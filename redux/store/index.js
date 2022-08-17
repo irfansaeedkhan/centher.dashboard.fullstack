@@ -8,9 +8,11 @@ import {testReducer,initialStates} from "../reducer/test"
 let store;
 
 const persistConfig = {
-    key: 'primary',
+    key: 'value1',
     storage,
-    whitelist: ['value2'], // place to select which state you want to persist
+    //timeout: null,
+    debug: true,
+    whitelist: ['value1'], // place to select which state you want to persist
 }
 
 const persistedReducer = persistReducer(persistConfig, testReducer)
