@@ -7,10 +7,13 @@ const PublicLayout = ({children, title="Nether NFT Platform", description="Nethe
     return(
         <>
             <PublicHead title={title} description={description} imagelink={imagelink}></PublicHead>
-            <ToastContainer>
-            </ToastContainer>
-            <PublicHeader></PublicHeader>
-            <div>{children}</div>
+            <ToastContainer />
+            <div className="bg-[#17171a]  w-full h-full font-monto text-white flex flex-col">
+                <PublicHeader></PublicHeader>
+                <div className="flex">
+                    <div>{children}</div>
+                </div>
+            </div>
             <PublicFooter></PublicFooter>
         </>
         

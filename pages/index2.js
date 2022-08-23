@@ -21,12 +21,18 @@ export default function Home() {
   }, []);
   return (
     <PublicLayout>
-      <div>Body</div>
+      <div className="text-yellow-theme">Home</div>
+      <div>Hello</div>
+      <Test1></Test1>
+      <Test2></Test2>
     </PublicLayout>
   );
 }
 
 export async function getStaticProps() {
+  const store = initializeStore();
+  //store.dispatch(testGetValue())
+
   return {
     props: {},
   };

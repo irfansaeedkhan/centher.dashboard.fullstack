@@ -8,7 +8,7 @@ const publicKeyBody =
 const publicKeyFooter = '-----END RSA PUBLIC KEY-----\n'
 
 
-const encryptStringWithPublicKey = ()=>{
+const encryptStringWithPublicKey = (data)=>{
     let publicKey = publicKeyHeader + publicKeyBody + publicKeyFooter
     let buffer = Buffer.from(data)
     let encrypted = crypto.publicEncrypt(publicKey, buffer)

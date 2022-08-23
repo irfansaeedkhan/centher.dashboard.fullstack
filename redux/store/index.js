@@ -8,7 +8,7 @@ import {testReducer,initialStates} from "../reducer/test"
 let store;
 
 const persistConfig = {
-    key: 'value1',
+    key: 'value2',
     storage,
     //timeout: null,
     debug: true,
