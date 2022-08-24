@@ -18,12 +18,12 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <Provider store={store}>
-      {/* <PersistGate loading={<div>loading</div>} persistor={persistor}>
-        <Component {...pageProps} />
-      </PersistGate> */}
-      <PersistGate persistor={persistor}>
+      <PersistGate loading={<div>loading</div>} persistor={persistor}>
         <Component {...pageProps} />
       </PersistGate>
+      {/* <PersistGate persistor={persistor}>
+        <Component {...pageProps} />
+      </PersistGate> */}
     </Provider>
   );
 }

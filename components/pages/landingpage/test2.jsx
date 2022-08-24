@@ -3,6 +3,7 @@ import { testSetValue, testGetValue } from '../../../redux/action/test'
 
 const Test2 = ()=>{
     const counter = useSelector((state) => state.value1)
+    console.log("Counter : ",counter)
     const dispatch = useDispatch()
 
     return(
