@@ -3,7 +3,7 @@ import Head from "next/head";
 import PublicLayout from "../components/layout/publiclayout";
 import { useDispatch } from "react-redux";
 import { initializeStore } from "../redux/store";
-import { testSetValue, testGetValue } from "../redux/action/test";
+import { testSetValue, testGetValue } from "../redux/action/testv1";
 import Test1 from "../components/pages/landingpage/test1";
 import Test2 from "../components/pages/landingpage/test2";
 import axios from "../utils/axios";
