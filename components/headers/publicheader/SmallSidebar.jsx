@@ -13,19 +13,23 @@ import { toast } from 'react-toastify';
 import logos from '../../../public/images/logoSmall.svg';
 
 const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
-  const location = useLocation();
-  const pathname = location.pathname.slice(1);
-  const history = useHistory();
-  const chat = useQuery();
-  const categoryQurey = useQuery();
-  const category = categoryQurey.get('category');
-  const chatAccountAddress = chat.get('account_address');
-  const authCtx = useContext(authContext);
-  const web3Ctx = useContext(Web3Context);
+  //const location = useLocation();
+  const pathname = "/"
+  //const pathname = location.pathname.slice(1);
+  //const history = useHistory();
+  //const chat = useQuery();
+  //const categoryQurey = useQuery();
+  const category = "all"
+  //const category = categoryQurey.get('category');
+  //const chatAccountAddress = chat.get('account_address');
+  //const authCtx = useContext(authContext);
+  //const web3Ctx = useContext(Web3Context);
+  const authCtx = null;
+  const web3Ctx = null;
   const [connectedAccountAddress, setConnectedAccountAddress] = useState('');
-  const [unreadMessages, setUnreadMessages] = useState(0);
-  const [unreadNotifications, setUnreadNotifications] = useState([]);
-  const transparentLayerCtx = useContext(transparentLayerContext);
+  //const [unreadMessages, setUnreadMessages] = useState(0);
+  //const [unreadNotifications, setUnreadNotifications] = useState([]);
+  //const transparentLayerCtx = useContext(transparentLayerContext);
 
   useEffect(() => {
     const handleResize = () => {
@@ -39,6 +43,7 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
     };
   }, []);
 
+  /*
   useEffect(() => {
     (async () => {
       if (!web3.currentProvider?.isMetaMask) {
@@ -47,9 +52,9 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
       const account_address = await web3Ctx.loadAccount(web3);
       setConnectedAccountAddress(web3.utils.toChecksumAddress(account_address));
     })();
-  }, []);
+  }, []);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/notifications/one_notification`)
       .then((resp) => {
@@ -57,9 +62,9 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
         setUnreadNotifications(data);
       })
       .catch((err) => console.log(err.response));
-  }, []);
+  }, []);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     let count = 0;
     axios
       .get(`${process.env.REACT_APP_API_URL}/api/conversations/readMessageInConversation`)
@@ -77,7 +82,7 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
         }
         setUnreadMessages(count);
       });
-  }, [chatAccountAddress]);
+  }, [chatAccountAddress]);*/
 
   async function handleLogout() {
     if (!authCtx.user || authCtx.jwt === 'logged_out') {
@@ -196,11 +201,11 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
                   }>
                   Chat
                 </Link> */}
-                {unreadMessages > 0 && (
+                {/* {unreadMessages > 0 && (
                   <span className="text-sm font-semibold text-[#222531] bg-yellow-theme w-8 h-5 rounded-lg flex justify-center">
                     +{unreadMessages}
                   </span>
-                )}
+                )} */}
               </div>
               <div className="flex items-center gap-2 w-full cursor-pointer">
                 <svg
@@ -236,11 +241,11 @@ const SmallSidebar = ({ BecomeInfluencer, setIsOpen }) => {
                   }>
                   Notifications
                 </Link> */}
-                {unreadNotifications.length > 0 && (
+                {/* {unreadNotifications.length > 0 && (
                   <span className="text-sm font-semibold text-[#222531] bg-yellow-theme w-8 h-5 rounded-lg flex justify-center">
                     +{unreadNotifications?.length}
                   </span>
-                )}
+                )} */}
               </div>
               <div className="text-[11px] font-bold pt-2 text-[#44485F] mt-5">NFT Marketplace</div>
               <div className="flex flex-col gap-5">

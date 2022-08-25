@@ -17,11 +17,11 @@ const web3Reducer = (state = web3InitialState, action)=>{
         }
         case web3ActionType.WEB3_CONNECT:return{
             ...state,
-            web3:action.web3,
-            useraddress:action.useraddress,
-            networkid:action.networkid,
+            web3:action.payload.web3,
+            useraddress:action.payload.useraddress,
+            networkid:action.payload.networkid,
             walletname:"metamask",
-            contractname:action.contractname
+            contractname:action.payload.contractname
         }
         case web3ActionType.WEB3_DISCONNECT:return{
             web3:null,
@@ -32,13 +32,17 @@ const web3Reducer = (state = web3InitialState, action)=>{
             transactionInprogress:false
         }
         case web3ActionType.WEB3_GET_NETWORK_CHAIN_ID:return{
-            networkid:state.networkid,
+            networkid:action.payload.networkid,
         }
         case web3ActionType.WEB3_GET_USER_PUBLIC_KEY:return{
-            useraddress:state.useraddress,
+            useraddress:action.payload.useraddress,
         }
         case web3ActionType.WEB3_GET_CONTRACT_VALUES:return{
             contractname:state.contractname,
+        }
+        case web3ActionType.WEB3_SET_CONTRACT_VALUES:return{
+            ...state,
+            contractname:action.payload.contractname,
         }
         case web3ActionType.WEB3_GET_WALLET_PROVIDER:return{
             walletname:state.walletname,

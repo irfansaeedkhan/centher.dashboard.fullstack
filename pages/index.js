@@ -24,6 +24,9 @@ export default function Home() {
       <div>
         <Test1></Test1>
         <Test2></Test2>
+        <p className="text-3xl font-bold underline">
+          Hello world!
+        </p>
       </div>
     </PublicLayout>
   );

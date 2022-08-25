@@ -26,7 +26,7 @@ import {setWeb3Data, disconnectWeb3, getAllValues} from "../../redux/action/web3
 const PublicHeader = (props) => {
   return(
     <div>
-      
+      <SmallSidebar></SmallSidebar>
     </div>
   )
 };

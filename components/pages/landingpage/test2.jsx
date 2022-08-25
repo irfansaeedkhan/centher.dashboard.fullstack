@@ -8,17 +8,17 @@ const Test2 = (props)=>{
     return(
         <div>
             <h1>
-                TEST Test V1 : <span>{props.value1}</span>
+                Web3wallet test name : <span>{props.web3.walletname}</span>
             </h1>
             <h1>
-                TEST Test V2 : <span>{props.value2}</span>
+                Web3 User test address : <span>{props.web3.useraddress}</span>
             </h1>
             <div></div>
         </div>
     )
 }
 const mapStateToProps = (state) => {
-	return { ...state.test };
+	return { web3:state.web3};
 }
 
 const mapDispatchToProps = (dispatch) => ({
