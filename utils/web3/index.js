@@ -37,6 +37,9 @@ module.exports.connectToWallet = async (walletname="metamask")=>{
         //
         await checkWalletExits(walletname)
 
+        //
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        
         //Connecting to web3
         web3 = await new Web3(window.ethereum)
 

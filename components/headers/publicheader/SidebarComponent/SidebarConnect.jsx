@@ -93,17 +93,28 @@ const SidebarConnect = (props) => {
 
 
       //Connecting to wallet
+      console.log("Connect to wallet")
       let {web3, networkid}= await connectToWallet(walletprovider);
-      console.log(web3)
-      console.log(networkid)
-      console.log("Setting up data in redux")
+
+      //Getting account
+      console.log("getting metamask account")
+      let metamaskAccount = await web3.eth.getAccounts();
+      
+      if(metamaskAccount.length<1){
+        //Checking if length of the metamask wallet is less than one
+        throw new Error("Failed to connect to metamask")
+      }
+
+      let toCheckSumAddress = await web3.utils.toChecksumAddress(metamaskAccount[0])
+      
       await props.setWeb3({
         web3:web3,
         networkid:networkid,
-        walletname:"metamask1",
-        useraddress:"qazwsx"
+        walletname:"metamask",
+        useraddress:toCheckSumAddress
       })
-      console.log("Setting up finished")
+
+      return toCheckSumAddress;
     }catch(e){
       console.log(e)
       if(!e.message){
@@ -154,7 +165,31 @@ const SidebarConnect = (props) => {
 
   async function loginWithMetamask(e) {
     try{
-      await connectMetamask();
+      let account_address = await connectMetamask();
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/nonce/${account_address}`
+      );
+
+      const nonce = res.data.nonce;
+
+      console.log(props.web3);
+
+      const data = props.web3.web3.utils.toHex('Please sign this message to Login: ' + nonce);
+
+      const signature = await props.web3.web3.currentProvider.request({
+        method: 'personal_sign',
+        params: [data, account_address]
+      });
+
+      const res_login = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+        account_address: account_address,
+        data,
+        signature
+      },{
+        withCredentials:true
+      });
+
+      console.log("Login : ",res_login.data)
     }catch(e){
       console.log("Login with metamask : ",e);
     }
