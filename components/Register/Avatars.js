@@ -1,15 +1,17 @@
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../utils/axios";
 
 const Avatars = () => {
   const [avatarModal, setAvatarModal] = useState(false);
   const [avatarsList, setAvatarsList] = useState([]);
+  const [profileImage, setProfileImage] = useState();
 
   useEffect(() => {
     (async () => {
       try {
         const promise2 = axios.get(
-          `${process.env.REACT_APP_API_URL}/api/public/avatars.json`
+          `${process.env.NEXT_PUBLIC_PLATFORM_URL}/api/public/avatars.json`
         );
 
         const [avatars] = await Promise.all([promise2]);
@@ -23,22 +25,21 @@ const Avatars = () => {
 
   return (
     <div className="flex gap-2 items-center">
-      {/* {profileImage !== undefined ? (
+      {profileImage !== undefined ? (
         <img
-          src={`${process.env.REACT_APP_API_URL}/${profileImage}`}
+          src={`${process.env.NEXT_PUBLIC_PLATFORM_URL}/${profileImage}`}
           className="bg-gray-shade-3 rounded-full"
           style={{ width: "80px", height: "80px", objectFit: "cover" }}
           alt="Profile Image"
         />
-      ) : ( */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/images/a1.png"
-        className="bg-gray-shade-3 rounded-full"
-        style={{ width: "80px", height: "80px", objectFit: "cover" }}
-        alt="Profile Image"
-      />
-      {/* )} */}
+      ) : (
+        <img
+          src="/images/a1.png"
+          className="bg-gray-shade-3 rounded-full"
+          style={{ width: "80px", height: "80px", objectFit: "cover" }}
+          alt="Profile Image"
+        />
+      )}
       <button
         className="bg-yellow-theme px-3 py-2 rounded-lg font-bold text-black"
         onClick={() => setAvatarModal(true)}
@@ -76,7 +77,7 @@ const Avatars = () => {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         key={avatar.path}
-                        src={`${process.env.REACT_APP_API_URL}/${avatar.path}`}
+                        src={`${process.env.NEXT_PUBLIC_PLATFORM_URL}/${avatar.path}`}
                         alt={avatar.name}
                         className="cursor-pointer rounded-full bg-gray-shade-3"
                         style={{

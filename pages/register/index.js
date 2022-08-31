@@ -66,7 +66,7 @@ function Register() {
           </span>
         </div>
         <div className="w-full h-auto flex flex-col gap-6">
-          {/* <Avatars /> */}
+          <Avatars />
           <div className="flex flex-col gap-2 ">
             <div className="text-sm text-white">Username</div>
             <input
