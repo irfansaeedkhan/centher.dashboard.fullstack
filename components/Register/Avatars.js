@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/axios";
 
-const Avatars = () => {
+const Avatars = ({ setSignup }) => {
   const [avatarModal, setAvatarModal] = useState(false);
   const [avatarsList, setAvatarsList] = useState([]);
   const [profileImage, setProfileImage] = useState();
@@ -88,6 +88,12 @@ const Avatars = () => {
                         onClick={() => {
                           setAvatarModal(false);
                           setProfileImage(avatar.path);
+                          setSignup((prev) => {
+                            return {
+                              ...prev,
+                              profile_image: avatar.path,
+                            };
+                          });
                         }}
                       />
                     );
