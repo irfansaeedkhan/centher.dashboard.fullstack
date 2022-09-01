@@ -18,19 +18,17 @@ function Register() {
     referred_by: "",
   });
 
-  async function fetchData(connectWallet=true) {
-    try{
-      console.log("hey");
-    
-      ///const response = await MyAPI.getData(someId);
-      let { web3, networkid } = await connectToWallet("metamask", connectWallet);
-      // ...
+  async function fetchData(connectWallet = true) {
+    try {
+      let { web3, networkid } = await connectToWallet(
+        "metamask",
+        connectWallet
+      );
       let metamaskAccount = await web3.eth.getAccounts();
       setConnectedAccountAddress(metamaskAccount[0]);
-    }catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
-    
   }
 
   useEffect(() => {
