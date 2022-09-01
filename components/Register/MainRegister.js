@@ -136,13 +136,32 @@ const MainRegister = (props) => {
           </div>
           <div className="flex flex-col gap-2">
             <div className="text-sm text-white">Account Address</div>
-            <input
-              type="text"
-              id="accountaddress"
-              name="accountaddress"
-              placeholder="Enter your account address"
-              className="bg-[#1E1E21] rounded-lg w-full py-3 px-5 text-white border-0 focus:ring-yellow-theme focus:outline-none focus:border-yellow-theme"
-            />
+            {props.connectedAccountAddress ? (
+              <input
+                readOnly
+                type="text"
+                id="accountaddress"
+                name="accountaddress"
+                placeholder="Enter your account address"
+                className="bg-[#1E1E21] rounded-lg w-full py-3 px-5 text-white border-0 focus:ring-yellow-theme focus:outline-none focus:border-yellow-theme"
+                value={props.connectedAccountAddress}
+                onChange={(e) => {
+                  props.setSignup((prev) => {
+                    return {
+                      ...prev,
+                      account_address: e.target.value,
+                    };
+                  });
+                }}
+              />
+            ) : (
+              <button
+                className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss"
+                onClick={() => props.fetchData()}
+              >
+                Connect Wallet
+              </button>
+            )}
           </div>
           <div className="flex flex-col gap-2">
             <div className="text-sm text-white">
@@ -159,7 +178,7 @@ const MainRegister = (props) => {
                 props.setSignup((prev) => {
                   return {
                     ...prev,
-                    referred_by: e.target.value.toLowerCase().trim(),
+                    referred_by: e.target.value,
                   };
                 });
               }}

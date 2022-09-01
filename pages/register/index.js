@@ -18,40 +18,24 @@ function Register() {
     referred_by: "",
   });
 
-  /*
-  useEffect(async () => {
-    try{
-        let { web3, networkid } = await connectToWallet("metamask");
-  
-        let metamaskAccount = await web3.eth.getAccounts();
-        console.log(metamaskAccount);
+  async function fetchData() {
+    console.log("hey");
+    ///const response = await MyAPI.getData(someId);
+    let { web3, networkid } = await connectToWallet("metamask", false);
+    // ...
+    let metamaskAccount = await web3.eth.getAccounts();
+    setConnectedAccountAddress(metamaskAccount[0]);
+  }
 
-    }catch(e){
-      console.log("Error message : ",e)
+  useEffect(() => {
+    try {
+      fetchData().catch((e) => {
+        console.log(e);
+      });
+    } catch (e) {
+      console.log(e);
     }
   }, []);
-  */
-  useEffect(()=>{
-    try{
-    async function fetchData() {
-      // You can await here
-      console.log("Fetch data ")
-      ///const response = await MyAPI.getData(someId);
-      let { web3, networkid } = await connectToWallet("metamask");
-      // ...
-      let metamaskAccount = await web3.eth.getAccounts();
-
-      console.log(metamaskAccount)
-      setConnectedAccountAddress(metamaskAccount[0])
-    }
-    fetchData().catch((e)=>{
-      console.log(e)
-    });
-    }catch(e){
-      console.log(e)
-    }
-  },[]);
-  
 
   return (
     <MainRegister
@@ -61,7 +45,9 @@ function Register() {
       setShowConfirmPassword={setShowConfirmPassword}
       setSignup={setSignup}
       signup={signup}
+      connectedAccountAddress={connectedAccountAddress}
       referrer={router.query.referrer}
+      fetchData={fetchData}
     />
   );
 }
