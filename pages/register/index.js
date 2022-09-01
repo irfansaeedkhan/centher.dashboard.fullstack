@@ -8,8 +8,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [connectedAccountAddress, setConnectedAccountAddress] = useState("");
-  let { web3, networkid } = connectToWallet("metamask");
-  console.log(web3, networkid);
   const [signup, setSignup] = useState({
     username: "",
     email: "",
@@ -20,11 +18,40 @@ function Register() {
     referred_by: "",
   });
 
-  // useEffect(() => {
-  //   let metamaskAccount = web3.eth.getAccounts();
-  //   console.log(metamaskAccount);
-  //   setConnectedAccountAddress(metamaskAccount);
-  // }, []);
+  /*
+  useEffect(async () => {
+    try{
+        let { web3, networkid } = await connectToWallet("metamask");
+  
+        let metamaskAccount = await web3.eth.getAccounts();
+        console.log(metamaskAccount);
+
+    }catch(e){
+      console.log("Error message : ",e)
+    }
+  }, []);
+  */
+  useEffect(()=>{
+    try{
+    async function fetchData() {
+      // You can await here
+      console.log("Fetch data ")
+      ///const response = await MyAPI.getData(someId);
+      let { web3, networkid } = await connectToWallet("metamask");
+      // ...
+      let metamaskAccount = await web3.eth.getAccounts();
+
+      console.log(metamaskAccount)
+      setConnectedAccountAddress(metamaskAccount[0])
+    }
+    fetchData().catch((e)=>{
+      console.log(e)
+    });
+    }catch(e){
+      console.log(e)
+    }
+  },[]);
+  
 
   return (
     <MainRegister
