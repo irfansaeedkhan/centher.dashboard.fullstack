@@ -39,7 +39,7 @@ module.exports.connectToWallet = async (walletname="metamask", connectWallet=tru
 
         //Dont connect to wallet if connectToWallet is false can use when page is loading
         if(connectWallet){
-
+            console.log("Connect to wallet function ")
             await window.ethereum.request({ method: 'eth_requestAccounts' });
         }
 
