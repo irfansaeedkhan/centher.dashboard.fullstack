@@ -24,7 +24,7 @@ const checkWalletExits = async (wallet)=>{
     }
 }
 
-module.exports.connectToWallet = async (walletname="metamask")=>{
+module.exports.connectToWallet = async (walletname="metamask", connectWallet=true)=>{
     //let provider = await detectEthereumProvider();
     let provider = null;
     let web3 = null;
@@ -37,9 +37,12 @@ module.exports.connectToWallet = async (walletname="metamask")=>{
         //
         await checkWalletExits(walletname)
 
-        //
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        
+        //Dont connect to wallet if connectToWallet is false can use when page is loading
+        if(connectWallet){
+
+            await window.ethereum.request({ method: 'eth_requestAccounts' });
+        }
+
         //Connecting to web3
         web3 = await new Web3(window.ethereum)
 
