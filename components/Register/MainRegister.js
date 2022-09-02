@@ -191,6 +191,15 @@ const MainRegister = (props) => {
             <div className="bg-[#1E1E21] rounded-lg w-full py-3 px-5 text-white flex gap-2 items-center justify-between">
               <input
                 type={props.showPassword ? "text" : "password"}
+                value={props.password}
+                onChange={(e) => {
+                  props.setSignup((prev) => {
+                    return {
+                      ...prev,
+                      password: e.target.value.trim(),
+                    };
+                  });
+                }}
                 placeholder="Password"
                 className="bg-transparent text-white border-0 focus:ring-0 focus:outline-none focus:border-0 p-0 w-full"
               />
@@ -212,6 +221,10 @@ const MainRegister = (props) => {
             <div className="bg-[#1E1E21] rounded-lg w-full py-3 px-5 text-white flex gap-2 items-center justify-between">
               <input
                 type={props.showConfirmPassword ? "text" : "password"}
+                value={props.confirmPassword}
+                onChange={(e) =>
+                  props.setConfirmPassword(e.target.value.trim())
+                }
                 placeholder="Confirm Password"
                 className="bg-transparent text-white border-0 focus:ring-0 focus:outline-none focus:border-0 p-0 w-full"
               />
@@ -230,7 +243,10 @@ const MainRegister = (props) => {
           </div>
 
           <div>
-            <button className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss">
+            <button
+              className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss"
+              onClick={props.handleSubmitSignup}
+            >
               Register account
             </button>
           </div>

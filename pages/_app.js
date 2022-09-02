@@ -1,11 +1,13 @@
 import "../styles/globals.css";
 import { useStore } from "../redux/store";
 import { Provider } from "react-redux";
-import { createWrapper } from 'next-redux-wrapper'
-import store from "../redux/store"
+import { createWrapper } from "next-redux-wrapper";
+import store from "../redux/store";
+import "react-toastify/dist/ReactToastify.css";
 
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { ToastContainer } from "react-toastify";
 
 /*
 function MyApp({ Component, pageProps }) {
@@ -40,16 +42,17 @@ function MyApp({ Component, pageProps }) {
 
 // export default MyApp;
 function MyApp({ Component, pageProps }) {
-	return (
-		<>
-			<Provider store={store}>
-				<Component {...pageProps} />
-			</Provider>
-		</>
-	)
+  return (
+    <>
+      <ToastContainer />
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
+    </>
+  );
 }
 
 // initialize store and wrapper store
-const makeStore = () => store
-const wrapper = createWrapper(makeStore)
-export default wrapper.withRedux(MyApp)
+const makeStore = () => store;
+const wrapper = createWrapper(makeStore);
+export default wrapper.withRedux(MyApp);
