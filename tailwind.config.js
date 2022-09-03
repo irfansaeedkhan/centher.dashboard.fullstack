@@ -60,11 +60,13 @@ module.exports = {
         background: {
           "shade-1": "#141417",
         },
-        "black-shade-1": "#0A0A0A",
-        "black-shade-2": "#141414",
-        "black-shade-3": "#17171A",
-        "black-shade-4": "#202020",
-        "black-shade-5": "#16161A",
+        "black-shade": {
+          1: "#0A0A0A",
+          2: "#141414",
+          3: "#17171A",
+          4: "#202020",
+          5: "#16161A",
+        },
       },
     },
   },

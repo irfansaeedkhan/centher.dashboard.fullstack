@@ -1,10 +1,11 @@
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className=" min-h-screen  font-monto flex w-full">
       <div className="md:flex sm:hidden flex-col py-11 px-12 gap-10 bg-background-shade-1 w-1/2 ">
@@ -101,7 +102,7 @@ const Login = () => {
               please click on forgot password to create new one for you.
             </div>
             <div className="text-xs font-medium text-white underline cursor-pointer hover:text-yellow-theme">
-              <Link href="/forgotPassword">Forgot password</Link>
+              <Link href="/forgot-password">Forgot password</Link>
             </div>
           </div>
           <div>

@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-import axios from "../../utils/axios";
+import axios from "@/utils/axios";
 
 const Avatars = ({ setSignup }) => {
   const [avatarModal, setAvatarModal] = useState(false);

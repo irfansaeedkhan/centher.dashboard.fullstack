@@ -1,10 +1,9 @@
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import axios from "../../utils/axios/index";
-
-import MainRegister from "../../components/Register/MainRegister";
-import { connectToWallet } from "../../utils/web3/index";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
+import RegisterComponent from "@/components/pages/register";
+import axios from "@/utils/axios";
+import { connectToWallet } from "@/utils/web3";
 
 function Register() {
   const router = useRouter();
@@ -184,7 +183,7 @@ function Register() {
   }
 
   return (
-    <MainRegister
+    <RegisterComponent
       setShowPassword={setShowPassword}
       showPassword={showPassword}
       showConfirmPassword={showConfirmPassword}

@@ -1,5 +1,0 @@
-export const socketActionType = {
-    SOCKET_CONNECT:'SOCKET_CONNECT',
-    SOCKET_DISCONNECT:'SOCKET_DISCONNECT',
-    SOCKET_GET:'SOCKET_GET'
-}

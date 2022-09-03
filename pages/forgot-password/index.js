@@ -1,6 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 const ForgotPassword = () => {
   return (
@@ -78,7 +77,7 @@ const ForgotPassword = () => {
               email.
             </div>
             {/* <div className="text-xs font-medium text-white underline cursor-pointer hover:text-yellow-theme">
-              <Link href="/resetPassword">Reset Password</Link>
+              <Link href="/reset-password">Reset Password</Link>
             </div> */}
           </div>
         </div>

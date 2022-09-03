@@ -1,5 +1,4 @@
 import Web3 from "web3";
-//import detectEthereumProvider from '@metamask/detect-provider';
 
 const checkWalletExits = async (wallet) => {
   let walletexits = false;
@@ -24,37 +23,34 @@ const checkWalletExits = async (wallet) => {
   }
 };
 
-module.exports.connectToWallet = async (walletname="metamask", connectWallet=true)=>{
-    //let provider = await detectEthereumProvider();
-    let provider = null;
-    let web3 = null;
-    let chainID = 0;
-    //let validChain = false;
-    
-    //Checking if window etherum exits and wallet type 
-    if(window.ethereum && walletname=="metamask"){
-        
-        //
-        await checkWalletExits(walletname)
+module.exports.connectToWallet = async (
+  walletname = "metamask",
+  connectWallet = true
+) => {
+  // let provider = await detectEthereumProvider();
+  let provider = null;
+  let web3 = null;
+  let chainID = 0;
+  // let validChain = false;
 
-        //Dont connect to wallet if connectToWallet is false can use when page is loading
-        if(connectWallet){
-            console.log("Connect to wallet function ")
-            await window.ethereum.request({ method: 'eth_requestAccounts' });
-        }
+  // Checking if window etherum exits and wallet type
+  if (window.ethereum && walletname == "metamask") {
+    await checkWalletExits(walletname);
 
-        //Connecting to web3
-        web3 = await new Web3(window.ethereum)
+    // Dont connect to wallet if connectToWallet is false can use when page is loading
+    if (connectWallet) {
+      console.log("Connect to wallet function ");
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+    }
 
-    }else if(window.web3 && walletname=="metamask"){
-        
-        //Checking if web3 varaible exits or not
-        await checkWalletExits(walletname)
+    // Connecting to web3
+    web3 = await new Web3(window.ethereum);
+  } else if (window.web3 && walletname == "metamask") {
+    // Checking if web3 varaible exits or not
+    await checkWalletExits(walletname);
 
-    //
     web3 = await new Web3(window.web3.currentProvider);
   } else if (walletname == "walletconnect") {
-    //
     let rpcObject = {};
     rpcObject.rpc = {};
     rpcObject.rpc[process.env.NEXT_PUBLIC_BINANCE_CHAIN_LINK] =
@@ -63,14 +59,13 @@ module.exports.connectToWallet = async (walletname="metamask", connectWallet=tru
     await provider.enable();
     web3 = await new Web3(provider);
   } else {
-    //
     throw new Error("Failed to connect to wallet");
   }
 
-  //Getting chain id of connected
+  // Getting chain id of connected
   chainID = await web3.eth.net.getId();
 
-  //Comparing chain id
+  // Comparing chain id
   if (chainID != process.env.NEXT_PUBLIC_BINANCE_CHAIN_ID) {
     throw new Error("Invalid chain id");
   }

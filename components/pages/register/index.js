@@ -2,11 +2,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
-import Avatars from "./Avatars";
+import Avatars from "./avatars";
 
-const MainRegister = (props) => {
+const RegisterComponent = (props) => {
   return (
-    <div className=" min-h-screen  font-monto flex w-full">
+    <div className="min-h-screen  font-monto flex w-full">
       <div className="md:flex sm:hidden flex-col py-11 px-12 gap-10 bg-background-shade-1 w-1/2 ">
         <div className="w-fit">
           <Image
@@ -256,4 +256,4 @@ const MainRegister = (props) => {
   );
 };
 
-export default MainRegister;
+export default RegisterComponent;
