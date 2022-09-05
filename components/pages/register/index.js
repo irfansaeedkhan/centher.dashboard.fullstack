@@ -2,9 +2,16 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import Avatars from "./avatars";
 
 const RegisterComponent = (props) => {
+  const { connectWallet } = useConnectWallet();
+
+  const handleConnectWallet = async () => {
+    await connectWallet();
+  };
+
   return (
     <div className="min-h-screen  font-monto flex w-full">
       <div className="md:flex sm:hidden flex-col py-11 px-12 gap-10 bg-background-shade-1 w-1/2 ">
@@ -157,7 +164,7 @@ const RegisterComponent = (props) => {
             ) : (
               <button
                 className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss"
-                onClick={() => props.fetchData()}
+                onClick={handleConnectWallet}
               >
                 Connect Wallet
               </button>

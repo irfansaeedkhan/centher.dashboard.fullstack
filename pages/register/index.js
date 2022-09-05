@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-toastify";
 import RegisterComponent from "@/components/pages/register";
 import axios from "@/utils/axios";
-import { connectToWallet } from "@/utils/web3";
 
 function Register() {
+  const { account } = useWeb3React();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,34 +23,17 @@ function Register() {
     password: "",
   });
 
-  async function fetchData(connectWallet = true) {
-    try {
-      let { web3, networkid } = await connectToWallet(
-        "metamask",
-        connectWallet
-      );
-      let metamaskAccount = await web3.eth.getAccounts();
-      setConnectedAccountAddress(metamaskAccount[0]);
+  useEffect(() => {
+    (async () => {
+      setConnectedAccountAddress(account);
       setSignup((prev) => {
         return {
           ...prev,
-          account_address: metamaskAccount[0],
+          account_address: account,
         };
       });
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  useEffect(() => {
-    try {
-      fetchData(false).catch((e) => {
-        console.log(e);
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+    })();
+  }, [account]);
 
   async function handleSubmitSignup(e) {
     e.target.disabled = true;
@@ -192,7 +176,6 @@ function Register() {
       signup={signup}
       connectedAccountAddress={connectedAccountAddress}
       referrer={router.query.referrer}
-      fetchData={fetchData}
       setConfirmPassword={setConfirmPassword}
       confirmPassword={confirmPassword}
       handleSubmitSignup={handleSubmitSignup}

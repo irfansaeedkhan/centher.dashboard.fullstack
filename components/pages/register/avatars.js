@@ -17,8 +17,8 @@ const Avatars = ({ setSignup }) => {
         const [avatars] = await Promise.all([promise2]);
 
         setAvatarsList(avatars.data);
-      } catch (error) {
-        console.log(error);
+      } catch {
+        console.log("Can't get avatars list");
       }
     })();
   }, []);
