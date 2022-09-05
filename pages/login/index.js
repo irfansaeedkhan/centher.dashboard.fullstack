@@ -1,10 +1,24 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { useDispatch } from "react-redux";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { setUserAndJwt } from "@/store/auth.slice";
 
 const Login = () => {
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleLogin = () => {
+    // API Call
+    // Set State
+    dispatch(
+      setUserAndJwt({
+        user: { _id: "123", email: "mhm13dev@gmail.com" },
+        jwt: "dehjbdwe",
+      })
+    );
+  };
 
   return (
     <div className=" min-h-screen  font-monto flex w-full">
@@ -106,7 +120,10 @@ const Login = () => {
             </div>
           </div>
           <div>
-            <button className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss">
+            <button
+              onClick={handleLogin}
+              className="w-full py-3 flex justify-center rounded-lg font-bold bg-yellow-theme mt-2 text-[#222531] dynamicTranss"
+            >
               Login
             </button>
           </div>
