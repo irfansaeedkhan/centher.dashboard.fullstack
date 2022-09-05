@@ -1,3 +1,4 @@
+import { HYDRATE } from "next-redux-wrapper";
 import { createSlice } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import localForage from "localforage";
@@ -7,7 +8,7 @@ const initialState = {
   jwt: null,
 };
 
-const authSlice = createSlice({
+export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -20,6 +21,15 @@ const authSlice = createSlice({
     },
     setJwt: (state, action) => {
       state.jwt = action.payload;
+    },
+  },
+
+  extraReducers: {
+    [HYDRATE]: (state, action) => {
+      return {
+        ...state,
+        ...action.payload.auth,
+      };
     },
   },
 });
