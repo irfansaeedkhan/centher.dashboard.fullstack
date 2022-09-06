@@ -7,18 +7,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "execute-husky": "npx husky install && npx husky add .husky/pre-commit \"npx --no-install lint-staged\""
+    "prepare": "husky install"
   },
   "lint-staged": {
     "**/*.{js,jsx,ts,tsx}": [
-      "eslint . --fix",
-      "prettier . --write"
+      "prettier . --write",
+      "eslint . --fix"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "dependencies": {
     "flowbite": "^1.5.3",
@@ -39,7 +34,7 @@
     "eslint": "8.23.0",
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
-    "husky": "^8.0.1",
+    "husky": "^8.0.0",
     "lint-staged": "^13.0.3",
     "postcss": "^8.4.16",
     "prettier": "^2.7.1",
