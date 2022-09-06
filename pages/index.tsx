@@ -1,13 +1,13 @@
 import Link from "next/link";
 
+import styles from "@/pages.components/index/styles.module.scss";
+
 export default function Home() {
   return (
     <div>
-      <p className="text-3xl font-bold text-center">Hello world!</p>
+      <h1 className={styles.page_heading}>Hello world!</h1>
       <Link href="/login">
-        <button className="py-2 px-4 block w-max mx-auto rounded-lg font-bold text-yellow-300 bg-black-shade-3 mt-2">
-          Connect
-        </button>
+        <button className={styles.connect_button}>Connect</button>
       </Link>
     </div>
   );
