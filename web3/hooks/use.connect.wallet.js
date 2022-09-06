@@ -9,8 +9,12 @@ export const useConnectWallet = () => {
 
   useEffect(() => {
     if (error) {
-      if (error.name === "UnsupportedChainIdError") {
-        toast.error("Please connect to the BSC testnet!");
+      if (error.message.toLocaleLowerCase().includes("unsupported chain id")) {
+        let network = "testnet";
+        if (process.env.NODE_ENV === "production") {
+          network = "mainnet";
+        }
+        toast.error(`Please connect to the BSC ${network}!`);
       }
     }
   }, [error]);
