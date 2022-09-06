@@ -4,8 +4,8 @@ import { persistReducer } from "redux-persist";
 import localForage from "localforage";
 
 const initialState = {
-  user: null,
-  jwt: null,
+  user: "init",
+  jwt: "init",
 };
 
 export const authSlice = createSlice({
@@ -26,6 +26,13 @@ export const authSlice = createSlice({
 
   extraReducers: {
     [HYDRATE]: (state, action) => {
+      if (action.payload.auth.user === "init") {
+        delete action.payload.auth.user;
+      }
+      if (action.payload.auth.jwt === "init") {
+        delete action.payload.auth.jwt;
+      }
+
       return {
         ...state,
         ...action.payload.auth,
@@ -38,8 +45,10 @@ export const authSlice = createSlice({
 export const { setUserAndJwt, setUser, setJwt } = authSlice.actions;
 
 // Selectors
-export const selectUser = (state) => state.auth.user;
-export const selectJwt = (state) => state.auth.jwt;
+export const selectUser = (state) =>
+  state.auth.user === "init" ? null : state.auth.user;
+export const selectJwt = (state) =>
+  state.auth.jwt === "init" ? null : state.auth.jwt;
 
 const persistedReducer = persistReducer(
   {
