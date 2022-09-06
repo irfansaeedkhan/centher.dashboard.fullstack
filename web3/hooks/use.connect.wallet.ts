@@ -1,0 +1,37 @@
+import { useCallback, useEffect } from "react";
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
+import { toast } from "react-toastify";
+
+import { injectedConnector } from "@/web3/connector";
+
+export const useConnectWallet = () => {
+  const { activate, error } = useWeb3React();
+
+  useEffect(() => {
+    if (error) {
+      if (error.message.toLocaleLowerCase().includes("unsupported chain id")) {
+        let network = "testnet";
+        if (process.env.NODE_ENV === "production") {
+          network = "mainnet";
+        }
+        toast.error(`Please connect to the BSC ${network}!`);
+      }
+    }
+  }, [error]);
+
+  const connectWallet = useCallback(async () => {
+    await activate(injectedConnector);
+  }, [activate]);
+
+  const getConnectedAccount = useCallback(async () => {
+    if (window.ethereum) {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      try {
+        return await provider.getSigner().getAddress();
+      } catch {}
+    }
+  }, []);
+
+  return { connectWallet, getConnectedAccount };
+};
