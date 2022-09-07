@@ -1,13 +1,14 @@
 import Link from "next/link";
 
-import styles from "@/pages.components/index/styles.module.scss";
+import { Button } from "@/pages.components/index";
+import { Heading } from "@/components/heading";
 
 export default function Home() {
   return (
     <div>
-      <h1 className={styles.page_heading}>Hello world!</h1>
+      <Heading variant="h1">Hello world!</Heading>
       <Link href="/login">
-        <button className={styles.connect_button}>Connect</button>
+        <Button>Connect</Button>
       </Link>
     </div>
   );

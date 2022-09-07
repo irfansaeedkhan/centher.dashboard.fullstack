@@ -48,6 +48,9 @@ module.exports = {
       },
 
       colors: {
+        brand: {
+          primary: "#FEBF32",
+        },
         yellow: {
           theme: "#FEBF32",
         },

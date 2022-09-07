@@ -10,13 +10,14 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,css,scss}": [
+    "**/*.{js,jsx,ts,tsx,scss}": [
       "prettier . --write",
       "eslint . --fix"
     ]
   },
   "dependencies": {
     "@ethersproject/providers": "^5.7.0",
+    "@netlify/classnames-template-literals": "^1.0.3",
     "@reduxjs/toolkit": "^1.8.5",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
