@@ -1,0 +1,24 @@
+import ctl from "@netlify/classnames-template-literals";
+import React from "react";
+
+interface RightSectionProps {
+  children: React.ReactNode;
+}
+
+export const RightSection: React.FC<RightSectionProps> = (props) => {
+  return <div className={pageWraper}>{props.children}</div>;
+};
+
+const pageWraper = ctl(`
+  flex 
+  gap-5 
+  sm:px-5 
+  md:py-32 
+  sm:py-10 
+  lg:px-20 
+  flex-col 
+  md:w-1/2 
+  sm:w-full
+  xl:px-[113px] 
+  bg-black-shade-3 
+`);
