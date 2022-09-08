@@ -13,7 +13,7 @@ export const NoteLogin: React.FC<NoteLoginProps> = (props) => {
       <div className={note}>Note:</div>
       <p className={noteP}>{props.title}</p>
       <div className={LinkClass}>
-        <Link href={`/${props.link}`}>Forgot password</Link>
+        <Link href={props.link}>Forgot password</Link>
       </div>
     </div>
   );

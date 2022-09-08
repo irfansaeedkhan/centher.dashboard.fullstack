@@ -1,11 +1,15 @@
-import { NoteLogin } from "@/components/notelogin";
-import { setUserAndJwt } from "@/store/slices/auth";
-import ctl from "@netlify/classnames-template-literals";
+// React, Next, NPM Packages
 import React, { useState } from "react";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { useDispatch } from "react-redux";
+import ctl from "@netlify/classnames-template-literals";
+import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-export const LoginForm: React.FC<any> = () => {
+// App Components and Data
+import { setUserAndJwt } from "@/store/slices/auth";
+import { NoteLogin } from "@/components/note.login";
+import { AppRoutes } from "@/constants/app.routes";
+
+export const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
 
@@ -19,8 +23,8 @@ export const LoginForm: React.FC<any> = () => {
   };
   return (
     <div className={wrapper}>
-      <div className={FieldWrapper}>
-        <label className={FieldTitle}>Email Address</label>
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>Email Address</label>
         <input
           type="email"
           id="email"
@@ -29,9 +33,9 @@ export const LoginForm: React.FC<any> = () => {
           className={inputEmail}
         />
       </div>
-      <div className={FieldWrapper}>
-        <label className={FieldTitle}>Password</label>
-        <div className={WrapperPassword}>
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>Password</label>
+        <div className={wrapperPassword}>
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
@@ -40,19 +44,19 @@ export const LoginForm: React.FC<any> = () => {
           {showPassword ? (
             <BsEyeSlash
               onClick={() => setShowPassword(false)}
-              className={EyeSlash}
+              className={eyeSlash}
             />
           ) : (
-            <BsEye onClick={() => setShowPassword(true)} className={EyeSlash} />
+            <BsEye onClick={() => setShowPassword(true)} className={eyeSlash} />
           )}
         </div>
       </div>
       <NoteLogin
-        title="If you are already memebr of Nethernft and don’t have password, please click on forgot password to create new one for you."
-        link="forgot-password"
+        title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
+        link={AppRoutes.forgot_password}
       />
       <div>
-        <button onClick={handleLogin} className={Button}>
+        <button onClick={handleLogin} className={button}>
           Login
         </button>
       </div>
@@ -68,13 +72,13 @@ const wrapper = ctl(`
   flex-col 
 `);
 
-const FieldWrapper = ctl(`
+const fieldWrapper = ctl(`
   flex 
   gap-2
   flex-col 
 `);
 
-const FieldTitle = ctl(`
+const fieldTitle = ctl(`
   text-sm 
   text-white
 `);
@@ -103,7 +107,7 @@ const inputPassword = ctl(`
   focus:outline-none 
 `);
 
-const WrapperPassword = ctl(`
+const wrapperPassword = ctl(`
   flex 
   py-3 
   px-5 
@@ -116,12 +120,12 @@ const WrapperPassword = ctl(`
   justify-between 
 `);
 
-const EyeSlash = ctl(`
+const eyeSlash = ctl(`
   cursor-pointer
   text-gray-shade-4
 `);
 
-const Button = ctl(`
+const button = ctl(`
   mt-2 
   py-3 
   flex 

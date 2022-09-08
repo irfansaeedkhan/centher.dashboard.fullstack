@@ -10,16 +10,16 @@ interface AboutMemberProps {
 
 export const AboutMember: React.FC<AboutMemberProps> = (props) => {
   return (
-    <div className={baseClass}>
+    <div className={componentWrapper}>
       <span className="text-white">{props.asked}</span>
-      <span className={baseClass2}>
-        <Link href={`/${props.link}`}>{props.title}</Link>
+      <span className={linkWrappper}>
+        <Link href={props.link}>{props.title}</Link>
       </span>
     </div>
   );
 };
 
-const baseClass = ctl(`
+const componentWrapper = ctl(`
   flex 
   gap-1
   text-sm 
@@ -28,7 +28,7 @@ const baseClass = ctl(`
   items-center 
 `);
 
-const baseClass2 = ctl(`
+const linkWrappper = ctl(`
   dynamicTranss
   cursor-pointer 
   text-brand-primary 

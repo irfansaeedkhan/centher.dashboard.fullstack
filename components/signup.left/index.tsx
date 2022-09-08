@@ -1,15 +1,16 @@
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
+// React, Next, NPM Packages
 import React from "react";
+import Image from "next/image";
+import ctl from "@netlify/classnames-template-literals";
 
 interface SignupProps {
   title: string;
   content: string;
-  varient: "desktop" | "mobile";
+  variant: "desktop" | "mobile";
 }
 
 export const SignupLeft: React.FC<SignupProps> = (props) => {
-  if (props.varient === "desktop") {
+  if (props.variant === "desktop") {
     return (
       <section className={section_left}>
         <div className="w-fit">
@@ -37,9 +38,10 @@ export const SignupLeft: React.FC<SignupProps> = (props) => {
       </section>
     );
   }
-  if (props.varient === "mobile") {
+
+  if (props.variant === "mobile") {
     return (
-      <div className={section_right_mobile_content_wrapper}>
+      <section className={section_right_mobile_content_wrapper}>
         <div className="w-fit">
           <Image
             src="/images/nether.nft.logo.login.svg"
@@ -52,7 +54,7 @@ export const SignupLeft: React.FC<SignupProps> = (props) => {
           <h1 className={title}>{props.title}</h1>
           <p className={contentMobile}>{props.content}</p>
         </div>
-      </div>
+      </section>
     );
   }
   return null;

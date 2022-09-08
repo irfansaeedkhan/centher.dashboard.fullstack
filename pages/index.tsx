@@ -1,15 +1,22 @@
-import Link from "next/link";
+// React, Next, NPM Packages
+import { NextPage } from "next";
 
-import { Button } from "@/pages.components/index";
+// App Components and Data
 import { Heading } from "@/components/heading";
+import { AppRoutes } from "@/constants/app.routes";
 
-export default function Home() {
+// Current File's Components and Data
+import { Button } from "@/pages.components/index";
+
+const Home: NextPage = () => {
   return (
     <div>
       <Heading variant="h1">Hello world!</Heading>
-      <Link href="/login">
-        <Button>Connect</Button>
-      </Link>
+      <Button component="a" href={AppRoutes.login}>
+        Connect
+      </Button>
     </div>
   );
-}
+};
+
+export default Home;
