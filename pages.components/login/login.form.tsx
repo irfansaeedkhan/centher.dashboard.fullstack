@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-// App Components and Data
+// App imports
 import { setUserAndJwt } from "@/store/slices/auth";
 import { NoteLogin } from "@/components/note.login";
 import { AppRoutes } from "@/constants/app.routes";

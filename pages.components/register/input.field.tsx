@@ -2,30 +2,21 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
-export interface InputFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  name: string;
-  label: React.ReactNode;
-  placeholder: string;
-}
+// Current directory imports
+import { FormFieldProps } from "./form.fields.data";
 
-export const InputField: React.FC<InputFieldProps> = ({
+export const InputField: React.FC<FormFieldProps> = ({
   label,
   name,
-  placeholder,
+  error,
   ...props
 }) => {
   return (
     <div className={fieldWrapper}>
       <label className={fieldTitle}>{label}</label>
-      <input
-        type={name}
-        id={name}
-        name={name}
-        placeholder={placeholder}
-        className={inputField}
-        {...props}
-      />
+      <input id={name} name={name} className={inputField} {...props} />
+
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 };

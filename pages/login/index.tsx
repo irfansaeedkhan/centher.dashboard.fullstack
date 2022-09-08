@@ -2,14 +2,14 @@
 import React from "react";
 import { NextPage } from "next";
 
-// App Components and Data
+// App imports
 import { RightSection } from "@/components/signup.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { SignupLeft } from "@/components/signup.left";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current File's Components and Data
+// Current directory imports
 import { LoginForm } from "@/pages.components/login";
 
 const Login: NextPage = () => {

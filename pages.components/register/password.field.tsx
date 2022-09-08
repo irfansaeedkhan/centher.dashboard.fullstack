@@ -3,15 +3,15 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-interface PasswordFieldProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: React.ReactNode;
-  placeholder: string;
-}
+// Current directory imports
+import { FormFieldProps } from "./form.fields.data";
 
-export const PasswordField: React.FC<PasswordFieldProps> = ({
+export const PasswordField: React.FC<FormFieldProps> = ({
   label,
-  placeholder,
+  name,
+  error,
+  type, // must be there to prevent type change via props
+  ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -21,8 +21,10 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
       <div className={wrapperPassword}>
         <input
           type={showPassword ? "text" : "password"}
-          placeholder={placeholder}
+          id={name}
+          name={name}
           className={inputPassword}
+          {...props}
         />
         {showPassword ? (
           <BsEyeSlash
@@ -33,6 +35,8 @@ export const PasswordField: React.FC<PasswordFieldProps> = ({
           <BsEye onClick={() => setShowPassword(true)} className={EyeSlash} />
         )}
       </div>
+
+      {error && <p className="text-red-500">{error}</p>}
     </div>
   );
 };

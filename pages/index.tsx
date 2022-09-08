@@ -1,11 +1,11 @@
 // React, Next, NPM Packages
 import { NextPage } from "next";
 
-// App Components and Data
+// App imports
 import { Heading } from "@/components/heading";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current File's Components and Data
+// Current directory imports
 import { Button } from "@/pages.components/index";
 
 const Home: NextPage = () => {
