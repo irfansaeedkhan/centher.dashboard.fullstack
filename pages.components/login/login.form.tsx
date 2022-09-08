@@ -20,7 +20,7 @@ export const LoginForm: React.FC<any> = () => {
   return (
     <div className={wrapper}>
       <div className={FieldWrapper}>
-        <div className={FieldTitle}>Email Address</div>
+        <label className={FieldTitle}>Email Address</label>
         <input
           type="email"
           id="email"
@@ -30,7 +30,7 @@ export const LoginForm: React.FC<any> = () => {
         />
       </div>
       <div className={FieldWrapper}>
-        <div className={FieldTitle}>Password</div>
+        <label className={FieldTitle}>Password</label>
         <div className={WrapperPassword}>
           <input
             type={showPassword ? "text" : "password"}

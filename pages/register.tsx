@@ -4,30 +4,31 @@ import { RightSection } from "@/components/signup.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { SignupLeft } from "@/components/signup.left";
+import { RegisterForm } from "@/pages.components/register";
 
-const Login: React.FC<any> = () => {
+const Register: React.FC<any> = () => {
   return (
     <PageWrapper>
       <SignupLeft
         varient="desktop"
-        title="Login to Netheru"
-        content="Login to your account with netheru to sell and buy NFTs on some easy steps."
+        title="Register to Nether NFT"
+        content="Register your account with nether NFT to sell and buy NFTs on some easy steps."
       />
       <RightSection>
         <SignupLeft
           varient="mobile"
-          title="Login to Netheru"
-          content="Login to your account with netheru to sell and buy NFTs on some easy steps."
+          title="Register to Nether NFT"
+          content="Register your account with nether NFT to sell and buy NFTs on some easy steps."
         />
         <AboutMember
-          asked="Not a member?"
-          title="Register now"
-          link="register"
+          asked="Already a memebr?"
+          title="Log in now"
+          link="login"
         />
-        <LoginForm />
+        <RegisterForm />
       </RightSection>
     </PageWrapper>
   );
 };
 
-export default Login;
+export default Register;
