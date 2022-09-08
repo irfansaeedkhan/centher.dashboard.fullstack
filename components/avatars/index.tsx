@@ -1,18 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-// import axios from "axios";
+import { axiosNodeApi } from "@/utils/axios";
+
+interface Avatar {
+  path: string;
+  name: string;
+}
 
 const Avatars = () => {
   const [avatarModal, setAvatarModal] = useState(false);
-  const [avatarsList, setAvatarsList] = useState([]);
-  const [profileImage, setProfileImage] = useState();
+  const [avatarsList, setAvatarsList] = useState<Avatar[]>([]);
+  const [profileImage, setProfileImage] = useState<Avatar["name"]>();
 
   useEffect(() => {
     (async () => {
       try {
-        const promise2 = axios.get(
-          `${process.env.NEXT_PUBLIC_PLATFORM_URL}/api/public/avatars.json`
-        );
+        const promise2 = axiosNodeApi.get(`/public/avatars.json`);
 
         const [avatars] = await Promise.all([promise2]);
 
