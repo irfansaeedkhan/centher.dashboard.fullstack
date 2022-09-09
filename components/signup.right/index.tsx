@@ -6,10 +6,10 @@ interface RightSectionProps {
 }
 
 export const RightSection: React.FC<RightSectionProps> = (props) => {
-  return <div className={pageWraper}>{props.children}</div>;
+  return <div className={componentWrapper}>{props.children}</div>;
 };
 
-const pageWraper = ctl(`
+const componentWrapper = ctl(`
   flex 
   gap-5 
   sm:px-5 

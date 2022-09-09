@@ -6,10 +6,10 @@ interface PageWrapperProps {
 }
 
 export const PageWrapper: React.FC<PageWrapperProps> = (props) => {
-  return <div className={pageWraper}>{props.children}</div>;
+  return <div className={componentWrapper}>{props.children}</div>;
 };
 
-const pageWraper = ctl(`
+const componentWrapper = ctl(`
   flex 
   w-full
   font-monto 
