@@ -3,32 +3,16 @@
 import React, { useEffect, useState } from "react";
 
 // App imports
-import { axiosNodeApi } from "@/utils/axios";
 import { NODE_API_URL } from "@/constants/common";
+import { Avatar, AvatarList } from "@/models/avatar";
 
-interface Avatar {
-  path: string;
-  name: string;
+interface AvatarsProps {
+  avatars: AvatarList;
 }
 
-const Avatars = () => {
+const Avatars: React.FC<AvatarsProps> = (props) => {
   const [avatarModal, setAvatarModal] = useState(false);
-  const [avatarsList, setAvatarsList] = useState<Avatar[]>([]);
   const [profileImage, setProfileImage] = useState<Avatar["name"]>();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const promise2 = axiosNodeApi.get(`/api/public/avatars.json`);
-
-        const [avatars] = await Promise.all([promise2]);
-
-        setAvatarsList(avatars.data);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
 
   return (
     <div className="flex gap-2 items-center">
@@ -79,7 +63,7 @@ const Avatars = () => {
                 style={{ maxHeight: "400px" }}
               >
                 <div className="w-full flex gap-4 items-center justify-center flex-wrap ">
-                  {avatarsList.map((avatar) => {
+                  {props.avatars.map((avatar) => {
                     return (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img

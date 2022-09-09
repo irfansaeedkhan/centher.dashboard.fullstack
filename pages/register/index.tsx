@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 
 // App imports
 import { RightSection } from "@/components/signup.right";
@@ -8,11 +8,17 @@ import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { SignupLeft } from "@/components/signup.left";
 import { AppRoutes } from "@/constants/app.routes";
+import { AvatarList } from "@/models/avatar";
+import { axiosNodeApi } from "@/utils/axios";
 
-// Current directory imports
+// Current page's components imports
 import { RegisterForm } from "@/pages.components/register";
 
-const Register: NextPage = () => {
+interface RegisterProps {
+  avatars: AvatarList;
+}
+
+const Register: NextPage<RegisterProps> = (props) => {
   return (
     <PageWrapper>
       <SignupLeft
@@ -31,7 +37,7 @@ const Register: NextPage = () => {
           title="Log in now"
           link={AppRoutes.login}
         />
-        <RegisterForm />
+        <RegisterForm avatars={props.avatars} />
       </RightSection>
     </PageWrapper>
   );
@@ -43,4 +49,17 @@ const signupLeftData = {
   title: "Register to Nether NFT",
   content:
     "Register your account with nether NFT to sell and buy NFTs on some easy steps.",
+};
+
+// Get server side props
+export const getServerSideProps: GetServerSideProps<
+  RegisterProps
+> = async () => {
+  const { data } = await axiosNodeApi.get("/api/public/avatars.json");
+
+  return {
+    props: {
+      avatars: data as AvatarList,
+    },
+  };
 };
