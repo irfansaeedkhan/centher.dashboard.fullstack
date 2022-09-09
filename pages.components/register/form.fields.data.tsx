@@ -58,23 +58,27 @@ export const formFields: FormFieldProps[] = [
 ];
 
 // Signup State Schema
-export const SignupStateSchema = Joi.object().keys({
-  username: Joi.string().label("Username").required(),
-  email: Joi.string().label("Email").email({ tlds: false }).required(),
-  first_name: Joi.string().label("First Name").required(),
-  last_name: Joi.string().label("Last Name").required(),
-  password: Joi.string().label("Password").min(8).max(30).required(),
-  confirm_password: Joi.string()
-    .label("Confirm Password")
-    .valid(Joi.ref("password"))
-    .required()
-    .messages({
-      "any.only": "Passwords do not match",
-    }),
-  profile_image: Joi.string().label("Profile Image"),
-  account_address: Joi.string().label("Account Address").required(),
-  referred_by: Joi.string().label("Referred By").allow(""),
-});
+export const SignupStateSchema = Joi.object()
+  .keys({
+    username: Joi.string().label("Username").required(),
+    email: Joi.string().label("Email").email({ tlds: false }).required(),
+    first_name: Joi.string().label("First Name").required(),
+    last_name: Joi.string().label("Last Name").required(),
+    password: Joi.string().label("Password").min(8).max(30).required(),
+    confirm_password: Joi.string()
+      .label("Confirm Password")
+      .valid(Joi.ref("password"))
+      .required()
+      .messages({
+        "any.only": "Passwords do not match",
+      }),
+    profile_image: Joi.string().label("Profile Image"),
+    account_address: Joi.string().label("Account Address").required(),
+    referred_by: Joi.string().label("Referred By").allow(""),
+  })
+  .messages({
+    "string.empty": `{#label} is required`,
+  });
 
 // Types
 export interface FormFieldProps
@@ -96,11 +100,4 @@ export type FieldName =
   | "account_address"
   | "referred_by";
 
-export type ErrorName = Extract<
-  FieldName,
-  "username" | "email" | "first_name" | "last_name" | "confirm_password"
->;
-
 export type SignupState = Record<FieldName, string>;
-
-export type ErrorState = Record<ErrorName, string>;
