@@ -1,16 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
 // React, Next, NPM Packages
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // App imports
+import { useAvatars } from "@/hooks/use.avatars";
+import { Avatar } from "@/models/avatars";
 import { NODE_API_URL } from "@/constants/common";
-import { Avatar, AvatarList } from "@/models/avatars";
 
-interface AvatarsProps {
-  avatars: AvatarList;
-}
-
-const Avatars: React.FC<AvatarsProps> = (props) => {
+const Avatars: React.FC = () => {
+  const { avatars } = useAvatars();
   const [avatarModal, setAvatarModal] = useState(false);
   const [profileImage, setProfileImage] = useState<Avatar["name"]>();
 
@@ -63,7 +61,7 @@ const Avatars: React.FC<AvatarsProps> = (props) => {
                 style={{ maxHeight: "400px" }}
               >
                 <div className="w-full flex gap-4 items-center justify-center flex-wrap ">
-                  {props.avatars.map((avatar) => {
+                  {avatars.map((avatar) => {
                     return (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img

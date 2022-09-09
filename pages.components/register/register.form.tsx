@@ -9,7 +9,6 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ErrorMessage } from "@/components/error.message";
 import Avatars from "@/components/avatars";
-import { AvatarList } from "@/models/avatars";
 
 // Current directory imports
 import { InputField } from "./input.field";
@@ -29,11 +28,7 @@ const initialSignupState: SignupState = {
   referred_by: "",
 };
 
-interface RegisterFormProps {
-  avatars: AvatarList;
-}
-
-export const RegisterForm: React.FC<RegisterFormProps> = (props) => {
+export const RegisterForm: React.FC = () => {
   const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
@@ -67,7 +62,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = (props) => {
 
   return (
     <>
-      <Avatars avatars={props.avatars} />
+      <Avatars />
 
       <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
         {formFields.slice(0, 4).map((formField) => {
