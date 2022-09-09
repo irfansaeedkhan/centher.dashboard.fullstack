@@ -105,6 +105,7 @@ const section_left_text_wrapper = ctl(`
 const title = ctl(`
   text-2xl 
   text-white
+  text-center
   font-semibold 
 `);
 

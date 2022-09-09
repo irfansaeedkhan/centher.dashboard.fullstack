@@ -1,6 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
+
+// App imports
 import { axiosNodeApi } from "@/utils/axios";
+import { NODE_API_URL } from "@/constants/common";
 
 interface Avatar {
   path: string;
@@ -15,7 +19,7 @@ const Avatars = () => {
   useEffect(() => {
     (async () => {
       try {
-        const promise2 = axiosNodeApi.get(`/public/avatars.json`);
+        const promise2 = axiosNodeApi.get(`/api/public/avatars.json`);
 
         const [avatars] = await Promise.all([promise2]);
 
@@ -30,7 +34,7 @@ const Avatars = () => {
     <div className="flex gap-2 items-center">
       {profileImage !== undefined ? (
         <img
-          src={`${process.env.NEXT_PUBLIC_PLATFORM_URL}/${profileImage}`}
+          src={`${NODE_API_URL}/${profileImage}`}
           className="bg-gray-shade-3 rounded-full"
           style={{ width: "80px", height: "80px", objectFit: "cover" }}
           alt="Profile Image"
@@ -80,7 +84,7 @@ const Avatars = () => {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         key={avatar.path}
-                        src={`${process.env.NEXT_PUBLIC_PLATFORM_URL}/${avatar.path}`}
+                        src={`${NODE_API_URL}/${avatar.path}`}
                         alt={avatar.name}
                         className="cursor-pointer rounded-full bg-gray-shade-3"
                         style={{

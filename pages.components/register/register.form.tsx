@@ -8,6 +8,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ErrorMessage } from "@/components/error.message";
+import Avatars from "@/components/avatars";
 
 // Current directory imports
 import { InputField } from "./input.field";
@@ -60,66 +61,72 @@ export const RegisterForm: React.FC = () => {
   }, [account, setValue]);
 
   return (
-    <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
-      {formFields.slice(0, 4).map((formField) => {
-        return (
-          <InputField
-            key={formField.id}
-            {...formField}
-            {...register(formField.id)}
-            error={errors[formField.id]}
-          />
-        );
-      })}
+    <>
+      <Avatars />
+      <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
+        {formFields.slice(0, 4).map((formField) => {
+          return (
+            <InputField
+              key={formField.id}
+              {...formField}
+              {...register(formField.id)}
+              error={errors[formField.id]}
+            />
+          );
+        })}
 
-      {formFields.slice(4, 6).map((formField) => {
-        return (
-          <PasswordField
-            key={formField.id}
-            {...formField}
-            {...register(formField.id)}
-            error={errors[formField.id]}
-          />
-        );
-      })}
+        {formFields.slice(4, 6).map((formField) => {
+          return (
+            <PasswordField
+              key={formField.id}
+              {...formField}
+              {...register(formField.id)}
+              error={errors[formField.id]}
+            />
+          );
+        })}
 
-      {formFields.slice(6).map((formField) => {
-        return (
-          <Controller
-            key={formField.id}
-            name={formField.id}
-            control={control}
-            render={({ field, fieldState: { error } }) => {
-              if (field.name === "account_address" && field.value === "") {
-                return (
-                  <div>
-                    <button
-                      key={formField.id}
-                      className={button}
-                      type="button"
-                      onClick={connectWallet}
-                    >
-                      Connect
-                    </button>
-                    {error && (
-                      <ErrorMessage message={error.message} className="mt-2" />
-                    )}
-                  </div>
-                );
-              }
+        {formFields.slice(6).map((formField) => {
+          return (
+            <Controller
+              key={formField.id}
+              name={formField.id}
+              control={control}
+              render={({ field, fieldState: { error } }) => {
+                if (field.name === "account_address" && field.value === "") {
+                  return (
+                    <div>
+                      <button
+                        key={formField.id}
+                        className={button}
+                        type="button"
+                        onClick={connectWallet}
+                      >
+                        Connect
+                      </button>
+                      {error && (
+                        <ErrorMessage
+                          message={error.message}
+                          className="mt-2"
+                        />
+                      )}
+                    </div>
+                  );
+                }
 
-              return <InputField {...formField} {...field} error={error} />;
-            }}
-          />
-        );
-      })}
+                return <InputField {...formField} {...field} error={error} />;
+              }}
+            />
+          );
+        })}
 
-      <div>
-        <button type="submit" className={button}>
-          Register
-        </button>
-      </div>
-    </form>
+        <div>
+          <button type="submit" className={button}>
+            Register
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
 
