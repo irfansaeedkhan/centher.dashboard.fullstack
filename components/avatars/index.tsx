@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 // App imports
 import { NODE_API_URL } from "@/constants/common";
-import { Avatar, AvatarList } from "@/models/avatar";
+import { Avatar, AvatarList } from "@/models/avatars";
 
 interface AvatarsProps {
   avatars: AvatarList;

@@ -9,7 +9,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ErrorMessage } from "@/components/error.message";
 import Avatars from "@/components/avatars";
-import { AvatarList } from "@/models/avatar";
+import { AvatarList } from "@/models/avatars";
 
 // Current directory imports
 import { InputField } from "./input.field";

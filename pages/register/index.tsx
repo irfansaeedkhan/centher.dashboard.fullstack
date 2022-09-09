@@ -8,7 +8,7 @@ import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { SignupLeft } from "@/components/signup.left";
 import { AppRoutes } from "@/constants/app.routes";
-import { AvatarList } from "@/models/avatar";
+import { AvatarList } from "@/models/avatars";
 import { axiosNodeApi } from "@/utils/axios";
 
 // Current page's components imports
