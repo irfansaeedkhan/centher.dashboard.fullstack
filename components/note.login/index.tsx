@@ -12,9 +12,9 @@ export const NoteLogin: React.FC<NoteLoginProps> = (props) => {
     <div className={baseClass}>
       <div className={note}>Note:</div>
       <p className={noteP}>{props.title}</p>
-      <div className={LinkClass}>
-        <Link href={props.link}>Forgot password</Link>
-      </div>
+      <Link href={props.link}>
+        <a className={linkClass}>Forgot password</a>
+      </Link>
     </div>
   );
 };
@@ -43,11 +43,10 @@ const noteP = ctl(`
   text-gray-shade-4 
 `);
 
-const LinkClass = ctl(`
+const linkClass = ctl(`
   text-xs 
   underline 
   text-white 
-  font-medium 
-  cursor-pointer 
-  hover:text-yellow-theme
+  font-medium
+  hover:text-brand-primary
 `);
