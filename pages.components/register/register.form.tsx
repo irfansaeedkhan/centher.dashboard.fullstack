@@ -1,29 +1,27 @@
 // React, Next, NPM Packages
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
+import { Controller, useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { ErrorMessage } from "@/components/error.message";
 
 // Current directory imports
 import { InputField } from "./input.field";
-import { formFields, ErrorState, SignupState } from "./form.fields.data";
+import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
 import { PasswordField } from "./password.field";
 
-// Initial Error State
-const initialErrorState: ErrorState = {
+// Initial Signup State
+const initialSignupState: SignupState = {
   username: "",
   email: "",
   first_name: "",
   last_name: "",
-  confirm_password: "",
-};
-
-// Initial Signup State
-const initialSignupState: SignupState = {
-  ...initialErrorState,
   password: "",
+  confirm_password: "",
   profile_image: "avatar-1",
   account_address: "",
   referred_by: "",
@@ -33,102 +31,95 @@ export const RegisterForm: React.FC = () => {
   const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
-  const [signup, setSignup] = useState(initialSignupState);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: initialSignupState,
+    resolver: joiResolver(SignupStateSchema, {
+      abortEarly: false,
+      errors: {
+        wrap: {
+          label: "",
+        },
+      },
+    }),
+  });
 
-  const [errors, setErrors] = useState(initialErrorState);
-
-  useEffect(() => {
-    (async () => {
-      setSignup((prev) => {
-        return {
-          ...prev,
-          account_address: account ?? "",
-        };
-      });
-    })();
-  }, [account]);
-
-  useEffect(() => {
-    if (
-      signup.password !== "" &&
-      signup.confirm_password !== "" &&
-      signup.password !== signup.confirm_password
-    ) {
-      setErrors((prev) => {
-        return {
-          ...prev,
-          confirm_password: "Passwords do not match",
-        };
-      });
-      return;
-    }
-
-    setErrors((prev) => {
-      return {
-        ...prev,
-        confirm_password: "",
-      };
-    });
-  }, [signup.password, signup.confirm_password]);
-
-  const handleValueChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSignup((prev) => ({ ...prev, [name]: value }));
+  const onSubmit = (data: SignupState) => {
+    console.log(data);
   };
 
+  useEffect(() => {
+    setValue("account_address", account ?? "", {
+      shouldValidate: account != null,
+    });
+  }, [account, setValue]);
+
   return (
-    <div className={wrapper}>
+    <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
       {formFields.slice(0, 4).map((formField) => {
-        const value = signup[formField.name];
         return (
           <InputField
-            key={formField.name}
+            key={formField.id}
             {...formField}
-            value={value}
-            onChange={handleValueChange}
+            {...register(formField.id)}
+            error={errors[formField.id]}
           />
         );
       })}
 
       {formFields.slice(4, 6).map((formField) => {
-        const value = signup[formField.name];
-        const error = errors[formField.name as keyof ErrorState];
         return (
           <PasswordField
-            key={formField.name}
+            key={formField.id}
             {...formField}
-            value={value}
-            onChange={handleValueChange}
-            error={error}
+            {...register(formField.id)}
+            error={errors[formField.id]}
           />
         );
       })}
 
       {formFields.slice(6).map((formField) => {
-        if (
-          formField.name === "account_address" &&
-          signup.account_address === ""
-        ) {
-          return (
-            <button
-              key={formField.name}
-              className={button}
-              onClick={connectWallet}
-            >
-              Connect
-            </button>
-          );
-        }
+        return (
+          <Controller
+            key={formField.id}
+            name={formField.id}
+            control={control}
+            render={({ field, fieldState: { error } }) => {
+              if (field.name === "account_address" && field.value === "") {
+                return (
+                  <div>
+                    <button
+                      key={formField.id}
+                      className={button}
+                      type="button"
+                      onClick={connectWallet}
+                    >
+                      Connect
+                    </button>
+                    {error && (
+                      <ErrorMessage message={error.message} className="mt-2" />
+                    )}
+                  </div>
+                );
+              }
 
-        const value = signup[formField.name as keyof typeof signup];
-
-        return <InputField key={formField.name} {...formField} value={value} />;
+              return <InputField {...formField} {...field} error={error} />;
+            }}
+          />
+        );
       })}
 
       <div>
-        <button className={button}>Register</button>
+        <button type="submit" className={button}>
+          Register
+        </button>
       </div>
-    </div>
+    </form>
   );
 };
 
@@ -148,7 +139,7 @@ const button = ctl(`
   font-bold 
   rounded-lg 
   dynamicTranss
-  text-[#222531] 
+  text-gray-shade-5 
   justify-center 
   bg-brand-primary 
 `);

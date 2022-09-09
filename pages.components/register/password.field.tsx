@@ -3,43 +3,54 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
+// App imports
+import { ErrorMessage } from "@/components/error.message";
+
 // Current directory imports
 import { FormFieldProps } from "./form.fields.data";
 
-export const PasswordField: React.FC<FormFieldProps> = ({
-  label,
-  name,
-  error,
-  type, // must be there to prevent type change via props
-  ...props
-}) => {
-  const [showPassword, setShowPassword] = useState(false);
+export const PasswordField = React.forwardRef<HTMLInputElement, FormFieldProps>(
+  (
+    {
+      label,
+      id,
+      error,
+      type, // must be there to prevent type change via props
+      ...props
+    },
+    ref
+  ) => {
+    const [showPassword, setShowPassword] = useState(false);
 
-  return (
-    <div className={fieldWrapper}>
-      <label className={fieldTitle}>{label}</label>
-      <div className={wrapperPassword}>
-        <input
-          type={showPassword ? "text" : "password"}
-          id={name}
-          name={name}
-          className={inputPassword}
-          {...props}
-        />
-        {showPassword ? (
-          <BsEyeSlash
-            onClick={() => setShowPassword(false)}
-            className={EyeSlash}
+    return (
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>{label}</label>
+        <div className={!error ? wrapperPassword : wrapperPasswordError}>
+          <input
+            type={showPassword ? "text" : "password"}
+            id={id}
+            className={inputPassword}
+            {...props}
+            ref={ref}
           />
-        ) : (
-          <BsEye onClick={() => setShowPassword(true)} className={EyeSlash} />
-        )}
-      </div>
+          {showPassword ? (
+            <BsEyeSlash
+              onClick={() => setShowPassword(false)}
+              className={EyeSlash}
+            />
+          ) : (
+            <BsEye onClick={() => setShowPassword(true)} className={EyeSlash} />
+          )}
+        </div>
 
-      {error && <p className="text-red-500">{error}</p>}
-    </div>
-  );
-};
+        {error && <ErrorMessage message={error.message} />}
+      </div>
+    );
+  }
+);
+
+// Display name of the component for debugging
+PasswordField.displayName = "PasswordField";
 
 const fieldWrapper = ctl(`
   flex 
@@ -65,6 +76,11 @@ const wrapperPassword = ctl(`
   rounded-lg 
   focus-within:ring-1
   focus-within:ring-brand-primary
+`);
+
+const wrapperPasswordError = ctl(`
+  ${wrapperPassword}
+  focus-within:!ring-red-500
 `);
 
 const inputPassword = ctl(`

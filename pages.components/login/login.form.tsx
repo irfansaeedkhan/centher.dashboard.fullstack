@@ -133,7 +133,7 @@ const button = ctl(`
   font-bold 
   rounded-lg 
   dynamicTranss
-  text-[#222531] 
+  text-gray-shade-5 
   justify-center 
   bg-brand-primary 
 `);
