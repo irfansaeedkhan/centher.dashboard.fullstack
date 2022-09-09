@@ -52,28 +52,29 @@ const fieldTitle = ctl(`
   text-white
 `);
 
-const inputPassword = ctl(`
-  p-0 
-  w-full
-  border-0 
-  text-white 
-  focus:ring-0 
-  bg-transparent 
-  focus:border-0 
-  focus:outline-none 
-`);
-
 const wrapperPassword = ctl(`
-  flex 
-  py-3 
-  px-5 
-  gap-2 
   w-full 
-  rounded-lg 
-  text-white 
-  bg-[#1E1E21] 
+  flex 
   items-center 
   justify-between 
+  gap-2 
+  py-3 
+  px-5 
+  bg-[#1E1E21] 
+  text-white 
+  rounded-lg 
+  focus-within:ring-1
+  focus-within:ring-brand-primary
+`);
+
+const inputPassword = ctl(`
+  w-full
+  p-0 
+  bg-transparent 
+  text-white 
+  border-0
+  focus:ring-0
+  focus:outline-none
 `);
 
 const EyeSlash = ctl(`

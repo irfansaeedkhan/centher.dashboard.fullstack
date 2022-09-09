@@ -33,14 +33,13 @@ const fieldTitle = ctl(`
 `);
 
 const inputField = ctl(`
+  w-full 
   py-3 
   px-5 
-  w-full 
-  border-0 
-  rounded-lg 
-  text-white 
   bg-[#1E1E21] 
+  text-white 
+  rounded-lg
+  border-0
   focus:outline-none 
-  focus:ring-brand-primary 
-  focus:border-brand-primary
+  focus:ring-brand-primary
 `);
