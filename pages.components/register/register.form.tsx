@@ -14,6 +14,7 @@ import Avatars from "@/components/avatars";
 import { InputField } from "./input.field";
 import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
 import { PasswordField } from "./password.field";
+import { useRouter } from "next/router";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -29,6 +30,7 @@ const initialSignupState: SignupState = {
 };
 
 export const RegisterForm: React.FC = () => {
+  const router = useRouter();
   const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
@@ -58,7 +60,10 @@ export const RegisterForm: React.FC = () => {
     setValue("account_address", account ?? "", {
       shouldValidate: account != null,
     });
-  }, [account, setValue]);
+    if (typeof router.query.referrer === "string") {
+      setValue("referred_by", router.query.referrer);
+    }
+  }, [account, setValue, router.query.referrer]);
 
   return (
     <>
