@@ -4,7 +4,7 @@ import React from "react";
 
 interface NoteLoginProps {
   title: string;
-  link: string;
+  link?: string;
 }
 
 export const NoteLogin: React.FC<NoteLoginProps> = (props) => {
@@ -12,9 +12,11 @@ export const NoteLogin: React.FC<NoteLoginProps> = (props) => {
     <div className={baseClass}>
       <div className={note}>Note:</div>
       <p className={noteP}>{props.title}</p>
-      <Link href={props.link}>
-        <a className={linkClass}>Forgot password</a>
-      </Link>
+      {props.link === "/forgot-password" && (
+        <Link href={props.link}>
+          <a className={linkClass}>Forgot password</a>
+        </Link>
+      )}
     </div>
   );
 };
