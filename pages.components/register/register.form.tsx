@@ -1,20 +1,23 @@
 // React, Next, NPM Packages
 import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { Controller, useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import { toast } from "react-toastify";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ErrorMessage } from "@/components/error.message";
 import Avatars from "@/components/avatars";
+import { axiosNodeApi } from "@/utils/axios";
 
 // Current directory imports
 import { InputField } from "./input.field";
 import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
 import { PasswordField } from "./password.field";
-import { useRouter } from "next/router";
+import { deductRegistrationFee } from "./deduct.registration.fee";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -31,7 +34,7 @@ const initialSignupState: SignupState = {
 
 export const RegisterForm: React.FC = () => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
   const {
@@ -52,8 +55,28 @@ export const RegisterForm: React.FC = () => {
     }),
   });
 
-  const onSubmit = (data: SignupState) => {
-    console.log(data);
+  const onSubmit = async (signupData: SignupState) => {
+    // TODO: Add loading state to the submit button and disable it
+
+    // Perform a transaction to deduct registration fee
+    const { trx_hash_bnb, error } = await deductRegistrationFee({
+      library,
+      referralSignup: signupData.referred_by ? true : false,
+    });
+
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+
+    // Submit data to Signup API
+    await axiosNodeApi.post("/api/auth/signup", {
+      ...signupData,
+      trx_hash_bnb,
+    });
+
+    // Redirect to login page
+    router.push("/login");
   };
 
   useEffect(() => {

@@ -60,21 +60,36 @@ export const formFields: FormFieldProps[] = [
 // Signup State Schema
 export const SignupStateSchema = Joi.object()
   .keys({
-    username: Joi.string().label("Username").required(),
-    email: Joi.string().label("Email").email({ tlds: false }).required(),
-    first_name: Joi.string().label("First Name").required(),
-    last_name: Joi.string().label("Last Name").required(),
-    password: Joi.string().label("Password").min(8).max(30).required(),
+    username: Joi.string()
+      .label("Username")
+      .required()
+      .lowercase()
+      .trim()
+      .pattern(/^[A-Za-z0-9._]+$/)
+      .messages({
+        "string.pattern.base":
+          "Username should only contain alphabets numbers _ and .",
+      }),
+    first_name: Joi.string().label("First Name").trim().required(),
+    last_name: Joi.string().label("Last Name").trim().required(),
+    email: Joi.string()
+      .label("Email")
+      .email({ tlds: false })
+      .lowercase()
+      .trim()
+      .required(),
+    profile_image: Joi.string().label("Profile Image").trim().required(),
+    password: Joi.string().label("Password").min(8).max(100).trim().required(),
     confirm_password: Joi.string()
       .label("Confirm Password")
+      .trim()
       .valid(Joi.ref("password"))
       .required()
       .messages({
         "any.only": "Passwords do not match",
       }),
-    profile_image: Joi.string().label("Profile Image"),
-    account_address: Joi.string().label("Account Address").required(),
-    referred_by: Joi.string().label("Referred By").allow(""),
+    account_address: Joi.string().label("Account Address").trim().required(),
+    referred_by: Joi.string().label("Referred By").trim().allow(""),
   })
   .messages({
     "string.empty": `{#label} is required`,
