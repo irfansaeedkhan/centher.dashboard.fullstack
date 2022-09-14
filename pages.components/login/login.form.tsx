@@ -1,45 +1,68 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import Joi from "joi";
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 // App imports
-import { setUserAndJwt } from "@/store/slices/auth";
 import { NoteLogin } from "@/components/note.login";
 import { AppRoutes } from "@/constants/app.routes";
+import { ErrorMessage } from "@/components/error.message";
+
+const loginFormInitialValues = {
+  email: "",
+  password: "",
+};
 
 export const LoginForm: React.FC = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    defaultValues: loginFormInitialValues,
+    resolver: joiResolver(LoginFormSchema, {
+      abortEarly: false,
+      errors: {
+        wrap: {
+          label: "",
+        },
+      },
+    }),
+  });
 
-  const handleLogin = () => {
-    dispatch(
-      setUserAndJwt({
-        user: { _id: "123", email: "mhm13dev@gmail.com" },
-        jwt: "some_token",
-      })
-    );
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onSubmit = (data: typeof loginFormInitialValues) => {
+    console.log(data);
+
+    // TODO: Call NextJS API to login with next-auth
   };
+
   return (
-    <div className={wrapper}>
+    <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Email Address</label>
         <input
           type="email"
-          id="email"
-          name="email"
           placeholder="Enter your email"
-          className={inputEmail}
+          className={!errors.email ? inputEmail : inputEmailError}
+          {...register("email")}
         />
+        {errors.email && <ErrorMessage message={errors.email.message} />}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Password</label>
-        <div className={wrapperPassword}>
+        <div
+          className={!errors.password ? wrapperPassword : wrapperPasswordError}
+        >
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             className={inputPassword}
+            {...register("password")}
           />
           {showPassword ? (
             <BsEyeSlash
@@ -50,20 +73,35 @@ export const LoginForm: React.FC = () => {
             <BsEye onClick={() => setShowPassword(true)} className={eyeSlash} />
           )}
         </div>
+        {errors.password && <ErrorMessage message={errors.password.message} />}
       </div>
       <NoteLogin
         title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
         link={AppRoutes.forgot_password}
       />
       <div>
-        <button onClick={handleLogin} className={button}>
-          Login
-        </button>
+        <button className={button}>Login</button>
       </div>
-    </div>
+    </form>
   );
 };
 
+// Login Form Schema
+export const LoginFormSchema = Joi.object()
+  .keys({
+    email: Joi.string()
+      .label("Email")
+      .email({ tlds: false })
+      .lowercase()
+      .trim()
+      .required(),
+    password: Joi.string().label("Password").trim().required(),
+  })
+  .messages({
+    "string.empty": `{#label} is required`,
+  });
+
+// Styles
 const wrapper = ctl(`
   flex 
   gap-6
@@ -92,8 +130,12 @@ const inputEmail = ctl(`
   text-white 
   bg-[#1E1E21] 
   focus:outline-none 
-  focus:ring-brand-primary 
-  focus:border-brand-primary
+  focus:ring-brand-primary
+`);
+
+const inputEmailError = ctl(`
+  ${inputEmail}
+  focus:!ring-red-500
 `);
 
 const inputPassword = ctl(`
@@ -120,6 +162,11 @@ const wrapperPassword = ctl(`
   justify-between 
   focus-within:ring-1
   focus-within:ring-brand-primary
+`);
+
+const wrapperPasswordError = ctl(`
+  ${wrapperPassword}
+  focus-within:!ring-red-500
 `);
 
 const eyeSlash = ctl(`
