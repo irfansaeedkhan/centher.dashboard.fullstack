@@ -6,7 +6,7 @@ import { NextPage } from "next";
 import { RightSection } from "@/components/signup.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
-import { SignupLeft } from "@/components/signup.left";
+import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
@@ -15,13 +15,13 @@ import { LoginForm } from "@/pages.components/login";
 const Login: NextPage = () => {
   return (
     <PageWrapper>
-      <SignupLeft
+      <AuthLeft
         variant="desktop"
         title={signupLeftData.title}
         content={signupLeftData.content}
       />
       <RightSection>
-        <SignupLeft
+        <AuthLeft
           variant="mobile"
           title={signupLeftData.title}
           content={signupLeftData.content}

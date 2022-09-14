@@ -30,7 +30,7 @@ export const ResetForm: React.FC = () => {
             <BsEye onClick={() => setShowPassword(true)} className={eyeSlash} />
           )}
         </div>
-        <span className={fieldInstruction}>Minimum 6 characters</span>
+        <span className={fieldInstruction}>Minimum 8 characters</span>
         {/* {error && <ErrorMessage message={error.message} />} */}
       </div>
       <div className={fieldWrapper}>
@@ -56,7 +56,7 @@ export const ResetForm: React.FC = () => {
             />
           )}
         </div>
-        <span className={fieldInstruction}>Both password must be match.</span>
+        <span className={fieldInstruction}>Both password must match.</span>
         {/* {error && <ErrorMessage message={error.message} />} */}
       </div>
       <div>

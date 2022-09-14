@@ -9,7 +9,7 @@ interface SignupProps {
   variant: "desktop" | "mobile";
 }
 
-export const SignupLeft: React.FC<SignupProps> = (props) => {
+export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
       <section className={section_left}>
