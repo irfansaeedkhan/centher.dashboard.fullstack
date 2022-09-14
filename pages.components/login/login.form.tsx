@@ -118,6 +118,8 @@ const wrapperPassword = ctl(`
   bg-[#1E1E21] 
   items-center 
   justify-between 
+  focus-within:ring-1
+  focus-within:ring-brand-primary
 `);
 
 const eyeSlash = ctl(`
