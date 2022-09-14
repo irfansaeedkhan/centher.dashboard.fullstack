@@ -55,8 +55,30 @@ export const RegisterForm: React.FC = () => {
     }),
   });
 
+  useEffect(() => {
+    setValue("account_address", account ?? "", {
+      shouldValidate: account != null,
+    });
+    if (typeof router.query.referrer === "string") {
+      setValue("referred_by", router.query.referrer);
+    }
+  }, [account, setValue, router.query.referrer]);
+
   const onSubmit = async (signupData: SignupState) => {
     // TODO: Add loading state to the submit button and disable it
+
+    let user;
+
+    try {
+      // Create a user with pending state in database
+      const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
+      user = data.user;
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message_description || "Something went wrong"
+      );
+      return;
+    }
 
     // Perform a transaction to deduct registration fee
     const { trx_hash_bnb, error } = await deductRegistrationFee({
@@ -69,24 +91,21 @@ export const RegisterForm: React.FC = () => {
       return;
     }
 
-    // Submit data to Signup API
-    await axiosNodeApi.post("/api/auth/signup", {
-      ...signupData,
-      trx_hash_bnb,
-    });
+    try {
+      // Verify Registration Fee Deduction
+      await axiosNodeApi.post("/api/auth/verify-registration", {
+        user_id: user._id,
+        trx_hash_bnb,
+      });
 
-    // Redirect to login page
-    router.push("/login");
-  };
-
-  useEffect(() => {
-    setValue("account_address", account ?? "", {
-      shouldValidate: account != null,
-    });
-    if (typeof router.query.referrer === "string") {
-      setValue("referred_by", router.query.referrer);
+      // Redirect to login page
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message_description || "Something went wrong"
+      );
     }
-  }, [account, setValue, router.query.referrer]);
+  };
 
   return (
     <>
