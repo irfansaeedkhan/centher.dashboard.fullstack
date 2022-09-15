@@ -4,12 +4,10 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import { ModalWrapper } from "@/components/modal";
 import { useAvatars } from "@/hooks/use.avatars";
 import { Avatar } from "@/models/avatars";
 import { NODE_API_URL } from "@/constants/common";
-
-// Current directory imports
-import { ModalWrapper } from "../modal";
 
 const Avatars: React.FC = () => {
   const { avatars } = useAvatars();
