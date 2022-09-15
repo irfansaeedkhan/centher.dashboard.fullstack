@@ -67,37 +67,9 @@ export const RegisterForm: React.FC = () => {
   const onSubmit = async (signupData: SignupState) => {
     // TODO: Add loading state to the submit button and disable it
 
-    let user;
-
     try {
-      // Create a user with pending state in database
-      const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
-      user = data.user;
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message_description || "Something went wrong"
-      );
-      return;
-    }
-
-    // Perform a transaction to deduct registration fee
-    const { trx_hash_bnb, error } = await deductRegistrationFee({
-      library,
-      referralSignup: signupData.referred_by ? true : false,
-    });
-
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-
-    try {
-      // Verify Registration Fee Deduction
-      await axiosNodeApi.post("/api/auth/verify-registration", {
-        user_id: user._id,
-        trx_hash_bnb,
-      });
-
+      // Create a user with registration_pending state in database
+      await axiosNodeApi.post("/api/auth/signup", signupData);
       // Redirect to login page
       router.push("/login");
     } catch (error: any) {
