@@ -3,7 +3,7 @@ import React from "react";
 import { NextPage } from "next";
 
 // App imports
-import { RightSection } from "@/components/signup.right";
+import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
@@ -21,7 +21,7 @@ const Register: NextPage = () => {
         content={signupLeftData.content}
       />
 
-      <RightSection>
+      <AuthRight>
         <AuthLeft
           variant="mobile"
           title={signupLeftData.title}
@@ -35,7 +35,7 @@ const Register: NextPage = () => {
         />
 
         <RegisterForm />
-      </RightSection>
+      </AuthRight>
     </PageWrapper>
   );
 };

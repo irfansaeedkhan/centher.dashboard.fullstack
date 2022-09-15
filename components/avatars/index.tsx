@@ -9,7 +9,7 @@ import { Avatar } from "@/models/avatars";
 import { NODE_API_URL } from "@/constants/common";
 
 // Current directory imports
-import { ModalWrapper } from "../Modal";
+import { ModalWrapper } from "../modal";
 
 const Avatars: React.FC = () => {
   const { avatars } = useAvatars();

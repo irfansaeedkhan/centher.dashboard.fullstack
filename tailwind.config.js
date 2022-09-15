@@ -24,6 +24,12 @@ module.exports = {
       },
       fontSize: {
         34: "2.125rem",
+        24: "1.6rem",
+        22: "1.375rem",
+        20: "1.25rem",
+        16: "1rem",
+        14: "0.875rem",
+        12: "0.875rem",
       },
       flexShrink: {
         4: 4,
@@ -62,11 +68,13 @@ module.exports = {
           "shade-4": "#6B7280",
           "shade-5": "#222531",
           "shade-6": "#1C1C1F",
-          "shade-7": "#44485F",
-          "shade-8": "#888DAA",
+          "shade-7": "#888DAA",
+          "shade-8": "#4C516B",
         },
         background: {
           "shade-1": "#141417",
+          "shade-2": "#1C1F29",
+          "shade-3": "#1B1C22",
         },
         "black-shade": {
           1: "#0A0A0A",
@@ -74,7 +82,8 @@ module.exports = {
           3: "#17171A",
           4: "#202020",
           5: "#16161A",
-          6: "#141416",
+          6: "#191B24",
+          7: "#1E212B",
         },
       },
     },
@@ -87,3 +96,8 @@ module.exports = {
     require("flowbite/plugin"),
   ],
 };
+
+// "shade-7": "#44485F",
+// "shade-8": "#888DAA",
+
+// 6: "#141416",

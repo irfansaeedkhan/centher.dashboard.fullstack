@@ -2,12 +2,12 @@ import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
 import React from "react";
 
-interface NoteLoginProps {
+interface AuthNoteProps {
   title: string;
   link?: string;
 }
 
-export const NoteLogin: React.FC<NoteLoginProps> = (props) => {
+export const AuthNote: React.FC<AuthNoteProps> = (props) => {
   return (
     <div className={baseClass}>
       <div className={note}>Note:</div>

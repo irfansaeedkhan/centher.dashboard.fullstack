@@ -4,7 +4,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import { Web3ReactProvider } from "@web3-react/core";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { RootState, wrapper } from "@/store";
 import { getLibrary } from "@/web3";
 import "@/styles/globals.css";

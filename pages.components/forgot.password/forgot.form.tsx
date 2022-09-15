@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
-import { NoteLogin } from "@/components/note.login";
+import { AuthNote } from "@/components/auth.note";
 
 export const ForgotForm: React.FC = () => {
   const [emailSentNote, setEmailSentNote] = useState(false);
@@ -23,7 +23,7 @@ export const ForgotForm: React.FC = () => {
         <button className={button}>Sent Reset instruction</button>
       </div>
       {emailSentNote && (
-        <NoteLogin title="If this email address was used to create an account, instructions to reset your password will be sent to you. Please check your email." />
+        <AuthNote title="If this email address was used to create an account, instructions to reset your password will be sent to you. Please check your email." />
       )}
     </div>
   );

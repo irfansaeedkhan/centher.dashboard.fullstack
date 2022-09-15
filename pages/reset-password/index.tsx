@@ -3,7 +3,7 @@ import React from "react";
 import { NextPage } from "next";
 
 // App imports
-import { RightSection } from "@/components/signup.right";
+import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AuthLeft } from "@/components/auth.left";
 
@@ -18,14 +18,14 @@ const ResetPassword: NextPage = () => {
         title={resetPasswordData.title}
         content={resetPasswordData.content}
       />
-      <RightSection>
+      <AuthRight>
         <AuthLeft
           variant="mobile"
           title={resetPasswordData.title}
           content={resetPasswordData.content}
         />
         <ResetForm />
-      </RightSection>
+      </AuthRight>
     </PageWrapper>
   );
 };

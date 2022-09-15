@@ -7,7 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 // App imports
-import { NoteLogin } from "@/components/note.login";
+import { AuthNote } from "@/components/auth.note";
 import { AppRoutes } from "@/constants/app.routes";
 import { ErrorMessage } from "@/components/error.message";
 
@@ -75,7 +75,7 @@ export const LoginForm: React.FC = () => {
         </div>
         {errors.password && <ErrorMessage message={errors.password.message} />}
       </div>
-      <NoteLogin
+      <AuthNote
         title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
         link={AppRoutes.forgot_password}
       />

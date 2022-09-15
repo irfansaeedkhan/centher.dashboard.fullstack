@@ -1,11 +1,11 @@
 import ctl from "@netlify/classnames-template-literals";
 import React from "react";
 
-interface RightSectionProps {
+interface AuthRightProps {
   children: React.ReactNode;
 }
 
-export const RightSection: React.FC<RightSectionProps> = (props) => {
+export const AuthRight: React.FC<AuthRightProps> = (props) => {
   return <div className={componentWrapper}>{props.children}</div>;
 };
 
