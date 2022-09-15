@@ -62,6 +62,8 @@ module.exports = {
           "shade-4": "#6B7280",
           "shade-5": "#222531",
           "shade-6": "#1C1C1F",
+          "shade-7": "#44485F",
+          "shade-8": "#888DAA",
         },
         background: {
           "shade-1": "#141417",
@@ -72,6 +74,7 @@ module.exports = {
           3: "#17171A",
           4: "#202020",
           5: "#16161A",
+          6: "#141416",
         },
       },
     },

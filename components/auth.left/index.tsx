@@ -51,7 +51,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           />
         </div>
         <div className={section_right_mobile_text_wrapper}>
-          <h1 className={title}>{props.title}</h1>
+          <h1 className={titleMobile}>{props.title}</h1>
           <p className={contentMobile}>{props.content}</p>
         </div>
       </section>
@@ -106,6 +106,11 @@ const title = ctl(`
   text-2xl 
   text-white
   text-center
+  font-semibold 
+`);
+const titleMobile = ctl(`
+  text-2xl 
+  text-white
   font-semibold 
 `);
 
