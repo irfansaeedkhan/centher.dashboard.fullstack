@@ -14,6 +14,7 @@ import {
   TopInfluencer,
   VotingChain,
 } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 export const SidebarData = {
   social_network: {
@@ -21,18 +22,18 @@ export const SidebarData = {
     items: [
       {
         label: "Feed",
-        url: "/feed",
+        url: AppRoutes.feed,
         icon: Feed,
       },
       {
         label: "Chat",
-        url: "/chat",
+        url: AppRoutes.chat,
         icon: Chat,
         countType: "chats",
       },
       {
         label: "Notifications",
-        url: "/notifications",
+        url: AppRoutes.notifications,
         icon: Notification,
         countType: "notifications",
       },
@@ -43,17 +44,17 @@ export const SidebarData = {
     items: [
       {
         label: "Explore",
-        url: "/",
+        url: AppRoutes.home,
         icon: Explore,
       },
       {
         label: "Top Influencers",
-        url: "/top-influencer",
+        url: AppRoutes.top_influencers,
         icon: TopInfluencer,
       },
       {
         label: "Create Collection",
-        url: "/create-collection",
+        url: AppRoutes.create_collection,
         icon: CreateCollection,
       },
     ],
@@ -63,12 +64,12 @@ export const SidebarData = {
     items: [
       {
         label: "Staking Pack",
-        url: "/staking-pack",
+        url: AppRoutes.staking_pack,
         icon: StakingPack,
       },
       {
         label: "Network Rewards",
-        url: "/network-rewards",
+        url: AppRoutes.network_rewards,
         icon: NetworkRewards,
       },
     ],
@@ -77,18 +78,18 @@ export const SidebarData = {
     label: "DAO GOVERNMENT",
     items: [
       {
-        label: "Buy NTRDAO",
-        url: "/buy-ntrdao",
+        label: "Buy NTR DAO",
+        url: AppRoutes.buy_ntr_dao,
         icon: DaoGovernment,
       },
       {
         label: "Profits Dashboard",
-        url: "/profits-dashboard",
+        url: AppRoutes.profits_dashboard,
         icon: ProfitsDashboard,
       },
       {
         label: "Voting Chain",
-        url: "/voting-chain",
+        url: AppRoutes.voting_chain,
         icon: VotingChain,
       },
     ],
@@ -98,12 +99,12 @@ export const SidebarData = {
     items: [
       {
         label: "Multilevel License",
-        url: "/referral-program",
+        url: AppRoutes.referral_program,
         icon: ReferralProgram,
       },
       {
         label: "Network Genealogy",
-        url: "/referral-program",
+        url: AppRoutes.referral_program,
         icon: ReferralProgram,
       },
     ],
