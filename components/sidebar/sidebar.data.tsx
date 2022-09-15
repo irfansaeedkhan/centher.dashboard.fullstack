@@ -1,5 +1,4 @@
 // App imports
-
 import {
   Feed,
   Chat,
@@ -14,7 +13,7 @@ import {
   StakingPack,
   TopInfluencer,
   VotingChain,
-} from "@/assets.svg/svg";
+} from "@/assets/svgs";
 
 export const SidebarData = {
   social_network: {
@@ -121,7 +120,7 @@ export const SidebarData = {
   },
 };
 
-export const SectionName = [
+export const SidebarSections = [
   SidebarData.social_network,
   SidebarData.nft_marketplace,
   SidebarData.decentralized_finance,
@@ -129,3 +128,6 @@ export const SectionName = [
   SidebarData.referral_program,
   SidebarData.logout,
 ];
+
+export type SidebarData = typeof SidebarData;
+export type SidebarSection = typeof SidebarData[keyof SidebarData];

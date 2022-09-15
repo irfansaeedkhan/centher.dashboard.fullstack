@@ -3,14 +3,14 @@ import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
-import { SectionName } from "./sidebar.data";
+import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 
 export const Sidebar = () => {
   return (
     <div className={sideBarWrapper}>
-      {SectionName.map((name: any, i: number) => {
-        return <Section section={name} key={i} />;
+      {SidebarSections.map((section) => {
+        return <Section section={section} key={section.label} />;
       })}
     </div>
   );

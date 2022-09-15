@@ -2,8 +2,11 @@
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 
+// Current directory imports
+import { SidebarSection } from "./sidebar.data";
+
 export interface SectionProps {
-  section: any;
+  section: SidebarSection;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
@@ -11,13 +14,13 @@ export const Section: React.FC<SectionProps> = (props) => {
     <div className={sectionWrapper}>
       <span className={sectionLabel}>{props.section.label}</span>
       <div className={sectionWrapper}>
-        {props.section.items.map((item: any, i: number) => {
+        {props.section.items.map((item) => {
           return (
-            <div className={itemWrapper} key={i}>
+            <div className={itemWrapper} key={item.label}>
               <item.icon className="stroke-gray-shade-8" />
-              <div className={itemlabel}>
-                <Link href={item.url}>{item.label}</Link>
-              </div>
+              <Link href={item.url}>
+                <a className={itemLabel}>{item.label}</a>
+              </Link>
             </div>
           );
         })}
@@ -44,7 +47,7 @@ const itemWrapper = ctl(`
   items-center
 `);
 
-const itemlabel = ctl(`
+const itemLabel = ctl(`
   text-sm
   font-semibold 
   text-gray-shade-8 
