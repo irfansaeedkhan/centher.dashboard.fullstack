@@ -70,6 +70,7 @@ module.exports = {
           "shade-6": "#1C1C1F",
           "shade-7": "#888DAA",
           "shade-8": "#4C516B",
+          "border-color": "#202027",
         },
         background: {
           "shade-1": "#141417",

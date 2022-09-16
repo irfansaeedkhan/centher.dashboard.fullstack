@@ -25,6 +25,6 @@ const sideBarWrapper = ctl(`
   h-screen 
   flex-col
   font-monto
-  bg-black-shade-6 
   overflow-y-scroll
+  bg-background-shade-1 
 `);
