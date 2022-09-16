@@ -7,23 +7,18 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { Button } from "@/pages.components/index";
-import { Sidebar } from "@/components/sidebar";
-import Header from "@/components/header";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 const Home: NextPage = () => {
   return (
-    <>
-      <Header />
-      <div className="flex">
-        <Sidebar />
-        <div>
-          <Heading variant="h1">Hello world!</Heading>
-          <Button component="a" href={AppRoutes.login}>
-            Connect
-          </Button>
-        </div>
+    <AllPagesWrapper>
+      <div>
+        <Heading variant="h1">Hello world!</Heading>
+        <Button component="a" href={AppRoutes.login}>
+          Connect
+        </Button>
       </div>
-    </>
+    </AllPagesWrapper>
   );
 };
 
