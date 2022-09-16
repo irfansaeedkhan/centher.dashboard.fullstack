@@ -2,12 +2,12 @@
 import { NextPage } from "next";
 
 // App imports
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Heading } from "@/components/heading";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { Button } from "@/pages.components/index";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 const Home: NextPage = () => {
   return (

@@ -15,7 +15,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
       <section className={section_left}>
         <div className="w-fit">
           <Image
-            src="/images/nether.nft.logo.login.svg"
+            src="/images/nether.nft.logo.svg"
             alt="logo"
             width={"166px"}
             height={"40px"}
@@ -24,7 +24,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
         <div className={section_left_content_wrapper}>
           <div className="w-fit">
             <Image
-              src="/images/nether.nft.favicon.vertical.svg"
+              src="/images/nether.nft.favicon.svg"
               alt="logo"
               width={"179px"}
               height={"308px"}

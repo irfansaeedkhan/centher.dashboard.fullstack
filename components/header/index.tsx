@@ -1,11 +1,11 @@
 // React, Next, NPM Packages
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
-import Search from "./Search";
+import Search from "./search";
 
 const Header = () => {
   return (
@@ -13,7 +13,7 @@ const Header = () => {
       <Link href={"/"}>
         <a>
           <Image
-            src="/images/MainLogo.svg"
+            src="/images/nether.nft.logo.svg"
             alt="logo"
             width={"240px"}
             height={"56px"}

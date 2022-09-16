@@ -2,9 +2,9 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
-// Current directory imports
-import Header from "../header";
-import { Sidebar } from "../sidebar";
+// App imports
+import Header from "@/components/header";
+import { Sidebar } from "@/components/sidebar";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
