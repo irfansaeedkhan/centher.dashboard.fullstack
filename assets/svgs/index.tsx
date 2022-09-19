@@ -452,3 +452,181 @@ export const SearchIcon = () => {
     </svg>
   );
 };
+
+export const InfluencerRequest: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.1667 18.333V16.6663C14.1667 15.7823 13.8155 14.9344 13.1904 14.3093C12.5652 13.6842 11.7174 13.333 10.8333 13.333H5.83333C4.94928 13.333 4.10143 13.6842 3.47631 14.3093C2.85119 14.9344 2.5 15.7823 2.5 16.6663V18.333"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.33333 9.99967C10.1743 9.99967 11.6667 8.50729 11.6667 6.66634C11.6667 4.82539 10.1743 3.33301 8.33333 3.33301C6.49238 3.33301 5 4.82539 5 6.66634C5 8.50729 6.49238 9.99967 8.33333 9.99967Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.3333 3.09958C13.5014 2.62193 13.833 2.21915 14.2696 1.9626C14.7061 1.70604 15.2193 1.61226 15.7184 1.69786C16.2175 1.78346 16.6701 2.04292 16.9962 2.43029C17.3223 2.81765 17.5008 3.30793 17.5 3.81427C17.5 5.24366 15.3559 5.95835 15.3559 5.95835"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.4131 8.81738H15.4202"
+        strokeWidth="1.71526"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const InfluencerDetails: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 1.90039H5C4.07953 1.90039 3.33334 2.57196 3.33334 3.40039V15.4004C3.33334 16.2288 4.07953 16.9004 5 16.9004H15C15.9205 16.9004 16.6667 16.2288 16.6667 15.4004V3.40039C16.6667 2.57196 15.9205 1.90039 15 1.90039Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.2674 16.7003V15.767C13.2674 15.2719 13.0707 14.7972 12.7207 14.4471C12.3706 14.097 11.8958 13.9004 11.4008 13.9004H8.60089C8.10583 13.9004 7.63106 14.097 7.281 14.4471C6.93095 14.7972 6.73429 15.2719 6.73429 15.767V16.7003"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10.0008 12.034C11.0317 12.034 11.8674 11.1983 11.8674 10.1674C11.8674 9.13648 11.0317 8.30078 10.0008 8.30078C8.96993 8.30078 8.13423 9.13648 8.13423 10.1674C8.13423 11.1983 8.96993 12.034 10.0008 12.034Z"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.53191 5.2334H11.8652"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const Transactions: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M16.6667 9.99967V6.66634H5C4.55798 6.66634 4.13405 6.49075 3.82149 6.17819C3.50893 5.86563 3.33334 5.4417 3.33334 4.99967C3.33334 4.08301 4.08334 3.33301 5 3.33301H15V6.66634"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.33334 5V15C3.33334 15.9167 4.08334 16.6667 5 16.6667H16.6667V13.3333"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 10C14.558 10 14.1341 10.1756 13.8215 10.4882C13.5089 10.8007 13.3333 11.2246 13.3333 11.6667C13.3333 12.5833 14.0833 13.3333 15 13.3333H18.3333V10H15Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const Users: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13.3333 17.5V15.8333C13.3333 14.9493 12.9821 14.1014 12.357 13.4763C11.7319 12.8512 10.8841 12.5 10 12.5H5C4.11594 12.5 3.2681 12.8512 2.64297 13.4763C2.01785 14.1014 1.66666 14.9493 1.66666 15.8333V17.5"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.5 9.16667C9.34095 9.16667 10.8333 7.67428 10.8333 5.83333C10.8333 3.99238 9.34095 2.5 7.5 2.5C5.65905 2.5 4.16666 3.99238 4.16666 5.83333C4.16666 7.67428 5.65905 9.16667 7.5 9.16667Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18.3333 17.5001V15.8334C18.3328 15.0948 18.087 14.3774 17.6345 13.7937C17.182 13.2099 16.5484 12.793 15.8333 12.6084"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M13.3333 2.6084C14.0503 2.79198 14.6859 3.20898 15.1397 3.79366C15.5935 4.37833 15.8399 5.09742 15.8399 5.83757C15.8399 6.57771 15.5935 7.2968 15.1397 7.88147C14.6859 8.46615 14.0503 8.88315 13.3333 9.06673"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const PlusIconBtn: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 21C9.61305 21 7.32387 20.0518 5.63604 18.364C3.94821 16.6761 3 14.3869 3 12C3 9.61305 3.94821 7.32387 5.63604 5.63604C7.32387 3.94821 9.61305 3 12 3C14.3869 3 16.6761 3.94821 18.364 5.63604C20.0518 7.32387 21 9.61305 21 12C21 14.3869 20.0518 16.6761 18.364 18.364C16.6761 20.0518 14.3869 21 12 21V21Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 8V16"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16 12H8"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

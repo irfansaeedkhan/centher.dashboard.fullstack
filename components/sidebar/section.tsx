@@ -4,9 +4,10 @@ import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
 import { SidebarSection } from "./sidebar.data";
+import { AdminSideBarType } from "./admin.sidebar.data";
 
 export interface SectionProps {
-  section: SidebarSection;
+  section: SidebarSection | AdminSideBarType;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
