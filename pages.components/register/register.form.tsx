@@ -168,8 +168,9 @@ const button = ctl(`
   w-full 
   font-bold 
   rounded-lg 
-  dynamicTranss
-  text-gray-shade-5 
+  text-gray-shade-5
   justify-center 
   bg-brand-primary 
+  hover:bg-brand-primary-light
+  transition-all 
 `);
