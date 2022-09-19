@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 // Current directory imports
-import Search from "./Search";
+import Search from "./search";
 
 const Header = () => {
   return (
