@@ -27,14 +27,14 @@ const initialSignupState: SignupState = {
   last_name: "",
   password: "",
   confirm_password: "",
-  profile_image: "avatar-1",
+  profile_image: "api/public/avatars/avatar-1.png",
   account_address: "",
   referred_by: "",
 };
 
 export const RegisterForm: React.FC = () => {
   const router = useRouter();
-  const { account, library } = useWeb3React();
+  const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
   const {
@@ -81,7 +81,10 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <>
-      <Avatars />
+      <Avatars
+        defaultAvatar={initialSignupState.profile_image}
+        onSelect={(avatar) => setValue("profile_image", avatar)}
+      />
 
       <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
         {formFields.slice(0, 4).map((formField) => {
