@@ -5,13 +5,26 @@ import ctl from "@netlify/classnames-template-literals";
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
+import Link from "next/link";
+import { Logout } from "@/assets/svgs";
 
 export const Sidebar = () => {
   return (
     <div className={sideBarWrapper}>
-      {SidebarSections.map((section) => {
-        return <Section section={section} key={section.label} />;
-      })}
+      <div className="flex flex-col gap-6">
+        {SidebarSections.map((section) => {
+          return <Section section={section} key={section.label} />;
+        })}
+      </div>
+      <div className={sectionWrapper}>
+        <span className={sectionLabel}>WILL YOU GET OUT?</span>
+        <div className={sectionWrapper}>
+          <div className={itemWrapper}>
+            <Logout />
+            <button className={itemLabel}>Logout</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -19,12 +32,37 @@ export const Sidebar = () => {
 const sideBarWrapper = ctl(`
   w-72
   flex
-  px-8 
-  gap-8  
-  py-10 
+  px-6 
+  gap-8
+  justify-between  
+  py-5 
   h-screen 
   flex-col
   font-monto
   overflow-y-scroll
   bg-background-shade-1 
+`);
+
+const sectionWrapper = ctl(`
+  flex
+  gap-6 
+  flex-col
+`);
+
+const sectionLabel = ctl(`
+  font-bold
+  text-[11px] 
+  text-gray-shade-7 
+`);
+
+const itemWrapper = ctl(`
+  flex 
+  gap-2 
+  items-center
+`);
+
+const itemLabel = ctl(`
+  text-sm
+  font-semibold 
+  text-gray-shade-8 
 `);

@@ -13,6 +13,8 @@ import {
   StakingPack,
   TopInfluencer,
   VotingChain,
+  Multilevel,
+  NetworkGenealogy,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -100,22 +102,12 @@ export const SidebarData = {
       {
         label: "Multilevel License",
         url: AppRoutes.referral_program,
-        icon: ReferralProgram,
+        icon: Multilevel,
       },
       {
         label: "Network Genealogy",
         url: AppRoutes.referral_program,
-        icon: ReferralProgram,
-      },
-    ],
-  },
-  logout: {
-    label: "WILL YOU GET OUT?",
-    items: [
-      {
-        label: "Logout",
-        url: "/logout",
-        icon: Logout,
+        icon: NetworkGenealogy,
       },
     ],
   },
@@ -127,7 +119,6 @@ export const SidebarSections = [
   SidebarData.decentralized_finance,
   SidebarData.dao_government,
   SidebarData.referral_program,
-  SidebarData.logout,
 ];
 
 export type SidebarData = typeof SidebarData;

@@ -15,8 +15,8 @@ const Header = () => {
           <Image
             src="/images/nether.nft.logo.svg"
             alt="logo"
-            width={"240px"}
-            height={"56px"}
+            width={"166px"}
+            height={"39px"}
           />
         </a>
       </Link>
@@ -35,8 +35,9 @@ export default Header;
 
 const headerWraper = ctl(`
   flex 
-  px-8 
-  h-24 
+  px-8
+  py-3 
+  h-[60px]
   items-center
   justify-between 
   border-b-[1.5px] 
