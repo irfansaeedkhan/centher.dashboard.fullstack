@@ -30,9 +30,8 @@ export const Sidebar = () => {
 };
 
 const sideBarWrapper = ctl(`
-  w-72
-  px-6 
-  py-5 
+  w-72 
+  p-5 
   gap-8
   hidden
   lg:flex

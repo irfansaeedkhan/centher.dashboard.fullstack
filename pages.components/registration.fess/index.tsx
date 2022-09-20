@@ -5,20 +5,21 @@ import { WalletIcon } from "@/assets/svgs";
 
 export const RegisterationFees: React.FC = () => {
   return (
-    <form className={wrapper}>
+    <div className={wrapper}>
       <div className={fieldWrapper}>
         <WalletIcon />
       </div>
-      <div className={fieldTitle}>Pay Registeration Fee</div>
-      <div className={text}>
-        Invalid Sponsor or Sponsor not provided. Please pay{" "}
-        <span className="text-brand-primary">0.33929123268872 BNB</span> for
-        registeration.
-      </div>
-      <div>
+      <h3 className={fieldTitle}>Pay Registeration Fee</h3>
+      <p className={text}>
+        Please pay registeration fee to start using your account.
+      </p>
+      <div className="mt-8">
+        <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
+          0.33929123268872 BNB
+        </p>
         <button className={button}>Pay fee</button>
       </div>
-    </form>
+    </div>
   );
 };
 
@@ -55,8 +56,9 @@ const button = ctl(`
   w-full 
   font-bold 
   rounded-lg 
-  dynamicTranss
   text-gray-shade-5 
   justify-center 
-  bg-brand-primary 
+  bg-brand-primary
+  hover:bg-brand-primary-dark
+  transition-all 
 `);

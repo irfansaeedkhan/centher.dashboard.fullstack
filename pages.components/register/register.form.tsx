@@ -171,6 +171,6 @@ const button = ctl(`
   text-gray-shade-5
   justify-center 
   bg-brand-primary 
-  hover:bg-brand-primary-light
+  hover:bg-brand-primary-dark
   transition-all 
 `);

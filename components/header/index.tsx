@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
@@ -14,9 +14,9 @@ const Header = () => {
         <a>
           <Image
             src="/images/nether.nft.logo.svg"
-            alt="logo"
-            width={"166px"}
-            height={"39px"}
+            alt="Nether NFT Logo"
+            width={166}
+            height={38}
           />
         </a>
       </Link>
@@ -59,8 +59,7 @@ const border = ctl(`
 `);
 
 const connectButoon = ctl(`
-  px-3 
-  py-2
+  px-6 
   flex
   items-center 
   text-sm 

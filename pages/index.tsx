@@ -5,11 +5,11 @@ import { NextPage } from "next";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current directory imports
-import { HotNFTs } from "@/pages.components/Explore";
+import { HotNFTs } from "@/pages.components/explore";
 
 const Home: NextPage = () => {
   return (
-    <AllPagesWrapper tabTitle="Explore">
+    <AllPagesWrapper pageTitle="Explore - Nether NFT">
       <div>
         <HotNFTs />
         <div></div>
