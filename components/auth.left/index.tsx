@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import Link from "next/link";
 
 interface SignupProps {
   title: string;
@@ -14,12 +15,16 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
     return (
       <section className={section_left}>
         <div className="w-fit">
-          <Image
-            src="/images/nether.nft.logo.svg"
-            alt="logo"
-            width={"166px"}
-            height={"40px"}
-          />
+          <Link href="/">
+            <a>
+              <Image
+                src="/images/nether.nft.logo.svg"
+                alt="logo"
+                width={"166px"}
+                height={"40px"}
+              />
+            </a>
+          </Link>
         </div>
         <div className={section_left_content_wrapper}>
           <div className="w-fit">
