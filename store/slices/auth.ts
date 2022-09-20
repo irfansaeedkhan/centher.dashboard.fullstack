@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
 import { HYDRATE } from "next-redux-wrapper";
-import localForage from "localforage";
 
 import { RootState } from "..";
 
@@ -38,16 +36,6 @@ export const { setUser } = authSlice.actions;
 // Selectors
 export const selectUser = (state: RootState) =>
   state.auth.user === "init" ? null : state.auth.user;
-
-const persistedReducer = persistReducer(
-  {
-    key: "auth",
-    storage: localForage,
-  },
-  authSlice.reducer
-);
-
-export default persistedReducer;
 
 // Types
 interface AuthState {
