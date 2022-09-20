@@ -66,7 +66,7 @@ export const SidebarData = {
     items: [
       {
         label: "Staking Pack",
-        url: AppRoutes.staking_pack,
+        url: AppRoutes.staking_packs,
         icon: StakingPack,
       },
       {

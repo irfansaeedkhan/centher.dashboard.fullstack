@@ -2,11 +2,12 @@
 import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
+// App imports
+import { Logout } from "@/assets/svgs";
+
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
-import Link from "next/link";
-import { Logout } from "@/assets/svgs";
 
 export const Sidebar = () => {
   return (
@@ -36,7 +37,7 @@ const sideBarWrapper = ctl(`
   hidden
   lg:flex
   flex-col
-  h-[calc(100vh-60px)] 
+  min-h-[calc(100vh-60px)]
   font-monto
   justify-between  
   overflow-y-scroll
