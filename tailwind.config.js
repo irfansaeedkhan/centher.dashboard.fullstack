@@ -75,6 +75,7 @@ module.exports = {
           10: "#666C8F",
           11: "#44485F",
           12: "#3B3F54",
+          12: "#C4C4C4",
           "border-color": "#202027",
         },
         "background-shade": {

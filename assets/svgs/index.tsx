@@ -6,8 +6,8 @@ export const Feed: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -26,8 +26,8 @@ export const Chat: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -46,8 +46,8 @@ export const Notification: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -72,8 +72,8 @@ export const Explore: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -110,8 +110,8 @@ export const TopInfluencer: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ export const TopInfluencer: React.FC<IconProps> = (props) => {
       </g>
       <defs>
         <clipPath id="clip0_6759_24053">
-          <rect width="24" height="24" fill="white" />
+          <rect width="20" height="20" fill="white" />
         </clipPath>
       </defs>
     </svg>
@@ -147,8 +147,8 @@ export const CreateCollection: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -173,8 +173,8 @@ export const StakingPack: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -217,8 +217,8 @@ export const NetworkRewards: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -248,8 +248,8 @@ export const DaoGovernment: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -267,8 +267,8 @@ export const ProfitsDashboard: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +294,7 @@ export const VotingChain: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +326,7 @@ export const Logout = () => {
   return (
     <svg
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -361,7 +361,7 @@ export const ReferralProgram: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -427,8 +427,8 @@ export const ReferralProgram: React.FC<IconProps> = (props) => {
 export const SearchIcon = () => {
   return (
     <svg
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

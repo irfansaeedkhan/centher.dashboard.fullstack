@@ -25,7 +25,9 @@ const Header = () => {
           <Search />
         </div>
         <span className={border}></span>
-        <button className={connectButoon}>Connect</button>
+        <Link href="/login">
+          <a className={connectButoon}>Connect</a>
+        </Link>
       </div>
     </div>
   );
@@ -36,13 +38,12 @@ export default Header;
 const headerWraper = ctl(`
   flex 
   px-8
-  py-3 
   h-[60px]
   items-center
   justify-between 
   border-b-[1.5px] 
-  bg-background-shade-1 
-  border-gray-border-color 
+  bg-black-shade-9 
+  border-gray-shade-border-color 
 `);
 
 const rightWraper = ctl(`
@@ -53,12 +54,15 @@ const rightWraper = ctl(`
 const border = ctl(`
   border-l-2 
   rounded-xl 
-  border-gray-border-color
+  border-gray-shade-12/30
+  my-3
 `);
 
 const connectButoon = ctl(`
   px-3 
-  py-2 
+  py-2
+  flex
+  items-center 
   text-sm 
   rounded-lg 
   font-semibold 

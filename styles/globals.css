@@ -256,7 +256,7 @@ input:-webkit-autofill {
   .paddingsetnew {
     padding: 10px 16px !important;
   }
-  .anim {
+  .animationTextHeading {
     animation: animate 2s linear infinite;
     background-image: linear-gradient(
       to left,
@@ -267,6 +267,11 @@ input:-webkit-autofill {
       #a9cdff
     ) !important;
     background-size: 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    font-size: 34px;
+    font-weight: 600;
+    color: transparent !important;
   }
   .paddingset {
     padding: 8px 0 !important;

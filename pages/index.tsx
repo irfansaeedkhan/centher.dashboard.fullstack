@@ -3,20 +3,17 @@ import { NextPage } from "next";
 
 // App imports
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { Heading } from "@/components/heading";
-import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
-import { Button } from "@/pages.components/index";
+import { HotNFTs } from "@/pages.components/Explore";
 
 const Home: NextPage = () => {
   return (
-    <AllPagesWrapper>
+    <AllPagesWrapper tabTitle="Explore">
       <div>
-        <Heading variant="h1">Hello world!</Heading>
-        <Button component="a" href={AppRoutes.login}>
-          Connect
-        </Button>
+        <HotNFTs />
+        <div></div>
+        <div></div>
       </div>
     </AllPagesWrapper>
   );

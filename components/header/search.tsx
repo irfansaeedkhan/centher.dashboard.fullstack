@@ -4,7 +4,7 @@ import React from "react";
 const Search = () => {
   return (
     <div className="relative">
-      <div className="flex gap-2 items-center bg-[#1E212B] xl:max-w-[500px] xl:min-w-[400px] w-auto  lg:max-w-[400px] lg:min-w-[300px] md:max-w-[300px] md:min-w-[200px] h-[44px] p-3 rounded-xl md:flex sm:hidden ">
+      <div className="flex gap-2 items-center bg-[#1E212B] xl:max-w-[500px] xl:min-w-[400px] w-auto  lg:max-w-[400px] lg:min-w-[300px] md:max-w-[300px] md:min-w-[200px] h-[44px] px-3 py-2 rounded-xl md:flex sm:hidden ">
         <SearchIcon />
         <input
           type="search"

@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-import Image from "next/image";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
 
@@ -20,8 +20,8 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
               <Image
                 src="/images/nether.nft.logo.svg"
                 alt="logo"
-                width={"166px"}
-                height={"40px"}
+                width={166}
+                height={40}
               />
             </a>
           </Link>
@@ -31,8 +31,8 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
             <Image
               src="/images/nether.nft.favicon.svg"
               alt="logo"
-              width={"179px"}
-              height={"308px"}
+              width={146}
+              height={250}
             />
           </div>
           <div className={section_left_text_wrapper}>
@@ -49,10 +49,10 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
       <section className={section_right_mobile_content_wrapper}>
         <div className="w-fit">
           <Image
-            src="/images/nether.nft.logo.login.svg"
+            src="/images/nether.nft.logo.svg"
             alt="logo"
-            width={"166px"}
-            height={"40px"}
+            width={166}
+            height={40}
           />
         </div>
         <div className={section_right_mobile_text_wrapper}>

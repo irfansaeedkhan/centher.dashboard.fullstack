@@ -31,14 +31,15 @@ export const Sidebar = () => {
 
 const sideBarWrapper = ctl(`
   w-72
-  flex
   px-6 
-  gap-8
-  justify-between  
   py-5 
-  h-screen 
+  gap-8
+  hidden
+  lg:flex
   flex-col
+  h-[calc(100vh-60px)] 
   font-monto
+  justify-between  
   overflow-y-scroll
   bg-background-shade-1 
 `);
