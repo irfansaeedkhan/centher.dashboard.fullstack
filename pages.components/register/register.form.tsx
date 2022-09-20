@@ -27,7 +27,7 @@ const initialSignupState: SignupState = {
   last_name: "",
   password: "",
   confirm_password: "",
-  profile_image: "api/public/avatars/avatar-1.png",
+  profile_image: "/api/public/avatars/avatar-1.png",
   account_address: "",
   referred_by: "",
 };
