@@ -1,5 +1,6 @@
 export const AppRoutes = {
   // Only unauthenticated users can access
+  // onlyPublicPages
   login: "/login",
   register: "/register",
   forgot_password: "/forgot-password",
@@ -13,6 +14,8 @@ export const AppRoutes = {
   top_influencers: "/top-influencers",
 
   // Unauthenticated users can not access
+  // Authenticated but registration_fee_pending users can not access
+  // authenticatedAndActiveUserPages
   feed: "/feed",
   chat: "/chat",
   notifications: "/notifications",
