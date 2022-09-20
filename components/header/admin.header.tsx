@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import { PlusIconBtn } from "@/assets/svgs";
 
 // Current directory imports
 const AdminHeader = () => {
@@ -27,8 +28,10 @@ const AdminHeader = () => {
               <p className="text-white font-semibold">Staking Pack</p>
             </div>
           </div>
-          <div>
-            <button className={createButton}>Create New</button>
+
+          <div className={createButton}>
+            <PlusIconBtn className="group-hover:stroke-white stroke-black " />
+            <span>Create New</span>
           </div>
         </div>
       </div>
@@ -48,26 +51,6 @@ const headerWraper = ctl(`
   bg-background-shade-1
   border-gray-border-color
 `);
-const rightWraper = ctl(`
-  flex
-  gap-10
-`);
-const border = ctl(`
-  border-l-2
-  rounded-xl
-  border-gray-border-color
-`);
-const connectButoon = ctl(`
-  px-3
-  py-2
-  text-sm
-  rounded-lg
-  font-semibold
-  bg-brand-primary
-  text-black-shade-2
-  hover:bg-gray-shade-3
-  hover:text-brand-primary
-`);
 
 const createButton = ctl(`
   px-3 
@@ -78,5 +61,10 @@ const createButton = ctl(`
   bg-brand-primary 
   text-black-shade-2 
   hover:bg-gray-shade-3 
-  hover:text-brand-primary 
+  hover:text-brand-primary
+  group
+  flex
+  gap-2
+  items-center 
+  cursor-pointer
 `);
