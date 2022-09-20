@@ -453,6 +453,41 @@ export const SearchIcon = () => {
   );
 };
 
+export const WalletIcon = () => {
+  return (
+    <svg
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="48" height="48" rx="14" fill="white" fillOpacity="0.03" />
+      <path
+        d="M34.1673 23.5V18.6667H17.2507C16.6097 18.6667 15.995 18.4121 15.5418 17.9589C15.0886 17.5057 14.834 16.891 14.834 16.25C14.834 14.9209 15.9215 13.8334 17.2507 13.8334H31.7506V18.6667"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.834 16.25V30.75C14.834 32.0792 15.9215 33.1667 17.2507 33.1667H34.1673V28.3333"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M31.7507 23.5C31.1097 23.5 30.495 23.7546 30.0418 24.2078C29.5886 24.661 29.334 25.2757 29.334 25.9167C29.334 27.2458 30.4215 28.3333 31.7507 28.3333H36.584V23.5H31.7507Z"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const Multilevel: React.FC<IconProps> = (props) => {
   return (
     <svg
