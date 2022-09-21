@@ -4,6 +4,9 @@ import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
 
+// App imports
+import { AppRoutes } from "@/constants/app.routes";
+
 interface SignupProps {
   title: string;
   content: string;
@@ -15,7 +18,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
     return (
       <section className={section_left}>
         <div className="w-fit">
-          <Link href="/">
+          <Link href={AppRoutes.home}>
             <a>
               <Image
                 src="/images/nether.nft.logo.svg"

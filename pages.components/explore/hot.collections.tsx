@@ -5,15 +5,14 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CollectionCard } from "@/components/collection.card";
-
-// Current directory imports
+import { AppRoutes } from "@/constants/app.routes";
 
 export const HotCollections: React.FC = () => {
   return (
     <div className={hotCollectionWrapper}>
       <div className={hotCollectionGap}>
         <div className={collectionHeaderAnimation}>Collections</div>
-        <Link href="/">
+        <Link href={AppRoutes.home}>
           <a className={viewAllLink}>View all</a>
         </Link>
       </div>

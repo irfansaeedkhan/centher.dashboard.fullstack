@@ -4,6 +4,9 @@ import Link from "next/link";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
+// App imports
+import { AppRoutes } from "@/constants/app.routes";
+
 // Current directory imports
 import Search from "./search";
 
@@ -25,7 +28,7 @@ const Header = () => {
           <Search />
         </div>
         <span className={border}></span>
-        <Link href="/login">
+        <Link href={AppRoutes.auth.login}>
           <a className={connectButoon}>Connect</a>
         </Link>
       </div>
