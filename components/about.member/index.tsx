@@ -29,7 +29,6 @@ const componentWrapper = ctl(`
 `);
 
 const linkWrappper = ctl(`
-  dynamicTranss
   cursor-pointer 
   text-brand-primary 
 `);

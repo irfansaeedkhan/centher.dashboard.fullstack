@@ -53,7 +53,7 @@ export interface User {
   custom_image: boolean;
   account_address: string;
   roles: UserRole[];
-  status: UserStatus[];
+  status: UserStatus;
   createdAt: string;
   updatedAt: string;
 }

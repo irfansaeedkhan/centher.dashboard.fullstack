@@ -1,8 +1,10 @@
 // React, Next, NPM Packages
 import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
+import toast from "react-hot-toast";
 
 // App imports
+import { axiosNodeApi } from "@/utils/axios";
 import { Logout } from "@/assets/svgs";
 
 // Current directory imports
@@ -10,6 +12,27 @@ import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 
 export const Sidebar = () => {
+  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    const button = e.currentTarget;
+    button.disabled = true;
+
+    axiosNodeApi
+      .post("/api/auth/logout")
+      .then(({ data }) => {
+        button.disabled = false;
+        toast.success(data.message_description ?? "Logged out successfully!");
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 3000);
+      })
+      .catch((err: any) => {
+        button.disabled = false;
+        toast.error(
+          err.response.data?.message_description ?? "Something went wrong!"
+        );
+      });
+  };
+
   return (
     <div className={sideBarWrapper}>
       <div className={sideBarWrapperStyling}>
@@ -22,7 +45,9 @@ export const Sidebar = () => {
         <div className={sectionWrapper}>
           <div className={itemWrapper}>
             <Logout />
-            <button className={itemLabel}>Logout</button>
+            <button className={itemLabel} onClick={handleLogout}>
+              Logout
+            </button>
           </div>
         </div>
       </div>

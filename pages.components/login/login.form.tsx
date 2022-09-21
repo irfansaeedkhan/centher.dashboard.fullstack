@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
@@ -43,21 +44,29 @@ export const LoginForm: React.FC = () => {
 
   const onSubmit = (data: typeof loginFormInitialValues) => {
     // TODO: disable button
-    console.log(data);
 
     // Call Node JS API
     axiosNodeApi
       .post("/api/auth/login", data)
       .then(({ data }) => {
+        const user = data.user as User;
         // Store user data in redux
-        dispatch(setUser(data.user as User));
+        dispatch(setUser(user));
 
-        // Redirect to home
-        router.push(AppRoutes.home);
+        toast.success(data.message_description ?? "Logged in successfully!");
+
+        // Redirect to home / pay-registration-fee page
+        router.push(
+          user.status === "registration_fee_pending"
+            ? AppRoutes.pay_registration_fee
+            : AppRoutes.home
+        );
       })
       .catch((err: any) => {
-        // TODO: Show toast
-        console.dir(err.response.data);
+        // Show toast
+        toast.error(
+          err.response.data?.message_description ?? "Something went wrong!"
+        );
       });
   };
 

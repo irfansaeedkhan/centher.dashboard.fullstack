@@ -200,9 +200,6 @@ input:-webkit-autofill {
     background-color: transparent !important;
     border: 0 !important;
   }
-  .textColor {
-    color: #abafc4 !important;
-  }
   .textGradient {
     animation: animate 2s linear infinite;
     background: linear-gradient(
@@ -272,34 +269,6 @@ input:-webkit-autofill {
     font-size: 34px;
     font-weight: 600;
     color: transparent !important;
-  }
-  .paddingset {
-    padding: 8px 0 !important;
-  }
-  .dynamicTrans {
-    transition: all 0.2s linear;
-  }
-  .dynamicTrans:hover {
-    transform: scale(1.1);
-  }
-  .dynamicTranss {
-    transition: all 0.2s linear;
-  }
-  .dynamicTranss:hover {
-    transform: scale(1.05);
-  }
-  .hoverText:hover {
-    color: #febf32 !important;
-  }
-  .trans {
-    transition: all 0.3s linear;
-    animation: animate 5s linear infinite;
-  }
-  .trans:hover {
-    transform: scale(1.02);
-    border-style: solid !important;
-    border-width: 1px !important;
-    border-radius: 8px !important;
   }
   .bordersetforgradient {
     border: 2px solid transparent;

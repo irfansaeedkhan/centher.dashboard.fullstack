@@ -5,7 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { Controller, useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -69,12 +69,19 @@ export const RegisterForm: React.FC = () => {
 
     try {
       // Create a user with registration_pending state in database
-      await axiosNodeApi.post("/api/auth/signup", signupData);
+      const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
+
+      // Show success toast
+      toast.success(
+        data.message_description ??
+          "You have successfully registered for Nether NFT account!"
+      );
+
       // Redirect to login page
       router.push("/login");
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message_description || "Something went wrong"
+        error.response.data?.message_description || "Something went wrong"
       );
     }
   };

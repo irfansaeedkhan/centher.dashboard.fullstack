@@ -1,7 +1,5 @@
 // React, Next, NPM Packages
 import { NextPage } from "next";
-import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 // App imports
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -10,10 +8,6 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNFTs, HotCollections, Explore } from "@/pages.components/explore";
 
 const Home: NextPage = () => {
-  useEffect(() => {
-    toast.error("Hello Zara!");
-  }, []);
-
   return (
     /* A wrapper for the page. */
     <AllPagesWrapper pageTitle="Explore - Nether NFT">

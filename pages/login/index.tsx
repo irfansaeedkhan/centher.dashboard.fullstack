@@ -13,6 +13,10 @@ import { AppRoutes } from "@/constants/app.routes";
 import { LoginForm } from "@/pages.components/login";
 
 const Login: NextPage = () => {
+  // TODO: Waqar - Add head tags for all auth pages
+
+  // TODO: Waqar - Make the left side unscrollable, and the right side scrollable
+
   return (
     <PageWrapper>
       <AuthLeft
