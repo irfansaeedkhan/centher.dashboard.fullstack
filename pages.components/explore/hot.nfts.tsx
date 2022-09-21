@@ -82,6 +82,6 @@ const Data = {
 
 const hotNftPageWrapper = ctl(`flex flex-col gap-8`);
 
-const hotNftAnimation = ctl(`nimationTextHeading`);
+const hotNftAnimation = ctl(`animationTextHeading`);
 
 const nftCardWrapper = ctl(`flex gap-10 flex-wrap`);

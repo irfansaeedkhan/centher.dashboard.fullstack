@@ -60,6 +60,7 @@ const border = ctl(`
 
 const connectButoon = ctl(`
   px-6 
+  py-2
   flex
   items-center 
   text-sm 
