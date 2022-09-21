@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
+import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CollectionCard } from "@/components/collection.card";
@@ -9,16 +10,14 @@ import { CollectionCard } from "@/components/collection.card";
 
 export const HotCollections: React.FC = () => {
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex items-center justify-between gap-10">
-        <div className="animationTextHeading">Collections</div>
+    <div className={hotCollectionWrapper}>
+      <div className={hotCollectionGap}>
+        <div className={collectionHeaderAnimation}>Collections</div>
         <Link href="/">
-          <a className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12">
-            View all
-          </a>
+          <a className={viewAllLink}>View all</a>
         </Link>
       </div>
-      <div className="flex gap-10 flex-wrap">
+      <div className={collectionCardStyle}>
         <CollectionCard
           collectionName={Data.Name}
           collectionDescription={Data.Description}
@@ -39,3 +38,15 @@ const Data = {
   collectionCoverImage: "/images/collection.png",
   collectionLogoImage: "/images/nft.png",
 };
+
+const hotCollectionWrapper = ctl(`flex flex-col gap-8`);
+
+const hotCollectionGap = ctl(`flex items-center justify-between gap-10`);
+
+const collectionHeaderAnimation = ctl(`animationTextHeading`);
+
+const viewAllLink = ctl(
+  `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
+);
+
+const collectionCardStyle = ctl(`flex gap-10 flex-wrap"`);

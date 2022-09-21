@@ -12,7 +12,7 @@ import { Section } from "./section";
 export const Sidebar = () => {
   return (
     <div className={sideBarWrapper}>
-      <div className="flex flex-col gap-6">
+      <div className={sideBarWrapperStyling}>
         {SidebarSections.map((section) => {
           return <Section section={section} key={section.label} />;
         })}
@@ -67,3 +67,5 @@ const itemLabel = ctl(`
   font-semibold 
   text-gray-shade-8 
 `);
+
+const sideBarWrapperStyling = ctl(`flex flex-col gap-6`);

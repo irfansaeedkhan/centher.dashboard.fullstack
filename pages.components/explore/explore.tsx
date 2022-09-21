@@ -12,16 +12,12 @@ export const Explore: React.FC = () => {
     <div className={pageWrapper}>
       <div className={nameButtonWrapper}>
         <div className={sectionName}>Explore</div>
-        <div className="flex gap-2 items-center">
-          <button className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12">
-            All
-          </button>
-          <button className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12">
-            Category
-          </button>
+        <div className={sectionNameStyle}>
+          <button className={allButtonWrapper}>All</button>
+          <button className={categoryButtonWrapper}>Category</button>
         </div>
       </div>
-      <div className="flex gap-10 flex-wrap">
+      <div className={mainNftCard}>
         <NFTCard
           nftImage={Data.nftImage}
           nftToken={Data.nftToken}
@@ -69,3 +65,15 @@ const pageWrapper = ctl(`flex flex-col gap-8`);
 const nameButtonWrapper = ctl(`flex items-center justify-between gap-10`);
 
 const sectionName = ctl(`animationTextHeading`);
+
+const sectionNameStyle = ctl(`flex gap-2 items-center`);
+
+const allButtonWrapper = ctl(
+  `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
+);
+
+const categoryButtonWrapper = ctl(
+  `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
+);
+
+const mainNftCard = ctl(`flex gap-10 flex-wrap`);

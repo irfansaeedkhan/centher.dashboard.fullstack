@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-
+import ctl from "@netlify/classnames-template-literals";
 // App imports
 import NFTCard from "@/components/nft.card";
 
@@ -8,9 +8,9 @@ import NFTCard from "@/components/nft.card";
 
 export const HotNFTs: React.FC = () => {
   return (
-    <div className="flex flex-col gap-8">
-      <div className="animationTextHeading">Hot NFTs</div>
-      <div className="flex gap-10 flex-wrap">
+    <div className={hotNftPageWrapper}>
+      <div className={hotNftAnimation}>Hot NFTs</div>
+      <div className={nftCardWrapper}>
         <NFTCard
           nftImage={Data.nftImage}
           nftToken={Data.nftToken}
@@ -79,3 +79,9 @@ const Data = {
   nftPriceNether: 65000,
   nftPriceDollar: 650000,
 };
+
+const hotNftPageWrapper = ctl(`flex flex-col gap-8`);
+
+const hotNftAnimation = ctl(`nimationTextHeading`);
+
+const nftCardWrapper = ctl(`flex gap-10 flex-wrap`);
