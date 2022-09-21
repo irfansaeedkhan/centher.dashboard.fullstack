@@ -20,10 +20,12 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
   const [profileImage, setProfileImage] =
     useState<Avatar["name"]>(defaultAvatar);
 
+  console.log("hey", profileImage);
+
   return (
     <div className={mainWrapper}>
       <Image
-        src={`${NODE_API_URL}/${profileImage}`}
+        src={`${NODE_API_URL}${profileImage}`}
         className={profileImageClass}
         width={80}
         height={80}
@@ -43,7 +45,7 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
               return (
                 <Image
                   key={avatar.path}
-                  src={`${NODE_API_URL}/${avatar.path}`}
+                  src={`${NODE_API_URL}${avatar.path}`}
                   alt={avatar.name}
                   className={profileImageClass2}
                   width={80}
