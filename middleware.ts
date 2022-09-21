@@ -20,22 +20,22 @@ export async function middleware(request: NextRequest) {
     const user = await getUser(sessionId);
     if (!user) {
       return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.login}`
+        `${request.nextUrl.origin}${AppRoutes.auth.login}`
       );
     }
 
     if (user.status === "registration_fee_pending") {
       return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.pay_registration_fee}`
+        `${request.nextUrl.origin}${AppRoutes.auth.pay_registration_fee}`
       );
     }
   }
 
-  if (request.nextUrl.pathname === AppRoutes.pay_registration_fee) {
+  if (request.nextUrl.pathname === AppRoutes.auth.pay_registration_fee) {
     const user = await getUser(sessionId);
     if (!user) {
       return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.login}`
+        `${request.nextUrl.origin}${AppRoutes.auth.login}`
       );
     }
 
@@ -72,10 +72,10 @@ async function getUser(sessionId: string | undefined) {
 
 // only public pages
 const onlyPublicPages: string[] = [
-  AppRoutes.login,
-  AppRoutes.register,
-  AppRoutes.forgot_password,
-  AppRoutes.reset_password,
+  AppRoutes.auth.login,
+  AppRoutes.auth.register,
+  AppRoutes.auth.forgot_password,
+  AppRoutes.auth.reset_password,
 ];
 
 // only authenticated pages

@@ -33,7 +33,7 @@ const Login: NextPage = () => {
         <AboutMember
           asked="Not a member?"
           title="Register now"
-          link={AppRoutes.register}
+          link={AppRoutes.auth.register}
         />
         <LoginForm />
       </AuthRight>

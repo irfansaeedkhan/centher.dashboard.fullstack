@@ -58,7 +58,7 @@ export const LoginForm: React.FC = () => {
         // Redirect to home / pay-registration-fee page
         router.push(
           user.status === "registration_fee_pending"
-            ? AppRoutes.pay_registration_fee
+            ? AppRoutes.auth.pay_registration_fee
             : AppRoutes.home
         );
       })
@@ -106,7 +106,7 @@ export const LoginForm: React.FC = () => {
       </div>
       <AuthNote
         title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
-        link={AppRoutes.forgot_password}
+        link={AppRoutes.auth.forgot_password}
       />
       <div>
         <button className={button}>Login</button>

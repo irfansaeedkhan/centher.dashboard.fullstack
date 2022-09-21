@@ -1,13 +1,15 @@
 export const AppRoutes = {
   // Only unauthenticated users can access
   // onlyPublicPages
-  login: "/login",
-  register: "/register",
-  forgot_password: "/forgot-password",
-  reset_password: "/reset-password",
+  auth: {
+    login: "/auth/login",
+    register: "/auth/register",
+    forgot_password: "/auth/forgot-password",
+    reset_password: "/auth/reset-password",
 
-  // Authenticated AND registration pending users can access
-  pay_registration_fee: "/pay-registration-fee",
+    // Authenticated AND registration pending users can access
+    pay_registration_fee: "/auth/pay-registration-fee",
+  },
 
   // Anyone can access
   home: "/",
