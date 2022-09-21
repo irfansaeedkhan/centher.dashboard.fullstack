@@ -20,8 +20,6 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
   const [profileImage, setProfileImage] =
     useState<Avatar["name"]>(defaultAvatar);
 
-  console.log("hey", profileImage);
-
   return (
     <div className={mainWrapper}>
       <Image

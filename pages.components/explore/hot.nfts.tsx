@@ -10,7 +10,14 @@ export const HotNFTs: React.FC = () => {
   return (
     <div className="flex flex-col gap-8">
       <div className="animationTextHeading">Hot NFTs</div>
-      <NFTCard />
+      <div className="flex gap-10 flex-wrap">
+        <NFTCard />
+        <NFTCard />
+        <NFTCard />
+        <NFTCard />
+        <NFTCard />
+        <NFTCard />
+      </div>
     </div>
   );
 };
