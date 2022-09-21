@@ -23,9 +23,7 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       <div className="flex">
         <Sidebar />
         {/* 18rem is the width of sidebar */}
-        <div className="bg-black-shade-3 lg:w-[calc(100%-18rem)] w-full p-8">
-          {props.children}
-        </div>
+        <div className={childrenWrapper}>{props.children}</div>
       </div>
     </div>
   );
@@ -36,3 +34,13 @@ const componentWrapper = ctl(`
   flex-col
   font-monto
 `);
+
+const childrenWrapper = ctl(`
+  p-8 
+  w-full 
+  bg-black-shade-3 
+  overflow-y-scroll
+  h-[calc(100vh-60px)] 
+  lg:w-[calc(100%-18rem)] 
+  
+  `);

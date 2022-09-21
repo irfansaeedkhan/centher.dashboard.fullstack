@@ -37,10 +37,10 @@ const sideBarWrapper = ctl(`
   hidden
   lg:flex
   flex-col
-  min-h-[calc(100vh-60px)]
   font-monto
   justify-between  
   overflow-y-scroll
+  h-[calc(100vh-60px)]
   bg-background-shade-1 
 `);
 

@@ -3,25 +3,44 @@ import React from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
-const NFTCard: React.FC = () => {
+export interface NFTCardProps {
+  nftImage: string;
+  nftToken: string;
+  nftName: string;
+  nftOwnerName: string;
+  nftOwnerDp: string;
+  nftPriceNether: number;
+  nftPriceDollar: number;
+}
+
+const NFTCard: React.FC<NFTCardProps> = (props) => {
   return (
     <div>
       <div className={nftCardWrapper}>
         <div className={nftImageWrapper}>
-          <Image src="/images/nft.png" alt="nft" height={210} width={286} />
+          <Image src={props.nftImage} alt="nft" height={210} width={286} />
         </div>
         <div className={nftDetailWrapper}>
-          <div className={textSimple}>MARA Token</div>
-          <div className={nftName}>Barack Obama</div>
+          <div className={textSimple}>{props.nftToken}</div>
+          <div className={nftName}>{props.nftName}</div>
         </div>
         <div className={nftOwnerWrapper}>
           <div className={ownerDpWrapper}>
-            <Image src="/images/a1.png" alt="profile" height={28} width={28} />
-            <span className={nftOwnerName}>Ricky Ammeandola</span>
+            <Image
+              src={props.nftOwnerDp}
+              alt="profile"
+              height={28}
+              width={28}
+            />
+            <span className={nftOwnerName}>{props.nftOwnerName}</span>
           </div>
           <div className={nftPriceWrapper}>
-            <span className={nftPrice}>65,000 NETHER</span>
-            <span className={textSimple}>$650,000</span>
+            <span className={nftPrice}>
+              {props.nftPriceNether.toLocaleString()} NETHER
+            </span>
+            <span className={textSimple}>
+              ${props.nftPriceDollar.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
