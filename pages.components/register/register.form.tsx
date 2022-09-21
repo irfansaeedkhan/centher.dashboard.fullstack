@@ -74,7 +74,10 @@ export const RegisterForm: React.FC = () => {
       // Show success toast
       toast.success(
         data.message_description ??
-          "You have successfully registered for Nether NFT account!"
+          "An email has been sent to your email address. Please verify your email address before login.",
+        {
+          duration: 8000,
+        }
       );
 
       // Redirect to login page

@@ -3,7 +3,7 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { WalletIcon } from "@/assets/svgs";
 
-export const RegisterationFees: React.FC = () => {
+export const RegisterationFee: React.FC = () => {
   return (
     <div className={wrapper}>
       <div className={fieldWrapper}>

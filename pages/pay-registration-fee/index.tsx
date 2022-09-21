@@ -5,7 +5,7 @@ import { AuthLeft } from "@/components/auth.left";
 import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 
-import { RegisterationFees } from "@/pages.components/registration.fess";
+import { RegisterationFee } from "@/pages.components/pay.registration.fee";
 
 const PayRegistrationFee: NextPage = () => {
   return (
@@ -13,7 +13,7 @@ const PayRegistrationFee: NextPage = () => {
       <AuthLeft variant="desktop" title={data.title} content={data.content} />
       <AuthRight>
         <AuthLeft variant="mobile" title={data.title} content={data.content} />
-        <RegisterationFees />
+        <RegisterationFee />
       </AuthRight>
     </PageWrapper>
   );
