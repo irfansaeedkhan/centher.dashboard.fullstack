@@ -25,6 +25,73 @@ input:-webkit-autofill {
   .text-20px {
     @apply text-base lg:text-xl;
   }
+  .text-18px {
+    @apply text-base lg:text-lg;
+  }
+  .text-16px {
+    @apply text-base;
+  }
+  .text-14px {
+    @apply lg:text-sm;
+  }
+  .text-12px {
+    @apply text-xs;
+  }
+  .AppWrapper {
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+  .nftCardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  @media only screen and (max-width: 1670px) {
+    .AppWrapper {
+      max-width: 1010px;
+    }
+  }
+  @media only screen and (max-width: 1321px) {
+    .nftCardContainer {
+      gap: 5%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 30% !important;
+      margin-bottom: 5%;
+    }
+  }
+  @media only screen and (max-width: 990px) {
+    .nftCardContainer {
+      gap: 3.5%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 31% !important;
+      margin-bottom: 3.5%;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    .nftCardContainer {
+      gap: 6%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 47% !important;
+      margin-bottom: 6%;
+    }
+  }
+  @media only screen and (max-width: 550px) {
+    .nftCardContainer {
+      gap: 6%;
+    }
+    .nftCardStyling {
+      width: 290px !important;
+      margin: 0 auto;
+      margin-bottom: 6%;
+    }
+  }
   .boxShadoww:hover {
     filter: drop-shadow(0 0 0.5rem #febf32);
   }
