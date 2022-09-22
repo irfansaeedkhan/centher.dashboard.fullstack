@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <div className={headerWraper}>
-      <Link href={"/"}>
+      <Link href={AppRoutes.home}>
         <a>
           <Image
             src="/images/nether.nft.logo.svg"
@@ -54,7 +54,7 @@ export default Header;
 
 const headerWraper = ctl(`
   flex 
-  px-8
+  px-5
   h-[60px]
   items-center
   justify-between 

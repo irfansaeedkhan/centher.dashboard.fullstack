@@ -1,23 +1,25 @@
 // React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
-import { PlusIconBtn } from "@/assets/svgs";
 
-// Current directory imports
+// App imports
+import { PlusIconBtn } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
+
 const AdminHeader = () => {
   return (
     <div>
       <div className={headerWraper}>
         <div className="w-72">
-          <Link href={"/"}>
+          <Link href={AppRoutes.home}>
             <a>
               <Image
                 src="/images/MainLogo.svg"
                 alt="logo"
-                width={"166px"}
-                height={"39px"}
+                width={166}
+                height={38}
               />
             </a>
           </Link>
@@ -42,8 +44,7 @@ export default AdminHeader;
 
 const headerWraper = ctl(`
   flex
-  px-8
-  py-3
+  px-5
   w-full
   h-[60px]
   items-center

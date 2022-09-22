@@ -3,7 +3,6 @@ import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
-import Link from "next/link";
 import { AdminSidebarSections } from "./admin.sidebar.data";
 import { Section } from "./section";
 
@@ -20,9 +19,8 @@ export const AdminSidebar = () => {
 const sideBarWrapper = ctl(`
   w-72
   flex
-  px-6
+  p-5
   gap-8
-  py-5
   h-screen
   flex-col
   font-monto
