@@ -555,6 +555,7 @@ export const Multilevel: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+
 export const NetworkGenealogy: React.FC<IconProps> = (props) => {
   return (
     <svg
@@ -598,6 +599,31 @@ export const NetworkGenealogy: React.FC<IconProps> = (props) => {
       <path
         d="M16.6641 15.0001V11.6667C16.6641 10.0001 15.8307 9.16675 14.1641 9.16675H5.83073C4.16406 9.16675 3.33073 10.0001 3.33073 11.6667V15.0001"
         strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const YellowTick = () => {
+  return (
+    <svg
+      width="12"
+      height="13"
+      viewBox="0 0 12 13"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M2.48529 2.31134L6 1.03209L9.51471 2.31134L11.3848 5.55051L10.7353 9.23396L7.87014 11.6382H4.12986L1.26465 9.23396L0.615159 5.55051L2.48529 2.31134Z"
+        fill="#FEBF32"
+        stroke="#FEBF32"
+      />
+      <path
+        d="M4.25 6.50016L5.41667 7.66683L7.75 5.3335"
+        stroke="#17171A"
+        strokeWidth="1.16667"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
