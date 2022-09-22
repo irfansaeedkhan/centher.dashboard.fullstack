@@ -24,12 +24,6 @@ module.exports = {
       },
       fontSize: {
         34: "2.125rem",
-        24: "1.6rem",
-        22: "1.375rem",
-        20: "1.25rem",
-        16: "1rem",
-        14: "0.875rem",
-        12: "0.875rem",
       },
       flexShrink: {
         4: 4,

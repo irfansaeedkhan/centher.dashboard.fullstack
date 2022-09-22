@@ -22,8 +22,23 @@ input:-webkit-autofill {
 }
 
 @layer components {
+  .text-34px {
+    @apply text-2xl  lg:text-4xl;
+  }
   .text-20px {
     @apply text-base lg:text-xl;
+  }
+  .text-18px {
+    @apply text-base lg:text-lg;
+  }
+  .text-16px {
+    @apply text-base;
+  }
+  .text-14px {
+    @apply lg:text-sm;
+  }
+  .text-12px {
+    @apply text-xs;
   }
   .boxShadoww:hover {
     filter: drop-shadow(0 0 0.5rem #febf32);
