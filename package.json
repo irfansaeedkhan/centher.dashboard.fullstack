@@ -10,7 +10,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,scss}": [
+    "**/*.{js,jsx,ts,tsx}": [
       "prettier . --write",
       "eslint . --fix"
     ]
@@ -33,11 +33,10 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.34.2",
+    "react-hot-toast": "^2.4.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
-    "react-toastify": "^9.0.8",
-    "redux-persist": "^6.0.0",
-    "sass": "^1.54.8"
+    "swr": "^1.3.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^6.3.1",

@@ -97,7 +97,6 @@ const button = ctl(`
   w-full 
   font-bold 
   rounded-lg 
-  dynamicTranss
   text-gray-shade-5 
   justify-center 
   bg-brand-primary 

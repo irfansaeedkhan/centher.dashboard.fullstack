@@ -1,15 +1,32 @@
 export const AppRoutes = {
+  // Only unauthenticated users can access
+  // onlyPublicPages
+  auth: {
+    login: "/auth/login",
+    register: "/auth/register",
+    forgot_password: "/auth/forgot-password",
+    reset_password: "/auth/reset-password",
+
+    // Authenticated AND registration pending users can access
+    pay_registration_fee: "/auth/pay-registration-fee",
+  },
+
+  profile: {
+    username: "/profile/[username]",
+  },
+
+  // Anyone can access
   home: "/",
-  login: "/login",
-  register: "/register",
-  forgot_password: "/forgot-password",
-  reset_password: "/reset-password",
+  top_influencers: "/top-influencers",
+
+  // Unauthenticated users can not access
+  // Authenticated but registration_fee_pending users can not access
+  // authenticatedAndActiveUserPages
   feed: "/feed",
   chat: "/chat",
   notifications: "/notifications",
-  top_influencers: "/top-influencers",
   create_collection: "/create-collection",
-  staking_pack: "/staking-pack",
+  staking_packs: "/staking-packs",
   network_rewards: "/network-rewards",
   buy_ntr_dao: "/buy-ntr-dao",
   profits_dashboard: "/profits-dashboard",

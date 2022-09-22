@@ -1,22 +1,28 @@
 // React, Next, NPM Packages
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
+import Image from "next/future/image";
+import ctl from "@netlify/classnames-template-literals";
+
+// App imports
+import useUser from "@/hooks/use.user";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import Search from "./search";
 
 const Header = () => {
+  const { user, isError, isLoading } = useUser();
+
   return (
     <div className={headerWraper}>
       <Link href={"/"}>
         <a>
           <Image
-            src="/images/MainLogo.svg"
-            alt="logo"
-            width={"240px"}
-            height={"56px"}
+            src="/images/nether.nft.logo.svg"
+            alt="Nether NFT Logo"
+            width={166}
+            height={38}
           />
         </a>
       </Link>
@@ -25,7 +31,20 @@ const Header = () => {
           <Search />
         </div>
         <span className={border}></span>
-        <button className={connectButoon}>Connect</button>
+        {!user ? (
+          <Link href={AppRoutes.auth.login}>
+            <a className={connectButoon}>Connect</a>
+          </Link>
+        ) : (
+          <Link
+            href={{
+              pathname: AppRoutes.profile.username,
+              query: { username: user.username },
+            }}
+          >
+            <a className={connectButoon}>{user.username}</a>
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -35,13 +54,13 @@ export default Header;
 
 const headerWraper = ctl(`
   flex 
-  px-8 
-  h-24 
+  px-8
+  h-[60px]
   items-center
   justify-between 
   border-b-[1.5px] 
-  bg-background-shade-1 
-  border-gray-border-color 
+  bg-black-shade-9 
+  border-gray-shade-border-color 
 `);
 
 const rightWraper = ctl(`
@@ -52,12 +71,15 @@ const rightWraper = ctl(`
 const border = ctl(`
   border-l-2 
   rounded-xl 
-  border-gray-border-color
+  border-gray-shade-12/30
+  my-3
 `);
 
 const connectButoon = ctl(`
-  px-3 
-  py-2 
+  px-6 
+  py-2
+  flex
+  items-center 
   text-sm 
   rounded-lg 
   font-semibold 

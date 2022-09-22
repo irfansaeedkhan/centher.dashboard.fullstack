@@ -2,21 +2,19 @@
 import { NextPage } from "next";
 
 // App imports
-import { Heading } from "@/components/heading";
-import { AppRoutes } from "@/constants/app.routes";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current directory imports
-import { Button } from "@/pages.components/index";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { HotNFTs, HotCollections, Explore } from "@/pages.components/explore";
 
 const Home: NextPage = () => {
   return (
-    <AllPagesWrapper>
-      <div>
-        <Heading variant="h1">Hello world!</Heading>
-        <Button component="a" href={AppRoutes.login}>
-          Connect
-        </Button>
+    /* A wrapper for the page. */
+    <AllPagesWrapper pageTitle="Explore - Nether NFT">
+      <div className="AppWrapper flex flex-col gap-10">
+        <HotNFTs />
+        <HotCollections />
+        <Explore />
       </div>
     </AllPagesWrapper>
   );

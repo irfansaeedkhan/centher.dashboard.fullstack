@@ -9,10 +9,14 @@ import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current page imports
-import { RegisterForm } from "@/pages.components/register";
+// Current directory imports
+import { LoginForm } from "@/pages.components/login";
 
-const Register: NextPage = () => {
+const Login: NextPage = () => {
+  // TODO: Waqar - Add head tags for all auth pages
+
+  // TODO: Waqar - Make the left side unscrollable, and the right side scrollable
+
   return (
     <PageWrapper>
       <AuthLeft
@@ -20,30 +24,27 @@ const Register: NextPage = () => {
         title={signupLeftData.title}
         content={signupLeftData.content}
       />
-
       <AuthRight>
         <AuthLeft
           variant="mobile"
           title={signupLeftData.title}
           content={signupLeftData.content}
         />
-
         <AboutMember
-          asked="Already a memebr?"
-          title="Log in now"
-          link={AppRoutes.login}
+          asked="Not a member?"
+          title="Register now"
+          link={AppRoutes.auth.register}
         />
-
-        <RegisterForm />
+        <LoginForm />
       </AuthRight>
     </PageWrapper>
   );
 };
 
-export default Register;
+export default Login;
 
 const signupLeftData = {
-  title: "Register to Nether NFT",
+  title: "Login to Netheru",
   content:
-    "Register your account with nether NFT to sell and buy NFTs on some easy steps.",
+    "Login to your account with netheru to sell and buy NFTs on some easy steps.",
 };

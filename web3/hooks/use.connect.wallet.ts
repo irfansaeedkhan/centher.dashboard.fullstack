@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 import { injectedConnector } from "@/web3/connector";
 

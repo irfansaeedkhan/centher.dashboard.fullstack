@@ -9,30 +9,27 @@ import { useAvatars } from "@/hooks/use.avatars";
 import { Avatar } from "@/models/avatars";
 import { NODE_API_URL } from "@/constants/common";
 
-const Avatars: React.FC = () => {
+interface AvatarProps {
+  defaultAvatar: Avatar["path"];
+  onSelect: (avatart: Avatar["path"]) => void;
+}
+
+const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
   const { avatars } = useAvatars();
   const [avatarModal, setAvatarModal] = useState(false);
-  const [profileImage, setProfileImage] = useState<Avatar["name"]>();
+  const [profileImage, setProfileImage] =
+    useState<Avatar["name"]>(defaultAvatar);
 
   return (
     <div className={mainWrapper}>
-      {profileImage !== undefined ? (
-        <Image
-          src={`${NODE_API_URL}/${profileImage}`}
-          className={profileImageClass}
-          width={80}
-          height={80}
-          alt="Profile Image"
-        />
-      ) : (
-        <Image
-          src="/images/a1.png"
-          className={profileImageClass}
-          width={80}
-          height={80}
-          alt="Profile Image"
-        />
-      )}
+      <Image
+        src={`${NODE_API_URL}${profileImage}`}
+        className={profileImageClass}
+        width={80}
+        height={80}
+        alt="Profile Image"
+      />
+
       <button
         className={profileImageButton}
         onClick={() => setAvatarModal(true)}
@@ -46,7 +43,7 @@ const Avatars: React.FC = () => {
               return (
                 <Image
                   key={avatar.path}
-                  src={`${NODE_API_URL}/${avatar.path}`}
+                  src={`${NODE_API_URL}${avatar.path}`}
                   alt={avatar.name}
                   className={profileImageClass2}
                   width={80}
@@ -54,12 +51,7 @@ const Avatars: React.FC = () => {
                   onClick={() => {
                     setAvatarModal(false);
                     setProfileImage(avatar.path);
-                    // setSignup((prev) => {
-                    //   return {
-                    //     ...prev,
-                    //     profile_image: avatar.path,
-                    //   };
-                    // });
+                    onSelect(avatar.path);
                   }}
                 />
               );

@@ -56,26 +56,33 @@ module.exports = {
       colors: {
         brand: {
           primary: "#FEBF32",
+          "primary-dark": "#DA9C24",
         },
         yellow: {
           theme: "#FEBF32",
         },
         danger: "#EA3943",
-        gray: {
-          "shade-1": "#ADADAD",
-          "shade-2": "#ABAFC4",
-          "shade-3": "#2A2D3C",
-          "shade-4": "#6B7280",
-          "shade-5": "#222531",
-          "shade-6": "#1C1C1F",
-          "shade-7": "#888DAA",
-          "shade-8": "#4C516B",
+        "gray-shade": {
+          1: "#ADADAD",
+          2: "#ABAFC4",
+          3: "#2A2D3C",
+          4: "#6B7280",
+          5: "#222531",
+          6: "#1C1C1F",
+          7: "#888DAA",
+          8: "#4C516B",
+          9: "#1E1F28",
+          10: "#666C8F",
+          11: "#44485F",
+          12: "#3B3F54",
+          13: "#C4C4C4",
+          14: "#A0A4BB",
           "border-color": "#202027",
         },
-        background: {
-          "shade-1": "#141417",
-          "shade-2": "#1C1F29",
-          "shade-3": "#1B1C22",
+        "background-shade": {
+          1: "#141417",
+          2: "#1C1F29",
+          3: "#1B1C22",
         },
         "black-shade": {
           1: "#0A0A0A",
@@ -85,6 +92,8 @@ module.exports = {
           5: "#16161A",
           6: "#191B24",
           7: "#1E212B",
+          8: "#0B0B0B",
+          9: "#141416",
         },
       },
     },
@@ -97,8 +106,3 @@ module.exports = {
     require("flowbite/plugin"),
   ],
 };
-
-// "shade-7": "#44485F",
-// "shade-8": "#888DAA",
-
-// 6: "#141416",

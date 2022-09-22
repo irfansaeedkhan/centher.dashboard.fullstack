@@ -5,7 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { Controller, useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { toast } from "react-toastify";
+import { toast } from "react-hot-toast";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -27,14 +27,14 @@ const initialSignupState: SignupState = {
   last_name: "",
   password: "",
   confirm_password: "",
-  profile_image: "avatar-1",
+  profile_image: "/api/public/avatars/avatar-1.png",
   account_address: "",
   referred_by: "",
 };
 
 export const RegisterForm: React.FC = () => {
   const router = useRouter();
-  const { account, library } = useWeb3React();
+  const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
   const {
@@ -69,19 +69,32 @@ export const RegisterForm: React.FC = () => {
 
     try {
       // Create a user with registration_pending state in database
-      await axiosNodeApi.post("/api/auth/signup", signupData);
+      const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
+
+      // Show success toast
+      toast.success(
+        data.message_description ??
+          "An email has been sent to your email address. Please verify your email address before login.",
+        {
+          duration: 8000,
+        }
+      );
+
       // Redirect to login page
       router.push("/login");
     } catch (error: any) {
       toast.error(
-        error?.response?.data?.message_description || "Something went wrong"
+        error.response.data?.message_description || "Something went wrong"
       );
     }
   };
 
   return (
     <>
-      <Avatars />
+      <Avatars
+        defaultAvatar={initialSignupState.profile_image}
+        onSelect={(avatar) => setValue("profile_image", avatar)}
+      />
 
       <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
         {formFields.slice(0, 4).map((formField) => {
@@ -165,8 +178,9 @@ const button = ctl(`
   w-full 
   font-bold 
   rounded-lg 
-  dynamicTranss
-  text-gray-shade-5 
+  text-gray-shade-5
   justify-center 
   bg-brand-primary 
+  hover:bg-brand-primary-dark
+  transition-all 
 `);
