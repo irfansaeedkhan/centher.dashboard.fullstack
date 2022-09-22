@@ -57,10 +57,10 @@ export default StakingPackPage;
 
 // styling
 const dashboardContentContainer = ctl(`
-  stakingpack bg-black-shade-3 w-full min-h-screen p-4 lg:pt-8 lg:pl-7 font-monto
+  stakingpack bg-black-shade-3 w-full min-h-screen font-monto
 `);
 const title = ctl(`
-  textGradient text-24 xl:text-34 leading-[42px] font-medium pb-6 lg:pb-8
+  textGradient text-34px font-semibold leading-[42px] font-medium pb-6 lg:pb-8
 `);
 const btnContainer = ctl(`
   flex max-w-[416px] bg-black-shade-6 p-1.5 rounded-2xl mb-10
