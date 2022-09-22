@@ -80,6 +80,7 @@ const onlyPublicPages: string[] = [
 
 // only authenticated pages
 const authenticatedAndActiveUserPages: string[] = [
+  // TODO: Mubashir - handle username dynamic route
   AppRoutes.feed,
   AppRoutes.chat,
   AppRoutes.notifications,
