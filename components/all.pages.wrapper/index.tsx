@@ -22,7 +22,7 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       <Header />
       <div className="flex">
         <Sidebar />
-        {/* 18rem is the width of sidebar */}
+        {/* 15.5rem is the width of sidebar */}
         <div className={childrenWrapper}>{props.children}</div>
       </div>
     </div>
@@ -41,6 +41,6 @@ const childrenWrapper = ctl(`
   bg-black-shade-3 
   overflow-y-scroll
   h-[calc(100vh-60px)] 
-  lg:w-[calc(100%-18rem)] 
+  lg:w-[calc(100%-15.5rem)] 
   
   `);
