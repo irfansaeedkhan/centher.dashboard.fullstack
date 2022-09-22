@@ -1,5 +1,4 @@
 import React from "react";
-import { HtmlHTMLAttributes } from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
