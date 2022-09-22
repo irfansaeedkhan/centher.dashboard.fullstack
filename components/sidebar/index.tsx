@@ -44,17 +44,19 @@ export const Sidebar = () => {
           return <Section section={section} key={section.label} />;
         })}
       </div>
-      <div className={sectionWrapper}>
-        <span className={sectionLabel}>WILL YOU GET OUT?</span>
+      {user && (
         <div className={sectionWrapper}>
-          <div className={itemWrapper}>
-            <Logout />
-            <button className={itemLabel} onClick={handleLogout}>
-              Logout
-            </button>
+          <span className={sectionLabel}>WILL YOU GET OUT?</span>
+          <div className={sectionWrapper}>
+            <div className={itemWrapper}>
+              <Logout />
+              <button className={itemLabel} onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

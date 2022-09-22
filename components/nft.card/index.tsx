@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+import { YellowTick } from "@/assets/svgs";
 
 export interface NFTCardProps {
   nftImage: string;
@@ -27,6 +28,7 @@ const NFTCard: React.FC<NFTCardProps> = (props) => {
         <div className={ownerDpWrapper}>
           <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
           <span className={nftOwnerName}>{props.nftOwnerName}</span>
+          <YellowTick />
         </div>
         <div className={nftPriceWrapper}>
           <span className={nftPrice}>
@@ -44,25 +46,25 @@ const NFTCard: React.FC<NFTCardProps> = (props) => {
 export default NFTCard;
 
 const nftCardWrapper = ctl(
-  `w-[310px] nftCardStyling h-auto border border-gray-shade-3 rounded-[10px] flex flex-col gap-3 bg-transparent`
+  `w-[310px] nftCardStyling h-auto border border-gray-shade-3 rounded-[10px] p-3 flex flex-col gap-3 bg-transparent`
 );
 
-const nftImageWrapper = ctl(`w-full flex justify-center p-3`);
+const nftImageWrapper = ctl(`w-full flex justify-center `);
 
 const textSimple = ctl(`text-gray-shade-7 text-xs font-medium`);
 
-const nftDetailWrapper = ctl(`flex flex-col gap-1 px-3`);
+const nftDetailWrapper = ctl(`flex flex-col gap-1`);
 
 const nftName = ctl(`font-semibold text-white`);
 
 const nftOwnerWrapper = ctl(
-  `bg-background-shade-3 flex justify-between items-center p-3 gap-10 rounded-b-[10px]`
+  `bg-background-shade-3 flex flex-col p-3 gap-2 rounded-b-[10px]`
 );
 
 const nftOwnerName = ctl(`text-white text-xs font-medium`);
 
-const nftPriceWrapper = ctl(`flex flex-col gap-1 items-end`);
+const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
 
-const nftPrice = ctl(`animationTextHeading !text-xs !font-medium`);
+const nftPrice = ctl(`animationTextHeading !text-[10px] !font-medium`);
 
-const ownerDpWrapper = ctl(`flex items-center gap-2 w-1/2`);
+const ownerDpWrapper = ctl(`flex items-center gap-2`);

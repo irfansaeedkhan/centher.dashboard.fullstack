@@ -17,7 +17,7 @@ export const Explore: React.FC = () => {
           <button className={categoryButtonWrapper}>Category</button>
         </div>
       </div>
-      <div className={mainNftCard}>
+      <div className="nftCardContainer">
         <NFTCard
           nftImage={Data.nftImage}
           nftToken={Data.nftToken}
@@ -62,7 +62,9 @@ const Data = {
 
 const pageWrapper = ctl(`flex flex-col gap-8`);
 
-const nameButtonWrapper = ctl(`flex items-center justify-between gap-10`);
+const nameButtonWrapper = ctl(
+  `flex md:flex-row sm:flex-col md:items-center justify-between md:gap-10 sm:gap-5`
+);
 
 const sectionName = ctl(`animationTextHeading`);
 
@@ -76,4 +78,4 @@ const categoryButtonWrapper = ctl(
   `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
 );
 
-const mainNftCard = ctl(`flex gap-10 flex-wrap`);
+const mainNftCard = ctl(`flex gap-10 flex-wrap nftCardContainer`);

@@ -33,7 +33,7 @@ const Header = () => {
         <span className={border}></span>
         {!user ? (
           <Link href={AppRoutes.auth.login}>
-            <a className={connectButoon}>Connect</a>
+            <a className={connectButoon}>Login</a>
           </Link>
         ) : (
           <Link
@@ -69,6 +69,8 @@ const rightWraper = ctl(`
 `);
 
 const border = ctl(`
+  md:block
+  sm:hidden
   border-l-2 
   rounded-xl 
   border-gray-shade-12/30
