@@ -65,7 +65,7 @@ export const RegisterForm: React.FC = () => {
   }, [account, setValue, router.query.referrer]);
 
   const onSubmit = async (signupData: SignupState) => {
-    // TODO: Add loading state to the submit button and disable it
+    // TODO: Waqar - Add loading state to the submit button and disable it
 
     try {
       // Create a user with registration_pending state in database
