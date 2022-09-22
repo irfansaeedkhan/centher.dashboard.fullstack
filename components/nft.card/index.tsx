@@ -63,7 +63,7 @@ const nftOwnerWrapper = ctl(
 
 const nftOwnerName = ctl(`text-white text-xs font-medium`);
 
-const nftPriceWrapper = ctl(`flex justify-between gap-10 items-center`);
+const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
 
 const nftPrice = ctl(`animationTextHeading !text-[10px] !font-medium`);
 

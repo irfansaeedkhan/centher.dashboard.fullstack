@@ -69,6 +69,8 @@ const rightWraper = ctl(`
 `);
 
 const border = ctl(`
+  md:block
+  sm:hidden
   border-l-2 
   rounded-xl 
   border-gray-shade-12/30
