@@ -5,12 +5,15 @@ import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import Search from "./search";
 
 const Header = () => {
+  const { user, isError, isLoading } = useUser();
+
   return (
     <div className={headerWraper}>
       <Link href={"/"}>
@@ -28,9 +31,20 @@ const Header = () => {
           <Search />
         </div>
         <span className={border}></span>
-        <Link href={AppRoutes.auth.login}>
-          <a className={connectButoon}>Connect</a>
-        </Link>
+        {!user ? (
+          <Link href={AppRoutes.auth.login}>
+            <a className={connectButoon}>Connect</a>
+          </Link>
+        ) : (
+          <Link
+            href={{
+              pathname: AppRoutes.profile.username,
+              query: { username: user.username },
+            }}
+          >
+            <a className={connectButoon}>{user.username}</a>
+          </Link>
+        )}
       </div>
     </div>
   );

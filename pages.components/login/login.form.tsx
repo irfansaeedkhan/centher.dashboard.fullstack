@@ -9,12 +9,11 @@ import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 // App imports
-import { useAppDispatch } from "@/store/hooks";
-import { setUser, User } from "@/store/slices/auth";
 import { AuthNote } from "@/components/auth.note";
-import { AppRoutes } from "@/constants/app.routes";
 import { ErrorMessage } from "@/components/error.message";
+import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
 
 const loginFormInitialValues = {
   email: "",
@@ -39,19 +38,16 @@ export const LoginForm: React.FC = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const onSubmit = (data: typeof loginFormInitialValues) => {
-    // TODO: disable button
+    // TODO: Waqar - disable button
 
     // Call Node JS API
     axiosNodeApi
       .post("/api/auth/login", data)
       .then(({ data }) => {
         const user = data.user as User;
-        // Store user data in redux
-        dispatch(setUser(user));
 
         toast.success(data.message_description ?? "Logged in successfully!");
 

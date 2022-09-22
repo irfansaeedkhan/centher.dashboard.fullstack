@@ -11,6 +11,10 @@ export const AppRoutes = {
     pay_registration_fee: "/auth/pay-registration-fee",
   },
 
+  profile: {
+    username: "/profile/[username]",
+  },
+
   // Anyone can access
   home: "/",
   top_influencers: "/top-influencers",
