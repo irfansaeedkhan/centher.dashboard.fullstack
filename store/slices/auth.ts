@@ -1,28 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { persistReducer } from "redux-persist";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
-import localForage from "localforage";
 
 import { RootState } from "..";
 
-const initialState = {
+const initialState: AuthState = {
   user: "init",
-  jwt: "init",
 };
 
 export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUserAndJwt: (state, action) => {
-      state.user = action.payload.user;
-      state.jwt = action.payload.jwt;
-    },
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
-    },
-    setJwt: (state, action) => {
-      state.jwt = action.payload;
     },
   },
 
@@ -30,9 +20,6 @@ export const authSlice = createSlice({
     [HYDRATE]: (state, action) => {
       if (action.payload.auth.user === "init") {
         delete action.payload.auth.user;
-      }
-      if (action.payload.auth.jwt === "init") {
-        delete action.payload.auth.jwt;
       }
 
       return {
@@ -44,20 +31,38 @@ export const authSlice = createSlice({
 });
 
 // Action Creators
-export const { setUserAndJwt, setUser, setJwt } = authSlice.actions;
+export const { setUser } = authSlice.actions;
 
 // Selectors
 export const selectUser = (state: RootState) =>
   state.auth.user === "init" ? null : state.auth.user;
-export const selectJwt = (state: RootState) =>
-  state.auth.jwt === "init" ? null : state.auth.jwt;
 
-const persistedReducer = persistReducer(
-  {
-    key: "auth",
-    storage: localForage,
-  },
-  authSlice.reducer
-);
+// Types
+interface AuthState {
+  user: "init" | User | null;
+}
 
-export default persistedReducer;
+export interface User {
+  _id: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  email_verified: string;
+  profile_image: string;
+  custom_image: boolean;
+  account_address: string;
+  roles: UserRole[];
+  status: UserStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+type UserRole =
+  | "user"
+  | "admin"
+  | "influencer"
+  | "pending_influencer"
+  | "rejected_influencer";
+
+type UserStatus = "active" | "inactive" | "delete" | "registration_fee_pending";

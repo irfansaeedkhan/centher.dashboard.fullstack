@@ -17,7 +17,7 @@ export const Section: React.FC<SectionProps> = (props) => {
         {props.section.items.map((item) => {
           return (
             <div className={itemWrapper} key={item.label}>
-              <item.icon className="stroke-gray-shade-8" />
+              <item.icon className={itemIcons} />
               <Link href={item.url}>
                 <a className={itemLabel}>{item.label}</a>
               </Link>
@@ -52,3 +52,5 @@ const itemLabel = ctl(`
   font-semibold 
   text-gray-shade-8 
 `);
+
+const itemIcons = ctl(`stroke-gray-shade-8`);

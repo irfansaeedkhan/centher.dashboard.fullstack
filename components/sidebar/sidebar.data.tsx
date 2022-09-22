@@ -13,7 +13,10 @@ import {
   StakingPack,
   TopInfluencer,
   VotingChain,
+  Multilevel,
+  NetworkGenealogy,
 } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 export const SidebarData = {
   social_network: {
@@ -21,18 +24,18 @@ export const SidebarData = {
     items: [
       {
         label: "Feed",
-        url: "/feed",
+        url: AppRoutes.feed,
         icon: Feed,
       },
       {
         label: "Chat",
-        url: "/chat",
+        url: AppRoutes.chat,
         icon: Chat,
         countType: "chats",
       },
       {
         label: "Notifications",
-        url: "/notifications",
+        url: AppRoutes.notifications,
         icon: Notification,
         countType: "notifications",
       },
@@ -43,17 +46,17 @@ export const SidebarData = {
     items: [
       {
         label: "Explore",
-        url: "/",
+        url: AppRoutes.home,
         icon: Explore,
       },
       {
         label: "Top Influencers",
-        url: "/top-influencer",
+        url: AppRoutes.top_influencers,
         icon: TopInfluencer,
       },
       {
         label: "Create Collection",
-        url: "/create-collection",
+        url: AppRoutes.create_collection,
         icon: CreateCollection,
       },
     ],
@@ -63,12 +66,12 @@ export const SidebarData = {
     items: [
       {
         label: "Staking Pack",
-        url: "/staking-pack",
+        url: AppRoutes.staking_packs,
         icon: StakingPack,
       },
       {
         label: "Network Rewards",
-        url: "/network-rewards",
+        url: AppRoutes.network_rewards,
         icon: NetworkRewards,
       },
     ],
@@ -77,18 +80,18 @@ export const SidebarData = {
     label: "DAO GOVERNMENT",
     items: [
       {
-        label: "Buy NTRDAO",
-        url: "/buy-ntrdao",
+        label: "Buy NTR DAO",
+        url: AppRoutes.buy_ntr_dao,
         icon: DaoGovernment,
       },
       {
         label: "Profits Dashboard",
-        url: "/profits-dashboard",
+        url: AppRoutes.profits_dashboard,
         icon: ProfitsDashboard,
       },
       {
         label: "Voting Chain",
-        url: "/voting-chain",
+        url: AppRoutes.voting_chain,
         icon: VotingChain,
       },
     ],
@@ -98,23 +101,13 @@ export const SidebarData = {
     items: [
       {
         label: "Multilevel License",
-        url: "/referral-program",
-        icon: ReferralProgram,
+        url: AppRoutes.referral_program,
+        icon: Multilevel,
       },
       {
         label: "Network Genealogy",
-        url: "/referral-program",
-        icon: ReferralProgram,
-      },
-    ],
-  },
-  logout: {
-    label: "WILL YOU GET OUT?",
-    items: [
-      {
-        label: "Logout",
-        url: "/logout",
-        icon: Logout,
+        url: AppRoutes.referral_program,
+        icon: NetworkGenealogy,
       },
     ],
   },
@@ -126,7 +119,6 @@ export const SidebarSections = [
   SidebarData.decentralized_finance,
   SidebarData.dao_government,
   SidebarData.referral_program,
-  SidebarData.logout,
 ];
 
 export type SidebarData = typeof SidebarData;

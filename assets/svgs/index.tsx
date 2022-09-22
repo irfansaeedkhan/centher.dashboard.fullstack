@@ -6,8 +6,8 @@ export const Feed: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -26,8 +26,8 @@ export const Chat: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -46,8 +46,8 @@ export const Notification: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -72,8 +72,8 @@ export const Explore: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -110,8 +110,8 @@ export const TopInfluencer: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +136,7 @@ export const TopInfluencer: React.FC<IconProps> = (props) => {
       </g>
       <defs>
         <clipPath id="clip0_6759_24053">
-          <rect width="24" height="24" fill="white" />
+          <rect width="20" height="20" fill="white" />
         </clipPath>
       </defs>
     </svg>
@@ -147,8 +147,8 @@ export const CreateCollection: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -173,8 +173,8 @@ export const StakingPack: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -217,8 +217,8 @@ export const NetworkRewards: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -248,8 +248,8 @@ export const DaoGovernment: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -267,8 +267,8 @@ export const ProfitsDashboard: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="24"
-      height="24"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +294,7 @@ export const VotingChain: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +326,7 @@ export const Logout = () => {
   return (
     <svg
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -361,7 +361,7 @@ export const ReferralProgram: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="25"
-      height="24"
+      height="20"
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -416,6 +416,187 @@ export const ReferralProgram: React.FC<IconProps> = (props) => {
       />
       <path
         d="M9.32636 2.89532C10.3027 3.87163 10.3027 5.45454 9.32636 6.43085C8.35005 7.40716 6.76714 7.40716 5.79083 6.43085C4.81452 5.45454 4.81452 3.87163 5.79083 2.89532C6.76714 1.91901 8.35005 1.91901 9.32636 2.89532"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const SearchIcon = () => {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g opacity="0.8">
+        <path
+          d="M15.7143 6.83804C16.8913 8.01507 17.5526 9.61146 17.5526 11.276C17.5526 12.9406 16.8913 14.537 15.7143 15.714C14.5372 16.8911 12.9409 17.5523 11.2763 17.5523C9.61171 17.5523 8.01531 16.8911 6.83828 15.714C5.66125 14.537 5 12.9406 5 11.276C5 9.61146 5.66125 8.01507 6.83828 6.83804C8.01531 5.661 9.61171 4.99976 11.2763 4.99976C12.9409 4.99976 14.5372 5.661 15.7143 6.83804"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M19.0009 19.0001L15.7109 15.7101"
+          stroke="white"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+    </svg>
+  );
+};
+
+export const WalletIcon = () => {
+  return (
+    <svg
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect width="48" height="48" rx="14" fill="white" fillOpacity="0.03" />
+      <path
+        d="M34.1673 23.5V18.6667H17.2507C16.6097 18.6667 15.995 18.4121 15.5418 17.9589C15.0886 17.5057 14.834 16.891 14.834 16.25C14.834 14.9209 15.9215 13.8334 17.2507 13.8334H31.7506V18.6667"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.834 16.25V30.75C14.834 32.0792 15.9215 33.1667 17.2507 33.1667H34.1673V28.3333"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M31.7507 23.5C31.1097 23.5 30.495 23.7546 30.0418 24.2078C29.5886 24.661 29.334 25.2757 29.334 25.9167C29.334 27.2458 30.4215 28.3333 31.7507 28.3333H36.584V23.5H31.7507Z"
+        stroke="white"
+        strokeWidth="1.16"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const Multilevel: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4.11401 4.97583C3.22901 5.88416 2.58651 7.02583 2.27734 8.29916"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.74219 17.0359C8.23469 17.1425 8.74552 17.2017 9.27052 17.2017C10.0139 17.2017 10.7314 17.0884 11.4064 16.8792"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2.27734 11.7009C2.58651 12.9743 3.22901 14.1159 4.11401 15.0243"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.1715 12.0532C15.8223 13.2299 15.1773 14.2774 14.3281 15.1182"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.3281 4.88159C15.1773 5.72243 15.8215 6.76993 16.1715 7.94659"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.74219 2.96422C8.23469 2.85755 8.74552 2.79839 9.27052 2.79839C10.0139 2.79839 10.7314 2.91172 11.4064 3.12089"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M17.9432 8.52694C18.7568 9.34053 18.7568 10.6596 17.9432 11.4732C17.1296 12.2868 15.8105 12.2868 14.9969 11.4732C14.1833 10.6596 14.1833 9.34053 14.9969 8.52694C15.8105 7.71335 17.1296 7.71335 17.9432 8.52694"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.35725 14.641C8.17084 15.4545 8.17084 16.7736 7.35725 17.5872C6.54366 18.4008 5.22457 18.4008 4.41098 17.5872C3.59738 16.7736 3.59738 15.4545 4.41098 14.641C5.22457 13.8274 6.54366 13.8274 7.35725 14.641"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.35725 2.41268C8.17084 3.22628 8.17084 4.54537 7.35725 5.35896C6.54366 6.17255 5.22457 6.17255 4.41098 5.35896C3.59738 4.54537 3.59738 3.22628 4.41098 2.41268C5.22457 1.59909 6.54366 1.59909 7.35725 2.41268"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const NetworkGenealogy: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M8.33073 16.6667C8.33073 17.5871 9.07692 18.3333 9.9974 18.3333C10.9179 18.3333 11.6641 17.5871 11.6641 16.6667C11.6641 15.7462 10.9179 15 9.9974 15C9.07692 15 8.33073 15.7462 8.33073 16.6667Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14.9987 16.6667C14.9987 17.5871 15.7449 18.3333 16.6654 18.3333C17.5858 18.3333 18.332 17.5871 18.332 16.6667C18.332 15.7462 17.5858 15 16.6654 15C15.7449 15 14.9987 15.7462 14.9987 16.6667Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M1.66667 16.6667C1.66667 17.5871 2.41286 18.3333 3.33333 18.3333C4.25381 18.3333 5 17.5871 5 16.6667C5 15.7462 4.25381 15 3.33333 15C2.41286 15 1.66667 15.7462 1.66667 16.6667Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.33073 3.33341C8.33073 4.25389 9.07692 5.00008 9.9974 5.00008C10.9179 5.00008 11.6641 4.25389 11.6641 3.33341C11.6641 2.41294 10.9179 1.66675 9.9974 1.66675C9.07692 1.66675 8.33073 2.41294 8.33073 3.33341Z"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 5V15"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.6641 15.0001V11.6667C16.6641 10.0001 15.8307 9.16675 14.1641 9.16675H5.83073C4.16406 9.16675 3.33073 10.0001 3.33073 11.6667V15.0001"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"

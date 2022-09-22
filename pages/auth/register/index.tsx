@@ -9,10 +9,10 @@ import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current directory imports
-import { LoginForm } from "@/pages.components/login";
+// Current page imports
+import { RegisterForm } from "@/pages.components/register";
 
-const Login: NextPage = () => {
+const Register: NextPage = () => {
   return (
     <PageWrapper>
       <AuthLeft
@@ -20,27 +20,30 @@ const Login: NextPage = () => {
         title={signupLeftData.title}
         content={signupLeftData.content}
       />
+
       <AuthRight>
         <AuthLeft
           variant="mobile"
           title={signupLeftData.title}
           content={signupLeftData.content}
         />
+
         <AboutMember
-          asked="Not a member?"
-          title="Register now"
-          link={AppRoutes.register}
+          asked="Already a memebr?"
+          title="Log in now"
+          link={AppRoutes.auth.login}
         />
-        <LoginForm />
+
+        <RegisterForm />
       </AuthRight>
     </PageWrapper>
   );
 };
 
-export default Login;
+export default Register;
 
 const signupLeftData = {
-  title: "Login to Netheru",
+  title: "Register to Nether NFT",
   content:
-    "Login to your account with netheru to sell and buy NFTs on some easy steps.",
+    "Register your account with nether NFT to sell and buy NFTs on some easy steps.",
 };
