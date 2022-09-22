@@ -4,17 +4,16 @@ import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { Logout } from "@/assets/svgs";
 
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
-import { useAppSelector } from "@/store/hooks";
-import { selectUser } from "@/store/slices/auth";
 
 export const Sidebar = () => {
-  const user = useAppSelector(selectUser);
+  const { user } = useUser();
   console.log(user);
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
