@@ -10,8 +10,13 @@ import { Logout } from "@/assets/svgs";
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
+import { useAppSelector } from "@/store/hooks";
+import { selectUser } from "@/store/slices/auth";
 
 export const Sidebar = () => {
+  const user = useAppSelector(selectUser);
+  console.log(user);
+
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     const button = e.currentTarget;
     button.disabled = true;
@@ -56,7 +61,7 @@ export const Sidebar = () => {
 };
 
 const sideBarWrapper = ctl(`
-  w-72 
+  w-[15.5rem] 
   p-5 
   gap-8
   hidden
