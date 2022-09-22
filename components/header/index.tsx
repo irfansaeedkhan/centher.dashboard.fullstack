@@ -33,7 +33,7 @@ const Header = () => {
         <span className={border}></span>
         {!user ? (
           <Link href={AppRoutes.auth.login}>
-            <a className={connectButoon}>Connect</a>
+            <a className={connectButoon}>Login</a>
           </Link>
         ) : (
           <Link
