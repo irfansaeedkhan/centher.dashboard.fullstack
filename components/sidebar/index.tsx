@@ -28,13 +28,22 @@ export const Sidebar = () => {
         button.disabled = false;
         toast.success(data.message_description ?? "Logged out successfully!");
         setTimeout(() => {
-          window.location.href = "/";
-        }, 3000);
+          window.location.reload();
+        }, 2000);
       })
       .catch((err: any) => {
+        // If user is already logged out, reload the page
+        if (err.response?.data?.message === "unauthenticated") {
+          setTimeout(() => {
+            window.location.reload();
+          });
+
+          return;
+        }
+
         button.disabled = false;
         toast.error(
-          err.response.data?.message_description ?? "Something went wrong!"
+          err.response?.data?.message_description ?? "Something went wrong!"
         );
       });
   };
