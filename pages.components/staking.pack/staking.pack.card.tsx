@@ -32,35 +32,51 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
         />
       </div>
       <div className={StackCardContent}>
-        <div className={StackCardContentWrap}>
-          <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Staking Pack</h5>
-            <div className={rateContainer}>
-              <h4 className={ContentItemData}>
-                {stakingPack.rateNTR ?? "N/A"}NTR
-              </h4>
-              <h6 className={ContentItemRate}>
-                (${Math.floor(stakingPack.rateNTR * 0.013102)})
-              </h6>
+        {/* <div className=""> */}
+        <div className="flex flex-col gap-3">
+          <div className="w-full flex md:gap-10 sm:gap-9 md:justify-start sm:justify-between">
+            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+              Staking Pack
+            </span>
+            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+              Daily Percentage
+            </span>
+            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+              Daily Profit
+            </span>
+          </div>
+          <div className="w-full flex md:gap-10 sm:gap-9 md:justify-start sm:justify-between">
+            <div className="flex md:flex-row sm:flex-col gap-1 w-1/3">
+              <span className="text-16px textGradient  font-semibold">
+                500NTR
+              </span>
+              <span className="text-14px font-semibold text-gray-shade-7">
+                ($50)
+              </span>
             </div>
-          </div>
-          <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Daily Percentage</h5>
-            <h4 className={ContentItemData2}>{stakingPack.percentage}</h4>
-          </div>
-          <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Daily Profit</h5>
-            <h4 className={ContentItemData2}>{stakingPack.profit} NTR</h4>
+            <span className="text-16px text-white font-semibold w-1/3">
+              0.15
+            </span>
+            <span className="text-16px text-white font-semibold w-1/3">
+              0,8 NTR
+            </span>
           </div>
         </div>
         <div className={StackCardContentWrap}>
-          <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Claim Lockup</h5>
-            <h4 className={ContentItemData2}>{stakingPack.claimLockup}</h4>
-          </div>
-          <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Duration</h5>
-            <h4 className={ContentItemData2}>{stakingPack.duration}</h4>
+          <div className="w-full gap-10 flex">
+            <div className="flex flex-col w-1/3">
+              <span className="text-12px leading-[24px] text-gray-shade-7 pb-3">
+                Duration
+              </span>
+              <span className="text-16px text-white font-semibold">0.15</span>
+            </div>
+            <div className="flex flex-col w-1/3 min-w-max">
+              <span className="text-12px leading-[24px] text-gray-shade-7 pb-3">
+                Claim Lookup
+              </span>
+              <span className="text-16px text-white font-semibold">0.15</span>
+            </div>
+            <div className="flex flex-col w-1/3"></div>
           </div>
         </div>
         <Button title={"Buy now"} variant={"v3"} className="py-4" />
@@ -93,13 +109,13 @@ const CardTitle = ctl(`
   text-18px font-bold text-white
 `);
 const StackCardContent = ctl(`
-  pt-8 px-5 flex flex-col gap-5 pb-6
+  pt-8 md:px-5 sm:px-4 flex flex-col gap-5 pb-6
 `);
 const StackCardContentWrap = ctl(`
-  flex md:justify-start sm:justify-between gap-10 
+  flex md:justify-start sm:justify-between gap-10 w-full
 `);
 const StackCardContentItem = ctl(`
-   w-max
+   w-1/3
 `);
 const ContentItemTitle = ctl(`
   text-12px leading-[24px] text-gray-shade-7 pb-3 
