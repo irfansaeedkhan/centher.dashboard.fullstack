@@ -18,6 +18,7 @@ import { InputField } from "./input.field";
 import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
 import { PasswordField } from "./password.field";
 import { deductRegistrationFee } from "./deduct.registration.fee";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -81,7 +82,7 @@ export const RegisterForm: React.FC = () => {
       );
 
       // Redirect to login page
-      router.push("/login");
+      router.push(AppRoutes.auth.login);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"

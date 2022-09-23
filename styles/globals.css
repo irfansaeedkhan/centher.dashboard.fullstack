@@ -22,76 +22,66 @@ input:-webkit-autofill {
 }
 
 @layer components {
+  .text-34px {
+    @apply text-2xl  xl:text-4xl;
+  }
   .text-20px {
-    @apply text-base lg:text-xl;
+    @apply text-base xl:text-xl;
   }
   .text-18px {
-    @apply text-base lg:text-lg;
+    @apply text-base xl:text-lg;
   }
   .text-16px {
     @apply text-base;
   }
   .text-14px {
-    @apply lg:text-sm;
+    @apply text-sm;
   }
   .text-12px {
     @apply text-xs;
   }
   .AppWrapper {
-    max-width: 1360px;
+    max-width: 1418px;
     margin: 0 auto;
   }
   .nftCardContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 20px;
   }
-
+  /* media queries */
+  @media only screen and (max-width: 1728px) {
+    .AppWrapper {
+      max-width: 1130px;
+    }
+  }
   @media only screen and (max-width: 1670px) {
     .AppWrapper {
-      max-width: 1010px;
+      max-width: 1130px;
     }
   }
-  @media only screen and (max-width: 1321px) {
-    .nftCardContainer {
-      gap: 5%;
+  @media only screen and (max-width: 1440px) {
+    .AppWrapper {
+      max-width: 842px;
     }
-    .nftCardStyling {
-      width: min-content !important;
-      min-width: 30% !important;
-      margin-bottom: 5%;
+    .nftCardContainer {
+      gap: 20px;
     }
   }
-  @media only screen and (max-width: 990px) {
-    .nftCardContainer {
-      gap: 3.5%;
-    }
-    .nftCardStyling {
-      width: min-content !important;
-      min-width: 31% !important;
-      margin-bottom: 3.5%;
+  @media only screen and (max-width: 1152px) {
+    .AppWrapper {
+      max-width: 555px;
     }
   }
-  @media only screen and (max-width: 800px) {
-    .nftCardContainer {
-      gap: 6%;
+  @media only screen and (max-width: 617px) {
+    .AppWrapper {
+      max-width: 268px;
     }
     .nftCardStyling {
-      width: min-content !important;
-      min-width: 47% !important;
-      margin-bottom: 6%;
-    }
-  }
-  @media only screen and (max-width: 550px) {
-    .nftCardContainer {
-      gap: 6%;
-    }
-    .nftCardStyling {
-      width: 290px !important;
       margin: 0 auto;
-      margin-bottom: 6%;
     }
   }
+
   .boxShadoww:hover {
     filter: drop-shadow(0 0 0.5rem #febf32);
   }

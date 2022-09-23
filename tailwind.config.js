@@ -16,6 +16,7 @@ module.exports = {
       md: "800px",
       lg: "990px",
       xl: "1440px",
+      xxl: "1680px",
     },
 
     extend: {
@@ -24,12 +25,6 @@ module.exports = {
       },
       fontSize: {
         34: "2.125rem",
-        24: "1.6rem",
-        22: "1.375rem",
-        20: "1.25rem",
-        16: "1rem",
-        14: "0.875rem",
-        12: "0.875rem",
       },
       flexShrink: {
         4: 4,
@@ -77,6 +72,7 @@ module.exports = {
           12: "#3B3F54",
           13: "#C4C4C4",
           14: "#A0A4BB",
+          15: "#17171a66",
           "border-color": "#202027",
         },
         "background-shade": {
@@ -94,6 +90,7 @@ module.exports = {
           7: "#1E212B",
           8: "#0B0B0B",
           9: "#141416",
+          10: "#1C1C21",
         },
       },
     },

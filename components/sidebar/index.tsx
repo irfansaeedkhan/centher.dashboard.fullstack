@@ -2,11 +2,13 @@
 import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { Logout } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
@@ -44,10 +46,10 @@ export const Sidebar = () => {
           return <Section section={section} key={section.label} />;
         })}
       </div>
-      {user && (
+      {user ? (
         <div className={sectionWrapper}>
           <span className={sectionLabel}>WILL YOU GET OUT?</span>
-          <div className={sectionWrapper}>
+          <div className={sectionWrapper2}>
             <div className={itemWrapper}>
               <Logout />
               <button className={itemLabel} onClick={handleLogout}>
@@ -56,6 +58,22 @@ export const Sidebar = () => {
             </div>
           </div>
         </div>
+      ) : (
+        <div className="w-[218px] min-h-[200px] rounded-[32px] bg-black-shade-10 mx-4 bg-[url('/images/Rectangle.png')] p-6 flex flex-col gap-4">
+          <div className="text-white font-semibold text-2xl">
+            Get in to trading
+          </div>
+          <Link href={AppRoutes.auth.register}>
+            <a className="text-black-shade-7 w-full py-1 bg-brand-primary hover:bg-brand-primary-dark font-semibold rounded-[10px] text-center">
+              Register
+            </a>
+          </Link>
+          <Link href={AppRoutes.auth.login}>
+            <a className="text-gray-shade-7 w-full py-1 bg-black-shade-3 font-semibold rounded-[10px] text-center">
+              Connect
+            </a>
+          </Link>
+        </div>
       )}
     </div>
   );
@@ -63,7 +81,7 @@ export const Sidebar = () => {
 
 const sideBarWrapper = ctl(`
   w-[15.5rem] 
-  p-5 
+  py-5 
   gap-8
   hidden
   lg:flex
@@ -76,6 +94,12 @@ const sideBarWrapper = ctl(`
 `);
 
 const sectionWrapper = ctl(`
+  flex
+  gap-6 
+  flex-col
+  px-5
+`);
+const sectionWrapper2 = ctl(`
   flex
   gap-6 
   flex-col
@@ -99,4 +123,4 @@ const itemLabel = ctl(`
   text-gray-shade-8 
 `);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6`);
+const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
