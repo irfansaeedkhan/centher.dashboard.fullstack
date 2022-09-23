@@ -32,7 +32,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
       <div className={StackCardContent}>
         <div className={StackCardContentWrap}>
           <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Staking Pack</h5>
+            <h5 className={ContentItemTitleMax}>Staking Pack</h5>
             <div className={rateContainer}>
               <h4 className={ContentItemData}>
                 {stakingPack.rateNTR ?? "N/A"}NTR
@@ -47,15 +47,15 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             <h4 className={ContentItemData2}>{stakingPack.percentage}</h4>
           </div>
           <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Daily Profit</h5>
+            <h5 className={ContentItemTitleMax}>Daily Profit</h5>
             <h4 className={ContentItemData2}>{stakingPack.profit} NTR</h4>
           </div>
           <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Claim Lockup</h5>
+            <h5 className={ContentItemTitleMax}>Claim Lockup</h5>
             <h4 className={ContentItemData2}>{stakingPack.claimLockup}</h4>
           </div>
           <div className={StackCardContentItem}>
-            <h5 className={ContentItemTitle}>Duration</h5>
+            <h5 className={ContentItemTitleMax}>Duration</h5>
             <h4 className={ContentItemData2}>{stakingPack.duration}</h4>
           </div>
         </div>
@@ -85,6 +85,9 @@ const StackCardContentItem = ctl(`
 `);
 const ContentItemTitle = ctl(`
   text-12 xl:text-14 leading-[18px] text-gray-shade-7 pb-4 
+`);
+const ContentItemTitleMax = ctl(`
+  text-12 xl:text-14 leading-[18px] text-gray-shade-7 pb-4 w-max 
 `);
 const ContentItemData = ctl(`
   text-16 xl:text-22 textGradient  font-semibold

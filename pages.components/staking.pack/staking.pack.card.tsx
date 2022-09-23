@@ -17,8 +17,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
 }) => {
   const [avatarModal, setAvatarModal] = useState(false);
   const AuthorizeFunction = () => {
-    alert("abcd");
-    setAvatarModal(false);
+    setAvatarModal(true);
   };
 
   return (
@@ -94,13 +93,13 @@ const CardTitle = ctl(`
   text-18px font-bold text-white
 `);
 const StackCardContent = ctl(`
-  pt-8 pb-6 px-5
+  pt-8 px-5 flex flex-col gap-5 pb-6
 `);
 const StackCardContentWrap = ctl(`
-  flex flex-wrap pb-8
+  flex md:justify-start sm:justify-between gap-10 
 `);
 const StackCardContentItem = ctl(`
-   w-1/3
+   w-max
 `);
 const ContentItemTitle = ctl(`
   text-12px leading-[24px] text-gray-shade-7 pb-3 
