@@ -7,7 +7,7 @@ import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AuthLeft } from "@/components/auth.left";
 
-// Current directory imports
+// Current page imports
 import { ForgotForm } from "@/pages.components/forgot.password/forgot.form";
 
 const ForgotPassword: NextPage = () => {

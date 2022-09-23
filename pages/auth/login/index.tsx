@@ -9,7 +9,7 @@ import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current directory imports
+// Current page imports
 import { LoginForm } from "@/pages.components/login";
 
 const Login: NextPage = () => {

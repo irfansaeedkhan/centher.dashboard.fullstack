@@ -1,9 +1,76 @@
 // React, Next, NPM Packages
 import React from "react";
+import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
+
+// App imports
+import useUser from "@/hooks/use.user";
+// TODO: Mubashir - create a route for getRegistrationFee instead of getting referral document and deciding fee on frontend
+import useRegistrationFee from "@/hooks/use.registration.fee";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
 import { WalletIcon } from "@/assets/svgs";
 
+// Current directory imports
+import { performRegistrationFeeTrx } from "./perform.registration.fee.trx";
+
 export const RegisterationFee: React.FC = () => {
+  const router = useRouter();
+  const { user } = useUser();
+  const { registrationFee } = useRegistrationFee();
+  const { account, library } = useWeb3React();
+  const { connectWallet } = useConnectWallet();
+
+  const payRegistrationFeeHandler: React.MouseEventHandler<
+    HTMLButtonElement
+  > = async (e) => {
+    // TODO: Waqar - show loading spinner and disable button
+    const button = e.currentTarget;
+    button.disabled = true;
+
+    // Account is already connected because we are showing this button only when account is connected
+    const result = await performRegistrationFeeTrx(
+      library,
+      user!,
+      registrationFee!
+    );
+
+    if (result.status !== "success") {
+      toast.error(result.message_description, {
+        style: {
+          wordBreak: "break-word",
+          maxWidth: "466px",
+        },
+      });
+      button.disabled = false;
+      return;
+    }
+
+    // Call the API to update the user's registration status
+    try {
+      const { data } = await axiosNodeApi.post(
+        "/api/auth/verify-registration-fee",
+        { trx_hash_bnb: result.data.hash }
+      );
+
+      toast.success(data.message_description);
+      button.disabled = false;
+
+      // Redirect to home page
+      router.push(AppRoutes.home);
+    } catch (error: any) {
+      button.disabled = false;
+      toast.error(
+        error.response.data?.message_description ??
+          error.message ??
+          "Something went wrong"
+      );
+    }
+  };
+
   return (
     <div className={wrapper}>
       <div className={fieldWrapper}>
@@ -15,9 +82,18 @@ export const RegisterationFee: React.FC = () => {
       </p>
       <div className="mt-8">
         <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
-          0.33929123268872 BNB
+          {!registrationFee ? <>Loading...</> : <>{registrationFee} BNB</>}
         </p>
-        <button className={button}>Pay fee</button>
+        {account ? (
+          <button className={button} onClick={payRegistrationFeeHandler}>
+            Pay fee
+          </button>
+        ) : (
+          // TODO: Waqar, Mubashir - Discuss about this button with amjad
+          <button className={connectButton} onClick={() => connectWallet()}>
+            Connect Wallet
+          </button>
+        )}
       </div>
     </div>
   );
@@ -60,5 +136,19 @@ const button = ctl(`
   justify-center 
   bg-brand-primary
   hover:bg-brand-primary-dark
+  transition-all 
+`);
+
+const connectButton = ctl(`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg 
+  justify-center 
+  text-brand-primary
+  bg-black-shade-7
+  hover:bg-black-shade-4
   transition-all 
 `);
