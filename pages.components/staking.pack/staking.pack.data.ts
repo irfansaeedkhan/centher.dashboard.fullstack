@@ -26,4 +26,12 @@ export const StakingPackList: StakingPack[] = [
     claimLockup: "Unlimited",
     duration: "Life-time",
   },
+  {
+    id: 2,
+    rateNTR: 700,
+    percentage: 0.5,
+    profit: 1.7,
+    claimLockup: "Unlimited",
+    duration: "Life-time",
+  },
 ];

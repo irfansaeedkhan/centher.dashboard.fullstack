@@ -23,22 +23,89 @@ input:-webkit-autofill {
 
 @layer components {
   .text-34px {
-    @apply text-2xl  lg:text-4xl;
+    @apply text-2xl  xl:text-4xl;
   }
   .text-20px {
-    @apply text-base lg:text-xl;
+    @apply text-base xl:text-xl;
   }
   .text-18px {
-    @apply text-base lg:text-lg;
+    @apply text-base xl:text-lg;
   }
   .text-16px {
     @apply text-base;
   }
   .text-14px {
-    @apply lg:text-sm;
+    @apply text-sm;
   }
   .text-12px {
     @apply text-xs;
+  }
+  .AppWrapper {
+    max-width: 1360px;
+    margin: 0 auto;
+  }
+  .nftCardContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  @media only screen and (max-width: 1670px) {
+    .AppWrapper {
+      max-width: 1010px;
+    }
+  }
+  @media only screen and (max-width: 1321px) {
+    .AppWrapper {
+      /* max-width: 660px; */
+    }
+    .nftCardContainer {
+      gap: 5%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 30% !important;
+      margin-bottom: 5%;
+    }
+  }
+  @media only screen and (max-width: 990px) {
+    .AppWrapper {
+      /* max-width: 660px; */
+    }
+    .nftCardContainer {
+      gap: 3.5%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 31% !important;
+      margin-bottom: 3.5%;
+    }
+  }
+  @media only screen and (max-width: 800px) {
+    .AppWrapper {
+      /* max-width: 660px; */
+    }
+    .nftCardContainer {
+      gap: 6%;
+    }
+    .nftCardStyling {
+      width: min-content !important;
+      min-width: 47% !important;
+      margin-bottom: 6%;
+    }
+  }
+  @media only screen and (max-width: 550px) {
+    .AppWrapper {
+      /* max-width: 660px; */
+    }
+    .nftCardContainer {
+      gap: 6%;
+    }
+    .nftCardStyling {
+      width: 290px !important;
+      margin: 0 auto;
+      margin-bottom: 6%;
+    }
   }
   .boxShadoww:hover {
     filter: drop-shadow(0 0 0.5rem #febf32);

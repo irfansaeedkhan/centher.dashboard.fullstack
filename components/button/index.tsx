@@ -17,7 +17,7 @@ const Button: React.FC<ButtonProps> = ({
           ${variant === "v1" && "bg-brand-primary text-black-shade-3 "}
           ${variant === "v2" && "bg-black-shade-6 text-gray-shade-7 "}
           ${variant === "v3" && "bg-black-shade-7 text-gray-shade-8 "}
-          text-14 xl:text-16  font-bold py-3 px-6 rounded-xl w-full 
+          text-14px  font-bold py-2 px-2 rounded-xl w-full 
           ${className && className}
           
           `}

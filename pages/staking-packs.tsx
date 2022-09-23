@@ -23,14 +23,14 @@ const StakingPackPage: NextPage = () => {
         <div className={btnContainer}>
           <Button
             title={"Pack List"}
-            variant={"v1"}
+            variant={`${tab === "PackList" ? "v1" : "v2"}`}
             onClick={() => {
               setTab("PackList");
             }}
           />
           <Button
             title={"Activated"}
-            variant={"v2"}
+            variant={`${tab === "Activated" ? "v1" : "v2"}`}
             onClick={() => {
               setTab("Activated");
             }}
@@ -60,10 +60,10 @@ const dashboardContentContainer = ctl(`
   stakingpack bg-black-shade-3 w-full min-h-screen font-monto
 `);
 const title = ctl(`
-  textGradient text-34px font-semibold leading-[42px] font-medium pb-6 lg:pb-8
+  textGradient text-34px font-semibold leading-[42px] font-medium pb-6 
 `);
 const btnContainer = ctl(`
-  flex max-w-[416px] bg-black-shade-6 p-1.5 rounded-2xl mb-10
+  ToggleBtnsContainer flex max-w-[428px] bg-black-shade-6 p-1.5 rounded-2xl mb-6 
 `);
 const StackCardContainer = ctl(`
   flex flex-wrap gap-5

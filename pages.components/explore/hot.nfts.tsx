@@ -10,7 +10,7 @@ export const HotNFTs: React.FC = () => {
   return (
     <div className={hotNftPageWrapper}>
       <div className={hotNftAnimation}>Hot NFTs</div>
-      <div className={nftCardWrapper}>
+      <div className={`${nftCardWrapper} nftCardContainer`}>
         <NFTCard
           nftImage={Data.nftImage}
           nftToken={Data.nftToken}
@@ -84,4 +84,5 @@ const hotNftPageWrapper = ctl(`flex flex-col gap-8`);
 
 const hotNftAnimation = ctl(`animationTextHeading`);
 
-const nftCardWrapper = ctl(`flex gap-10 flex-wrap`);
+// const nftCardWrapper = ctl(`flex gap-10 flex-wrap`);
+const nftCardWrapper = ctl(``);

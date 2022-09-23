@@ -11,7 +11,7 @@ const Home: NextPage = () => {
   return (
     /* A wrapper for the page. */
     <AllPagesWrapper pageTitle="Explore - Nether NFT">
-      <div className="flex flex-col gap-10 max-w-[1360px] mx-auto">
+      <div className="AppWrapper flex flex-col gap-10">
         <HotNFTs />
         <HotCollections />
         <Explore />
