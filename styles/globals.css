@@ -44,7 +44,7 @@ input:-webkit-autofill {
   .nftCardContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 20px;
   }
 
   @media only screen and (max-width: 1670px) {
