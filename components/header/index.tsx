@@ -16,7 +16,7 @@ const Header = () => {
 
   return (
     <div className={headerWraper}>
-      <Link href={"/"}>
+      <Link href={AppRoutes.home}>
         <a>
           <Image
             src="/images/nether.nft.logo.svg"
@@ -33,7 +33,7 @@ const Header = () => {
         <span className={border}></span>
         {!user ? (
           <Link href={AppRoutes.auth.login}>
-            <a className={connectButoon}>Connect</a>
+            <a className={connectButoon}>Login</a>
           </Link>
         ) : (
           <Link
@@ -54,7 +54,7 @@ export default Header;
 
 const headerWraper = ctl(`
   flex 
-  px-8
+  px-5
   h-[60px]
   items-center
   justify-between 
@@ -69,6 +69,8 @@ const rightWraper = ctl(`
 `);
 
 const border = ctl(`
+  md:block
+  sm:hidden
   border-l-2 
   rounded-xl 
   border-gray-shade-12/30
