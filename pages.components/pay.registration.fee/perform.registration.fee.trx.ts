@@ -51,8 +51,6 @@ export const performRegistrationFeeTrx = async (
       data: tx,
     };
   } catch (error: any) {
-    console.dir(error);
-
     if (error.code === "ACTION_REJECTED") {
       return {
         status: "error",

@@ -12,7 +12,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import Search from "./search";
 
 const Header = () => {
-  const { user, isError, isLoading } = useUser();
+  const { user } = useUser();
 
   return (
     <div className={headerWraper}>

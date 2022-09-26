@@ -16,7 +16,6 @@ import { Section } from "./section";
 
 export const Sidebar = () => {
   const { user } = useUser();
-  console.log(user);
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     const button = e.currentTarget;

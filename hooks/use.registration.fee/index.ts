@@ -53,7 +53,7 @@ const useRegistrationFee = () => {
   return {
     registrationFee: data,
     isLoading: !error && !data,
-    isError: error,
+    error,
   };
 };
 
