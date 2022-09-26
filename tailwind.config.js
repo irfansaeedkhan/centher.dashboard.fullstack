@@ -47,7 +47,9 @@ module.exports = {
         200: "50rem",
         302: "75.5rem",
       },
-
+      backgroundImage: {
+        "buydao-pattern": "url('/images/buyntrdaoBackground.png')",
+      },
       colors: {
         brand: {
           primary: "#FEBF32",
