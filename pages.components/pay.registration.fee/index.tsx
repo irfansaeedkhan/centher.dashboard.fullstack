@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React from "react";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
@@ -11,22 +12,32 @@ import useUser from "@/hooks/use.user";
 import useRegistrationFee from "@/hooks/use.registration.fee";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
-import { AppRoutes } from "@/constants/app.routes";
 import { WalletIcon } from "@/assets/svgs";
 
 // Current directory imports
 import { performRegistrationFeeTrx } from "./perform.registration.fee.trx";
+import { listenRegistrationFeeTrxStatus } from "./listen.registration.fee.trx.status";
 
 export const RegisterationFee: React.FC = () => {
   const router = useRouter();
-  const { user } = useUser();
-  const { registrationFee } = useRegistrationFee();
+  const { user, error: userError, isLoading: userLoading } = useUser();
+  const {
+    registrationFee,
+    error: registrationFeeError,
+    isLoading: registrationFeeLoading,
+  } = useRegistrationFee();
   const { account, library } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
   const payRegistrationFeeHandler: React.MouseEventHandler<
     HTMLButtonElement
   > = async (e) => {
+    if (registrationFeeError || userError) {
+      const error = registrationFeeError || userError;
+      toast.error(error.message_description);
+      return;
+    }
+
     // TODO: Waqar - show loading spinner and disable button
     const button = e.currentTarget;
     button.disabled = true;
@@ -52,19 +63,25 @@ export const RegisterationFee: React.FC = () => {
     // Call the API to update the user's registration status
     try {
       const { data } = await axiosNodeApi.post(
-        "/api/auth/verify-registration-fee",
-        { trx_hash_bnb: result.data.hash }
+        "/api/auth/registration-fee-trx",
+        {
+          trx_hash_bnb: result.data.hash,
+          trx_amount_bnb: Number(ethers.utils.formatEther(result.data.value)),
+        }
       );
 
       toast.success(data.message_description);
-      button.disabled = false;
 
-      // Redirect to home page
-      router.push(AppRoutes.home);
+      // Listen for the transaction status
+      listenRegistrationFeeTrxStatus({
+        trxHash: result.data.hash,
+        button,
+        router,
+      });
     } catch (error: any) {
       button.disabled = false;
       toast.error(
-        error.response.data?.message_description ??
+        error?.response?.data?.message_description ??
           error.message ??
           "Something went wrong"
       );
@@ -82,15 +99,27 @@ export const RegisterationFee: React.FC = () => {
       </p>
       <div className="mt-8">
         <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
-          {!registrationFee ? <>Loading...</> : <>{registrationFee} BNB</>}
+          {registrationFeeLoading ? (
+            <>Loading...</>
+          ) : (
+            <>{!registrationFeeError ? `${registrationFee} BNB` : "---"} </>
+          )}
         </p>
         {account ? (
-          <button className={button} onClick={payRegistrationFeeHandler}>
+          <button
+            className={button}
+            onClick={payRegistrationFeeHandler}
+            disabled={registrationFeeLoading || userLoading}
+          >
             Pay fee
           </button>
         ) : (
           // TODO: Waqar, Mubashir - Discuss about this button with amjad
-          <button className={connectButton} onClick={() => connectWallet()}>
+          <button
+            className={connectButton}
+            onClick={() => connectWallet()}
+            disabled={registrationFeeLoading || userLoading}
+          >
             Connect Wallet
           </button>
         )}

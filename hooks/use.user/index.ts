@@ -43,7 +43,7 @@ const useUser = () => {
   return {
     user: data,
     isLoading: !error && !data,
-    isError: error,
+    error,
   };
 };
 
