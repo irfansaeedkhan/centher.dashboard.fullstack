@@ -12,7 +12,7 @@ module.exports = {
     screens: {
       // From Small to big
       ...defaultTheme.screens,
-      sm: "325px",
+      sm: "320px",
       md: "800px",
       lg: "990px",
       xl: "1440px",
