@@ -12,7 +12,7 @@ import { ForgotForm } from "@/pages.components/forgot.password/forgot.form";
 
 const ForgotPassword: NextPage = () => {
   return (
-    <PageWrapper>
+    <PageWrapper pageTitle="Forgot Password">
       <AuthLeft
         variant="desktop"
         title={forgotPasswordData.title}

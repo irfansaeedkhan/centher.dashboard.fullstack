@@ -81,12 +81,7 @@ const modalHeader = ctl(`
   justify-between 
 `);
 
-const modalHeaderTitle = ctl(`
-  anim
-  text-34
-  bg-clip-text
-  font-semibold
-  text-transparent
+const modalHeaderTitle = ctl(`animationTextHeading
 `);
 
 const modalHeaderButton = ctl(`

@@ -17,7 +17,6 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
     <div className={componentWrapper}>
       <Head>
         <title>{props.pageTitle}</title>
-        {/* <meta name="viewport" content="initial-scale=1.0, width=device-width" /> */}
       </Head>
       <Header />
       <div className="flex">

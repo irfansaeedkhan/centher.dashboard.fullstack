@@ -12,7 +12,7 @@ import { ResetForm } from "@/pages.components/reset.password/reset.password.form
 
 const ResetPassword: NextPage = () => {
   return (
-    <PageWrapper>
+    <PageWrapper pageTitle="Reset Password">
       <AuthLeft
         variant="desktop"
         title={resetPasswordData.title}

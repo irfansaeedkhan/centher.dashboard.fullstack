@@ -19,6 +19,8 @@ const componentWrapper = ctl(`
   flex-col 
   md:w-1/2 
   sm:w-full
+  max-h-screen
   xl:px-[113px] 
   bg-black-shade-3 
+  overflow-y-scroll
 `);

@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
@@ -12,13 +12,14 @@ import useUser from "@/hooks/use.user";
 import useRegistrationFee from "@/hooks/use.registration.fee";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
-import { WalletIcon } from "@/assets/svgs";
+import { SpinIcon, WalletIcon } from "@/assets/svgs";
 
 // Current directory imports
 import { performRegistrationFeeTrx } from "./perform.registration.fee.trx";
 import { listenRegistrationFeeTrxStatus } from "./listen.registration.fee.trx.status";
 
 export const RegisterationFee: React.FC = () => {
+  const [isButton, setIsButton] = useState(false);
   const router = useRouter();
   const { user, error: userError, isLoading: userLoading } = useUser();
   const {
@@ -32,13 +33,14 @@ export const RegisterationFee: React.FC = () => {
   const payRegistrationFeeHandler: React.MouseEventHandler<
     HTMLButtonElement
   > = async (e) => {
+    setIsButton(true);
     if (registrationFeeError || userError) {
       const error = registrationFeeError || userError;
       toast.error(error.message_description);
+      setIsButton(false);
       return;
     }
 
-    // TODO: Waqar - show loading spinner and disable button
     const button = e.currentTarget;
     button.disabled = true;
 
@@ -56,6 +58,7 @@ export const RegisterationFee: React.FC = () => {
           maxWidth: "466px",
         },
       });
+      setIsButton(false);
       button.disabled = false;
       return;
     }
@@ -71,15 +74,16 @@ export const RegisterationFee: React.FC = () => {
       );
 
       toast.success(data.message_description);
-
       // Listen for the transaction status
       listenRegistrationFeeTrxStatus({
         trxHash: result.data.hash,
         button,
         router,
       });
+      setIsButton(false);
     } catch (error: any) {
       button.disabled = false;
+      setIsButton(false);
       toast.error(
         error?.response?.data?.message_description ??
           error.message ??
@@ -106,13 +110,20 @@ export const RegisterationFee: React.FC = () => {
           )}
         </p>
         {account ? (
-          <button
-            className={button}
-            onClick={payRegistrationFeeHandler}
-            disabled={registrationFeeLoading || userLoading}
-          >
-            Pay fee
-          </button>
+          isButton ? (
+            <button type="button" className={button} disabled>
+              <SpinIcon />
+              Processing...
+            </button>
+          ) : (
+            <button
+              className={button}
+              onClick={payRegistrationFeeHandler}
+              disabled={registrationFeeLoading || userLoading}
+            >
+              Pay fee
+            </button>
+          )
         ) : (
           // TODO: Waqar, Mubashir - Discuss about this button with amjad
           <button
@@ -160,7 +171,8 @@ const button = ctl(`
   flex 
   w-full 
   font-bold 
-  rounded-lg 
+  rounded-lg
+  items-center 
   text-gray-shade-5 
   justify-center 
   bg-brand-primary

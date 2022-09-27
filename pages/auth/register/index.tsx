@@ -14,7 +14,7 @@ import { RegisterForm } from "@/pages.components/register";
 
 const Register: NextPage = () => {
   return (
-    <PageWrapper>
+    <PageWrapper pageTitle="Register">
       <AuthLeft
         variant="desktop"
         title={signupLeftData.title}

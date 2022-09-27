@@ -14,7 +14,7 @@ import { RegisterationFee } from "@/pages.components/pay.registration.fee";
 
 const PayRegistrationFee: NextPage = () => {
   return (
-    <PageWrapper>
+    <PageWrapper pageTitle="Pay Registration Fee">
       <AuthLeft variant="desktop" title={data.title} content={data.content} />
       <AuthRight>
         <AuthLeft variant="mobile" title={data.title} content={data.content} />

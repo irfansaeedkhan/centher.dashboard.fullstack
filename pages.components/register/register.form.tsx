@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
@@ -17,8 +17,8 @@ import { axiosNodeApi } from "@/utils/axios";
 import { InputField } from "./input.field";
 import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
 import { PasswordField } from "./password.field";
-import { deductRegistrationFee } from "./deduct.registration.fee";
 import { AppRoutes } from "@/constants/app.routes";
+import { SpinIcon } from "@/assets/svgs";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -34,6 +34,7 @@ const initialSignupState: SignupState = {
 };
 
 export const RegisterForm: React.FC = () => {
+  const [isButton, setIsButton] = useState(false);
   const router = useRouter();
   const { account } = useWeb3React();
   const { connectWallet } = useConnectWallet();
@@ -66,8 +67,7 @@ export const RegisterForm: React.FC = () => {
   }, [account, setValue, router.query.referrer]);
 
   const onSubmit = async (signupData: SignupState) => {
-    // TODO: Waqar - Add loading state to the submit button and disable it
-
+    setIsButton(true);
     try {
       // Create a user with registration_pending state in database
       const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
@@ -81,12 +81,14 @@ export const RegisterForm: React.FC = () => {
         }
       );
 
+      setIsButton(false);
       // Redirect to login page
       router.push(AppRoutes.auth.login);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
+      setIsButton(false);
     }
   };
 
@@ -155,9 +157,16 @@ export const RegisterForm: React.FC = () => {
         })}
 
         <div>
-          <button type="submit" className={button}>
-            Register
-          </button>
+          {isButton ? (
+            <button type="button" className={button} disabled>
+              <SpinIcon />
+              Processing...
+            </button>
+          ) : (
+            <button type="submit" className={button}>
+              Register
+            </button>
+          )}
         </div>
       </form>
     </>
@@ -178,7 +187,8 @@ const button = ctl(`
   flex 
   w-full 
   font-bold 
-  rounded-lg 
+  rounded-lg
+  items-center 
   text-gray-shade-5
   justify-center 
   bg-brand-primary 
