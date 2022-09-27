@@ -40,7 +40,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = (props) => {
 };
 
 const collectionWrapper = ctl(
-  `w-[390px] border border-gray-shade-3 h-auto rounded-lg flex flex-col gap-12`
+  `w-[340px] border border-gray-shade-3 h-auto rounded-lg flex flex-col gap-12`
 );
 
 const imagesWrapper = ctl(`relative flex justify-center`);
@@ -51,9 +51,9 @@ const logoImage = ctl(
 
 const contentWrapper = ctl(`flex flex-col gap-3 px-4 items-center`);
 
-const collectionName = ctl(`text-xl text-white font-semibold`);
+const collectionName = ctl(`text-base text-white font-bold`);
 
-const collectionOwner = ctl(`text-base text-white font-semibold`);
+const collectionOwner = ctl(`text-sm text-white font-semibold`);
 
 const collectionDescription = ctl(
   `font-medium text-xs text-gray-shade-14 text-center mb-8 line-clamp-3 whitespace-pre-wrap`
