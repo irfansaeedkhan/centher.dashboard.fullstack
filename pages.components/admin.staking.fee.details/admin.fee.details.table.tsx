@@ -1,126 +1,95 @@
+import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
+import { useTable } from "react-table";
 
 //Current directory imports
-import { FeeDetails } from "./admin.fee.details.data";
+import { AdminFeeDetailsData } from "./admin.fee.details.data";
+import { Columns } from "./header.columns";
 
-interface FeeDetailsTableProps {
-  feeDetails: FeeDetails;
-}
+export const AdminFeeDetailsTable = () => {
+  const columns = useMemo(() => Columns, []);
+  const data = useMemo(() => AdminFeeDetailsData, []);
+  const tableInstance = useTable({
+    columns,
+    data,
+  });
 
-export const AdminFeeDetailsTable: React.FC<FeeDetailsTableProps> = (props) => {
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
+    tableInstance;
   return (
-    <div className="inline-block min-w-full shadow rounded-lg bordersetall overflow-auto my-4 h-auto">
-      <table className="min-w-full leading-normal">
-        <thead className="headerSett">
-          <tr className="bordersetbottom text-white ">
-            <th className="pl-4 pr-2 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Email
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Public Key
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Date
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Transaction Hash
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Transaction Details
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Transaction Valid
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Issue
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Amount
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Amount In BNB
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Correct In BNB
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              In Difference
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Status
-            </th>
-            <th className="px-4 py-3  text-left text-xs font-semibold uppercase tracking-wider">
-              Action
-            </th>
-          </tr>
+    <div className={componentWrapper}>
+      <table className={tableContainer} {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => {
+            const { key, ...restHeaderGroupProps } =
+              headerGroup.getHeaderGroupProps();
+            return (
+              <tr
+                className={tableRowContainer}
+                key={key}
+                {...restHeaderGroupProps}
+              >
+                {headerGroup.headers.map((column) => {
+                  const { key, ...restHeaderProps } = column.getHeaderProps();
+                  return (
+                    <th className={header} key={key} {...restHeaderProps}>
+                      {column.render("Header")}
+                    </th>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </thead>
-        <tbody className="bg-transparent text-white text-sm">
-          <tr className="bordersetbottom ">
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Email}</p>
-            </td>
-            <td className="px-4 py-3  ">
-              <Link href="" className="hover:text-yellow-theme">
-                {props.feeDetails.Publickey}
-              </Link>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Date}</p>
-            </td>
-            <td className="px-4 py-3  ">
-              <Link className="hover:text-yellow-theme" href="">
-                {props.feeDetails.TransactionHash}
-              </Link>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className="whitespace-no-wrap">
-                {props.feeDetails.TransactionDetail}
-              </p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">
-                {props.feeDetails.TransactionValid}
-              </p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Issue}</p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Amount}</p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">
-                {props.feeDetails.AmountInBNB}
-              </p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">
-                {props.feeDetails.CorrectInBNB}
-              </p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">
-                {props.feeDetails.InDifference}
-              </p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Status}</p>
-            </td>
-            <td className="px-4 py-3  ">
-              <p className=" whitespace-no-wrap">{props.feeDetails.Action}</p>
-            </td>
-          </tr>
+        <tbody className={tableBody} {...getTableBodyProps()}>
+          {rows.map((row) => {
+            prepareRow(row);
+            const { key, ...restRowProps } = row.getRowProps();
+            return (
+              <tr key={key} {...restRowProps}>
+                {row.cells.map((cell) => {
+                  const { key, ...restCellProps } = cell.getCellProps();
+                  return (
+                    <td className={tablecolumn} key={key} {...restCellProps}>
+                      {cell.render("Cell")}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
         </tbody>
-        );
       </table>
-      <div className="px-4 py-2 bg-transparent border-t flex flex-col xs:flex-row items-end justify-end ">
-        <div className="inline-flex gap-2 mt-2 xs:mt-0">
-          <span className="px-4 py-3 text-left text-white text-xs font-semibold uppercase tracking-wider">
-            1
-          </span>
-        </div>
-      </div>
     </div>
   );
 };
+
+const componentWrapper = ctl(`
+inline-block min-w-full shadow rounded-lg bordersetall overflow-auto my-4 h-auto
+`);
+
+const tableContainer = ctl(`
+min-w-full leading-normal
+`);
+
+const tableRowContainer = ctl(`
+bordersetbottom text-white 
+`);
+
+const header = ctl(`
+pl-4 pr-2 py-3  text-left text-xs font-semibold uppercase tracking-wider
+`);
+
+const tableBody = ctl(`
+bg-transparent text-white text-sm
+`);
+
+const tablecolumn = ctl(`
+px-4 py-3
+
+`);
+
+const tableLink = ctl(`
+hover:text-yellow-theme
+`);

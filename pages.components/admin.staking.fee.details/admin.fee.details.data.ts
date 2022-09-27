@@ -1,34 +1,86 @@
-//types
-export interface FeeDetails {
-  Email: string;
-  Publickey: string;
-  Date: string;
-  TransactionHash: string;
-  TransactionDetail: string;
-  TransactionValid: string;
-  Issue: string;
-  Amount: number;
-  AmountInBNB: number;
-  CorrectInBNB: number;
-  InDifference: "%";
-  Status: string;
-  Action: string;
-}
-
-export const AdminFeeDetailsData: FeeDetails[] = [
+export const AdminFeeDetailsData = [
   {
-    Email: "talha@gmail.com",
-    Publickey: "0x123456789",
-    Date: "2021-05-01",
-    TransactionHash: "0x123456789",
-    TransactionDetail: "0x123456789",
-    TransactionValid: "true",
-    Issue: "0x123456789",
-    Amount: 100,
-    AmountInBNB: 100,
-    CorrectInBNB: 100,
-    InDifference: "%",
-    Status: "Pending",
-    Action: "Edit",
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "0xjksdjk32342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
+  },
+  {
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "0xjksdjk322342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
+  },
+  {
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "1xjksdjk322342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
+  },
+  {
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "2xjksdjk322342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
+  },
+  {
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "3xjksdjk322342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
+  },
+  {
+    email: "talha@gmail.com",
+    public_key: "0xsdjk32342",
+    date: "2021-05-1",
+    transaction_hash: "4xjksdjk322342",
+    transaction_detail: "0x2342dskd",
+    transaction_valid: true,
+    issue: "--",
+    amount: "1000",
+    status: "success",
+    amount_in_bnb: 100,
+    correct_in_bnb: 100,
+    in_difference: "%",
   },
 ];

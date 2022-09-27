@@ -8,6 +8,7 @@ import Button from "@/components/button";
 // Current directory imports
 import { StakingPack } from "./admin.coinpack.data";
 import { DeleteIconBtnCoinPack } from "@/assets/svgs";
+import Link from "next/link";
 
 interface StakingPackCardProps {
   stakingPack: StakingPack;
@@ -59,7 +60,11 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             <h4 className={ContentItemData2}>{stakingPack.duration}</h4>
           </div>
         </div>
-        <Button title={"Update"} variant={"v3"} />
+        <Link href="/admin/update-staking-pack">
+          <a className="block">
+            <Button title={"Update"} variant={"v3"} />
+          </a>
+        </Link>
       </div>
     </div>
   );

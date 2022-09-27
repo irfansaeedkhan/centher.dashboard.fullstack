@@ -8,7 +8,12 @@ import ctl from "@netlify/classnames-template-literals";
 import { PlusIconBtn } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
-const AdminHeader = () => {
+export interface AdminHeaderProps {
+  title: string;
+  url?: string;
+}
+
+const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
   return (
     <div>
       <div className={headerWraper}>
@@ -27,14 +32,18 @@ const AdminHeader = () => {
         <div className="flex items-center justify-between w-[calc(100%-288px)]">
           <div className="flex items-center gap-6">
             <div>
-              <p className="text-white font-semibold">Staking Pack</p>
+              <p className="text-white font-semibold">{props.title}</p>
             </div>
           </div>
 
-          <div className={createButton}>
-            <PlusIconBtn className="group-hover:stroke-white stroke-black " />
-            <span>Create New</span>
-          </div>
+          {props.url && (
+            <Link href={props.url}>
+              <a className={createButton}>
+                <PlusIconBtn className="group-hover:stroke-brand-primary stroke-black " />
+                <span>Create New</span>
+              </a>
+            </Link>
+          )}
         </div>
       </div>
     </div>
@@ -50,7 +59,7 @@ const headerWraper = ctl(`
   items-center
   border-b-[1.5px]
   bg-background-shade-1
-  border-gray-border-color
+  border-gray-shade-border-color
 `);
 
 const createButton = ctl(`
