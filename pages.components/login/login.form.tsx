@@ -9,7 +9,6 @@ import ctl from "@netlify/classnames-template-literals";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 // App imports
-import { AuthNote } from "@/components/auth.note";
 import { ErrorMessage } from "@/components/error.message";
 import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -100,10 +99,6 @@ export const LoginForm: React.FC = () => {
         </div>
         {errors.password && <ErrorMessage message={errors.password.message} />}
       </div>
-      <AuthNote
-        title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
-        link={AppRoutes.auth.forgot_password}
-      />
       <div>
         <button className={button}>Login</button>
       </div>
