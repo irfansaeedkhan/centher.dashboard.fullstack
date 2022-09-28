@@ -14,6 +14,7 @@ import { ErrorMessage } from "@/components/error.message";
 import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
+import { SpinIcon } from "@/assets/svgs";
 
 const loginFormInitialValues = {
   email: "",
@@ -38,10 +39,11 @@ export const LoginForm: React.FC = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isButton, setIsButton] = useState(false);
   const router = useRouter();
 
   const onSubmit = (data: typeof loginFormInitialValues) => {
-    // TODO: Waqar - disable button
+    setIsButton(true);
 
     // Call Node JS API
     axiosNodeApi
@@ -50,7 +52,7 @@ export const LoginForm: React.FC = () => {
         const user = data.user as User;
 
         toast.success(data.message_description ?? "Logged in successfully!");
-
+        setIsButton(false);
         // Redirect to home / pay-registration-fee page
         router.push(
           user.status === "registration_fee_pending"
@@ -63,6 +65,7 @@ export const LoginForm: React.FC = () => {
         toast.error(
           err.response.data?.message_description ?? "Something went wrong!"
         );
+        setIsButton(false);
       });
   };
 
@@ -105,7 +108,14 @@ export const LoginForm: React.FC = () => {
         link={AppRoutes.auth.forgot_password}
       />
       <div>
-        <button className={button}>Login</button>
+        {isButton ? (
+          <button type="button" className={button} disabled>
+            <SpinIcon />
+            Processing...
+          </button>
+        ) : (
+          <button className={button}>Login</button>
+        )}
       </div>
     </form>
   );
