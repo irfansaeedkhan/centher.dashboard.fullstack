@@ -6,7 +6,11 @@ import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 
 // Current page imports
-import { ProfileDetailCard } from "@/pages.components/feed";
+import {
+  ProfileDetailCard,
+  DiscoverCard,
+  MessagesCard,
+} from "@/pages.components/feed";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 const Feed: NextPage = () => {
@@ -14,8 +18,16 @@ const Feed: NextPage = () => {
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
         <h1 className={title}>Feed</h1>
-        <div className="feedContainer">
-          <ProfileDetailCard />
+        <div className="feedContainer flex justify-between">
+          <div className="left flex flex-col gap-3">
+            <ProfileDetailCard />
+            <DiscoverCard />
+          </div>
+          <div className="center"></div>
+          <div className="right flex flex-col gap-3">
+            <MessagesCard />
+            <MessagesCard />
+          </div>
         </div>
       </div>
     </AllPagesWrapper>
