@@ -12,14 +12,21 @@ import useUser from "@/hooks/use.user";
 import useRegistrationFee from "@/hooks/use.registration.fee";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
-import { SpinIcon, WalletIcon } from "@/assets/svgs";
+import {
+  SpinIcon2,
+  Successfully,
+  WalletIcon,
+  WalletIconModal,
+} from "@/assets/svgs";
 
 // Current directory imports
 import { performRegistrationFeeTrx } from "./perform.registration.fee.trx";
 import { listenRegistrationFeeTrxStatus } from "./listen.registration.fee.trx.status";
+import { ModalWrapper } from "@/components/modal";
 
 export const RegisterationFee: React.FC = () => {
-  const [isButton, setIsButton] = useState(false);
+  const [feeModal, setFeeModal] = useState(false);
+  const [feeModalStatus, setFeeModalStatus] = useState("start");
   const router = useRouter();
   const { user, error: userError, isLoading: userLoading } = useUser();
   const {
@@ -33,11 +40,11 @@ export const RegisterationFee: React.FC = () => {
   const payRegistrationFeeHandler: React.MouseEventHandler<
     HTMLButtonElement
   > = async (e) => {
-    setIsButton(true);
+    setFeeModalStatus("progress");
     if (registrationFeeError || userError) {
       const error = registrationFeeError || userError;
       toast.error(error.message_description);
-      setIsButton(false);
+      setFeeModalStatus("start");
       return;
     }
 
@@ -58,8 +65,7 @@ export const RegisterationFee: React.FC = () => {
           maxWidth: "466px",
         },
       });
-      setIsButton(false);
-      button.disabled = false;
+      setFeeModalStatus("start");
       return;
     }
 
@@ -80,15 +86,15 @@ export const RegisterationFee: React.FC = () => {
         button,
         router,
       });
-      setIsButton(false);
+      setFeeModalStatus("end");
+      setFeeModal(false);
     } catch (error: any) {
-      button.disabled = false;
-      setIsButton(false);
       toast.error(
         error?.response?.data?.message_description ??
           error.message ??
           "Something went wrong"
       );
+      setFeeModalStatus("start");
     }
   };
 
@@ -102,28 +108,21 @@ export const RegisterationFee: React.FC = () => {
         Please pay registeration fee to start using your account.
       </p>
       <div className="mt-8">
-        <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
+        {/* <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
           {registrationFeeLoading ? (
             <>Loading...</>
           ) : (
             <>{!registrationFeeError ? `${registrationFee} BNB` : "---"} </>
           )}
-        </p>
+        </p> */}
         {account ? (
-          isButton ? (
-            <button type="button" className={button} disabled>
-              <SpinIcon />
-              Processing...
-            </button>
-          ) : (
-            <button
-              className={button}
-              onClick={payRegistrationFeeHandler}
-              disabled={registrationFeeLoading || userLoading}
-            >
-              Pay fee
-            </button>
-          )
+          <button
+            className={button}
+            onClick={() => setFeeModal(true)}
+            // disabled={registrationFeeLoading || userLoading}
+          >
+            Pay fee
+          </button>
         ) : (
           // TODO: Waqar, Mubashir - Discuss about this button with amjad
           <button
@@ -135,6 +134,71 @@ export const RegisterationFee: React.FC = () => {
           </button>
         )}
       </div>
+      {feeModal && (
+        <ModalWrapper
+          title="Registeration Fee"
+          onClose={() => setFeeModal(false)}
+        >
+          <div className="px-10 flex flex-col gap-6 pt-5 pb-8">
+            <div className="flex justify-center">
+              {feeModalStatus === "start" ? (
+                <WalletIconModal />
+              ) : feeModalStatus === "progress" ? (
+                <SpinIcon2 />
+              ) : (
+                feeModalStatus === "end" && <Successfully />
+              )}
+            </div>
+            <div className="flex flex-col gap-2 items-center">
+              <h2 className="font-semibold text-lg text-center text-white">
+                {feeModalStatus === "start"
+                  ? "Pay Registeration Fee"
+                  : feeModalStatus === "progress"
+                  ? "Transaction in progress"
+                  : feeModalStatus === "end" && "Successfully"}
+              </h2>
+              {feeModalStatus === "start" ? (
+                <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
+                  {registrationFeeLoading ? (
+                    <>Loading...</>
+                  ) : (
+                    <>
+                      {!registrationFeeError ? `${registrationFee} BNB` : "---"}{" "}
+                    </>
+                  )}
+                </p>
+              ) : feeModalStatus === "progress" ? (
+                <p className="text-sm text-center text-gray-shade-2">
+                  Please do not close or refresh page.
+                </p>
+              ) : (
+                feeModalStatus === "end" && (
+                  <p className="text-sm text-center text-gray-shade-2">
+                    Transaction done successfully. Registering user on platform
+                  </p>
+                )
+              )}
+            </div>
+            <div>
+              {feeModalStatus === "start" ? (
+                <button
+                  className={button}
+                  onClick={payRegistrationFeeHandler}
+                  disabled={registrationFeeLoading || userLoading}
+                >
+                  Pay
+                </button>
+              ) : (
+                (feeModalStatus === "progress" || feeModalStatus === "end") && (
+                  <button className={button2} disabled>
+                    Ok
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        </ModalWrapper>
+      )}
     </div>
   );
 };
@@ -178,6 +242,20 @@ const button = ctl(`
   bg-brand-primary
   hover:bg-brand-primary-dark
   transition-all 
+`);
+
+const button2 = ctl(`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg
+  items-center 
+  text-[#7C81A2] 
+  justify-center 
+  bg-black-shade-7
+  cursor-not-allowed
 `);
 
 const connectButton = ctl(`

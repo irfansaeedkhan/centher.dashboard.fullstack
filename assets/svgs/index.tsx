@@ -988,6 +988,7 @@ export const LeftArrowIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+
 export const SpinIcon = () => {
   return (
     <div role="status">
@@ -1009,6 +1010,118 @@ export const SpinIcon = () => {
       </svg>
       <span className="sr-only">Loading...</span>
     </div>
+  );
+};
+
+export const SpinIcon2 = () => {
+  return (
+    <div role="status">
+      <svg
+        className="animate-spin"
+        width="64"
+        height="64"
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <ellipse
+          cx="32.0002"
+          cy="32.0002"
+          rx="24.01"
+          ry="24.01"
+          stroke="#2A2D3C"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M56.0102 32.0002C56.0102 36.749 54.6021 41.391 51.9638 45.3395C49.3256 49.2879 45.5757 52.3653 41.1885 54.1826C36.8012 55.9998 31.9736 56.4753 27.3161 55.5489C22.6586 54.6225 18.3805 52.3357 15.0226 48.9779C11.6647 45.62 9.37801 41.3418 8.45158 36.6844C7.52515 32.0269 8.00063 27.1993 9.81789 22.812C11.6351 18.4248 14.7126 14.6749 18.661 12.0366C22.6094 9.3984 27.2515 7.99023 32.0002 7.99023"
+          stroke="url(#paint0_linear_6774_66731)"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_6774_66731"
+            x1="7.99023"
+            y1="7.99023"
+            x2="57.0405"
+            y2="9.06678"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#A9CDFF" />
+            <stop offset="0.21875" stopColor="#72F6D1" />
+            <stop offset="0.557292" stopColor="#A0ED8D" />
+            <stop offset="0.817708" stopColor="#FED365" />
+            <stop offset="1" stopColor="#FAA49E" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+};
+
+export const Successfully = () => {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        cx="31.9963"
+        cy="32.0005"
+        r="24.01"
+        stroke="#76E268"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22.5078 32.905L28.2889 38.686L28.2515 38.6487L41.2943 25.6059"
+        stroke="#76E268"
+        strokeWidth="0.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const WalletIconModal = () => {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M48.6673 32V23.6667H19.5007C18.3956 23.6667 17.3358 23.2277 16.5544 22.4463C15.773 21.6649 15.334 20.6051 15.334 19.5C15.334 17.2083 17.209 15.3333 19.5007 15.3333H44.5006V23.6667"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15.334 19.5V44.5C15.334 46.7917 17.209 48.6667 19.5007 48.6667H48.6673V40.3333"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M44.5007 32C43.3956 32 42.3358 32.439 41.5544 33.2204C40.773 34.0018 40.334 35.0616 40.334 36.1667C40.334 38.4583 42.209 40.3333 44.5007 40.3333H52.834V32H44.5007Z"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 };
 
