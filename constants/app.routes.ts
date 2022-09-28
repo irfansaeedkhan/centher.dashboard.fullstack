@@ -10,7 +10,7 @@ export const AppRoutes = {
   },
 
   profile: {
-    username: "/profile/[username]",
+    account_address: "/profile/[account_address]",
   },
 
   // Anyone can access
