@@ -4,12 +4,6 @@ import { FieldError } from "react-hook-form";
 
 export const formFields: FormFieldProps[] = [
   {
-    id: "pseudonym",
-    label: "Pseudonym (optional)",
-    placeholder: "Enter your pseudonym",
-    type: "text",
-  },
-  {
     id: "first_name",
     label: "First Name",
     placeholder: "Enter your first name",
@@ -19,6 +13,12 @@ export const formFields: FormFieldProps[] = [
     id: "last_name",
     label: "Last Name",
     placeholder: "Enter your last name",
+    type: "text",
+  },
+  {
+    id: "pseudonym",
+    label: "Pseudonym (optional)",
+    placeholder: "Enter your pseudonym",
     type: "text",
   },
   {

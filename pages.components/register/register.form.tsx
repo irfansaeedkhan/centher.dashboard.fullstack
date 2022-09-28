@@ -112,12 +112,12 @@ export const RegisterForm: React.FC = () => {
 
         {/* Display Name Selector */}
         {/* TODO: Waqar Update it according to Design */}
-        <div>
-          <label className={"block text-white mb-1"} htmlFor="display_name">
+        <div className="flex flex-col gap-2">
+          <label className={"text-white text-sm"} htmlFor="display_name">
             Display Name
           </label>
 
-          <select className="block w-full" {...register("display_name")}>
+          <select className={inputField} {...register("display_name")}>
             <option value="pseudonym">Pseudonym</option>
             <option value="real_name">Real Name</option>
             <option value="account_address">Account Address</option>
@@ -196,4 +196,16 @@ const button = ctl(`
   bg-brand-primary 
   hover:bg-brand-primary-dark
   transition-all 
+`);
+
+const inputField = ctl(`
+  w-full 
+  py-3 
+  px-5 
+  bg-[#1E1E21] 
+  text-white 
+  rounded-lg
+  border-0
+  focus:outline-none 
+  focus:ring-brand-primary
 `);
