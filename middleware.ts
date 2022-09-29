@@ -74,8 +74,6 @@ async function getUser(sessionId: string | undefined) {
 const onlyPublicPages: string[] = [
   AppRoutes.auth.login,
   AppRoutes.auth.register,
-  AppRoutes.auth.forgot_password,
-  AppRoutes.auth.reset_password,
 ];
 
 // only authenticated pages

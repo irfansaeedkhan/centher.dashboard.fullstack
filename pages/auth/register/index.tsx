@@ -29,7 +29,7 @@ const Register: NextPage = () => {
         />
 
         <AboutMember
-          asked="Already a memebr?"
+          asked="Already a member?"
           title="Log in now"
           link={AppRoutes.auth.login}
         />

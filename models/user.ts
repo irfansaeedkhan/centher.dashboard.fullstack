@@ -1,17 +1,9 @@
 export interface User {
   _id: string;
-  username: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  email_verified: string;
+  account_address: string;
+  display_name: string;
   profile_image: string;
   custom_image: boolean;
-  account_address: string;
-  roles: UserRole[];
-  status: UserStatus;
-  createdAt: string;
-  updatedAt: string;
 }
 
 type UserRole =
