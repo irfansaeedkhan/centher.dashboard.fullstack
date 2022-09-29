@@ -1,7 +1,6 @@
 import useSWR from "swr";
 
 import { axiosNodeApi } from "@/utils/axios";
-import { Referral } from "@/models/referral";
 
 const useRegistrationFee = () => {
   const { data, error } = useSWR(
@@ -9,9 +8,9 @@ const useRegistrationFee = () => {
     async (url) => {
       try {
         const { data } = await axiosNodeApi.get(url);
-        const referral = data.referral_doc as Referral;
+        const referred_by = data.referred_by as string;
 
-        if (referral.referred_by === null) {
+        if (referred_by === null) {
           return Number(
             process.env.NEXT_PUBLIC_SIGNUP_REGISTRATION_FEE_BNB_WITHOUT_REFERRAL
           );
