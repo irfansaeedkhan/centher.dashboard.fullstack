@@ -8,8 +8,8 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import useUser from "@/hooks/use.user";
-// TODO: Mubashir - create a route for getRegistrationFee instead of getting referral document and deciding fee on frontend
-import useRegistrationFee from "@/hooks/use.registration.fee";
+import useGetReferrer from "@/hooks/use.get.referrer";
+import useGetRegistrationFee from "@/hooks/use.get.registration.fee";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
 import {
@@ -30,10 +30,16 @@ export const RegisterationFee: React.FC = () => {
   const router = useRouter();
   const { user, error: userError, isLoading: userLoading } = useUser();
   const {
+    referrer,
+    error: referrerError,
+    isLoading: referrerLoading,
+  } = useGetReferrer();
+
+  const {
     registrationFee,
     error: registrationFeeError,
     isLoading: registrationFeeLoading,
-  } = useRegistrationFee();
+  } = useGetRegistrationFee(referrer);
   const { account, library } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
@@ -41,9 +47,11 @@ export const RegisterationFee: React.FC = () => {
     HTMLButtonElement
   > = async (e) => {
     setFeeModalStatus("progress");
-    if (registrationFeeError || userError) {
-      const error = registrationFeeError || userError;
-      toast.error(error.message_description);
+    if (!referrer || !user || !registrationFee) {
+      const error = referrerError || userError || registrationFeeError;
+      toast.error(
+        error.message_description ?? error.message ?? "Something went wrong"
+      );
       setFeeModalStatus("start");
       return;
     }
@@ -54,8 +62,8 @@ export const RegisterationFee: React.FC = () => {
     // Account is already connected because we are showing this button only when account is connected
     const result = await performRegistrationFeeTrx(
       library,
-      user!,
-      registrationFee!
+      user,
+      registrationFee
     );
 
     if (result.status !== "success") {
@@ -108,28 +116,17 @@ export const RegisterationFee: React.FC = () => {
         Please pay registeration fee to start using your account.
       </p>
       <div className="mt-8">
-        {/* <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
-          {registrationFeeLoading ? (
-            <>Loading...</>
-          ) : (
-            <>{!registrationFeeError ? `${registrationFee} BNB` : "---"} </>
-          )}
-        </p> */}
         {account ? (
           <button
             className={button}
             onClick={() => setFeeModal(true)}
-            // disabled={registrationFeeLoading || userLoading}
+            // disabled={referrerLoading || userLoading}
           >
             Pay fee
           </button>
         ) : (
           // TODO: Waqar, Mubashir - Discuss about this button with amjad
-          <button
-            className={connectButton}
-            onClick={() => connectWallet()}
-            disabled={registrationFeeLoading || userLoading}
-          >
+          <button className={connectButton} onClick={() => connectWallet()}>
             Connect Wallet
           </button>
         )}
@@ -184,7 +181,7 @@ export const RegisterationFee: React.FC = () => {
                 <button
                   className={button}
                   onClick={payRegistrationFeeHandler}
-                  disabled={registrationFeeLoading || userLoading}
+                  disabled={referrerLoading || userLoading}
                 >
                   Pay
                 </button>

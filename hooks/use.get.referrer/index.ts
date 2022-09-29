@@ -2,23 +2,15 @@ import useSWR from "swr";
 
 import { axiosNodeApi } from "@/utils/axios";
 
-const useRegistrationFee = () => {
+const useGetReferrer = () => {
   const { data, error } = useSWR(
     `/api/users/me/referral`,
     async (url) => {
       try {
         const { data } = await axiosNodeApi.get(url);
-        const referred_by = data.referred_by as string;
+        const referrer = data.referred_by as string;
 
-        if (referred_by === null) {
-          return Number(
-            process.env.NEXT_PUBLIC_SIGNUP_REGISTRATION_FEE_BNB_WITHOUT_REFERRAL
-          );
-        } else {
-          return Number(
-            process.env.NEXT_PUBLIC_SIGNUP_REGISTRATION_FEE_BNB_WITH_REFERRAL
-          );
-        }
+        return referrer as string | null;
       } catch (error: any) {
         throw (
           error.response.data ?? {
@@ -50,10 +42,10 @@ const useRegistrationFee = () => {
   );
 
   return {
-    registrationFee: data,
+    referrer: data,
     isLoading: !error && !data,
     error,
   };
 };
 
-export default useRegistrationFee;
+export default useGetReferrer;
