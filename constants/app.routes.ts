@@ -4,15 +4,13 @@ export const AppRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
-    forgot_password: "/auth/forgot-password",
-    reset_password: "/auth/reset-password",
 
     // Authenticated AND registration pending users can access
     pay_registration_fee: "/auth/pay-registration-fee",
   },
 
   profile: {
-    username: "/profile/[username]",
+    account_address: "/profile/[account_address]",
   },
 
   // Anyone can access

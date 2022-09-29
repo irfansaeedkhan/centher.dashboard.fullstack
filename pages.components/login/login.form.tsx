@@ -1,123 +1,97 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 // App imports
-import { AuthNote } from "@/components/auth.note";
-import { ErrorMessage } from "@/components/error.message";
-import { User } from "@/models/user";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 import { SpinIcon } from "@/assets/svgs";
 
-const loginFormInitialValues = {
-  email: "",
-  password: "",
+const ButtonsText = {
+  connect_metamask: "Connect to Metamask",
+  login_metamask: "Login with Metamask",
+  loading: "Logging in...",
 };
 
 export const LoginForm: React.FC = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm({
-    defaultValues: loginFormInitialValues,
-    resolver: joiResolver(LoginFormSchema, {
-      abortEarly: false,
-      errors: {
-        wrap: {
-          label: "",
-        },
-      },
-    }),
-  });
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [isButton, setIsButton] = useState(false);
   const router = useRouter();
+  const { connectWallet } = useConnectWallet();
+  const { account, library } = useWeb3React();
 
-  const onSubmit = (data: typeof loginFormInitialValues) => {
-    setIsButton(true);
+  const handleMetamaskLogin = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    // TODO: Waqar - add a spinner on button
+    const button = e.currentTarget;
+    button.disabled = true;
+    button.innerText = ButtonsText.loading;
 
-    // Call Node JS API
-    axiosNodeApi
-      .post("/api/auth/login", data)
-      .then(({ data }) => {
-        const user = data.user as User;
+    // Get Nonce from backend
+    try {
+      const { data: nonceData } = await axiosNodeApi.get(
+        `/api/auth/get-nonce/${account}`
+      );
 
-        toast.success(data.message_description ?? "Logged in successfully!");
-        setIsButton(false);
-        // Redirect to home / pay-registration-fee page
-        router.push(
-          user.status === "registration_fee_pending"
-            ? AppRoutes.auth.pay_registration_fee
-            : AppRoutes.home
-        );
-      })
-      .catch((err: any) => {
-        // Show toast
-        toast.error(
-          err.response.data?.message_description ?? "Something went wrong!"
-        );
-        setIsButton(false);
+      const signature = await (library as Web3Provider)
+        .getSigner()
+        .signMessage(nonceData.auth_nonce);
+
+      const { data: loginData } = await axiosNodeApi.post("/api/auth/login", {
+        account_address: account,
+        signature,
       });
+
+      const user = loginData.user;
+
+      toast.success(loginData.message_description);
+
+      // Redirect to home / pay-registration-fee page
+      router.push(
+        user.status === "registration_fee_pending"
+          ? AppRoutes.auth.pay_registration_fee
+          : AppRoutes.home
+      );
+    } catch (error: any) {
+      button.disabled = false;
+      button.innerText = ButtonsText.login_metamask;
+      if (error.code === "ACTION_REJECTED") {
+        toast.error("Login request rejected.");
+        return;
+      }
+      if (error?.response?.data?.message_description) {
+        toast.error(error.response.data.message_description);
+        return;
+      }
+      toast.error(error.message ?? "Something went wrong");
+    }
   };
 
   return (
-    <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Email Address</label>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          className={!errors.email ? inputEmail : inputEmailError}
-          {...register("email")}
-        />
-        {errors.email && <ErrorMessage message={errors.email.message} />}
-      </div>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Password</label>
-        <div
-          className={!errors.password ? wrapperPassword : wrapperPasswordError}
-        >
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            className={inputPassword}
-            {...register("password")}
-          />
-          {showPassword ? (
-            <BsEyeSlash
-              onClick={() => setShowPassword(false)}
-              className={eyeSlash}
-            />
-          ) : (
-            <BsEye onClick={() => setShowPassword(true)} className={eyeSlash} />
-          )}
-        </div>
-        {errors.password && <ErrorMessage message={errors.password.message} />}
-      </div>
-      <AuthNote
-        title="If you are already memebr of Nethernft and don't have password, please click on forgot password to create new one for you."
-        link={AppRoutes.auth.forgot_password}
-      />
-      <div>
-        {isButton ? (
-          <button type="button" className={button} disabled>
-            <SpinIcon />
-            Processing...
+    <div className={wrapper}>
+      {account ? (
+        <>
+          <p className="text-white">Connected Account:</p>
+          <p className="text-white">{account}</p>
+
+          <button className={button} onClick={handleMetamaskLogin}>
+            {ButtonsText.login_metamask}
           </button>
-        ) : (
-          <button className={button}>Login</button>
-        )}
-      </div>
-    </form>
+        </>
+      ) : (
+        <button
+          className={connectButton}
+          onClick={async () => await connectWallet()}
+        >
+          {ButtonsText.connect_metamask}
+        </button>
+      )}
+    </div>
   );
 };
 
@@ -145,70 +119,6 @@ const wrapper = ctl(`
   flex-col 
 `);
 
-const fieldWrapper = ctl(`
-  flex 
-  gap-2
-  flex-col 
-`);
-
-const fieldTitle = ctl(`
-  text-sm 
-  text-white
-`);
-
-const inputEmail = ctl(`
-  py-3 
-  px-5 
-  w-full 
-  border-0 
-  rounded-lg 
-  text-white 
-  bg-[#1E1E21] 
-  focus:outline-none 
-  focus:ring-brand-primary
-`);
-
-const inputEmailError = ctl(`
-  ${inputEmail}
-  focus:!ring-red-500
-`);
-
-const inputPassword = ctl(`
-  p-0 
-  w-full
-  border-0 
-  text-white 
-  focus:ring-0 
-  bg-transparent 
-  focus:border-0 
-  focus:outline-none 
-`);
-
-const wrapperPassword = ctl(`
-  flex 
-  py-3 
-  px-5 
-  gap-2 
-  w-full 
-  rounded-lg 
-  text-white 
-  bg-[#1E1E21] 
-  items-center 
-  justify-between 
-  focus-within:ring-1
-  focus-within:ring-brand-primary
-`);
-
-const wrapperPasswordError = ctl(`
-  ${wrapperPassword}
-  focus-within:!ring-red-500
-`);
-
-const eyeSlash = ctl(`
-  cursor-pointer
-  text-gray-shade-4
-`);
-
 const button = ctl(`
   mt-2 
   py-3 
@@ -220,4 +130,18 @@ const button = ctl(`
   justify-center 
   bg-brand-primary 
   hover:bg-brand-primary-dark
+`);
+
+const connectButton = ctl(`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg 
+  justify-center 
+  text-brand-primary
+  bg-black-shade-7
+  hover:bg-black-shade-4
+  transition-all 
 `);

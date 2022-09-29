@@ -4,12 +4,6 @@ import { FieldError } from "react-hook-form";
 
 export const formFields: FormFieldProps[] = [
   {
-    id: "username",
-    label: "Username",
-    placeholder: "Enter your username",
-    type: "text",
-  },
-  {
     id: "first_name",
     label: "First Name",
     placeholder: "Enter your first name",
@@ -22,20 +16,10 @@ export const formFields: FormFieldProps[] = [
     type: "text",
   },
   {
-    id: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-    type: "email",
-  },
-  {
-    id: "password",
-    label: "Password",
-    placeholder: "Enter your password",
-  },
-  {
-    id: "confirm_password",
-    label: "Confirm Password",
-    placeholder: "Enter your password again",
+    id: "pseudonym",
+    label: "Pseudonym (optional)",
+    placeholder: "Enter your pseudonym",
+    type: "text",
   },
   {
     id: "account_address",
@@ -60,39 +44,34 @@ export const formFields: FormFieldProps[] = [
 // Signup State Schema
 export const SignupStateSchema = Joi.object()
   .keys({
-    username: Joi.string()
-      .label("Username")
-      .required()
-      .lowercase()
+    pseudonym: Joi.string()
+      .label("Pseudonym")
+      .allow("")
+      .optional()
       .trim()
-      .pattern(/^[A-Za-z0-9._]+$/)
+      .pattern(/^[ A-Za-z0-9_]+$/)
       .messages({
         "string.pattern.base":
-          "Username should only contain alphabets numbers _ and .",
+          "Pseudonym should only contain alphabets numbers _ and space",
       }),
     first_name: Joi.string().label("First Name").trim().required(),
     last_name: Joi.string().label("Last Name").trim().required(),
-    email: Joi.string()
-      .label("Email")
-      .email({ tlds: false })
-      .lowercase()
+    display_name: Joi.string()
+      .label("Display Name")
       .trim()
+      .valid("pseudonym", "real_name", "account_address")
       .required(),
     profile_image: Joi.string().label("Profile Image").trim().required(),
-    password: Joi.string().label("Password").min(8).max(100).trim().required(),
-    confirm_password: Joi.string()
-      .label("Confirm Password")
-      .trim()
-      .valid(Joi.ref("password"))
-      .required()
-      .messages({
-        "any.only": "Passwords do not match",
-      }),
     account_address: Joi.string().label("Account Address").trim().required(),
-    referred_by: Joi.string().label("Referred By").trim().allow(""),
+    referred_by: Joi.string()
+      .label("Referred By ID")
+      .trim()
+      .allow("")
+      .optional(),
   })
   .messages({
-    "string.empty": `{#label} is required`,
+    "string.empty": "{#label} is required",
+    "any.invalid": "{#label} is invalid",
   });
 
 // Types
@@ -105,13 +84,11 @@ export interface FormFieldProps
 }
 
 export type FieldName =
-  | "username"
-  | "email"
+  | "pseudonym"
   | "first_name"
   | "last_name"
+  | "display_name"
   | "profile_image"
-  | "password"
-  | "confirm_password"
   | "account_address"
   | "referred_by";
 

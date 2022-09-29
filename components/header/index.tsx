@@ -38,11 +38,11 @@ const Header = () => {
         ) : (
           <Link
             href={{
-              pathname: AppRoutes.profile.username,
-              query: { username: user.username },
+              pathname: AppRoutes.profile.account_address,
+              query: { account_address: user.account_address },
             }}
           >
-            <a className={connectButoon}>{user.username}</a>
+            <a className={connectButoon}>{user.display_name}</a>
           </Link>
         )}
       </div>
