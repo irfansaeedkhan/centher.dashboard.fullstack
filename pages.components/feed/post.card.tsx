@@ -1,150 +1,182 @@
 // React, Next, NPM Packages
+import { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
+// App imports
+import { CustomModal } from "@/components/modal/custom.modal";
+import Button from "@/components/button";
+import {
+  PhotoIcon,
+  VideoIcon,
+  EmojiIcon,
+  AnimateTrashIcon,
+} from "@/assets/svgs";
+
 export const PostCard = () => {
+  // states
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  // function to set max value of text
+  const handleTextLength = (e: any) => {
+    var box: HTMLElement | null = document.getElementById("trashRect");
+    if (box) {
+      box.style.transform = `translateY(${
+        -(e.target.value.length * 100) / 200 + 100
+      }%)`;
+      if ((e.target.value.length * 100) / 200 > 80) {
+        box.style.fill = `#E03434`;
+      } else {
+        box.style.fill = `#FEBF32`;
+      }
+    }
+  };
   return (
-    <div className={DiscoverCardContainer}>
-      <div className="postCardContainer">
-        <div className="iconProfile">
-          <img src={""} width="48" height="48" className="rounded-full" />
-        </div>
-        <div className="postBtnsContainer">
-          <div className="postBtn">
-            <button>Start a post</button>
-          </div>
-          <div className="uploadBtns">
-            <div>
-              <label className="btnBox photo" style={{ display: "flex" }}>
-                <img src={"/Image.png"} width="24" height="24" />
-                <h5>Photo</h5>
-                <input
-                  type="file"
-                  id="file"
-                  name="files[]"
-                  accept={"image"}
-                  multiple
-                />
-                {/* <input type="file" id="file" name="file"/> */}
-              </label>
-            </div>
-            <div>
-              <label className="btnBox video" style={{ display: "flex" }}>
-                <img src={"/Video.png"} width="24" height="24" />
-                <h5>Video</h5>
-                <input
-                  type="file"
-                  id="video"
-                  name="files[]"
-                  style={{ display: "none" }}
-                  multiple
-                />
-              </label>
-            </div>
-            <div className="btnBox emoji">
-              <img src={"/emoji.png"} width="24" height="24" />
-              <h5>Emoji</h5>
-            </div>
-          </div>
-        </div>
+    <div className={postCardContainer}>
+      <div className={topCard}>
+        <img
+          src={"/images/feedprofilepic.png"}
+          width="48"
+          height="48"
+          className="rounded-full"
+        />
+        <button
+          className={postBtn}
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Start a post
+        </button>
       </div>
+      <div className={uploadBtnContainer}>
+        <button className={`${uploadBtn} text-yellow-theme`}>
+          <PhotoIcon />
+          Photo
+        </button>
+        <button className={`${uploadBtn} text-[#157AFB]`}>
+          <VideoIcon />
+          Video
+        </button>
+        <button className={`${uploadBtn} text-[#00BF96]`}>
+          <EmojiIcon />
+          Emoji
+        </button>
+      </div>
+      {showModal && (
+        <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
+          <div className={modalBodyWrapper}>
+            <div className={contactDetail}>
+              <img
+                src={"/images/robertProfilepic.png"}
+                width="44"
+                height="44"
+                alt="profile pic"
+              />
+              <h5 className={cdName}>uixamjad</h5>
+            </div>
+            <div className={maincontentContainer}>
+              <div className={mediaContainer}>
+                <img
+                  src="/images/postimage.png"
+                  width={452}
+                  height={312}
+                  alt="post media"
+                  className="w-full"
+                />
+              </div>
+              <div className={inputTextContainer}>
+                <textarea
+                  className={textContainerContent}
+                  name=""
+                  id="posttext"
+                  cols={12}
+                  rows={4}
+                  placeholder="Type Here"
+                  maxLength={200}
+                  onChange={handleTextLength}
+                ></textarea>
+              </div>
+            </div>
+            <div className={modalFooter}>
+              <div className={leftActionBtns}>
+                <button className={`${uploadBtn} text-yellow-theme`}>
+                  <PhotoIcon />
+                  Photo
+                </button>
+                <button className={`${uploadBtn} text-[#157AFB]`}>
+                  <VideoIcon />
+                  Video
+                </button>
+                <button className={`${uploadBtn} text-[#00BF96]`}>
+                  <EmojiIcon />
+                  Emoji
+                </button>
+              </div>
+              <div className={RightActionBtns}>
+                <AnimateTrashIcon />
+                <div className={divider}></div>
+                <button className={clearBtn}>+</button>
+                <Button title={"Post"} variant="v1" className="max-w-[140px]" />
+              </div>
+            </div>
+          </div>
+        </CustomModal>
+      )}
     </div>
   );
 };
 
 // styling
-const DiscoverCardContainer = ctl(`
-  w-full max-w-[272px] px-4 pt-4   rounded-10px bg-background-shade-3
+const postCardContainer = ctl(`
+  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
 `);
-const DCTitle = ctl(`
-  text-14px font-semibold text-white pb-4
+const topCard = ctl(`
+top w-full flex items-center gap-2 mb-2 
 `);
-const DCTags = ctl(`
-  text-12px font-medium text-gray-shade-7 pb-3
+const postBtn = ctl(`
+w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left
+`);
+const uploadBtnContainer = ctl(`
+  flex items-items justify-between
+`);
+const uploadBtn = ctl(`
+flex items-center gap-3 text-14px font-medium 
 `);
 
-// .postCardContainer {
-//   background: #141414;
-//   border-radius: 16px;
-//   display: flex;
-//   padding: 25px;
-//   gap: 15px;
+// create post modal styling
+const modalBodyWrapper = ctl(`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`);
+const contactDetail = ctl(`
+  flex items-center  gap-3 px-6
+`);
+const cdName = ctl(`
+  text-14px font-semibold text-white
+`);
+const maincontentContainer = ctl(`
+px-6
+`);
+const mediaContainer = ctl(`
 
-//   @media screen and (max-width: 1100px) {
-//     flex-direction: column;
-//     align-items: center;
-//   }
-
-//   .iconProfile {
-//     width: 48px;
-
-//     @media screen and (max-width: 1100px) {
-//       width: 35%;
-//     }
-
-//     img {
-//       width: 100%;
-//     }
-//   }
-
-//   .postBtnsContainer {
-//     width: 100%;
-
-//     .postBtn {
-//       background: #1f1f1f;
-//       border-radius: 16px;
-//       height: 48px;
-//       padding: 14px 16px;
-//       margin-bottom: 38px;
-
-//       button {
-//         font-weight: 600;
-//         font-size: 1.8em;
-//         line-height: 20px;
-//         color: #5c5c5c;
-//       }
-//     }
-
-//     .uploadBtns {
-//       display: flex;
-//       justify-content: space-between;
-//       align-items: center;
-
-//       .btnBox {
-//         display: flex;
-//         justify-content: center;
-//         align-items: center;
-//         gap: 15px;
-
-//         img {
-//           width: 24px;
-//           height: 24px;
-//         }
-
-//         h5 {
-//           font-weight: 700;
-//           font-size: 1.4em;
-//           line-height: 24px;
-//           margin: 0;
-//         }
-
-//         &.photo {
-//           h5 {
-//             color: #feca43;
-//           }
-//         }
-
-//         &.video {
-//           h5 {
-//             color: #157afb;
-//           }
-//         }
-
-//         &.emoji {
-//           h5 {
-//             color: #00bf96;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+`);
+const inputTextContainer = ctl(`
+pt-4 pb-2 w-full
+`);
+const textContainerContent = ctl(`
+text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3
+`);
+const modalFooter = ctl(`
+flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`);
+const leftActionBtns = ctl(`
+w-[100%] lg:w-[48%] flex items-center justify-between
+`);
+const RightActionBtns = ctl(`
+w-[100%] lg:w-[40%] flex items-center gap-2
+`);
+const divider = ctl(`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
+`);
+const clearBtn = ctl(`
+plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
+`);

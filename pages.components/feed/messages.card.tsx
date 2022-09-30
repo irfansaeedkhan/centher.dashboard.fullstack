@@ -2,7 +2,9 @@
 import ctl from "@netlify/classnames-template-literals";
 import { SearchIcon } from "@/assets/svgs";
 
+// Current directory imports
 import { ContactCard } from "./contact.card";
+
 export const MessagesCard = () => {
   return (
     <div className={MessagesCardContainer}>
@@ -42,7 +44,7 @@ const topDetails = ctl(`
 p-4
 `);
 const searchBox = ctl(`
-  mb-4 w-full h-[38px] bg-background-shade-2 rounded-10px  px-10 relative overflow-hidden relative w-full h-[64px] bg-gray-shade-9 border-2 border-gray-shade-3  px-3 py-4
+  mb-4 w-full h-[38px] bg-background-shade-2 rounded-10px relative overflow-hidden border-2 border-gray-shade-3  px-3 py-4
 `);
 const searchIcon = ctl(`  
   absolute top-[50%] left-[14px] translate-y-[-50%]

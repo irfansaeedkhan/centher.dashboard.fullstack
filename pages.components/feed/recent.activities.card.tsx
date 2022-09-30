@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import ctl from "@netlify/classnames-template-literals";
+
 export const RecentActivitiesCard = () => {
   return (
     <div className={RACardContainer}>

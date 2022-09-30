@@ -433,6 +433,9 @@ input:-webkit-autofill {
     content: attr(placeholder);
     color: #555;
   }
+  #trashRect {
+    transform: translateY(100%);
+  }
 }
 
 .filll {
