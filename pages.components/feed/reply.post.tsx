@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -11,11 +11,39 @@ import {
   EditIcon,
   TrashIcon,
 } from "@/assets/svgs";
+import Image from "next/future/image";
+import { Post } from "@/models/post";
+import { useRouter } from "next/router";
+import { AppRoutes } from "@/constants/app.routes";
+import { posts } from "./dummy.posts";
+import Link from "next/link";
 
-export const ReplyCardLevel2 = (props: setLevelFunction) => {
+interface ReplyPostProps {
+  post: Post;
+}
+
+export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   // states
   const [togglePop, setTogglePop] = useState(false);
+  const [replies, setReplies] = useState<Post[]>([]);
+  // const router = useRouter();
+  // const isFeedPage = router.pathname === AppRoutes.feed;
 
+  useEffect(() => {
+    const post_id = post._id;
+    const account_address = post.user.account_address;
+
+    const _replies = posts
+      .filter(
+        (p) =>
+          p.parent_post?._id === post_id &&
+          p.parent_post?.user.account_address === account_address
+      )
+      .slice(0, 1);
+    setReplies(_replies);
+  }, [post]);
+
+  console.log("replies", replies);
   // toggle function to show/hide edit/delete popup
   const togglePopFunc = async () => {
     setTogglePop((prev) => !prev);
@@ -23,24 +51,28 @@ export const ReplyCardLevel2 = (props: setLevelFunction) => {
   return (
     <div className={replyBoxContainer}>
       <div className={firstReplyBox}>
-        <div className={connectLines}></div>
+        {replies.length > 0 && <div className={connectLines}></div>}
         <div className={topCard}>
           <div className={profileDetail}>
-            <img
-              src={"/images/feedprofilepic.png"}
-              width="48"
-              height="48"
+            <Image
+              src={post.user.profile_image}
+              width={48}
+              height={48}
               className="rounded-full"
+              alt={post.user.display_name}
             />
             <div>
               <div className={replyToBox}>
-                <h5 className={PFName}>irfan</h5>
+                <h5 className={PFName}>{post.user.display_name}</h5>
                 <button className={replyToContent}>
                   Replying to{" "}
-                  <span className={repliedToPersonName}> uixamjad 2</span>
+                  <span className={repliedToPersonName}>
+                    {" "}
+                    {post.parent_post?.user.display_name}
+                  </span>
                 </button>
               </div>
-              <h6 className={PFTime}>11 Feb, 2022 at 2:30 PM</h6>
+              <h6 className={PFTime}>{post.createdAt}</h6>
             </div>
           </div>
           <div className={toggleContainer}>
@@ -60,7 +92,7 @@ export const ReplyCardLevel2 = (props: setLevelFunction) => {
         <div
           className={maincontentContainer}
           onClick={() => {
-            props.setLevelFunc("level3");
+            // props.setLevelFunc("level3");
           }}
         >
           {/* <div className={mediaContainer}>
@@ -72,35 +104,47 @@ export const ReplyCardLevel2 = (props: setLevelFunction) => {
                 className="w-full"
               />
             </div> */}
-          <div className={textContainer}>
-            <p className={textContainerContent}>
-              We know the voices in our heads aren&apos;t real, but sometimes
-              their ideas are just too good to ignore.please check thread for
-              more details 😎👇
-            </p>
-          </div>
+          {post.text_content && (
+            <div className={textContainer}>
+              <p className={textContainerContent}>{post.text_content}</p>
+            </div>
+          )}
         </div>
         <div className={footerBtnContainer}>
-          <button className={footerdetailBtn}>
-            <MessageIcon />3
-          </button>
+          <Link
+            href={{
+              pathname: AppRoutes.single_post,
+              query: {
+                post_id: post._id,
+                account_address: post.user.account_address,
+              },
+            }}
+          >
+            <a className={footerdetailBtn}>
+              <MessageIcon /> {post.comments_count_on_post}
+            </a>
+          </Link>
           <button className={footerdetailBtn}>
             <LikeIcon />
-            194
+            {post.likes_count_on_post}
           </button>
           <button className={footerdetailBtn}>
-            <ShareIcon />2
+            <ShareIcon /> {post.shares_count_on_post}
           </button>
         </div>
       </div>
-      <div className={secondReplyBox}>
+      {replies.map((reply) => {
+        return <ReplyPost key={reply._id} post={reply} />;
+      })}
+      {/* <div className={secondReplyBox}>
         <div className={topCard}>
           <div className={profileDetail}>
-            <img
+            <Image
               src={"/images/feedprofilepic.png"}
-              width="48"
-              height="48"
+              width={48}
+              height={48}
               className="rounded-full"
+              alt="User Display Name"
             />
             <div>
               <div className="flex items-center gap-2 ">
@@ -130,11 +174,11 @@ export const ReplyCardLevel2 = (props: setLevelFunction) => {
         <div
           className={maincontentContainer}
           onClick={() => {
-            props.setLevelFunc("level3");
+            // props.setLevelFunc("level3");
           }}
         >
           <div className={mediaContainer}>
-            <img
+            <Image
               src="/images/postimage.png"
               width={452}
               height={312}
@@ -162,7 +206,7 @@ export const ReplyCardLevel2 = (props: setLevelFunction) => {
             <ShareIcon />2
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
