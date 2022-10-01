@@ -1,19 +1,92 @@
 // React, Next, NPM Packages
 import React from "react";
+import { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import {
+  BUSDIcon,
+  NTRDAOIcon,
+  LeftArrowIcon,
+  LockedIcon,
+  WarningIcon,
+  SuccessIcon,
+} from "@/assets/svgs";
 import Button from "@/components/button";
-import { BUSDIcon, NTRDAOIcon, LeftArrowIcon, LockedIcon } from "@/assets/svgs";
+import { CustomModal } from "@/components/modal/custom.modal";
 
-interface PurchaseNTRDAOCardProps {
-  locked?: boolean;
-}
+// same directory Imports
+import { NTRDAOTable } from "./ntrdao.table";
+
 export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
   locked,
 }) => {
+  // states
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState(<div></div>);
+  const [contractState, setContractState] = useState<string>(
+    "Authorization Contract"
+  );
+
+  // functions
   const buyNowFunc = () => {
-    console.log("buyNow");
+    alert("buy now func");
+  };
+  const authorizeSucessModal = () => {
+    setShowModal(true);
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <WarningIcon className={Icon} />
+        <div className={Modalcontent}>
+          <h5 className={modalTitle}>Authorized Successfully</h5>
+          <h6 className={modalMessage}>
+            Your Contract has been Authorized, Now you can buy Packs.
+          </h6>
+        </div>
+        <div className={modalFooter}>
+          <Button
+            title={"Buy Now"}
+            variant="v4"
+            onClick={() => {
+              setShowModal(false);
+              alert("buy now");
+            }}
+            className="py-3"
+          />
+        </div>
+      </div>
+    );
+  };
+  const authorizeFunc = () => {
+    setShowModal(true);
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <WarningIcon className={Icon} />
+        <div className={Modalcontent}>
+          <h5 className={modalTitle}>Allow Nethernft to use your NTR?</h5>
+          <h6 className={modalMessage}>
+            Confirmation of the NTR token to interact with the Nethernft
+            contract.
+          </h6>
+        </div>
+        <div className={modalFooter}>
+          <Button
+            title={"Cancel"}
+            variant="v2"
+            onClick={() => {
+              setShowModal(false);
+            }}
+            className="py-3"
+          />
+          <Button
+            title={"Authorize"}
+            variant="v1"
+            onClick={authorizeSucessModal}
+            className="py-3"
+          />
+        </div>
+      </div>
+    );
   };
   return (
     <div className="relative">
@@ -25,71 +98,89 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
           </h6>
         </div>
       </div>
-      <div
-        className={`${
-          locked && "blur-xl bg-black-shade-3/60"
-        } ${transactionBox} `}
-      >
-        <h1 className={transactionBoxTitle}>
-          Please Enter NTRDAO amount to you’d like to purchase
-        </h1>
-        <div className={divider}></div>
-        <div className={conversionBox}>
-          <div className={ConversioninputContainer}>
-            <div className={inputBox}>
-              <div className={coinBox}>
-                <BUSDIcon /> <h5 className={coinName}>BUSD </h5>
+      <div className={`${locked && "blur-xl bg-black-shade-3/60"}`}>
+        <div className={transactionBox}>
+          <h1 className={transactionBoxTitle}>
+            Please Enter NTRDAO amount to you’d like to purchase
+          </h1>
+          <div className={divider}></div>
+          <div className={conversionBox}>
+            <div className={ConversioninputContainer}>
+              <div className={inputBox}>
+                <div className={coinBox}>
+                  <BUSDIcon /> <h5 className={coinName}>BUSD </h5>
+                </div>
+                <div className={balanceBox}>
+                  <div>
+                    <h5 className={balanceText}>Balance</h5>
+                    <h6 className={balanceNumber}>0.00</h6>
+                  </div>
+                </div>
               </div>
-              <div className={balanceBox}>
-                <div>
-                  <h5 className={balanceText}>Balance</h5>
-                  <h6 className={balanceNumber}>0.00</h6>
+              <div className={inputBox}>
+                <input className={input} type="text" placeholder="0.00" />
+                <div className={maxBtnContainer}>
+                  <div>
+                    <button className={maxBtn}>Max</button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className={inputBox}>
-              <input className={input} type="text" placeholder="0.00" />
-              <div className={maxBtnContainer}>
-                <div>
-                  <button className={maxBtn}>Max</button>
+            <div className={conversionBtn}>
+              <LeftArrowIcon />
+            </div>
+            <div className={ConversioninputContainer}>
+              <div className={inputBox}>
+                <div className={coinBox}>
+                  <NTRDAOIcon /> <h5 className={coinName}>NTRDAO </h5>
                 </div>
+                <div className={balanceBox}>
+                  <div>
+                    <h5 className={balanceText}>Balance</h5>
+                    <h6 className={balanceNumber}>0.00</h6>
+                  </div>
+                </div>
+              </div>
+              <div className={inputBox}>
+                <input className={input} type="text" placeholder="0.00" />
+                <div className={maxBtnContainer}>&nbsp;</div>
               </div>
             </div>
           </div>
-          <div className={conversionBtn}>
-            <LeftArrowIcon />
+          <div className={conversionBoxFooter}>
+            <h6 className={conversionBoxFooterTitle}>
+              Price:{" "}
+              <span className={conversionBoxFooterTitleBold}>500 BUSD</span>
+            </h6>
+            <Button
+              title={
+                contractState === "Authorization Contract"
+                  ? "Authorize"
+                  : "Buy Now"
+              }
+              variant="v1"
+              onClick={
+                contractState === "Authorization Contract"
+                  ? authorizeFunc
+                  : buyNowFunc
+              }
+              className="py-4"
+            />
           </div>
-          <div className={ConversioninputContainer}>
-            <div className={inputBox}>
-              <div className={coinBox}>
-                <NTRDAOIcon /> <h5 className={coinName}>NTRDAO </h5>
-              </div>
-              <div className={balanceBox}>
-                <div>
-                  <h5 className={balanceText}>Balance</h5>
-                  <h6 className={balanceNumber}>0.00</h6>
-                </div>
-              </div>
-            </div>
-            <div className={inputBox}>
-              <input className={input} type="text" placeholder="0.00" />
-              <div className={maxBtnContainer}></div>
-            </div>
+          <div className={roundOverTextContainer}>
+            <p className={roundOverText}>
+              This round is over! Buy another availabe or wait for the next
+              round
+            </p>
           </div>
         </div>
-        <div className={conversionBoxFooter}>
-          <h6 className={conversionBoxFooterTitle}>
-            Price:{" "}
-            <span className={conversionBoxFooterTitleBold}>500 BUSD</span>
-          </h6>
-          <Button
-            title={"Buy Now"}
-            variant="v1"
-            onClick={buyNowFunc}
-            className="py-4"
-          />
-        </div>
+        <NTRDAOTable />
       </div>
+      {showModal && (
+        <CustomModal onClose={() => setShowModal(false)} title={contractState}>
+          {modalContent}
+        </CustomModal>
+      )}
     </div>
   );
 };
@@ -158,3 +249,33 @@ text-14px font-semibold text-gray-shade-7 pb-4
 const conversionBoxFooterTitleBold = ctl(`
 text-white
 `);
+const roundOverTextContainer = ctl(`
+mt-8 lg:mt-12 text-center mx-auto  py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl
+`);
+const roundOverText = ctl(`
+text-[#E6535A] text-16px font-semibold
+ `);
+
+// modal styling
+const modalBodyWrapper = ctl(`
+  text-center flex flex-col gap-6 w-full border-t-2 border-gray-shade-3 pt-4
+`);
+const Modalcontent = ctl(`
+px-6
+`);
+const Icon = ctl(`
+mx-auto w-[64px]
+`);
+const modalTitle = ctl(`
+text-18px text-white font-semibold pb-2
+`);
+const modalMessage = ctl(`
+text-14px text-gray-shade-2 font-normal
+`);
+const modalFooter = ctl(`
+flex items-center justify-center gap-3  pt-6 px-6
+`);
+// interfaces
+interface PurchaseNTRDAOCardProps {
+  locked?: boolean;
+}
