@@ -21,6 +21,7 @@ export const AppRoutes = {
   // Authenticated but registration_fee_pending users can not access
   // authenticatedAndActiveUserPages
   feed: "/feed",
+  single_post: "/feed/[account_address]/post/[post_id]",
   chat: "/chat",
   notifications: "/notifications",
   create_collection: "/create-collection",
