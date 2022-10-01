@@ -33,7 +33,7 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
     alert("buy now func");
   };
   const authorizeSucessModal = () => {
-    setShowModal(true);
+    setContractState("Buy Now");
     setModalContent(
       <div className={modalBodyWrapper}>
         <WarningIcon className={Icon} />
@@ -56,6 +56,7 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
         </div>
       </div>
     );
+    setShowModal(true);
   };
   const authorizeFunc = () => {
     setShowModal(true);
@@ -63,9 +64,9 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
       <div className={modalBodyWrapper}>
         <WarningIcon className={Icon} />
         <div className={Modalcontent}>
-          <h5 className={modalTitle}>Allow Nethernft to use your NTR?</h5>
+          <h5 className={modalTitle}>Allow Nether NFT to use your NTR?</h5>
           <h6 className={modalMessage}>
-            Confirmation of the NTR token to interact with the Nethernft
+            Confirmation of the NTR token to interact with the Nether NFT
             contract.
           </h6>
         </div>
