@@ -60,7 +60,7 @@ const dashboardContentContainer = ctl(`
   stakingpack bg-black-shade-3 w-full min-h-screen font-monto
 `);
 const title = ctl(`
-  textGradient text-34px font-semibold leading-[42px] font-medium pb-6 
+textGradient  pb-6 animationTextHeading text-34px
 `);
 const btnContainer = ctl(`
   ToggleBtnsContainer flex max-w-[428px] bg-black-shade-6 p-1.5 rounded-2xl mb-6 

@@ -39,7 +39,7 @@ const dashboardContentContainer = ctl(`
   bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10
 `);
 const title = ctl(`
-  textGradient  font-semibold leading-[42px] font-medium pb-6 animationTextHeading text-34px 
+  textGradient leading-[42px] pb-6 animationTextHeading text-34px 
 `);
 const daoMainContentContainer = ctl(`
 flex flex-col gap-5

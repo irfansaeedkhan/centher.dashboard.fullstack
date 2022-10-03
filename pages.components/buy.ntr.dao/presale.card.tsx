@@ -18,7 +18,7 @@ export const PresaleCard = () => {
             </h2>
           </div>
         </div>
-        {/* FIXME: Irfan - didn't convert it to ctl yet because still animation will be applied */}
+        {/* FIXME: Irfan - didn&apos;t convert it to ctl yet because still animation will be applied */}
         <div className="timer flex items-center gap-8">
           <div className="box flex flex-col gap-2 items-center ">
             <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">

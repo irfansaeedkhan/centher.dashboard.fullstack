@@ -84,7 +84,22 @@ input:-webkit-autofill {
       margin: 0 auto;
     }
   }
-
+  .dpImagePreview {
+    animation: animate 2s linear infinite;
+    border: double 2px transparent;
+    border-radius: 50%;
+    background-image: linear-gradient(#17171a, #17171a),
+      radial-gradient(
+        circle at left,
+        #70a2ff,
+        #72f6d1,
+        #76e268,
+        #ffd505,
+        #f76e64
+      );
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
   .boxShadoww:hover {
     filter: drop-shadow(0 0 0.5rem #febf32);
   }
@@ -432,6 +447,9 @@ input:-webkit-autofill {
   .test[placeholder]:empty:before {
     content: attr(placeholder);
     color: #555;
+  }
+  #trashRect {
+    transform: translateY(100%);
   }
 }
 

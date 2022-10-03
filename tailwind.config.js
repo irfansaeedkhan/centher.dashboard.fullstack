@@ -32,7 +32,9 @@ module.exports = {
       height: {
         113.5: "28.375rem",
       },
-
+      borderRadius: {
+        "10px": "10px",
+      },
       width: {
         18: "4.5rem",
         77: "19.25rem",
@@ -93,6 +95,7 @@ module.exports = {
           8: "#0B0B0B",
           9: "#141416",
           10: "#1C1C21",
+          11: "#18181C",
         },
       },
     },
