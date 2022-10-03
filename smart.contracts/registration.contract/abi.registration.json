@@ -36,30 +36,18 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "userAddress",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "sponsorId",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
-        "name": "sponsorAddress",
+        "name": "referrerAddress",
         "type": "address"
       }
     ],
-    "name": "RegisterWithSponsor",
+    "name": "RegisterWithReferrer",
     "type": "event"
   },
   {
@@ -67,18 +55,12 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "string",
-        "name": "userId",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "address",
         "name": "userAddress",
         "type": "address"
       }
     ],
-    "name": "RegisterWithoutSponsor",
+    "name": "RegisterWithoutReferrer",
     "type": "event"
   },
   {
@@ -97,31 +79,13 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_id",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_newAdd",
-        "type": "address"
-      }
-    ],
-    "name": "changeAccount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
-        "name": "_feeWithoutSponsor",
+        "name": "feeWithoutReferrer",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_feeWithSponsor",
+        "name": "feeWithReferrer",
         "type": "uint256"
       }
     ],
@@ -133,73 +97,16 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_id",
-        "type": "string"
-      }
-    ],
-    "name": "getAddressFromId",
-    "outputs": [
-      {
         "internalType": "address",
-        "name": "",
+        "name": "_userAddress",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getIdFromAddress",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_id",
-        "type": "string"
-      }
-    ],
-    "name": "getSponsorAddressFromId",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
-    ],
-    "name": "getSponsorAddresses",
+    "name": "getReferrerAddresses",
     "outputs": [
       {
         "internalType": "address[6]",
-        "name": "sponsorAddresses",
+        "name": "referrerAddresses",
         "type": "address[6]"
       }
     ],
@@ -211,6 +118,25 @@
     "name": "initialize",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "isUserRegisteredWithAddress",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -234,19 +160,13 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "name": "registerId",
+    "inputs": [],
+    "name": "referralDeep",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "uint8",
         "name": "",
-        "type": "bool"
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -255,37 +175,26 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_id",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_sponsorId",
-        "type": "string"
+        "internalType": "address",
+        "name": "referrerAddress",
+        "type": "address"
       }
     ],
-    "name": "registerWithSponsor",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_id",
-        "type": "string"
-      }
-    ],
-    "name": "registerWithoutSponsor",
+    "name": "registerWithReferrer",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "registrationFeeWithSponsor",
+    "name": "registerWithoutReferrer",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "registrationFeeWithReferrer",
     "outputs": [
       {
         "internalType": "uint256",
@@ -298,7 +207,7 @@
   },
   {
     "inputs": [],
-    "name": "registrationFeeWithoutSponsor",
+    "name": "registrationFeeWithoutReferrer",
     "outputs": [
       {
         "internalType": "uint256",
@@ -319,25 +228,6 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "name": "sponsorId",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "newOwner",
         "type": "address"
@@ -353,6 +243,25 @@
     "name": "unPause",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "userAddressToReferrerAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

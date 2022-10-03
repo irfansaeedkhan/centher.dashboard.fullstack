@@ -47,16 +47,10 @@ export const LoginForm: React.FC = () => {
         signature,
       });
 
-      const user = loginData.user;
-
       toast.success(loginData.message_description);
 
-      // Redirect to home / pay-registration-fee page
-      router.push(
-        user.status === "registration_fee_pending"
-          ? AppRoutes.auth.pay_registration_fee
-          : AppRoutes.home
-      );
+      // Redirect to home page
+      router.push(AppRoutes.home);
     } catch (error: any) {
       button.disabled = false;
       button.innerText = ButtonsText.login_metamask;
