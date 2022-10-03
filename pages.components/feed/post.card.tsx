@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import { useState, useRef } from "react";
 import ctl from "@netlify/classnames-template-literals";
+import Image from "next/future/image";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -364,11 +365,12 @@ export const PostCard = () => {
   return (
     <div className={postCardContainer}>
       <div className={topCard}>
-        <img
+        <Image
           src={"/images/feedprofilepic.png"}
-          width="48"
-          height="48"
+          width={48}
+          height={48}
           className="rounded-full"
+          alt={"icon"}
         />
         <button
           className={postBtn}
@@ -425,11 +427,11 @@ export const PostCard = () => {
         <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
-              <img
+              <Image
                 src={"/images/robertProfilepic.png"}
-                width="44"
-                height="44"
-                alt="profile pic"
+                width={44}
+                height={44}
+                alt={"image"}
               />
               <h5 className={cdName}>uixamjad</h5>
             </div>
@@ -544,6 +546,9 @@ const maincontentContainer = ctl(`
 px-6
 `);
 const mediaContainer = ctl(`
+ w-full flex gap-2 
+`);
+const mediaItem = ctl(`  
 
 `);
 const inputTextContainer = ctl(`

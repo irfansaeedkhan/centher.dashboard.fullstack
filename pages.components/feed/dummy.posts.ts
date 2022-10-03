@@ -39,6 +39,16 @@ const post1: Post = {
       url: "/images/postimage.png",
       type: "image/jpeg",
     },
+    {
+      _id: "2",
+      url: "/images/postimage.png",
+      type: "image/jpeg",
+    },
+    {
+      _id: "3",
+      url: "/images/postimage.png",
+      type: "image/jpeg",
+    },
   ],
   comments_count_on_post: 10,
   likes_count_on_post: 24,
@@ -54,13 +64,7 @@ const post2: Post = {
   },
   text_content: "reply 1 to main",
   createdAt: new Date().toDateString(),
-  media: [
-    {
-      _id: "1",
-      url: "/images/postimage.png",
-      type: "image/jpeg",
-    },
-  ],
+  media: [],
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -102,6 +106,11 @@ const post4: Post = {
       url: "/images/postimage.png",
       type: "image/jpeg",
     },
+    {
+      _id: "2",
+      url: "/images/postimage.png",
+      type: "image/jpeg",
+    },
   ],
   comments_count_on_post: 10,
   likes_count_on_post: 24,
@@ -138,13 +147,7 @@ const post6: Post = {
   },
   text_content: "reply 5 to reply 3",
   createdAt: new Date().toDateString(),
-  media: [
-    {
-      _id: "1",
-      url: "/images/postimage.png",
-      type: "image/jpeg",
-    },
-  ],
+  media: [],
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,

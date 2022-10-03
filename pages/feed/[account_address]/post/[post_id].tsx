@@ -48,7 +48,7 @@ const SinglePostPage: NextPage = () => {
             <DiscoverCard />
           </div>
           {post ? (
-            <div>
+            <div className={postsMainContainer}>
               {post.parent_post ? (
                 <Link
                   href={{
@@ -107,7 +107,10 @@ const postsContainer = ctl(`
 w-full flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);
 const backBtn = ctl(`
-text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium w-20
+text-brand-primary text-[11px] px-4 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium w-fit 
+`);
+const postsMainContainer = ctl(`
+flex flex-col gap-3
 `);
 // interfaces
 type setLevelFunction = (levelVal: "level1" | "level2" | "level3") => void;
