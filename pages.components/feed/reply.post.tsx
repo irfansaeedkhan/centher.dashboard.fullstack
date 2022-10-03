@@ -37,8 +37,6 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-  // const router = useRouter();
-  // const isFeedPage = router.pathname === AppRoutes.feed;
 
   useEffect(() => {
     const post_id = post._id;
@@ -218,11 +216,21 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
                 <ArrowLeftIcon /> Share Via
               </button>
               <button className={SharetoggleListBtn}>
-                <img src="/images/whatsapp.png" width={24} height={24} />
+                <Image
+                  src="/images/whatsapp.png"
+                  width={24}
+                  height={24}
+                  alt="icon"
+                />
                 WhatsApp
               </button>
               <button className={SharetoggleListBtn}>
-                <img src="/images/twitter2.png" width={24} height={24} />
+                <Image
+                  src="/images/twitter2.png"
+                  width={24}
+                  height={24}
+                  alt="icon"
+                />
                 Twitter
               </button>
             </div>

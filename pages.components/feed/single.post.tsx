@@ -48,6 +48,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [replies, setReplies] = useState<Post[]>([]);
   const router = useRouter();
   const isFeedPage = router.pathname === AppRoutes.feed;
+  const isProfilePage = router.pathname === AppRoutes.user_profile;
 
   useEffect(() => {
     const post_id = router.query.post_id;
@@ -97,7 +98,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
 
   return (
     <div className={postCardContainer}>
-      {isFeedPage && <div className={connectLines}></div>}
+      {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
       <div className={topCard}>
         <div className={profileDetail}>
           <Image
@@ -127,7 +128,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           </div>
         </div>
       </div>
-      <div className={`${maincontentContainer} ${isFeedPage && " ml-16 "}`}>
+      <div
+        className={`${maincontentContainer} ${
+          (isFeedPage || isProfilePage) && " ml-16 "
+        }`}
+      >
         <div className={mediaContainer}>
           {post.media && post.media.length > 0 && (
             <Carousel
@@ -176,11 +181,14 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         )}
       </div>
       <div
-        className={`${footerBtnContainer} ${isFeedPage && " ml-16 "} ${
-          !isFeedPage && " pb-4 border-b-2 border-gray-shade-3 "
+        className={`${footerBtnContainer} ${
+          (isFeedPage || isProfilePage) && " ml-16 "
+        } ${
+          !(isFeedPage || isProfilePage) &&
+          " pb-4 border-b-2 border-gray-shade-3 "
         }`}
       >
-        {!isFeedPage && (
+        {!(isFeedPage || isProfilePage) && (
           <button
             className={footerdetailReplyBtn}
             onClick={() => {
@@ -243,7 +251,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           </div>
         </div>
       </div>
-      {isFeedPage && (
+      {(isFeedPage || isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image
             src={post.user.profile_image}
@@ -266,7 +274,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         </div>
       )}
 
-      {!isFeedPage && (
+      {!(isFeedPage || isProfilePage) && (
         <>
           {replies.map((reply) => {
             return <ReplyPost key={reply._id} post={reply} />;
@@ -350,7 +358,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
 
 // styling
 const postCardContainer = ctl(`
-w-full min-w-[30vw] max-w-[570px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
+w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
 `);
 const topCard = ctl(`
 top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4
