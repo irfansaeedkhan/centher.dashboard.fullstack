@@ -4,6 +4,7 @@ import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import { ProfilePageWrapper } from "@/pages.components/profile/profile.wrapper";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 
@@ -18,46 +19,41 @@ import {
   posts as dummyPosts,
 } from "@/pages.components/feed";
 
-const Feed: NextPage = () => {
+const Profile: NextPage = () => {
   // states
   const [posts, setPosts] = useState<Post[]>(dummyPosts);
 
   return (
-    <AllPagesWrapper pageTitle="Feed">
-      <div className={dashboardContentContainer}>
-        <h1 className={title}>My Feed</h1>
-        <div className={feedContainer}>
-          <div className={leftSidebar}>
-            <ProfileDetailCard />
-            <DiscoverCard />
-          </div>
-          <div className={postsContainer}>
-            <PostCard />
-            {posts
-              .filter((p) => !p.parent_post)
-              .map((post) => (
-                <SinglePost key={post._id} post={post} />
-              ))}
-          </div>
-          <div className={rightSidebar}>
-            <MessagesCard />
-            <RecentActivitiesCard />
+    <AllPagesWrapper pageTitle="Profile">
+      <ProfilePageWrapper>
+        <div>
+          <div className={feedContainer}>
+            <div className={leftSidebar}>
+              <ProfileDetailCard />
+              <DiscoverCard />
+            </div>
+            <div className={postsContainer}>
+              <PostCard />
+              {posts
+                .filter((p) => !p.parent_post)
+                .map((post) => (
+                  <SinglePost key={post._id} post={post} />
+                ))}
+            </div>
+            <div className={rightSidebar}>
+              <MessagesCard />
+              <RecentActivitiesCard />
+            </div>
           </div>
         </div>
-      </div>
+      </ProfilePageWrapper>
     </AllPagesWrapper>
   );
 };
 
-export default Feed;
+export default Profile;
 
 // styling
-const dashboardContentContainer = ctl(`
-stakingpack bg-black-shade-3 w-full min-h-screen font-monto
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
-`);
 const feedContainer = ctl(`
 flex justify-center gap-5
 `);

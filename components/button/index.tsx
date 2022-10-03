@@ -3,12 +3,14 @@ import React from "react";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
   variant?: "v1" | "v2" | "v3" | "v4";
+  Icon?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
   title,
   variant = "v1",
   className,
+  Icon,
   ...props
 }) => {
   return (
@@ -24,6 +26,7 @@ const Button: React.FC<ButtonProps> = ({
           `}
       {...props}
     >
+      {Icon && Icon}
       {title}
     </button>
   );
