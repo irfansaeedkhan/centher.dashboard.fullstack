@@ -172,7 +172,7 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
         setApproved(true);
         setModalTitle("Authorization Contract");
         setModalSubTitle("Authorized Successfully");
-        setModalStatus(`ntrdao`);
+        setModalStatus(`success`);
         setModalDescription(
           `Your Contract has been Authorized, Now you can buy Packs.`
         );
@@ -326,6 +326,7 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
                   type="text"
                   placeholder="0.00"
                   value={inputNtrAmount}
+                  readOnly
                 />
                 <div className={maxBtnContainer}>&nbsp;</div>
               </div>
