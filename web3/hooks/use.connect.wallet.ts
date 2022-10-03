@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import { injectedConnector } from "@/web3/connector";
 
 export const useConnectWallet = () => {
-  const { activate, error } = useWeb3React();
+  const { activate, error, library } = useWeb3React();
 
   useEffect(() => {
     if (error) {
