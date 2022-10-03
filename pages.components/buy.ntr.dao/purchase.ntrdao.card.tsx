@@ -7,7 +7,7 @@ import { BUSDIcon, NTRDAOIcon, LeftArrowIcon, LockedIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
 import { BigNumber } from "ethers";
-import { buyNtrDao, setBusdApprove } from "@/web3/utils/callHelper";
+import { buyNtrDao, setBusdApprove } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import {
   useBusdAllowance,
@@ -16,7 +16,7 @@ import {
   useIsRegistered,
   useNtrdaoBalance,
   useRoundState,
-} from "@/web3/hooks/use.Contracts.Functions";
+} from "@/web3/hooks/use.contracts.functions";
 import { LoadingSkeleton } from "../../web3/utils/utils";
 
 // same directory Imports

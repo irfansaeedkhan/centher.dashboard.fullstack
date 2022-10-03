@@ -4,14 +4,14 @@ import {
   getPresaleAddress,
   getBusdAddress,
   getMulticallAddress,
-  getRegisterAddress,
+  getRegistrationAddress,
   getRouterAddress,
-} from "./addressHelper";
+} from "./address.helpers";
 
 // ABI
 import ntrdaoAbi from "../abis/ntrdao.json";
 import presaleAbi from "../abis/presale.json";
-import registerAbi from "../abis/register.json";
+import registrationAbi from "../abis/registration.json";
 import multicallAbi from "../abis/multicall.json";
 import busdAbi from "../abis/erc20.json";
 import routerAbi from "../abis/router.json";
@@ -24,11 +24,9 @@ import { ethers } from "ethers";
 //   return new Contract(address, abi, library?.getSigner())
 // }
 
-const getContract = (
-  abi: any,
-  address: string,
-  signer?: ethers.Signer | ethers.providers.Provider
-) => {
+type SignerOrProvider = ethers.Signer | ethers.providers.Provider;
+
+const getContract = (abi: any, address: string, signer?: SignerOrProvider) => {
   const signerOrProvider = signer ?? simpleRpcProvider;
   return new ethers.Contract(address, abi, signerOrProvider);
 };
@@ -43,8 +41,8 @@ export const getNtrdaoContract = (signer: any) => {
   return getContract(ntrdaoAbi, getNtrdaoAddress(), signer);
 };
 
-export const getRegisterContract = (signer: any) => {
-  return getContract(registerAbi, getRegisterAddress(), signer);
+export const getRegistrationContract = (signer?: SignerOrProvider) => {
+  return getContract(registrationAbi, getRegistrationAddress(), signer);
 };
 
 export const getPresaleContract = (signer: any) => {

@@ -6,7 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { PurchasedInfo } from "@/web3/constants/types";
 import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
-import { claimNtrTokens } from "@/web3/utils/callHelper";
+import { claimNtrTokens } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 

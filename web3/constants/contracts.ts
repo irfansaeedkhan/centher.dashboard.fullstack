@@ -6,7 +6,7 @@ const contracts = {
     4: "0xd753294Cc2F2be848C1cfAAffceEB2F4d7899B1f",
     1: "0x1fc6B3f9225b84111c7F5aEF0291b01A35b15731",
   },
-  register: {
+  registration: {
     // Register Contract Address
     97: "0xC456A1E6AC909f9881AF50aeE8fE9bB25a8615Db",
     56: "0x36000E261Ad3fD443bc557020130FE09f905d9cb",

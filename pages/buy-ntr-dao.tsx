@@ -20,7 +20,7 @@ import {
   useIsRegistered,
   useNtrdaoBalance,
   useRoundState,
-} from "@/web3/hooks/use.Contracts.Functions";
+} from "@/web3/hooks/use.contracts.functions";
 import { useWeb3React } from "@web3-react/core";
 
 const BuyNTRDAOPage: NextPage = () => {

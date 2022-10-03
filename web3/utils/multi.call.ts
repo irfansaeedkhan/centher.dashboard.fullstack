@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getMulticallContract } from "./contractHelper";
+import { getMulticallContract } from "./contract.helpers";
 
 export interface Call {
   address: string; // Address of the contract

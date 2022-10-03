@@ -1,18 +1,18 @@
-import { BigNumber, ethers } from "ethers";
-import { formatEther } from "ethers/lib/utils";
 import { useEffect, useState } from "react";
+
+import { ethers } from "ethers";
 import {
   PurchasedInfoResponse,
   RoundInfo,
   RoundState,
 } from "../constants/types";
-import { getPresaleAddress } from "../utils/addressHelper";
+import { getPresaleAddress } from "../utils/address.helpers";
 import {
   getBusdContract,
   getNtrdaoContract,
   getPresaleContract,
-  getRegisterContract,
-} from "../utils/contractHelper";
+  getRegistrationContract,
+} from "../utils/contract.helpers";
 
 export const useNtrdaoBalance = (account: string | undefined | null) => {
   const [balance, setBalance] = useState(0);
@@ -150,15 +150,20 @@ export const useRoundState = () => {
 
 export const useIsRegistered = (account: string | undefined | null) => {
   const [isRegistered, setIsRegistered] = useState(false);
-  const registerContract = getRegisterContract(null);
+
   useEffect(() => {
+    const registerContract = getRegistrationContract();
+
     const fetchIsRegistered = async (account: string) => {
       const _isRegistered = await registerContract.isUserRegisteredWithAddress(
         account
       );
       setIsRegistered(_isRegistered);
     };
-    if (account) fetchIsRegistered(account);
+
+    if (account) {
+      fetchIsRegistered(account);
+    }
   }, [account]);
   return isRegistered;
 };

@@ -3,7 +3,7 @@ import { BigNumber, ethers } from "ethers";
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers";
 
 // App imports
-import { getRegistrationContract } from "@/smart.contracts/registration.contract";
+import { getRegistrationContract } from "@/web3/utils/contract.helpers";
 
 // Current directory imports
 import { SignupState } from "./form.fields.data";

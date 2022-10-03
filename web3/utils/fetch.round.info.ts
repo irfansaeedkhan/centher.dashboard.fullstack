@@ -1,10 +1,11 @@
-import presaleABI from "../abis/presale.json";
-import { multicall } from "./multiCall";
-import { getPresaleAddress } from "./addressHelper";
-import { BigNumber, ethers } from "ethers";
 import { useEffect, useState } from "react";
-import useRefresh from "../hooks/use.Refresh";
-import { Web3Provider } from "@ethersproject/providers";
+import { ethers } from "ethers";
+
+import useRefresh from "../hooks/use.refresh";
+import presaleABI from "../abis/presale.json";
+
+import { multicall } from "./multi.call";
+import { getPresaleAddress } from "./address.helpers";
 
 interface RoundInfo {
   price: number;

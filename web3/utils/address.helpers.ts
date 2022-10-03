@@ -19,8 +19,8 @@ export const getNtrdaoAddress = () => {
 export const getPresaleAddress = () => {
   return getAddress(addresses.presale);
 };
-export const getRegisterAddress = () => {
-  return getAddress(addresses.register);
+export const getRegistrationAddress = () => {
+  return getAddress(addresses.registration);
 };
 export const getMulticallAddress = () => {
   return getAddress(addresses.multicall);

@@ -1,24 +1,10 @@
-import {
-  getBusdAddress,
-  getNtrdaoAddress,
-  getPresaleAddress,
-} from "./addressHelper";
-import { useWeb3React } from "@web3-react/core";
-import { Provider, Web3Provider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
-import { parseEther } from "@ethersproject/units";
 import { BigNumber, ethers } from "ethers";
-import { simpleRpcProvider } from "./providers";
-import {
-  getBusdContract,
-  getNtrdaoContract,
-  getPresaleContract,
-} from "./contractHelper";
+import { Web3Provider } from "@ethersproject/providers";
+
+import { getPresaleAddress } from "./address.helpers";
+import { getBusdContract, getPresaleContract } from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
 import { delay, isEmpty } from "./utility";
-
-const dao_abi = require("../abis/ntrdao.json");
-const busd_abi = require("../abis/busd.json");
 
 const MAX_SUPPLY = BigNumber.from("260000");
 
