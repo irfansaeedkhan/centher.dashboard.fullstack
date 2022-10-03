@@ -24,29 +24,29 @@ const Feed: NextPage = () => {
   const [posts, setPosts] = useState<Post[]>(dummyPosts);
 
   return (
-    <AllPagesWrapper pageTitle="Feed">
-      <div className={dashboardContentContainer}>
-        <h1 className={title}>My Feed</h1>
-        <div className={feedContainer}>
-          <div className={leftSidebar}>
-            <ProfileDetailCard />
-            <DiscoverCard />
-          </div>
-          <div className={postsContainer}>
-            <PostCard />
-            {posts
-              .filter((p) => !p.parent_post)
-              .map((post) => (
-                <SinglePost key={post._id} post={post} />
-              ))}
-          </div>
-          <div className={rightSidebar}>
-            <MessagesCard />
-            <RecentActivitiesCard />
-          </div>
+    // <AllPagesWrapper pageTitle="Feed">
+    <div className={dashboardContentContainer}>
+      <h1 className={title}>My Feed</h1>
+      <div className={feedContainer}>
+        <div className={leftSidebar}>
+          <ProfileDetailCard />
+          <DiscoverCard />
+        </div>
+        <div className={postsContainer}>
+          <PostCard />
+          {posts
+            .filter((p) => !p.parent_post)
+            .map((post) => (
+              <SinglePost key={post._id} post={post} />
+            ))}
+        </div>
+        <div className={rightSidebar}>
+          <MessagesCard />
+          <RecentActivitiesCard />
         </div>
       </div>
-    </AllPagesWrapper>
+    </div>
+    // </AllPagesWrapper>
   );
 };
 
