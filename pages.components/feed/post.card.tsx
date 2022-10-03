@@ -46,7 +46,7 @@ export const PostCard = () => {
   );
 
   //
-  const [previewFiles, setpreviewFiles] = useState([]);
+  const [previewFilesUI, setpreviewFilesUI] = useState([]);
 
   //
   const [deletedFileIndexs, setDeletedFileIndex] = useState([]);
@@ -59,6 +59,7 @@ export const PostCard = () => {
   //
   let currentPostID = "";
 
+  let previewFileList = [];
   // states
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -198,6 +199,66 @@ export const PostCard = () => {
     }
   };
 
+  const deleteFileIndexs = async (fileListIndex, fileIndex, previewIndex) => {
+    try {
+      console.log(
+        "Delete file index : ",
+        fileIndex,
+        fileIndex,
+        previewIndex,
+        "\n Preview : ",
+        previewFileList
+      );
+      //Check if single file in fileList
+      let singleFileInArray = false;
+
+      //Checking if only single file
+      if (userSelectedFileListArray[fileListIndex].length == 1) {
+        singleFileInArray = true;
+      }
+
+      if (singleFileInArray) {
+        //Removing fileList Object from array
+        let updatedFileListArray = await userSelectedFileListArray.filter(
+          (value, index) => {
+            if (index == fileListIndex) {
+              return false;
+            }
+            return true;
+          }
+        );
+        console.log(
+          "Removed value from array because no file : ",
+          updatedFileListArray
+        );
+        setuserSelectedFileListArray(updatedFileListArray);
+      } else {
+        let deleted_file_index = deletedFileIndexs;
+        //If more than one file exists in the fileArray Object then cannot delete single file because it is not allowed
+        //so storing this details in different array while creating chunks we will skip this file
+        if (deleted_file_index.indexOf(fileListIndex + "," + fileIndex) == -1) {
+          //Doesn't exits in the database
+          await setDeletedFileIndex(
+            deleted_file_index.push(fileListIndex + "," + fileIndex)
+          );
+          console.log(deleted_file_index);
+        }
+      }
+
+      //Remove Selected file
+      let updateFile = await previewFileList.filter((value, index) => {
+        if (index == previewIndex) {
+          return false;
+        }
+        return true;
+      });
+      await createSelectedFileUI(updateFile);
+      return;
+    } catch (error) {
+      console.log("Error ", error);
+    }
+  };
+
   const createPost = async (event: Event) => {
     try {
       let post_text = "";
@@ -237,32 +298,60 @@ export const PostCard = () => {
     try {
       let displaySelectedFile = [];
       for (let fileDetails in previewUrlList) {
+        console.log("File preview : ", previewUrlList[fileDetails]);
         if (
           SUPPORTED_VIDEO_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <video width={452} height={312} className="w-full" controls>
-              <source
-                src={previewUrlList[fileDetails].fileBlobURL}
-                type={previewUrlList[fileDetails].fileType}
-              />
-            </video>
+            <div>
+              <video width={452} height={312} className="w-full" controls>
+                <source
+                  src={previewUrlList[fileDetails].fileBlobURL}
+                  type={previewUrlList[fileDetails].fileType}
+                />
+              </video>
+              <button
+                onClick={(e) => {
+                  deleteFileIndexs(
+                    previewUrlList[fileDetails].fileListIndex,
+                    previewUrlList[fileDetails].fileIndex,
+                    fileDetails
+                  );
+                }}
+              >
+                Delete
+              </button>
+            </div>
           );
         } else if (
           SUPPORTED_IMAGE_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <img
-              src={previewUrlList[fileDetails].fileBlobURL}
-              width={452}
-              height={312}
-              alt="post media"
-              className="w-full"
-            />
+            <div>
+              <img
+                src={previewUrlList[fileDetails].fileBlobURL}
+                width={452}
+                height={312}
+                alt="post media"
+                className="w-full"
+              />
+              <button
+                onClick={(e) => {
+                  deleteFileIndexs(
+                    previewUrlList[fileDetails].fileListIndex,
+                    previewUrlList[fileDetails].fileIndex,
+                    fileDetails
+                  );
+                }}
+              >
+                Delete
+              </button>
+            </div>
           );
         }
       }
-      setpreviewFiles(displaySelectedFile);
+      console.log("Preview created for : ", displaySelectedFile);
+      setpreviewFilesUI(displaySelectedFile);
     } catch (error) {
       console.log("Failed to create selected ", error);
     }
@@ -306,7 +395,8 @@ export const PostCard = () => {
           });
         }
       }
-
+      console.log("Creating Selected UI ", previewUrlList);
+      previewFileList = previewUrlList;
       createSelectedFileUI(previewUrlList);
     } catch (error) {
       console.log("Failed to add file ", error);
@@ -424,7 +514,18 @@ export const PostCard = () => {
         </label>
       </div>
       {showModal && (
-        <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
+        <CustomModal
+          onClose={() => {
+            //TO DO : Convert to function
+            setShowModal(false);
+            setuserSelectedFileListArray([]);
+            setpreviewFilesUI([]);
+            setDeletedFileIndex([]);
+            setselectedFileDetail([]);
+            previewFileList = "";
+          }}
+          title={"Create post"}
+        >
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
@@ -444,7 +545,7 @@ export const PostCard = () => {
                   alt="post media"
                   className="w-full"
                 /> */}
-                {previewFiles}
+                {previewFilesUI}
               </div>
               <div className={inputTextContainer}>
                 <textarea
