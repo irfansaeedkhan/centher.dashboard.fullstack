@@ -81,7 +81,7 @@ export const registerWithSmartContract = async (
     return {
       status: "success",
       message: "registration_fee_paid",
-      message_description: "Registration fee paid successfully",
+      message_description: "You are successfully registered",
       data: tx,
     };
   } catch (error: any) {
@@ -93,7 +93,7 @@ export const registerWithSmartContract = async (
         data: null,
       };
     }
-    if (error.reason?.toLowerCase()?.includes("duplicated id")) {
+    if (error.reason?.toLowerCase()?.includes("user_already_registered")) {
       return {
         status: "error",
         message: "user_already_registered",
