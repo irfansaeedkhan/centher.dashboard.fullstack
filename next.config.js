@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["localhost"],
+    domains: ["localhost", "nethernftdevelopment.s3.eu-west-3.amazonaws.com"],
   },
   webpack(config) {
     config.module.rules.push({

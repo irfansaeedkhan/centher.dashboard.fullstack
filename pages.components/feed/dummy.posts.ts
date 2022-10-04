@@ -5,6 +5,7 @@ const user1 = {
   account_address: "0x73468329239987238997324",
   display_name: "User 1",
   profile_image: "/images/feedprofilepic.png",
+  custom_image: false,
 };
 
 const user2 = {
@@ -12,6 +13,7 @@ const user2 = {
   account_address: "0x782364287378234",
   display_name: "User 2",
   profile_image: "/images/feedprofilepic.png",
+  custom_image: false,
 };
 
 const user3 = {
@@ -19,6 +21,7 @@ const user3 = {
   account_address: "0x832745789734347",
   display_name: "User 3",
   profile_image: "/images/feedprofilepic.png",
+  custom_image: false,
 };
 
 const user4 = {
@@ -26,6 +29,7 @@ const user4 = {
   account_address: "0x829348002349874",
   display_name: "User 4",
   profile_image: "/images/feedprofilepic.png",
+  custom_image: false,
 };
 
 const post1: Post = {
@@ -35,17 +39,14 @@ const post1: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
     {
-      _id: "2",
       url: "/images/postimage.png",
       type: "image",
     },
     {
-      _id: "3",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -67,7 +68,6 @@ const post2: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -89,7 +89,6 @@ const post3: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -111,12 +110,10 @@ const post4: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
     {
-      _id: "2",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -138,7 +135,6 @@ const post5: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -160,7 +156,6 @@ const post6: Post = {
   createdAt: new Date().toDateString(),
   media: [
     {
-      _id: "1",
       url: "/images/postimage.png",
       type: "image",
     },
@@ -171,19 +166,4 @@ const post6: Post = {
   shares_count_on_post: 44,
 };
 
-// const post7: Post = {
-//   _id: "78246872364t72344432",
-//   user: user2,
-//   parent_post: {
-//     _id: post4._id,
-//     user: post4.user,
-//   },
-//   post_liked_by_loggedin_user:0,
-//   text_content: "reply 6 to reply 3",
-//   createdAt: new Date().toDateString(),
-//   media: [
-//     {
-//       _id: "1",
-//       url: "/images/postimage.png",
-//       type: "image",
-// }]};
+export const posts: Post[] = [post1, post2, post3, post4, post5, post6];

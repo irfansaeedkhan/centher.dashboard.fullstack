@@ -81,7 +81,7 @@ const modalHeader = ctl(`
   justify-between 
 `);
 
-const modalHeaderTitle = ctl(`animationTextHeading`);
+const modalHeaderTitle = ctl(`animationTextHeading py-1`);
 
 const modalHeaderButton = ctl(`
   px-1 

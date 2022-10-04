@@ -15,6 +15,7 @@ export interface Post {
     account_address: string;
     profile_image: string;
     display_name: string;
+    custom_image: boolean;
   };
   media?: Media[];
   post_liked_by_loggedin_user: number;
@@ -25,7 +26,6 @@ export interface Post {
 }
 
 interface Media {
-  _id: string;
   url: string;
   type: "image" | "video";
   alt?: string;
