@@ -39,6 +39,16 @@ const post1: Post = {
       url: "/images/postimage.png",
       type: "image",
     },
+    {
+      _id: "2",
+      url: "/images/postimage.png",
+      type: "image",
+    },
+    {
+      _id: "3",
+      url: "/images/postimage.png",
+      type: "image",
+    },
   ],
   post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
@@ -102,6 +112,11 @@ const post4: Post = {
   media: [
     {
       _id: "1",
+      url: "/images/postimage.png",
+      type: "image",
+    },
+    {
+      _id: "2",
       url: "/images/postimage.png",
       type: "image",
     },

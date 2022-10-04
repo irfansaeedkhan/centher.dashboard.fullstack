@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
@@ -7,12 +7,15 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
+import { NODE_API_URL } from "@/constants/common";
 
 // Current directory imports
 import Search from "./search";
+import HeaderProfile from "./header.profile";
 
 const Header = () => {
   const { user } = useUser();
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <div className={headerWraper}>
@@ -33,7 +36,7 @@ const Header = () => {
         <span className={border}></span>
         {!user ? (
           <Link href={AppRoutes.auth.login}>
-            <a className={connectButoon}>Login</a>
+            <a className={connectButoon}>Connect</a>
           </Link>
         ) : (
           <Link
@@ -44,6 +47,23 @@ const Header = () => {
           >
             <a className={connectButoon}>{user.display_name}</a>
           </Link>
+        )}
+        {user && (
+          <div
+            className="dpImagePreview cursor-pointer relative"
+            onClick={() => setOpenModal(true)}
+          >
+            <Image
+              src={`${NODE_API_URL}${user.profile_image}`}
+              alt="userProfile"
+              width={40}
+              height={40}
+              className="rounded-full"
+            />
+            {openModal && (
+              <HeaderProfile onClickOutside={() => setOpenModal(false)} />
+            )}
+          </div>
         )}
       </div>
     </div>
@@ -65,7 +85,7 @@ const headerWraper = ctl(`
 
 const rightWraper = ctl(`
   flex 
-  gap-10
+  gap-6
 `);
 
 const border = ctl(`

@@ -68,7 +68,7 @@ const timerSubTitleContainer = ctl(`
 blurbackground rounded-xl bg-white/30 backdrop-blur-sm py-1 px-2.5 border border-solid border-white/20
 `);
 const timerSubTitle = ctl(`
-text-14px text-[#F6F7FA]
+text-14px text-gray-shade-16
 `);
 const timerSubTitleBold = ctl(`
 text-white font-semibold

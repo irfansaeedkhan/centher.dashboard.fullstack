@@ -22,7 +22,6 @@ import {
 
 const Feed: NextPage = () => {
   // states
-
   const [posts, setPosts] = useState<Post[]>(dummyPosts);
 
   useEffect(() => {
@@ -83,16 +82,11 @@ const feedContainer = ctl(`
 flex justify-center gap-5
 `);
 const leftSidebar = ctl(`
-w-full max-w-[272px] flex flex-col gap-3
+w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
 `);
 const rightSidebar = ctl(`
-w-full max-w-[272px] flex flex-col gap-3
+w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full lg:w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);
-const backBtn = ctl(`
-text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium w-20
-`);
-// interfaces
-type setLevelFunction = (levelVal: "level1" | "level2" | "level3") => void;
