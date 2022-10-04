@@ -8,7 +8,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Avatars from "@/components/avatars";
 import {
   AvatarIcon,
-  CameraIcon,
+  CameraIcon2,
   NFTIcon,
   Polygon,
   UploadIcon,
@@ -54,7 +54,7 @@ const ProfilePicture: React.FC = () => {
               className="absolute flex flex-col gap-6 w-[380px] h-auto bg-[#0D0D0D] p-6 top-10 rounded-xl"
             >
               <div className="flex gap-2 items-center">
-                <CameraIcon />
+                <CameraIcon2 />
                 <span
                   className="text-sm font-medium hover:text-brand-primary"
                   onClick={() => setIsDpModal("selfie")}

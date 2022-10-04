@@ -1818,7 +1818,7 @@ export const SettingIcon: React.FC<IconProps> = (props) => {
   );
 };
 
-export const CameraIcon = () => {
+export const CameraIcon2 = () => {
   return (
     <svg
       width="24"
