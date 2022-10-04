@@ -16,12 +16,11 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
 } from "@/pages.components/feed";
 
 const Profile: NextPage = () => {
   // states
-  const [posts, setPosts] = useState<Post[]>(dummyPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   return (
     <AllPagesWrapper pageTitle="Profile">

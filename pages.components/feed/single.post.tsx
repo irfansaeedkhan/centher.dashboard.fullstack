@@ -74,7 +74,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      setTotalLikePost(data.total_likes);
+      setTotalLikePost(data.likes_count);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"

@@ -17,12 +17,11 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
 } from "@/pages.components/feed";
 
 const Feed: NextPage = () => {
   // states
-  const [posts, setPosts] = useState<Post[]>(dummyPosts);
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     fetchFeedsData();
@@ -30,9 +29,8 @@ const Feed: NextPage = () => {
 
   const fetchFeedsData = async () => {
     try {
-      // Create a user with registration_pending state in database
       const { data } = await axiosNodeApi.get("/api/socials/posts");
-      setPosts(data.postData);
+      setPosts(data.posts);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
