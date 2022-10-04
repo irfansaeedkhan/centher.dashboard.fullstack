@@ -8,6 +8,7 @@ import { Carousel } from "react-responsive-carousel";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
+import moment from "moment";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -31,6 +32,7 @@ import {
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
+import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
@@ -48,7 +50,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-  //const [likePostValue, setLikePostValue] = useState(0);
+  const [totalLikePost, setTotalLikePost] = useState<number>(
+    post.likes_count_on_post
+  );
   const router = useRouter();
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
@@ -70,11 +74,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      // if (data.message_description == "post liked successfully!") {
-      //   setLikePostValue(1);
-      // } else if (data.message_description == "post unliked successfully!") {
-      //   setLikePostValue(-1);
-      // }
+      setTotalLikePost(data.total_likes);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -122,7 +122,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       <div className={topCard}>
         <div className={profileDetail}>
           <Image
-            src={post.user.profile_image}
+            src={
+              post.user.custom_image
+                ? post.user.profile_image
+                : `${NODE_API_URL}${post.user.profile_image}`
+            }
             width={48}
             height={48}
             className="rounded-full"
@@ -131,7 +135,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <div>
             <h5 className={PFName}>{post.user.display_name}</h5>
             {/* TODO: Irfan - Use dayjs for created at*/}
-            <h6 className={PFTime}>{post.createdAt}</h6>
+            <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
           </div>
         </div>
         <div ref={ref} className={toggleContainer}>
@@ -161,20 +165,16 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               showIndicators={false}
               showArrows={post.media && post.media.length === 1 ? false : true}
             >
-              <Image
-                src="/images/postimage.png"
-                width={452}
-                height={312}
-                alt="post media"
-                className="w-full"
-              />
-              <Image
-                src="/images/postimage.png"
-                width={452}
-                height={312}
-                alt="post media"
-                className="w-full"
-              />
+              {post.media.map((media) => (
+                <Image
+                  key={media.url}
+                  src={media.url}
+                  width={452}
+                  height={312}
+                  alt="post media"
+                  className="w-full"
+                />
+              ))}
             </Carousel>
           )}
           {/* map to show images */}
@@ -222,7 +222,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <MessageIcon /> {post.comments_count_on_post}
         </button>
         <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
-          <LikeIcon /> {post.likes_count_on_post}
+          <LikeIcon /> {totalLikePost > 0 && totalLikePost}
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
@@ -284,7 +284,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       {(isFeedPage || isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image
-            src={post?.user?.profile_image}
+            src={
+              post?.user?.custom_image
+                ? post.user.profile_image
+                : `${NODE_API_URL}${post.user.profile_image}`
+            }
             width={30}
             height={30}
             className="rounded-full"

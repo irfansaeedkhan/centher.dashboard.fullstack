@@ -31,9 +31,7 @@ const Feed: NextPage = () => {
   const fetchFeedsData = async () => {
     try {
       // Create a user with registration_pending state in database
-      const { data } = await axiosNodeApi.get("/api/socials/posts/fetch");
-
-      console.log("data.postData", data.postData);
+      const { data } = await axiosNodeApi.get("/api/socials/posts");
       setPosts(data.postData);
     } catch (error: any) {
       toast.error(
