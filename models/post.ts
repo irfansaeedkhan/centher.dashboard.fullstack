@@ -17,6 +17,7 @@ export interface Post {
     display_name: string;
   };
   media?: Media[];
+  post_liked_by_loggedin_user: number;
   comments_count_on_post: number;
   shares_count_on_post: number;
   likes_count_on_post: number;
@@ -26,6 +27,6 @@ export interface Post {
 interface Media {
   _id: string;
   url: string;
-  type: "image/jpeg" | "video/mp4";
+  type: "image" | "video";
   alt?: string;
 }

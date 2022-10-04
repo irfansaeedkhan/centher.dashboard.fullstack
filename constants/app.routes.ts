@@ -18,6 +18,8 @@ export const AppRoutes = {
   // authenticatedAndActiveUserPages
   feed: "/feed",
   single_post: "/feed/[account_address]/post/[post_id]",
+  user_profile: "/profile",
+  user_NFTprofile: "/profile/nftprofile",
   chat: "/chat",
   notifications: "/notifications",
   create_collection: "/create-collection",

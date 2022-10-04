@@ -1,0 +1,128 @@
+import {
+  SUPPORTED_VIDEO_TYPES,
+  SUPPORTED_IMAGE_TYPES,
+  MAX_IMAGE_SIZE,
+  MAX_VIDEO_SIZE,
+} from "@/constants/supported.media.type";
+import {
+  calculateFileChunksSizes,
+  FileChunksDetails,
+  FileChunks,
+} from "@/utils/mediafile/filechunks";
+
+// Function will check following detail in image file
+// image size
+// image type
+export const checkValidImageFile = (file_details: File): boolean => {
+  //Checking if image file is supported or not
+  if (!SUPPORTED_IMAGE_TYPES.includes(file_details.type)) {
+    //
+    return false;
+  }
+
+  //Checking if image file is less than allowed size
+  if (file_details.size > MAX_IMAGE_SIZE) {
+    //
+    return false;
+  }
+
+  return true;
+};
+
+// Function will check following details in video file
+// video size
+// video type
+export const checkValidVideoFile = (file_details: File): boolean => {
+  //Checking if video file is supported or not
+  if (!SUPPORTED_VIDEO_TYPES.includes(file_details.type)) {
+    //
+    return false;
+  }
+
+  //Checking if video file is less than allowed size
+  if (file_details.size > MAX_VIDEO_SIZE) {
+    //
+    return false;
+  }
+
+  return true;
+};
+
+// Function will check if file already exits in selected file list or not
+// Function will check following things
+// file name
+// file size
+// file lastmodified data
+export const checkFileAlreadyAddedInSelectedFile = (
+  fileListArray: Array<FileList>,
+  selected_files: FileList
+): boolean => {
+  //
+  for (
+    let selected_file_index = 0;
+    selected_file_index < selected_files.length;
+    selected_file_index++
+  ) {
+    for (let files_list_index in fileListArray) {
+      //
+      for (
+        let file_index = 0;
+        file_index < fileListArray[files_list_index].length;
+        file_index++
+      ) {
+        if (
+          fileListArray[files_list_index][file_index].name ==
+            selected_files[selected_file_index].name &&
+          fileListArray[files_list_index][file_index].size ==
+            selected_files[selected_file_index].size &&
+          fileListArray[files_list_index][file_index].lastModified ==
+            selected_files[selected_file_index].lastModified
+        ) {
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+};
+
+export type FileChunksChunksCalculations = {
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  no_of_chunk: number;
+  index_of_file_list: number | string;
+  index_of_file: number;
+  chunks_range: FileChunks[];
+};
+
+//Function will calculate chunks of the file
+export const post_file_details = async (
+  fileListArray: Array<FileList>,
+  removedFiles: string[] = []
+): Promise<Array<FileChunksChunksCalculations>> => {
+  let fileChunksDetails: Array<FileChunksChunksCalculations> = [];
+  //
+  for (let files_list_index in fileListArray) {
+    //
+    for (let file = 0; file < fileListArray[files_list_index].length; file++) {
+      //
+      let { chunks_range, no_of_chunks } = calculateFileChunksSizes(
+        fileListArray[files_list_index][file].size
+      );
+
+      fileChunksDetails.push({
+        file_name: fileListArray[files_list_index][file].name,
+        file_size: fileListArray[files_list_index][file].size,
+        file_type: fileListArray[files_list_index][file].type,
+        no_of_chunk: no_of_chunks,
+        index_of_file_list: files_list_index,
+        index_of_file: file,
+        chunks_range: chunks_range,
+      });
+    }
+  }
+
+  return fileChunksDetails;
+};
