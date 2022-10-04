@@ -13,6 +13,7 @@ import {
   AnimateTrashIcon,
 } from "@/assets/svgs";
 
+// TO DO : Remove
 import {
   defaultBufferSize,
   awsMinBufferSize,
@@ -51,11 +52,12 @@ export const PostCard = () => {
   //
   const [deletedFileIndexs, setDeletedFileIndex] = useState([]);
 
-  //
+  //TO DO : Remove
   const [selectedFileDetail, setselectedFileDetail] = useState(
     Array<FileChunksChunksCalculations>
   );
 
+  const [tweetText, setweetText] = useState("");
   //
   let currentPostID = "";
 
@@ -75,16 +77,20 @@ export const PostCard = () => {
       } else {
         box.style.fill = `#FEBF32`;
       }
+      setweetText(e.target.value);
     }
   };
-  const CompleteMultipartUpload = async (file_index) => {
+  const CompleteMultipartUpload = async (
+    CompleteMultipartUpload,
+    file_index
+  ) => {
     try {
       await axiosNodeApi.post("/api/socials/posts-media/complete", {
         post_id: currentPostID,
         file_index: file_index,
       });
-
-      UploadFiles(file_index + 1);
+      console.log("Uploading new file : ", file_index);
+      await UploadFiles(CompleteMultipartUpload, file_index + 1);
     } catch (error) {
       console.log("Failed to complete upload : ", error);
     }
@@ -158,12 +164,22 @@ export const PostCard = () => {
             .then((image_upload_result) => {
               console.log("Chunk uploaded success fully");
               //Checking all chunks are uploaded
+              console.log(
+                file_details,
+                "\n ",
+                file_details.chunks_range,
+                file_details.chunks_range.length,
+                chunk_index
+              );
               if (file_details.chunks_range.length - 1 == chunk_index) {
                 console.log("File upload complete");
                 //All chunks are uploaded now need to upload new file
-                CompleteMultipartUpload(uploading_file_index);
+                CompleteMultipartUpload(
+                  filesChunksDetails,
+                  uploading_file_index
+                );
               } else {
-                console.log("Uploading new file");
+                console.log("Uploading chunks");
                 //Upload Next Chunk
                 UploadChunks(
                   filesChunksDetails,
@@ -186,8 +202,13 @@ export const PostCard = () => {
 
   const UploadFiles = async (filesChunksDetails, uploading_file_index) => {
     try {
-      console.log("File chunks details : ", filesChunksDetails);
-      if (uploading_file_index > filesChunksDetails.length) {
+      console.log(
+        "File chunks details : ",
+        filesChunksDetails,
+        filesChunksDetails.length,
+        uploading_file_index
+      );
+      if (uploading_file_index >= filesChunksDetails.length) {
         //Checking if file list
         console.log("File Upload complete show message ");
         return;
@@ -199,6 +220,8 @@ export const PostCard = () => {
     }
   };
 
+  //Function will remove the files created by the user
+  //
   const deleteFileIndexs = async (fileListIndex, fileIndex, previewIndex) => {
     try {
       console.log(
@@ -241,17 +264,31 @@ export const PostCard = () => {
           await setDeletedFileIndex(
             deleted_file_index.push(fileListIndex + "," + fileIndex)
           );
-          console.log(deleted_file_index);
+          console.log(
+            "Cannot remove file because their is more than one file so adding it "
+          );
         }
       }
 
       //Remove Selected file
+      console.log("Before removing file : ", previewFileList);
       let updateFile = await previewFileList.filter((value, index) => {
+        console.log(value, "Index ", index, "Delte index ", previewIndex);
         if (index == previewIndex) {
           return false;
         }
         return true;
       });
+
+      console.log("After removing file ", updateFile);
+      previewFileList = updateFile;
+
+      // If all files are deleted then clearning array
+      if (previewFileList.length < 1) {
+        //
+        setuserSelectedFileListArray([]);
+      }
+
       await createSelectedFileUI(updateFile);
       return;
     } catch (error) {
@@ -259,13 +296,15 @@ export const PostCard = () => {
     }
   };
 
+  // Function will do the following
+  // Calculate Chunks
+  // Create entry in database
+  // Start uploading it to server
   const createPost = async (event: Event) => {
     try {
-      let post_text = "";
-
-      //TO DO : Get text
       let filesChunksDetails = await post_file_details(
-        userSelectedFileListArray
+        userSelectedFileListArray,
+        deletedFileIndexs
       );
 
       //Setting details in filesChunksDetails
@@ -273,10 +312,10 @@ export const PostCard = () => {
 
       let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
         post_files_detail: filesChunksDetails,
-        post_text: post_text,
+        post_text: tweetText,
       });
 
-      //If no file data that means only text was avaible in post
+      //If no file media that means only text was avaible in post
       if (filesChunksDetails.length == 0) {
         //To DO : Show message post is created
         setShowModal(false);
@@ -285,7 +324,7 @@ export const PostCard = () => {
 
       currentPostID = data.post_id;
 
-      //
+      // Starting uploading of task
       await UploadFiles(filesChunksDetails, 0).catch((error) => {
         console.log("Error ", error);
       });
@@ -293,12 +332,18 @@ export const PostCard = () => {
       console.log("Failed to create post ", error);
     }
   };
+
+  // Function will display social media in pop up
   //
   const createSelectedFileUI = (previewUrlList) => {
     try {
+      console.log("Preview list : ", previewUrlList);
+      //
       let displaySelectedFile = [];
+
+      // Running loop to all the added files
       for (let fileDetails in previewUrlList) {
-        console.log("File preview : ", previewUrlList[fileDetails]);
+        // Checking if type is supported video type
         if (
           SUPPORTED_VIDEO_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
@@ -326,6 +371,7 @@ export const PostCard = () => {
         } else if (
           SUPPORTED_IMAGE_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
+          // Checking if supported image type
           displaySelectedFile.push(
             <div>
               <img
@@ -350,7 +396,8 @@ export const PostCard = () => {
           );
         }
       }
-      console.log("Preview created for : ", displaySelectedFile);
+
+      // Displaying preview
       setpreviewFilesUI(displaySelectedFile);
     } catch (error) {
       console.log("Failed to create selected ", error);
@@ -363,28 +410,40 @@ export const PostCard = () => {
       //TO DO : Remove Selected filed
       let alreadyAddedFileList: Array<FileList> = userSelectedFileListArray;
 
+      // Checking file already exits in selected file or not
       let fileExits = checkFileAlreadyAddedInSelectedFile(
         alreadyAddedFileList,
         selected_files
       );
+
+      // If file exits
       if (fileExits) {
-        console.log("Select file list : ", fileExits);
+        console.log(
+          "Selected file already exits in the database : ",
+          fileExits
+        );
         //TO DO : Show error message that file already exits in the selected file
-        return;
+        return false;
       }
-      //
+
+      // Pushing FileList to Array of FileList
       alreadyAddedFileList.push(selected_files);
       setuserSelectedFileListArray(alreadyAddedFileList);
-      let previewUrlList: Array<PreviewSelectedFile> = [];
-      //
 
+      //
+      let previewUrlList: Array<PreviewSelectedFile> = [];
+
+      // Creating Blob for and storing in seperate
+      // Running loop of FileList Array
       for (let filelist_index in alreadyAddedFileList) {
-        //Running loop for creating file
+        // Running loop on each file
         for (
           let file_index = 0;
           file_index < alreadyAddedFileList[filelist_index].length;
           file_index++
         ) {
+          // Check if file is not deleted by user
+          // To Add FileListArray Index with FileList check if exists in file
           previewUrlList.push({
             fileListIndex: filelist_index,
             fileIndex: file_index,
@@ -395,41 +454,48 @@ export const PostCard = () => {
           });
         }
       }
-      console.log("Creating Selected UI ", previewUrlList);
+
       previewFileList = previewUrlList;
+
+      // Creating UI for displaying selected file
       createSelectedFileUI(previewUrlList);
+
+      return true;
     } catch (error) {
       console.log("Failed to add file ", error);
     }
   };
 
+  // Function will be called when user click on photo or video icon on create post
   const handleSelectFile = (event: Event, file_type: string) => {
     try {
-      //Checking if file is selected or not
+      // Checking if file is selected or not
       if (!event.target.files) {
         return;
       }
 
-      //No file selected returning from the array
+      // No file selected returning
       if (event.target.files.length < 1) {
         return;
       }
 
       let validFileType: boolean = false;
-      //
+
+      // Check if selected files have valid file extension or not
       for (
         let file_index = 0;
         file_index < event.target.files.length;
         file_index++
       ) {
         if (file_type == "images") {
-          //
+          // Checking if valid image type
           validFileType = checkValidImageFile(event.target.files[file_index]);
         } else if (file_type == "videos") {
-          //
+          // Checking if valid video type
           validFileType = checkValidVideoFile(event.target.files[file_index]);
         }
 
+        // Show error message
         if (!validFileType) {
           break;
         }
@@ -437,17 +503,20 @@ export const PostCard = () => {
 
       //
       if (!validFileType) {
-        console.log("imvalid file type ");
-        //TO DO : Add alert of something to display error message
+        console.log("Invalid file type");
+        // TO DO : Add alert of something to display error message
         return;
       }
 
-      console.log("Valid file type : ", validFileType);
-      //Add selected file
-      addSelectedFiles(event.target.files);
+      // Function will do following things
+      // Check if file is already selected by user earlier
+      // Create blob of file to display it at frontend
+      let showPopUp = addSelectedFiles(event.target.files);
 
-      //Showing modals
-      setShowModal(true);
+      // Showing modals
+      if (showPopUp) {
+        setShowModal(true);
+      }
     } catch (error) {
       console.log("Failed to handle file ", error);
     }

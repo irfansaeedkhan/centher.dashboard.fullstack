@@ -107,20 +107,23 @@ export const post_file_details = async (
   for (let files_list_index in fileListArray) {
     //
     for (let file = 0; file < fileListArray[files_list_index].length; file++) {
-      //
-      let { chunks_range, no_of_chunks } = calculateFileChunksSizes(
-        fileListArray[files_list_index][file].size
-      );
+      // Cheking if file is not inclued in list of deleted files
+      if (removedFiles.indexOf(files_list_index + "," + file) == -1) {
+        //C
+        let { chunks_range, no_of_chunks } = calculateFileChunksSizes(
+          fileListArray[files_list_index][file].size
+        );
 
-      fileChunksDetails.push({
-        file_name: fileListArray[files_list_index][file].name,
-        file_size: fileListArray[files_list_index][file].size,
-        file_type: fileListArray[files_list_index][file].type,
-        no_of_chunk: no_of_chunks,
-        index_of_file_list: files_list_index,
-        index_of_file: file,
-        chunks_range: chunks_range,
-      });
+        fileChunksDetails.push({
+          file_name: fileListArray[files_list_index][file].name,
+          file_size: fileListArray[files_list_index][file].size,
+          file_type: fileListArray[files_list_index][file].type,
+          no_of_chunk: no_of_chunks,
+          index_of_file_list: files_list_index,
+          index_of_file: file,
+          chunks_range: chunks_range,
+        });
+      }
     }
   }
 
