@@ -158,7 +158,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         }`}
       >
         <div className={mediaContainer}>
-          {post.media && post.media.length > 0 && (
+          {post.media && (
             <Carousel
               showStatus={false}
               showThumbs={false}
