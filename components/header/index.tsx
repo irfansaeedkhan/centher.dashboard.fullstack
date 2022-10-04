@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
@@ -89,21 +89,21 @@ const rightWraper = ctl(`
 `);
 
 const border = ctl(`
+  my-3
   md:block
   sm:hidden
   border-l-2 
   rounded-xl 
   border-gray-shade-12/30
-  my-3
 `);
 
 const connectButoon = ctl(`
   px-6 
   py-2
   flex
-  items-center 
   text-sm 
   rounded-lg 
+  items-center 
   font-semibold 
   bg-brand-primary 
   text-black-shade-2 
