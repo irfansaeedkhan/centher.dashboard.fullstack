@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
+// import { toast } from "react-hot-toast";
 
 // App imports
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
+// import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import {
@@ -28,15 +30,24 @@ const SinglePostPage: NextPage = () => {
 
   console.log(router.query);
 
-  useEffect(() => {
-    const _post = posts.find(
-      (p) =>
-        p._id === router.query.post_id &&
-        p.user.account_address === router.query.account_address
-    );
-    console.log("post", _post);
-    setPost(_post);
-  }, [router]);
+  // useEffect(() => {
+  //   const fetchSinglePostData = async () => {
+  //     try {
+  //       // Create a user with registration_pending state in database
+  //       const { data } = await axiosNodeApi.get(
+  //         `/api/socials/posts/fetch-single?account_address='${router?.query?.account_address}'&post_id=${router?.query?.post_id}`
+  //       );
+
+  //       console.log("post", data.postData);
+  //       setPost(data.postData);
+  //     } catch (error: any) {
+  //       toast.error(
+  //         error.response.data?.message_description || "Something went wrong"
+  //       );
+  //     }
+  //   };
+  //   fetchSinglePostData();
+  // }, []);
 
   return (
     <AllPagesWrapper pageTitle="Feed">

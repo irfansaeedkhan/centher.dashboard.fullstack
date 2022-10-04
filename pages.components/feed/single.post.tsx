@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef } from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+import { toast } from "react-hot-toast";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { useRouter } from "next/router";
@@ -33,7 +34,8 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
-import { posts } from "./dummy.posts";
+import { axiosNodeApi } from "@/utils/axios";
+// import { posts } from "./dummy.posts";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -46,21 +48,39 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
+  //const [likePostValue, setLikePostValue] = useState(0);
   const router = useRouter();
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
-  useEffect(() => {
-    const post_id = router.query.post_id;
-    const account_address = router.query.account_address;
+  // useEffect(() => {
+  //   const post_id = router.query.post_id;
+  //   const account_address = router.query.account_address;
 
-    const _replies = posts.filter(
-      (p) =>
-        p.parent_post?._id === post_id &&
-        p.parent_post?.user.account_address === account_address
-    );
-    setReplies(_replies);
-  }, [router]);
+  //   const _replies = posts.filter(
+  //     (p) =>
+  //       p.parent_post?._id === post_id &&
+  //       p.parent_post?.user.account_address === account_address
+  //   );
+  //   setReplies(_replies);
+  // }, [router]);
+
+  const likePost = async (post_id: String) => {
+    try {
+      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+        post_id,
+      });
+      // if (data.message_description == "post liked successfully!") {
+      //   setLikePostValue(1);
+      // } else if (data.message_description == "post unliked successfully!") {
+      //   setLikePostValue(-1);
+      // }
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
 
   // toggle function to show/hide edit/delete popup
   const togglePopFunc = async () => {
@@ -201,7 +221,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         <button className={footerdetailBtn}>
           <MessageIcon /> {post.comments_count_on_post}
         </button>
-        <button className={footerdetailBtn}>
+        <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
           <LikeIcon /> {post.likes_count_on_post}
         </button>
         <div ref={ref2} className={toggleContainer}>
@@ -241,11 +261,21 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               <ArrowLeftIcon /> Share Via
             </button>
             <button className={SharetoggleListBtn}>
-              <img src="/images/whatsapp.png" width={24} height={24} />
+              <Image
+                src="/images/whatsapp.png"
+                width={24}
+                height={24}
+                alt="whatapp"
+              />
               WhatsApp
             </button>
             <button className={SharetoggleListBtn}>
-              <img src="/images/twitter2.png" width={24} height={24} />
+              <Image
+                src="/images/twitter2.png"
+                width={24}
+                height={24}
+                alt="twitter"
+              />
               Twitter
             </button>
           </div>
@@ -254,7 +284,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       {(isFeedPage || isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image
-            src={post.user.profile_image}
+            src={post?.user?.profile_image}
             width={30}
             height={30}
             className="rounded-full"
