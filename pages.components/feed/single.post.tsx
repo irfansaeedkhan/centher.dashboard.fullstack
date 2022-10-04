@@ -154,34 +154,14 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         }`}
       >
         <div className={mediaContainer}>
-          {post.media && post.media.length > 0 && (
+          {post.media && (
             <Carousel
               showStatus={false}
               showThumbs={false}
               showIndicators={false}
               showArrows={post.media && post.media.length === 1 ? false : true}
             >
-              <Image
-                src="/images/postimage.png"
-                width={452}
-                height={312}
-                alt="post media"
-                className="w-full"
-              />
-              <Image
-                src="/images/postimage.png"
-                width={452}
-                height={312}
-                alt="post media"
-                className="w-full"
-              />
-            </Carousel>
-          )}
-          {/* map to show images */}
-          {/* {post.media && post.media.length > 1 && (
-            <>
               {post.media.map((media) => (
-                // TODO: Irfan - Wrap it in carousel
                 <Image
                   key={media._id}
                   src={media.url}
@@ -191,8 +171,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
                   className="w-full"
                 />
               ))}
-            </>
-          )} */}
+            </Carousel>
+          )}
         </div>
         {post.text_content && (
           <div className={textContainer}>
