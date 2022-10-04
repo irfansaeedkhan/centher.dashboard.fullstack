@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
+import { Carousel } from "react-responsive-carousel";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -327,13 +328,13 @@ export const PostCard = () => {
           SUPPORTED_IMAGE_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <div>
+            <div className="h-[38vh] relative">
               <img
                 src={previewUrlList[fileDetails].fileBlobURL}
                 width={452}
                 height={312}
                 alt="post media"
-                className="w-full"
+                className="w-full h-full object-cover rounded-xl"
               />
               <button
                 onClick={(e) => {
@@ -343,12 +344,16 @@ export const PostCard = () => {
                     fileDetails
                   );
                 }}
+                className={imageDelBtn}
               >
-                Delete
+                x
               </button>
             </div>
           );
         }
+      }
+      {
+        /* aaaaaa */
       }
       console.log("Preview created for : ", displaySelectedFile);
       setpreviewFilesUI(displaySelectedFile);
@@ -452,6 +457,8 @@ export const PostCard = () => {
       console.log("Failed to handle file ", error);
     }
   };
+
+  console.log("previewFilesUI", previewFilesUI);
   return (
     <div className={postCardContainer}>
       <div className={topCard}>
@@ -536,8 +543,23 @@ export const PostCard = () => {
               />
               <h5 className={cdName}>uixamjad</h5>
             </div>
+            {/* aaaaaa */}
             <div className={maincontentContainer}>
-              <div className={mediaContainer}>
+              <div
+                className={`${mediaContainer} 
+                // ${previewFilesUI.length === 1 && "grid-cols-1"} 
+                // ${previewFilesUI.length === 2 && "grid-cols-2"} 
+                // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                `}
+              >
+                <Carousel
+                  showStatus={false}
+                  showThumbs={false}
+                  showIndicators={false}
+                  showArrows={previewFilesUI.length === 1 ? false : true}
+                >
+                  {previewFilesUI}
+                </Carousel>
                 {/* <img
                   src="/images/postimage.png"
                   width={452}
@@ -545,7 +567,7 @@ export const PostCard = () => {
                   alt="post media"
                   className="w-full"
                 /> */}
-                {previewFilesUI}
+                {/* {previewFilesUI} */}
               </div>
               <div className={inputTextContainer}>
                 <textarea
@@ -647,7 +669,7 @@ const maincontentContainer = ctl(`
 px-6
 `);
 const mediaContainer = ctl(`
- w-full flex gap-2 
+ "w-full grid" gap-3"
 `);
 const mediaItem = ctl(`  
 
@@ -672,4 +694,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
 `);
 const clearBtn = ctl(`
 plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
+`);
+const imageDelBtn = ctl(`
+absolute top-2 right-2 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
 `);
