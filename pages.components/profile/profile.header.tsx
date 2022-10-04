@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
 import Button from "@/components/button";
 import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
+import useUser from "@/hooks/use.user";
 
 const ProfileHeader = () => {
   // states
@@ -32,6 +33,8 @@ const ProfileHeader = () => {
   const router = useRouter();
   const isUserProfile = router.pathname === AppRoutes.user_profile;
   const isUserNFTProfile = router.pathname === AppRoutes.user_NFTprofile;
+  const { user } = useUser();
+
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -78,7 +81,11 @@ const ProfileHeader = () => {
               <h5 className={profileName}>uixamjad</h5>
               <div className={shareBtns}>
                 <div className={copyContainer}>
-                  <h6 className={code}>0xf563...3053</h6>
+                  <h6 className={code}>
+                    {user?.account_address.slice(0, 6) +
+                      "..." +
+                      user?.account_address.slice(38, 42)}
+                  </h6>
                   <button className="copyBtn" onClick={copy}>
                     <CopyIcon />
                   </button>
