@@ -62,7 +62,6 @@ export const PostCard = () => {
   let currentPostID = "";
 
   let previewFileList = [];
-
   // states
   const [showModal, setShowModal] = useState<boolean>(false);
 
@@ -233,7 +232,6 @@ export const PostCard = () => {
         "\n Preview : ",
         previewFileList
       );
-
       //Check if single file in fileList
       let singleFileInArray = false;
 
@@ -523,7 +521,6 @@ export const PostCard = () => {
       console.log("Failed to handle file ", error);
     }
   };
-
   return (
     <div className={postCardContainer}>
       <div className={topCard}>

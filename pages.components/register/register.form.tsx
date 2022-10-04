@@ -10,22 +10,16 @@ import { toast } from "react-hot-toast";
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ErrorMessage } from "@/components/error.message";
-import Avatars from "@/components/avatars";
-import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
+import { SpinIcon } from "@/assets/svgs";
 
 // Current directory imports
 import { InputField } from "./input.field";
 import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
-import { AppRoutes } from "@/constants/app.routes";
-import { SpinIcon } from "@/assets/svgs";
+import { registerWithSmartContract } from "./register.with.smart.contract";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
-  pseudonym: "",
-  first_name: "",
-  last_name: "",
-  display_name: "pseudonym",
-  profile_image: "/api/public/avatars/avatar-1.png",
   account_address: "",
   referred_by: "",
 };
@@ -34,16 +28,10 @@ export const RegisterForm: React.FC = () => {
   // TODO: Waqar - Change the state name to isButtonDisabled to be more clear
   const [isButton, setIsButton] = useState(false);
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    control,
-    formState: { errors },
-  } = useForm({
+  const { handleSubmit, setValue, control } = useForm({
     defaultValues: initialSignupState,
     resolver: joiResolver(SignupStateSchema, {
       abortEarly: false,
@@ -67,64 +55,24 @@ export const RegisterForm: React.FC = () => {
   const onSubmit = async (signupData: SignupState) => {
     setIsButton(true);
 
-    try {
-      // Create a user with registration_pending state in database
-      const { data } = await axiosNodeApi.post("/api/auth/signup", signupData);
+    const res = await registerWithSmartContract(library, signupData);
 
-      // Show success toast
-      toast.success(
-        data.message_description ??
-          "Your account has been created successfully. Please login to continue.",
-        {
-          duration: 8000,
-        }
-      );
-
+    if (res.status === "error") {
       setIsButton(false);
-      // Redirect to login page
-      router.push(AppRoutes.auth.login);
-    } catch (error: any) {
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-      setIsButton(false);
+      toast.error(res.message_description || "Something went wrong");
+      return;
     }
+
+    toast.success(res.message_description);
+
+    // Redirect to login page
+    router.push(AppRoutes.auth.login);
   };
 
   return (
     <>
-      <Avatars
-        defaultAvatar={initialSignupState.profile_image}
-        onSelect={(avatar) => setValue("profile_image", avatar)}
-      />
-
       <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
-        {formFields.slice(0, 3).map((formField) => {
-          return (
-            <InputField
-              key={formField.id}
-              {...formField}
-              {...register(formField.id)}
-              error={errors[formField.id]}
-            />
-          );
-        })}
-
-        {/* Display Name Selector */}
-        {/* TODO: Waqar Update it according to Design */}
-        <div className="flex flex-col gap-2">
-          <label className={"text-white text-sm"} htmlFor="display_name">
-            Display Name
-          </label>
-
-          <select className={inputField} {...register("display_name")}>
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
-          </select>
-        </div>
-
-        {formFields.slice(3).map((formField) => {
+        {formFields.map((formField) => {
           return (
             <Controller
               key={formField.id}
@@ -136,7 +84,7 @@ export const RegisterForm: React.FC = () => {
                     <div>
                       <button
                         key={formField.id}
-                        className={button}
+                        className={connectButton}
                         type="button"
                         onClick={connectWallet}
                       >
@@ -198,14 +146,17 @@ const button = ctl(`
   transition-all 
 `);
 
-const inputField = ctl(`
-  w-full 
+const connectButton = ctl(`
+  mt-2 
   py-3 
-  px-5 
-  bg-[#1E1E21] 
-  text-white 
+  flex 
+  w-full 
+  font-bold 
   rounded-lg
-  border-0
-  focus:outline-none 
-  focus:ring-brand-primary
+  items-center 
+  justify-center 
+  text-brand-primary
+  bg-black-shade-7
+  hover:bg-black-shade-4
+  transition-all 
 `);

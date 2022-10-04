@@ -23,27 +23,6 @@ export async function middleware(request: NextRequest) {
         `${request.nextUrl.origin}${AppRoutes.auth.login}`
       );
     }
-
-    if (user.status === "registration_fee_pending") {
-      return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.auth.pay_registration_fee}`
-      );
-    }
-  }
-
-  if (request.nextUrl.pathname === AppRoutes.auth.pay_registration_fee) {
-    const user = await getUser(sessionId);
-    if (!user) {
-      return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.auth.login}`
-      );
-    }
-
-    if (user.status !== "registration_fee_pending") {
-      return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.home}`
-      );
-    }
   }
 
   // Last step: return the request to Next.js

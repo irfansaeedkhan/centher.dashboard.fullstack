@@ -4,9 +4,6 @@ export const AppRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
-
-    // Authenticated AND registration pending users can access
-    pay_registration_fee: "/auth/pay-registration-fee",
   },
 
   profile: {
@@ -18,7 +15,6 @@ export const AppRoutes = {
   top_influencers: "/top-influencers",
 
   // Unauthenticated users can not access
-  // Authenticated but registration_fee_pending users can not access
   // authenticatedAndActiveUserPages
   feed: "/feed",
   single_post: "/feed/[account_address]/post/[post_id]",
