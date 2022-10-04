@@ -1,11 +1,72 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // app imports
 import Button from "@/components/button";
+import { PurchasedInfo } from "@/web3/constants/types";
+import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
+import { claimNtrTokens } from "@/web3/utils/call.helpers";
+import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 
-export const NTRDAOTable = () => {
+export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
+  purchasedInfo,
+  reload,
+  setReload,
+  roundNumber,
+}) => {
+  //for modal
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState(<div></div>);
+  const [modalTitle, setModalTitle] = useState<string>(
+    "Authorization Contract"
+  );
+  const [modalSubTitle, setModalSubTitle] = useState<string>("");
+  const [modalStatus, setModalStatus] = useState("success");
+  const [modalDescription, setModalDescription] = useState<string>("");
+  const [modalButtonTitle, setModalButtonTitle] = useState<string>("");
+
+  const { account, library } = useWeb3React();
+  const [clickItemNumber, setClickItemNumber] = useState(0);
+
+  const handleClaim = async () => {
+    try {
+      setModalStatus("progress");
+      const result = await claimNtrTokens(
+        library,
+        roundNumber,
+        clickItemNumber
+      );
+      setReload(!reload);
+      if (result.success) {
+        toast.success("Claim Successed!");
+        setModalSubTitle("Claim Success!");
+        setModalStatus("success");
+        setModalDescription(
+          `You claimed NTR tokens. Please check your balance.`
+        );
+        setModalButtonTitle("");
+        setShowModal(true);
+      } else {
+        toast.error("Transaction has been failed.");
+        setModalStatus("failed");
+      }
+    } catch (error) {
+      setModalStatus("failed");
+    }
+  };
+
+  const claimFunc = (index: number) => {
+    setModalTitle("Claim NTRDAO");
+    setModalSubTitle("Do you want to claim NTRDAO?");
+    setModalStatus(`claim`);
+    setModalDescription(`Confirmation that you claim NTRDAO.`);
+    setModalButtonTitle("Claim Now");
+    setShowModal(true);
+    setClickItemNumber(Number(index));
+  };
+
   return (
     <div className={nftdaoTableContainer}>
       <table className={table}>
@@ -21,7 +82,7 @@ export const NTRDAOTable = () => {
               BUSD paid amount
             </th>
             <th scope="col" className={th}>
-              BUSD NTRDOA amount
+              NTRDOA amount
             </th>
             <th scope="col" className={th}>
               Bonus
@@ -38,27 +99,49 @@ export const NTRDAOTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr className={tbodyTR}>
-            <td className={tdh}>1</td>
-            <td className={td}>1/10/2022</td>
-            <td className={td}>1000 BUSD</td>
-            <td className={td}>2 NTRDAO</td>
-            <td className={td}>1.2 NTRDAO</td>
-            <td className={td}>6</td>
-            <td className={td}>176 days</td>
-            <td className={td}>
-              <Button
-                title={"Claim"}
-                variant="v1"
-                className="max-w-[80px]"
-                onClick={() => {
-                  console.log("work");
-                }}
-              />
-            </td>
-          </tr>
+          {purchasedInfo?.map((item: PurchasedInfo, index: number) => {
+            return (
+              <tr className={tbodyTR} key={index}>
+                <td className={tdh}>{index + 1}</td>
+                <td className={td}>{item.purchasedDate}</td>
+                <td className={td}>{`${item.contributedBusdAmount} BUSD`}</td>
+                <td className={td}>{`${item.ntrdaoAmount} NTRDAO`}</td>
+                <td className={td}>{`${item.bonusAmount} NTRDAO`}</td>
+                <td className={td}>{`${item.lockmonths} MONTH`}</td>
+                <td className={td}>{`${
+                  item.remainingDate >= 0 ? item.remainingDate : 0
+                } days`}</td>
+                <td className={td}>
+                  <Button
+                    title={item.claimed ? "Claimed" : "Claim"}
+                    variant={`${
+                      item.remainingDate <= 0 && !item.claimed ? "v1" : "v2"
+                    }`}
+                    className="max-w-[80px]"
+                    onClick={() => claimFunc(index)}
+                    disabled={
+                      item.remainingDate > 0 || item.claimed ? true : false
+                    }
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
+      {showModal && (
+        <CustomProgressModal
+          onClose={() => setShowModal(false)}
+          title={modalTitle}
+          status={modalStatus}
+          subTitle={modalSubTitle}
+          description={modalDescription}
+          buttonTitle={modalButtonTitle}
+          handleBuyNow={() => {}}
+          handleAutorize={() => {}}
+          handleClaim={handleClaim}
+        />
+      )}
     </div>
   );
 };
@@ -86,3 +169,10 @@ text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
 const tdh = ctl(` 
 text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
 `);
+
+interface NTRDAOTableProps {
+  purchasedInfo: PurchasedInfo[] | undefined;
+  reload: boolean;
+  setReload: any;
+  roundNumber: number;
+}

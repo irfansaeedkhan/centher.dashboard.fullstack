@@ -1,9 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+/**
+ * @type {import('@types/tailwindcss/tailwind-config').TailwindConfig}
+ */
+
 const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
-    "./node_modules/flowbite-react/**/*.js",
+    "./node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/tw-elements/dist/js/**/*.{js,jsx,ts,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./pages.components/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -106,6 +111,7 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
     require("@tailwindcss/aspect-ratio"),
+    require("tw-elements/dist/plugin"),
     require("flowbite/plugin"),
   ],
 };

@@ -1,15 +1,42 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { FC } from "react";
 import ctl from "@netlify/classnames-template-literals";
+import { RoundInfo, RoundState } from "@/web3/constants/types";
+import { useState } from "react";
+import { useEffect } from "react";
+import { TimeCount } from "./TimeCount";
 
-export const PresaleCard = () => {
+interface PresaleCardProps {
+  round: number;
+  roundInfo: RoundInfo | null;
+  roundState: RoundState;
+}
+
+export const PresaleCard: React.FC<PresaleCardProps> = ({
+  round,
+  roundInfo,
+  roundState,
+}) => {
+  const [deadLineTime, setDeadLineTime] = useState(0);
+  useEffect(() => {
+    const getDeadlineTime = (roundInfo: RoundInfo) => {
+      if (round < roundState) {
+        setDeadLineTime(0);
+      } else if (round == roundState) {
+        setDeadLineTime(roundInfo?.startTime + roundInfo?.duration);
+      } else {
+        setDeadLineTime(roundInfo?.startTime);
+      }
+    };
+    if (roundInfo) getDeadlineTime(roundInfo);
+  }, [round, roundInfo, roundState]);
   return (
     <div className={presaleCardContainer}>
       <div className={timerContentContainer}>
         <div>
           <h1 className={timerTitle}>
             The time remaining to <br className="hidden lg:block" /> participate
-            in Presale Round 1
+            {`in Presale Round ${round + 1}`}
           </h1>
           <div className={timerSubTitleContainer}>
             <h2 className={timerSubTitle}>
@@ -18,37 +45,7 @@ export const PresaleCard = () => {
             </h2>
           </div>
         </div>
-        {/* FIXME: Irfan - didn&apos;t convert it to ctl yet because still animation will be applied */}
-        <div className="timer flex items-center gap-8">
-          <div className="box flex flex-col gap-2 items-center ">
-            <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
-              <h1 className="text-black-shade-3 font-semibold text-34px">41</h1>
-            </div>
-            <p className="text-14px font-semibold text-gray-shade-7 ">Days</p>
-          </div>
-          <div className="box flex flex-col gap-2 items-center ">
-            <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
-              <h1 className="text-black-shade-3 font-semibold text-34px">37</h1>
-            </div>
-            <p className="text-14px font-semibold text-gray-shade-7 ">Hours</p>
-          </div>
-          <div className="box flex flex-col gap-2 items-center ">
-            <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
-              <h1 className="text-black-shade-3 font-semibold text-34px">18</h1>
-            </div>
-            <p className="text-14px font-semibold text-gray-shade-7 ">
-              Minutes
-            </p>
-          </div>
-          <div className="box flex flex-col gap-2 items-center ">
-            <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
-              <h1 className="text-black-shade-3 font-semibold text-34px">52</h1>
-            </div>
-            <p className="text-14px font-semibold text-gray-shade-7 ">
-              Seconds
-            </p>
-          </div>
-        </div>
+        <TimeCount deadline={deadLineTime} />
       </div>
     </div>
   );
