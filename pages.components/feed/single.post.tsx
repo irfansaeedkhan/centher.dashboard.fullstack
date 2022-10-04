@@ -177,22 +177,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               ))}
             </Carousel>
           )}
-          {/* map to show images */}
-          {/* {post.media && post.media.length > 1 && (
-            <>
-              {post.media.map((media) => (
-                // TODO: Irfan - Wrap it in carousel
-                <Image
-                  key={media._id}
-                  src={media.url}
-                  width={452}
-                  height={312}
-                  alt="post media"
-                  className="w-full"
-                />
-              ))}
-            </>
-          )} */}
         </div>
         {post.text_content && (
           <div className={textContainer}>
