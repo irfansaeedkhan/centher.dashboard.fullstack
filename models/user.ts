@@ -13,4 +13,4 @@ type UserRole =
   | "pending_influencer"
   | "rejected_influencer";
 
-type UserStatus = "active" | "inactive" | "delete" | "registration_fee_pending";
+type UserStatus = "active" | "inactive" | "delete";

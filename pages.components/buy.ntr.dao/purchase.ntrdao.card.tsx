@@ -1,97 +1,255 @@
 // React, Next, NPM Packages
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
-import {
-  BUSDIcon,
-  NTRDAOIcon,
-  LeftArrowIcon,
-  LockedIcon,
-  WarningIcon,
-  SuccessIcon,
-} from "@/assets/svgs";
+import { BUSDIcon, NTRDAOIcon, LeftArrowIcon, LockedIcon } from "@/assets/svgs";
 import Button from "@/components/button";
-import { CustomModal } from "@/components/modal/custom.modal";
+import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
+import { BigNumber } from "ethers";
+import { buyNtrDao, setBusdApprove } from "@/web3/utils/call.helpers";
+import { useWeb3React } from "@web3-react/core";
+import {
+  useBusdAllowance,
+  useBusdBalance,
+  useGetPurchasedInfo,
+  useIsRegistered,
+  useNtrdaoBalance,
+  useRoundState,
+} from "@/web3/hooks/use.contracts.functions";
+import { LoadingSkeleton } from "../../web3/utils/utils";
 
 // same directory Imports
 import { NTRDAOTable } from "./ntrdao.table";
+import toast from "react-hot-toast";
+import {
+  PurchasedInfo,
+  PurchasedInfoResponse,
+  RoundInfo,
+  RoundState,
+} from "@/web3/constants/types";
+import { DAY } from "@/web3/constants/common";
+import { bool, boolean } from "joi";
 
 export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
-  locked,
+  round,
+  roundInfo,
+  ntrdaoBalance,
+  busdBalance,
+  busdAllowance,
+  purchasedInfoResponse,
+  roundState,
+  isApproved,
+  setApproved,
+  reload,
+  setReload,
 }) => {
   // states
+  //for modal
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalContent, setModalContent] = useState(<div></div>);
-  const [contractState, setContractState] = useState<string>(
+  const [modalTitle, setModalTitle] = useState<string>(
     "Authorization Contract"
   );
+  const [modalSubTitle, setModalSubTitle] = useState<string>("");
+  const [modalStatus, setModalStatus] = useState("success");
+  const [modalDescription, setModalDescription] = useState<string>("");
+  const [modalButtonTitle, setModalButtonTitle] = useState<string>("");
+
+  const { account, library } = useWeb3React();
+  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfo[]>();
+  const [inputBusdAmount, setInputBusdAmount] = useState("");
+  const [ntrDaoAmount, setNtrDaoAmount] = useState(0);
+  const [bonusAmount, setBonusAmount] = useState(0);
+  const [inputNtrAmount, setInputNtrAmount] = useState("");
+  const [busdAmountForSwap, setBusdAmountForSwap] = useState(0);
+  const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    const getPurchasedInfo = (
+      purchasedInfoResponse: PurchasedInfoResponse[],
+      roundInfo: RoundInfo
+    ) => {
+      const rawPurchasedInfo = purchasedInfoResponse;
+      const _roundInfo = roundInfo;
+      const parsedPurchasedInfo = rawPurchasedInfo.map((item: any) => {
+        const _purchasedDate = new Date(
+          item.purchasedDate * 1000
+        ).toLocaleDateString("default");
+        const _contributedBusdAmount = Number(item.contributedBusdAmount);
+        const _ntrdaoAmount = Number(
+          Number(_contributedBusdAmount / _roundInfo.price).toFixed(4)
+        );
+        const _bonusAmount = Number(
+          Number(
+            ((_contributedBusdAmount / _roundInfo.price) *
+              _roundInfo.bonusRate) /
+              100
+          ).toFixed(4)
+        );
+        const _locckmonths = _roundInfo.lockMonths;
+        const _remainingDate =
+          Math.floor(
+            (_locckmonths * 30 * DAY -
+              (Math.floor(Date.now() / 1000) - item.purchasedDate)) /
+              DAY
+          ) + 1;
+        const _claimed = item.claimedAmount > 0 ? true : false;
+        return {
+          purchasedDate: _purchasedDate,
+          contributedBusdAmount: _contributedBusdAmount,
+          ntrdaoAmount: _ntrdaoAmount,
+          bonusAmount: _bonusAmount,
+          lockmonths: _locckmonths,
+          remainingDate: _remainingDate,
+          claimed: _claimed,
+        };
+      });
+      setPurchasedInfo(parsedPurchasedInfo);
+    };
+    if (account && purchasedInfoResponse && roundInfo)
+      getPurchasedInfo(purchasedInfoResponse, roundInfo);
+  }, [account, purchasedInfoResponse, roundInfo]);
 
   // functions
+  const validate = () => {
+    if (busdAmountForSwap === 0) {
+      toast.error("Please Enter Correct BUSD Amount!");
+      return false;
+    }
+    return true;
+  };
+
+  const handleBuyNtrdao = async () => {
+    try {
+      setPending(true);
+      setModalStatus("progress");
+      const result = await buyNtrDao(
+        library,
+        BigNumber.from(busdAmountForSwap)
+      );
+      setReload(!reload);
+      setPending(false);
+      if (result.success) {
+        toast.success("Purchased Successed!");
+        setModalSubTitle("Bought Success!");
+        setModalStatus("success");
+        setModalDescription(
+          `You bought NTR tokens. NTRDAO will be locked for ${roundInfo?.lockMonths} months. You can claim when unlock.`
+        );
+        setModalButtonTitle("");
+        setShowModal(true);
+      } else {
+        toast.error("Transaction has been failed.");
+        setModalStatus("failed");
+      }
+    } catch (error) {
+      setModalStatus("failed");
+      setPending(false);
+    }
+  };
+
   const buyNowFunc = () => {
-    alert("buy now func");
-  };
-  const authorizeSucessModal = () => {
-    setContractState("Buy Now");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className={Icon} />
-        <div className={Modalcontent}>
-          <h5 className={modalTitle}>Authorized Successfully</h5>
-          <h6 className={modalMessage}>
-            Your Contract has been Authorized, Now you can buy Packs.
-          </h6>
-        </div>
-        <div className={modalFooter}>
-          <Button
-            title={"Buy Now"}
-            variant="v4"
-            onClick={() => {
-              setShowModal(false);
-              alert("buy now");
-            }}
-            className="py-3"
-          />
-        </div>
-      </div>
+    if (!validate()) return;
+    setModalTitle("Buy Now");
+    setModalSubTitle("Do you want to buy NTRDAO?");
+    setModalStatus(`ntrdao`);
+    setModalDescription(
+      `Confirmation that you pay ${busdAmountForSwap} BUSD to buy ${ntrDaoAmount} NTRDAO & ${bonusAmount} NTRDAO as a bonus.`
     );
+    setModalButtonTitle("Buy Now");
     setShowModal(true);
   };
+
+  const handleAuthorize = async () => {
+    try {
+      setPending(true);
+      setModalStatus("progress");
+      const result = await setBusdApprove(library);
+      setPending(false);
+      if (result.success) {
+        // setContractState("Buy Now");
+        setApproved(true);
+        setModalTitle("Authorization Contract");
+        setModalSubTitle("Authorized Successfully");
+        setModalStatus(`success`);
+        setModalDescription(
+          `Your Contract has been Authorized, Now you can buy Packs.`
+        );
+        setModalButtonTitle("");
+        setShowModal(true);
+      } else {
+        toast.error("Transaction has been failed.");
+        setModalStatus("failed");
+      }
+    } catch (error) {
+      setModalStatus("failed");
+      setPending(false);
+    }
+  };
+
   const authorizeFunc = () => {
-    setShowModal(true);
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className={Icon} />
-        <div className={Modalcontent}>
-          <h5 className={modalTitle}>Allow Nether NFT to use your NTR?</h5>
-          <h6 className={modalMessage}>
-            Confirmation of the NTR token to interact with the Nether NFT
-            contract.
-          </h6>
-        </div>
-        <div className={modalFooter}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            onClick={() => {
-              setShowModal(false);
-            }}
-            className="py-3"
-          />
-          <Button
-            title={"Authorize"}
-            variant="v1"
-            onClick={authorizeSucessModal}
-            className="py-3"
-          />
-        </div>
-      </div>
+    setModalTitle("Authorization Contract");
+    setModalSubTitle("Allow Nether NFT to use your NTR?");
+    setModalStatus(`warning`);
+    setModalDescription(
+      `Confirmation of the NTR token to interact with the Nether NFT contract.`
     );
+    setModalButtonTitle("Authorize");
+    setShowModal(true);
   };
+
+  const handleChange = async (event: any) => {
+    const value = Number(event.target.value);
+    if (account && value >= busdBalance) {
+      event.target.value = busdBalance;
+    }
+    if (value === 0) {
+      event.target.value = "";
+      setBusdAmountForSwap(0);
+      setNtrDaoAmount(0);
+      setInputBusdAmount("");
+      setInputNtrAmount("");
+      return;
+    }
+    if (roundInfo != null) {
+      const toValue = event.target.value / roundInfo.price;
+      setInputBusdAmount(event.target.value);
+      setBusdAmountForSwap(event.target.value);
+      setNtrDaoAmount(toValue);
+      setBonusAmount(
+        Number(
+          Number(
+            ((event.target.value / roundInfo.price) * roundInfo.bonusRate) / 100
+          ).toFixed(4)
+        )
+      );
+      setInputNtrAmount(toValue.toString());
+    }
+  };
+
+  const handleMax = async () => {
+    if (busdBalance === 0) {
+      setBusdAmountForSwap(0);
+      setNtrDaoAmount(0);
+      setInputBusdAmount("");
+      setInputNtrAmount("");
+      return;
+    }
+    setInputBusdAmount(busdBalance.toString());
+    setBusdAmountForSwap(busdBalance);
+    const toValue = busdBalance / 500;
+    setNtrDaoAmount(toValue);
+    setInputNtrAmount(toValue.toString());
+  };
+
   return (
     <div className="relative">
-      <div className={`${locked ? "block" : "hidden"} ${lockedContainer}`}>
+      <div
+        className={`${
+          round > roundState ? "block" : "hidden"
+        } ${lockedContainer}`}
+      >
         <div className={lockedContent}>
           <LockedIcon className="w-[80px] h-[80px]" />
           <h6 className={lockedContentMessage}>
@@ -99,7 +257,7 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
           </h6>
         </div>
       </div>
-      <div className={`${locked && "blur-xl bg-black-shade-3/60"}`}>
+      <div className={`${round > roundState && "blur-xl bg-black-shade-3/60"}`}>
         <div className={transactionBox}>
           <h1 className={transactionBoxTitle}>
             Please Enter NTRDAO amount to you’d like to purchase
@@ -114,15 +272,29 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
                 <div className={balanceBox}>
                   <div>
                     <h5 className={balanceText}>Balance</h5>
-                    <h6 className={balanceNumber}>0.00</h6>
+                    <h6 className={balanceNumber}>
+                      {account ? (
+                        `${Number(busdBalance).toString()}`
+                      ) : (
+                        <LoadingSkeleton />
+                      )}
+                    </h6>
                   </div>
                 </div>
               </div>
               <div className={inputBox}>
-                <input className={input} type="text" placeholder="0.00" />
+                <input
+                  className={input}
+                  type="text"
+                  placeholder="0.00"
+                  value={inputBusdAmount}
+                  onChange={handleChange}
+                />
                 <div className={maxBtnContainer}>
                   <div>
-                    <button className={maxBtn}>Max</button>
+                    <button className={maxBtn} onClick={handleMax}>
+                      Max
+                    </button>
                   </div>
                 </div>
               </div>
@@ -138,49 +310,71 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
                 <div className={balanceBox}>
                   <div>
                     <h5 className={balanceText}>Balance</h5>
-                    <h6 className={balanceNumber}>0.00</h6>
+                    <h6 className={balanceNumber}>
+                      {account ? (
+                        `${Number(ntrdaoBalance).toString()}`
+                      ) : (
+                        <LoadingSkeleton />
+                      )}
+                    </h6>
                   </div>
                 </div>
               </div>
               <div className={inputBox}>
-                <input className={input} type="text" placeholder="0.00" />
+                <input
+                  className={input}
+                  type="text"
+                  placeholder="0.00"
+                  value={inputNtrAmount}
+                  readOnly
+                />
                 <div className={maxBtnContainer}>&nbsp;</div>
               </div>
             </div>
           </div>
-          <div className={conversionBoxFooter}>
-            <h6 className={conversionBoxFooterTitle}>
-              Price:{" "}
-              <span className={conversionBoxFooterTitleBold}>500 BUSD</span>
-            </h6>
-            <Button
-              title={
-                contractState === "Authorization Contract"
-                  ? "Authorize"
-                  : "Buy Now"
-              }
-              variant="v1"
-              onClick={
-                contractState === "Authorization Contract"
-                  ? authorizeFunc
-                  : buyNowFunc
-              }
-              className="py-4"
-            />
-          </div>
-          <div className={roundOverTextContainer}>
-            <p className={roundOverText}>
-              This round is over! Buy another availabe or wait for the next
-              round
-            </p>
-          </div>
+          {roundState === round && (
+            <div className={conversionBoxFooter}>
+              <h6 className={conversionBoxFooterTitle}>
+                Price:{" "}
+                <span className={conversionBoxFooterTitleBold}>500 BUSD</span>
+              </h6>
+              <Button
+                title={isApproved ? "Buy now" : "Authorize"}
+                variant="v1"
+                onClick={isApproved ? buyNowFunc : authorizeFunc}
+                className="py-4"
+                disabled={account ? false : true}
+              />
+            </div>
+          )}
+          {round < roundState && (
+            <div className={roundOverTextContainer}>
+              <p className={roundOverText}>
+                This round is over! Buy another availabe or wait for the next
+                round
+              </p>
+            </div>
+          )}
         </div>
-        <NTRDAOTable />
+        <NTRDAOTable
+          purchasedInfo={purchasedInfo}
+          reload={reload}
+          setReload={setReload}
+          roundNumber={round}
+        />
       </div>
       {showModal && (
-        <CustomModal onClose={() => setShowModal(false)} title={contractState}>
-          {modalContent}
-        </CustomModal>
+        <CustomProgressModal
+          onClose={() => setShowModal(false)}
+          title={modalTitle}
+          status={modalStatus}
+          subTitle={modalSubTitle}
+          description={modalDescription}
+          buttonTitle={modalButtonTitle}
+          handleBuyNow={handleBuyNtrdao}
+          handleAutorize={handleAuthorize}
+          handleClaim={() => {}}
+        />
       )}
     </div>
   );
@@ -257,26 +451,17 @@ const roundOverText = ctl(`
 text-[#E6535A] text-16px font-semibold
  `);
 
-// modal styling
-const modalBodyWrapper = ctl(`
-  text-center flex flex-col gap-6 w-full border-t-2 border-gray-shade-3 pt-4
-`);
-const Modalcontent = ctl(`
-px-6
-`);
-const Icon = ctl(`
-mx-auto w-[64px]
-`);
-const modalTitle = ctl(`
-text-18px text-white font-semibold pb-2
-`);
-const modalMessage = ctl(`
-text-14px text-gray-shade-2 font-normal
-`);
-const modalFooter = ctl(`
-flex items-center justify-center gap-3  pt-6 px-6
-`);
 // interfaces
 interface PurchaseNTRDAOCardProps {
-  locked?: boolean;
+  round: number;
+  roundInfo: RoundInfo | null;
+  ntrdaoBalance: number;
+  busdBalance: number;
+  busdAllowance: number;
+  purchasedInfoResponse: PurchasedInfoResponse[] | null;
+  roundState: RoundState;
+  isApproved: boolean;
+  setApproved: any;
+  reload: boolean;
+  setReload: any;
 }

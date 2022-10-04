@@ -37,9 +37,20 @@ const post1: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
+    },
+    {
+      _id: "2",
+      url: "/images/postimage.png",
+      type: "image",
+    },
+    {
+      _id: "3",
+      url: "/images/postimage.png",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -58,9 +69,10 @@ const post2: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -79,9 +91,10 @@ const post3: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -100,9 +113,15 @@ const post4: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
+    },
+    {
+      _id: "2",
+      url: "/images/postimage.png",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -121,9 +140,10 @@ const post5: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
@@ -142,33 +162,28 @@ const post6: Post = {
     {
       _id: "1",
       url: "/images/postimage.png",
-      type: "image/jpeg",
+      type: "image",
     },
   ],
+  post_liked_by_loggedin_user: 0,
   comments_count_on_post: 10,
   likes_count_on_post: 24,
   shares_count_on_post: 44,
 };
 
-const post7: Post = {
-  _id: "78246872364t72344432",
-  user: user2,
-  parent_post: {
-    _id: post4._id,
-    user: post4.user,
-  },
-  text_content: "reply 6 to reply 3",
-  createdAt: new Date().toDateString(),
-  media: [
-    {
-      _id: "1",
-      url: "/images/postimage.png",
-      type: "image/jpeg",
-    },
-  ],
-  comments_count_on_post: 10,
-  likes_count_on_post: 24,
-  shares_count_on_post: 44,
-};
-
-export const posts: Post[] = [post1, post2, post3, post4, post5, post6, post7];
+// const post7: Post = {
+//   _id: "78246872364t72344432",
+//   user: user2,
+//   parent_post: {
+//     _id: post4._id,
+//     user: post4.user,
+//   },
+//   post_liked_by_loggedin_user:0,
+//   text_content: "reply 6 to reply 3",
+//   createdAt: new Date().toDateString(),
+//   media: [
+//     {
+//       _id: "1",
+//       url: "/images/postimage.png",
+//       type: "image",
+// }]};

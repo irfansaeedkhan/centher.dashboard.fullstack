@@ -82,6 +82,7 @@ module.exports = {
           13: "#C4C4C4",
           14: "#A0A4BB",
           15: "#17171a66",
+          16: "#F6F7FA",
           "border-color": "#202027",
         },
         "background-shade": {

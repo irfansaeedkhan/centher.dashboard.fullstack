@@ -1597,6 +1597,201 @@ export const SuccessIcon: React.FC<IconProps> = (props) => {
   );
 };
 
+export const LinkIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15.9641 6.03599C16.6271 5.37295 17.5264 5.00046 18.4641 5.00046C19.4018 5.00046 20.3011 5.37295 20.9641 6.03599C21.6271 6.69903 21.9996 7.59831 21.9996 8.53599C21.9996 9.47367 21.6271 10.373 20.9641 11.036L15.0851 16.915C14.4221 17.578 13.5228 17.9505 12.5851 17.9505C11.6474 17.9505 10.7481 17.578 10.0851 16.915C9.42205 16.252 9.04956 15.3527 9.04956 14.415C9.04956 13.4773 9.42205 12.578 10.0851 11.915L10.9641 11.036"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.03602 18.964C7.70772 19.2923 7.31796 19.5527 6.88901 19.7304C6.46006 19.9081 6.00031 19.9995 5.53602 19.9995C5.07173 19.9995 4.61198 19.9081 4.18303 19.7304C3.75408 19.5527 3.36433 19.2923 3.03602 18.964C2.37298 18.301 2.00049 17.4017 2.00049 16.464C2.00049 15.5263 2.37298 14.627 3.03602 13.964L8.91502 8.085C9.57806 7.42196 10.4773 7.04947 11.415 7.04947C12.3527 7.04947 13.252 7.42196 13.915 8.085C14.5781 8.74804 14.9506 9.64732 14.9506 10.585C14.9506 11.5227 14.5781 12.422 13.915 13.085L13 14"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const WorldIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.0001 3H9.0001C7.0501 8.84 7.0501 15.16 9.0001 21H8.0001"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M15 3C16.95 8.84 16.95 15.16 15 21"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 16V15C8.84 16.95 15.16 16.95 21 15V16"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3 9.00001C8.84 7.05001 15.16 7.05001 21 9.00001"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const ArrowRightIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 16L14 12L10 8"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const ArrowLeftIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14 8L10 12L14 16"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const MessageIcon2: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21 11.5C21.0034 12.8199 20.6951 14.1219 20.1 15.3C19.3944 16.7118 18.3098 17.8992 16.9674 18.7293C15.6251 19.5594 14.0782 19.9994 12.5 20C11.1801 20.0035 9.87812 19.6951 8.7 19.1L3 21L4.9 15.3C4.30493 14.1219 3.99656 12.8199 4 11.5C4.00061 9.92179 4.44061 8.37488 5.27072 7.03258C6.10083 5.69028 7.28825 4.6056 8.7 3.90003C9.87812 3.30496 11.1801 2.99659 12.5 3.00003H13C15.0843 3.11502 17.053 3.99479 18.5291 5.47089C20.0052 6.94699 20.885 8.91568 21 11V11.5Z"
+        stroke="#FFFFFF"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const CameraIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <mask
+        id="mask0_7320_70608"
+        style={{ maskType: "alpha" }}
+        maskUnits="userSpaceOnUse"
+        x="0"
+        y="0"
+        width="16"
+        height="16"
+      >
+        <rect width="16" height="16" fill="#D9D9D9" />
+      </mask>
+      <g mask="url(#mask0_7320_70608)">
+        <path
+          d="M10.064 10.7301L10.064 10.73C10.6326 10.161 10.918 9.4716 10.918 8.66732C10.918 7.86303 10.6326 7.17361 10.064 6.60464L10.064 6.60458C9.49501 6.03607 8.80559 5.75065 8.0013 5.75065C7.19702 5.75065 6.50759 6.03607 5.93862 6.60458L5.93856 6.60464C5.37005 7.17361 5.08464 7.86303 5.08464 8.66732C5.08464 9.4716 5.37005 10.161 5.93856 10.73L5.93862 10.7301C6.50759 11.2986 7.19702 11.584 8.0013 11.584C8.80559 11.584 9.49501 11.2986 10.064 10.7301ZM8.59363 9.30919L8.0013 10.6094L7.40897 9.30919L7.39346 9.27516L7.35943 9.25965L6.05919 8.66732L7.35943 8.07499L7.39346 8.05948L7.40897 8.02544L8.0013 6.7252L8.59363 8.02544L8.60914 8.05948L8.64318 8.07499L9.94342 8.66732L8.64318 9.25965L8.60914 9.27516L8.59363 9.30919ZM6.13464 2.23398H6.09091L6.06123 2.26608L4.85758 3.56732H2.86797C2.50842 3.56732 2.19956 3.69431 1.94726 3.94661C1.69496 4.19891 1.56797 4.50777 1.56797 4.86732V12.4673C1.56797 12.8269 1.69496 13.1357 1.94726 13.388C2.19956 13.6403 2.50842 13.7673 2.86797 13.7673H13.1346C13.4942 13.7673 13.803 13.6403 14.0553 13.388C14.3076 13.1357 14.4346 12.8269 14.4346 12.4673V4.86732C14.4346 4.50777 14.3076 4.19891 14.0553 3.94661C13.803 3.69431 13.4942 3.56732 13.1346 3.56732H11.145L9.94138 2.26608L9.91169 2.23398H9.86797H6.13464ZM10.5779 4.73522L10.6076 4.76732H10.6513H13.1346C13.1638 4.76732 13.1857 4.77643 13.2059 4.79669C13.2255 4.81627 13.2346 4.83781 13.2346 4.86732V12.4673C13.2346 12.4967 13.2256 12.5185 13.2059 12.5386C13.1859 12.5583 13.164 12.5673 13.1346 12.5673H2.86797C2.83846 12.5673 2.81693 12.5582 2.79735 12.5386C2.77708 12.5183 2.76797 12.4965 2.76797 12.4673V4.86732C2.76797 4.83818 2.77705 4.81677 2.79694 4.7971L2.79695 4.7971L2.79775 4.79629C2.81742 4.7764 2.83883 4.76732 2.86797 4.76732H5.3513H5.39502L5.42471 4.73522L6.62836 3.43398H9.37425L10.5779 4.73522Z"
+          fill="#17171A"
+          stroke="black"
+          strokeWidth="0.2"
+        />
+      </g>
+    </svg>
+  );
+};
+export const CopyIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7 17H5C4.46957 17 3.96086 16.7893 3.58579 16.4142C3.21071 16.0391 3 15.5304 3 15V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H15C15.5304 3 16.0391 3.21071 16.4142 3.58579C16.7893 3.96086 17 4.46957 17 5V7"
+        stroke="#FEBF32"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19.895 7H8.105C7.49472 7 7 7.49472 7 8.105V19.895C7 20.5053 7.49472 21 8.105 21H19.895C20.5053 21 21 20.5053 21 19.895V8.105C21 7.49472 20.5053 7 19.895 7Z"
+        stroke="#FEBF32"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
 export const SettingIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
