@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+import { toast } from "react-hot-toast";
 
 // App imports
 import {
@@ -17,7 +18,7 @@ import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 import { ReplyPost } from "./reply.post";
 import { useRouter } from "next/router";
-import { posts } from "./dummy.posts";
+import { axiosNodeApi } from "@/utils/axios";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -27,20 +28,38 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   // states
   const [togglePop, setTogglePop] = useState(false);
   const [replies, setReplies] = useState<Post[]>([]);
+  //const [likePostValue, setLikePostValue] = useState(0);
   const router = useRouter();
   const isFeedPage = router.pathname === AppRoutes.feed;
 
-  useEffect(() => {
-    const post_id = router.query.post_id;
-    const account_address = router.query.account_address;
+  // useEffect(() => {
+  //   const post_id = router.query.post_id;
+  //   const account_address = router.query.account_address;
 
-    const _replies = posts.filter(
-      (p) =>
-        p.parent_post?._id === post_id &&
-        p.parent_post?.user.account_address === account_address
-    );
-    setReplies(_replies);
-  }, [router]);
+  //   const _replies = posts.filter(
+  //     (p) =>
+  //       p.parent_post?._id === post_id &&
+  //       p.parent_post?.user.account_address === account_address
+  //   );
+  //   setReplies(_replies);
+  // }, [router]);
+
+  const likePost = async (post_id: String) => {
+    try {
+      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+        post_id,
+      });
+      // if (data.message_description == "post liked successfully!") {
+      //   setLikePostValue(1);
+      // } else if (data.message_description == "post unliked successfully!") {
+      //   setLikePostValue(-1);
+      // }
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
 
   // toggle function to show/hide edit/delete popup
   const togglePopFunc = async () => {
@@ -118,7 +137,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         <button className={footerdetailBtn}>
           <MessageIcon /> {post.comments_count_on_post}
         </button>
-        <button className={footerdetailBtn}>
+        <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
           <LikeIcon /> {post.likes_count_on_post}
         </button>
         <button className={footerdetailBtn}>
@@ -128,7 +147,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
       {isFeedPage && (
         <div className={showThreadBtnContainer}>
           <Image
-            src={post.user.profile_image}
+            src={post?.user?.profile_image}
             width={30}
             height={30}
             className="rounded-full"

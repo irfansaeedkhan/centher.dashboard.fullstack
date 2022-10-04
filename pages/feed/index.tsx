@@ -1,11 +1,13 @@
 // React, Next, NPM Packages
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
+import { toast } from "react-hot-toast";
 
 // App imports
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
+import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import {
@@ -23,6 +25,24 @@ const Feed: NextPage = () => {
 
   const [posts, setPosts] = useState<Post[]>(dummyPosts);
 
+  useEffect(() => {
+    fetchFeedsData();
+  }, []);
+
+  const fetchFeedsData = async () => {
+    try {
+      // Create a user with registration_pending state in database
+      const { data } = await axiosNodeApi.get("/api/socials/posts/fetch");
+
+      console.log("data.postData", data.postData);
+      setPosts(data.postData);
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
   return (
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
@@ -35,7 +55,7 @@ const Feed: NextPage = () => {
           <div className={postsContainer}>
             <PostCard />
             {posts
-              .filter((p) => !p.parent_post)
+              ?.filter((p) => !p.parent_post)
               .map((post) => (
                 <SinglePost key={post._id} post={post} />
               ))}

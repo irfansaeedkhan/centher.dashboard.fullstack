@@ -15,7 +15,7 @@ import Image from "next/future/image";
 import { Post } from "@/models/post";
 import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
-import { posts } from "./dummy.posts";
+//import { posts } from "./dummy.posts";
 import Link from "next/link";
 
 interface ReplyPostProps {
@@ -33,14 +33,14 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
     const post_id = post._id;
     const account_address = post.user.account_address;
 
-    const _replies = posts
-      .filter(
-        (p) =>
-          p.parent_post?._id === post_id &&
-          p.parent_post?.user.account_address === account_address
-      )
-      .slice(0, 1);
-    setReplies(_replies);
+    // const _replies = posts
+    //   .filter(
+    //     (p) =>
+    //       p.parent_post?._id === post_id &&
+    //       p.parent_post?.user.account_address === account_address
+    //   )
+    //   .slice(0, 1);
+    // setReplies(_replies);
   }, [post]);
 
   console.log("replies", replies);
