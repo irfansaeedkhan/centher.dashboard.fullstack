@@ -4,7 +4,9 @@ import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
-import { ProfilePageWrapper } from "@/pages.components/profile/profile.wrapper";
+import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 
@@ -17,9 +19,14 @@ import {
   PostCard,
   SinglePost,
 } from "@/pages.components/feed";
+import { ProfilePageWrapper } from "@/pages.components/profile";
 
 const Profile: NextPage = () => {
-  // states
+  // Create User Profile View
+  useCreateUserProfileView();
+
+  const { user: loggedInUser } = useUser();
+  const { user, loading: userLoading } = useGetUser();
   const [posts, setPosts] = useState<Post[]>([]);
 
   return (
@@ -28,7 +35,17 @@ const Profile: NextPage = () => {
         <div>
           <div className={feedContainer}>
             <div className={leftSidebar}>
-              <ProfileDetailCard />
+              {/* TODO: Irfan - Use some loader */}
+              {userLoading === "loaded" && user && (
+                <ProfileDetailCard
+                  user={user}
+                  isLoggedInUser={
+                    user.account_address === loggedInUser?.account_address
+                  }
+                />
+              )}
+              {userLoading === "loading" && <p>Loading...</p>}
+              {userLoading === "failed" && <p>Error!</p>}
               <DiscoverCard />
             </div>
             <div className={postsContainer}>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 // App imports
-import { ProfilePageWrapper } from "@/pages.components/profile/profile.wrapper";
+import { ProfilePageWrapper } from "@/pages.components/profile";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 

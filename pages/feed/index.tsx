@@ -5,6 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -20,7 +21,7 @@ import {
 } from "@/pages.components/feed";
 
 const Feed: NextPage = () => {
-  // states
+  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
@@ -44,7 +45,11 @@ const Feed: NextPage = () => {
         <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            <ProfileDetailCard />
+            {!isLoggedInUserLoading && loggedInUser ? (
+              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+            ) : (
+              <>Loading...</>
+            )}
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
