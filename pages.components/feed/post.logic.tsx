@@ -47,10 +47,11 @@ export default function (
 
   const [tweetText, setweetText] = useState<string>("");
 
+  const [disablePostButton, setdisablePostButton] = useState<boolean>(false);
   //
   let currentPostID: string = "";
 
-  let previewFileList: Array<PreviewSelectedFile> = [];
+  let previewFileList = [];
 
   const closePostModel = () => {
     try {
@@ -264,6 +265,7 @@ export default function (
           "Removed value from array because no file : ",
           updatedFileListArray
         );
+
         setuserSelectedFileListArray(updatedFileListArray);
       } else {
         let deleted_file_index = deletedFileIndexs;
@@ -300,6 +302,7 @@ export default function (
       // If all files are deleted then clearning array
       if (previewFileList.length < 1) {
         //
+        console.log("Updating it empty");
         setuserSelectedFileListArray([]);
       }
 
@@ -314,11 +317,16 @@ export default function (
   // Calculate Chunks
   // Create entry in database
   // Start uploading it to server
-  const createPost = async (event: Event) => {
+  const createPost = async (event: any) => {
     try {
+      console.log("Create post function called : ", event);
+      console.log("User Selected List array : ", userSelectedFileListArray);
+
+      console.log("Deleted index : ", deletedFileIndexs);
       let filesChunksDetails: Array<FileChunksChunksCalculations> =
         await post_file_details(userSelectedFileListArray, deletedFileIndexs);
 
+      console.log("Calculated chunks : ", filesChunksDetails);
       //Setting details in filesChunksDetails
       setselectedFileDetail(filesChunksDetails);
 
@@ -424,8 +432,11 @@ export default function (
   //
   const addSelectedFiles = (selected_files: FileList): boolean => {
     try {
+      console.log("Add selected file event called!!");
       //TO DO : Remove Selected filed
       let alreadyAddedFileList: Array<FileList> = userSelectedFileListArray;
+
+      console.log("Currently Selected filelist is : ", alreadyAddedFileList);
 
       // Checking file already exits in selected file or not
       let fileExits: boolean = checkFileAlreadyAddedInSelectedFile(
@@ -443,6 +454,8 @@ export default function (
         return false;
       }
 
+      console.log("Already existing files are :  ", alreadyAddedFileList);
+      console.log("Selected file : ", selected_files);
       // Pushing FileList to Array of FileList
       alreadyAddedFileList.push(selected_files);
       setuserSelectedFileListArray(alreadyAddedFileList);
@@ -453,12 +466,17 @@ export default function (
       // Creating Blob for and storing in seperate
       // Running loop of FileList Array
       for (let filelist_index in alreadyAddedFileList) {
+        console.log("Checking fileList index : ", filelist_index);
         // Running loop on each file
         for (
           let file_index = 0;
           file_index < alreadyAddedFileList[filelist_index].length;
           file_index++
         ) {
+          console.log(
+            "Creating blob for filr : ",
+            alreadyAddedFileList[filelist_index][file_index]
+          );
           // Check if file is not deleted by user
           // To Add FileListArray Index with FileList check if exists in file
           previewUrlList.push({

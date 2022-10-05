@@ -98,7 +98,7 @@ export const PostCardNew = () => {
                 height={44}
                 alt={"image"}
               />
-              <h5 className={cdName}>uixamjad</h5>
+              <h5 className={cdName}>uixamjad new test</h5>
             </div>
             <div className={maincontentContainer}>
               <div
