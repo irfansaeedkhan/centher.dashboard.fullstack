@@ -159,7 +159,7 @@ const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
 `);
 const btnContainer = ctl(`
-  flex [&>*]:w-max w-fit bg-black-shade-6 p-1.5 rounded-2xl mb-6
+  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
 `);
 const coverCard = ctl(`
 bg-background-shade-3 rounded-xl

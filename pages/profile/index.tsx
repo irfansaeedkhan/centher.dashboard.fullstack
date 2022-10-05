@@ -55,7 +55,7 @@ export default Profile;
 
 // styling
 const feedContainer = ctl(`
-flex justify-center gap-5
+flex  gap-5 max-w-[835px]
 `);
 const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
@@ -64,5 +64,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full lg:w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);
