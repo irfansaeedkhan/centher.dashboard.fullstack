@@ -706,7 +706,7 @@ export const PostCard = () => {
 
 // styling
 const postCardContainer = ctl(`
-  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
+  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 
 `);
 const topCard = ctl(`
 top w-full flex items-center gap-2 mb-2 
