@@ -349,8 +349,13 @@ export const PostCard = () => {
           SUPPORTED_VIDEO_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <div>
-              <video width={452} height={312} className="w-full" controls>
+            <div className="relative h-[38vh]">
+              <video
+                width={452}
+                height={312}
+                className=" rounded-xl w-full h-full object-cover"
+                controls
+              >
                 <source
                   src={previewUrlList[fileDetails].fileBlobURL}
                   type={previewUrlList[fileDetails].fileType}
@@ -364,8 +369,9 @@ export const PostCard = () => {
                     fileDetails
                   );
                 }}
+                className={imageDelBtn}
               >
-                Delete
+                x
               </button>
             </div>
           );
@@ -611,30 +617,33 @@ export const PostCard = () => {
             </div>
             {/* aaaaaa */}
             <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer} 
-                // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                // ${previewFilesUI.length > 2 && "grid-cols-3"} 
-                `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
+              {previewFilesUI?.length > 0 && (
+                <div
+                  className={`${mediaContainer} 
+               // ${previewFilesUI.length === 1 && "grid-cols-1"} 
+               // ${previewFilesUI.length === 2 && "grid-cols-2"} 
+               // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+               `}
                 >
-                  {previewFilesUI}
-                </Carousel>
-                {/* <img
-                  src="/images/postimage.png"
-                  width={452}
-                  height={312}
-                  alt="post media"
-                  className="w-full"
-                /> */}
-                {/* {previewFilesUI} */}
-              </div>
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={previewFilesUI.length === 1 ? false : true}
+                  >
+                    {previewFilesUI}
+                  </Carousel>
+                  {/* <img
+                 src="/images/postimage.png"
+                 width={452}
+                 height={312}
+                 alt="post media"
+                 className="w-full"
+               /> */}
+                  {/* {previewFilesUI} */}
+                </div>
+              )}
+
               <div className={inputTextContainer}>
                 <textarea
                   className={textContainerContent}
