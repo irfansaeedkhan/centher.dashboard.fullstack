@@ -20,7 +20,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
 
 // styling
 const componentWrapper = ctl(`
-  flex flex-col bg-black-shade-3 w-full gap-6
+  flex flex-col bg-black-shade-3 w-full max-w-[1236px] mx-auto gap-6
 `);
 const childrenWrapper = ctl(`
 

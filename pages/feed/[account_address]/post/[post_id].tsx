@@ -6,6 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -18,13 +19,12 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
-  posts,
 } from "@/pages.components/feed";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 
 const SinglePostPage: NextPage = () => {
+  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [post, setPost] = useState<Post>();
   const router = useRouter();
 
@@ -33,10 +33,9 @@ const SinglePostPage: NextPage = () => {
       try {
         // Create a user with registration_pending state in database
         const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}`
+          `/api/socials/posts/'${accountAddress}'/post/${postId}`
         );
 
-        console.log("post", data.postData);
         setPost(data.postData);
       } catch (error: any) {
         toast.error(
@@ -44,7 +43,15 @@ const SinglePostPage: NextPage = () => {
         );
       }
     };
-    fetchSinglePostData();
+
+    const accountAddress = router?.query?.account_address
+      ?.toString()
+      ?.toLowerCase();
+    const postId = router?.query?.post_id?.toString();
+
+    if (accountAddress && postId) {
+      fetchSinglePostData();
+    }
   }, [router]);
 
   return (
@@ -53,7 +60,11 @@ const SinglePostPage: NextPage = () => {
         <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            <ProfileDetailCard />
+            {!isLoggedInUserLoading && loggedInUser ? (
+              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+            ) : (
+              <>Loading...</>
+            )}
             <DiscoverCard />
           </div>
           <div className={postsContainer}>

@@ -5,6 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -17,12 +18,11 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
 } from "@/pages.components/feed";
 
 const Feed: NextPage = () => {
-  // states
-  const [posts, setPosts] = useState<Post[]>(dummyPosts);
+  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
+  const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     fetchFeedsData();
@@ -30,9 +30,8 @@ const Feed: NextPage = () => {
 
   const fetchFeedsData = async () => {
     try {
-      // Create a user with registration_pending state in database
       const { data } = await axiosNodeApi.get("/api/socials/posts");
-      setPosts(data.postData);
+      setPosts(data.posts);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -46,7 +45,11 @@ const Feed: NextPage = () => {
         <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            <ProfileDetailCard />
+            {!isLoggedInUserLoading && loggedInUser ? (
+              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+            ) : (
+              <>Loading...</>
+            )}
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
@@ -71,13 +74,13 @@ export default Feed;
 
 // styling
 const dashboardContentContainer = ctl(`
-stakingpack bg-black-shade-3 w-full min-h-screen font-monto
+stakingpack bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
 `);
 const feedContainer = ctl(`
-flex justify-center gap-5
+flex  gap-5
 `);
 const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
@@ -86,5 +89,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full lg:w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);

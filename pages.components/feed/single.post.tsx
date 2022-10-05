@@ -32,27 +32,28 @@ import {
   MessageIcon2,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
+import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
-import { axiosNodeApi } from "@/utils/axios";
-// import { posts } from "./dummy.posts";
 
 interface FeedCardLevel1Props {
   post: Post;
 }
 
-export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }, req) => {
-  // states
+export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-  const [totalLikePost, setTotalLikePost] = useState<number>(
+  const [totalPostLikes, setTotalPostLikes] = useState<number>(
     post.likes_count_on_post
+  );
+  const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
+    post.post_liked_by_loggedin_user === 1 ? true : false
   );
   const router = useRouter();
   console.log("query", router.query);
@@ -60,25 +61,24 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }, req) => {
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
-  // useEffect(() => {
-  //   const post_id = router.query.post_id;
-  //   const account_address = router.query.account_address;
-
-  //   const _replies = posts.filter(
-  //     (p) =>
-  //       p.parent_post?._id === post_id &&
-  //       p.parent_post?.user.account_address === account_address
-  //   );
-  //   setReplies(_replies);
-  // }, [router]);
-
   const likePost = async (post_id: String) => {
     try {
-      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+      // putting it before the api call to make it feel faster
+      if (isLikedByLoggedInUser) {
+        setIsLikedByLoggedInUser(false);
+        setTotalPostLikes(totalPostLikes - 1);
+      } else {
+        setTotalPostLikes((prev) => prev + 1);
+        setIsLikedByLoggedInUser(true);
+      }
+      await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      setTotalLikePost(data.total_likes);
     } catch (error: any) {
+      setIsLikedByLoggedInUser(
+        post.post_liked_by_loggedin_user === 1 ? true : false
+      );
+      setTotalPostLikes(post.likes_count_on_post);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -209,7 +209,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }, req) => {
           <MessageIcon /> {post.comments_count_on_post}
         </button>
         <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
-          <LikeIcon /> {totalLikePost > 0 && totalLikePost}
+          <LikeIcon
+            className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
+          />{" "}
+          <span className="text-brand-primary">
+            {totalPostLikes > 0 && totalPostLikes}
+          </span>
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>

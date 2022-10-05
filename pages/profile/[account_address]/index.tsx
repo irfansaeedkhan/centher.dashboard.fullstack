@@ -4,7 +4,9 @@ import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
-import { ProfilePageWrapper } from "@/pages.components/profile/profile.wrapper";
+import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 
@@ -16,12 +18,16 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
 } from "@/pages.components/feed";
+import { ProfilePageWrapper } from "@/pages.components/profile";
 
 const Profile: NextPage = () => {
-  // states
-  const [posts, setPosts] = useState<Post[]>(dummyPosts);
+  // Create User Profile View
+  useCreateUserProfileView();
+
+  const { user: loggedInUser } = useUser();
+  const { user, loading: userLoading } = useGetUser();
+  const [posts, setPosts] = useState<Post[]>([]);
 
   return (
     <AllPagesWrapper pageTitle="Profile">
@@ -29,7 +35,17 @@ const Profile: NextPage = () => {
         <div>
           <div className={feedContainer}>
             <div className={leftSidebar}>
-              <ProfileDetailCard />
+              {/* TODO: Irfan - Use some loader */}
+              {userLoading === "loaded" && user && (
+                <ProfileDetailCard
+                  user={user}
+                  isLoggedInUser={
+                    user.account_address === loggedInUser?.account_address
+                  }
+                />
+              )}
+              {userLoading === "loading" && <p>Loading...</p>}
+              {userLoading === "failed" && <p>Error!</p>}
               <DiscoverCard />
             </div>
             <div className={postsContainer}>
@@ -55,7 +71,7 @@ export default Profile;
 
 // styling
 const feedContainer = ctl(`
-flex justify-center gap-5
+flex  gap-5 max-w-[835px]
 `);
 const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
@@ -64,5 +80,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full lg:w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);
