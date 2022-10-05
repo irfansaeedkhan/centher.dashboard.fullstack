@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -43,7 +44,7 @@ interface FeedCardLevel1Props {
   post: Post;
 }
 
-export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
+export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }, req) => {
   // states
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
@@ -54,6 +55,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     post.likes_count_on_post
   );
   const router = useRouter();
+  console.log("query", router.query);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
@@ -245,13 +248,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               <ArrowLeftIcon /> Share Via
             </button>
             <button className={SharetoggleListBtn}>
-              <Image
-                src="/images/whatsapp.png"
-                width={24}
-                height={24}
-                alt="whatapp"
-              />
-              WhatsApp
+              <WhatsappShareButton url={shareUrl}>
+                <Image
+                  src="/images/whatsapp.png"
+                  width={24}
+                  height={24}
+                  alt="whatapp"
+                />
+                WhatsApp
+              </WhatsappShareButton>
             </button>
             <button className={SharetoggleListBtn}>
               <Image
@@ -260,7 +265,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
                 height={24}
                 alt="twitter"
               />
-              Twitter
+              <TwitterShareButton url={shareUrl}>Twitter</TwitterShareButton>
             </button>
           </div>
         </div>
