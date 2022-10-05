@@ -530,7 +530,8 @@ export const PostCard = () => {
     }
   };
 
-  console.log("previewFilesUI", previewFilesUI);
+  let date = new Date();
+  // console.log("aaaaaaaaaaaaaaaaaaaaaaaaa", date.getDate());
   return (
     <div className={postCardContainer}>
       <div className={topCard}>

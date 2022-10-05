@@ -16,7 +16,11 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
           {/*header*/}
           <div className={modalHeader}>
             <span className={modalHeaderTitle}>{props.title}</span>
-            <button className={modalHeaderButton} onClick={props.onClose}>
+            <button
+              className={modalHeaderButton}
+              onClick={props.onClose}
+              type="button"
+            >
               ×
             </button>
           </div>

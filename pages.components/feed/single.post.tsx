@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -31,30 +32,33 @@ import {
   MessageIcon2,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
+import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
-import { axiosNodeApi } from "@/utils/axios";
 // import { posts } from "./dummy.posts";
 import PostTweetLogic from "./post.logic";
-
 interface FeedCardLevel1Props {
   post: Post;
 }
 
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
-  // states
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
 
   const [replies, setReplies] = useState<Post[]>([]);
-  const [totalLikePost, setTotalLikePost] = useState<number>(
+  const [totalPostLikes, setTotalPostLikes] = useState<number>(
     post.likes_count_on_post
   );
+  const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
+    post.post_liked_by_loggedin_user === 1 ? true : false
+  );
   const router = useRouter();
+  console.log("query", router.query);
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
@@ -82,11 +86,22 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
 
   const likePost = async (post_id: String) => {
     try {
-      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+      // putting it before the api call to make it feel faster
+      if (isLikedByLoggedInUser) {
+        setIsLikedByLoggedInUser(false);
+        setTotalPostLikes(totalPostLikes - 1);
+      } else {
+        setTotalPostLikes((prev) => prev + 1);
+        setIsLikedByLoggedInUser(true);
+      }
+      await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      setTotalLikePost(data.total_likes);
     } catch (error: any) {
+      setIsLikedByLoggedInUser(
+        post.post_liked_by_loggedin_user === 1 ? true : false
+      );
+      setTotalPostLikes(post.likes_count_on_post);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -127,6 +142,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     setToggleSharePop_2(false);
   });
 
+  const myMoment = moment();
+  const yourMoment = moment(post.createdAt).add(15, "minutes");
+
+  console.log("post edit duration is passed", myMoment >= yourMoment);
   return (
     <div className={postCardContainer}>
       {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
@@ -145,7 +164,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           />
           <div>
             <h5 className={PFName}>{post.user.display_name}</h5>
-            {/* TODO: Irfan - Use dayjs for created at*/}
             <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
           </div>
         </div>
@@ -153,14 +171,22 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <button onClick={togglePopFunc}>
             <DotsIcon />
           </button>
-          <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-            <button className={toggleListBtn}>
-              <EditIcon className={toggleListIcons} /> Edit
-            </button>
-            <button className={toggleListBtn}>
-              <TrashIcon className={toggleListIcons} /> Delete
-            </button>
-          </div>
+          {myMoment >= yourMoment ? (
+            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+              <button className={toggleListBtn}>
+                <TrashIcon className={toggleListIcons} /> Archive
+              </button>
+            </div>
+          ) : (
+            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+              <button className={toggleListBtn}>
+                <EditIcon className={toggleListIcons} /> Edit
+              </button>
+              <button className={toggleListBtn}>
+                <TrashIcon className={toggleListIcons} /> Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -217,7 +243,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <MessageIcon /> {post.comments_count_on_post}
         </button>
         <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
-          <LikeIcon /> {totalLikePost > 0 && totalLikePost}
+          <LikeIcon
+            className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
+          />{" "}
+          <span className="text-brand-primary">
+            {totalPostLikes > 0 && totalPostLikes}
+          </span>
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
@@ -227,10 +258,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <div
             className={`${SharetoggleList} ${toggleSharePop && "!block z-50"}`}
           >
-            <button className={SharetoggleListBtn}>
+            {/* <button className={SharetoggleListBtn}>
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
-            </button>
+            </button> */}
             <button className={SharetoggleListBtn}>
               <LinkIcon className={SharetoggleListIcons} /> Copy link
             </button>
@@ -256,22 +287,32 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               <ArrowLeftIcon /> Share Via
             </button>
             <button className={SharetoggleListBtn}>
-              <Image
-                src="/images/whatsapp.png"
-                width={24}
-                height={24}
-                alt="whatapp"
-              />
-              WhatsApp
+              <WhatsappShareButton
+                url={shareUrl}
+                className="flex items-center gap-3"
+              >
+                <Image
+                  src="/images/whatsapp.png"
+                  width={24}
+                  height={24}
+                  alt="whatapp"
+                />
+                WhatsApp
+              </WhatsappShareButton>
             </button>
             <button className={SharetoggleListBtn}>
-              <Image
-                src="/images/twitter2.png"
-                width={24}
-                height={24}
-                alt="twitter"
-              />
-              Twitter
+              <TwitterShareButton
+                url={shareUrl}
+                className="flex items-center gap-3"
+              >
+                <Image
+                  src="/images/twitter2.png"
+                  width={24}
+                  height={24}
+                  alt="twitter"
+                />
+                Twitter
+              </TwitterShareButton>
             </button>
           </div>
         </div>
@@ -504,7 +545,7 @@ const maincontentContainer = ctl(`
 px-4
 `);
 const mediaContainer = ctl(`
-
+   
 `);
 const textContainer = ctl(`
 pt-4 pb-2 

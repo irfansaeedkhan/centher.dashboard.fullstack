@@ -43,12 +43,12 @@ const inputField = ctl(`
   w-full 
   py-3 
   px-5 
-  bg-[#1E1E21] 
+  !bg-[#1E1E21] 
   text-white 
   rounded-lg
   border-0
-  focus:outline-none 
-  focus:ring-brand-primary
+  focus:!outline-none 
+  focus:!ring-brand-primary
 `);
 
 const inputFieldError = ctl(`
