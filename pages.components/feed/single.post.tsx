@@ -56,11 +56,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     post.post_liked_by_loggedin_user === 1 ? true : false
   );
   const router = useRouter();
-  console.log("query", router.query);
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  const copyText = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
+
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
-
   const likePost = async (post_id: String) => {
     try {
       // putting it before the api call to make it feel faster
@@ -79,6 +83,19 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         post.post_liked_by_loggedin_user === 1 ? true : false
       );
       setTotalPostLikes(post.likes_count_on_post);
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
+  const sharePost = async () => {
+    try {
+      const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
+        post_id: post._id,
+      });
+      return data;
+    } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -228,7 +245,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
             </button>
-            <button className={SharetoggleListBtn}>
+            <button onClick={copyText} className={SharetoggleListBtn}>
               <LinkIcon className={SharetoggleListIcons} /> Copy link
             </button>
             <button
@@ -253,13 +270,13 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               <ArrowLeftIcon /> Share Via
             </button>
             <button className={SharetoggleListBtn}>
-              <WhatsappShareButton url={shareUrl}>
-                <Image
-                  src="/images/whatsapp.png"
-                  width={24}
-                  height={24}
-                  alt="whatapp"
-                />
+              <Image
+                src="/images/whatsapp.png"
+                width={24}
+                height={24}
+                alt="whatapp"
+              />
+              <WhatsappShareButton onClick={sharePost} url={shareUrl}>
                 WhatsApp
               </WhatsappShareButton>
             </button>
@@ -270,7 +287,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
                 height={24}
                 alt="twitter"
               />
-              <TwitterShareButton url={shareUrl}>Twitter</TwitterShareButton>
+              <TwitterShareButton onClick={sharePost} url={shareUrl}>
+                Twitter
+              </TwitterShareButton>
             </button>
           </div>
         </div>
