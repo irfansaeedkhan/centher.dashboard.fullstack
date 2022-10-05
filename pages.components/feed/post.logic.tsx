@@ -1,26 +1,6 @@
-// React, Next, NPM Packages
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
-import Image from "next/future/image";
-import { Carousel } from "react-responsive-carousel";
-
-// App imports
-import { CustomModal } from "@/components/modal/custom.modal";
-import Button from "@/components/button";
-import {
-  PhotoIcon,
-  VideoIcon,
-  EmojiIcon,
-  AnimateTrashIcon,
-} from "@/assets/svgs";
-
-// TO DO : Remove
-import {
-  defaultBufferSize,
-  awsMinBufferSize,
-  calculateFileChunksSizes,
-} from "@/utils/mediafile/filechunks";
-
+import { axiosNodeApi } from "@/utils/axios";
 import {
   checkValidImageFile,
   checkValidVideoFile,
@@ -39,32 +19,53 @@ type PreviewSelectedFile = {
   fileType: string;
   fileBlobURL: string;
 };
-import { axiosNodeApi } from "@/utils/axios";
 
-export const PostCard = () => {
+// eslint-disable-next-line import/no-anonymous-default-export
+export default function (
+  reply: boolean = false,
+  reply_address: string = "",
+  reply_post_id: string = ""
+) {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   //It will store list of files selected by the user
   const [userSelectedFileListArray, setuserSelectedFileListArray] = useState(
     Array<FileList>
   );
-
-  //
-  const [previewFilesUI, setpreviewFilesUI] = useState([]);
-
-  //
-  const [deletedFileIndexs, setDeletedFileIndex] = useState([]);
 
   //TO DO : Remove
   const [selectedFileDetail, setselectedFileDetail] = useState(
     Array<FileChunksChunksCalculations>
   );
 
-  const [tweetText, setweetText] = useState("");
   //
-  let currentPostID = "";
+  const [deletedFileIndexs, setDeletedFileIndex] = useState([]);
 
-  let previewFileList = [];
-  // states
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [previewFilesUI, setpreviewFilesUI] = useState(
+    Array<PreviewSelectedFile>
+  );
+
+  const [tweetText, setweetText] = useState<string>("");
+
+  //
+  let currentPostID: string = "";
+
+  let previewFileList: Array<PreviewSelectedFile> = [];
+
+  const closePostModel = () => {
+    try {
+      setShowModal(false);
+      setuserSelectedFileListArray([]);
+      setselectedFileDetail([]);
+      setDeletedFileIndex([]);
+      setweetText("");
+      setpreviewFilesUI([]);
+      currentPostID = "";
+      previewFileList = [];
+    } catch (error) {
+      console.log("Failed to close");
+    }
+  };
 
   // function to set max value of text
   const handleTextLength = (e: any) => {
@@ -81,9 +82,10 @@ export const PostCard = () => {
       setweetText(e.target.value);
     }
   };
+
   const CompleteMultipartUpload = async (
-    CompleteMultipartUpload,
-    file_index
+    FileListDetails: Array<FileChunksChunksCalculations>,
+    file_index: number
   ) => {
     try {
       await axiosNodeApi.post("/api/socials/posts-media/complete", {
@@ -91,16 +93,16 @@ export const PostCard = () => {
         file_index: file_index,
       });
       console.log("Uploading new file : ", file_index);
-      await UploadFiles(CompleteMultipartUpload, file_index + 1);
+      await UploadFiles(FileListDetails, file_index + 1);
     } catch (error) {
       console.log("Failed to complete upload : ", error);
     }
   };
 
   const UploadChunks = async (
-    filesChunksDetails,
-    uploading_file_index,
-    chunk_index
+    filesChunksDetails: Array<FileChunksChunksCalculations>,
+    uploading_file_index: number,
+    chunk_index: number
   ) => {
     try {
       if (
@@ -120,7 +122,7 @@ export const PostCard = () => {
 
       let ending = file_details.chunks_range[chunk_index].Ending;
 
-      let fileList_index = file_details.index_of_file_list;
+      let fileList_index: string = file_details.index_of_file_list;
 
       let fileIndex = file_details.index_of_file;
 
@@ -130,15 +132,15 @@ export const PostCard = () => {
       );
 
       //Onload
-      fileReader.onloadend = async function (event) {
+      fileReader.onloadend = async function (event: any) {
         try {
-          if (event.target.readyState !== FileReader.DONE) {
+          if (event?.target?.readyState !== FileReader.DONE) {
             console.log("File reading complete");
             return;
           }
 
           //Storing data
-          let dataRead = event?.target.result;
+          let dataRead = event?.target?.result;
 
           console.log("Data Read : ", dataRead);
 
@@ -201,7 +203,10 @@ export const PostCard = () => {
     }
   };
 
-  const UploadFiles = async (filesChunksDetails, uploading_file_index) => {
+  const UploadFiles = async (
+    filesChunksDetails: Array<FileChunksChunksCalculations>,
+    uploading_file_index: number
+  ) => {
     try {
       console.log(
         "File chunks details : ",
@@ -223,7 +228,11 @@ export const PostCard = () => {
 
   //Function will remove the files created by the user
   //
-  const deleteFileIndexs = async (fileListIndex, fileIndex, previewIndex) => {
+  const deleteFileIndexs = async (
+    fileListIndex: string,
+    fileIndex: number,
+    previewIndex: number
+  ) => {
     try {
       console.log(
         "Delete file index : ",
@@ -245,7 +254,7 @@ export const PostCard = () => {
         //Removing fileList Object from array
         let updatedFileListArray = await userSelectedFileListArray.filter(
           (value, index) => {
-            if (index == fileListIndex) {
+            if (Number(index) == Number(fileListIndex)) {
               return false;
             }
             return true;
@@ -260,7 +269,11 @@ export const PostCard = () => {
         let deleted_file_index = deletedFileIndexs;
         //If more than one file exists in the fileArray Object then cannot delete single file because it is not allowed
         //so storing this details in different array while creating chunks we will skip this file
-        if (deleted_file_index.indexOf(fileListIndex + "," + fileIndex) == -1) {
+        if (
+          deleted_file_index.indexOf(
+            String(fileListIndex) + "," + String(fileIndex)
+          ) == -1
+        ) {
           //Doesn't exits in the database
           await setDeletedFileIndex(
             deleted_file_index.push(fileListIndex + "," + fileIndex)
@@ -303,17 +316,19 @@ export const PostCard = () => {
   // Start uploading it to server
   const createPost = async (event: Event) => {
     try {
-      let filesChunksDetails = await post_file_details(
-        userSelectedFileListArray,
-        deletedFileIndexs
-      );
+      let filesChunksDetails: Array<FileChunksChunksCalculations> =
+        await post_file_details(userSelectedFileListArray, deletedFileIndexs);
 
       //Setting details in filesChunksDetails
       setselectedFileDetail(filesChunksDetails);
 
+      // No need to pass user address
       let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
         post_files_detail: filesChunksDetails,
         post_text: tweetText,
+        reply: reply,
+        reply_address: reply_address,
+        reply_post_id: reply_post_id,
       });
 
       //If no file media that means only text was avaible in post
@@ -336,7 +351,7 @@ export const PostCard = () => {
 
   // Function will display social media in pop up
   //
-  const createSelectedFileUI = (previewUrlList) => {
+  const createSelectedFileUI = (previewUrlList: Array<PreviewSelectedFile>) => {
     try {
       console.log("Preview list : ", previewUrlList);
       //
@@ -407,13 +422,13 @@ export const PostCard = () => {
   };
 
   //
-  const addSelectedFiles = (selected_files: FileList) => {
+  const addSelectedFiles = (selected_files: FileList): boolean => {
     try {
       //TO DO : Remove Selected filed
       let alreadyAddedFileList: Array<FileList> = userSelectedFileListArray;
 
       // Checking file already exits in selected file or not
-      let fileExits = checkFileAlreadyAddedInSelectedFile(
+      let fileExits: boolean = checkFileAlreadyAddedInSelectedFile(
         alreadyAddedFileList,
         selected_files
       );
@@ -469,10 +484,10 @@ export const PostCard = () => {
   };
 
   // Function will be called when user click on photo or video icon on create post
-  const handleSelectFile = (event: Event, file_type: string) => {
+  const handleSelectFile = (event: any, file_type: string) => {
     try {
       // Checking if file is selected or not
-      if (!event.target.files) {
+      if (!event?.target?.files) {
         return;
       }
 
@@ -524,234 +539,17 @@ export const PostCard = () => {
     }
   };
 
-  console.log("previewFilesUI", previewFilesUI);
-  return (
-    <div className={postCardContainer}>
-      <div className={topCard}>
-        <Image
-          src={"/images/feedprofilepic.png"}
-          width={48}
-          height={48}
-          className="rounded-full"
-          alt={"icon"}
-        />
-        <button
-          className={postBtn}
-          onClick={() => {
-            setShowModal(true);
-          }}
-        >
-          Start a post
-        </button>
-      </div>
-      <div className={uploadBtnContainer}>
-        <label className={`${uploadBtn} text-yellow-theme`}>
-          <PhotoIcon />
-          Photo
-          <input
-            type="file"
-            id="files-photo"
-            name="photos-file"
-            accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
-            style={{ display: "none" }}
-            multiple
-            onChange={(e) => {
-              handleSelectFile(e, "images");
-            }}
-          />
-        </label>
+  return [
+    showModal,
+    setShowModal,
+    previewFilesUI,
+    handleTextLength,
+    createPost,
+    closePostModel,
+    handleSelectFile,
+  ];
+}
 
-        <label className={`${uploadBtn} text-[#157AFB]`}>
-          <VideoIcon />
-          Video
-          <input
-            type="file"
-            id="files-videos"
-            name="videos-file"
-            accept=".webm,.mp4,.mpg,.avi,.m4v"
-            style={{ display: "none" }}
-            multiple
-            onChange={(e) => {
-              handleSelectFile(e, "videos");
-            }}
-          />
-        </label>
-        <label
-          onClick={() => {
-            setShowModal(true);
-          }}
-          className={`${uploadBtn} text-[#00BF96]`}
-        >
-          <EmojiIcon />
-          Emoji
-        </label>
-      </div>
-      {showModal && (
-        <CustomModal
-          onClose={() => {
-            //TO DO : Convert to function
-            setShowModal(false);
-            setuserSelectedFileListArray([]);
-            setpreviewFilesUI([]);
-            setDeletedFileIndex([]);
-            setselectedFileDetail([]);
-            previewFileList = "";
-          }}
-          title={"Create post"}
-        >
-          <div className={modalBodyWrapper}>
-            <div className={contactDetail}>
-              <Image
-                src={"/images/robertProfilepic.png"}
-                width={44}
-                height={44}
-                alt={"image"}
-              />
-              <h5 className={cdName}>uixamjad</h5>
-            </div>
-            <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer} 
-                // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                // ${previewFilesUI.length > 2 && "grid-cols-3"} 
-                `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
-                >
-                  {previewFilesUI}
-                </Carousel>
-              </div>
-              <div className={inputTextContainer}>
-                <textarea
-                  className={textContainerContent}
-                  name=""
-                  id="posttext"
-                  cols={12}
-                  rows={4}
-                  placeholder="Type Here"
-                  maxLength={200}
-                  onChange={handleTextLength}
-                ></textarea>
-              </div>
-            </div>
-            <div className={modalFooter}>
-              <div className={leftActionBtns}>
-                <label className={`${uploadBtn} text-yellow-theme`}>
-                  <PhotoIcon />
-                  Photo
-                  <input
-                    type="file"
-                    id="files-photo"
-                    name="photos-file"
-                    accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
-                    style={{ display: "none" }}
-                    multiple
-                    onChange={(e) => {
-                      handleSelectFile(e, "images");
-                    }}
-                  />
-                </label>
-                <label className={`${uploadBtn} text-[#157AFB]`}>
-                  <VideoIcon />
-                  Video
-                  <input
-                    type="file"
-                    id="files-videos"
-                    name="videos-file"
-                    accept=".webm,.mp4,.mpg,.avi,.m4v"
-                    style={{ display: "none" }}
-                    multiple
-                    onChange={(e) => {
-                      handleSelectFile(e, "videos");
-                    }}
-                  />
-                </label>
-                <button className={`${uploadBtn} text-[#00BF96]`}>
-                  <EmojiIcon />
-                  Emoji
-                </button>
-              </div>
-              <div className={RightActionBtns}>
-                <AnimateTrashIcon />
-                <div className={divider}></div>
-                <button className={clearBtn}>+</button>
-                <Button
-                  title={"Post"}
-                  variant="v1"
-                  className="max-w-[140px]"
-                  onClick={createPost}
-                />
-              </div>
-            </div>
-          </div>
-        </CustomModal>
-      )}
-    </div>
-  );
-};
-
-// styling
-const postCardContainer = ctl(`
-  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 
-`);
-const topCard = ctl(`
-top w-full flex items-center gap-2 mb-2 
-`);
-const postBtn = ctl(`
-w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left
-`);
-const uploadBtnContainer = ctl(`
-  flex items-items justify-between
-`);
-const uploadBtn = ctl(`
-flex items-center gap-3 text-14px font-medium 
-`);
-
-// create post modal styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`);
-const contactDetail = ctl(`
-  flex items-center  gap-3 px-6
-`);
-const cdName = ctl(`
-  text-14px font-semibold text-white
-`);
-const maincontentContainer = ctl(`
-px-6
-`);
-const mediaContainer = ctl(`
- "w-full grid" gap-3"
-`);
-const mediaItem = ctl(`  
-
-`);
-const inputTextContainer = ctl(`
-pt-4 pb-2 w-full
-`);
-const textContainerContent = ctl(`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3
-`);
-const modalFooter = ctl(`
-flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`);
-const leftActionBtns = ctl(`
-w-[100%] lg:w-[48%] flex items-center justify-between
-`);
-const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2
-`);
-const divider = ctl(`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
-const clearBtn = ctl(`
-plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
-`);
 const imageDelBtn = ctl(`
-absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
-`);
+  absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
+  `);

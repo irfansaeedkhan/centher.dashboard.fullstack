@@ -38,6 +38,7 @@ import { NODE_API_URL } from "@/constants/common";
 import { ReplyPost } from "./reply.post";
 import { axiosNodeApi } from "@/utils/axios";
 // import { posts } from "./dummy.posts";
+import PostTweetLogic from "./post.logic";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -48,7 +49,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
+
   const [replies, setReplies] = useState<Post[]>([]);
   const [totalLikePost, setTotalLikePost] = useState<number>(
     post.likes_count_on_post
@@ -57,6 +58,16 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
+  //TO DO : Pass post id and account address
+  const [
+    showModal,
+    setShowModal,
+    previewFilesUI,
+    handleTextLength,
+    createPost,
+    closePostModel,
+    handleSelectFile,
+  ] = PostTweetLogic(true);
   // useEffect(() => {
   //   const post_id = router.query.post_id;
   //   const account_address = router.query.account_address;
@@ -93,19 +104,19 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     setToggleSharePop_2((prev) => !prev);
   };
   // function to set max value of text
-  const handleTextLength = (e: any) => {
-    var box: HTMLElement | null = document.getElementById("trashRect");
-    if (box) {
-      box.style.transform = `translateY(${
-        -(e.target.value.length * 100) / 200 + 100
-      }%)`;
-      if ((e.target.value.length * 100) / 200 > 80) {
-        box.style.fill = `#E03434`;
-      } else {
-        box.style.fill = `#FEBF32`;
-      }
-    }
-  };
+  // const handleTextLength = (e: any) => {
+  //   var box: HTMLElement | null = document.getElementById("trashRect");
+  //   if (box) {
+  //     box.style.transform = `translateY(${
+  //       -(e.target.value.length * 100) / 200 + 100
+  //     }%)`;
+  //     if ((e.target.value.length * 100) / 200 > 80) {
+  //       box.style.fill = `#E03434`;
+  //     } else {
+  //       box.style.fill = `#FEBF32`;
+  //     }
+  //   }
+  // };
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
     setTogglePop(false);
@@ -299,7 +310,102 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           })}
         </>
       )}
-      {showModal && (
+      {
+        showModal && (
+          <CustomModal onClose={closePostModel} title={"Create post"}>
+            <div className={modalBodyWrapper}>
+              <div className={contactDetail}>
+                <Image
+                  src={"/images/robertProfilepic.png"}
+                  width={44}
+                  height={44}
+                  alt={"image"}
+                />
+                <h5 className={cdName}>uixamjad</h5>
+              </div>
+              <div className={maincontentContainer}>
+                <div
+                  className={`${mediaContainer} 
+                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
+                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
+                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                    `}
+                >
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={previewFilesUI.length === 1 ? false : true}
+                  >
+                    {previewFilesUI}
+                  </Carousel>
+                </div>
+                <div className={inputTextContainer}>
+                  <textarea
+                    className={ModaltextContainerContent}
+                    name=""
+                    id="posttext"
+                    cols={12}
+                    rows={4}
+                    placeholder="Type Here"
+                    maxLength={200}
+                    onChange={handleTextLength}
+                  ></textarea>
+                </div>
+              </div>
+              <div className={modalFooter}>
+                <div className={leftActionBtns}>
+                  <label className={`${uploadBtn} text-yellow-theme`}>
+                    <PhotoIcon />
+                    Photo
+                    <input
+                      type="file"
+                      id="files-photo"
+                      name="photos-file"
+                      accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "images");
+                      }}
+                    />
+                  </label>
+                  <label className={`${uploadBtn} text-[#157AFB]`}>
+                    <VideoIcon />
+                    Video
+                    <input
+                      type="file"
+                      id="files-videos"
+                      name="videos-file"
+                      accept=".webm,.mp4,.mpg,.avi,.m4v"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "videos");
+                      }}
+                    />
+                  </label>
+                  <button className={`${uploadBtn} text-[#00BF96]`}>
+                    <EmojiIcon />
+                    Emoji
+                  </button>
+                </div>
+                <div className={RightActionBtns}>
+                  <AnimateTrashIcon />
+                  <div className={divider}></div>
+                  <button className={clearBtn}>+</button>
+                  <Button
+                    title={"Post"}
+                    variant="v1"
+                    className="max-w-[140px]"
+                    onClick={createPost}
+                  />
+                </div>
+              </div>
+            </div>
+          </CustomModal>
+        )
+        /* {showModal && (
         <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
@@ -369,7 +475,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
             </div>
           </div>
         </CustomModal>
-      )}
+      )} */
+      }
     </div>
   );
 };
