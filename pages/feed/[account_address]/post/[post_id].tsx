@@ -31,12 +31,10 @@ const SinglePostPage: NextPage = () => {
   useEffect(() => {
     const fetchSinglePostData = async () => {
       try {
-        // Create a user with registration_pending state in database
-        const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${accountAddress}'/post/${postId}`
-        );
+        // Get Single Post By ID
+        const { data } = await axiosNodeApi.get(`/api/socials/posts/${postId}`);
 
-        setPost(data.postData);
+        setPost(data.post);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"

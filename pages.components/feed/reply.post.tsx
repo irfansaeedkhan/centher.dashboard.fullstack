@@ -171,16 +171,16 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             }}
           >
             <a className={footerdetailBtn}>
-              <MessageIcon /> {post.comments_count_on_post}
+              <MessageIcon /> {post.replies_count}
             </a>
           </Link>
           <button className={footerdetailBtn}>
             <LikeIcon />
-            {post.likes_count_on_post}
+            {post.likes_count}
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-              <ShareIcon /> {post.shares_count_on_post}
+              <ShareIcon /> {post.shares_count}
             </button>
 
             <div

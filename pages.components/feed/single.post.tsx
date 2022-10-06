@@ -50,10 +50,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
   const [totalPostLikes, setTotalPostLikes] = useState<number>(
-    post.likes_count_on_post
+    post.likes_count
   );
   const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
-    post.post_liked_by_loggedin_user === 1 ? true : false
+    post.liked_by_loggedin_user
   );
   const router = useRouter();
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -79,10 +79,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         post_id,
       });
     } catch (error: any) {
-      setIsLikedByLoggedInUser(
-        post.post_liked_by_loggedin_user === 1 ? true : false
-      );
-      setTotalPostLikes(post.likes_count_on_post);
+      setIsLikedByLoggedInUser(post.liked_by_loggedin_user);
+      setTotalPostLikes(post.likes_count);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -223,7 +221,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           </button>
         )}
         <button className={footerdetailBtn}>
-          <MessageIcon /> {post.comments_count_on_post}
+          <MessageIcon /> {post.replies_count}
         </button>
         <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
           <LikeIcon
@@ -235,7 +233,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-            <ShareIcon /> {post.shares_count_on_post}
+            <ShareIcon /> {post.shares_count}
           </button>
 
           <div
