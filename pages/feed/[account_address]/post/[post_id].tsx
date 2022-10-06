@@ -91,7 +91,12 @@ const SinglePostPage: NextPage = () => {
                     <a className={backBtn}>Back</a>
                   </Link>
                 )}
-                <SinglePost post={post} />
+                <SinglePost
+                  post={post}
+                  onDelete={() => {
+                    router.replace(AppRoutes.feed);
+                  }}
+                />
               </div>
             ) : (
               <p>Loading...</p>
