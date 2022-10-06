@@ -102,7 +102,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     createPost,
     closePostModel,
     handleSelectFile,
-  ] = PostTweetLogic(true);
+  ] = PostTweetLogic(
+    true,
+    router?.query?.account_address,
+    router?.query?.post_id
+  );
   useEffect(() => {
     //   const post_id = router.query.post_id;
     //   const account_address = router.query.account_address;

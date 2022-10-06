@@ -1,4 +1,7 @@
 // React, Next, NPM Packages
+//
+// This file will get deleted file upload code is in post.logic.card.jsx.
+//
 import { useState, useRef } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";

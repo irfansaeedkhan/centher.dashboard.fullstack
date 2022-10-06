@@ -17,7 +17,8 @@ import {
   DiscoverCard,
   MessagesCard,
   RecentActivitiesCard,
-  PostCard,
+  //PostCard,
+  PostCardNew,
   SinglePost,
 } from "@/pages.components/feed";
 import {
@@ -69,7 +70,8 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
-            <PostCard renderFeedPage={renderFeedPage} />
+            {/* <PostCard renderFeedPage={renderFeedPage} /> */}
+            <PostCardNew renderFeedPage={renderFeedPage} />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
