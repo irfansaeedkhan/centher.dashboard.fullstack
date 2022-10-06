@@ -1,10 +1,12 @@
 // React, Next, NPM Packages
 import React from "react";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
 import { User } from "@/models/user";
-import { useGetUserProfileViews } from "@/hooks/user.profile.views";
-import Image from "next/future/image";
+import { getProfileImage } from "@/utils/helpers/get.profile.image";
+
+import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
 interface ProfileDetailCardProps {
   user: User;
@@ -15,14 +17,14 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
   isLoggedInUser,
 }) => {
-  const { userProfileViews } = useGetUserProfileViews();
+  const { profileCardDetails } = useGetProfileCardDetails();
 
   return (
     <div className={profileDetailCard}>
       <Image
-        src="/images/feedprofilepic.png"
+        src={getProfileImage(user)}
         className={profilePic}
-        alt="profle pic"
+        alt={user.display_name}
         width={60}
         height={60}
       />
@@ -30,16 +32,22 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       <div className={numberDetails}>
         <div>
           <h4 className={detailnumTitle}>Post</h4>
-          <h5 className={detailnumValue}>2</h5>
+          <h5 className={detailNumValue}>
+            {profileCardDetails.posts_count ?? "--"}
+          </h5>
         </div>
         <div>
           <h4 className={detailnumTitle}>Followers</h4>
-          <h5 className={detailnumValue}>0</h5>
+          <h5 className={detailNumValue}>
+            {profileCardDetails.followers_count ?? "--"}
+          </h5>
         </div>
         {isLoggedInUser && (
           <div>
             <h4 className={detailnumTitle}>Following</h4>
-            <h5 className={detailnumValue}>1</h5>
+            <h5 className={detailNumValue}>
+              {profileCardDetails.following_count ?? "--"}
+            </h5>
           </div>
         )}
       </div>
@@ -47,17 +55,23 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         <>
           <div className={viewBox}>
             <h5 className={viewBoxTitle}>Your Profile viewed by</h5>
-            <h6 className={viewBoxValue}>{userProfileViews}</h6>
+            <h6 className={viewBoxValue}>
+              {profileCardDetails.profile_views_count ?? "--"}
+            </h6>
           </div>
           <div className={viewBox}>
             <h5 className={viewBoxTitle}>Your Posts viewed by</h5>
-            <h6 className={viewBoxValue}>1287</h6>
+            <h6 className={viewBoxValue}>
+              {" "}
+              {profileCardDetails.posts_views_count ?? "--"}
+            </h6>
           </div>
         </>
       )}
     </div>
   );
 };
+
 // styling
 const profileDetailCard = ctl(`
   w-full max-w-[272px] pt-6 pb-3 rounded-10px text-center bg-background-shade-3
@@ -74,7 +88,7 @@ const numberDetails = ctl(`
 const detailnumTitle = ctl(`
   text-12px font-medium text-gray-shade-7 mb-2
 `);
-const detailnumValue = ctl(`
+const detailNumValue = ctl(`
   text-14px font-semibold text-white
 `);
 const viewBox = ctl(`
