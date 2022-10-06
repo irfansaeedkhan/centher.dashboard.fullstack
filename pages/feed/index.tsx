@@ -74,7 +74,7 @@ export default Feed;
 
 // styling
 const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
+ bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
@@ -89,5 +89,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-158px)] pb-12
 `);
