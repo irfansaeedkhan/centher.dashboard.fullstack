@@ -36,7 +36,6 @@ const SinglePostPage: NextPage = () => {
           `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}`
         );
 
-        console.log("post", data.postData);
         setPost(data.postData);
       } catch (error: any) {
         toast.error(

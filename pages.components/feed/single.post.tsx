@@ -57,17 +57,33 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
-  // useEffect(() => {
-  //   const post_id = router.query.post_id;
-  //   const account_address = router.query.account_address;
+  useEffect(() => {
+    //   const post_id = router.query.post_id;
+    //   const account_address = router.query.account_address;
 
-  //   const _replies = posts.filter(
-  //     (p) =>
-  //       p.parent_post?._id === post_id &&
-  //       p.parent_post?.user.account_address === account_address
-  //   );
-  //   setReplies(_replies);
-  // }, [router]);
+    //   const _replies = posts.filter(
+    //     (p) =>
+    //       p.parent_post?._id === post_id &&
+    //       p.parent_post?.user.account_address === account_address
+    //   );
+    //   setReplies(_replies);
+    const fetchRepliesPostData = async () => {
+      try {
+        // Create a user with registration_pending state in database
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}/replies`
+        );
+        setReplies(data.postData);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+    if (router.query.account_address && router?.query?.post_id) {
+      fetchRepliesPostData();
+    }
+  }, [router]);
 
   const likePost = async (post_id: String) => {
     try {
@@ -165,9 +181,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               showIndicators={false}
               showArrows={post.media && post.media.length === 1 ? false : true}
             >
-              {post.media.map((media) => (
+              {post.media.map((media, index) => (
                 <Image
-                  key={media.url}
+                  key={index}
                   src={media.url}
                   width={452}
                   height={312}

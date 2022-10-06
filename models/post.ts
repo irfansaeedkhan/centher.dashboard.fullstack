@@ -7,6 +7,7 @@ export interface Post {
       account_address: string;
       profile_image: string;
       display_name: string;
+      custom_image: boolean;
     };
   };
   text_content?: string;

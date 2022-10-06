@@ -6,6 +6,8 @@ import { Carousel } from "react-responsive-carousel";
 import { useOnClickOutside } from "usehooks-ts";
 import Image from "next/future/image";
 import Link from "next/link";
+import moment from "moment";
+import { toast } from "react-hot-toast";
 
 // App imports
 import {
@@ -24,6 +26,9 @@ import {
 import { Post } from "@/models/post";
 import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
+import { NODE_API_URL } from "@/constants/common";
+import { axiosNodeApi } from "@/utils/axios";
+
 // import { posts } from "./dummy.posts";
 
 // import from same directory
@@ -38,23 +43,50 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-
+  const [totalLikePost, setTotalLikePost] = useState<number>(
+    post.likes_count_on_post
+  );
   useEffect(() => {
-    const post_id = post._id;
-    const account_address = post.user.account_address;
+    //   const post_id = router.query.post_id;
+    //   const account_address = router.query.account_address;
 
-    // const _replies = posts
-    //   .filter(
+    //   const _replies = posts.filter(
     //     (p) =>
     //       p.parent_post?._id === post_id &&
     //       p.parent_post?.user.account_address === account_address
-    //   )
-    //   .slice(0, 1);
-    // setReplies(_replies);
+    //   );
+    //   setReplies(_replies);
+    const fetchRepliesPostData = async () => {
+      try {
+        // Create a user with registration_pending state in database
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
+        );
+        setReplies(data.postData);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+    if (post._id) {
+      fetchRepliesPostData();
+    }
   }, [post]);
 
-  console.log("replies", replies);
-  console.log("post", post);
+  const likePost = async (post_id: String) => {
+    try {
+      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+        post_id,
+      });
+      setTotalLikePost(data.total_likes);
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
   // toggle function to show/hide edit/delete popup
   const togglePopFunc = async () => {
     setTogglePop((prev) => !prev);
@@ -87,7 +119,11 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
         <div className={topCard}>
           <div className={profileDetail}>
             <Image
-              src={post.user.profile_image}
+              src={
+                post.user.custom_image
+                  ? post.user.profile_image
+                  : `${NODE_API_URL}${post.user.profile_image}`
+              }
               width={48}
               height={48}
               className="rounded-full"
@@ -104,7 +140,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
                   </span>
                 </button>
               </div>
-              <h6 className={PFTime}>{post.createdAt}</h6>
+              <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
             </div>
           </div>
           <div ref={ref} className={toggleContainer}>
@@ -137,20 +173,16 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
                   post.media && post.media.length === 1 ? false : true
                 }
               >
-                <Image
-                  src="/images/postimage.png"
-                  width={452}
-                  height={312}
-                  alt="post media"
-                  className="w-full"
-                />
-                <Image
-                  src="/images/postimage.png"
-                  width={452}
-                  height={312}
-                  alt="post media"
-                  className="w-full"
-                />
+                {post.media.map((media, index) => (
+                  <Image
+                    key={index}
+                    src={media.url}
+                    width={452}
+                    height={312}
+                    alt="post media"
+                    className="w-full"
+                  />
+                ))}
               </Carousel>
             )}
           </div>
@@ -174,9 +206,12 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
               <MessageIcon /> {post.comments_count_on_post}
             </a>
           </Link>
-          <button className={footerdetailBtn}>
+          <button
+            className={footerdetailBtn}
+            onClick={() => likePost(post._id)}
+          >
             <LikeIcon />
-            {post.likes_count_on_post}
+            {totalLikePost > 0 && totalLikePost}
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
