@@ -53,6 +53,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   renderFeedPage,
   onDelete,
 }) => {
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [editPostText, setEditPostText] = useState<string>();
+  const [editDeletedItem, setEditDeletedItem] = useState([]);
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
@@ -74,6 +77,21 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
+
+  // ref for toggle function
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, () => {
+    setTogglePop(false);
+  });
+  const ref2 = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref2, () => {
+    setToggleSharePop(false);
+    setToggleSharePop_2(false);
+  });
+
+  // timer to check 15 min difference
+  const myMoment = moment();
+  const yourMoment = moment(post.createdAt).add(15, "minutes");
 
   //TO DO : Pass post id and account address
   const [
@@ -148,6 +166,20 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     }
   };
 
+  const archivePostFunc = async (post_id: string) => {
+    try {
+      await axiosNodeApi.post(`/api/socials/posts/archive`, {
+        post_id,
+      });
+      toast.success("Post Archived Successfully");
+      renderFeedPage();
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
   const deletePost = async () => {
     try {
       await axiosNodeApi.delete(`api/socials/posts/${post._id}`);
@@ -170,46 +202,53 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const toggleSharePopFunc_2 = async () => {
     setToggleSharePop_2((prev) => !prev);
   };
-  // function to set max value of text
-  // const handleTextLength = (e: any) => {
-  //   var box: HTMLElement | null = document.getElementById("trashRect");
-  //   if (box) {
-  //     box.style.transform = `translateY(${
-  //       -(e.target.value.length * 100) / 200 + 100
-  //     }%)`;
-  //     if ((e.target.value.length * 100) / 200 > 80) {
-  //       box.style.fill = `#E03434`;
-  //     } else {
-  //       box.style.fill = `#FEBF32`;
-  //     }
-  //   }
-  // };
-  const ref = useRef<HTMLDivElement>(null);
-  useOnClickOutside(ref, () => {
-    setTogglePop(false);
-  });
-  const ref2 = useRef<HTMLDivElement>(null);
-  useOnClickOutside(ref2, () => {
-    setToggleSharePop(false);
-    setToggleSharePop_2(false);
-  });
 
-  const myMoment = moment();
-  const yourMoment = moment(post.createdAt).add(15, "minutes");
-
-  const archivePostFunc = async (post_id: string) => {
-    console.log("post_id", post_id);
-    const { data } = await axiosNodeApi.post(`/api/socials/posts/archive`, {
-      post_id,
-    });
-    if (data) {
-      console.log("data>>>>", data);
-      renderFeedPage();
-      console.log("sucess");
+  const editPost = async ({
+    post_id,
+    text,
+    delete_file_indexdelete_file_index,
+  }) => {
+    try {
+      await axiosNodeApi.post(`api/socials/posts/edit`, {
+        post_id,
+        text,
+        delete_file_indexdelete_file_index,
+      });
+      toast.success("Post Edited Successfully");
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
     }
-    return data;
+  };
+  const editPostModal = (post) => {
+    setShowEditModal(true);
+    console.log("post this one", post);
+  };
+  // function to set max value of text
+  const handleEditTextLength = (e: any) => {
+    var box: HTMLElement | null = document.getElementById("trashRectedit");
+    if (box) {
+      box.style.transform = `translateY(${
+        -(e.target.value.length * 100) / 200 + 100
+      }%)`;
+      if ((e.target.value.length * 100) / 200 > 80) {
+        box.style.fill = `#E03434`;
+      } else {
+        box.style.fill = `#FEBF32`;
+      }
+    }
+    setEditPostText(e.target.value);
   };
 
+  let deleteList = [];
+  const handleMediaDel = (id) => {
+    // editDeletedItem.push(id);
+    deleteList.push(id);
+    setEditDeletedItem(deleteList);
+  };
+  console.log("editPostText", editPostText);
+  console.log("editDeletedItem", editDeletedItem);
   return (
     <div className={postCardContainer}>
       {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
@@ -249,7 +288,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               </div>
             ) : (
               <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-                <button className={toggleListBtn}>
+                <button
+                  className={toggleListBtn}
+                  onClick={() => {
+                    editPostModal(post);
+                  }}
+                >
                   <EditIcon className={toggleListIcons} /> Edit
                 </button>
                 <button className={toggleListBtn} onClick={deletePost}>
@@ -590,6 +634,89 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         </CustomModal>
       )} */
       }
+      {/* edit modal */}
+      {showEditModal && (
+        <CustomModal
+          onClose={() => {
+            setShowEditModal(false);
+          }}
+          title={"Edit post"}
+        >
+          <div className={modalBodyWrapper}>
+            <div className={contactDetail}>
+              <Image
+                src={`${NODE_API_URL}${user?.profile_image}`}
+                width={44}
+                height={44}
+                className="rounded-full"
+                alt={user?.display_name ?? "profile image"}
+              />
+              <h5 className={cdName}>{user?.display_name}</h5>
+            </div>
+            <div className={maincontentContainer}>
+              <div
+                className={`${mediaContainer}
+                    `}
+              >
+                <Carousel
+                  showStatus={false}
+                  showThumbs={false}
+                  showIndicators={false}
+                  showArrows={previewFilesUI.length === 1 ? false : true}
+                >
+                  {post.media?.map((data, index) => {
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => {
+                          handleMediaDel(index);
+                        }}
+                      >
+                        <Image
+                          src={data.url}
+                          width={452}
+                          height={312}
+                          className="w-full rounded-xl"
+                          alt={user?.display_name ?? "profile image"}
+                        />
+                      </div>
+                    );
+                  })}
+                </Carousel>
+              </div>
+              <div className={inputTextContainer}>
+                <textarea
+                  className={ModaltextContainerContent}
+                  name=""
+                  id="posttext"
+                  cols={12}
+                  rows={4}
+                  placeholder="Type Here"
+                  maxLength={200}
+                  onChange={handleEditTextLength}
+                  defaultValue={post?.text_content}
+                  value={editPostText}
+                ></textarea>
+              </div>
+            </div>
+            <div className={modalFooter}>
+              <div className={RightActionBtns}>
+                <AnimateTrashIcon />
+                <div className={divider}></div>
+                <button className={clearBtn}>+</button>
+                <Button
+                  title={"Update"}
+                  variant="v1"
+                  className="max-w-[140px]"
+                  onClick={() => {
+                    editPost(post?._id, editPostText, editDeletedItem);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </CustomModal>
+      )}
     </div>
   );
 };
@@ -688,10 +815,10 @@ const mediaItem = ctl(`
 
 `);
 const inputTextContainer = ctl(`
-pt-4 pb-2 w-full
+pt-4 pb-2 w-full px-6
 `);
 const ModaltextContainerContent = ctl(`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3
+text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
 `);
 const modalFooter = ctl(`
 flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6

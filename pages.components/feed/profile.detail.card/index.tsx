@@ -20,7 +20,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   const { profileCardDetails } = useGetProfileCardDetails();
 
   return (
-    <div className={profileDetailCard}>
+    <div className={profileDetailCardContainer}>
       <Image
         src={getProfileImage(user)}
         className={profilePic}
@@ -73,7 +73,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 };
 
 // styling
-const profileDetailCard = ctl(`
+const profileDetailCardContainer = ctl(`
   w-full max-w-[272px] pt-6 pb-3 rounded-10px text-center bg-background-shade-3
 `);
 const profilePic = ctl(`

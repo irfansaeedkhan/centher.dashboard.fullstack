@@ -751,7 +751,7 @@ const mediaItem = ctl(`
 
 `);
 const inputTextContainer = ctl(`
-pt-4 pb-2 w-full
+pt-4 pb-2 w-full px-6
 `);
 const textContainerContent = ctl(`
 text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3
