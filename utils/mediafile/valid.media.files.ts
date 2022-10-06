@@ -92,7 +92,7 @@ export type FileChunksChunksCalculations = {
   file_size: number;
   file_type: string;
   no_of_chunk: number;
-  index_of_file_list: number | string;
+  index_of_file_list: string;
   index_of_file: number;
   chunks_range: FileChunks[];
 };

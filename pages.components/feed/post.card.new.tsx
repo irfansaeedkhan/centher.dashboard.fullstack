@@ -16,7 +16,7 @@ import {
 
 import PostTweetLogic from "./post.logic";
 //
-export const PostCardNew = () => {
+export const PostCardNew = ({ renderFeedPage }) => {
   const [
     showModal,
     setShowModal,
