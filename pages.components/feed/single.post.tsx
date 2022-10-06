@@ -307,6 +307,14 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 >
                   <EditIcon className={toggleListIcons} /> Edit
                 </button>
+                <button
+                  className={toggleListBtn}
+                  onClick={() => {
+                    archivePostFunc(post._id);
+                  }}
+                >
+                  <TrashIcon className={toggleListIcons} /> Archive
+                </button>
                 <button className={toggleListBtn} onClick={deletePost}>
                   <TrashIcon className={toggleListIcons} /> Delete
                 </button>
@@ -680,17 +688,25 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                     return (
                       <div
                         key={index}
-                        onClick={() => {
-                          handleMediaDel(index);
-                        }}
+                        className="h-full flex items-center justify-center relative"
                       >
                         <Image
                           src={data.url}
                           width={452}
                           height={312}
-                          className="w-full rounded-xl"
+                          className={
+                            "object-contain object-center w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block"
+                          }
                           alt={user?.display_name ?? "profile image"}
                         />
+                        <button
+                          className={imageDelBtn}
+                          onClick={() => {
+                            handleMediaDel(index);
+                          }}
+                        >
+                          x
+                        </button>
                       </div>
                     );
                   })}
@@ -854,3 +870,6 @@ flex items-center gap-3 text-14px font-medium
 const postImageStyling = ctl(`
  object-contain object-left  !w-auto h-auto rounded-xl max-w-[27rem] max-h-[20rem] !block
 `);
+const imageDelBtn = ctl(`
+  absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
+  `);
