@@ -398,13 +398,13 @@ export default function (
         ) {
           // Checking if supported image type
           displaySelectedFile.push(
-            <div className="relative h-[38vh]">
+            <div className={ImageStyleContainer}>
               <img
                 src={previewUrlList[fileDetails].fileBlobURL}
                 width={452}
                 height={312}
                 alt="post media"
-                className=" rounded-xl w-full h-full object-cover"
+                className={createPostImageStyling}
               />
               <button
                 onClick={(e) => {
@@ -573,4 +573,10 @@ export default function (
 
 const imageDelBtn = ctl(`
   absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
+  `);
+const ImageStyleContainer = ctl(`
+ h-full flex items-center justify-center
+  `);
+const createPostImageStyling = ctl(`
+ object-contain object-center  w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block
   `);
