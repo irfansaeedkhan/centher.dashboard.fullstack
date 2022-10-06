@@ -10,7 +10,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
-
+import useUser from "@/hooks/use.user";
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
@@ -30,6 +30,7 @@ import {
   ArrowRightIcon,
   WorldIcon,
   MessageIcon2,
+  Users,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -40,11 +41,16 @@ import { NODE_API_URL } from "@/constants/common";
 import { ReplyPost } from "./reply.post";
 // import { posts } from "./dummy.posts";
 import PostTweetLogic from "./post.logic";
+import { userAgent } from "next/server";
 interface FeedCardLevel1Props {
   post: Post;
+  onDelete: (id: string) => void;
 }
 
-export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
+export const SinglePost: React.FC<FeedCardLevel1Props> = ({
+  post,
+  onDelete,
+}) => {
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
@@ -58,7 +64,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   );
   const router = useRouter();
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-
+  const { user } = useUser();
   const copyText = () => {
     navigator.clipboard.writeText(shareUrl);
     toast.success("Copy Link Successfully!");
@@ -105,7 +111,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     }
   }, [router]);
 
-  const likePost = async (post_id: String) => {
+  const likePost = async (post_id: string) => {
     try {
       // putting it before the api call to make it feel faster
       if (isLikedByLoggedInUser) {
@@ -135,6 +141,18 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
         post_id: post._id,
       });
       return data;
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
+  const deletePost = async () => {
+    try {
+      await axiosNodeApi.delete(`api/socials/posts/${post._id}`);
+      toast.success("Post Deleted Successfully");
+      onDelete(post._id);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -179,7 +197,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const myMoment = moment();
   const yourMoment = moment(post.createdAt).add(15, "minutes");
 
-  console.log("post edit duration is passed", myMoment >= yourMoment);
   return (
     <div className={postCardContainer}>
       {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
@@ -201,27 +218,29 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
             <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
           </div>
         </div>
-        <div ref={ref} className={toggleContainer}>
-          <button onClick={togglePopFunc}>
-            <DotsIcon />
-          </button>
-          {myMoment >= yourMoment ? (
-            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-              <button className={toggleListBtn}>
-                <TrashIcon className={toggleListIcons} /> Archive
-              </button>
-            </div>
-          ) : (
-            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-              <button className={toggleListBtn}>
-                <EditIcon className={toggleListIcons} /> Edit
-              </button>
-              <button className={toggleListBtn}>
-                <TrashIcon className={toggleListIcons} /> Delete
-              </button>
-            </div>
-          )}
-        </div>
+        {post.user._id === user?._id && (
+          <div ref={ref} className={toggleContainer}>
+            <button onClick={togglePopFunc}>
+              <DotsIcon />
+            </button>
+            {myMoment >= yourMoment ? (
+              <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+                <button className={toggleListBtn}>
+                  <TrashIcon className={toggleListIcons} /> Archive
+                </button>
+              </div>
+            ) : (
+              <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+                <button className={toggleListBtn}>
+                  <EditIcon className={toggleListIcons} /> Edit
+                </button>
+                <button className={toggleListBtn} onClick={deletePost}>
+                  <TrashIcon className={toggleListIcons} /> Delete
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div
         className={`${maincontentContainer} ${

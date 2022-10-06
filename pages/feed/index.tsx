@@ -57,7 +57,13 @@ const Feed: NextPage = () => {
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
-                <SinglePost key={post._id} post={post} />
+                <SinglePost
+                  key={post._id}
+                  post={post}
+                  onDelete={(post_id) => {
+                    setPosts(posts.filter((p) => p._id !== post_id));
+                  }}
+                />
               ))}
           </div>
           <div className={rightSidebar}>
