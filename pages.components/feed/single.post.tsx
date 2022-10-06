@@ -227,7 +227,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <LikeIcon
             className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
           />{" "}
-          <span className="text-brand-primary">
+          <span
+            className={`${isLikedByLoggedInUser ? "text-brand-primary" : ""}`}
+          >
             {totalPostLikes > 0 && totalPostLikes}
           </span>
         </button>
