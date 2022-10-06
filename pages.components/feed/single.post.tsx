@@ -207,21 +207,18 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     setToggleSharePop_2((prev) => !prev);
   };
 
-  const editPost = async ({
-    post_id,
-    text,
-    delete_file_indexdelete_file_index,
-  }) => {
+  const editPost = async (post_id, text, delete_file_index) => {
+    console.log("edited", post_id, text, delete_file_index);
     try {
       await axiosNodeApi.post(`api/socials/posts/edit`, {
         post_id,
         text,
-        delete_file_indexdelete_file_index,
+        delete_file_index,
       });
       toast.success("Post Edited Successfully");
     } catch (error: any) {
       toast.error(
-        error.response.data?.message_description || "Something went wrong"
+        error?.response?.data?.message_description || "Something went wrong"
       );
     }
   };
@@ -328,7 +325,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   width={452}
                   height={312}
                   alt="post media"
-                  className="w-full"
+                  className={postImageStyling}
                 />
               ))}
             </Carousel>
@@ -842,4 +839,7 @@ plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 
 
 const uploadBtn = ctl(`
 flex items-center gap-3 text-14px font-medium 
+`);
+const postImageStyling = ctl(`
+ object-contain object-left  !w-auto h-auto rounded-xl max-w-[27rem] max-h-[20rem] !block
 `);
