@@ -402,10 +402,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
               </div>
               <div className={maincontentContainer}>
                 <div
-                  className={`${mediaContainer} 
-                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                  className={`${mediaContainer}
                     `}
                 >
                   <Carousel
