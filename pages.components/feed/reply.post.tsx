@@ -43,7 +43,12 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-  const [totalLikePost, setTotalLikePost] = useState<number>(post.likes_count);
+  const [totalPostLikes, setTotalPostLikes] = useState<number>(
+    post.likes_count
+  );
+  const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
+    post.liked_by_loggedin_user
+  );
   useEffect(() => {
     //   const post_id = router.query.post_id;
     //   const account_address = router.query.account_address;
@@ -72,13 +77,22 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
     }
   }, [post]);
 
-  const likePost = async (post_id: String) => {
+  const likePost = async (post_id: string) => {
     try {
-      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+      // putting it before the api call to make it feel faster
+      if (isLikedByLoggedInUser) {
+        setIsLikedByLoggedInUser(false);
+        setTotalPostLikes(totalPostLikes - 1);
+      } else {
+        setTotalPostLikes((prev) => prev + 1);
+        setIsLikedByLoggedInUser(true);
+      }
+      await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      setTotalLikePost(data.total_likes);
     } catch (error: any) {
+      setIsLikedByLoggedInUser(post.liked_by_loggedin_user);
+      setTotalPostLikes(post.likes_count);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -208,8 +222,12 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             className={footerdetailBtn}
             onClick={() => likePost(post._id)}
           >
-            <LikeIcon />
-            {post.likes_count}
+            <LikeIcon
+              className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
+            />{" "}
+            <span className="text-brand-primary">
+              {totalPostLikes > 0 && totalPostLikes}
+            </span>
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>

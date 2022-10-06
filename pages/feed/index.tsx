@@ -33,11 +33,15 @@ const Feed: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [skip, setSkip] = useState(0);
+
   const fetchFeedsData = async () => {
     try {
       setLoadingState(true);
-      const { data } = await axiosNodeApi.get("/api/socials/posts");
-      setPosts(data.posts);
+      const { data } = await axiosNodeApi.get(
+        `/api/socials/posts?off_set=${skip}`
+      );
+      setPosts([...posts, ...data.posts]);
       if (data) {
         setLoadingState(false);
       }
@@ -55,7 +59,16 @@ const Feed: NextPage = () => {
   };
   useEffect(() => {
     fetchFeedsData();
-  }, []);
+  }, [skip]);
+
+  const handleScroll = (event: any): void => {
+    const { offsetHeight, scrollTop, scrollHeight } = event.target;
+
+    if (offsetHeight + scrollTop >= scrollHeight) {
+      setSkip(posts?.length);
+    }
+  };
+
   return (
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
@@ -69,7 +82,7 @@ const Feed: NextPage = () => {
             )}
             <DiscoverCard />
           </div>
-          <div className={postsContainer}>
+          <div className={postsContainer} onScroll={handleScroll}>
             {/* <PostCard renderFeedPage={renderFeedPage} /> */}
             <PostCardNew renderFeedPage={renderFeedPage} />
             {posts
