@@ -1,7 +1,11 @@
+import { Polygon } from "@/assets/svgs";
 import { NODE_API_URL } from "@/constants/common";
 import useUser from "@/hooks/use.user";
+import { axiosNodeApi } from "@/utils/axios";
 import Image from "next/future/image";
+import Link from "next/link";
 import React, { useRef } from "react";
+import toast from "react-hot-toast";
 import { FiArrowUpRight } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { useOnClickOutside } from "usehooks-ts";
@@ -13,6 +17,7 @@ interface HeaderProfileProps {
 const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user } = useUser();
+  console.log(user);
 
   const handleClickOutside = () => {
     onClickOutside();
@@ -20,88 +25,121 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
 
   useOnClickOutside(ref, handleClickOutside);
 
+  const copyText = () => {
+    navigator.clipboard.writeText(user?.account_address);
+    toast.success("Copied!");
+  };
+
+  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+    const button = e.currentTarget;
+    button.disabled = true;
+
+    axiosNodeApi
+      .post("/api/auth/logout")
+      .then(({ data }) => {
+        button.disabled = false;
+        toast.success(data.message_description ?? "Logged out successfully!");
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((err: any) => {
+        // If user is already logged out, reload the page
+        if (err.response?.data?.message === "unauthenticated") {
+          setTimeout(() => {
+            window.location.reload();
+          });
+          return;
+        }
+        button.disabled = false;
+        toast.error(
+          err.response?.data?.message_description ?? "Something went wrong!"
+        );
+      });
+  };
+
   return (
-    <div
-      ref={ref}
-      className="absolute w-64 bordersetall right-0  gradientborders z-50"
-      style={{ padding: "0.1rem", top: "3.5rem" }}
-    >
+    <>
+      <div className="absolute top-12 ">
+        <Polygon />
+      </div>
       <div
-        style={{ padding: "1rem" }}
-        className="flex flex-col gap-3 text-white"
+        ref={ref}
+        className="absolute w-77 rounded-lg right-0 z-50 bg-black top-[3.5rem]"
       >
-        <span className="flex justify-between text-sm">
-          <span className="text-lg font-semibold text-transparent bg-clip-text anim">
-            Account
-          </span>
-        </span>
-        <div className="flex gap-2 items-center">
-          <button>
-            <div>
-              {user && (
-                <div className="dpImagePreview cursor-pointer relative">
-                  <Image
-                    src={`${NODE_API_URL}${user.profile_image}`}
-                    alt="userProfile"
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                </div>
-              )}
+        <Image
+          src={"/images/dummy-cover-img.jpg"}
+          alt="dummy-cover-img.jpg"
+          width={308}
+          height={96}
+          className="rounded-t-lg !h-[96px] object-cover"
+        />
+        <div className="flex flex-col gap-3 text-white ">
+          <div className="flex gap-2 items-center px-6 py-4">
+            <button>
+              <div>
+                {user && (
+                  <div className="dpImagePreview relative">
+                    <Image
+                      src={`${NODE_API_URL}${user.profile_image}`}
+                      alt="userProfile"
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  </div>
+                )}
+              </div>
+            </button>
+            <div className="flex flex-col gap-1 ">
+              <div className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white">
+                {user?.display_name}
+              </div>
+              <div className="flex gap-2 items-center">
+                <p className="text-sm">
+                  {user?.account_address.slice(0, 4) +
+                    "..." +
+                    user?.account_address.slice(38, 42)}
+                </p>
+                <MdContentCopy
+                  className="cursor-pointer text-sm text-white hover:text-brand-primary "
+                  onClick={copyText}
+                />
+                <a
+                  href={"/"}
+                  target={"_blank"}
+                  rel="noreferrer"
+                  title="View on BSC Scan"
+                >
+                  <FiArrowUpRight className="cursor-pointer text-sm hover:text-brand-primary " />
+                </a>
+              </div>
             </div>
-          </button>
-          <div className="flex flex-col gap-1 ">
-            <span className="flex gap-2 items-center">
-              <button>
-                <div className="dynamicTranss hoverText">
-                  <span>12345...78903</span>
-                </div>
-              </button>
-              <MdContentCopy
-                className="cursor-pointer text-lg hoverText dynamicTranss "
-                // onClick={copyText}
-              />
-              <a
-                href={"/"}
-                target={"_blank"}
-                rel="noreferrer"
-                title="View on BSC Scan"
-              >
-                <FiArrowUpRight className="cursor-pointer text-lg hoverText dynamicTranss " />
+          </div>
+          <div className="w-full flex justify-end items-end px-6 py-4">
+            <button
+              className="rounded-lg bg-gray-shade-3 text-gray-shade-7 w-full text-sm hover:bg-yellow-theme hover:text-black font-semibold p-3"
+              onClick={handleLogout}
+            >
+              Disconnect
+            </button>
+          </div>
+          <hr className="border-gray-shade-border-color" />
+          <div className="flex flex-col gap-3 px-6 pt-3 pb-4">
+            <Link href={`/profile/${user?._id}`}>
+              <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
+                My Profile
               </a>
-            </span>
-            <span className="text-sm" style={{ color: "#ABAFC4" }}>
-              MetaMask
-            </span>
+            </Link>
+            <Link href={`/profile/settings`}>
+              <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
+                Profile Settings
+              </a>
+            </Link>
           </div>
         </div>
-        <div className="w-full flex justify-end items-end">
-          <button
-            className=" bordersetall text-sm hover:bg-yellow-theme hover:text-black font-semibold dynamicTranss"
-            style={{ padding: "0.75rem" }}
-            // onClick={handleLogout}
-          >
-            Disconnect
-          </button>
-        </div>
-        <hr className="border-gray-700" />
-        <div className="flex flex-col gap-2">
-          <span className="text-lg font-semibold text-transparent bg-clip-text anim">
-            Referral Link
-          </span>
-          <span className="px-2 py-3 bordersetall w-full flex gap-2 items-center">
-            <span className="w-4/5 overflow-x-scroll whitespace-nowrap">
-              1232313123....2312312321
-            </span>
-            <MdContentCopy
-              className="cursor-pointer text-lg hoverText dynamicTranss w-1/5 "
-              // onClick={copyReferral}
-            />
-          </span>
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 
