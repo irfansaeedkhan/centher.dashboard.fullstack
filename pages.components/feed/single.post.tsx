@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 // App imports
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -31,32 +32,51 @@ import {
   MessageIcon2,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
+import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
-import { axiosNodeApi } from "@/utils/axios";
 // import { posts } from "./dummy.posts";
-
+import PostTweetLogic from "./post.logic";
 interface FeedCardLevel1Props {
   post: Post;
 }
 
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
-  // states
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
+
   const [replies, setReplies] = useState<Post[]>([]);
-  const [totalLikePost, setTotalLikePost] = useState<number>(
+  const [totalPostLikes, setTotalPostLikes] = useState<number>(
     post.likes_count_on_post
   );
+  const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
+    post.post_liked_by_loggedin_user === 1 ? true : false
+  );
   const router = useRouter();
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  const copyText = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
+
   const isFeedPage = router.pathname === AppRoutes.feed;
   const isProfilePage = router.pathname === AppRoutes.user_profile;
 
+  //TO DO : Pass post id and account address
+  const [
+    showModal,
+    setShowModal,
+    previewFilesUI,
+    handleTextLength,
+    createPost,
+    closePostModel,
+    handleSelectFile,
+  ] = PostTweetLogic(true);
   useEffect(() => {
     //   const post_id = router.query.post_id;
     //   const account_address = router.query.account_address;
@@ -87,10 +107,34 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
 
   const likePost = async (post_id: String) => {
     try {
-      const { data } = await axiosNodeApi.post("api/socials/analytics/likes", {
+      // putting it before the api call to make it feel faster
+      if (isLikedByLoggedInUser) {
+        setIsLikedByLoggedInUser(false);
+        setTotalPostLikes(totalPostLikes - 1);
+      } else {
+        setTotalPostLikes((prev) => prev + 1);
+        setIsLikedByLoggedInUser(true);
+      }
+      await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
-      setTotalLikePost(data.total_likes);
+    } catch (error: any) {
+      setIsLikedByLoggedInUser(
+        post.post_liked_by_loggedin_user === 1 ? true : false
+      );
+      setTotalPostLikes(post.likes_count_on_post);
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
+  const sharePost = async () => {
+    try {
+      const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
+        post_id: post._id,
+      });
+      return data;
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -109,19 +153,19 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     setToggleSharePop_2((prev) => !prev);
   };
   // function to set max value of text
-  const handleTextLength = (e: any) => {
-    var box: HTMLElement | null = document.getElementById("trashRect");
-    if (box) {
-      box.style.transform = `translateY(${
-        -(e.target.value.length * 100) / 200 + 100
-      }%)`;
-      if ((e.target.value.length * 100) / 200 > 80) {
-        box.style.fill = `#E03434`;
-      } else {
-        box.style.fill = `#FEBF32`;
-      }
-    }
-  };
+  // const handleTextLength = (e: any) => {
+  //   var box: HTMLElement | null = document.getElementById("trashRect");
+  //   if (box) {
+  //     box.style.transform = `translateY(${
+  //       -(e.target.value.length * 100) / 200 + 100
+  //     }%)`;
+  //     if ((e.target.value.length * 100) / 200 > 80) {
+  //       box.style.fill = `#E03434`;
+  //     } else {
+  //       box.style.fill = `#FEBF32`;
+  //     }
+  //   }
+  // };
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
     setTogglePop(false);
@@ -132,6 +176,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
     setToggleSharePop_2(false);
   });
 
+  const myMoment = moment();
+  const yourMoment = moment(post.createdAt).add(15, "minutes");
+
+  console.log("post edit duration is passed", myMoment >= yourMoment);
   return (
     <div className={postCardContainer}>
       {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
@@ -150,7 +198,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           />
           <div>
             <h5 className={PFName}>{post.user.display_name}</h5>
-            {/* TODO: Irfan - Use dayjs for created at*/}
             <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
           </div>
         </div>
@@ -158,14 +205,22 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <button onClick={togglePopFunc}>
             <DotsIcon />
           </button>
-          <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-            <button className={toggleListBtn}>
-              <EditIcon className={toggleListIcons} /> Edit
-            </button>
-            <button className={toggleListBtn}>
-              <TrashIcon className={toggleListIcons} /> Delete
-            </button>
-          </div>
+          {myMoment >= yourMoment ? (
+            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+              <button className={toggleListBtn}>
+                <TrashIcon className={toggleListIcons} /> Archive
+              </button>
+            </div>
+          ) : (
+            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+              <button className={toggleListBtn}>
+                <EditIcon className={toggleListIcons} /> Edit
+              </button>
+              <button className={toggleListBtn}>
+                <TrashIcon className={toggleListIcons} /> Delete
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -222,7 +277,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <MessageIcon /> {post.comments_count_on_post}
         </button>
         <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
-          <LikeIcon /> {totalLikePost > 0 && totalLikePost}
+          <LikeIcon
+            className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
+          />{" "}
+          <span className="text-brand-primary">
+            {totalPostLikes > 0 && totalPostLikes}
+          </span>
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
@@ -232,11 +292,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           <div
             className={`${SharetoggleList} ${toggleSharePop && "!block z-50"}`}
           >
-            <button className={SharetoggleListBtn}>
+            {/* <button className={SharetoggleListBtn}>
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
-            </button>
-            <button className={SharetoggleListBtn}>
+          </button> */}
+            <button onClick={copyText} className={SharetoggleListBtn}>
               <LinkIcon className={SharetoggleListIcons} /> Copy link
             </button>
             <button
@@ -267,7 +327,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
                 height={24}
                 alt="whatapp"
               />
-              WhatsApp
+              <WhatsappShareButton onClick={sharePost} url={shareUrl}>
+                WhatsApp
+              </WhatsappShareButton>
             </button>
             <button className={SharetoggleListBtn}>
               <Image
@@ -276,7 +338,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
                 height={24}
                 alt="twitter"
               />
-              Twitter
+              <TwitterShareButton onClick={sharePost} url={shareUrl}>
+                Twitter
+              </TwitterShareButton>
             </button>
           </div>
         </div>
@@ -315,7 +379,102 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           })}
         </>
       )}
-      {showModal && (
+      {
+        showModal && (
+          <CustomModal onClose={closePostModel} title={"Create post"}>
+            <div className={modalBodyWrapper}>
+              <div className={contactDetail}>
+                <Image
+                  src={"/images/robertProfilepic.png"}
+                  width={44}
+                  height={44}
+                  alt={"image"}
+                />
+                <h5 className={cdName}>uixamjad</h5>
+              </div>
+              <div className={maincontentContainer}>
+                <div
+                  className={`${mediaContainer} 
+                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
+                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
+                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                    `}
+                >
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={previewFilesUI.length === 1 ? false : true}
+                  >
+                    {previewFilesUI}
+                  </Carousel>
+                </div>
+                <div className={inputTextContainer}>
+                  <textarea
+                    className={ModaltextContainerContent}
+                    name=""
+                    id="posttext"
+                    cols={12}
+                    rows={4}
+                    placeholder="Type Here"
+                    maxLength={200}
+                    onChange={handleTextLength}
+                  ></textarea>
+                </div>
+              </div>
+              <div className={modalFooter}>
+                <div className={leftActionBtns}>
+                  <label className={`${uploadBtn} text-yellow-theme`}>
+                    <PhotoIcon />
+                    Photo
+                    <input
+                      type="file"
+                      id="files-photo"
+                      name="photos-file"
+                      accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "images");
+                      }}
+                    />
+                  </label>
+                  <label className={`${uploadBtn} text-[#157AFB]`}>
+                    <VideoIcon />
+                    Video
+                    <input
+                      type="file"
+                      id="files-videos"
+                      name="videos-file"
+                      accept=".webm,.mp4,.mpg,.avi,.m4v"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "videos");
+                      }}
+                    />
+                  </label>
+                  <button className={`${uploadBtn} text-[#00BF96]`}>
+                    <EmojiIcon />
+                    Emoji
+                  </button>
+                </div>
+                <div className={RightActionBtns}>
+                  <AnimateTrashIcon />
+                  <div className={divider}></div>
+                  <button className={clearBtn}>+</button>
+                  <Button
+                    title={"Post"}
+                    variant="v1"
+                    className="max-w-[140px]"
+                    onClick={createPost}
+                  />
+                </div>
+              </div>
+            </div>
+          </CustomModal>
+        )
+        /* {showModal && (
         <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
@@ -385,7 +544,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
             </div>
           </div>
         </CustomModal>
-      )}
+      )} */
+      }
     </div>
   );
 };
@@ -413,7 +573,7 @@ const maincontentContainer = ctl(`
 px-4
 `);
 const mediaContainer = ctl(`
-
+   
 `);
 const textContainer = ctl(`
 pt-4 pb-2 

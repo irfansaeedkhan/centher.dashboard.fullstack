@@ -34,18 +34,9 @@ const Header = () => {
           <Search />
         </div>
         <span className={border}></span>
-        {!user ? (
+        {!user && (
           <Link href={AppRoutes.auth.login}>
             <a className={connectButoon}>Connect</a>
-          </Link>
-        ) : (
-          <Link
-            href={{
-              pathname: AppRoutes.profile.account_address,
-              query: { account_address: user.account_address },
-            }}
-          >
-            <a className={connectButoon}>{user.display_name}</a>
           </Link>
         )}
         {user && (

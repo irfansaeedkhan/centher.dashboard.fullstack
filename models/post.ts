@@ -19,7 +19,7 @@ export interface Post {
     custom_image: boolean;
   };
   media?: Media[];
-  post_liked_by_loggedin_user: number;
+  post_liked_by_loggedin_user: 0 | 1;
   comments_count_on_post: number;
   shares_count_on_post: number;
   likes_count_on_post: number;

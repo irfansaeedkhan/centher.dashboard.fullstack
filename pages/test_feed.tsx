@@ -5,7 +5,6 @@ import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
-import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -16,13 +15,15 @@ import {
   DiscoverCard,
   MessagesCard,
   RecentActivitiesCard,
-  PostCard,
+  //PostCard,
+  PostCardNew,
   SinglePost,
+  posts as dummyPosts,
 } from "@/pages.components/feed";
 
 const Feed: NextPage = () => {
-  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
-  const [posts, setPosts] = useState<Post[]>([]);
+  // states
+  const [posts, setPosts] = useState<Post[]>(dummyPosts);
 
   useEffect(() => {
     fetchFeedsData();
@@ -30,8 +31,9 @@ const Feed: NextPage = () => {
 
   const fetchFeedsData = async () => {
     try {
+      // Create a user with registration_pending state in database
       const { data } = await axiosNodeApi.get("/api/socials/posts");
-      setPosts(data.posts);
+      setPosts(data.postData);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -45,15 +47,11 @@ const Feed: NextPage = () => {
         <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            {!isLoggedInUserLoading && loggedInUser ? (
-              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
-            ) : (
-              <>Loading...</>
-            )}
+            <ProfileDetailCard />
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
-            <PostCard />
+            <PostCardNew />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
@@ -74,7 +72,7 @@ export default Feed;
 
 // styling
 const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
+stakingpack bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px

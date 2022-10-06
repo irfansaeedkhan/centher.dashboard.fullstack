@@ -6,6 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -18,13 +19,12 @@ import {
   RecentActivitiesCard,
   PostCard,
   SinglePost,
-  posts as dummyPosts,
-  posts,
 } from "@/pages.components/feed";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 
 const SinglePostPage: NextPage = () => {
+  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [post, setPost] = useState<Post>();
   const router = useRouter();
 
@@ -33,7 +33,7 @@ const SinglePostPage: NextPage = () => {
       try {
         // Create a user with registration_pending state in database
         const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}`
+          `/api/socials/posts/'${accountAddress}'/post/${postId}`
         );
 
         setPost(data.postData);
@@ -43,7 +43,15 @@ const SinglePostPage: NextPage = () => {
         );
       }
     };
-    fetchSinglePostData();
+
+    const accountAddress = router?.query?.account_address
+      ?.toString()
+      ?.toLowerCase();
+    const postId = router?.query?.post_id?.toString();
+
+    if (accountAddress && postId) {
+      fetchSinglePostData();
+    }
   }, [router]);
 
   return (
@@ -52,7 +60,11 @@ const SinglePostPage: NextPage = () => {
         <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            <ProfileDetailCard />
+            {!isLoggedInUserLoading && loggedInUser ? (
+              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+            ) : (
+              <>Loading...</>
+            )}
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
@@ -99,22 +111,22 @@ export default SinglePostPage;
 
 // styling
 const dashboardContentContainer = ctl(`
-stakingpack bg-black-shade-3 w-full font-monto h-[100vh]
+ bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
 `);
 const feedContainer = ctl(`
-flex justify-center gap-5
+flex  gap-5
 `);
 const leftSidebar = ctl(`
-w-full max-w-[272px] flex flex-col gap-3
+w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
 `);
 const rightSidebar = ctl(`
-w-full max-w-[272px] flex flex-col gap-3
+w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full lg:w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-60px)]
 `);
 const backBtn = ctl(`
 text-brand-primary text-[11px] px-4 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium w-fit 
