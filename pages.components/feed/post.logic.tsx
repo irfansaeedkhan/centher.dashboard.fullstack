@@ -14,8 +14,8 @@ import {
 } from "@/constants/supported.media.type";
 
 type PreviewSelectedFile = {
-  fileListIndex: string | string;
-  fileIndex: number | string;
+  fileListIndex: string;
+  fileIndex: number;
   fileType: string;
   fileBlobURL: string;
 };
@@ -29,9 +29,9 @@ export default function (
   const [showModal, setShowModal] = useState<boolean>(false);
 
   //It will store list of files selected by the user
-  const [userSelectedFileListArray, setuserSelectedFileListArray] = useState(
-    Array<FileList>
-  );
+  const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
+    FileList[]
+  >([]);
 
   //TO DO : Remove
   const [selectedFileDetail, setselectedFileDetail] = useState(
@@ -39,11 +39,9 @@ export default function (
   );
 
   //
-  const [deletedFileIndexs, setDeletedFileIndex] = useState([]);
+  const [deletedFileIndexs, setDeletedFileIndex] = useState<string[]>([]);
 
-  const [previewFilesUI, setpreviewFilesUI] = useState(
-    Array<PreviewSelectedFile>
-  );
+  const [previewFilesUI, setpreviewFilesUI] = useState(Array<Element>);
 
   const [tweetText, setweetText] = useState<string>("");
 
@@ -51,7 +49,7 @@ export default function (
   //
   let currentPostID: string = "";
 
-  let previewFileList = [];
+  let previewFileList: Array<PreviewSelectedFile> = [];
 
   const closePostModel = () => {
     try {
@@ -232,7 +230,7 @@ export default function (
   const deleteFileIndexs = async (
     fileListIndex: string,
     fileIndex: number,
-    previewIndex: number
+    previewIndex: string
   ) => {
     try {
       console.log(
@@ -278,7 +276,9 @@ export default function (
         ) {
           //Doesn't exits in the database
           await setDeletedFileIndex(
-            deleted_file_index.push(fileListIndex + "," + fileIndex)
+            deleted_file_index.push(
+              String(String(fileListIndex) + "," + String(fileIndex))
+            )
           );
           console.log(
             "Cannot remove file because their is more than one file so adding it "
@@ -290,7 +290,7 @@ export default function (
       console.log("Before removing file : ", previewFileList);
       let updateFile = await previewFileList.filter((value, index) => {
         console.log(value, "Index ", index, "Delte index ", previewIndex);
-        if (index == previewIndex) {
+        if (Number(index) == Number(previewIndex)) {
           return false;
         }
         return true;
@@ -330,6 +330,7 @@ export default function (
       //Setting details in filesChunksDetails
       setselectedFileDetail(filesChunksDetails);
 
+      console.log("Reply address : ", reply_address, reply_post_id);
       // No need to pass user address
       let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
         post_files_detail: filesChunksDetails,
@@ -466,13 +467,14 @@ export default function (
       // Creating Blob for and storing in seperate
       // Running loop of FileList Array
       for (let filelist_index in alreadyAddedFileList) {
-        console.log("Checking fileList index : ", filelist_index);
+        console.log("XXXX Checking fileList index : ", typeof filelist_index);
         // Running loop on each file
         for (
           let file_index = 0;
           file_index < alreadyAddedFileList[filelist_index].length;
           file_index++
         ) {
+          console.log("XXX Type of : ", typeof file_index);
           console.log(
             "Creating blob for filr : ",
             alreadyAddedFileList[filelist_index][file_index]
@@ -498,6 +500,7 @@ export default function (
       return true;
     } catch (error) {
       console.log("Failed to add file ", error);
+      return false;
     }
   };
 
