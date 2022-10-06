@@ -74,16 +74,16 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 
 // styling
 const profileDetailCardContainer = ctl(`
-  w-full max-w-[272px] pt-6 pb-3 rounded-10px text-center bg-background-shade-3
+  w-full max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
 `);
 const profilePic = ctl(`
   w-[60px] h-[60px] mx-auto rounded-full 
 `);
 const profileName = ctl(`
-  text-14px font-bold py-3 text-white
+  text-14px font-bold pt-3 pb-6 text-white
 `);
 const numberDetails = ctl(`
-  bg-background-shade-2 p-3 flex items-center justify-center gap-8 mb-3
+  bg-background-shade-2 p-3 flex items-center justify-center gap-8 
 `);
 const detailnumTitle = ctl(`
   text-12px font-medium text-gray-shade-7 mb-2
