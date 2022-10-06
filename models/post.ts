@@ -1,28 +1,18 @@
+import { User } from "./user";
+
 export interface Post {
   _id: string;
   parent_post?: {
     _id: string;
-    user: {
-      _id: string;
-      account_address: string;
-      profile_image: string;
-      display_name: string;
-      custom_image: boolean;
-    };
+    user: PostUser;
   };
   text_content?: string;
-  user: {
-    _id: string;
-    account_address: string;
-    profile_image: string;
-    display_name: string;
-    custom_image: boolean;
-  };
+  user: PostUser;
   media?: Media[];
-  post_liked_by_loggedin_user: 0 | 1;
-  comments_count_on_post: number;
-  shares_count_on_post: number;
-  likes_count_on_post: number;
+  liked_by_loggedin_user: boolean;
+  replies_count: number;
+  shares_count: number;
+  likes_count: number;
   createdAt: string;
 }
 
@@ -31,3 +21,8 @@ interface Media {
   type: "image" | "video";
   alt?: string;
 }
+
+type PostUser = Pick<
+  User,
+  "_id" | "account_address" | "display_name" | "profile_image" | "custom_image"
+>;

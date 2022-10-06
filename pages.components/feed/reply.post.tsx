@@ -43,9 +43,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
   const [replies, setReplies] = useState<Post[]>([]);
-  const [totalLikePost, setTotalLikePost] = useState<number>(
-    post.likes_count_on_post
-  );
+  const [totalLikePost, setTotalLikePost] = useState<number>(post.likes_count);
   useEffect(() => {
     //   const post_id = router.query.post_id;
     //   const account_address = router.query.account_address;
@@ -203,7 +201,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             }}
           >
             <a className={footerdetailBtn}>
-              <MessageIcon /> {post.comments_count_on_post}
+              <MessageIcon /> {post.replies_count}
             </a>
           </Link>
           <button
@@ -211,11 +209,11 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             onClick={() => likePost(post._id)}
           >
             <LikeIcon />
-            {totalLikePost > 0 && totalLikePost}
+            {post.likes_count}
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-              <ShareIcon /> {post.shares_count_on_post}
+              <ShareIcon /> {post.shares_count}
             </button>
 
             <div
