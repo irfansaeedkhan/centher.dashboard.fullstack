@@ -320,25 +320,33 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
             >
               <ArrowLeftIcon /> Share Via
             </button>
-            <button className={SharetoggleListBtn}>
-              <Image
-                src="/images/whatsapp.png"
-                width={24}
-                height={24}
-                alt="whatapp"
-              />
-              <WhatsappShareButton onClick={sharePost} url={shareUrl}>
+            <button className={SharetoggleListBtn2} onClick={sharePost}>
+              <WhatsappShareButton
+                onClick={sharePost}
+                url={shareUrl}
+                className="flex items-center gap-3 w-full h-full !px-5 !py-4"
+              >
+                <Image
+                  src="/images/whatsapp.png"
+                  width={24}
+                  height={24}
+                  alt="whatapp"
+                />
                 WhatsApp
               </WhatsappShareButton>
             </button>
-            <button className={SharetoggleListBtn}>
-              <Image
-                src="/images/twitter2.png"
-                width={24}
-                height={24}
-                alt="twitter"
-              />
-              <TwitterShareButton onClick={sharePost} url={shareUrl}>
+            <button className={SharetoggleListBtn2} onClick={sharePost}>
+              <TwitterShareButton
+                onClick={sharePost}
+                url={shareUrl}
+                className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
+              >
+                <Image
+                  src="/images/twitter2.png"
+                  width={24}
+                  height={24}
+                  alt="twitter"
+                />
                 Twitter
               </TwitterShareButton>
             </button>
@@ -612,7 +620,10 @@ const SharetoggleList = ctl(`
  hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[235px]
 `);
 const SharetoggleListBtn = ctl(`
-w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
+`);
+const SharetoggleListBtn2 = ctl(`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
 `);
 const SharetoggleListIcons = ctl(`
 w-[20px] h-[20px]
