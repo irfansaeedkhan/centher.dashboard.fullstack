@@ -41,7 +41,7 @@ type PreviewSelectedFile = {
 };
 import { axiosNodeApi } from "@/utils/axios";
 
-export const PostCard = () => {
+export const PostCard = ({ renderFeedPage }) => {
   //It will store list of files selected by the user
   const [userSelectedFileListArray, setuserSelectedFileListArray] = useState(
     Array<FileList>
@@ -322,7 +322,10 @@ export const PostCard = () => {
         setShowModal(false);
         return;
       }
-
+      if (data) {
+        clearModalVals();
+        renderFeedPage();
+      }
       currentPostID = data.post_id;
 
       // Starting uploading of task
@@ -334,6 +337,16 @@ export const PostCard = () => {
     }
   };
 
+  // clear modal values
+
+  const clearModalVals = () => {
+    setShowModal(false);
+    setuserSelectedFileListArray([]);
+    setpreviewFilesUI([]);
+    setDeletedFileIndex([]);
+    setselectedFileDetail([]);
+    previewFileList = "";
+  };
   // Function will display social media in pop up
   //
   const createSelectedFileUI = (previewUrlList) => {
@@ -594,18 +607,7 @@ export const PostCard = () => {
         </label>
       </div>
       {showModal && (
-        <CustomModal
-          onClose={() => {
-            //TO DO : Convert to function
-            setShowModal(false);
-            setuserSelectedFileListArray([]);
-            setpreviewFilesUI([]);
-            setDeletedFileIndex([]);
-            setselectedFileDetail([]);
-            previewFileList = "";
-          }}
-          title={"Create post"}
-        >
+        <CustomModal onClose={clearModalVals} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image

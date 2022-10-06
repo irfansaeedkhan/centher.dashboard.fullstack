@@ -9,6 +9,7 @@ import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
+import Loader from "@/components/loader";
 
 // Current page imports
 import {
@@ -19,26 +20,41 @@ import {
   PostCard,
   SinglePost,
 } from "@/pages.components/feed";
+import {
+  checkValidImageFile,
+  checkValidVideoFile,
+  checkFileAlreadyAddedInSelectedFile,
+  post_file_details,
+  FileChunksChunksCalculations,
+} from "@/utils/mediafile/valid.media.files";
 
 const Feed: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
-
-  useEffect(() => {
-    fetchFeedsData();
-  }, []);
-
+  const [loadingState, setLoadingState] = useState<boolean>(false);
   const fetchFeedsData = async () => {
     try {
+      setLoadingState(true);
       const { data } = await axiosNodeApi.get("/api/socials/posts");
       setPosts(data.posts);
+      if (data) {
+        setLoadingState(false);
+      }
     } catch (error: any) {
+      setLoadingState(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
     }
   };
 
+  // function when create post and rendered the posts again
+  const renderFeedPage = () => {
+    fetchFeedsData();
+  };
+  useEffect(() => {
+    fetchFeedsData();
+  }, []);
   return (
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
@@ -53,11 +69,15 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
-            <PostCard />
+            <PostCard renderFeedPage={renderFeedPage} />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
-                <SinglePost key={post._id} post={post} />
+                <SinglePost
+                  key={post._id}
+                  post={post}
+                  renderFeedPage={renderFeedPage}
+                />
               ))}
           </div>
           <div className={rightSidebar}>
@@ -66,6 +86,7 @@ const Feed: NextPage = () => {
           </div>
         </div>
       </div>
+      {loadingState && <Loader />}
     </AllPagesWrapper>
   );
 };

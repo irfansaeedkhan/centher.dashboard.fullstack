@@ -16,7 +16,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   isLoggedInUser,
 }) => {
   const { userProfileViews } = useGetUserProfileViews();
-
   return (
     <div className={profileDetailCard}>
       <Image

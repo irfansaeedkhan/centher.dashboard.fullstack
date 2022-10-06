@@ -44,7 +44,10 @@ interface FeedCardLevel1Props {
   post: Post;
 }
 
-export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
+export const SinglePost: React.FC<FeedCardLevel1Props> = ({
+  post,
+  renderFeedPage,
+}) => {
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
@@ -179,7 +182,19 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
   const myMoment = moment();
   const yourMoment = moment(post.createdAt).add(15, "minutes");
 
-  console.log("post edit duration is passed", myMoment >= yourMoment);
+  const archivePostFunc = async (post_id: string) => {
+    console.log("post_id", post_id);
+    const { data } = await axiosNodeApi.post(`/api/socials/posts/archive`, {
+      post_id,
+    });
+    if (data) {
+      console.log("data>>>>", data);
+      renderFeedPage();
+      console.log("sucess");
+    }
+    return data;
+  };
+
   return (
     <div className={postCardContainer}>
       {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
@@ -207,7 +222,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({ post }) => {
           </button>
           {myMoment >= yourMoment ? (
             <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-              <button className={toggleListBtn}>
+              <button
+                className={toggleListBtn}
+                onClick={() => {
+                  archivePostFunc(post._id);
+                }}
+              >
                 <TrashIcon className={toggleListIcons} /> Archive
               </button>
             </div>
