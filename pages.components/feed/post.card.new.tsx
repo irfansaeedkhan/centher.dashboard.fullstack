@@ -3,8 +3,20 @@ import { useState, useRef } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
 import { Carousel } from "react-responsive-carousel";
+import EmojiPicker, {
+  EmojiStyle,
+  SkinTones,
+  Theme,
+  Categories,
+  EmojiClickData,
+  Emoji,
+  SuggestionMode,
+} from "emoji-picker-react";
+import { useOnClickOutside } from "usehooks-ts";
 
 // App imports
+import useUser from "@/hooks/use.user";
+import { NODE_API_URL } from "@/constants/common";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
 import {
@@ -27,6 +39,22 @@ export const PostCardNew = ({ renderFeedPage }) => {
     handleSelectFile,
   ] = PostTweetLogic();
 
+  // emoji toggle functions
+  const [selectedEmoji, setSelectedEmoji] = useState<string>("");
+  const [togglePop, setTogglePop] = useState<boolean>(false);
+  const togglePopFunc = async () => {
+    setTogglePop((prev) => !prev);
+  };
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, () => {
+    setTogglePop(false);
+  });
+  function onClick(emojiData: EmojiClickData, event: MouseEvent) {
+    setSelectedEmoji(emojiData.unified);
+    setShowModal(true);
+  }
+
+  const { user } = useUser();
   return (
     <div className={postCardContainer}>
       <div className={topCard}>
@@ -80,25 +108,42 @@ export const PostCardNew = ({ renderFeedPage }) => {
         </label>
         <label
           onClick={() => {
-            setShowModal(true);
+            togglePopFunc();
           }}
           className={`${uploadBtn} text-[#00BF96]`}
         >
           <EmojiIcon />
           Emoji
         </label>
+        {togglePop && (
+          <div
+            ref={ref}
+            className={`emojiContainer absolute right-[0] top-[120px] ${
+              togglePop && "!block z-50"
+            }`}
+          >
+            <EmojiPicker
+              height={400}
+              width={300}
+              onEmojiClick={onClick}
+              autoFocusSearch={false}
+              theme={Theme.AUTO}
+            />
+          </div>
+        )}
       </div>
       {showModal && (
         <CustomModal onClose={closePostModel} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
-                src={"/images/robertProfilepic.png"}
+                src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                alt={"image"}
+                className="rounded-full"
+                alt={user?.display_name ?? "profile image"}
               />
-              <h5 className={cdName}>uixamjad new test</h5>
+              <h5 className={cdName}>{user?.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
               <div
@@ -128,6 +173,15 @@ export const PostCardNew = ({ renderFeedPage }) => {
                   maxLength={200}
                   onChange={handleTextLength}
                 ></textarea>
+                <div className="show-emoji">
+                  {selectedEmoji ? (
+                    <Emoji
+                      unified={selectedEmoji}
+                      emojiStyle={EmojiStyle.APPLE}
+                      size={42}
+                    />
+                  ) : null}
+                </div>
               </div>
             </div>
             <div className={modalFooter}>
@@ -166,6 +220,15 @@ export const PostCardNew = ({ renderFeedPage }) => {
                   <EmojiIcon />
                   Emoji
                 </button>
+                {/* <div className="emojiContainer absolute left-[212px] bottom-[-390px]">
+                  <EmojiPicker
+                    height={400}
+                    width={300}
+                    onEmojiClick={onClick}
+                    autoFocusSearch={false}
+                    theme={Theme.AUTO}
+                  />
+                </div> */}
               </div>
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
@@ -188,7 +251,7 @@ export const PostCardNew = ({ renderFeedPage }) => {
 
 // styling
 const postCardContainer = ctl(`
-  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 
+  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative
 `);
 const topCard = ctl(`
 top w-full flex items-center gap-2 mb-2 
