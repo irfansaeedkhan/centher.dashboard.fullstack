@@ -67,6 +67,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const router = useRouter();
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const { user } = useUser();
+  const [skip, setSkip] = useState(0);
+
   const copyText = () => {
     navigator.clipboard.writeText(shareUrl);
     toast.success("Copy Link Successfully!");
@@ -99,9 +101,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       try {
         // Create a user with registration_pending state in database
         const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}/replies`
+          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}/replies?off_set=${skip}`
         );
-        setReplies(data.postData);
+        setReplies([...replies, ...data.postData]);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -111,7 +113,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     if (router.query.account_address && router?.query?.post_id) {
       fetchRepliesPostData();
     }
-  }, [router]);
+  }, [router, skip]);
+
+  const handleScroll = (event: any): void => {
+    const { offsetHeight, scrollTop, scrollHeight } = event.target;
+
+    if (offsetHeight + scrollTop >= scrollHeight) {
+      setSkip(replies?.length);
+    }
+  };
 
   const likePost = async (post_id: string) => {
     try {
@@ -418,14 +428,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </Link>
         </div>
       )}
-
-      {!(isFeedPage || isProfilePage) && (
-        <>
-          {replies.map((reply) => {
-            return <ReplyPost key={reply._id} post={reply} />;
-          })}
-        </>
-      )}
+      <div className="overflow-y-scroll" onScroll={handleScroll}>
+        {!(isFeedPage || isProfilePage) && (
+          <>
+            {replies.map((reply) => {
+              return <ReplyPost key={reply._id} post={reply} />;
+            })}
+          </>
+        )}
+      </div>
       {
         showModal && (
           <CustomModal onClose={closePostModel} title={"Create post"}>
