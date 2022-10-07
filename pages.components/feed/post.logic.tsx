@@ -346,7 +346,9 @@ export default function (
         setShowModal(false);
         return;
       }
-
+      if (data) {
+        closePostModel();
+      }
       currentPostID = data.post_id;
 
       // Starting uploading of task
