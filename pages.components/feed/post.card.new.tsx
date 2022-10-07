@@ -5,12 +5,9 @@ import Image from "next/future/image";
 import { Carousel } from "react-responsive-carousel";
 import EmojiPicker, {
   EmojiStyle,
-  SkinTones,
   Theme,
-  Categories,
   EmojiClickData,
   Emoji,
-  SuggestionMode,
 } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -26,13 +23,10 @@ import {
   AnimateTrashIcon,
 } from "@/assets/svgs";
 
+// Current directory imports
 import { usePostUpload } from "./post.logic";
 
-interface PostCardNewProps {
-  renderFeedPage: () => void;
-}
-
-export const PostCardNew: React.FC<PostCardNewProps> = ({ renderFeedPage }) => {
+export const PostCardNew: React.FC = () => {
   const {
     showModal,
     setShowModal,

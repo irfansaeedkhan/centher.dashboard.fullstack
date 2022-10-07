@@ -10,17 +10,6 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import Loader from "@/components/loader";
-
-// Current page imports
-import {
-  ProfileDetailCard,
-  DiscoverCard,
-  MessagesCard,
-  RecentActivitiesCard,
-  //PostCard,
-  PostCardNew,
-  SinglePost,
-} from "@/pages.components/feed";
 import {
   checkValidImageFile,
   checkValidVideoFile,
@@ -28,6 +17,16 @@ import {
   post_file_details,
   FileChunksChunksCalculations,
 } from "@/utils/mediafile/valid.media.files";
+
+// Current page imports
+import {
+  ProfileDetailCard,
+  DiscoverCard,
+  MessagesCard,
+  RecentActivitiesCard,
+  PostCardNew,
+  SinglePost,
+} from "@/pages.components/feed";
 
 const Feed: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
@@ -41,10 +40,17 @@ const Feed: NextPage = () => {
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
       );
-      setPosts((prev) => [...prev, ...data.posts]);
-      if (data) {
-        setLoadingState(false);
-      }
+
+      const _posts = data.posts;
+
+      setPosts((prev) => {
+        const filteredPosts = _posts.filter((post: Post) => {
+          return prev.every((prevPost) => prevPost._id !== post._id);
+        });
+        return [...prev, ...filteredPosts];
+      });
+
+      setLoadingState(false);
     } catch (error: any) {
       setLoadingState(false);
       toast.error(
@@ -79,7 +85,7 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer} onScroll={handleScroll}>
-            <PostCardNew renderFeedPage={fetchFeedsData} />
+            <PostCardNew />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
