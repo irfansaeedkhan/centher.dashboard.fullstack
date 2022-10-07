@@ -10,6 +10,7 @@ import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
+import Loader from "@/components/loader";
 
 // Current page imports
 import {
@@ -25,6 +26,7 @@ import { AppRoutes } from "@/constants/app.routes";
 const SinglePostPage: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [post, setPost] = useState<Post>();
+  const [loadingState, setLoadingState] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,7 +36,9 @@ const SinglePostPage: NextPage = () => {
         const { data } = await axiosNodeApi.get(`/api/socials/posts/${postId}`);
 
         setPost(data.post);
+        setLoadingState(false);
       } catch (error: any) {
+        setLoadingState(false);
         toast.error(
           error.response.data?.message_description || "Something went wrong"
         );
@@ -105,6 +109,7 @@ const SinglePostPage: NextPage = () => {
           </div>
         </div>
       </div>
+      {loadingState && <Loader />}
     </AllPagesWrapper>
   );
 };
