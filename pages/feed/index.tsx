@@ -92,7 +92,6 @@ const Feed: NextPage = () => {
                 <SinglePost
                   key={post._id}
                   post={post}
-                  renderFeedPage={fetchFeedsData}
                   onDelete={(post_id) => {
                     setPosts(posts.filter((p) => p._id !== post_id));
                   }}
