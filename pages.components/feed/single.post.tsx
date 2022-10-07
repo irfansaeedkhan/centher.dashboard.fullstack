@@ -50,19 +50,18 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   post,
   onDelete,
 }) => {
+  const router = useRouter();
+  const { user } = useUser();
   const [_post, setPost] = useState<Post>(post);
+  const [replies, setReplies] = useState<Post[]>([]);
+  const [skip, setSkip] = useState(0);
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [editPostText, setEditPostText] = useState("");
   const [editDeletedItem, setEditDeletedItem] = useState<number[]>([]);
   const [togglePop, setTogglePop] = useState(false);
   const [toggleSharePop, setToggleSharePop] = useState(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
-
-  const [replies, setReplies] = useState<Post[]>([]);
-
-  const router = useRouter();
-  const { user } = useUser();
-  const [skip, setSkip] = useState(0);
   const [shareUrl, setShareUrl] = useState("");
 
   const currentPageRoute = useMemo(
@@ -134,7 +133,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     setToggleSharePop_2(false);
   });
 
-  // TODO: Pass post id and account address
   const {
     showModal,
     setShowModal,
@@ -187,22 +185,20 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
   const sharePost = async () => {
     try {
-      // Increment share count
-      setPost((prev) => ({
-        ...prev,
-        shares_count: prev.shares_count + 1,
-      }));
-
       const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
         post_id: _post._id,
       });
 
-      return data;
-    } catch (error: any) {
-      // Decrement share count
+      // Update share count
       setPost((prev) => ({
         ...prev,
-        shares_count: prev.shares_count - 1,
+        shares_count: data.shares_count,
+      }));
+    } catch (error: any) {
+      // Reset share count
+      setPost((prev) => ({
+        ...prev,
+        shares_count: post.shares_count,
       }));
 
       toast.error(
