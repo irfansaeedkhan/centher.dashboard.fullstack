@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
@@ -8,9 +9,11 @@ import { toast } from "react-hot-toast";
 // App imports
 import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { Post } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
 import Loader from "@/components/loader";
+import { Post } from "@/models/post";
+import { LoadingState } from "@/models/common";
+import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current page imports
 import {
@@ -20,25 +23,24 @@ import {
   RecentActivitiesCard,
   SinglePost,
 } from "@/pages.components/feed";
-import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
 
 const SinglePostPage: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [post, setPost] = useState<Post>();
-  const [loadingState, setLoadingState] = useState(true);
+  const [loadingState, setLoadingState] = useState<LoadingState>("idle");
   const router = useRouter();
 
   useEffect(() => {
     const fetchSinglePostData = async () => {
+      setLoadingState("loading");
       try {
         // Get Single Post By ID
         const { data } = await axiosNodeApi.get(`/api/socials/posts/${postId}`);
 
         setPost(data.post);
-        setLoadingState(false);
+        setLoadingState("loaded");
       } catch (error: any) {
-        setLoadingState(false);
+        setLoadingState("failed");
         toast.error(
           error.response.data?.message_description || "Something went wrong"
         );
@@ -69,7 +71,7 @@ const SinglePostPage: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer}>
-            {post ? (
+            {loadingState === "loaded" && post && (
               <div className={postsMainContainer}>
                 {post.parent_post ? (
                   <Link
@@ -99,8 +101,6 @@ const SinglePostPage: NextPage = () => {
                   }}
                 />
               </div>
-            ) : (
-              <p>Loading...</p>
             )}
           </div>
           <div className={rightSidebar}>
@@ -109,7 +109,8 @@ const SinglePostPage: NextPage = () => {
           </div>
         </div>
       </div>
-      {loadingState && <Loader />}
+      {(loadingState === "loading" || loadingState === "idle") && <Loader />}
+      {loadingState === "failed" && <p className="text-red-500">Error</p>}
     </AllPagesWrapper>
   );
 };
