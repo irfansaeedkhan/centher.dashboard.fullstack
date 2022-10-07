@@ -16,7 +16,7 @@ import {
   DiscoverCard,
   MessagesCard,
   RecentActivitiesCard,
-  PostCard,
+  PostCardNew,
   SinglePost,
 } from "@/pages.components/feed";
 import { ProfilePageWrapper } from "@/pages.components/profile";
@@ -49,11 +49,17 @@ const Profile: NextPage = () => {
               <DiscoverCard />
             </div>
             <div className={postsContainer}>
-              <PostCard />
+              <PostCardNew />
               {posts
                 .filter((p) => !p.parent_post)
                 .map((post) => (
-                  <SinglePost key={post._id} post={post} />
+                  <SinglePost
+                    key={post._id}
+                    post={post}
+                    onDelete={(post_id) => {
+                      setPosts(posts.filter((p) => p._id !== post_id));
+                    }}
+                  />
                 ))}
             </div>
             <div className={rightSidebar}>
