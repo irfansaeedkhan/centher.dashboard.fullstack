@@ -10,7 +10,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 
 // Current directory imports
-import Search from "./search";
+// import Search from "./search";
 import HeaderProfile from "./header.profile";
 
 const Header = () => {
@@ -30,9 +30,9 @@ const Header = () => {
         </a>
       </Link>
       <div className={rightWraper}>
-        <div>
+        {/* <div>
           <Search />
-        </div>
+        </div> */}
         <span className={border}></span>
         {!user && (
           <Link href={AppRoutes.auth.login}>
