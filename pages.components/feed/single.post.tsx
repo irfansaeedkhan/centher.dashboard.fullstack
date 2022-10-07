@@ -44,7 +44,7 @@ import { userAgent } from "next/server";
 
 interface FeedCardLevel1Props {
   post: Post;
-  renderFeedPage: () => void;
+  renderFeedPage?: () => void;
   onDelete: (id: string) => void;
 }
 
@@ -178,7 +178,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         post_id,
       });
       toast.success("Post Archived Successfully");
-      renderFeedPage();
+      // FIXME: This is a hack to refresh the feed page, we don't need to fetch the feed again, just remove the post from the state, use the same approach as delete post
+      renderFeedPage && renderFeedPage();
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"

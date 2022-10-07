@@ -1,8 +1,13 @@
 // React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
+import Joi from "joi";
+import toast from "react-hot-toast";
 
 // App imports
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { PasswordForm } from "./password.form";
@@ -10,6 +15,18 @@ import { InputField } from "./Input.field";
 import ProfilePicture from "./profile.picture";
 
 const EditProfileForm: React.FC = () => {
+  const updateProfile = async () => {
+    // try {
+    //   const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
+    //     post_id: post._id,
+    //   });
+    //   return data;
+    // } catch (error: any) {
+    //   toast.error(
+    //     error.response.data?.message_description || "Something went wrong"
+    //   );
+    // }
+  };
   return (
     <div className="bg-background-shade-1 py-10 flex justify-center items-center">
       <div className="flex flex-col gap-6 max-w-[496px] w-full">
@@ -26,7 +43,18 @@ const EditProfileForm: React.FC = () => {
         })}
         <div className="flex flex-col gap-2">
           <label htmlFor="textarea" className={fieldTitle}>
-            Short bio
+            Display Name
+          </label>
+          <select className={inputField}>
+            <option value="">Select</option>
+            <option value="pseudonym">Pseudonym</option>
+            <option value="real_name">Real Name</option>
+            <option value="account_address">Account Address</option>
+          </select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="textarea" className={fieldTitle}>
+            Profile bio
           </label>
           <textarea
             placeholder="Enter Your bio!"
@@ -37,28 +65,7 @@ const EditProfileForm: React.FC = () => {
             className={inputField}
           ></textarea>
         </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="textarea" className={fieldTitle}>
-            Filed
-          </label>
-          <select className={inputField}>
-            <option value="">Select</option>
-            <option value="">Select</option>
-            <option value="">Select</option>
-            <option value="">Select</option>
-          </select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <label htmlFor="textarea" className={fieldTitle}>
-            Display Name
-          </label>
-          <select className={inputField}>
-            <option value="">Select</option>
-            <option value="pseudonym">Pseudonym</option>
-            <option value="first_name">First Name</option>
-            <option value="last_name">Last Name</option>
-          </select>
-        </div>
+
         <button className={connectButton}>Update profile</button>
       </div>
     </div>
@@ -66,6 +73,30 @@ const EditProfileForm: React.FC = () => {
 };
 
 export default EditProfileForm;
+
+// Joi Schema
+// exports.UpdateMeSchema = Joi.object()
+//   .keys({
+//     pseudonym: Joi.string()
+//       .label("Pseudonym")
+//       .optional()
+//       .trim()
+//       .pattern(/^[ A-Za-z0-9_]+$/)
+//       .messages({
+//         "string.pattern.base":
+//           "Pseudonym should only contain alphabets numbers _ and space",
+//       }),
+//     first_name: Joi.string().label("First Name").trim().optional(),
+//     last_name: Joi.string().label("Last Name").trim().optional(),
+//     short_bio: Joi.string().label("Short Bio").trim().optional(),
+//     field: Joi.string().label("Field").trim().optional(),
+//     display_name: Joi.string().label("Display").trim().optional(),
+//     custom_image: Joi.boolean().label("Custom Image").optional(),
+//     profile_image: Joi.string().label("Profile Image").trim().optional(),
+//   })
+//   .messages({
+//     "string.empty": `{#label} is required`,
+//   });
 
 const connectButton = ctl(`
   mt-2 

@@ -6,6 +6,17 @@ export interface User {
   custom_image: boolean;
 }
 
+export interface LoggedInUser {
+  _id: string;
+  account_address?: string;
+  display_name?: string;
+  profile_image?: string;
+  custom_image?: boolean;
+  first_name?: string;
+  last_name?: string;
+  profile_bio?: string;
+  pseudonym?: string;
+}
 type UserRole =
   | "user"
   | "admin"

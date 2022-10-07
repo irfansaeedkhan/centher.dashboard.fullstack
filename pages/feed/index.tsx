@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
@@ -10,17 +10,6 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import Loader from "@/components/loader";
-
-// Current page imports
-import {
-  ProfileDetailCard,
-  DiscoverCard,
-  MessagesCard,
-  RecentActivitiesCard,
-  //PostCard,
-  PostCardNew,
-  SinglePost,
-} from "@/pages.components/feed";
 import {
   checkValidImageFile,
   checkValidVideoFile,
@@ -29,37 +18,50 @@ import {
   FileChunksChunksCalculations,
 } from "@/utils/mediafile/valid.media.files";
 
+// Current page imports
+import {
+  ProfileDetailCard,
+  DiscoverCard,
+  MessagesCard,
+  RecentActivitiesCard,
+  PostCardNew,
+  SinglePost,
+} from "@/pages.components/feed";
+
 const Feed: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [skip, setSkip] = useState(0);
 
-  const fetchFeedsData = async () => {
+  const fetchFeedsData = useCallback(async () => {
     try {
       setLoadingState(true);
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
       );
-      setPosts([...posts, ...data.posts]);
-      if (data) {
-        setLoadingState(false);
-      }
+
+      const _posts = data.posts;
+
+      setPosts((prev) => {
+        const filteredPosts = _posts.filter((post: Post) => {
+          return prev.every((prevPost) => prevPost._id !== post._id);
+        });
+        return [...prev, ...filteredPosts];
+      });
+
+      setLoadingState(false);
     } catch (error: any) {
       setLoadingState(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
     }
-  };
+  }, [skip]);
 
-  // function when create post and rendered the posts again
-  const renderFeedPage = () => {
-    fetchFeedsData();
-  };
   useEffect(() => {
     fetchFeedsData();
-  }, [skip]);
+  }, [fetchFeedsData]);
 
   const handleScroll = (event: any): void => {
     const { offsetHeight, scrollTop, scrollHeight } = event.target;
@@ -83,15 +85,14 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer} onScroll={handleScroll}>
-            {/* <PostCard renderFeedPage={renderFeedPage} /> */}
-            <PostCardNew renderFeedPage={renderFeedPage} />
+            <PostCardNew />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
                 <SinglePost
                   key={post._id}
                   post={post}
-                  renderFeedPage={renderFeedPage}
+                  renderFeedPage={fetchFeedsData}
                   onDelete={(post_id) => {
                     setPosts(posts.filter((p) => p._id !== post_id));
                   }}

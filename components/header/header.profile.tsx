@@ -17,7 +17,6 @@ interface HeaderProfileProps {
 const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user } = useUser();
-  console.log(user);
 
   const handleClickOutside = () => {
     onClickOutside();
@@ -129,7 +128,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
           </div>
           <hr className="border-gray-shade-border-color" />
           <div className="flex flex-col gap-3 px-6 pt-3 pb-4">
-            <Link href={`/profile/${user?._id}`}>
+            <Link href={`/profile/${user?.account_address}`}>
               <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
                 My Profile
               </a>
