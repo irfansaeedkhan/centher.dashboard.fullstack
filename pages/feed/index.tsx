@@ -107,7 +107,7 @@ const Feed: NextPage = () => {
           </div>
         </div>
       </div>
-      {loadingState && <Loader />}
+      {/* {loadingState && <Loader />} */}
     </AllPagesWrapper>
   );
 };
