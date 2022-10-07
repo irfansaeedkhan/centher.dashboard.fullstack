@@ -95,6 +95,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const myMoment = moment();
   const yourMoment = moment(post.createdAt).add(15, "minutes");
 
+  console.log("Logged In User", user);
   //TO DO : Pass post id and account address
   const {
     showModal,

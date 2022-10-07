@@ -18,31 +18,6 @@ export const PasswordForm: PasswordFormProps[] = [
     label: "Last Name",
     placeholder: "Enter your last name",
   },
-  {
-    id: "email",
-    label: "Email",
-    placeholder: "Enter your email",
-  },
-  {
-    id: "website",
-    label: "Website",
-    placeholder: "Enter your website",
-  },
-  {
-    id: "old_password",
-    label: "Old Password",
-    placeholder: "Enter your old password",
-  },
-  {
-    id: "password",
-    label: "Password",
-    placeholder: "Enter your password",
-  },
-  {
-    id: "confirm_password",
-    label: "Confirm Password",
-    placeholder: "Enter your password again",
-  },
 ];
 
 // Password State Schema
@@ -60,15 +35,6 @@ export const PasswordStateSchema = Joi.object()
       }),
     first_name: Joi.string().label("First Name").trim().required(),
     last_name: Joi.string().label("Last Name").trim().required(),
-    password: Joi.string().label("Password").min(8).max(100).trim().required(),
-    confirm_password: Joi.string()
-      .label("Confirm Password")
-      .trim()
-      .valid(Joi.ref("password"))
-      .required()
-      .messages({
-        "any.only": "Passwords do not match",
-      }),
   })
   .messages({
     "string.empty": `{#label} is required`,
