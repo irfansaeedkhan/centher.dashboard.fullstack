@@ -34,7 +34,8 @@ const ProfileHeader = () => {
   const isUserProfile = router.pathname === AppRoutes.user_profile;
   const isUserNFTProfile = router.pathname === AppRoutes.user_NFTprofile;
   const { user } = useUser();
-
+  console.log("id from path", router.asPath.replace("/profile/", ""));
+  console.log("user id", user?.account_address);
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -103,12 +104,21 @@ const ProfileHeader = () => {
                 </button>
               </div>
             </div>
-            <Button
-              title={"Edit Profile"}
-              variant="v1"
-              className={editProfileBtn}
-              Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
-            />
+            {user?.account_address ===
+            router.asPath.replace("/profile/", "") ? (
+              <Button
+                title={"Edit Profile"}
+                variant="v1"
+                className={editProfileBtn}
+                Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
+              />
+            ) : (
+              <Button
+                title={"Follow"}
+                variant="v1"
+                className={editProfileBtn}
+              />
+            )}
           </div>
           <div className={textContent}>
             {desEditStatus ? (
