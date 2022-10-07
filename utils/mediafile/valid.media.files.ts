@@ -92,7 +92,7 @@ export type FileChunksChunksCalculations = {
   file_size: number;
   file_type: string;
   no_of_chunk: number;
-  index_of_file_list: string;
+  index_of_file_list: number;
   index_of_file: number;
   chunks_range: FileChunks[];
 };
@@ -142,7 +142,7 @@ export const post_file_details = async (
           file_size: fileListArray[files_list_index][file].size,
           file_type: fileListArray[files_list_index][file].type,
           no_of_chunk: no_of_chunks,
-          index_of_file_list: files_list_index,
+          index_of_file_list: Number(files_list_index),
           index_of_file: file,
           chunks_range: chunks_range,
         });

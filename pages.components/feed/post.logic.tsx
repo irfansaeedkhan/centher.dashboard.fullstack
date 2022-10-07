@@ -12,16 +12,17 @@ import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
+import Image from "next/future/image";
 
 type PreviewSelectedFile = {
-  fileListIndex: string;
+  fileListIndex: number;
   fileIndex: number;
   fileType: string;
   fileBlobURL: string;
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default function (
+export function usePostUpload(
   reply: boolean = false,
   reply_address: string = "",
   reply_post_id: string = ""
@@ -29,6 +30,10 @@ export default function (
   const [showModal, setShowModal] = useState<boolean>(false);
 
   //It will store list of files selected by the user
+  // const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
+  //   FileList[]
+  // >([]);
+
   const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
     FileList[]
   >([]);
@@ -41,7 +46,7 @@ export default function (
   //
   const [deletedFileIndexs, setDeletedFileIndex] = useState<string[]>([]);
 
-  const [previewFilesUI, setpreviewFilesUI] = useState(Array<Element>);
+  const [previewFilesUI, setpreviewFilesUI] = useState(Array<JSX.Element>);
 
   const [tweetText, setweetText] = useState<string>("");
 
@@ -121,7 +126,7 @@ export default function (
 
       let ending = file_details.chunks_range[chunk_index].Ending;
 
-      let fileList_index: string = file_details.index_of_file_list;
+      let fileList_index = file_details.index_of_file_list;
 
       let fileIndex = file_details.index_of_file;
 
@@ -228,7 +233,7 @@ export default function (
   //Function will remove the files created by the user
   //
   const deleteFileIndexs = async (
-    fileListIndex: string,
+    fileListIndex: number,
     fileIndex: number,
     previewIndex: string
   ) => {
@@ -266,7 +271,7 @@ export default function (
 
         setuserSelectedFileListArray(updatedFileListArray);
       } else {
-        let deleted_file_index = deletedFileIndexs;
+        let deleted_file_index: string[] = deletedFileIndexs;
         //If more than one file exists in the fileArray Object then cannot delete single file because it is not allowed
         //so storing this details in different array while creating chunks we will skip this file
         if (
@@ -274,12 +279,12 @@ export default function (
             String(fileListIndex) + "," + String(fileIndex)
           ) == -1
         ) {
-          //Doesn't exits in the database
-          await setDeletedFileIndex(
-            deleted_file_index.push(
-              String(String(fileListIndex) + "," + String(fileIndex))
-            )
+          deleted_file_index.push(
+            String(fileListIndex) + "," + String(fileIndex)
           );
+
+          //Doesn't exits in the database
+          await setDeletedFileIndex(deleted_file_index);
           console.log(
             "Cannot remove file because their is more than one file so adding it "
           );
@@ -317,7 +322,7 @@ export default function (
   // Calculate Chunks
   // Create entry in database
   // Start uploading it to server
-  const createPost = async (event: any) => {
+  const createPost = async (event: any): Promise<any> => {
     try {
       console.log("Create post function called : ", event);
       console.log("User Selected List array : ", userSelectedFileListArray);
@@ -366,7 +371,7 @@ export default function (
     try {
       console.log("Preview list : ", previewUrlList);
       //
-      let displaySelectedFile = [];
+      let displaySelectedFile: JSX.Element[] = previewFilesUI;
 
       // Running loop to all the added files
       for (let fileDetails in previewUrlList) {
@@ -401,7 +406,7 @@ export default function (
           // Checking if supported image type
           displaySelectedFile.push(
             <div className={ImageStyleContainer}>
-              <img
+              <Image
                 src={previewUrlList[fileDetails].fileBlobURL}
                 width={452}
                 height={312}
@@ -468,7 +473,11 @@ export default function (
 
       // Creating Blob for and storing in seperate
       // Running loop of FileList Array
-      for (let filelist_index in alreadyAddedFileList) {
+      for (
+        let filelist_index = 0;
+        filelist_index < alreadyAddedFileList.length;
+        filelist_index++
+      ) {
         console.log("XXXX Checking fileList index : ", typeof filelist_index);
         // Running loop on each file
         for (
@@ -562,7 +571,7 @@ export default function (
     }
   };
 
-  return [
+  return {
     showModal,
     setShowModal,
     previewFilesUI,
@@ -570,7 +579,7 @@ export default function (
     createPost,
     closePostModel,
     handleSelectFile,
-  ];
+  };
 }
 
 const imageDelBtn = ctl(`

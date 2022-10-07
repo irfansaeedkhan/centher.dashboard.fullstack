@@ -26,7 +26,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
   useOnClickOutside(ref, handleClickOutside);
 
   const copyText = () => {
-    navigator.clipboard.writeText(user?.account_address);
+    if (!user) {
+      return;
+    }
+    navigator.clipboard.writeText(user.account_address);
     toast.success("Copied!");
   };
 

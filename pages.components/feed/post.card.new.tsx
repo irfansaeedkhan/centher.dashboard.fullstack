@@ -26,10 +26,14 @@ import {
   AnimateTrashIcon,
 } from "@/assets/svgs";
 
-import PostTweetLogic from "./post.logic";
-//
-export const PostCardNew = ({ renderFeedPage }) => {
-  const [
+import { usePostUpload } from "./post.logic";
+
+interface PostCardNewProps {
+  renderFeedPage: () => void;
+}
+
+export const PostCardNew: React.FC<PostCardNewProps> = ({ renderFeedPage }) => {
+  const {
     showModal,
     setShowModal,
     previewFilesUI,
@@ -37,7 +41,7 @@ export const PostCardNew = ({ renderFeedPage }) => {
     createPost,
     closePostModel,
     handleSelectFile,
-  ] = PostTweetLogic();
+  } = usePostUpload();
 
   // emoji toggle functions
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
@@ -238,7 +242,9 @@ export const PostCardNew = ({ renderFeedPage }) => {
                   title={"Post"}
                   variant="v1"
                   className="max-w-[140px]"
-                  onClick={createPost}
+                  onClick={(e) => {
+                    createPost(e);
+                  }}
                 />
               </div>
             </div>

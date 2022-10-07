@@ -17,7 +17,6 @@ import {
   DiscoverCard,
   MessagesCard,
   RecentActivitiesCard,
-  PostCard,
   SinglePost,
 } from "@/pages.components/feed";
 import Link from "next/link";
