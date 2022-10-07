@@ -1,4 +1,5 @@
 import type { AppProps } from "next/app";
+import NextNProgress from "nextjs-progressbar";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
 
@@ -11,6 +12,12 @@ import "@/styles/globals.css";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
+      <NextNProgress
+        color="#FEBF32"
+        options={{
+          showSpinner: false,
+        }}
+      />
       <ScriptTags />
       <Web3ReactProvider getLibrary={getLibrary}>
         <Toaster
