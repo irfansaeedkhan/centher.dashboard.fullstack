@@ -7,9 +7,9 @@ import useUser from "@/hooks/use.user";
 import Image from "next/future/image";
 
 const SelfieModal: React.FC = () => {
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLImageElement>();
   const { user } = useUser();
-  const webRef = useRef(null);
+  const webRef = useRef<Webcam>();
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   let img = "httpsL;';'";
   const [isModal, setIsModal] = useState(true);
@@ -21,7 +21,7 @@ const SelfieModal: React.FC = () => {
 
   const showImage = async () => {
     if (webRef && webRef.current) {
-      img = webRef.current.getScreenshot();
+      img = webRef.current.getScreenshot() as string;
     }
     setPreviewPicture(img);
     setCapture(true);
@@ -96,7 +96,7 @@ const SelfieModal: React.FC = () => {
               className="rounded-lg font-semibold  py-3 px-2 text-sm items-center flex w-full justify-center bg-yellow-theme text-black shadow-lg tracking-wide cursor-pointer ease-linear transition-all duration-150"
               onClick={async () => {
                 const res = await fetch(
-                  previewCanvasRef.current.toDataURL("image/webp")
+                  previewCanvasRef.current?.toDataURL("image/webp") ?? ""
                 );
                 const blob = await res.blob();
                 const file = new File(

@@ -39,9 +39,9 @@ import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "./reply.post";
-// import { posts } from "./dummy.posts";
-import PostTweetLogic from "./post.logic";
+import { usePostUpload } from "./post.logic";
 import { userAgent } from "next/server";
+
 interface FeedCardLevel1Props {
   post: Post;
   renderFeedPage: () => void;
@@ -53,12 +53,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   renderFeedPage,
   onDelete,
 }) => {
-  const [showEditModal, setShowEditModal] = useState<boolean>(false);
-  const [editPostText, setEditPostText] = useState<string>();
-  const [editDeletedItem, setEditDeletedItem] = useState([]);
-  const [togglePop, setTogglePop] = useState<boolean>(false);
-  const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
-  const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editPostText, setEditPostText] = useState("");
+  const [editDeletedItem, setEditDeletedItem] = useState<number[]>([]);
+  const [togglePop, setTogglePop] = useState(false);
+  const [toggleSharePop, setToggleSharePop] = useState(false);
+  const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
 
   const [replies, setReplies] = useState<Post[]>([]);
   const [totalPostLikes, setTotalPostLikes] = useState<number>(
@@ -96,7 +96,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const yourMoment = moment(post.createdAt).add(15, "minutes");
 
   //TO DO : Pass post id and account address
-  const [
+  const {
     showModal,
     setShowModal,
     previewFilesUI,
@@ -104,28 +104,20 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     createPost,
     closePostModel,
     handleSelectFile,
-  ] = PostTweetLogic(
+  } = usePostUpload(
     true,
-    router?.query?.account_address,
-    router?.query?.post_id
+    router?.query?.account_address?.toString(),
+    router?.query?.post_id?.toString()
   );
-  useEffect(() => {
-    //   const post_id = router.query.post_id;
-    //   const account_address = router.query.account_address;
 
-    //   const _replies = posts.filter(
-    //     (p) =>
-    //       p.parent_post?._id === post_id &&
-    //       p.parent_post?.user.account_address === account_address
-    //   );
-    //   setReplies(_replies);
+  useEffect(() => {
     const fetchRepliesPostData = async () => {
       try {
         // Create a user with registration_pending state in database
         const { data } = await axiosNodeApi.get(
           `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}/replies?off_set=${skip}`
         );
-        setReplies([...replies, ...data.postData]);
+        setReplies((prev) => [...prev, ...data.postData]);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -217,7 +209,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     setToggleSharePop_2((prev) => !prev);
   };
 
-  const editPost = async (post_id, text, delete_file_index) => {
+  const editPost = async (
+    post_id: string,
+    text: string,
+    delete_file_index: number[]
+  ) => {
     console.log("edited", post_id, text, delete_file_index);
     try {
       await axiosNodeApi.post(`api/socials/posts/edit`, {
@@ -232,10 +228,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       );
     }
   };
-  const editPostModal = (post) => {
-    setShowEditModal(true);
-    console.log("post this one", post);
-  };
+
   // function to set max value of text
   const handleEditTextLength = (e: any) => {
     var box: HTMLElement | null = document.getElementById("trashRectedit");
@@ -252,11 +245,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     setEditPostText(e.target.value);
   };
 
-  let deleteList = [];
-  const handleMediaDel = (id) => {
-    // editDeletedItem.push(id);
-    deleteList.push(id);
-    setEditDeletedItem(deleteList);
+  const handleMediaDel = (id: number) => {
+    setEditDeletedItem((prev) => {
+      return [...prev, id];
+    });
   };
   console.log("editPostText", editPostText);
   console.log("editDeletedItem", editDeletedItem);
@@ -302,7 +294,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 <button
                   className={toggleListBtn}
                   onClick={() => {
-                    editPostModal(post);
+                    setShowEditModal(true);
                   }}
                 >
                   <EditIcon className={toggleListIcons} /> Edit
@@ -490,100 +482,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </>
         )}
       </div>
-      {
-        showModal && (
-          <CustomModal onClose={closePostModel} title={"Create post"}>
-            <div className={modalBodyWrapper}>
-              <div className={contactDetail}>
-                <Image
-                  src={"/images/robertProfilepic.png"}
-                  width={44}
-                  height={44}
-                  alt={"image"}
-                />
-                <h5 className={cdName}>uixamjad</h5>
-              </div>
-              <div className={maincontentContainer}>
-                <div
-                  className={`${mediaContainer}
-                    `}
-                >
-                  <Carousel
-                    showStatus={false}
-                    showThumbs={false}
-                    showIndicators={false}
-                    showArrows={previewFilesUI.length === 1 ? false : true}
-                  >
-                    {previewFilesUI}
-                  </Carousel>
-                </div>
-                <div className={inputTextContainer}>
-                  <textarea
-                    className={ModaltextContainerContent}
-                    name=""
-                    id="posttext"
-                    cols={12}
-                    rows={4}
-                    placeholder="Type Here"
-                    maxLength={200}
-                    onChange={handleTextLength}
-                  ></textarea>
-                </div>
-              </div>
-              <div className={modalFooter}>
-                <div className={leftActionBtns}>
-                  <label className={`${uploadBtn} text-yellow-theme`}>
-                    <PhotoIcon />
-                    Photo
-                    <input
-                      type="file"
-                      id="files-photo"
-                      name="photos-file"
-                      accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
-                      style={{ display: "none" }}
-                      multiple
-                      onChange={(e) => {
-                        handleSelectFile(e, "images");
-                      }}
-                    />
-                  </label>
-                  <label className={`${uploadBtn} text-[#157AFB]`}>
-                    <VideoIcon />
-                    Video
-                    <input
-                      type="file"
-                      id="files-videos"
-                      name="videos-file"
-                      accept=".webm,.mp4,.mpg,.avi,.m4v"
-                      style={{ display: "none" }}
-                      multiple
-                      onChange={(e) => {
-                        handleSelectFile(e, "videos");
-                      }}
-                    />
-                  </label>
-                  <button className={`${uploadBtn} text-[#00BF96]`}>
-                    <EmojiIcon />
-                    Emoji
-                  </button>
-                </div>
-                <div className={RightActionBtns}>
-                  <AnimateTrashIcon />
-                  <div className={divider}></div>
-                  <button className={clearBtn}>+</button>
-                  <Button
-                    title={"Post"}
-                    variant="v1"
-                    className="max-w-[140px]"
-                    onClick={createPost}
-                  />
-                </div>
-              </div>
-            </div>
-          </CustomModal>
-        )
-        /* {showModal && (
-        <CustomModal onClose={() => setShowModal(false)} title={"Create post"}>
+      {showModal && (
+        <CustomModal onClose={closePostModel} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
@@ -594,26 +494,19 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               />
               <h5 className={cdName}>uixamjad</h5>
             </div>
-            <div className={ModalmaincontentContainer}>
-              <div className={ModalmediaContainer}>
-                <div className={mediaItem}>
-                  <Image
-                    src="/images/postimage.png"
-                    width={452}
-                    height={312}
-                    alt={"post media"}
-                    className={"w-full"}
-                  />
-                </div>
-                <div className={mediaItem}>
-                  <Image
-                    src="/images/postimage.png"
-                    width={452}
-                    height={312}
-                    alt={"post media"}
-                    className={"w-full"}
-                  />
-                </div>
+            <div className={maincontentContainer}>
+              <div
+                className={`${mediaContainer}
+                    `}
+              >
+                <Carousel
+                  showStatus={false}
+                  showThumbs={false}
+                  showIndicators={false}
+                  showArrows={previewFilesUI.length === 1 ? false : true}
+                >
+                  {previewFilesUI}
+                </Carousel>
               </div>
               <div className={inputTextContainer}>
                 <textarea
@@ -630,14 +523,36 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             </div>
             <div className={modalFooter}>
               <div className={leftActionBtns}>
-                <button className={`${uploadBtn} text-yellow-theme`}>
+                <label className={`${uploadBtn} text-yellow-theme`}>
                   <PhotoIcon />
                   Photo
-                </button>
-                <button className={`${uploadBtn} text-[#157AFB]`}>
+                  <input
+                    type="file"
+                    id="files-photo"
+                    name="photos-file"
+                    accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                    style={{ display: "none" }}
+                    multiple
+                    onChange={(e) => {
+                      handleSelectFile(e, "images");
+                    }}
+                  />
+                </label>
+                <label className={`${uploadBtn} text-[#157AFB]`}>
                   <VideoIcon />
                   Video
-                </button>
+                  <input
+                    type="file"
+                    id="files-videos"
+                    name="videos-file"
+                    accept=".webm,.mp4,.mpg,.avi,.m4v"
+                    style={{ display: "none" }}
+                    multiple
+                    onChange={(e) => {
+                      handleSelectFile(e, "videos");
+                    }}
+                  />
+                </label>
                 <button className={`${uploadBtn} text-[#00BF96]`}>
                   <EmojiIcon />
                   Emoji
@@ -647,13 +562,17 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 <AnimateTrashIcon />
                 <div className={divider}></div>
                 <button className={clearBtn}>+</button>
-                <Button title={"Post"} variant="v1" className="max-w-[140px]" />
+                <Button
+                  title={"Post"}
+                  variant="v1"
+                  className="max-w-[140px]"
+                  onClick={createPost}
+                />
               </div>
             </div>
           </div>
         </CustomModal>
-      )} */
-      }
+      )}
       {/* edit modal */}
       {showEditModal && (
         <CustomModal

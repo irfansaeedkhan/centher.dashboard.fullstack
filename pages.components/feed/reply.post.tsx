@@ -29,10 +29,6 @@ import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";
 
-// import { posts } from "./dummy.posts";
-
-// import from same directory
-// import { posts } from "./dummy.posts";
 interface ReplyPostProps {
   post: Post;
 }
