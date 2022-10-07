@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
@@ -35,13 +35,13 @@ const Feed: NextPage = () => {
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [skip, setSkip] = useState(0);
 
-  const fetchFeedsData = async () => {
+  const fetchFeedsData = useCallback(async () => {
     try {
       setLoadingState(true);
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
       );
-      setPosts([...posts, ...data.posts]);
+      setPosts((prev) => [...prev, ...data.posts]);
       if (data) {
         setLoadingState(false);
       }
@@ -51,15 +51,11 @@ const Feed: NextPage = () => {
         error.response.data?.message_description || "Something went wrong"
       );
     }
-  };
+  }, [skip]);
 
-  // function when create post and rendered the posts again
-  const renderFeedPage = () => {
-    fetchFeedsData();
-  };
   useEffect(() => {
     fetchFeedsData();
-  }, [skip]);
+  }, [fetchFeedsData]);
 
   const handleScroll = (event: any): void => {
     const { offsetHeight, scrollTop, scrollHeight } = event.target;
@@ -83,15 +79,14 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer} onScroll={handleScroll}>
-            {/* <PostCard renderFeedPage={renderFeedPage} /> */}
-            <PostCardNew renderFeedPage={renderFeedPage} />
+            <PostCardNew renderFeedPage={fetchFeedsData} />
             {posts
               ?.filter((p) => !p.parent_post)
               .map((post) => (
                 <SinglePost
                   key={post._id}
                   post={post}
-                  renderFeedPage={renderFeedPage}
+                  renderFeedPage={fetchFeedsData}
                   onDelete={(post_id) => {
                     setPosts(posts.filter((p) => p._id !== post_id));
                   }}
