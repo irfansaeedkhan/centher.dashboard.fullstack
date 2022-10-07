@@ -4,3 +4,4 @@ export { MessagesCard } from "./messages.card";
 export { RecentActivitiesCard } from "./recent.activities.card";
 export { SinglePost } from "./single.post";
 export { PostCardNew } from "./post.card.new";
+export { PostCardTest } from "./post.cardtest";
