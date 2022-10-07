@@ -12,6 +12,7 @@ import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { Polygon } from "@/assets/svgs";
 import { NODE_API_URL } from "@/constants/common";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -42,7 +43,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       return;
     }
     navigator.clipboard.writeText(user.account_address);
-    toast.success("Copied!");
+    toast.success("Account Address Copied!");
   };
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -106,7 +107,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 )}
               </div>
             </button>
-            <div className="flex flex-col gap-1 ">
+            <div className="flex flex-col gap-1">
               <div className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white">
                 {user?.display_name}
               </div>
@@ -121,7 +122,12 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                   onClick={copyText}
                 />
                 <a
-                  href={"/"}
+                  href={
+                    process.env.NODE_ENV === "production"
+                      ? "https://bscscan.com/address/" + user?.account_address
+                      : "https://testnet.bscscan.com/address/" +
+                        user?.account_address
+                  }
                   target={"_blank"}
                   rel="noreferrer"
                   title="View on BSC Scan"
@@ -141,12 +147,19 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </div>
           <hr className="border-gray-shade-border-color" />
           <div className="flex flex-col gap-3 px-6 pt-3 pb-4">
-            <Link href={`/profile/${user?.account_address}`}>
+            <Link
+              href={{
+                pathname: AppRoutes.profile.account_address,
+                query: {
+                  account_address: user?.account_address,
+                },
+              }}
+            >
               <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
                 My Profile
               </a>
             </Link>
-            <Link href={`/profile/settings`}>
+            <Link href={AppRoutes.profile.settings}>
               <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
                 Profile Settings
               </a>

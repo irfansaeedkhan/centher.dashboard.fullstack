@@ -18,25 +18,17 @@ const ProfileHeader = () => {
   const [description, setDescription] = useState<string>(
     "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don’t contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
+
   // handle description data
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // test
     setDescription(event.target.value);
   };
-  // copy function
-  const copy = async () => {
-    // try{
-    // await navigator.clipboard.writeText(window.location.href.split("/")[0]+"//"+window.location.href.split("/")[2]+"/profile/"+publicKey);
-    // }catch(e){
-    //   console.log(e)
-    // }
-  };
+
   const router = useRouter();
   const isUserProfile = router.pathname === AppRoutes.user_profile;
   const isUserNFTProfile = router.pathname === AppRoutes.user_NFTprofile;
   const { user } = useUser();
-  console.log("id from path", router.asPath.replace("/profile/", ""));
-  console.log("user id", user?.account_address);
+
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -88,7 +80,7 @@ const ProfileHeader = () => {
                       "..." +
                       user?.account_address.slice(38, 42)}
                   </h6>
-                  <button className="copyBtn" onClick={copy}>
+                  <button className="copyBtn">
                     <CopyIcon />
                   </button>
                 </div>
@@ -105,14 +97,16 @@ const ProfileHeader = () => {
                 </button>
               </div>
             </div>
-            {user?.account_address ===
-            router.asPath.replace("/profile/", "") ? (
-              <Button
-                title={"Edit Profile"}
-                variant="v1"
-                className={editProfileBtn}
-                Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
-              />
+            {user?.account_address.toLowerCase() ===
+            router.query.account_address?.toString().toLowerCase() ? (
+              <Link href={AppRoutes.profile.settings}>
+                <Button
+                  title={"Edit Profile"}
+                  variant="v1"
+                  className={editProfileBtn}
+                  Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
+                />
+              </Link>
             ) : (
               <Button
                 title={"Follow"}
