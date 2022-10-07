@@ -141,7 +141,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     createPost,
     closePostModel,
     handleSelectFile,
-  } = usePostUpload(true, _post.user.account_address, _post._id);
+  } = usePostUpload({
+    reply: true,
+    reply_address: _post.user.account_address,
+    reply_post_id: _post._id,
+  });
 
   const handleScroll = (event: any): void => {
     const { offsetHeight, scrollTop, scrollHeight } = event.target;
@@ -541,6 +545,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </>
         )}
       </div>
+
+      {/* Reply Post Modal */}
       {showModal && (
         <CustomModal onClose={closePostModel} title={"Create post"}>
           <div className={modalBodyWrapper}>
@@ -632,6 +638,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </div>
         </CustomModal>
       )}
+
       {/* edit modal */}
       {showEditModal && (
         <CustomModal
@@ -715,7 +722,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   variant="v1"
                   className="max-w-[140px]"
                   onClick={() => {
-                    editPost(_post?._id, editPostText, editDeletedItem);
+                    editPost(_post._id, editPostText, editDeletedItem);
                   }}
                 />
               </div>

@@ -49,7 +49,11 @@ const Profile: NextPage = () => {
               <DiscoverCard />
             </div>
             <div className={postsContainer}>
-              <PostCardNew />
+              <PostCardNew
+                onPostCreated={(post) => {
+                  setPosts((prev) => [post, ...prev]);
+                }}
+              />
               {posts
                 .filter((p) => !p.parent_post)
                 .map((post) => (

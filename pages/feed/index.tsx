@@ -85,18 +85,20 @@ const Feed: NextPage = () => {
             <DiscoverCard />
           </div>
           <div className={postsContainer} onScroll={handleScroll}>
-            <PostCardNew />
-            {posts
-              ?.filter((p) => !p.parent_post)
-              .map((post) => (
-                <SinglePost
-                  key={post._id}
-                  post={post}
-                  onDelete={(post_id) => {
-                    setPosts(posts.filter((p) => p._id !== post_id));
-                  }}
-                />
-              ))}
+            <PostCardNew
+              onPostCreated={(post) => {
+                setPosts((prev) => [post, ...prev]);
+              }}
+            />
+            {posts.map((post) => (
+              <SinglePost
+                key={post._id}
+                post={post}
+                onDelete={(post_id) => {
+                  setPosts(posts.filter((p) => p._id !== post_id));
+                }}
+              />
+            ))}
           </div>
           <div className={rightSidebar}>
             <MessagesCard />

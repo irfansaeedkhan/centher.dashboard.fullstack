@@ -1,5 +1,10 @@
-import { useState, useEffect } from "react";
+// React, Next, NPM Packages
+import { useState } from "react";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+import toast from "react-hot-toast";
+
+// App imports
 import { axiosNodeApi } from "@/utils/axios";
 import {
   checkValidImageFile,
@@ -8,11 +13,11 @@ import {
   post_file_details,
   FileChunksChunksCalculations,
 } from "@/utils/mediafile/valid.media.files";
+import { Post } from "@/models/post";
 import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
-import Image from "next/future/image";
 
 type PreviewSelectedFile = {
   fileListIndex: number;
@@ -21,12 +26,19 @@ type PreviewSelectedFile = {
   fileBlobURL: string;
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export function usePostUpload(
-  reply: boolean = false,
-  reply_address: string = "",
-  reply_post_id: string = ""
-) {
+interface PostUploadOptions {
+  onPostCreated?: (post: Post) => void;
+  reply?: boolean;
+  reply_address?: string;
+  reply_post_id?: string;
+}
+
+export function usePostUpload({
+  reply = false,
+  reply_address = "",
+  reply_post_id = "",
+  onPostCreated,
+}: PostUploadOptions) {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   //It will store list of files selected by the user
@@ -38,12 +50,11 @@ export function usePostUpload(
     FileList[]
   >([]);
 
-  //TO DO : Remove
+  //TODO: Remove
   const [selectedFileDetail, setselectedFileDetail] = useState(
     Array<FileChunksChunksCalculations>
   );
 
-  //
   const [deletedFileIndexs, setDeletedFileIndex] = useState<string[]>([]);
 
   const [previewFilesUI, setpreviewFilesUI] = useState(Array<JSX.Element>);
@@ -51,7 +62,7 @@ export function usePostUpload(
   const [tweetText, setweetText] = useState<string>("");
 
   const [disablePostButton, setdisablePostButton] = useState<boolean>(false);
-  //
+
   let currentPostID: string = "";
 
   let previewFileList: Array<PreviewSelectedFile> = [];
@@ -219,8 +230,12 @@ export function usePostUpload(
         uploading_file_index
       );
       if (uploading_file_index >= filesChunksDetails.length) {
-        //TO DO : Checking if file list
+        // TODO: Checking if file list
         console.log("File Upload complete show message ");
+
+        await getNewPostAndUpdateState();
+
+        // Close Post Modal on successful upload
         closePostModel();
         return;
       }
@@ -232,7 +247,6 @@ export function usePostUpload(
   };
 
   //Function will remove the files created by the user
-  //
   const deleteFileIndexs = async (
     fileListIndex: number,
     fileIndex: number,
@@ -346,26 +360,39 @@ export function usePostUpload(
         reply_post_id: reply_post_id,
       });
 
-      //If no file media that means only text was avaible in post
+      currentPostID = data.post_id;
+
+      // If no file media that means only text was avaible in post
       if (filesChunksDetails.length == 0) {
-        //To DO : Show message post is created
-        setShowModal(false);
+        await getNewPostAndUpdateState();
+        closePostModel();
         return;
       }
-
-      currentPostID = data.post_id;
 
       // Starting uploading of task
       await UploadFiles(filesChunksDetails, 0).catch((error) => {
         console.log("Error ", error);
       });
     } catch (error) {
-      console.log("Failed to create post ", error);
+      toast.error("Failed to create post");
+    }
+  };
+
+  /** Get Newly Created Post and Update State */
+  const getNewPostAndUpdateState = async () => {
+    try {
+      // Get the new post and add it to the top of the post list
+      const { data: newPostData } = await axiosNodeApi.get(
+        `/api/socials/posts/${currentPostID}`
+      );
+
+      onPostCreated && onPostCreated(newPostData.post as Post);
+    } catch {
+      toast.error("Failed to get new post");
     }
   };
 
   // Function will display social media in pop up
-  //
   const createSelectedFileUI = (previewUrlList: Array<PreviewSelectedFile>) => {
     try {
       console.log("Preview list : ", previewUrlList);
@@ -438,7 +465,6 @@ export function usePostUpload(
     }
   };
 
-  //
   const addSelectedFiles = (selected_files: FileList): boolean => {
     try {
       console.log("Add selected file event called!!");

@@ -13,9 +13,10 @@ import { useOnClickOutside } from "usehooks-ts";
 
 // App imports
 import useUser from "@/hooks/use.user";
-import { NODE_API_URL } from "@/constants/common";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
+import { Post } from "@/models/post";
+import { NODE_API_URL } from "@/constants/common";
 import {
   PhotoIcon,
   VideoIcon,
@@ -26,7 +27,11 @@ import {
 // Current directory imports
 import { usePostUpload } from "./post.logic";
 
-export const PostCardNew: React.FC = () => {
+interface PostCardNewProps {
+  onPostCreated: (post: Post) => void;
+}
+
+export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const {
     showModal,
     setShowModal,
@@ -35,7 +40,9 @@ export const PostCardNew: React.FC = () => {
     createPost,
     closePostModel,
     handleSelectFile,
-  } = usePostUpload();
+  } = usePostUpload({
+    onPostCreated,
+  });
 
   // emoji toggle functions
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
