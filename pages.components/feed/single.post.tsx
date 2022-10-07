@@ -46,6 +46,12 @@ interface FeedCardLevel1Props {
   onDelete: (id: string) => void;
 }
 
+interface IEditPostData {
+  isEditModalVisible: boolean;
+  editedPostText: string;
+  editDeletedItems: number[];
+}
+
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   post,
   onDelete,
@@ -56,9 +62,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const [replies, setReplies] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
 
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editPostText, setEditPostText] = useState("");
-  const [editDeletedItem, setEditDeletedItem] = useState<number[]>([]);
+  const [editPostData, setEditPostData] = useState<IEditPostData>({
+    isEditModalVisible: false,
+    editedPostText: _post.text_content ?? "",
+    editDeletedItems: [],
+  });
+
   const [togglePop, setTogglePop] = useState(false);
   const [toggleSharePop, setToggleSharePop] = useState(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
@@ -258,11 +267,16 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         text,
         delete_file_index,
       });
+
+      // Get Updated Post
+      const { data } = await axiosNodeApi.get(
+        `/api/socials/posts/${_post._id}`
+      );
+      setPost(data.post);
       toast.success("Post Edited Successfully");
-      setShowEditModal(false);
-      // TODO: Update post in state
+      setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
     } catch (error: any) {
-      setShowEditModal(false);
+      setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
       toast.error(
         error?.response?.data?.message_description || "Something went wrong"
       );
@@ -271,9 +285,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
   const handleMediaDel = (id: number) => {
     // Append deleted item in array
-    setEditDeletedItem((prev) => {
-      return [...prev, id];
-    });
+    setEditPostData((prev) => ({
+      ...prev,
+      editDeletedItems: [...prev.editDeletedItems, id],
+    }));
   };
 
   // toggle function to show/hide edit/delete popup
@@ -300,7 +315,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         box.style.fill = `#FEBF32`;
       }
     }
-    setEditPostText(e.target.value);
+    setEditPostData((prev) => ({
+      ...prev,
+      editedPostText: e.target.value,
+    }));
   };
 
   // Timer to check 15 min difference
@@ -351,7 +369,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 <button
                   className={toggleListBtn}
                   onClick={() => {
-                    setShowEditModal(true);
+                    setEditPostData((prev) => ({
+                      ...prev,
+                      isEditModalVisible: true,
+                    }));
                   }}
                 >
                   <EditIcon className={toggleListIcons} /> Edit
@@ -642,10 +663,13 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       )}
 
       {/* edit modal */}
-      {showEditModal && (
+      {editPostData.isEditModalVisible && (
         <CustomModal
           onClose={() => {
-            setShowEditModal(false);
+            setEditPostData((prev) => ({
+              ...prev,
+              isEditModalVisible: false,
+            }));
           }}
           title={"Edit post"}
         >
@@ -702,15 +726,13 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               <div className={inputTextContainer}>
                 <textarea
                   className={ModaltextContainerContent}
-                  name=""
                   id="posttext"
                   cols={12}
                   rows={4}
                   placeholder="Type Here"
                   maxLength={200}
                   onChange={handleEditTextLength}
-                  defaultValue={_post?.text_content}
-                  value={editPostText}
+                  value={editPostData.editedPostText}
                 ></textarea>
               </div>
             </div>
@@ -724,7 +746,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   variant="v1"
                   className="max-w-[140px]"
                   onClick={() => {
-                    editPost(_post._id, editPostText, editDeletedItem);
+                    editPost(
+                      _post._id,
+                      editPostData.editedPostText,
+                      editPostData.editDeletedItems
+                    );
                   }}
                 />
               </div>
