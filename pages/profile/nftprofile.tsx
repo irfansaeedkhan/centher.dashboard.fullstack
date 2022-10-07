@@ -20,7 +20,7 @@ const NFTProfile: NextPage = () => {
           <div className={tabsContainer}>
             <Link
               href={{
-                pathname: AppRoutes.user_NFTprofile,
+                pathname: AppRoutes.user_nft_profile,
                 query: { tab: "owned" },
               }}
             >
@@ -40,7 +40,7 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_NFTprofile,
+                pathname: AppRoutes.user_nft_profile,
                 query: { tab: "purchased" },
               }}
             >
@@ -60,7 +60,7 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_NFTprofile,
+                pathname: AppRoutes.user_nft_profile,
                 query: { tab: "collections" },
               }}
             >
@@ -81,7 +81,7 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_NFTprofile,
+                pathname: AppRoutes.user_nft_profile,
                 query: { tab: "followers" },
               }}
             >
@@ -101,7 +101,7 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_NFTprofile,
+                pathname: AppRoutes.user_nft_profile,
                 query: { tab: "following" },
               }}
             >

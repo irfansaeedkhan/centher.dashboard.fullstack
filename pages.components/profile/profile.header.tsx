@@ -1,22 +1,31 @@
 // React, Next, NPM Packages
 import React from "react";
 import { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
+import { useRouter } from "next/router";
 import Image from "next/future/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import ctl from "@netlify/classnames-template-literals";
+import { useCopyToClipboard } from "usehooks-ts";
+import toast from "react-hot-toast";
 
 //App imports
-import { AppRoutes } from "@/constants/app.routes";
-import Button from "@/components/button";
-import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
 import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import Button from "@/components/button";
+import { getProfileImage } from "@/utils/helpers/get.profile.image";
+import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 const ProfileHeader = () => {
-  // states
+  const router = useRouter();
+  const { user: loggedInUser } = useUser();
+  const { user } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
+  const [_, copy] = useCopyToClipboard();
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
   const [description, setDescription] = useState<string>(
-    "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don’t contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
+    "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
 
   // handle description data
@@ -24,10 +33,9 @@ const ProfileHeader = () => {
     setDescription(event.target.value);
   };
 
-  const router = useRouter();
+  // FIXME: Mubashir - Use memoization
   const isUserProfile = router.pathname === AppRoutes.user_profile;
-  const isUserNFTProfile = router.pathname === AppRoutes.user_NFTprofile;
-  const { user } = useUser();
+  const isUserNFTProfile = router.pathname === AppRoutes.user_nft_profile;
 
   return (
     <div className={profilePageHeader}>
@@ -42,116 +50,127 @@ const ProfileHeader = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_NFTprofile,
+            pathname: AppRoutes.user_nft_profile,
             query: { tab: "owned" },
           }}
         >
           <Button
-            title={"My Nfts Profile"}
+            title={"My NFT Profile"}
             variant={`${isUserNFTProfile ? "v1" : "v2"}`}
             className="px-8"
           />
         </Link>
       </div>
-      <div className={coverCard}>
-        <div className={coverImageContainer}>
-          <button className={editCover}>
-            <CameraIcon />
-            Edit cover
-          </button>
-          <div className={profileImage}>
-            <Image
-              src={`/images/feedprofilepic.png`}
-              alt="userProfile"
-              width={111}
-              height={112}
-              className="rounded-full dpImagePreview"
-            />
+
+      {user && loggedInUser ? (
+        <div className={coverCard}>
+          <div className={coverImageContainer}>
+            <button className={editCover}>
+              <CameraIcon />
+              Edit cover
+            </button>
+            <div className={profileImage}>
+              <Image
+                src={getProfileImage(user)}
+                alt={user.display_name}
+                width={111}
+                height={112}
+                className="rounded-full dpImagePreview"
+              />
+            </div>
           </div>
-        </div>
-        <div className={coverDetails}>
-          <div className={topDetais}>
-            <div>
-              <h5 className={profileName}>uixamjad</h5>
-              <div className={shareBtns}>
-                <div className={copyContainer}>
-                  <h6 className={code}>
-                    {user?.account_address.slice(0, 6) +
-                      "..." +
-                      user?.account_address.slice(38, 42)}
-                  </h6>
-                  <button className="copyBtn">
-                    <CopyIcon />
+          <div className={coverDetails}>
+            <div className={topDetais}>
+              <div>
+                <h5 className={profileName}>{user.display_name}</h5>
+                <div className={shareBtns}>
+                  <div className={copyContainer}>
+                    <h6 className={code}>
+                      {user.account_address.slice(0, 6) +
+                        "..." +
+                        user.account_address.slice(38, 42)}
+                    </h6>
+                    <button
+                      className="copyBtn"
+                      onClick={() => {
+                        copy(user.account_address);
+                        toast.success("Account address copied to clipboard");
+                      }}
+                    >
+                      <CopyIcon />
+                    </button>
+                  </div>
+                  <button>
+                    <Image
+                      src="/images/twitter2.png"
+                      width={24}
+                      height={24}
+                      alt="icon"
+                    />
+                  </button>
+                  <button>
+                    <LinkIcon />
                   </button>
                 </div>
-                <button>
-                  <Image
-                    src="/images/twitter2.png"
-                    width={24}
-                    height={24}
-                    alt="icon"
-                  />
-                </button>
-                <button>
-                  <LinkIcon />
-                </button>
               </div>
-            </div>
-            {user?.account_address.toLowerCase() ===
-            router.query.account_address?.toString().toLowerCase() ? (
-              <Link href={AppRoutes.profile.settings}>
+              {loggedInUser.account_address.toLowerCase() ===
+              user.account_address.toLowerCase() ? (
+                <Link href={AppRoutes.profile.settings}>
+                  <Button
+                    title={"Edit Profile"}
+                    variant="v1"
+                    className={editProfileBtn}
+                    Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
+                  />
+                </Link>
+              ) : (
                 <Button
-                  title={"Edit Profile"}
+                  title={"Follow"}
                   variant="v1"
                   className={editProfileBtn}
-                  Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
                 />
-              </Link>
-            ) : (
-              <Button
-                title={"Follow"}
-                variant="v1"
-                className={editProfileBtn}
-              />
-            )}
-          </div>
-          <div className={textContent}>
-            {desEditStatus ? (
-              <div>
-                <textarea
-                  className={textInputArea}
-                  cols={12}
-                  rows={3}
-                  id="description"
-                  name="description"
-                  onChange={handleChange}
-                  value={description}
-                />
-                <Button
-                  title={"Save"}
-                  variant="v1"
-                  className={saveBtn}
-                  onClick={() => {
-                    setDesEditStatus(false);
-                  }}
-                />
-              </div>
-            ) : (
-              <p className={profileDescription}>
-                {description}
-                <button
-                  className={editTxtIcon}
-                  onClick={() => {
-                    setDesEditStatus(true);
-                  }}
-                >
-                  <EditIcon className={editIcon} />
-                </button>
-              </p>
-            )}
+              )}
+            </div>
+            <div className={textContent}>
+              {desEditStatus ? (
+                <div>
+                  <textarea
+                    className={textInputArea}
+                    cols={12}
+                    rows={3}
+                    id="description"
+                    name="description"
+                    onChange={handleChange}
+                    value={description}
+                  />
+                  <Button
+                    title={"Save"}
+                    variant="v1"
+                    className={saveBtn}
+                    onClick={() => {
+                      setDesEditStatus(false);
+                    }}
+                  />
+                </div>
+              ) : (
+                <p className={profileDescription}>
+                  {description}
+                  <button
+                    className={editTxtIcon}
+                    onClick={() => {
+                      setDesEditStatus(true);
+                    }}
+                  >
+                    <EditIcon className={editIcon} />
+                  </button>
+                </p>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      ) : (
+        <>Loading...</>
+      )}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiArrowUpRight } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
-import { useOnClickOutside } from "usehooks-ts";
+import { useCopyToClipboard, useOnClickOutside } from "usehooks-ts";
 
 // App Imports
 import useUser from "@/hooks/use.user";
@@ -25,6 +25,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user } = useUser();
+  const [_, copy] = useCopyToClipboard();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -37,14 +38,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   };
 
   useOnClickOutside(ref, handleClickOutside);
-
-  const copyText = () => {
-    if (!user) {
-      return;
-    }
-    navigator.clipboard.writeText(user.account_address);
-    toast.success("Account Address Copied!");
-  };
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     const button = e.currentTarget;
@@ -119,7 +112,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 </p>
                 <MdContentCopy
                   className="cursor-pointer text-sm text-white hover:text-brand-primary "
-                  onClick={copyText}
+                  onClick={() => {
+                    copy(user?.account_address ?? "");
+                    toast.success("Account Address Copied!");
+                  }}
                 />
                 <a
                   href={

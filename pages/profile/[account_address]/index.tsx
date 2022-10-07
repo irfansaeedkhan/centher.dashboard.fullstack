@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import { useState } from "react";
 import { NextPage } from "next";
+import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -25,8 +26,11 @@ const Profile: NextPage = () => {
   // Create User Profile View
   useCreateUserProfileView();
 
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { user, loading: userLoading } = useGetUser();
+  const { user, loading: userLoading } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
   const [posts, setPosts] = useState<Post[]>([]);
 
   return (

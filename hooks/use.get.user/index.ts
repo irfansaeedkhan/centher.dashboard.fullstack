@@ -1,24 +1,18 @@
 // React, Next, NPM Packages
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
 // App imports
 import { User } from "@/models/user";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
 
-const useGetUser = () => {
-  const router = useRouter();
-
+const useGetUser = (account_address?: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   useEffect(() => {
-    setLoading("loading");
-    const account_address = router.query.account_address
-      ?.toString()
-      ?.toLowerCase();
     if (account_address) {
+      setLoading("loading");
       (async () => {
         try {
           const { data } = await axiosNodeApi.get(
@@ -32,10 +26,8 @@ const useGetUser = () => {
           setLoading("failed");
         }
       })();
-    } else {
-      setLoading("failed");
     }
-  }, [router]);
+  }, [account_address]);
 
   return {
     user,
