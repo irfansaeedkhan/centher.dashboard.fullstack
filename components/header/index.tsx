@@ -16,6 +16,7 @@ import HeaderProfile from "./header.profile";
 const Header = () => {
   const { user } = useUser();
   const [openModal, setOpenModal] = useState(false);
+  const modalOpenerRef = React.useRef<HTMLDivElement>(null);
 
   return (
     <div className={headerWraper}>
@@ -40,19 +41,26 @@ const Header = () => {
           </Link>
         )}
         {user && (
-          <div
-            className="dpImagePreview cursor-pointer relative"
-            onClick={() => setOpenModal(true)}
-          >
-            <Image
-              src={`${NODE_API_URL}${user.profile_image}`}
-              alt="userProfile"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
+          <div className="relative">
+            <div
+              ref={modalOpenerRef}
+              className="dpImagePreview"
+              onClick={() => setOpenModal((prev) => !prev)}
+              role="button"
+            >
+              <Image
+                src={`${NODE_API_URL}${user.profile_image}`}
+                alt="userProfile"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </div>
             {openModal && (
-              <HeaderProfile onClickOutside={() => setOpenModal(false)} />
+              <HeaderProfile
+                onClickOutside={() => setOpenModal(false)}
+                modalOpenerRef={modalOpenerRef}
+              />
             )}
           </div>
         )}

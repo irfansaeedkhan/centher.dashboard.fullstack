@@ -1,24 +1,37 @@
-import { Polygon } from "@/assets/svgs";
-import { NODE_API_URL } from "@/constants/common";
-import useUser from "@/hooks/use.user";
-import { axiosNodeApi } from "@/utils/axios";
+// React, Next, NPM Packages
+import React, { useRef } from "react";
 import Image from "next/future/image";
 import Link from "next/link";
-import React, { useRef } from "react";
 import toast from "react-hot-toast";
 import { FiArrowUpRight } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { useOnClickOutside } from "usehooks-ts";
 
+// App Imports
+import useUser from "@/hooks/use.user";
+import { axiosNodeApi } from "@/utils/axios";
+import { Polygon } from "@/assets/svgs";
+import { NODE_API_URL } from "@/constants/common";
+
 interface HeaderProfileProps {
   onClickOutside: () => void;
+  modalOpenerRef: React.RefObject<HTMLDivElement>;
 }
 
-const HeaderProfile: React.FC<HeaderProfileProps> = ({ onClickOutside }) => {
+const HeaderProfile: React.FC<HeaderProfileProps> = ({
+  onClickOutside,
+  modalOpenerRef,
+}) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user } = useUser();
 
-  const handleClickOutside = () => {
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      modalOpenerRef.current &&
+      modalOpenerRef.current.contains(e.target as Node)
+    ) {
+      return;
+    }
     onClickOutside();
   };
 
