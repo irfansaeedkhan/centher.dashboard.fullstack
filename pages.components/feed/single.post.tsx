@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import Image from "next/future/image";
+import { userAgent } from "next/server";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -10,8 +11,9 @@ import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import useUser from "@/hooks/use.user";
+
 // App imports
+import useUser from "@/hooks/use.user";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
 import {
@@ -29,8 +31,6 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   WorldIcon,
-  MessageIcon2,
-  Users,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -40,62 +40,99 @@ import { NODE_API_URL } from "@/constants/common";
 // import from same directory
 import { ReplyPost } from "./reply.post";
 import { usePostUpload } from "./post.logic";
-import { userAgent } from "next/server";
 
 interface FeedCardLevel1Props {
   post: Post;
-  renderFeedPage?: () => void;
   onDelete: (id: string) => void;
 }
 
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   post,
-  renderFeedPage,
   onDelete,
 }) => {
+  const router = useRouter();
+  const { user } = useUser();
+  const [_post, setPost] = useState<Post>(post);
+  const [replies, setReplies] = useState<Post[]>([]);
+  const [skip, setSkip] = useState(0);
+
   const [showEditModal, setShowEditModal] = useState(false);
   const [editPostText, setEditPostText] = useState("");
   const [editDeletedItem, setEditDeletedItem] = useState<number[]>([]);
   const [togglePop, setTogglePop] = useState(false);
   const [toggleSharePop, setToggleSharePop] = useState(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
-  const [replies, setReplies] = useState<Post[]>([]);
-  const [totalPostLikes, setTotalPostLikes] = useState<number>(
-    post.likes_count
+  const currentPageRoute = useMemo(
+    () => ({
+      isSinglePostPage: router.pathname === AppRoutes.single_post,
+      isFeedPage: router.pathname === AppRoutes.feed,
+      isProfilePage: router.pathname === AppRoutes.user_profile,
+    }),
+    [router.pathname]
   );
-  const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
-    post.liked_by_loggedin_user
-  );
-  const router = useRouter();
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
-  const { user } = useUser();
-  const [skip, setSkip] = useState(0);
 
-  const copyText = () => {
+  // Update post
+  useEffect(() => {
+    setPost(post);
+  }, [post]);
+
+  // Set updated post share url
+  useEffect(() => {
+    setShareUrl(
+      `${window.location.origin}${AppRoutes.feed}/${_post.user.account_address}/post/${_post._id}`
+    );
+  }, [router, _post]);
+
+  // Fetch post replies
+  useEffect(() => {
+    const fetchRepliesPostData = async () => {
+      try {
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
+        );
+
+        const _replies = data.postData;
+
+        setReplies((prev) => {
+          const filteredReplies = _replies.filter((reply: Post) => {
+            return prev.every((prevReply) => prevReply._id !== reply._id);
+          });
+
+          return [...prev, ...filteredReplies];
+        });
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
+    // Temporary fix for replies
+    if (currentPageRoute.isSinglePostPage) {
+      fetchRepliesPostData();
+    }
+  }, [_post, skip, currentPageRoute.isSinglePostPage]);
+
+  // Copy post share url to clipboard
+  const copyShareUrl = () => {
     navigator.clipboard.writeText(shareUrl);
     toast.success("Copy Link Successfully!");
   };
-
-  const isFeedPage = router.pathname === AppRoutes.feed;
-  const isProfilePage = router.pathname === AppRoutes.user_profile;
 
   // ref for toggle function
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
     setTogglePop(false);
   });
+
   const ref2 = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref2, () => {
     setToggleSharePop(false);
     setToggleSharePop_2(false);
   });
 
-  // timer to check 15 min difference
-  const myMoment = moment();
-  const yourMoment = moment(post.createdAt).add(15, "minutes");
-
-  //TO DO : Pass post id and account address
   const {
     showModal,
     setShowModal,
@@ -104,30 +141,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     createPost,
     closePostModel,
     handleSelectFile,
-  } = usePostUpload(
-    true,
-    router?.query?.account_address?.toString(),
-    router?.query?.post_id?.toString()
-  );
-
-  useEffect(() => {
-    const fetchRepliesPostData = async () => {
-      try {
-        // Create a user with registration_pending state in database
-        const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${router?.query?.account_address}'/post/${router?.query?.post_id}/replies?off_set=${skip}`
-        );
-        setReplies((prev) => [...prev, ...data.postData]);
-      } catch (error: any) {
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-    if (router.query.account_address && router?.query?.post_id) {
-      fetchRepliesPostData();
-    }
-  }, [router, skip]);
+  } = usePostUpload(true, _post.user.account_address, _post._id);
 
   const handleScroll = (event: any): void => {
     const { offsetHeight, scrollTop, scrollHeight } = event.target;
@@ -140,19 +154,29 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const likePost = async (post_id: string) => {
     try {
       // putting it before the api call to make it feel faster
-      if (isLikedByLoggedInUser) {
-        setIsLikedByLoggedInUser(false);
-        setTotalPostLikes(totalPostLikes - 1);
+      if (_post.liked_by_loggedin_user) {
+        setPost((prev) => ({
+          ...prev,
+          likes_count: prev.likes_count - 1,
+          liked_by_loggedin_user: false,
+        }));
       } else {
-        setTotalPostLikes((prev) => prev + 1);
-        setIsLikedByLoggedInUser(true);
+        setPost((prev) => ({
+          ...prev,
+          likes_count: prev.likes_count + 1,
+          liked_by_loggedin_user: true,
+        }));
       }
       await axiosNodeApi.post("api/socials/analytics/likes", {
         post_id,
       });
     } catch (error: any) {
-      setIsLikedByLoggedInUser(post.liked_by_loggedin_user);
-      setTotalPostLikes(post.likes_count);
+      setPost((prev) => ({
+        ...prev,
+        likes_count: post.likes_count,
+        liked_by_loggedin_user: post.liked_by_loggedin_user,
+      }));
+
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -162,24 +186,42 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const sharePost = async () => {
     try {
       const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
-        post_id: post._id,
+        post_id: _post._id,
       });
-      return data;
+
+      // Update share count
+      setPost((prev) => ({
+        ...prev,
+        shares_count: data.shares_count,
+      }));
     } catch (error: any) {
+      // Reset share count
+      setPost((prev) => ({
+        ...prev,
+        shares_count: post.shares_count,
+      }));
+
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
     }
   };
 
-  const archivePostFunc = async (post_id: string) => {
+  const archivePost = async (post_id: string) => {
     try {
       await axiosNodeApi.post(`/api/socials/posts/archive`, {
         post_id,
       });
+
       toast.success("Post Archived Successfully");
-      // FIXME: This is a hack to refresh the feed page, we don't need to fetch the feed again, just remove the post from the state, use the same approach as delete post
-      renderFeedPage && renderFeedPage();
+
+      if (currentPageRoute.isSinglePostPage) {
+        router.replace(AppRoutes.feed);
+        return;
+      }
+
+      // Using onDeleted prop to remove the post from the feed page as archiving the post is same as deleting it
+      onDelete(post_id);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -189,14 +231,43 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
   const deletePost = async () => {
     try {
-      await axiosNodeApi.delete(`api/socials/posts/${post._id}`);
+      await axiosNodeApi.delete(`api/socials/posts/${_post._id}`);
+
       toast.success("Post Deleted Successfully");
-      onDelete(post._id);
+
+      onDelete(_post._id);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
     }
+  };
+
+  const editPost = async (
+    post_id: string,
+    text: string,
+    delete_file_index: number[]
+  ) => {
+    try {
+      await axiosNodeApi.post(`api/socials/posts/edit`, {
+        post_id,
+        text,
+        delete_file_index,
+      });
+      toast.success("Post Edited Successfully");
+      // TODO: Update post in state
+    } catch (error: any) {
+      toast.error(
+        error?.response?.data?.message_description || "Something went wrong"
+      );
+    }
+  };
+
+  const handleMediaDel = (id: number) => {
+    // Append deleted item in array
+    setEditDeletedItem((prev) => {
+      return [...prev, id];
+    });
   };
 
   // toggle function to show/hide edit/delete popup
@@ -208,26 +279,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   };
   const toggleSharePopFunc_2 = async () => {
     setToggleSharePop_2((prev) => !prev);
-  };
-
-  const editPost = async (
-    post_id: string,
-    text: string,
-    delete_file_index: number[]
-  ) => {
-    console.log("edited", post_id, text, delete_file_index);
-    try {
-      await axiosNodeApi.post(`api/socials/posts/edit`, {
-        post_id,
-        text,
-        delete_file_index,
-      });
-      toast.success("Post Edited Successfully");
-    } catch (error: any) {
-      toast.error(
-        error?.response?.data?.message_description || "Something went wrong"
-      );
-    }
   };
 
   // function to set max value of text
@@ -246,45 +297,44 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
     setEditPostText(e.target.value);
   };
 
-  const handleMediaDel = (id: number) => {
-    setEditDeletedItem((prev) => {
-      return [...prev, id];
-    });
-  };
-  console.log("editPostText", editPostText);
-  console.log("editDeletedItem", editDeletedItem);
+  // Timer to check 15 min difference
+  const timeNow = moment();
+  const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
+
   return (
     <div className={postCardContainer}>
-      {(isFeedPage || isProfilePage) && <div className={connectLines}></div>}
+      {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+        <div className={connectLines}></div>
+      )}
       <div className={topCard}>
         <div className={profileDetail}>
           <Image
             src={
-              post.user.custom_image
-                ? post.user.profile_image
-                : `${NODE_API_URL}${post.user.profile_image}`
+              _post.user.custom_image
+                ? _post.user.profile_image
+                : `${NODE_API_URL}${_post.user.profile_image}`
             }
             width={48}
             height={48}
             className="rounded-full"
-            alt={post.user.display_name}
+            alt={_post.user.display_name}
           />
           <div>
-            <h5 className={PFName}>{post.user.display_name}</h5>
-            <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
+            <h5 className={PFName}>{_post.user.display_name}</h5>
+            <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
           </div>
         </div>
-        {post.user._id === user?._id && (
+        {_post.user._id === user?._id && (
           <div ref={ref} className={toggleContainer}>
             <button onClick={togglePopFunc}>
               <DotsIcon />
             </button>
-            {myMoment >= yourMoment ? (
+            {timeNow >= timeAfter15Minutes ? (
               <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
                 <button
                   className={toggleListBtn}
                   onClick={() => {
-                    archivePostFunc(post._id);
+                    archivePost(_post._id);
                   }}
                 >
                   <TrashIcon className={toggleListIcons} /> Archive
@@ -303,7 +353,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 <button
                   className={toggleListBtn}
                   onClick={() => {
-                    archivePostFunc(post._id);
+                    archivePost(_post._id);
                   }}
                 >
                   <TrashIcon className={toggleListIcons} /> Archive
@@ -318,18 +368,21 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       </div>
       <div
         className={`${maincontentContainer} ${
-          (isFeedPage || isProfilePage) && " ml-16 "
+          (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+          " ml-16 "
         }`}
       >
         <div className={mediaContainer}>
-          {post.media && (
+          {_post.media && (
             <Carousel
               showStatus={false}
               showThumbs={false}
               showIndicators={false}
-              showArrows={post.media && post.media.length === 1 ? false : true}
+              showArrows={
+                _post.media && _post.media.length === 1 ? false : true
+              }
             >
-              {post.media.map((media, index) => (
+              {_post.media.map((media, index) => (
                 <Image
                   key={index}
                   src={media.url}
@@ -342,21 +395,22 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             </Carousel>
           )}
         </div>
-        {post.text_content && (
+        {_post.text_content && (
           <div className={textContainer}>
-            <p className={textContainerContent}>{post.text_content}</p>
+            <p className={textContainerContent}>{_post.text_content}</p>
           </div>
         )}
       </div>
       <div
         className={`${footerBtnContainer} ${
-          (isFeedPage || isProfilePage) && " ml-16 "
+          (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+          " ml-16 "
         } ${
-          !(isFeedPage || isProfilePage) &&
+          !(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
           " pb-4 border-b-2 border-gray-shade-3 "
         }`}
       >
-        {!(isFeedPage || isProfilePage) && (
+        {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <button
             className={footerdetailReplyBtn}
             onClick={() => {
@@ -367,21 +421,25 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </button>
         )}
         <button className={footerdetailBtn}>
-          <MessageIcon /> {post.replies_count}
+          <MessageIcon /> {_post.replies_count}
         </button>
-        <button className={footerdetailBtn} onClick={() => likePost(post._id)}>
+        <button className={footerdetailBtn} onClick={() => likePost(_post._id)}>
           <LikeIcon
-            className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
+            className={
+              _post.liked_by_loggedin_user ? "stroke-brand-primary" : ""
+            }
           />{" "}
           <span
-            className={`${isLikedByLoggedInUser ? "text-brand-primary" : ""}`}
+            className={`${
+              _post.liked_by_loggedin_user ? "text-brand-primary" : ""
+            }`}
           >
-            {totalPostLikes > 0 && totalPostLikes}
+            {_post.likes_count > 0 && _post.likes_count}
           </span>
         </button>
         <div ref={ref2} className={toggleContainer}>
           <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-            <ShareIcon /> {post.shares_count}
+            <ShareIcon /> {_post.shares_count}
           </button>
 
           <div
@@ -391,7 +449,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
           </button> */}
-            <button onClick={copyText} className={SharetoggleListBtn}>
+            <button onClick={copyShareUrl} className={SharetoggleListBtn}>
               <LinkIcon className={SharetoggleListIcons} /> Copy link
             </button>
             <button
@@ -415,7 +473,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             >
               <ArrowLeftIcon /> Share Via
             </button>
-            <button className={SharetoggleListBtn2} onClick={sharePost}>
+            <div className={SharetoggleListBtn2}>
               <WhatsappShareButton
                 onClick={sharePost}
                 url={shareUrl}
@@ -429,8 +487,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 />
                 WhatsApp
               </WhatsappShareButton>
-            </button>
-            <button className={SharetoggleListBtn2} onClick={sharePost}>
+            </div>
+            <div className={SharetoggleListBtn2}>
               <TwitterShareButton
                 onClick={sharePost}
                 url={shareUrl}
@@ -444,29 +502,29 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 />
                 Twitter
               </TwitterShareButton>
-            </button>
+            </div>
           </div>
         </div>
       </div>
-      {(isFeedPage || isProfilePage) && (
+      {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image
             src={
-              post?.user?.custom_image
-                ? post.user.profile_image
-                : `${NODE_API_URL}${post.user.profile_image}`
+              _post?.user?.custom_image
+                ? _post.user.profile_image
+                : `${NODE_API_URL}${_post.user.profile_image}`
             }
             width={30}
             height={30}
             className="rounded-full"
-            alt={post.user.display_name}
+            alt={_post.user.display_name}
           />
           <Link
             href={{
               pathname: AppRoutes.single_post,
               query: {
-                account_address: post.user.account_address,
-                post_id: post._id,
+                account_address: _post.user.account_address,
+                post_id: _post._id,
               },
             }}
           >
@@ -475,7 +533,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         </div>
       )}
       <div className="overflow-y-scroll" onScroll={handleScroll}>
-        {!(isFeedPage || isProfilePage) && (
+        {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <>
             {replies.map((reply) => {
               return <ReplyPost key={reply._id} post={reply} />;
@@ -604,7 +662,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   showIndicators={false}
                   showArrows={previewFilesUI.length === 1 ? false : true}
                 >
-                  {post.media?.map((data, index) => {
+                  {_post.media?.map((data, index) => {
                     return (
                       <div
                         key={index}
@@ -642,7 +700,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   placeholder="Type Here"
                   maxLength={200}
                   onChange={handleEditTextLength}
-                  defaultValue={post?.text_content}
+                  defaultValue={_post?.text_content}
                   value={editPostText}
                 ></textarea>
               </div>
@@ -657,7 +715,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   variant="v1"
                   className="max-w-[140px]"
                   onClick={() => {
-                    editPost(post?._id, editPostText, editDeletedItem);
+                    editPost(_post?._id, editPostText, editDeletedItem);
                   }}
                 />
               </div>

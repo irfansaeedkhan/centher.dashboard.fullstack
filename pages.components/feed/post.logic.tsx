@@ -219,8 +219,9 @@ export function usePostUpload(
         uploading_file_index
       );
       if (uploading_file_index >= filesChunksDetails.length) {
-        //Checking if file list
+        //TO DO : Checking if file list
         console.log("File Upload complete show message ");
+        closePostModel();
         return;
       }
 
@@ -371,7 +372,9 @@ export function usePostUpload(
     try {
       console.log("Preview list : ", previewUrlList);
       //
-      let displaySelectedFile: JSX.Element[] = previewFilesUI;
+      let displaySelectedFile: JSX.Element[] = [];
+
+      //let displaySelectedFile: JSX.Element[] = previewFilesUI;
 
       // Running loop to all the added files
       for (let fileDetails in previewUrlList) {
@@ -429,7 +432,7 @@ export function usePostUpload(
           );
         }
       }
-
+      console.log("Display created for image : ", displaySelectedFile);
       // Displaying preview
       setpreviewFilesUI(displaySelectedFile);
     } catch (error) {
