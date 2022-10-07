@@ -255,8 +255,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
         delete_file_index,
       });
       toast.success("Post Edited Successfully");
+      setShowEditModal(false);
       // TODO: Update post in state
     } catch (error: any) {
+      setShowEditModal(false);
       toast.error(
         error?.response?.data?.message_description || "Something went wrong"
       );

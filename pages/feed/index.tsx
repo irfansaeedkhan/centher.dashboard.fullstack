@@ -31,7 +31,7 @@ import {
 const Feed: NextPage = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [loadingState, setLoadingState] = useState<boolean>(true);
   const [skip, setSkip] = useState(0);
 
   const fetchFeedsData = useCallback(async () => {
@@ -49,8 +49,9 @@ const Feed: NextPage = () => {
         });
         return [...prev, ...filteredPosts];
       });
-
-      setLoadingState(false);
+      if (data) {
+        setLoadingState(false);
+      }
     } catch (error: any) {
       setLoadingState(false);
       toast.error(

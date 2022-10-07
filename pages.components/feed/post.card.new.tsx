@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
+import Loader from "@/components/loader";
 import { Carousel } from "react-responsive-carousel";
 import EmojiPicker, {
   EmojiStyle,
@@ -35,11 +36,13 @@ export const PostCardNew: React.FC = () => {
     createPost,
     closePostModel,
     handleSelectFile,
+    loadingState,
   } = usePostUpload();
 
   // emoji toggle functions
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
-  const [togglePop, setTogglePop] = useState<boolean>(false);
+
+  const [togglePop, setTogglePop] = useState(false);
   const togglePopFunc = async () => {
     setTogglePop((prev) => !prev);
   };
@@ -146,19 +149,20 @@ export const PostCardNew: React.FC = () => {
             <div className={maincontentContainer}>
               <div
                 className={`${mediaContainer} 
-                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                    ${previewFilesUI.length === 1 && "grid-cols-1"} 
+                    ${previewFilesUI.length === 2 && "grid-cols-2"} 
+                    ${previewFilesUI.length > 2 && "grid-cols-3"} 
                     `}
               >
-                <Carousel
+                {/* <Carousel
                   showStatus={false}
                   showThumbs={false}
                   showIndicators={false}
                   showArrows={previewFilesUI.length === 1 ? false : true}
                 >
                   {previewFilesUI}
-                </Carousel>
+                </Carousel> */}
+                {previewFilesUI}
               </div>
               <div className={inputTextContainer}>
                 <textarea
@@ -245,6 +249,7 @@ export const PostCardNew: React.FC = () => {
           </div>
         </CustomModal>
       )}
+      {loadingState && <Loader />}
     </div>
   );
 };
@@ -280,7 +285,7 @@ const maincontentContainer = ctl(`
 px-6
 `);
 const mediaContainer = ctl(`
- "w-full grid" gap-3"
+ w-full grid gap-3
 `);
 const mediaItem = ctl(`  
 
