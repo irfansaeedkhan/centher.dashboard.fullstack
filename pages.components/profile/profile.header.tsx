@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/future/image";
@@ -7,12 +7,14 @@ import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
+import { TwitterShareButton } from "react-share";
 
 //App imports
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
 import { getProfileImage } from "@/utils/helpers/get.profile.image";
+import { Website } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -24,9 +26,14 @@ const ProfileHeader = () => {
   );
   const [_, copy] = useCopyToClipboard();
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
+  const [shareUrl, setShareUrl] = useState("");
   const [description, setDescription] = useState<string>(
     "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
+
+  useEffect(() => {
+    setShareUrl(`${window.location.origin}${router.asPath}`);
+  }, [router.asPath, user?.account_address]);
 
   // handle description data
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -101,15 +108,21 @@ const ProfileHeader = () => {
                     </button>
                   </div>
                   <button>
-                    <Image
-                      src="/images/twitter2.png"
-                      width={24}
-                      height={24}
-                      alt="icon"
-                    />
+                    <TwitterShareButton
+                      className="flex items-center"
+                      url={shareUrl}
+                    >
+                      <Image
+                        src="/images/twitter2.png"
+                        width={24}
+                        height={24}
+                        alt="icon"
+                      />
+                    </TwitterShareButton>
                   </button>
                   <button>
-                    <LinkIcon />
+                    {/* TODO: Waqar need to condition when user add website in his/her info only then user see this icon */}
+                    <Website />
                   </button>
                 </div>
               </div>
