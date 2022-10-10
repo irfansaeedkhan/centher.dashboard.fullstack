@@ -181,16 +181,27 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
                   post.media && post.media.length === 1 ? false : true
                 }
               >
-                {post.media.map((media, index) => (
-                  <Image
-                    key={index}
-                    src={media.url}
-                    width={452}
-                    height={312}
-                    alt="post media"
-                    className="w-full"
-                  />
-                ))}
+                {post.media.map((media, index) =>
+                  media.type == "image" ? (
+                    <Image
+                      key={index}
+                      src={media.url}
+                      width={452}
+                      height={312}
+                      alt="post media"
+                      className="w-full"
+                    />
+                  ) : (
+                    <video
+                      key={index}
+                      src={media.url}
+                      width={452}
+                      height={312}
+                      className="w-full"
+                      controls
+                    />
+                  )
+                )}
               </Carousel>
             )}
           </div>
