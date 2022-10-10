@@ -94,7 +94,7 @@ const ProfileHeader = () => {
                       className="copyBtn"
                       onClick={() => {
                         copy(user.account_address);
-                        toast.success("Account address copied to clipboard");
+                        toast.success("Account Address Copied!");
                       }}
                     >
                       <CopyIcon />
