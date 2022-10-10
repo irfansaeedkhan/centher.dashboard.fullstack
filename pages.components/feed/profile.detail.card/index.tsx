@@ -16,7 +16,8 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
   isLoggedInUser,
 }) => {
-  const { profileCardDetails } = useGetProfileCardDetails();
+  const { profileCardDetails } = useGetProfileCardDetails(user);
+
   return (
     <div className={profileDetailCardContainer}>
       <Link href={`/profile/${user?.account_address}`}>

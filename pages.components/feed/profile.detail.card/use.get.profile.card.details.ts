@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 // App imports
-import useUser from "@/hooks/use.user";
+import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
 interface ProfileCardDetailsState {
@@ -25,13 +25,11 @@ const initialState: ProfileCardDetailsState = {
   profile_views_count: null,
 };
 
-export const useGetProfileCardDetails = () => {
-  const { user: loggedInUser } = useUser();
-
+export const useGetProfileCardDetails = (user: User) => {
   const [profileCardDetails, setProfileCardDetails] = useState(initialState);
 
   useEffect(() => {
-    const account_address = loggedInUser?.account_address;
+    const account_address = user.account_address;
     if (account_address) {
       (async () => {
         try {
@@ -46,7 +44,7 @@ export const useGetProfileCardDetails = () => {
         }
       })();
     }
-  }, [loggedInUser]);
+  }, [user]);
 
   return {
     profileCardDetails,

@@ -19,7 +19,7 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
         <title>{props.pageTitle}</title>
       </Head>
       <Header />
-      <div className="flex">
+      <div className={parentWrapper}>
         <Sidebar />
         {/* 15.5rem is the width of sidebar */}
         <div className={childrenWrapper}>{props.children}</div>
@@ -43,3 +43,5 @@ const childrenWrapper = ctl(`
   h-[calc(100vh-60px)] 
   lg:w-[calc(100%-15.5rem)] 
   `);
+
+const parentWrapper = ctl(`flex`);
