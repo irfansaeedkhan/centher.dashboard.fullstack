@@ -110,7 +110,13 @@ export const RegisterForm: React.FC = () => {
 
         <button
           type="button"
-          onClick={() => setFeeModal(true)}
+          onClick={() => {
+            if (!account) {
+              toast.error("Please connect wallet first!");
+              return;
+            }
+            setFeeModal(true);
+          }}
           className={button}
         >
           Register
