@@ -19,8 +19,11 @@ const NFTProfile: NextPage = () => {
           <div className={tabsContainer}>
             <Link
               href={{
-                pathname: AppRoutes.user_nft_profile,
-                query: { tab: "owned" },
+                pathname: AppRoutes.user_nfts_profile,
+                query: {
+                  account_address: router.query.account_address,
+                  tab: "owned",
+                },
               }}
             >
               <div
@@ -39,8 +42,11 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_nft_profile,
-                query: { tab: "purchased" },
+                pathname: AppRoutes.user_nfts_profile,
+                query: {
+                  account_address: router.query.account_address,
+                  tab: "purchased",
+                },
               }}
             >
               <div
@@ -59,8 +65,11 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_nft_profile,
-                query: { tab: "collections" },
+                pathname: AppRoutes.user_nfts_profile,
+                query: {
+                  account_address: router.query.account_address,
+                  tab: "collections",
+                },
               }}
             >
               <div
@@ -80,8 +89,11 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_nft_profile,
-                query: { tab: "followers" },
+                pathname: AppRoutes.user_nfts_profile,
+                query: {
+                  account_address: router.query.account_address,
+                  tab: "followers",
+                },
               }}
             >
               <div
@@ -100,8 +112,11 @@ const NFTProfile: NextPage = () => {
             </Link>
             <Link
               href={{
-                pathname: AppRoutes.user_nft_profile,
-                query: { tab: "following" },
+                pathname: AppRoutes.user_nfts_profile,
+                query: {
+                  account_address: router.query.account_address,
+                  tab: "following",
+                },
               }}
             >
               <div

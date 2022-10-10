@@ -87,29 +87,39 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   };
 
   // FIXME: Mubashir - Use memoization
-  const isUserProfile = router.pathname === AppRoutes.user_profile;
-  const isUserNFTProfile = router.pathname === AppRoutes.user_nft_profile;
+  const isProfilePage = router.pathname === AppRoutes.user_profile;
+  const isNFTProfilePage = router.pathname === AppRoutes.user_nfts_profile;
 
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
       <div className={btnContainer}>
-        <Link href={{ pathname: AppRoutes.user_profile }}>
+        <Link
+          href={{
+            pathname: AppRoutes.user_profile,
+            query: {
+              account_address: user?.account_address,
+            },
+          }}
+        >
           <Button
             title={"Feed and Post"}
-            variant={`${isUserProfile ? "v1" : "v2"}`}
+            variant={`${isProfilePage ? "v1" : "v2"}`}
             className="px-8"
           />
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nft_profile,
-            query: { tab: "owned" },
+            pathname: AppRoutes.user_nfts_profile,
+            query: {
+              account_address: user?.account_address,
+              tab: "owned",
+            },
           }}
         >
           <Button
             title={"My NFT Profile"}
-            variant={`${isUserNFTProfile ? "v1" : "v2"}`}
+            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8"
           />
         </Link>
