@@ -76,7 +76,7 @@ const Feed: NextPage = () => {
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>
-          <div className="leftSidebarStickyContainer lg:sticky  lg:top-0 ">
+          <div className={leftSidebarStickyContainer}>
             <h1 className={title}>My Feed</h1>
             <div className={leftSidebar}>
               {!isLoggedInUserLoading && loggedInUser ? (
@@ -88,8 +88,7 @@ const Feed: NextPage = () => {
             </div>
           </div>
 
-          {/* <div className={postsContainer} onScroll={handleScroll}> */}
-          <div className={postsContainer}>
+          <div className={postsContainer} onScroll={handleScroll}>
             <PostCardNew
               onPostCreated={(post) => {
                 setPosts((prev) => [post, ...prev]);
@@ -136,4 +135,7 @@ w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
 w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll  pb-12 lg:mt-[4.125rem]
+`);
+const leftSidebarStickyContainer = ctl(`
+lg:sticky  lg:top-0
 `);
