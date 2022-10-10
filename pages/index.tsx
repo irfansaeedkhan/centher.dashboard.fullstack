@@ -1,22 +1,23 @@
-// React, Next, NPM Packages
-import { NextPage } from "next";
-
 // App imports
+import { NextPageWithLayout } from "@/pages/_app";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current directory imports
 import { HotNFTs, HotCollections, Explore } from "@/pages.components/explore";
 
-const Home: NextPage = () => {
+const Home: NextPageWithLayout = () => {
   return (
-    /* A wrapper for the page. */
-    <AllPagesWrapper pageTitle="Explore - Nether NFT">
-      <div className="AppWrapper flex flex-col gap-10">
-        <HotNFTs />
-        <HotCollections />
-        <Explore />
-      </div>
-    </AllPagesWrapper>
+    <div className="AppWrapper flex flex-col gap-10">
+      <HotNFTs />
+      <HotCollections />
+      <Explore />
+    </div>
+  );
+};
+
+Home.getLayout = (page) => {
+  return (
+    <AllPagesWrapper pageTitle="Explore - Nether NFT">{page}</AllPagesWrapper>
   );
 };
 

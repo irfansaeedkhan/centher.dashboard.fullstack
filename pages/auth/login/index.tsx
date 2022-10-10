@@ -1,8 +1,8 @@
 // React, Next, NPM Packages
 import React from "react";
-import { NextPage } from "next";
 
 // App imports
+import { NextPageWithLayout } from "@/pages/_app";
 import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
@@ -12,7 +12,11 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current page imports
 import { LoginForm } from "@/pages.components/login";
 
-const Login: NextPage = () => {
+const Login: NextPageWithLayout = () => {
+  return <LoginForm />;
+};
+
+Login.getLayout = (page) => {
   return (
     <PageWrapper pageTitle="Login">
       <AuthLeft
@@ -31,7 +35,7 @@ const Login: NextPage = () => {
           title="Register now"
           link={AppRoutes.auth.register}
         />
-        <LoginForm />
+        {page}
       </AuthRight>
     </PageWrapper>
   );

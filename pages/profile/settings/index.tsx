@@ -1,23 +1,22 @@
 // React, Next, NPM Packages
-import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import { NextPageWithLayout } from "@/pages/_app";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import EditProfileForm from "@/pages.components/profile.setting/edit.profile.form";
 
-// Current directory imports
-
-const Setting: NextPage = () => {
+const Setting: NextPageWithLayout = () => {
   return (
-    /* A wrapper for the page. */
-    <AllPagesWrapper pageTitle="Settings">
-      <div className="AppWrapper flex flex-col gap-10">
-        <h1 className={title}>Profile Setting</h1>
-        <EditProfileForm />
-      </div>
-    </AllPagesWrapper>
+    <div className="AppWrapper flex flex-col gap-10">
+      <h1 className={title}>Profile Setting</h1>
+      <EditProfileForm />
+    </div>
   );
+};
+
+Setting.getLayout = (page) => {
+  return <AllPagesWrapper pageTitle="Settings">{page}</AllPagesWrapper>;
 };
 
 export default Setting;

@@ -15,7 +15,7 @@ import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
 import { getProfileImage } from "@/utils/helpers/get.profile.image";
 import { Website } from "@/assets/svgs";
-import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
+import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
 
