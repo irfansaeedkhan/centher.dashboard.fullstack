@@ -1,5 +1,4 @@
 // React, Next, NPM Packages
-import { useState } from "react";
 import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";

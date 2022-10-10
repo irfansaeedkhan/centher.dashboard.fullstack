@@ -545,7 +545,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </div>
         </div>
       </div>
-      {console.log("pagee", currentPageRoute)}
       {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image

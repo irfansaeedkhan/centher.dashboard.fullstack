@@ -20,7 +20,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
 
 interface FollowUser {
-  setFollowUser: (arg0: boolean) => void;
+  setFollowUser?: (arg0: boolean) => void;
 }
 
 const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
@@ -52,7 +52,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         const { data } = await axiosNodeApi.get(
           `api/socials/follows/${user?._id}`
         );
-        setFollowUser(data.follow);
+        setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
       } catch (error: any) {
         toast.error(
@@ -63,7 +63,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     if (user?._id) {
       fetchFollow();
     }
-  }, [user]);
+  }, [user, setFollowUser]);
 
   const followUser = async (follower_id: string) => {
     try {
@@ -71,12 +71,12 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         follower_id,
       });
       if (response.data.message_description == "Follow user successfully") {
-        setFollowUser(true);
+        setFollowUser && setFollowUser(true);
         setFollow(true);
       } else if (
         response.data.message_description == "Unfollow user successfully"
       ) {
-        setFollowUser(false);
+        setFollowUser && setFollowUser(false);
         setFollow(false);
       }
     } catch (error: any) {

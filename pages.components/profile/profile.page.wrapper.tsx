@@ -7,7 +7,7 @@ import ProfileHeader from "./profile.header";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
-  setFollowUser: (arg0: boolean) => void;
+  setFollowUser?: (arg0: boolean) => void;
 }
 
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
