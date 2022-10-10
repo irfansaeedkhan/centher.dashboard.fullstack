@@ -146,8 +146,8 @@ export const RegisterForm: React.FC = () => {
                 setFeeModal((prev) => ({ ...prev, isOpen: false }));
             }}
           >
-            <div className="px-10 flex flex-col gap-6 pt-5 pb-8">
-              <div className="flex justify-center">
+            <div className={feeWrapper}>
+              <div className={feeModalWrapper}>
                 {feeModal.status === "start" ? (
                   <WalletIconModal />
                 ) : feeModal.status === "progress" ? (
@@ -156,8 +156,8 @@ export const RegisterForm: React.FC = () => {
                   feeModal.status === "end" && <Successfully />
                 )}
               </div>
-              <div className="flex flex-col gap-2 items-center">
-                <h2 className="font-semibold text-lg text-center text-white">
+              <div className={feeModalStatus}>
+                <h2 className={feeModalProgress}>
                   {feeModal.status === "start"
                     ? "Pay Registeration Fee"
                     : feeModal.status === "progress"
@@ -165,16 +165,14 @@ export const RegisterForm: React.FC = () => {
                     : feeModal.status === "end" && "Successfully"}
                 </h2>
                 {feeModal.status === "start" ? (
-                  <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
-                    {`${feeModal.fee} BNB`}
-                  </p>
+                  <p className={textFee}>{`${feeModal.fee} BNB`}</p>
                 ) : feeModal.status === "progress" ? (
-                  <p className="text-sm text-center text-gray-shade-2">
+                  <p className={modalInnerText}>
                     Please do not close or refresh page.
                   </p>
                 ) : (
                   feeModal.status === "end" && (
-                    <p className="text-sm text-center text-gray-shade-2">
+                    <p className={registrationCompleted}>
                       Transaction done successfully. Registering user on
                       platform
                     </p>
@@ -254,3 +252,21 @@ const button2 = ctl(`
   bg-black-shade-7
   cursor-not-allowed
 `);
+
+const feeWrapper = ctl(`
+px-10 flex flex-col gap-6 pt-5 pb-8
+`);
+
+const feeModalWrapper = ctl(`flex justify-center`);
+
+const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
+
+const feeModalProgress = ctl(`font-semibold text-lg text-center text-white"`);
+
+const textFee = ctl(
+  `text-brand-primary text-center font-semibold tracking-wider text-base`
+);
+
+const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);
+
+const registrationCompleted = ctl(`text-sm text-center text-gray-shade-2`);
