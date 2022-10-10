@@ -645,3 +645,8 @@ input:-webkit-autofill {
   height: 100%;
   overflow: hidden;
 }
+
+/* carousel child transform control */
+.transformChild :nth-child(1) {
+  transform: translate3d(0%, 0px, 0px) !important;
+}
