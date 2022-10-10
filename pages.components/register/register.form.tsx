@@ -3,21 +3,21 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
-import { Controller, useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-hot-toast";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { ErrorMessage } from "@/components/error.message";
+import { ModalWrapper } from "@/components/modal";
 import { AppRoutes } from "@/constants/app.routes";
 import { SpinIcon2, Successfully, WalletIconModal } from "@/assets/svgs";
 
 // Current directory imports
 import { InputField } from "./input.field";
-import { formFields, SignupState, SignupStateSchema } from "./form.fields.data";
-import { registerWithSmartContract } from "./register.with.smart.contract";
-import { ModalWrapper } from "@/components/modal";
+import { SignupState, FeeModalState } from "./form.fields.data";
+import {
+  getRegistrationFee,
+  registerWithSmartContract,
+} from "./register.with.smart.contract";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -25,132 +25,154 @@ const initialSignupState: SignupState = {
   referred_by: "",
 };
 
+// Initial Fee Modal State
+const initialFeeModalState: FeeModalState = {
+  isOpen: false,
+  status: "start",
+  fee: "--",
+};
+
 export const RegisterForm: React.FC = () => {
-  const [feeModal, setFeeModal] = useState(false);
-  const [feeModalStatus, setFeeModalStatus] = useState("start");
+  const [feeModal, setFeeModal] = useState<FeeModalState>(initialFeeModalState);
+  const [signupState, setSignupState] =
+    useState<SignupState>(initialSignupState);
+
   const router = useRouter();
   const { account, library } = useWeb3React();
   const { connectWallet } = useConnectWallet();
 
-  const { handleSubmit, setValue, control } = useForm({
-    defaultValues: initialSignupState,
-    resolver: joiResolver(SignupStateSchema, {
-      abortEarly: false,
-      errors: {
-        wrap: {
-          label: "",
-        },
-      },
-    }),
-  });
-
+  // Set account address and referred by address
   useEffect(() => {
-    setValue("account_address", account ?? "", {
-      shouldValidate: account != null,
-    });
-    if (typeof router.query.referred_by === "string") {
-      setValue("referred_by", router.query.referred_by);
+    setSignupState((prev) => ({
+      ...prev,
+      account_address: account ?? "",
+      referred_by: router.query.referred_by?.toString() ?? "",
+    }));
+  }, [account, router.query.referred_by]);
+
+  // Pay registration fee and register user
+  const payFee: React.FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
+    if (feeModal.fee === "--") {
+      toast.error("Please wait for the fee to load");
+      return;
     }
-  }, [account, setValue, router.query.referred_by]);
 
-  const onSubmit = async (signupData: SignupState) => {
-    setFeeModalStatus("progress");
+    setFeeModal((prev) => ({ ...prev, status: "progress" }));
 
-    const res = await registerWithSmartContract(library, signupData);
-    // TODO: Mubashir: Show fee in Modal
+    const res = await registerWithSmartContract(
+      library,
+      signupState,
+      feeModal.fee
+    );
+
     if (res.status === "error") {
-      setFeeModalStatus("start");
+      setFeeModal((prev) => ({ ...prev, status: "start" }));
       toast.error(res.message_description || "Something went wrong");
       return;
     }
 
     toast.success(res.message_description);
-    setFeeModalStatus("end");
-    setFeeModal(false);
+    setFeeModal((prev) => ({ ...prev, status: "end", isOpen: false }));
+
     // Redirect to login page
     router.push(AppRoutes.auth.login);
   };
 
+  // Open fee modal and get registration fee from smart contract
+  const openFeeModal = async () => {
+    if (!account) {
+      toast.error("Please connect wallet first!");
+      return;
+    }
+
+    setFeeModal((prev) => ({ ...prev, isOpen: true }));
+
+    try {
+      const registrationFee = await getRegistrationFee(library, signupState);
+      setFeeModal((prev) => ({ ...prev, fee: registrationFee }));
+    } catch (err: any) {
+      toast.error(err.message_description ?? "Could not get registration fee!");
+      setFeeModal((prev) => ({ ...prev, isOpen: false }));
+    }
+  };
+
   return (
     <>
-      <form className={wrapper} onSubmit={handleSubmit(onSubmit)}>
-        {formFields.map((formField) => {
-          return (
-            <Controller
-              key={formField.id}
-              name={formField.id}
-              control={control}
-              render={({ field, fieldState: { error } }) => {
-                if (field.name === "account_address" && field.value === "") {
-                  return (
-                    <div>
-                      <button
-                        key={formField.id}
-                        className={connectButton}
-                        type="button"
-                        onClick={connectWallet}
-                      >
-                        Connect
-                      </button>
-                      {error && (
-                        <ErrorMessage
-                          message={error.message}
-                          className="mt-2"
-                        />
-                      )}
-                    </div>
-                  );
-                }
+      <form className={wrapper} onSubmit={payFee}>
+        {account ? (
+          <InputField
+            id="account_address"
+            label="Account Address"
+            placeholder="Enter your account address"
+            type="text"
+            readOnly
+            defaultValue={signupState.account_address}
+          />
+        ) : (
+          <button
+            className={connectButton}
+            type="button"
+            onClick={connectWallet}
+          >
+            Connect
+          </button>
+        )}
 
-                return <InputField {...formField} {...field} error={error} />;
-              }}
-            />
-          );
-        })}
+        <InputField
+          id="referred_by"
+          label={
+            <>
+              Referred by{" "}
+              <span className="text-[#6B7280] text-xs"> (optional)</span>
+            </>
+          }
+          placeholder="Enter referrer account address"
+          type="text"
+          readOnly
+          defaultValue={signupState.referred_by}
+        />
 
-        <button
-          type="button"
-          onClick={() => setFeeModal(true)}
-          className={button}
-        >
+        <button type="button" onClick={openFeeModal} className={button}>
           Register
         </button>
-        {feeModal && (
+
+        {feeModal.isOpen && (
           <ModalWrapper
             title="Registeration Fee"
             onClose={() => {
-              feeModalStatus !== "progress" && setFeeModal(false);
+              feeModal.status !== "progress" &&
+                setFeeModal((prev) => ({ ...prev, isOpen: false }));
             }}
           >
-            <div className="px-10 flex flex-col gap-6 pt-5 pb-8">
-              <div className="flex justify-center">
-                {feeModalStatus === "start" ? (
+            <div className={feeWrapper}>
+              <div className={feeModalWrapper}>
+                {feeModal.status === "start" ? (
                   <WalletIconModal />
-                ) : feeModalStatus === "progress" ? (
+                ) : feeModal.status === "progress" ? (
                   <SpinIcon2 />
                 ) : (
-                  feeModalStatus === "end" && <Successfully />
+                  feeModal.status === "end" && <Successfully />
                 )}
               </div>
-              <div className="flex flex-col gap-2 items-center">
-                <h2 className="font-semibold text-lg text-center text-white">
-                  {feeModalStatus === "start"
+              <div className={feeModalStatus}>
+                <h2 className={feeModalProgress}>
+                  {feeModal.status === "start"
                     ? "Pay Registeration Fee"
-                    : feeModalStatus === "progress"
+                    : feeModal.status === "progress"
                     ? "Transaction in progress"
-                    : feeModalStatus === "end" && "Successfully"}
+                    : feeModal.status === "end" && "Successfully"}
                 </h2>
-                {feeModalStatus === "start" ? (
-                  <p className="text-brand-primary text-center font-semibold tracking-wider text-base">
-                    {`BNB`}
-                  </p>
-                ) : feeModalStatus === "progress" ? (
-                  <p className="text-sm text-center text-gray-shade-2">
+                {feeModal.status === "start" ? (
+                  <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+                ) : feeModal.status === "progress" ? (
+                  <p className={modalInnerText}>
                     Please do not close or refresh page.
                   </p>
                 ) : (
-                  feeModalStatus === "end" && (
-                    <p className="text-sm text-center text-gray-shade-2">
+                  feeModal.status === "end" && (
+                    <p className={registrationCompleted}>
                       Transaction done successfully. Registering user on
                       platform
                     </p>
@@ -158,13 +180,13 @@ export const RegisterForm: React.FC = () => {
                 )}
               </div>
               <div>
-                {feeModalStatus === "start" ? (
+                {feeModal.status === "start" ? (
                   <button className={button} type="submit">
                     Pay
                   </button>
                 ) : (
-                  (feeModalStatus === "progress" ||
-                    feeModalStatus === "end") && (
+                  (feeModal.status === "progress" ||
+                    feeModal.status === "end") && (
                     <button className={button2} type="button" disabled>
                       Ok
                     </button>
@@ -230,3 +252,21 @@ const button2 = ctl(`
   bg-black-shade-7
   cursor-not-allowed
 `);
+
+const feeWrapper = ctl(`
+px-10 flex flex-col gap-6 pt-5 pb-8
+`);
+
+const feeModalWrapper = ctl(`flex justify-center`);
+
+const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
+
+const feeModalProgress = ctl(`font-semibold text-lg text-center text-white"`);
+
+const textFee = ctl(
+  `text-brand-primary text-center font-semibold tracking-wider text-base`
+);
+
+const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);
+
+const registrationCompleted = ctl(`text-sm text-center text-gray-shade-2`);
