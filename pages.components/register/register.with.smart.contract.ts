@@ -10,7 +10,8 @@ import { SignupState } from "./form.fields.data";
 
 export const registerWithSmartContract = async (
   library: Web3Provider,
-  signupData: SignupState
+  signupData: SignupState,
+  fee: string
 ): Promise<{
   status: "success" | "error";
   message: string;
@@ -36,15 +37,8 @@ export const registerWithSmartContract = async (
     // Get BNB balance of the user's account
     const bnbBalance = await library.getBalance(address);
 
-    // If referred_by is not empty, then the user is registering with a referral
-    let registrationFee: BigNumber;
-    if (signupData.referred_by !== "") {
-      registrationFee =
-        (await registrationContract.registrationFeeWithReferrer()) as BigNumber;
-    } else {
-      registrationFee =
-        (await registrationContract.registrationFeeWithoutReferrer()) as BigNumber;
-    }
+    // Convert registration fee to BigNumber
+    const registrationFee = ethers.utils.parseEther(fee);
 
     // If the user's BNB balance is less than the registration fee, return error
     if (bnbBalance.lt(registrationFee)) {
@@ -109,4 +103,37 @@ export const registerWithSmartContract = async (
       data: null,
     };
   }
+};
+
+export const getRegistrationFee = async (
+  library: Web3Provider,
+  signupData: SignupState
+) => {
+  const signer = library.getSigner();
+  const registrationContract = getRegistrationContract(signer);
+
+  // Check if referred_by address is valid
+  if (
+    signupData.referred_by !== "" &&
+    !ethers.utils.isAddress(signupData.referred_by)
+  ) {
+    throw {
+      status: "error",
+      message: "invalid_referred_by_address",
+      message_description: `Please enter a valid referral address!`,
+      data: null,
+    };
+  }
+
+  let registrationFee: BigNumber;
+
+  if (signupData.referred_by !== "") {
+    registrationFee =
+      (await registrationContract.registrationFeeWithReferrer()) as BigNumber;
+  } else {
+    registrationFee =
+      (await registrationContract.registrationFeeWithoutReferrer()) as BigNumber;
+  }
+
+  return ethers.utils.formatEther(registrationFee);
 };
