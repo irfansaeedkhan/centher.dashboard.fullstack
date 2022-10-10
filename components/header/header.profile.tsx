@@ -3,6 +3,8 @@ import React, { useRef } from "react";
 import Image from "next/future/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
+
 import { FiArrowUpRight } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { useCopyToClipboard, useOnClickOutside } from "usehooks-ts";
@@ -69,49 +71,44 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   return (
     <>
-      <div className="absolute top-12 ">
+      <div className={polygonButton}>
         <Polygon />
       </div>
-      <div
-        ref={ref}
-        className="absolute w-77 rounded-lg right-0 z-50 bg-black top-[3.5rem]"
-      >
+      <div ref={ref} className={wrapper}>
         <Image
           src={"/images/dummy-cover-img.jpg"}
           alt="dummy-cover-img.jpg"
           width={308}
           height={96}
-          className="rounded-t-lg !h-[96px] object-cover"
+          className={polygonImage}
         />
-        <div className="flex flex-col gap-3 text-white ">
-          <div className="flex gap-2 items-center px-6 py-4">
+        <div className={profileImageWrapper}>
+          <div className={profileImageInner}>
             <button>
               <div>
                 {user && (
-                  <div className="dpImagePreview relative">
+                  <div className={mainImage}>
                     <Image
                       src={`${NODE_API_URL}${user.profile_image}`}
                       alt="userProfile"
                       width={40}
                       height={40}
-                      className="rounded-full"
+                      className={innerImageStyle}
                     />
                   </div>
                 )}
               </div>
             </button>
-            <div className="flex flex-col gap-1">
-              <div className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white">
-                {user?.display_name}
-              </div>
-              <div className="flex gap-2 items-center">
-                <p className="text-sm">
+            <div className={accountAddressWrapper}>
+              <div className={displayName}>{user?.display_name}</div>
+              <div className={accountAddressInner}>
+                <p className={textStyle}>
                   {user?.account_address.slice(0, 4) +
                     "..." +
                     user?.account_address.slice(38, 42)}
                 </p>
                 <MdContentCopy
-                  className="cursor-pointer text-sm text-white hover:text-brand-primary "
+                  className={copyButton}
                   onClick={() => {
                     copy(user?.account_address ?? "");
                     toast.success("Account Address Copied!");
@@ -128,21 +125,18 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                   rel="noreferrer"
                   title="View on BSC Scan"
                 >
-                  <FiArrowUpRight className="cursor-pointer text-sm hover:text-brand-primary " />
+                  <FiArrowUpRight className={arrowUp} />
                 </a>
               </div>
             </div>
           </div>
-          <div className="w-full flex justify-end items-end px-6 py-4">
-            <button
-              className="rounded-lg bg-gray-shade-3 text-gray-shade-7 w-full text-sm hover:bg-yellow-theme hover:text-black font-semibold p-3"
-              onClick={handleLogout}
-            >
+          <div className={disconnectButton}>
+            <button className={disconnectButtonStyle} onClick={handleLogout}>
               Disconnect
             </button>
           </div>
-          <hr className="border-gray-shade-border-color" />
-          <div className="flex flex-col gap-3 px-6 pt-3 pb-4">
+          <hr className={userProfile} />
+          <div className={userLink}>
             <Link
               href={{
                 pathname: AppRoutes.profile.account_address,
@@ -151,14 +145,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 },
               }}
             >
-              <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
-                My Profile
-              </a>
+              <a className={myProfileLink}>My Profile</a>
             </Link>
             <Link href={AppRoutes.profile.settings}>
-              <a className="whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary">
-                Profile Settings
-              </a>
+              <a className={profileSettingLink}>Profile Settings</a>
             </Link>
           </div>
         </div>
@@ -168,3 +158,53 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 };
 
 export default HeaderProfile;
+
+const polygonButton = ctl(`absolute top-12`);
+
+const wrapper = ctl(
+  `absolute w-77 rounded-lg right-0 z-50 bg-black top-[3.5rem]`
+);
+
+const polygonImage = ctl(`rounded-t-lg !h-[96px] object-cover`);
+
+const profileImageWrapper = ctl(`flex flex-col gap-3 text-white`);
+
+const profileImageInner = ctl(`flex gap-2 items-center px-6 py-4`);
+
+const mainImage = ctl(`dpImagePreview relative`);
+
+const innerImageStyle = ctl(`rounded-full`);
+
+const accountAddressWrapper = ctl(`flex flex-col gap-1`);
+
+const displayName = ctl(
+  `whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white`
+);
+
+const accountAddressInner = ctl(`flex gap-2 items-center`);
+
+const textStyle = ctl(`text-sm`);
+
+const copyButton = ctl(
+  `cursor-pointer text-sm text-white hover:text-brand-primary`
+);
+
+const arrowUp = ctl(`cursor-pointer text-sm hover:text-brand-primary`);
+
+const disconnectButton = ctl(`w-full flex justify-end items-end px-6 py-4`);
+
+const disconnectButtonStyle = ctl(
+  `rounded-lg bg-gray-shade-3 text-gray-shade-7 w-full text-sm hover:bg-yellow-theme hover:text-black font-semibold p-3`
+);
+
+const userProfile = ctl(`border-gray-shade-border-color`);
+
+const userLink = ctl(`flex flex-col gap-3 px-6 pt-3 pb-4`);
+
+const myProfileLink = ctl(
+  `whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary`
+);
+
+const profileSettingLink = ctl(
+  `whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary`
+);

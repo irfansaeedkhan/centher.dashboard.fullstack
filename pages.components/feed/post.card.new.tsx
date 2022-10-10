@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
 import Loader from "@/components/loader";
@@ -41,6 +41,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     createPost,
     closePostModel,
     handleSelectFile,
+    lastItem,
   } = usePostUpload({
     onPostCreated,
   });
@@ -62,6 +63,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   }
 
   const { user } = useUser();
+
+  useEffect(() => {}, [previewFilesUI]);
   return (
     <div className={postCardContainer}>
       <div className={topCard}>
@@ -155,20 +158,21 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
             <div className={maincontentContainer}>
               <div
                 className={`${mediaContainer} 
-                    ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                    ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                    ${previewFilesUI.length > 2 && "grid-cols-3"} 
+                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
+                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
+                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
                     `}
               >
-                {/* <Carousel
+                <Carousel
                   showStatus={false}
                   showThumbs={false}
                   showIndicators={false}
                   showArrows={previewFilesUI.length === 1 ? false : true}
+                  selectedItem={lastItem}
                 >
                   {previewFilesUI}
-                </Carousel> */}
-                {previewFilesUI}
+                </Carousel>
+                {/* {previewFilesUI} */}
               </div>
               <div className={inputTextContainer}>
                 <textarea
@@ -290,7 +294,7 @@ const maincontentContainer = ctl(`
 px-6
 `);
 const mediaContainer = ctl(`
- w-full grid gap-3
+ w-full grid, gap-3,
 `);
 const mediaItem = ctl(`  
 

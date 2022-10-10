@@ -20,7 +20,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = (props) => {
           alt="collection Image"
           width={390}
           height={244}
-          className="rounded-t-lg"
+          className={imageStyle}
         />
         <Image
           src={props.logoImage}
@@ -58,3 +58,5 @@ const collectionOwner = ctl(`text-sm text-white font-semibold`);
 const collectionDescription = ctl(
   `font-medium text-xs text-gray-shade-14 text-center mb-8 line-clamp-3 whitespace-pre-wrap`
 );
+
+const imageStyle = ctl(`rounded-t-lg`);

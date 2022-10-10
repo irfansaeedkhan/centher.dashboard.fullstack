@@ -17,7 +17,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
   return (
     <div>
       <div className={headerWraper}>
-        <div className="w-72">
+        <div className={routerLink}>
           <Link href={AppRoutes.home}>
             <a>
               <Image
@@ -29,17 +29,17 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
             </a>
           </Link>
         </div>
-        <div className="flex items-center justify-between w-[calc(100%-288px)]">
-          <div className="flex items-center gap-6">
+        <div className={headerTitleWrapper}>
+          <div className={titleParent}>
             <div>
-              <p className="text-white font-semibold">{props.title}</p>
+              <p className={titleStyle}>{props.title}</p>
             </div>
           </div>
 
           {props.url && (
             <Link href={props.url}>
               <a className={createButton}>
-                <PlusIconBtn className="group-hover:stroke-brand-primary stroke-black " />
+                <PlusIconBtn className={plusButtonStyle} />
                 <span>Create New</span>
               </a>
             </Link>
@@ -78,3 +78,15 @@ const createButton = ctl(`
   items-center 
   cursor-pointer
 `);
+
+const headerTitleWrapper = ctl(
+  `flex items-center justify-between w-[calc(100%-288px)]`
+);
+
+const titleParent = ctl(`flex items-center gap-6`);
+
+const titleStyle = ctl(`text-white font-semibold`);
+
+const plusButtonStyle = ctl(`group-hover:stroke-brand-primary stroke-black`);
+
+const routerLink = ctl(`w-72`);
