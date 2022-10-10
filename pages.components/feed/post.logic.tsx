@@ -41,6 +41,7 @@ export function usePostUpload({
 }: PostUploadOptions) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState(false);
+  const [lastItem, setLastItem] = useState<number>();
   //It will store list of files selected by the user
   // const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
   //   FileList[]
@@ -395,6 +396,31 @@ export function usePostUpload({
     }
   };
 
+  // delete parent Element while deleting image
+  const handleDeleteItemStyling = (e: any) => {
+    // dom elements
+    let topParent =
+      e.target?.parentElement?.parentElement?.parentElement?.parentElement;
+    let listParent = e.target?.parentElement?.parentElement?.parentElement;
+    let ListItem = e.target?.parentElement?.parentElement;
+    // adding transform when last element is deleted
+    if (
+      listParent.classList.contains("slider") &&
+      listParent.lastElementChild == ListItem
+    ) {
+      if (listParent?.childElementCount == 2) {
+        topParent.classList.add("transformChild");
+        return;
+      }
+      let listCount = listParent?.childElementCount - 2;
+      listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
+      setLastItem(listCount);
+      console.log("last Item", lastItem);
+
+      // ListItem?.previousSibling?.classList.replace("previous", "selected");
+      // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
+    }
+  };
   // Function will display social media in pop up
   const createSelectedFileUI = (previewUrlList: Array<PreviewSelectedFile>) => {
     try {
@@ -451,6 +477,7 @@ export function usePostUpload({
                     previewUrlList[fileDetails].fileIndex,
                     fileDetails
                   );
+                  handleDeleteItemStyling(e);
                 }}
                 className={imageDelBtn}
               >
@@ -610,6 +637,7 @@ export function usePostUpload({
     closePostModel,
     handleSelectFile,
     loadingState,
+    lastItem,
   };
 }
 

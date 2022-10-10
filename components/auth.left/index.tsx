@@ -17,7 +17,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
       <section className={section_left}>
-        <div className="w-fit">
+        <div className={sectionLeftInner}>
           <Link href={AppRoutes.home}>
             <a>
               <Image
@@ -30,7 +30,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           </Link>
         </div>
         <div className={section_left_content_wrapper}>
-          <div className="w-fit">
+          <div className={sectionLeftInner}>
             <Image
               src="/images/nether.nft.favicon.svg"
               alt="logo"
@@ -50,7 +50,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "mobile") {
     return (
       <section className={section_right_mobile_content_wrapper}>
-        <div className="w-fit">
+        <div className={sectionLeftInner}>
           <Image
             src="/images/nether.nft.logo.svg"
             alt="logo"
@@ -134,3 +134,5 @@ const contentMobile = ctl(`
   font-medium 
   text-gray-shade-4 
 `);
+
+const sectionLeftInner = ctl(`w-fit`);

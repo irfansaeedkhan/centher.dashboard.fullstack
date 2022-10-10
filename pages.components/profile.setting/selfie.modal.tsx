@@ -7,9 +7,9 @@ import useUser from "@/hooks/use.user";
 import Image from "next/future/image";
 
 const SelfieModal: React.FC = () => {
-  const imgRef = useRef<HTMLImageElement>();
+  const imgRef = useRef<HTMLImageElement | null>(null);
   const { user } = useUser();
-  const webRef = useRef<Webcam>();
+  const webRef = useRef<Webcam | null>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   let img = "httpsL;';'";
   const [isModal, setIsModal] = useState(true);
@@ -76,8 +76,10 @@ const SelfieModal: React.FC = () => {
                 alt="image"
                 width={300}
                 height={300}
-                ref={imgRef}
                 src={previewPicture}
+                onLoadingComplete={(img) => {
+                  imgRef.current = img;
+                }}
               />
             </ReactCrop>
           </div>

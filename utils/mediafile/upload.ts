@@ -1,4 +1,4 @@
-import { FileChunksChunksCalculations } from "./filechunks";
+import { FileChunksDetails } from "./filechunks";
 
 let texthello = "";
 
@@ -12,8 +12,8 @@ export const UploadFileChunks = async () => {
 };
 
 export const UploadFiles = async (
-  filesListArray: Array<FileList>,
-  fileChunks: Array<FileChunksChunksCalculations>
+  filesListArray: FileList[],
+  fileChunks: FileChunksDetails[]
 ) => {
   UploadFileChunks();
   //texthello = 'hello'

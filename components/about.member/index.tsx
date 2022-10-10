@@ -11,7 +11,7 @@ interface AboutMemberProps {
 export const AboutMember: React.FC<AboutMemberProps> = (props) => {
   return (
     <div className={componentWrapper}>
-      <span className="text-white">{props.asked}</span>
+      <span className={textStyle}>{props.asked}</span>
       <span className={linkWrappper}>
         <Link href={props.link}>{props.title}</Link>
       </span>
@@ -32,3 +32,5 @@ const linkWrappper = ctl(`
   cursor-pointer 
   text-brand-primary 
 `);
+
+const textStyle = ctl(`text-white`);
