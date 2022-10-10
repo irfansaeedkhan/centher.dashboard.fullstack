@@ -409,16 +409,28 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 _post.media && _post.media.length === 1 ? false : true
               }
             >
-              {_post.media.map((media, index) => (
-                <Image
-                  key={index}
-                  src={media.url}
-                  width={452}
-                  height={312}
-                  alt="post media"
-                  className={postImageStyling}
-                />
-              ))}
+              {_post.media.map((media, index) =>
+                media.type == "image" ? (
+                  <Image
+                    key={index}
+                    src={media.url}
+                    width={452}
+                    height={312}
+                    alt="post media"
+                    className={postImageStyling}
+                  />
+                ) : (
+                  <video
+                    key={index}
+                    src={media.url}
+                    width={452}
+                    height={312}
+                    //alt="post media"
+                    className={postImageStyling}
+                    controls
+                  />
+                )
+              )}
             </Carousel>
           )}
         </div>
@@ -533,6 +545,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           </div>
         </div>
       </div>
+      {console.log("pagee", currentPageRoute)}
       {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
         <div className={showThreadBtnContainer}>
           <Image

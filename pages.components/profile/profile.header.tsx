@@ -17,8 +17,13 @@ import { getProfileImage } from "@/utils/helpers/get.profile.image";
 import { Website } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import { axiosNodeApi } from "@/utils/axios";
 
-const ProfileHeader = () => {
+interface FollowUser {
+  setFollowUser: (arg0: boolean) => void;
+}
+
+const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(
@@ -30,6 +35,7 @@ const ProfileHeader = () => {
   const [description, setDescription] = useState<string>(
     "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
+  const [follow, setFollow] = useState<boolean>(false);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -38,6 +44,46 @@ const ProfileHeader = () => {
   // handle description data
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(event.target.value);
+  };
+
+  useEffect(() => {
+    const fetchFollow = async () => {
+      try {
+        const { data } = await axiosNodeApi.get(
+          `api/socials/follows/${user?._id}`
+        );
+        setFollowUser(data.follow);
+        setFollow(data.follow);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+    if (user?._id) {
+      fetchFollow();
+    }
+  }, [user]);
+
+  const followUser = async (follower_id: string) => {
+    try {
+      const response = await axiosNodeApi.post("api/socials/follows", {
+        follower_id,
+      });
+      if (response.data.message_description == "Follow user successfully") {
+        setFollowUser(true);
+        setFollow(true);
+      } else if (
+        response.data.message_description == "Unfollow user successfully"
+      ) {
+        setFollowUser(false);
+        setFollow(false);
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
   };
 
   // FIXME: Mubashir - Use memoization
@@ -138,9 +184,10 @@ const ProfileHeader = () => {
                 </Link>
               ) : (
                 <Button
-                  title={"Follow"}
+                  title={follow ? "Unfollow" : "Follow"}
                   variant="v1"
                   className={editProfileBtn}
+                  onClick={() => followUser(user._id)}
                 />
               )}
             </div>
