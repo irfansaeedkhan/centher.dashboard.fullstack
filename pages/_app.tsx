@@ -5,7 +5,6 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
 
 // App Imports
-import { wrapper } from "@/store";
 import { getLibrary } from "@/web3";
 import ScriptTags from "@/components/script.tags";
 import "@/styles/globals.css";
@@ -59,4 +58,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   );
 }
 
-export default wrapper.withRedux(MyApp);
+export default MyApp;
