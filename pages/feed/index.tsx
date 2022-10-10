@@ -75,17 +75,21 @@ const Feed: NextPage = () => {
   return (
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
-        <h1 className={title}>My Feed</h1>
         <div className={feedContainer}>
-          <div className={leftSidebar}>
-            {!isLoggedInUserLoading && loggedInUser ? (
-              <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
-            ) : (
-              <>Loading...</>
-            )}
-            <DiscoverCard />
+          <div className="leftSidebarStickyContainer lg:sticky  lg:top-0 ">
+            <h1 className={title}>My Feed</h1>
+            <div className={leftSidebar}>
+              {!isLoggedInUserLoading && loggedInUser ? (
+                <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+              ) : (
+                <>Loading...</>
+              )}
+              <DiscoverCard />
+            </div>
           </div>
-          <div className={postsContainer} onScroll={handleScroll}>
+
+          {/* <div className={postsContainer} onScroll={handleScroll}> */}
+          <div className={postsContainer}>
             <PostCardNew
               onPostCreated={(post) => {
                 setPosts((prev) => [post, ...prev]);
@@ -116,13 +120,13 @@ export default Feed;
 
 // styling
 const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto
+ bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto relative
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
 `);
 const feedContainer = ctl(`
-flex  gap-5
+flex flex-col lg:flex-row  gap-5 lg:items-start 
 `);
 const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
@@ -131,5 +135,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll h-[calc(100vh-158px)] pb-12
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll  pb-12 lg:mt-[4.125rem]
 `);
