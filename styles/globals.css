@@ -159,13 +159,14 @@ input:-webkit-autofill {
     border-radius: 8px !important;
   }
   .scrollSet::-webkit-scrollbar-thumb {
-    background-color: #febf32 !important;
+    background-color: #febd32c4 !important;
+    border-radius: 18px !important;
   }
   .scrollSetLight::-webkit-scrollbar {
     display: flex !important;
     background-color: transparent !important;
     width: 2px !important;
-    border-radius: 8px !important;
+    border-radius: 18px !important;
   }
   .scrollSetLight::-webkit-scrollbar-thumb {
     background-color: #febf32 !important;
