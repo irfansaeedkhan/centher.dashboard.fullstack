@@ -437,8 +437,13 @@ export function usePostUpload({
           SUPPORTED_VIDEO_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <div>
-              <video width={452} height={312} className="w-full" controls>
+            <div className={ImageStyleContainer}>
+              <video
+                width={452}
+                height={312}
+                controls
+                className={createPostImageStyling}
+              >
                 <source
                   src={previewUrlList[fileDetails].fileBlobURL}
                   type={previewUrlList[fileDetails].fileType}
@@ -452,6 +457,7 @@ export function usePostUpload({
                     fileDetails
                   );
                 }}
+                className={imageDelBtn}
               >
                 Delete
               </button>
