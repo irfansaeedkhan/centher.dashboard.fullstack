@@ -14,7 +14,7 @@ export const DiscoverCard = () => {
 
 // styling
 const DiscoverCardContainer = ctl(`
-  w-full max-w-[272px] px-4 pt-4   rounded-10px bg-background-shade-3
+   w-[272px] max-w-[272px] px-4 pt-4   rounded-10px bg-background-shade-3
 `);
 const DCTitle = ctl(`
   text-14px font-semibold text-white pb-4

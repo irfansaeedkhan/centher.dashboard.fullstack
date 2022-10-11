@@ -128,10 +128,13 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
       {user && loggedInUser ? (
         <div className={coverCard}>
           <div className={coverImageContainer}>
-            <button className={editCover}>
-              <CameraIcon />
-              Edit cover
-            </button>
+            {loggedInUser.account_address.toLowerCase() ===
+              user.account_address.toLowerCase() && (
+              <button className={editCover}>
+                <CameraIcon />
+                Edit cover
+              </button>
+            )}
             <div className={profileImage}>
               <Image
                 src={getProfileImage(user)}
