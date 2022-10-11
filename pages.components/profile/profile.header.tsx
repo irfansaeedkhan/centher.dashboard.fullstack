@@ -63,7 +63,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     if (user?._id) {
       fetchFollow();
     }
-  }, [user]);
+  }, [setFollowUser, user?._id]);
 
   const followUser = async (follower_id: string) => {
     try {

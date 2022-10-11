@@ -12,10 +12,11 @@ import { AppRoutes } from "@/constants/app.routes";
 
 const NFTProfile: NextPage = () => {
   const router = useRouter();
+  const [followUser, setFollowUser] = useState<boolean>(false);
 
   return (
     <AllPagesWrapper pageTitle="Profile">
-      <ProfilePageWrapper>
+      <ProfilePageWrapper setFollowUser={setFollowUser}>
         <div className={nftProfilePageContainer}>
           <div className={tabsContainer}>
             <Link

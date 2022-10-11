@@ -103,7 +103,8 @@ const Profile: NextPage = () => {
                   setPosts((prev) => [post, ...prev]);
                 }}
               />
-              {followUser &&
+              {(followUser ||
+                user?.account_address === loggedInUser?.account_address) &&
                 posts
                   .filter((p) => !p.parent_post)
                   .map((post) => (
