@@ -245,7 +245,6 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <button className={clearBtn}>+</button>
                 <Button
                   title={"Post"}
                   variant="v1"
@@ -316,9 +315,6 @@ w-[100%] lg:w-[40%] flex items-center gap-2
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
-const clearBtn = ctl(`
-plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
 `);
 const imageDelBtn = ctl(`
 absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl

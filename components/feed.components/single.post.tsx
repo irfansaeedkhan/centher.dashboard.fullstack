@@ -661,7 +661,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <button className={clearBtn}>+</button>
                 <Button
                   title={"Post"}
                   variant="v1"
@@ -752,7 +751,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <button className={clearBtn}>+</button>
                 <Button
                   title={"Update"}
                   variant="v1"
@@ -885,10 +883,6 @@ w-[100%] lg:w-[40%] flex items-center gap-2
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl
 `);
-const clearBtn = ctl(`
-plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
-`);
-
 const uploadBtn = ctl(`
 flex items-center gap-3 text-14px font-medium 
 `);
