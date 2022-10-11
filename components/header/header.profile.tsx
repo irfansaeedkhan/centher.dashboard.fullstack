@@ -145,10 +145,14 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 },
               }}
             >
-              <a className={myProfileLink}>My Profile</a>
+              <a className={myProfileLink} onClick={onClickOutside}>
+                My Profile
+              </a>
             </Link>
             <Link href={AppRoutes.profile.settings}>
-              <a className={profileSettingLink}>Profile Settings</a>
+              <a className={profileSettingLink} onClick={onClickOutside}>
+                Profile Settings
+              </a>
             </Link>
           </div>
         </div>
