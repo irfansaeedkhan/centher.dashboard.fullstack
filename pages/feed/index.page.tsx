@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
+import { Bars } from "react-loader-spinner";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -62,15 +63,29 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.map((post) => (
-        <SinglePost
-          key={post._id}
-          post={post}
-          onDelete={(post_id) => {
-            setPosts(posts.filter((p) => p._id !== post_id));
-          }}
-        />
-      ))}
+      {posts.length < 1 ? (
+        <div className="componentLoaderContainer">
+          <Bars
+            height="25"
+            width="25"
+            color="#FEBF32"
+            ariaLabel="bars-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </div>
+      ) : (
+        posts.map((post) => (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              setPosts(posts.filter((p) => p._id !== post_id));
+            }}
+          />
+        ))
+      )}
     </div>
   );
 };

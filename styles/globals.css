@@ -26,6 +26,9 @@ input:-webkit-autofill {
 }
 
 @layer components {
+  .componentLoaderContainer {
+    @apply w-full h-full flex items-center justify-center;
+  }
   .text-34px {
     @apply text-2xl  xl:text-4xl;
   }
