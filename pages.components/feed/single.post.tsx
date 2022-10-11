@@ -803,7 +803,7 @@ const textContainer = ctl(`
 pt-4 pb-2 
 `);
 const textContainerContent = ctl(`
-text-16px font-semibold text-[#E7E8EE]
+text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap
 `);
 const showThreadBtnContainer = ctl(`
 z-10 flex gap-3 pl-6 items-center 

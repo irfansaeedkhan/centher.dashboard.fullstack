@@ -400,7 +400,7 @@ const textContainer = ctl(`
 pt-4 pb-3 
 `);
 const textContainerContent = ctl(`
-text-14px font-light text-[#E7E8EE]
+text-14px font-light text-[#E7E8EE] whitespace-pre-wrap
 `);
 const footerBtnContainer = ctl(`
   flex items-items justify-between ml-16 pb-3 pr-4  
