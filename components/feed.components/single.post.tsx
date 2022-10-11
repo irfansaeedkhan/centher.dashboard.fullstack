@@ -340,7 +340,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             }
             width={48}
             height={48}
-            className="rounded-full"
+            className="rounded-full dpImagePreview"
             alt={_post.user.display_name}
           />
           <div>
@@ -555,7 +555,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             }
             width={30}
             height={30}
-            className="rounded-full"
+            className="rounded-full dpImagePreview"
             alt={_post.user.display_name}
           />
           <Link
@@ -591,8 +591,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 width={44}
                 height={44}
                 alt={"image"}
+                className="rounded-full dpImagePreview"
               />
-              <h5 className={cdName}>uixamjad</h5>
+              <h5 className={cdName}>integrate this name/image</h5>
             </div>
             <div className={maincontentContainer}>
               <div
@@ -690,7 +691,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                className="rounded-full"
+                className="rounded-full dpImagePreview"
                 alt={user?.display_name ?? "profile image"}
               />
               <h5 className={cdName}>{user?.display_name}</h5>

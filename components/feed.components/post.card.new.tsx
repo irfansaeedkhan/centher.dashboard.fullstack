@@ -73,7 +73,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           src={"/images/feedprofilepic.png"}
           width={48}
           height={48}
-          className="rounded-full"
+          className="rounded-full dpImagePreview"
           alt={"icon"}
         />
         <button
@@ -151,7 +151,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                className="rounded-full"
+                className="rounded-full dpImagePreview"
                 alt={user?.display_name ?? "profile image"}
               />
               <h5 className={cdName}>{user?.display_name}</h5>

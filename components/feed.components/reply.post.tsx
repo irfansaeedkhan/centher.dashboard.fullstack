@@ -134,7 +134,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
               }
               width={48}
               height={48}
-              className="rounded-full"
+              className="rounded-full dpImagePreview"
               alt={post.user.display_name}
             />
             <div>
