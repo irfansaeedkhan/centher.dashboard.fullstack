@@ -24,7 +24,6 @@ import {
   MessageIcon2,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
-import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";

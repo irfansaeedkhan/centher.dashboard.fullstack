@@ -51,6 +51,7 @@ interface IEditPostData {
   isEditModalVisible: boolean;
   editedPostText: string;
   editDeletedItems: number[];
+  media?: [];
 }
 
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({
@@ -63,10 +64,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const [replies, setReplies] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
 
+  // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
   const [editPostData, setEditPostData] = useState<IEditPostData>({
     isEditModalVisible: false,
     editedPostText: _post.text_content ?? "",
     editDeletedItems: [],
+    // media: _post.media,
   });
 
   const [togglePop, setTogglePop] = useState(false);
@@ -325,7 +328,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   // Timer to check 15 min difference
   const timeNow = moment();
   const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
-
+  // useEffect(() => {}, [editPostData.media]);
+  // console.log("editPostData::", editPostData);
   return (
     <div className={postCardContainer}>
       {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
@@ -602,13 +606,13 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
-                src={"/images/robertProfilepic.png"}
+                src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                alt={"image"}
+                alt={user?.display_name ?? "profile image"}
                 className="rounded-full dpImagePreview"
               />
-              <h5 className={cdName}>integrate this name/image</h5>
+              <h5 className={cdName}>{user?.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
               <div
@@ -722,14 +726,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   showIndicators={false}
                   showArrows={previewFilesUI.length === 1 ? false : true}
                 >
-                  {_post.media?.map((data, index) => {
+                  {/* {editPostData.media?.map((data, index) => { */}
+                  {post.media?.map((data, index) => {
                     return (
                       <div
                         key={index}
                         className="h-full flex items-center justify-center relative"
                       >
                         <Image
-                          src={data.url}
+                          src={data?.url}
                           width={452}
                           height={312}
                           className={
@@ -741,6 +746,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                           className={imageDelBtn}
                           onClick={() => {
                             handleMediaDel(index);
+                            // setEditPostData((prev) => ({
+                            //   ...prev,
+                            //   media: prev.media.filter(
+                            //     (filterdata) => filterdata.url !== data.url
+                            //   ),
+                            // }));
                           }}
                         >
                           x
@@ -763,7 +774,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 ></textarea>
               </div>
             </div>
-            <div className={modalFooter}>
+            <div className={`${modalFooter} justify-end`}>
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
