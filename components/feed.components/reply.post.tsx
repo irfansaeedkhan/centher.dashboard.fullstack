@@ -237,9 +237,6 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             >
               {totalPostLikes > 0 && totalPostLikes}
             </span>
-            {/* <span className="text-brand-primary">
-              {totalPostLikes > 0 && totalPostLikes}
-            </span> */}
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
