@@ -179,10 +179,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       />
                     </TwitterShareButton>
                   </button>
-                  <button>
-                    {/* TODO: Waqar need to condition when user add website in his/her info only then user see this icon */}
-                    <Website />
-                  </button>
+                  <button>{user.website_url ? <Website /> : ""}</button>
                 </div>
               </div>
               {loggedInUser.account_address.toLowerCase() ===
