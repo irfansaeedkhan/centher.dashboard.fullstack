@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
-import { Bars } from "react-loader-spinner";
 
 // app imports
 import { User } from "@/models/user";

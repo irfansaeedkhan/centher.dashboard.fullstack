@@ -63,7 +63,7 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.length < 1 ? (
+      {posts.length <= 0 ? (
         <div className="componentLoaderContainer">
           <Bars
             height="25"

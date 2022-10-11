@@ -11,6 +11,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
+import { Bars } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -574,9 +575,23 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       <div className={repliesContainer} onScroll={handleScroll}>
         {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <>
-            {replies.map((reply) => {
-              return <ReplyPost key={reply._id} post={reply} />;
-            })}
+            {replies?.length <= 0 ? (
+              <div className="componentLoaderContainer">
+                <Bars
+                  height="25"
+                  width="25"
+                  color="#FEBF32"
+                  ariaLabel="bars-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              </div>
+            ) : (
+              replies.map((reply) => {
+                return <ReplyPost key={reply._id} post={reply} />;
+              })
+            )}
           </>
         )}
       </div>
