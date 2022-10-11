@@ -232,9 +232,14 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             <LikeIcon
               className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
             />{" "}
-            <span className="text-brand-primary">
+            <span
+              className={`${isLikedByLoggedInUser ? "text-brand-primary" : ""}`}
+            >
               {totalPostLikes > 0 && totalPostLikes}
             </span>
+            {/* <span className="text-brand-primary">
+              {totalPostLikes > 0 && totalPostLikes}
+            </span> */}
           </button>
           <div ref={ref2} className={toggleContainer}>
             <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
