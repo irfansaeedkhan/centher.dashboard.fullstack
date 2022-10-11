@@ -2,7 +2,6 @@
 import { useState, useRef, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
-import Loader from "@/components/loader";
 import { Carousel } from "react-responsive-carousel";
 import EmojiPicker, {
   EmojiStyle,
@@ -11,6 +10,7 @@ import EmojiPicker, {
   Emoji,
 } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
+import { Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -43,6 +43,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     handleSelectFile,
     lastItem,
     postError,
+    loadingState,
   } = usePostUpload({
     onPostCreated,
   });
@@ -253,14 +254,29 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <Button
-                  title={"Post"}
-                  variant="v1"
-                  className="max-w-[140px]"
-                  onClick={(e) => {
-                    createPost(e);
-                  }}
-                />
+                {loadingState ? (
+                  <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
+                    <Rings
+                      height="30"
+                      width="30"
+                      color="#ffffff"
+                      radius="6"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      ariaLabel="rings-loading"
+                    />
+                  </button>
+                ) : (
+                  <Button
+                    title={"Post"}
+                    variant="v1"
+                    className="max-w-[140px]"
+                    onClick={(e) => {
+                      createPost(e);
+                    }}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -319,7 +335,7 @@ const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
 `);
 const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2
+w-[100%] lg:w-[40%] flex items-center justify-end gap-2
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl

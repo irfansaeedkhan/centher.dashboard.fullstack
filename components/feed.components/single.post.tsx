@@ -879,7 +879,7 @@ const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
 `);
 const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2
+w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl

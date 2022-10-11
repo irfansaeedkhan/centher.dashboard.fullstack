@@ -73,6 +73,7 @@ export function usePostUpload({
   const closePostModel = () => {
     try {
       setShowModal(false);
+      setLoadingState(false);
       setPostError("");
       setuserSelectedFileListArray([]);
       setselectedFileDetail([]);
@@ -346,8 +347,8 @@ export function usePostUpload({
       setPostError("Post content is empty");
       return;
     }
-    setPostError("");
     setLoadingState(true);
+    setPostError("");
     try {
       console.log("Create post function called : ", event);
       console.log("User Selected List array : ", userSelectedFileListArray);
@@ -376,6 +377,7 @@ export function usePostUpload({
       if (filesChunksDetails.length == 0) {
         await getNewPostAndUpdateState();
         closePostModel();
+        setLoadingState(false);
         return;
       }
 
@@ -386,6 +388,7 @@ export function usePostUpload({
         console.log("Error ", error);
       });
     } catch (error) {
+      setLoadingState(false);
       toast.error("Failed to create post");
     }
   };
