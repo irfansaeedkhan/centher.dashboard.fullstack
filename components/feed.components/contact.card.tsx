@@ -1,14 +1,18 @@
 // React, Next, NPM Packages
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+
+// App imports
 import { RightSimpleIcon } from "@/assets/svgs";
+
 export const ContactCard = () => {
   return (
     <div className={contactCard}>
       <div className={contactDetail}>
-        <img
+        <Image
           src={"/images/robertProfilepic.png"}
-          width="44"
-          height="44"
+          width={44}
+          height={44}
           alt="profile pic"
         />
         <div>

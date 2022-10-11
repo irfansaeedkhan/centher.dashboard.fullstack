@@ -1,4 +1,5 @@
 // React, Next, NPM Packages
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 
 export const RecentActivitiesCard = () => {
@@ -6,10 +7,10 @@ export const RecentActivitiesCard = () => {
     <div className={RACardContainer}>
       <h5 className={MCTitle}>Recent activities</h5>
       <div className={RADetail}>
-        <img
+        <Image
           src={"/images/robertProfilepic.png"}
-          width="44"
-          height="44"
+          width={44}
+          height={44}
           alt="profile pic"
         />
         <h3 className={RAName}>
@@ -18,10 +19,10 @@ export const RecentActivitiesCard = () => {
         </h3>
       </div>
       <div className={RADetail}>
-        <img
+        <Image
           src={"/images/robertProfilepic.png"}
-          width="44"
-          height="44"
+          width={44}
+          height={44}
           alt="profile pic"
         />
         <h3 className={RAName}>
@@ -30,10 +31,10 @@ export const RecentActivitiesCard = () => {
         </h3>
       </div>
       <div className={RADetail}>
-        <img
+        <Image
           src={"/images/robertProfilepic.png"}
-          width="44"
-          height="44"
+          width={44}
+          height={44}
           alt="profile pic"
         />
         <h3 className={RAName}>
