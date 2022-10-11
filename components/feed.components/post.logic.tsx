@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
@@ -102,7 +102,20 @@ export function usePostUpload({
       setweetText(e.target.value);
     }
   };
-
+  // emoji toggle functions
+  const refe: any = useRef(null);
+  const onEmojiClick = (emojiObject: any, event: any) => {
+    const cursor = refe?.current?.selectionStart;
+    const text =
+      tweetText.slice(0, cursor) + emojiObject?.emoji + tweetText.slice(cursor);
+    // setweetText((prev) => prev + text);
+    setweetText(text);
+    // setTotalPostLikes((prev) => prev + 1);
+    // setShowModal(true);
+    //Codes added for the new cursor
+    const newCursor = cursor + emojiObject?.emoji?.length;
+    setTimeout(() => refe.current.setSelectionRange(newCursor, newCursor), 10);
+  };
   const CompleteMultipartUpload = async (
     FileListDetails: Array<FileChunksChunksCalculations>,
     file_index: number
@@ -657,6 +670,9 @@ export function usePostUpload({
     loadingState,
     lastItem,
     postError,
+    refe,
+    onEmojiClick,
+    tweetText,
   };
 }
 

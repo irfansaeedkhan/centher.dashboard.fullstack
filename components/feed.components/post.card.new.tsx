@@ -3,12 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/future/image";
 import { Carousel } from "react-responsive-carousel";
-import EmojiPicker, {
-  EmojiStyle,
-  Theme,
-  EmojiClickData,
-  Emoji,
-} from "emoji-picker-react";
+import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
 import { Rings } from "react-loader-spinner";
 
@@ -44,12 +39,12 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     lastItem,
     postError,
     loadingState,
+    refe,
+    tweetText,
+    onEmojiClick,
   } = usePostUpload({
     onPostCreated,
   });
-
-  // emoji toggle functions
-  const [selectedEmoji, setSelectedEmoji] = useState<string>("");
 
   const [togglePop, setTogglePop] = useState(false);
   const togglePopFunc = async () => {
@@ -59,10 +54,6 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   useOnClickOutside(ref, () => {
     setTogglePop(false);
   });
-  function onClick(emojiData: EmojiClickData, event: MouseEvent) {
-    setSelectedEmoji(emojiData.unified);
-    setShowModal(true);
-  }
 
   const { user } = useUser();
 
@@ -119,30 +110,15 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           />
         </label>
         <label
-          onClick={() => {
-            togglePopFunc();
-          }}
           className={`${uploadBtn} text-[#00BF96]`}
+          onClick={() => {
+            setShowModal(true);
+            setTogglePop(true);
+          }}
         >
           <EmojiIcon />
           Emoji
         </label>
-        {togglePop && (
-          <div
-            ref={ref}
-            className={`emojiContainer absolute right-[0] top-[120px] ${
-              togglePop && "!block z-50"
-            }`}
-          >
-            <EmojiPicker
-              height={400}
-              width={300}
-              onEmojiClick={onClick}
-              autoFocusSearch={false}
-              theme={Theme.AUTO}
-            />
-          </div>
-        )}
       </div>
       {showModal && (
         <CustomModal onClose={closePostModel} title={"Create post"}>
@@ -179,23 +155,19 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               <div className={inputTextContainer}>
                 <textarea
                   className={textContainerContent}
+                  ref={refe}
                   name=""
                   id="posttext"
                   cols={12}
                   rows={4}
                   placeholder="Type Here"
                   maxLength={200}
+                  value={tweetText}
                   onChange={handleTextLength}
+                  onKeyPress={(e) => {
+                    if (e.key !== "Enter") return;
+                  }}
                 ></textarea>
-                <div className="show-emoji">
-                  {selectedEmoji ? (
-                    <Emoji
-                      unified={selectedEmoji}
-                      emojiStyle={EmojiStyle.APPLE}
-                      size={42}
-                    />
-                  ) : null}
-                </div>
               </div>
             </div>
             {postError && (
@@ -237,10 +209,31 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     }}
                   />
                 </label>
-                <button className={`${uploadBtn} text-[#00BF96]`}>
+                <button
+                  className={`${uploadBtn} text-[#00BF96]`}
+                  onClick={() => {
+                    togglePopFunc();
+                  }}
+                >
                   <EmojiIcon />
                   Emoji
                 </button>
+                {togglePop && (
+                  <div
+                    ref={ref}
+                    className={`emojiContainer absolute right-[0] top-[287px] ${
+                      togglePop && "!block z-50"
+                    }`}
+                  >
+                    <Picker
+                      onEmojiClick={onEmojiClick}
+                      height={400}
+                      width={300}
+                      autoFocusSearch={false}
+                      theme={Theme.AUTO}
+                    />
+                  </div>
+                )}
                 {/* <div className="emojiContainer absolute left-[212px] bottom-[-390px]">
                   <EmojiPicker
                     height={400}
