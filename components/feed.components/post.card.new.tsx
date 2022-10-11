@@ -42,6 +42,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     closePostModel,
     handleSelectFile,
     lastItem,
+    postError,
   } = usePostUpload({
     onPostCreated,
   });
@@ -196,6 +197,13 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 </div>
               </div>
             </div>
+            {postError && (
+              <div className="postErrorMessage">
+                <p className="px-6 text-14 text-[#ec5858] font-semibold">
+                  {postError}
+                </p>
+              </div>
+            )}
             <div className={modalFooter}>
               <div className={leftActionBtns}>
                 <label className={`${uploadBtn} text-yellow-theme`}>

@@ -43,6 +43,7 @@ export function usePostUpload({
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState(false);
   const [lastItem, setLastItem] = useState<number>();
+  const [postError, setPostError] = useState("");
   //It will store list of files selected by the user
   // const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
   //   FileList[]
@@ -72,6 +73,7 @@ export function usePostUpload({
   const closePostModel = () => {
     try {
       setShowModal(false);
+      setPostError("");
       setuserSelectedFileListArray([]);
       setselectedFileDetail([]);
       setDeletedFileIndex([]);
@@ -340,6 +342,11 @@ export function usePostUpload({
   // Create entry in database
   // Start uploading it to server
   const createPost = async (event: any): Promise<any> => {
+    if (tweetText === "" && previewFilesUI.length < 1) {
+      setPostError("Post content is empty");
+      return;
+    }
+    setPostError("");
     setLoadingState(true);
     try {
       console.log("Create post function called : ", event);
@@ -629,6 +636,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
+        setPostError("");
       }
     } catch (error) {
       console.log("Failed to handle file ", error);
@@ -645,6 +653,7 @@ export function usePostUpload({
     handleSelectFile,
     loadingState,
     lastItem,
+    postError,
   };
 }
 
