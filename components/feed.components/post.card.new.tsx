@@ -276,7 +276,7 @@ const uploadBtnContainer = ctl(`
   flex items-items justify-between
 `);
 const uploadBtn = ctl(`
-flex items-center gap-3 text-14px font-medium 
+flex items-center gap-3 text-14px font-medium  cursor-pointer
 `);
 
 // create post modal styling

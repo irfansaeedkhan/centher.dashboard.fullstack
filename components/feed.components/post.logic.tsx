@@ -18,6 +18,7 @@ import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
+import { CrossIcon } from "@/assets/svgs";
 
 type PreviewSelectedFile = {
   fileListIndex: number;
@@ -459,7 +460,7 @@ export function usePostUpload({
                 }}
                 className={imageDelBtn}
               >
-                Delete
+                <CrossIcon />
               </button>
             </div>
           );
@@ -487,7 +488,7 @@ export function usePostUpload({
                 }}
                 className={imageDelBtn}
               >
-                x
+                <CrossIcon />
               </button>
             </div>
           );
