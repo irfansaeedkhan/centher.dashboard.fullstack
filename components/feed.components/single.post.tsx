@@ -583,7 +583,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
       {/* Reply Post Modal */}
       {showModal && (
-        <CustomModal onClose={closePostModel} title={"Create post"}>
+        <CustomModal onClose={closePostModel} title={"Reply"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
