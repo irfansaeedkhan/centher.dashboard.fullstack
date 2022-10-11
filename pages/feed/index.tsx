@@ -1,42 +1,29 @@
 // React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
-import { NextPage } from "next";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
-import useUser from "@/hooks/use.user";
+import { NextPageWithLayout } from "@/pages/_app";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
-import Loader from "@/components/loader";
-import {
-  checkValidImageFile,
-  checkValidVideoFile,
-  checkFileAlreadyAddedInSelectedFile,
-  post_file_details,
-  FileChunksChunksCalculations,
-} from "@/utils/mediafile/valid.media.files";
 
 // Current page imports
 import {
-  ProfileDetailCard,
-  DiscoverCard,
   MessagesCard,
   RecentActivitiesCard,
   PostCardNew,
   SinglePost,
+  LeftSidebarStickyContainer,
 } from "@/pages.components/feed";
 
-const Feed: NextPage = () => {
-  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
+const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loadingState, setLoadingState] = useState<boolean>(true);
   const [skip, setSkip] = useState(0);
 
   const fetchFeedsData = useCallback(async () => {
     try {
-      setLoadingState(true);
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
       );
@@ -49,11 +36,7 @@ const Feed: NextPage = () => {
         });
         return [...prev, ...filteredPosts];
       });
-      if (data) {
-        setLoadingState(false);
-      }
     } catch (error: any) {
-      setLoadingState(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -73,45 +56,40 @@ const Feed: NextPage = () => {
   };
 
   return (
+    <div className={postsContainer} onScroll={handleScroll}>
+      <PostCardNew
+        onPostCreated={(post) => {
+          setPosts((prev) => [post, ...prev]);
+        }}
+      />
+      {posts.map((post) => (
+        <SinglePost
+          key={post._id}
+          post={post}
+          onDelete={(post_id) => {
+            setPosts(posts.filter((p) => p._id !== post_id));
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+Feed.getLayout = (page) => {
+  return (
     <AllPagesWrapper pageTitle="Feed">
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>
-          <div className="leftSidebarStickyContainer lg:sticky  lg:top-0 ">
-            <h1 className={title}>My Feed</h1>
-            <div className={leftSidebar}>
-              {!isLoggedInUserLoading && loggedInUser ? (
-                <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
-              ) : (
-                <>Loading...</>
-              )}
-              <DiscoverCard />
-            </div>
-          </div>
+          <LeftSidebarStickyContainer />
 
-          {/* <div className={postsContainer} onScroll={handleScroll}> */}
-          <div className={postsContainer}>
-            <PostCardNew
-              onPostCreated={(post) => {
-                setPosts((prev) => [post, ...prev]);
-              }}
-            />
-            {posts.map((post) => (
-              <SinglePost
-                key={post._id}
-                post={post}
-                onDelete={(post_id) => {
-                  setPosts(posts.filter((p) => p._id !== post_id));
-                }}
-              />
-            ))}
-          </div>
+          {page}
+
           <div className={rightSidebar}>
             <MessagesCard />
             <RecentActivitiesCard />
           </div>
         </div>
       </div>
-      {/* {loadingState && <Loader />} */}
     </AllPagesWrapper>
   );
 };
@@ -136,4 +114,7 @@ w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
 w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll  pb-12 lg:mt-[4.125rem]
+`);
+const leftSidebarStickyContainer = ctl(`
+lg:sticky  lg:top-0
 `);

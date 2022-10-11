@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import * as React from "react";
+import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports

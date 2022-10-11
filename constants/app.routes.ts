@@ -20,7 +20,7 @@ export const AppRoutes = {
   feed: "/feed",
   single_post: "/feed/[account_address]/post/[post_id]",
   user_profile: "/profile/[account_address]",
-  user_nft_profile: "/profile/nftprofile",
+  user_nfts_profile: "/profile/[account_address]/nfts",
   chat: "/chat",
   notifications: "/notifications",
   create_collection: "/create-collection",

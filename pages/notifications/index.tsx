@@ -1,27 +1,23 @@
 // React, Next, NPM Packages
-import { NextPage } from "next";
+import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import { NextPageWithLayout } from "@/pages/_app";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import ctl from "@netlify/classnames-template-literals";
-import {
-  NoNotification,
-  SingleNotification,
-} from "@/pages.components/notifications";
+import { SingleNotification } from "@/pages.components/notifications";
 
-// Current directory imports
-
-const Notifications: NextPage = () => {
+const Notifications: NextPageWithLayout = () => {
   return (
-    /* A wrapper for the page. */
-    <AllPagesWrapper pageTitle="Notifications">
-      <div>
-        <div className={sectionName}>Notifications</div>
-        {/* <NoNotification /> */}
-        <SingleNotification />
-      </div>
-    </AllPagesWrapper>
+    <div>
+      <div className={sectionName}>Notifications</div>
+      {/* <NoNotification /> */}
+      <SingleNotification />
+    </div>
   );
+};
+
+Notifications.getLayout = (page) => {
+  return <AllPagesWrapper pageTitle="Notifications">{page}</AllPagesWrapper>;
 };
 
 export default Notifications;

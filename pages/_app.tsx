@@ -1,3 +1,4 @@
+import { NextPage } from "next";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Web3ReactProvider } from "@web3-react/core";
@@ -9,7 +10,17 @@ import { getLibrary } from "@/web3";
 import ScriptTags from "@/components/script.tags";
 import "@/styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: React.ReactElement) => React.ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const getLayout = Component.getLayout || ((page) => page);
+
   return (
     <>
       <NextNProgress
@@ -42,7 +53,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             },
           }}
         />
-        <Component {...pageProps} />
+        {getLayout(<Component {...pageProps} />)}
       </Web3ReactProvider>
     </>
   );

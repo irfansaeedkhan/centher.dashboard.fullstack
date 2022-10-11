@@ -15,12 +15,12 @@ import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
 import { getProfileImage } from "@/utils/helpers/get.profile.image";
 import { Website } from "@/assets/svgs";
-import { CameraIcon, CopyIcon, LinkIcon, EditIcon } from "@/assets/svgs";
+import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
 
 interface FollowUser {
-  setFollowUser: (arg0: boolean) => void;
+  setFollowUser?: (arg0: boolean) => void;
 }
 
 const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
@@ -52,7 +52,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         const { data } = await axiosNodeApi.get(
           `api/socials/follows/${user?._id}`
         );
-        setFollowUser(data.follow);
+        setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
       } catch (error: any) {
         toast.error(
@@ -63,7 +63,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     if (user?._id) {
       fetchFollow();
     }
-  }, [setFollowUser, user?._id]);
+  }, [user, setFollowUser]);
 
   const followUser = async (follower_id: string) => {
     try {
@@ -71,12 +71,12 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         follower_id,
       });
       if (response.data.message_description == "Follow user successfully") {
-        setFollowUser(true);
+        setFollowUser && setFollowUser(true);
         setFollow(true);
       } else if (
         response.data.message_description == "Unfollow user successfully"
       ) {
-        setFollowUser(false);
+        setFollowUser && setFollowUser(false);
         setFollow(false);
       }
     } catch (error: any) {
@@ -87,29 +87,39 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   };
 
   // FIXME: Mubashir - Use memoization
-  const isUserProfile = router.pathname === AppRoutes.user_profile;
-  const isUserNFTProfile = router.pathname === AppRoutes.user_nft_profile;
+  const isProfilePage = router.pathname === AppRoutes.user_profile;
+  const isNFTProfilePage = router.pathname === AppRoutes.user_nfts_profile;
 
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
       <div className={btnContainer}>
-        <Link href={{ pathname: AppRoutes.user_profile }}>
+        <Link
+          href={{
+            pathname: AppRoutes.user_profile,
+            query: {
+              account_address: user?.account_address,
+            },
+          }}
+        >
           <Button
             title={"Feed and Post"}
-            variant={`${isUserProfile ? "v1" : "v2"}`}
+            variant={`${isProfilePage ? "v1" : "v2"}`}
             className="px-8"
           />
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nft_profile,
-            query: { tab: "owned" },
+            pathname: AppRoutes.user_nfts_profile,
+            query: {
+              account_address: user?.account_address,
+              tab: "owned",
+            },
           }}
         >
           <Button
             title={"My NFT Profile"}
-            variant={`${isUserNFTProfile ? "v1" : "v2"}`}
+            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8"
           />
         </Link>

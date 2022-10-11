@@ -1,16 +1,11 @@
 // React, Next, NPM Packages
-import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
+import { useWeb3React } from "@web3-react/core";
 
 // App imports
+import { NextPageWithLayout } from "@/pages/_app";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-// Current page imports
-import {
-  PresaleCard,
-  PurchaseNTRDAOCard,
-} from "@/pages.components/buy.ntr.dao";
 import { RoundState, RoundInfo } from "@/web3/constants/types";
 import {
   useBusdAllowance,
@@ -21,9 +16,14 @@ import {
   useNtrdaoBalance,
   useRoundState,
 } from "@/web3/hooks/use.contracts.functions";
-import { useWeb3React } from "@web3-react/core";
 
-const BuyNTRDAOPage: NextPage = () => {
+// Current page imports
+import {
+  PresaleCard,
+  PurchaseNTRDAOCard,
+} from "@/pages.components/buy.ntr.dao";
+
+const BuyNTRDAOPage: NextPageWithLayout = () => {
   const [tab, setTab] = useState<"PackList" | "Activated">("PackList");
   const roundInfo: RoundInfo[] | undefined = useGetRoundInfo();
   const [reload, setReload] = useState(false);
@@ -50,87 +50,89 @@ const BuyNTRDAOPage: NextPage = () => {
   }, [busdAllowance, busdBalance, account]);
 
   return (
-    <AllPagesWrapper pageTitle="Buy NTRDAO">
-      <div className={dashboardContentContainer}>
-        <h1 className={title}>Buy NTRDAO</h1>
-        <div className={daoMainContentContainer}>
-          <PresaleCard
-            round={RoundState.Round1}
-            roundInfo={roundInfo ? roundInfo[RoundState.Round1] : null}
-            roundState={roundState}
-          />
-          <PurchaseNTRDAOCard
-            round={RoundState.Round1}
-            roundInfo={
-              roundInfo?.length === 3 ? roundInfo[RoundState.Round1] : null
-            }
-            ntrdaoBalance={ntrdaoBalance}
-            busdBalance={busdBalance}
-            busdAllowance={busdAllowance}
-            purchasedInfoResponse={
-              purchasedInfoResponse.length === 3
-                ? purchasedInfoResponse[RoundState.Round1]
-                : null
-            }
-            roundState={roundState}
-            isApproved={isApproved}
-            setApproved={setApproved}
-            reload={reload}
-            setReload={setReload}
-          />
-          <PresaleCard
-            round={RoundState.Round2}
-            roundInfo={roundInfo ? roundInfo[RoundState.Round2] : null}
-            roundState={roundState}
-          />
-          <PurchaseNTRDAOCard
-            round={RoundState.Round2}
-            roundInfo={
-              roundInfo?.length === 3 ? roundInfo[RoundState.Round2] : null
-            }
-            ntrdaoBalance={ntrdaoBalance}
-            busdBalance={busdBalance}
-            busdAllowance={busdAllowance}
-            purchasedInfoResponse={
-              purchasedInfoResponse.length === 3
-                ? purchasedInfoResponse[RoundState.Round2]
-                : null
-            }
-            roundState={roundState}
-            isApproved={isApproved}
-            setApproved={setApproved}
-            reload={reload}
-            setReload={setReload}
-          />
-          <PresaleCard
-            round={RoundState.Round3}
-            roundInfo={roundInfo ? roundInfo[RoundState.Round3] : null}
-            roundState={roundState}
-          />
-          <PurchaseNTRDAOCard
-            round={RoundState.Round3}
-            roundInfo={
-              roundInfo?.length === 3 ? roundInfo[RoundState.Round3] : null
-            }
-            ntrdaoBalance={ntrdaoBalance}
-            busdBalance={busdBalance}
-            busdAllowance={busdAllowance}
-            purchasedInfoResponse={
-              purchasedInfoResponse.length === 3
-                ? purchasedInfoResponse[RoundState.Round3]
-                : null
-            }
-            roundState={roundState}
-            isApproved={isApproved}
-            setApproved={setApproved}
-            reload={reload}
-            setReload={setReload}
-          />
-        </div>
+    <div className={dashboardContentContainer}>
+      <h1 className={title}>Buy NTRDAO</h1>
+      <div className={daoMainContentContainer}>
+        <PresaleCard
+          round={RoundState.Round1}
+          roundInfo={roundInfo ? roundInfo[RoundState.Round1] : null}
+          roundState={roundState}
+        />
+        <PurchaseNTRDAOCard
+          round={RoundState.Round1}
+          roundInfo={
+            roundInfo?.length === 3 ? roundInfo[RoundState.Round1] : null
+          }
+          ntrdaoBalance={ntrdaoBalance}
+          busdBalance={busdBalance}
+          busdAllowance={busdAllowance}
+          purchasedInfoResponse={
+            purchasedInfoResponse.length === 3
+              ? purchasedInfoResponse[RoundState.Round1]
+              : null
+          }
+          roundState={roundState}
+          isApproved={isApproved}
+          setApproved={setApproved}
+          reload={reload}
+          setReload={setReload}
+        />
+        <PresaleCard
+          round={RoundState.Round2}
+          roundInfo={roundInfo ? roundInfo[RoundState.Round2] : null}
+          roundState={roundState}
+        />
+        <PurchaseNTRDAOCard
+          round={RoundState.Round2}
+          roundInfo={
+            roundInfo?.length === 3 ? roundInfo[RoundState.Round2] : null
+          }
+          ntrdaoBalance={ntrdaoBalance}
+          busdBalance={busdBalance}
+          busdAllowance={busdAllowance}
+          purchasedInfoResponse={
+            purchasedInfoResponse.length === 3
+              ? purchasedInfoResponse[RoundState.Round2]
+              : null
+          }
+          roundState={roundState}
+          isApproved={isApproved}
+          setApproved={setApproved}
+          reload={reload}
+          setReload={setReload}
+        />
+        <PresaleCard
+          round={RoundState.Round3}
+          roundInfo={roundInfo ? roundInfo[RoundState.Round3] : null}
+          roundState={roundState}
+        />
+        <PurchaseNTRDAOCard
+          round={RoundState.Round3}
+          roundInfo={
+            roundInfo?.length === 3 ? roundInfo[RoundState.Round3] : null
+          }
+          ntrdaoBalance={ntrdaoBalance}
+          busdBalance={busdBalance}
+          busdAllowance={busdAllowance}
+          purchasedInfoResponse={
+            purchasedInfoResponse.length === 3
+              ? purchasedInfoResponse[RoundState.Round3]
+              : null
+          }
+          roundState={roundState}
+          isApproved={isApproved}
+          setApproved={setApproved}
+          reload={reload}
+          setReload={setReload}
+        />
       </div>
-    </AllPagesWrapper>
+    </div>
   );
 };
+
+BuyNTRDAOPage.getLayout = (page) => (
+  <AllPagesWrapper pageTitle="Buy NTRDAO">{page}</AllPagesWrapper>
+);
 
 export default BuyNTRDAOPage;
 
