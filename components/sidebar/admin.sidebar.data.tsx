@@ -15,7 +15,7 @@ export const AdminSideBarData = {
     items: [
       {
         label: "Staking Pack",
-        url: AppRoutes.admin_staking_pack,
+        url: AppRoutes.admin_staking_packs,
         icon: StakingPack,
       },
       {

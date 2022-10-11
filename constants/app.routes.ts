@@ -30,7 +30,7 @@ export const AppRoutes = {
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",
-  admin_staking_pack: "/admin",
+  admin_staking_packs: "/admin/staking-packs",
   admin_network_rewards: "/admin/network-rewards",
   admin_influencer_request: "/admin/influencer-request",
   admin_transactions: "/admin/transaction",
