@@ -102,6 +102,8 @@ export function usePostUpload({
       setweetText(e.target.value);
     }
   };
+
+  // TODO: mubashir kindly fix any types
   // emoji toggle functions
   const refe: any = useRef(null);
   const onEmojiClick = (emojiObject: any, event: any) => {
