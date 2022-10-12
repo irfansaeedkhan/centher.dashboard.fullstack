@@ -73,14 +73,6 @@ const Profile: NextPageWithLayout = () => {
     }
   }, [fetchUserFeedsData, user?._id]);
 
-  const handleScroll = (event: any): void => {
-    const { offsetHeight, scrollTop, scrollHeight } = event.target;
-
-    if (offsetHeight + scrollTop >= scrollHeight) {
-      setSkip(posts?.length);
-    }
-  };
-
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
       <div>
@@ -97,7 +89,7 @@ const Profile: NextPageWithLayout = () => {
             <DiscoverCard />
           </div>
 
-          <div className={postsContainer} onScroll={handleScroll}>
+          <div className={postsContainer}>
             <PostCardNew
               onPostCreated={(post) => {
                 setPosts((prev) => [post, ...prev]);
