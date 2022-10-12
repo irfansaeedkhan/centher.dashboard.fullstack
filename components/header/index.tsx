@@ -30,6 +30,7 @@ const Header = () => {
           />
         </a>
       </Link>
+
       <div className={rightWraper}>
         {/* <div>
           <Search />
@@ -37,32 +38,38 @@ const Header = () => {
         <span className={border}></span>
         {!user && (
           <Link href={AppRoutes.auth.login}>
-            <a className={connectButoon}>Connect</a>
+            <a className={connectButton}>Connect</a>
           </Link>
         )}
         {user && (
-          <div className="relative">
-            <div
-              ref={modalOpenerRef}
-              className="dpImagePreview"
-              onClick={() => setOpenModal((prev) => !prev)}
-              role="button"
-            >
-              <Image
-                src={`${NODE_API_URL}${user.profile_image}`}
-                alt="userProfile"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
+          <>
+            <Link href={AppRoutes.auth.login}>
+              <a className={connectButton}>Create NFT</a>
+            </Link>
+            <div className="relative">
+              <div
+                ref={modalOpenerRef}
+                className="dpImagePreview"
+                onClick={() => setOpenModal((prev) => !prev)}
+                role="button"
+              >
+                <Image
+                  src={`${NODE_API_URL}${user.profile_image}`}
+                  alt="userProfile"
+                  width={40}
+                  height={40}
+                  className="rounded-full"
+                />
+              </div>
+
+              {openModal && (
+                <HeaderProfile
+                  onClickOutside={() => setOpenModal(false)}
+                  modalOpenerRef={modalOpenerRef}
+                />
+              )}
             </div>
-            {openModal && (
-              <HeaderProfile
-                onClickOutside={() => setOpenModal(false)}
-                modalOpenerRef={modalOpenerRef}
-              />
-            )}
-          </div>
+          </>
         )}
       </div>
     </div>
@@ -96,7 +103,7 @@ const border = ctl(`
   border-gray-shade-12/30
 `);
 
-const connectButoon = ctl(`
+const connectButton = ctl(`
   px-6 
   py-2
   flex
@@ -106,6 +113,5 @@ const connectButoon = ctl(`
   font-semibold 
   bg-brand-primary 
   text-black-shade-2 
-  hover:bg-gray-shade-3 
-  hover:text-brand-primary 
+  hover:bg-brand-primary-dark 
 `);
