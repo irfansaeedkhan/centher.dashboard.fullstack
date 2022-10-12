@@ -579,7 +579,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       <div className={repliesContainer} onScroll={handleScroll}>
         {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <>
-            {replies?.length <= 0 ? (
+            {replies?.length > 0 ? (
+              replies.map((reply) => {
+                return <ReplyPost key={reply._id} post={reply} />;
+              })
+            ) : (
               <div className="componentLoaderContainer">
                 <Bars
                   height="25"
@@ -591,10 +595,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   visible={true}
                 />
               </div>
-            ) : (
-              replies.map((reply) => {
-                return <ReplyPost key={reply._id} post={reply} />;
-              })
             )}
           </>
         )}

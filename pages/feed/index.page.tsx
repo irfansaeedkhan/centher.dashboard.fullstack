@@ -63,7 +63,17 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.length <= 0 ? (
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              setPosts(posts.filter((p) => p._id !== post_id));
+            }}
+          />
+        ))
+      ) : (
         <div className="componentLoaderContainer">
           <Bars
             height="25"
@@ -75,16 +85,6 @@ const Feed: NextPageWithLayout = () => {
             visible={true}
           />
         </div>
-      ) : (
-        posts.map((post) => (
-          <SinglePost
-            key={post._id}
-            post={post}
-            onDelete={(post_id) => {
-              setPosts(posts.filter((p) => p._id !== post_id));
-            }}
-          />
-        ))
       )}
     </div>
   );
