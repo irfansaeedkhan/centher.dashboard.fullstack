@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 import { Bars } from "react-loader-spinner";
@@ -23,6 +24,14 @@ const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
   const [loader, setLoader] = useState(false);
+  const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
+
+  useEffect(() => {
+    if (lastPostInView) {
+      setSkip(posts.length);
+    }
+  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
+
   const fetchFeedsData = useCallback(async () => {
     setLoader(true);
     try {
@@ -38,6 +47,7 @@ const Feed: NextPageWithLayout = () => {
         });
         return [...prev, ...filteredPosts];
       });
+
       setLoader(false);
     } catch (error: any) {
       setLoader(false);
@@ -51,31 +61,37 @@ const Feed: NextPageWithLayout = () => {
     fetchFeedsData();
   }, [fetchFeedsData]);
 
-  const handleScroll = (event: any): void => {
-    const { offsetHeight, scrollTop, scrollHeight } = event.target;
-
-    if (offsetHeight + scrollTop >= scrollHeight) {
-      setSkip(posts?.length);
-    }
-  };
-
   return (
-    <div className={postsContainer} onScroll={handleScroll}>
+    <div className={postsContainer}>
       <PostCardNew
         onPostCreated={(post) => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
       {posts.length > 0 &&
-        posts.map((post) => (
-          <SinglePost
-            key={post._id}
-            post={post}
-            onDelete={(post_id) => {
-              setPosts(posts.filter((p) => p._id !== post_id));
-            }}
-          />
-        ))}
+        posts.map((post) => {
+          if (post._id === posts[posts.length - 1]._id) {
+            return (
+              <SinglePost
+                ref={lastPostRef}
+                key={post._id}
+                post={post}
+                onDelete={(post_id) => {
+                  setPosts(posts.filter((p) => p._id !== post_id));
+                }}
+              />
+            );
+          }
+          return (
+            <SinglePost
+              key={post._id}
+              post={post}
+              onDelete={(post_id) => {
+                setPosts(posts.filter((p) => p._id !== post_id));
+              }}
+            />
+          );
+        })}
       {loader && (
         <div className="componentLoaderContainer">
           <Bars

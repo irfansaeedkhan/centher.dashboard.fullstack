@@ -18,6 +18,8 @@ import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
+import Image from "next/future/image";
+import { MetamaskIcon } from "@/assets/svgs/metamask.icon";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -36,6 +38,7 @@ export const RegisterForm: React.FC = () => {
   const [feeModal, setFeeModal] = useState<FeeModalState>(initialFeeModalState);
   const [signupState, setSignupState] =
     useState<SignupState>(initialSignupState);
+  const [isChecked, setIsChecked] = useState(false);
 
   const router = useRouter();
   const { account, library } = useWeb3React();
@@ -102,21 +105,32 @@ export const RegisterForm: React.FC = () => {
     <>
       <form className={wrapper} onSubmit={payFee}>
         {account ? (
-          <InputField
-            id="account_address"
-            label="Account Address"
-            placeholder="Enter your account address"
-            type="text"
-            readOnly
-            defaultValue={signupState.account_address}
-          />
+          <>
+            <div className="flex flex-col gap-2">
+              <MetamaskIcon />
+            </div>
+            <InputField
+              id="account_address"
+              label="Wallet Address"
+              placeholder="Enter your account address"
+              type="text"
+              readOnly
+              defaultValue={signupState.account_address}
+            />
+          </>
         ) : (
           <button
             className={connectButton}
             type="button"
             onClick={connectWallet}
           >
-            Connect
+            <Image
+              src="/images/metamask_icon.png"
+              alt="metamask_icon.png"
+              width={20}
+              height={20}
+            />
+            <p>Connect</p>
           </button>
         )}
 
@@ -134,9 +148,29 @@ export const RegisterForm: React.FC = () => {
           defaultValue={signupState.referred_by}
         />
 
-        <button type="button" onClick={openFeeModal} className={button}>
-          Register
-        </button>
+        <div className="flex gap-2">
+          <input
+            type="checkbox"
+            name=""
+            id=""
+            onClick={() => setIsChecked(!isChecked)}
+          />
+          <p className="text-white text-sm">
+            I have read aand agree to Binance&apos;s{" "}
+            <span className="font-semibold underline">Terms of Service</span>{" "}
+            and <span className="font-semibold underline">Privacy Policy.</span>
+          </p>
+        </div>
+
+        {isChecked ? (
+          <button type="button" onClick={openFeeModal} className={button}>
+            Register
+          </button>
+        ) : (
+          <button type="button" className={buttonDisabled} disabled>
+            Register
+          </button>
+        )}
 
         {feeModal.isOpen && (
           <ModalWrapper
@@ -220,11 +254,11 @@ const button = ctl(`
   text-gray-shade-5
   justify-center 
   !bg-brand-primary 
-  hover:bg-brand-primary-dark
+  hover:!bg-brand-primary-dark
   transition-all 
 `);
 
-const connectButton = ctl(`
+const buttonDisabled = ctl(`
   mt-2 
   py-3 
   flex 
@@ -232,11 +266,27 @@ const connectButton = ctl(`
   font-bold 
   rounded-lg
   items-center 
+  text-gray-shade-7
   justify-center 
-  text-brand-primary
-  !bg-black-shade-7
-  hover:!bg-black-shade-4
+  !bg-gray-shade-3
+  cursor-not-allowed
   transition-all 
+`);
+
+const connectButton = ctl(`
+  mt-6 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  transition-all 
+  justify-center 
+  !bg-brand-primary 
+  text-gray-shade-5 
+  hover:!bg-brand-primary-dark
 `);
 
 const button2 = ctl(`
@@ -249,7 +299,7 @@ const button2 = ctl(`
   items-center 
   text-[#7C81A2] 
   justify-center 
-  bg-black-shade-7
+  !bg-black-shade-7
   cursor-not-allowed
 `);
 
@@ -261,7 +311,7 @@ const feeModalWrapper = ctl(`flex justify-center`);
 
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
 
-const feeModalProgress = ctl(`font-semibold text-lg text-center text-white"`);
+const feeModalProgress = ctl(`font-semibold text-lg text-center text-white`);
 
 const textFee = ctl(
   `text-brand-primary text-center font-semibold tracking-wider text-base`

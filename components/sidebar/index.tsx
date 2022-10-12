@@ -3,6 +3,7 @@ import * as React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -16,6 +17,7 @@ import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 
 export const Sidebar = () => {
+  const router = useRouter();
   const { user } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -59,8 +61,22 @@ export const Sidebar = () => {
             <div className={sectionWrapper2}>
               <Link href={AppRoutes.profile.settings}>
                 <a className={itemWrapper}>
-                  <SettingIcon className={itemIcons} />
-                  <div className={itemLabel}>Settings</div>
+                  <SettingIcon
+                    className={
+                      router.pathname.replaceAll("-", " ").includes("settings")
+                        ? itemIconsActive
+                        : itemIcons
+                    }
+                  />
+                  <div
+                    className={
+                      router.pathname.replaceAll("-", " ").includes("settings")
+                        ? itemLabelActive
+                        : itemLabel
+                    }
+                  >
+                    Settings
+                  </div>
                 </a>
               </Link>
             </div>
@@ -130,6 +146,14 @@ const itemLabel = ctl(`
   text-gray-shade-8 
 `);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
+const itemLabelActive = ctl(`
+  text-sm
+  font-semibold 
+  text-white 
+`);
 
 const itemIcons = ctl(`stroke-gray-shade-8`);
+
+const itemIconsActive = ctl(`stroke-white`);
+
+const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);

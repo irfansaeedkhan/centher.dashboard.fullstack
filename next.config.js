@@ -3,7 +3,11 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: ["localhost", "nethernftdevelopment.s3.eu-west-3.amazonaws.com"],
+    domains: [
+      "devapi.nethernft.io",
+      "localhost",
+      "nethernftdevelopment.s3.eu-west-3.amazonaws.com",
+    ],
   },
   pageExtensions: ["page.tsx", "api.ts"],
   webpack(config) {

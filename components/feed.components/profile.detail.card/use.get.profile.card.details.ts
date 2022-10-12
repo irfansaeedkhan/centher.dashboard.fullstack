@@ -39,7 +39,8 @@ export const useGetProfileCardDetails = (user: User) => {
             ...res.profileCardDetails,
           }));
         } catch (error: any) {
-          process.env.NODE_ENV !== "production" && console.dir(error);
+          process.env.NEXT_PUBLIC_WEB3_MODE !== "production" &&
+            console.dir(error);
           setProfileCardDetails(initialState);
         }
       })();

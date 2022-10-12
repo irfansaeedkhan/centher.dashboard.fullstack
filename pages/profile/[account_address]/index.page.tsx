@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
@@ -36,6 +37,14 @@ const Profile: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
   const [followUser, setFollowUser] = useState<boolean>(false);
+
+  const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
+
+  useEffect(() => {
+    if (lastPostInView) {
+      setSkip(posts.length);
+    }
+  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
 
   const fetchUserFeedsData = useCallback(async () => {
     try {
@@ -98,15 +107,29 @@ const Profile: NextPageWithLayout = () => {
               user?.account_address === loggedInUser?.account_address) &&
               posts
                 .filter((p) => !p.parent_post)
-                .map((post) => (
-                  <SinglePost
-                    key={post._id}
-                    post={post}
-                    onDelete={(post_id) => {
-                      setPosts(posts.filter((p) => p._id !== post_id));
-                    }}
-                  />
-                ))}
+                .map((post) => {
+                  if (post._id === posts[posts.length - 1]._id) {
+                    return (
+                      <SinglePost
+                        ref={lastPostRef}
+                        key={post._id}
+                        post={post}
+                        onDelete={(post_id) => {
+                          setPosts(posts.filter((p) => p._id !== post_id));
+                        }}
+                      />
+                    );
+                  }
+                  return (
+                    <SinglePost
+                      key={post._id}
+                      post={post}
+                      onDelete={(post_id) => {
+                        setPosts(posts.filter((p) => p._id !== post_id));
+                      }}
+                    />
+                  );
+                })}
           </div>
 
           <div className={rightSidebar}>

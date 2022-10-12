@@ -19,11 +19,20 @@ import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
 
+import { useUserMediaUpload } from "./upload.media.logic";
+
 interface FollowUser {
   setFollowUser?: (arg0: boolean) => void;
 }
 
 const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
+  const {
+    displayImage,
+    imageUrl,
+    uploadImageButton,
+    uploadImage,
+    handleSelectedFile,
+  } = useUserMediaUpload("cover image");
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(
@@ -36,6 +45,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
   const [follow, setFollow] = useState<boolean>(false);
+  const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -54,6 +64,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         );
         setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
+        setShowFollowButton(true);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -124,17 +135,46 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           />
         </Link>
       </div>
-
       {user && loggedInUser ? (
         <div className={coverCard}>
-          <div className={coverImageContainer}>
+          <div
+            className={coverImageContainer}
+            style={{
+              backgroundImage: displayImage
+                ? `url(${imageUrl})`
+                : user.cover_image
+                ? `url(${user.cover_image})`
+                : `url(/images/coverImage.png)`,
+            }}
+          >
             {loggedInUser.account_address.toLowerCase() ===
-              user.account_address.toLowerCase() && (
-              <button className={editCover}>
-                <CameraIcon />
-                Edit cover
-              </button>
-            )}
+            user.account_address.toLowerCase() ? (
+              !uploadImageButton ? (
+                <label className={`${editCover} `}>
+                  <CameraIcon />
+                  Edit cover
+                  <input
+                    type="file"
+                    id="files-photo"
+                    name="photos-file"
+                    accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handleSelectedFile(e);
+                    }}
+                  />{" "}
+                </label>
+              ) : (
+                <button className={editCover} onClick={uploadImage}>
+                  <CameraIcon />
+                  Upload cover
+                </button>
+              )
+            ) : null}
+            {/* <button className={editCover}>
+              <CameraIcon />
+              Edit cover
+            </button> */}
             <div className={profileImage}>
               <Image
                 src={getProfileImage(user)}
@@ -193,12 +233,14 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   />
                 </Link>
               ) : (
-                <Button
-                  title={follow ? "Unfollow" : "Follow"}
-                  variant="v1"
-                  className={editProfileBtn}
-                  onClick={() => followUser(user._id)}
-                />
+                showFollowButton && (
+                  <Button
+                    title={follow ? "Unfollow" : "Follow"}
+                    variant="v1"
+                    className={editProfileBtn}
+                    onClick={() => followUser(user._id)}
+                  />
+                )
               )}
             </div>
             <div className={textContent}>
