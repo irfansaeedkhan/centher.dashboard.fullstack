@@ -70,7 +70,7 @@ export function useUserMediaUpload(media_type: string) {
       return;
     }
 
-    let validFileType: boolean = false;
+    let validFileType: string = "";
 
     // Check if selected files have valid file extension or not
     for (
@@ -82,14 +82,14 @@ export function useUserMediaUpload(media_type: string) {
       validFileType = checkValidImageFile(event.target.files[file_index]);
 
       // Show error message
-      if (!validFileType) {
+      if (validFileType !== "") {
         break;
       }
     }
 
     //
-    if (!validFileType) {
-      // TO DO : Add alert of something to display error message
+    if (validFileType !== "") {
+      toast.error(validFileType);
       return;
     }
 
