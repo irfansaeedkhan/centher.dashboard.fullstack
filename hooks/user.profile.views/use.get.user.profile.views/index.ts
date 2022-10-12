@@ -20,7 +20,8 @@ export const useGetUserProfileViews = () => {
           const res = await getProfileViews(account_address);
           setUserProfileViews(res.views_count);
         } catch (error: any) {
-          process.env.NODE_ENV !== "production" && console.dir(error);
+          process.env.NEXT_PUBLIC_WEB3_MODE !== "production" &&
+            console.dir(error);
           setUserProfileViews(null);
         }
       })();

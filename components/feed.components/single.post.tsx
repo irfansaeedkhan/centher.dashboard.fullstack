@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import { useEffect, useState, useRef, useMemo } from "react";
-import Image from "next/future/image";
+//import Image from "next/future/image";
+import Image from "next/image";
 import { userAgent } from "next/server";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
@@ -421,7 +422,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                     src={media.url}
                     width={452}
                     height={312}
-                    alt="post media"
+                    alt={String(index) + "post image"}
                     className={postImageStyling}
                   />
                 ) : (
