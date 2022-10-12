@@ -73,6 +73,7 @@ export function usePostUpload({
   const closePostModel = () => {
     try {
       setShowModal(false);
+      setLastItem(0);
       setLoadingState(false);
       setPostError("");
       setuserSelectedFileListArray([]);
@@ -421,20 +422,24 @@ export function usePostUpload({
       toast.error("Failed to get new post");
     }
   };
-
+  // TODO: fix any types please
   // delete parent Element while deleting image
   const handleDeleteItemStyling = (e: any) => {
     // dom elements
-    let topParent =
-      e.target?.parentElement?.parentElement?.parentElement?.parentElement;
-    let listParent = e.target?.parentElement?.parentElement?.parentElement;
-    let ListItem = e.target?.parentElement?.parentElement;
+    let topParent: any = document.querySelector(
+      ".slider-wrapper.axis-horizontal"
+    );
+    let listParent: any = document.querySelector(".slider.animated");
+    let ListItem = e.target?.parentElement?.parentElement?.parentElement;
     // adding transform when last element is deleted
+    console.log("e.target", ListItem);
+    console.log("listParent.lastElementChild", listParent.lastElementChild);
+
     if (
-      listParent.classList.contains("slider") &&
+      ListItem.classList.contains("slide") &&
       listParent.lastElementChild == ListItem
     ) {
-      if (listParent?.childElementCount == 2) {
+      if (listParent?.childElementCount === 2) {
         topParent.classList.add("transformChild");
         return;
       }
@@ -476,12 +481,19 @@ export function usePostUpload({
                 />
               </video>
               <button
-                onClick={(e) => {
-                  deleteFileIndexs(
-                    previewUrlList[fileDetails].fileListIndex,
-                    previewUrlList[fileDetails].fileIndex,
-                    fileDetails
-                  );
+                onClick={(e: any) => {
+                  if (
+                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
+                      "slide"
+                    )
+                  ) {
+                    deleteFileIndexs(
+                      previewUrlList[fileDetails].fileListIndex,
+                      previewUrlList[fileDetails].fileIndex,
+                      fileDetails
+                    );
+                    handleDeleteItemStyling(e);
+                  }
                 }}
                 className={imageDelBtn}
               >
@@ -503,17 +515,23 @@ export function usePostUpload({
                 className={createPostImageStyling}
               />
               <button
-                onClick={(e) => {
-                  deleteFileIndexs(
-                    previewUrlList[fileDetails].fileListIndex,
-                    previewUrlList[fileDetails].fileIndex,
-                    fileDetails
-                  );
-                  handleDeleteItemStyling(e);
+                onClick={(e: any) => {
+                  if (
+                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
+                      "slide"
+                    )
+                  ) {
+                    deleteFileIndexs(
+                      previewUrlList[fileDetails].fileListIndex,
+                      previewUrlList[fileDetails].fileIndex,
+                      fileDetails
+                    );
+                    handleDeleteItemStyling(e);
+                  }
                 }}
                 className={imageDelBtn}
               >
-                <CrossIcon />
+                <CrossIcon className="z-0" />
               </button>
             </div>
           );
@@ -654,6 +672,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
+        setLastItem(0);
         setPostError("");
       }
     } catch (error) {
