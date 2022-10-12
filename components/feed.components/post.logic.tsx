@@ -617,7 +617,7 @@ export function usePostUpload({
         return;
       }
 
-      let validFileType: boolean = false;
+      let validFileType: string = "";
 
       // Check if selected files have valid file extension or not
       for (
@@ -634,15 +634,15 @@ export function usePostUpload({
         }
 
         // Show error message
-        if (!validFileType) {
+        if (validFileType !== "") {
           break;
         }
       }
 
       //
-      if (!validFileType) {
+      if (validFileType !== "") {
         console.log("Invalid file type");
-        // TO DO : Add alert of something to display error message
+        toast.error(validFileType);
         return;
       }
 

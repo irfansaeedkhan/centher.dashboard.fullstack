@@ -6,21 +6,29 @@ interface AuthRightProps {
 }
 
 export const AuthRight: React.FC<AuthRightProps> = (props) => {
-  return <div className={componentWrapper}>{props.children}</div>;
+  return (
+    <div className={componentWrapper}>
+      <div className={childrenWrapper}>{props.children}</div>
+    </div>
+  );
 };
 
 const componentWrapper = ctl(`
-  flex 
-  gap-5 
-  sm:px-5 
-  md:py-32 
-  sm:py-10 
-  lg:px-20 
-  flex-col 
   md:w-1/2 
-  sm:w-full
+  sm:w-full 
   max-h-screen
   xl:px-[113px] 
-  bg-black-shade-3 
+bg-black-shade-3 
   overflow-y-scroll
+  flex 
+  justify-center 
+  md:py-32 
+  sm:py-10 
+  sm:px-5 
+  lg:px-20
+`);
+
+const childrenWrapper = ctl(`
+  w-[496px]
+  max-w-[496px]
 `);
