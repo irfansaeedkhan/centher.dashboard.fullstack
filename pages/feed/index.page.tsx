@@ -22,8 +22,9 @@ import {
 const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
-
+  const [loader, setLoader] = useState(false);
   const fetchFeedsData = useCallback(async () => {
+    setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
@@ -37,7 +38,9 @@ const Feed: NextPageWithLayout = () => {
         });
         return [...prev, ...filteredPosts];
       });
+      setLoader(false);
     } catch (error: any) {
+      setLoader(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -63,7 +66,17 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.length <= 0 ? (
+      {posts.length > 0 &&
+        posts.map((post) => (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              setPosts(posts.filter((p) => p._id !== post_id));
+            }}
+          />
+        ))}
+      {loader && (
         <div className="componentLoaderContainer">
           <Bars
             height="25"
@@ -75,16 +88,6 @@ const Feed: NextPageWithLayout = () => {
             visible={true}
           />
         </div>
-      ) : (
-        posts.map((post) => (
-          <SinglePost
-            key={post._id}
-            post={post}
-            onDelete={(post_id) => {
-              setPosts(posts.filter((p) => p._id !== post_id));
-            }}
-          />
-        ))
       )}
     </div>
   );
