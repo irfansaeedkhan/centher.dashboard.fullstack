@@ -45,6 +45,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
   );
   const [follow, setFollow] = useState<boolean>(false);
+  const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -63,6 +64,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         );
         setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
+        setShowFollowButton(true);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -231,12 +233,14 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   />
                 </Link>
               ) : (
-                <Button
-                  title={follow ? "Unfollow" : "Follow"}
-                  variant="v1"
-                  className={editProfileBtn}
-                  onClick={() => followUser(user._id)}
-                />
+                showFollowButton && (
+                  <Button
+                    title={follow ? "Unfollow" : "Follow"}
+                    variant="v1"
+                    className={editProfileBtn}
+                    onClick={() => followUser(user._id)}
+                  />
+                )
               )}
             </div>
             <div className={textContent}>
