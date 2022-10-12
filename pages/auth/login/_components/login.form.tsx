@@ -1,36 +1,43 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
+import Image from "next/future/image";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
-import { SpinIcon } from "@/assets/svgs";
+import { SpinIcon, SpinIcon3 } from "@/assets/svgs";
+import { MetamaskIcon } from "@/assets/svgs/metamask.icon";
+import { log } from "console";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
-  login_metamask: "Login with Metamask",
-  loading: "Logging in...",
+  login_metamask: "Continue",
+  loading: "Continue...",
 };
 
 export const LoginForm: React.FC = () => {
   const router = useRouter();
   const { connectWallet } = useConnectWallet();
   const { account, library } = useWeb3React();
+  const [isLoading, setisLoading] = useState("loaded");
 
   const handleMetamaskLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     // TODO: Waqar - add a spinner on button
+    console.log(e.currentTarget);
+
     const button = e.currentTarget;
     button.disabled = true;
     button.innerText = ButtonsText.loading;
+    setisLoading("loading");
 
     // Get Nonce from backend
     try {
@@ -48,12 +55,13 @@ export const LoginForm: React.FC = () => {
       });
 
       toast.success(loginData.message_description);
-
+      setisLoading("loaded");
       // Redirect to home page
       router.push(AppRoutes.home);
     } catch (error: any) {
       button.disabled = false;
       button.innerText = ButtonsText.login_metamask;
+      setisLoading("loaded");
       if (error.code === "ACTION_REJECTED") {
         toast.error("Login request rejected.");
         return;
@@ -70,10 +78,21 @@ export const LoginForm: React.FC = () => {
     <div className={wrapper}>
       {account ? (
         <>
-          <p className="text-white">Connected Account:</p>
-          <p className="text-white">{account}</p>
+          <div className="flex flex-col gap-2">
+            <MetamaskIcon />
+            <p className="text-lg font-semibold text-white mt-4">
+              Metamask wallet connected
+            </p>
+            <div className="flex items-center gap-1">
+              <p className="text-[#6B7280] text-sm">Wallet Address:</p>
+              <p className="text-white text-sm">
+                {account.slice(0, 6) + "..." + account.slice(38, 42)}
+              </p>
+            </div>
+          </div>
 
           <button className={button} onClick={handleMetamaskLogin}>
+            {isLoading === "loading" && <SpinIcon3 />}
             {ButtonsText.login_metamask}
           </button>
         </>
@@ -82,7 +101,13 @@ export const LoginForm: React.FC = () => {
           className={connectButton}
           onClick={async () => await connectWallet()}
         >
-          {ButtonsText.connect_metamask}
+          <Image
+            src="/images/metamask_icon.png"
+            alt="metamask_icon.png"
+            width={20}
+            height={20}
+          />
+          <p>{ButtonsText.connect_metamask}</p>
         </button>
       )}
     </div>
@@ -116,10 +141,12 @@ const wrapper = ctl(`
 const button = ctl(`
   mt-2 
   py-3 
-  flex 
+  flex
+  gap-2
   w-full 
   font-bold 
   rounded-lg 
+  items-center 
   text-gray-shade-5 
   justify-center 
   bg-brand-primary 
@@ -129,13 +156,15 @@ const button = ctl(`
 const connectButton = ctl(`
   mt-2 
   py-3 
-  flex 
+  flex
+  gap-2
   w-full 
   font-bold 
   rounded-lg 
-  justify-center 
-  text-brand-primary
-  bg-black-shade-7
-  hover:bg-black-shade-4
+  items-center 
   transition-all 
+  justify-center 
+  bg-brand-primary 
+  text-gray-shade-5 
+  hover:bg-brand-primary-dark
 `);
