@@ -44,7 +44,7 @@ Login.getLayout = (page) => {
 export default Login;
 
 const signupLeftData = {
-  title: "Login to Netheru",
+  title: "Connect wallet",
   content:
     "Login to your account with netheru to sell and buy NFTs on some easy steps.",
 };

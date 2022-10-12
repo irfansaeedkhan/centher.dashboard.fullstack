@@ -13,39 +13,44 @@ import {
 // Function will check following detail in image file
 // image size
 // image type
-export const checkValidImageFile = (file_details: File): boolean => {
+export const checkValidImageFile = (file_details: File): string => {
   //Checking if image file is supported or not
   if (!SUPPORTED_IMAGE_TYPES.includes(file_details.type)) {
     //
-    return false;
+    return "The file format is not supported";
   }
 
   //Checking if image file is less than allowed size
   if (file_details.size > MAX_IMAGE_SIZE) {
     //
-    return false;
+    return (
+      "Image should be less than " + MAX_IMAGE_SIZE / (1000 * 1000) + " MB"
+    );
   }
 
-  return true;
+  return "";
 };
 
 // Function will check following details in video file
 // video size
 // video type
-export const checkValidVideoFile = (file_details: File): boolean => {
+export const checkValidVideoFile = (file_details: File): string => {
   //Checking if video file is supported or not
   if (!SUPPORTED_VIDEO_TYPES.includes(file_details.type)) {
     //
-    return false;
+
+    return "The file format is not supported";
   }
 
   //Checking if video file is less than allowed size
   if (file_details.size > MAX_VIDEO_SIZE) {
     //
-    return false;
+    return (
+      "Video should be less than " + MAX_VIDEO_SIZE / (1000 * 1000) + " MB"
+    );
   }
 
-  return true;
+  return "";
 };
 
 // Function will check if file already exits in selected file list or not

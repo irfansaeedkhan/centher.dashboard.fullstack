@@ -24,7 +24,7 @@ export const AppRoutes = {
   chat: "/chat",
   notifications: "/notifications",
   create_collection: "/create-collection",
-  staking_packs: "/staking-packs",
+  staking_packs: "/staking-pack",
   network_rewards: "/network-rewards",
   buy_ntr_dao: "/buy-ntr-dao",
   profits_dashboard: "/profits-dashboard",

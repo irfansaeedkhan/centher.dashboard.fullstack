@@ -5,12 +5,14 @@ import ctl from "@netlify/classnames-template-literals";
 // Current directory imports
 import { SidebarSection } from "./sidebar.data";
 import { AdminSideBarType } from "./admin.sidebar.data";
+import { useRouter } from "next/router";
 
 export interface SectionProps {
   section: SidebarSection | AdminSideBarType;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
+  const router = useRouter();
   return (
     <div className={sectionWrapper}>
       <span className={sectionLabel}>{props.section.label}</span>
@@ -18,9 +20,27 @@ export const Section: React.FC<SectionProps> = (props) => {
         {props.section.items.map((item) => {
           return (
             <div className={itemWrapper} key={item.label}>
-              <item.icon className={itemIcons} />
+              <item.icon
+                className={
+                  router.pathname
+                    .replaceAll("-", " ")
+                    .includes(item.label.toLowerCase())
+                    ? itemIconsActive
+                    : itemIcons
+                }
+              />
               <Link href={item.url}>
-                <a className={itemLabel}>{item.label}</a>
+                <a
+                  className={
+                    router.pathname
+                      .replaceAll("-", " ")
+                      .includes(item.label.toLowerCase())
+                      ? itemLabelActive
+                      : itemLabel
+                  }
+                >
+                  {item.label}
+                </a>
               </Link>
             </div>
           );
@@ -54,4 +74,12 @@ const itemLabel = ctl(`
   text-gray-shade-8 
 `);
 
+const itemLabelActive = ctl(`
+  text-sm
+  font-semibold 
+  text-white 
+`);
+
 const itemIcons = ctl(`stroke-gray-shade-8`);
+
+const itemIconsActive = ctl(`stroke-white`);

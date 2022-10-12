@@ -64,6 +64,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const [_post, setPost] = useState<Post>(post);
   const [replies, setReplies] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
+  const [loader, setLoader] = useState(false);
 
   // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
   const [editPostData, setEditPostData] = useState<IEditPostData>({
@@ -102,6 +103,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   // Fetch post replies
   useEffect(() => {
     const fetchRepliesPostData = async () => {
+      setLoader(true);
       try {
         const { data } = await axiosNodeApi.get(
           `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
@@ -116,7 +118,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
           return [...prev, ...filteredReplies];
         });
+        setLoader(false);
       } catch (error: any) {
+        setLoader(false);
         toast.error(
           error.response.data?.message_description || "Something went wrong"
         );
@@ -166,6 +170,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
     if (offsetHeight + scrollTop >= scrollHeight) {
       setSkip(replies?.length);
+      setLoader(false);
     }
   };
 
@@ -580,7 +585,11 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       <div className={repliesContainer} onScroll={handleScroll}>
         {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <>
-            {replies?.length <= 0 ? (
+            {replies?.length > 0 &&
+              replies.map((reply) => {
+                return <ReplyPost key={reply._id} post={reply} />;
+              })}
+            {loader && (
               <div className="componentLoaderContainer">
                 <Bars
                   height="25"
@@ -592,10 +601,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   visible={true}
                 />
               </div>
-            ) : (
-              replies.map((reply) => {
-                return <ReplyPost key={reply._id} post={reply} />;
-              })
             )}
           </>
         )}

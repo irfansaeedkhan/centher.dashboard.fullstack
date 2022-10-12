@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useRef } from "react";
 import Image from "next/future/image";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
@@ -26,6 +27,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   modalOpenerRef,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { user } = useUser();
   const [_, copy] = useCopyToClipboard();
 
@@ -53,6 +55,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         setTimeout(() => {
           window.location.reload();
         }, 2000);
+
+        // Redirect to home page
+        router.push(AppRoutes.home);
       })
       .catch((err: any) => {
         // If user is already logged out, reload the page
