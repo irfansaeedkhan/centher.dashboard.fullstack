@@ -148,7 +148,7 @@ export const RegisterForm: React.FC = () => {
           defaultValue={signupState.referred_by}
         />
 
-        {/* <div className="flex gap-2">
+        <div className="flex gap-2">
           <input
             type="checkbox"
             name=""
@@ -160,15 +160,17 @@ export const RegisterForm: React.FC = () => {
             <span className="font-semibold underline">Terms of Service</span>{" "}
             and <span className="font-semibold underline">Privacy Policy.</span>
           </p>
-        </div> */}
-        <button type="button" onClick={openFeeModal} className={button}>
-          Register
-        </button>
-        {/* {isChecked && (
+        </div>
+
+        {isChecked ? (
+          <button type="button" onClick={openFeeModal} className={button}>
+            Register
+          </button>
+        ) : (
           <button type="button" className={buttonDisabled} disabled>
             Register
           </button>
-        )} */}
+        )}
 
         {feeModal.isOpen && (
           <ModalWrapper
