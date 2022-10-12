@@ -1,8 +1,12 @@
+// React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
+import { Bars } from "react-loader-spinner";
 
+// app imports
 import useUser from "@/hooks/use.user";
 
+// same directory imports
 import { ProfileDetailCard } from "./profile.detail.card";
 import { DiscoverCard } from "./discover.card";
 
@@ -13,8 +17,20 @@ export const LeftSidebarStickyContainer = () => {
     <div className={leftSidebarStickyContainer}>
       <h1 className={title}>My Feed</h1>
       <div className={leftSidebar}>
-        {!isLoggedInUserLoading && loggedInUser && (
+        {!isLoggedInUserLoading && loggedInUser ? (
           <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+        ) : (
+          <div className="componentLoaderContainer">
+            <Bars
+              height="25"
+              width="25"
+              color="#FEBF32"
+              ariaLabel="bars-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+              visible={true}
+            />
+          </div>
         )}
         <DiscoverCard />
       </div>

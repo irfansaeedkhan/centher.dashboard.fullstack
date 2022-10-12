@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
@@ -18,6 +18,7 @@ import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
+import { CrossIcon } from "@/assets/svgs";
 
 type PreviewSelectedFile = {
   fileListIndex: number;
@@ -42,6 +43,7 @@ export function usePostUpload({
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState(false);
   const [lastItem, setLastItem] = useState<number>();
+  const [postError, setPostError] = useState("");
   //It will store list of files selected by the user
   // const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
   //   FileList[]
@@ -71,6 +73,8 @@ export function usePostUpload({
   const closePostModel = () => {
     try {
       setShowModal(false);
+      setLoadingState(false);
+      setPostError("");
       setuserSelectedFileListArray([]);
       setselectedFileDetail([]);
       setDeletedFileIndex([]);
@@ -99,6 +103,21 @@ export function usePostUpload({
     }
   };
 
+  // TODO: mubashir kindly fix any types
+  // emoji toggle functions
+  const refe: any = useRef(null);
+  const onEmojiClick = (emojiObject: any, event: any) => {
+    const cursor = refe?.current?.selectionStart;
+    const text =
+      tweetText.slice(0, cursor) + emojiObject?.emoji + tweetText.slice(cursor);
+    // setweetText((prev) => prev + text);
+    setweetText(text);
+    // setTotalPostLikes((prev) => prev + 1);
+    // setShowModal(true);
+    //Codes added for the new cursor
+    const newCursor = cursor + emojiObject?.emoji?.length;
+    setTimeout(() => refe.current.setSelectionRange(newCursor, newCursor), 10);
+  };
   const CompleteMultipartUpload = async (
     FileListDetails: Array<FileChunksChunksCalculations>,
     file_index: number
@@ -339,7 +358,12 @@ export function usePostUpload({
   // Create entry in database
   // Start uploading it to server
   const createPost = async (event: any): Promise<any> => {
+    if (tweetText === "" && previewFilesUI.length < 1) {
+      setPostError("Post content is empty");
+      return;
+    }
     setLoadingState(true);
+    setPostError("");
     try {
       console.log("Create post function called : ", event);
       console.log("User Selected List array : ", userSelectedFileListArray);
@@ -368,6 +392,7 @@ export function usePostUpload({
       if (filesChunksDetails.length == 0) {
         await getNewPostAndUpdateState();
         closePostModel();
+        setLoadingState(false);
         return;
       }
 
@@ -378,6 +403,7 @@ export function usePostUpload({
         console.log("Error ", error);
       });
     } catch (error) {
+      setLoadingState(false);
       toast.error("Failed to create post");
     }
   };
@@ -437,8 +463,13 @@ export function usePostUpload({
           SUPPORTED_VIDEO_TYPES.includes(previewUrlList[fileDetails].fileType)
         ) {
           displaySelectedFile.push(
-            <div>
-              <video width={452} height={312} className="w-full" controls>
+            <div className={ImageStyleContainer}>
+              <video
+                width={452}
+                height={312}
+                controls
+                className={createPostImageStyling}
+              >
                 <source
                   src={previewUrlList[fileDetails].fileBlobURL}
                   type={previewUrlList[fileDetails].fileType}
@@ -452,8 +483,9 @@ export function usePostUpload({
                     fileDetails
                   );
                 }}
+                className={imageDelBtn}
               >
-                Delete
+                <CrossIcon />
               </button>
             </div>
           );
@@ -481,7 +513,7 @@ export function usePostUpload({
                 }}
                 className={imageDelBtn}
               >
-                x
+                <CrossIcon />
               </button>
             </div>
           );
@@ -622,6 +654,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
+        setPostError("");
       }
     } catch (error) {
       console.log("Failed to handle file ", error);
@@ -638,6 +671,10 @@ export function usePostUpload({
     handleSelectFile,
     loadingState,
     lastItem,
+    postError,
+    refe,
+    onEmojiClick,
+    tweetText,
   };
 }
 

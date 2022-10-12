@@ -5,6 +5,7 @@ export interface User {
   profile_image: string;
   custom_image: boolean;
   cover_image?: string;
+  website_url: string;
 }
 
 export interface LoggedInUser {
@@ -18,6 +19,7 @@ export interface LoggedInUser {
   profile_bio?: string;
   pseudonym?: string;
   cover_image?: string;
+  website_url?: string;
 }
 type UserRole =
   | "user"

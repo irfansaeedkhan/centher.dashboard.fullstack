@@ -42,6 +42,7 @@ const childrenWrapper = ctl(`
   overflow-y-scroll
   h-[calc(100vh-60px)] 
   lg:w-[calc(100%-15.5rem)] 
+  scrollSet
   `);
 
 const parentWrapper = ctl(`flex`);

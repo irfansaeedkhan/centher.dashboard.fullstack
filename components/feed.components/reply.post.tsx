@@ -24,7 +24,6 @@ import {
   MessageIcon2,
 } from "@/assets/svgs";
 import { Post } from "@/models/post";
-import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";
@@ -134,7 +133,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
               }
               width={48}
               height={48}
-              className="rounded-full"
+              className="rounded-full dpImagePreview"
               alt={post.user.display_name}
             />
             <div>
@@ -232,7 +231,9 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
             <LikeIcon
               className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
             />{" "}
-            <span className="text-brand-primary">
+            <span
+              className={`${isLikedByLoggedInUser ? "text-brand-primary" : ""}`}
+            >
               {totalPostLikes > 0 && totalPostLikes}
             </span>
           </button>
@@ -299,77 +300,6 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
       {replies.map((reply) => {
         return <ReplyPost key={reply._id} post={reply} />;
       })}
-      {/* <div className={secondReplyBox}>
-        <div className={topCard}>
-          <div className={profileDetail}>
-            <Image
-              src={"/images/feedprofilepic.png"}
-              width={48}
-              height={48}
-              className="rounded-full"
-              alt="User Display Name"
-            />
-            <div>
-              <div className="flex items-center gap-2 ">
-                <h5 className={PFName}>irfan</h5>
-                <button className={replyToContent}>
-                  Replying to{" "}
-                  <span className={repliedToPersonName}> uixamjad 2</span>
-                </button>
-              </div>
-              <h6 className={PFTime}>11 Feb, 2022 at 2:30 PM</h6>
-            </div>
-          </div>
-          <div className={toggleContainer}>
-            <button onClick={togglePopFunc}>
-              <DotsIcon />
-            </button>
-            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-              <button className={toggleListBtn}>
-                <EditIcon className={toggleListIcons} /> Edit
-              </button>
-              <button className={toggleListBtn}>
-                <TrashIcon className={toggleListIcons} /> Delete
-              </button>
-            </div>
-          </div>
-        </div>
-        <div
-          className={maincontentContainer}
-          onClick={() => {
-            // props.setLevelFunc("level3");
-          }}
-        >
-          <div className={mediaContainer}>
-            <Image
-              src="/images/postimage.png"
-              width={452}
-              height={312}
-              alt="post media"
-              className="w-full"
-            />
-          </div>
-          <div className={textContainer}>
-            <p className={textContainerContent}>
-              We know the voices in our heads aren&apos;t real, but sometimes
-              their ideas are just too good to ignore.please check thread for
-              more details 😎👇
-            </p>
-          </div>
-        </div>
-        <div className={footerBtnContainer}>
-          <button className={footerdetailBtn}>
-            <MessageIcon />3
-          </button>
-          <button className={footerdetailBtn}>
-            <LikeIcon />
-            194
-          </button>
-          <button className={footerdetailBtn}>
-            <ShareIcon />2
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };
@@ -447,7 +377,3 @@ w-[20px] h-[20px]
 const shareBtnContainer = ctl(`
 w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
 `);
-// interfaces
-interface setLevelFunction {
-  setLevelFunc: (levelVal: "level1" | "level2" | "level3") => void;
-}

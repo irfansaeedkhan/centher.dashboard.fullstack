@@ -217,10 +217,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       />
                     </TwitterShareButton>
                   </button>
-                  <button>
-                    {/* TODO: Waqar need to condition when user add website in his/her info only then user see this icon */}
-                    <Website />
-                  </button>
+                  <button>{user.website_url ? <Website /> : ""}</button>
                 </div>
               </div>
               {loggedInUser.account_address.toLowerCase() ===
@@ -318,7 +315,7 @@ const profileName = ctl(`
 text-white text-20px font-semibold
 `);
 const shareBtns = ctl(`
-flex items-center gap-8
+flex items-center gap-4
 `);
 const copyContainer = ctl(`
 copyContainer pt-1 flex items-center gap-2 relative

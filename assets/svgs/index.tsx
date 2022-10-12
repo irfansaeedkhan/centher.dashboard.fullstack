@@ -1987,3 +1987,30 @@ export const Website: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const CrossIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M7 7L17 17"
+        stroke="#0B0B0B"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7 17L17 7"
+        stroke="#0B0B0B"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};

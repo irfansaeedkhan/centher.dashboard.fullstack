@@ -2,9 +2,11 @@
 import React from "react";
 import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
+import Link from "next/link";
+
+// app imports
 import { User } from "@/models/user";
 import { getProfileImage } from "@/utils/helpers/get.profile.image";
-import Link from "next/link";
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
 interface ProfileDetailCardProps {
@@ -80,7 +82,7 @@ const profileDetailCardContainer = ctl(`
   w-full max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
 `);
 const profilePic = ctl(`
-  w-[60px] h-[60px] mx-auto rounded-full cursor-pointer
+  w-[60px] h-[60px] mx-auto rounded-full cursor-pointer dpImagePreview
 `);
 const profileName = ctl(`
   text-14px font-bold pt-3 pb-6 text-white cursor-pointer

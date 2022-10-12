@@ -2,6 +2,7 @@
 import { useCallback, useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
+import { Bars } from "react-loader-spinner";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -21,8 +22,9 @@ import {
 const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
-
+  const [loader, setLoader] = useState(false);
   const fetchFeedsData = useCallback(async () => {
+    setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts?off_set=${skip}`
@@ -36,7 +38,9 @@ const Feed: NextPageWithLayout = () => {
         });
         return [...prev, ...filteredPosts];
       });
+      setLoader(false);
     } catch (error: any) {
+      setLoader(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -62,15 +66,29 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.map((post) => (
-        <SinglePost
-          key={post._id}
-          post={post}
-          onDelete={(post_id) => {
-            setPosts(posts.filter((p) => p._id !== post_id));
-          }}
-        />
-      ))}
+      {posts.length > 0 &&
+        posts.map((post) => (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              setPosts(posts.filter((p) => p._id !== post_id));
+            }}
+          />
+        ))}
+      {loader && (
+        <div className="componentLoaderContainer">
+          <Bars
+            height="25"
+            width="25"
+            color="#FEBF32"
+            ariaLabel="bars-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -113,7 +131,7 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll  pb-12 lg:mt-[4.125rem]
+w-full max-w-[544px] flex flex-col gap-3 overflow-y-scroll  pb-32 lg:mt-[4.125rem]
 `);
 const leftSidebarStickyContainer = ctl(`
 lg:sticky  lg:top-0

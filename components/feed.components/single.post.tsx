@@ -11,6 +11,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Link from "next/link";
 import moment from "moment";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
+import { Bars } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -50,6 +51,7 @@ interface IEditPostData {
   isEditModalVisible: boolean;
   editedPostText: string;
   editDeletedItems: number[];
+  media?: [];
 }
 
 export const SinglePost: React.FC<FeedCardLevel1Props> = ({
@@ -61,11 +63,14 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   const [_post, setPost] = useState<Post>(post);
   const [replies, setReplies] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
+  const [loader, setLoader] = useState(false);
 
+  // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
   const [editPostData, setEditPostData] = useState<IEditPostData>({
     isEditModalVisible: false,
     editedPostText: _post.text_content ?? "",
     editDeletedItems: [],
+    // media: _post.media,
   });
 
   const [togglePop, setTogglePop] = useState(false);
@@ -97,6 +102,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   // Fetch post replies
   useEffect(() => {
     const fetchRepliesPostData = async () => {
+      setLoader(true);
       try {
         const { data } = await axiosNodeApi.get(
           `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
@@ -111,7 +117,9 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
           return [...prev, ...filteredReplies];
         });
+        setLoader(false);
       } catch (error: any) {
+        setLoader(false);
         toast.error(
           error.response.data?.message_description || "Something went wrong"
         );
@@ -161,6 +169,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
 
     if (offsetHeight + scrollTop >= scrollHeight) {
       setSkip(replies?.length);
+      setLoader(false);
     }
   };
 
@@ -324,7 +333,8 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
   // Timer to check 15 min difference
   const timeNow = moment();
   const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
-
+  // useEffect(() => {}, [editPostData.media]);
+  // console.log("editPostData::", editPostData);
   return (
     <div className={postCardContainer}>
       {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
@@ -340,7 +350,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             }
             width={48}
             height={48}
-            className="rounded-full"
+            className="rounded-full dpImagePreview"
             alt={_post.user.display_name}
           />
           <div>
@@ -555,7 +565,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
             }
             width={30}
             height={30}
-            className="rounded-full"
+            className="rounded-full dpImagePreview"
             alt={_post.user.display_name}
           />
           <Link
@@ -574,9 +584,23 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
       <div className={repliesContainer} onScroll={handleScroll}>
         {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
           <>
-            {replies.map((reply) => {
-              return <ReplyPost key={reply._id} post={reply} />;
-            })}
+            {replies?.length > 0 &&
+              replies.map((reply) => {
+                return <ReplyPost key={reply._id} post={reply} />;
+              })}
+            {loader && (
+              <div className="componentLoaderContainer">
+                <Bars
+                  height="25"
+                  width="25"
+                  color="#FEBF32"
+                  ariaLabel="bars-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  visible={true}
+                />
+              </div>
+            )}
           </>
         )}
       </div>
@@ -587,12 +611,13 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
-                src={"/images/robertProfilepic.png"}
+                src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                alt={"image"}
+                alt={user?.display_name ?? "profile image"}
+                className="rounded-full dpImagePreview"
               />
-              <h5 className={cdName}>uixamjad</h5>
+              <h5 className={cdName}>{user?.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
               <div
@@ -661,7 +686,6 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <button className={clearBtn}>+</button>
                 <Button
                   title={"Post"}
                   variant="v1"
@@ -691,7 +715,7 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 src={`${NODE_API_URL}${user?.profile_image}`}
                 width={44}
                 height={44}
-                className="rounded-full"
+                className="rounded-full dpImagePreview"
                 alt={user?.display_name ?? "profile image"}
               />
               <h5 className={cdName}>{user?.display_name}</h5>
@@ -707,14 +731,15 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                   showIndicators={false}
                   showArrows={previewFilesUI.length === 1 ? false : true}
                 >
-                  {_post.media?.map((data, index) => {
+                  {/* {editPostData.media?.map((data, index) => { */}
+                  {post.media?.map((data, index) => {
                     return (
                       <div
                         key={index}
                         className="h-full flex items-center justify-center relative"
                       >
                         <Image
-                          src={data.url}
+                          src={data?.url}
                           width={452}
                           height={312}
                           className={
@@ -726,6 +751,12 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                           className={imageDelBtn}
                           onClick={() => {
                             handleMediaDel(index);
+                            // setEditPostData((prev) => ({
+                            //   ...prev,
+                            //   media: prev.media.filter(
+                            //     (filterdata) => filterdata.url !== data.url
+                            //   ),
+                            // }));
                           }}
                         >
                           x
@@ -748,11 +779,10 @@ export const SinglePost: React.FC<FeedCardLevel1Props> = ({
                 ></textarea>
               </div>
             </div>
-            <div className={modalFooter}>
+            <div className={`${modalFooter} justify-end`}>
               <div className={RightActionBtns}>
                 <AnimateTrashIcon />
                 <div className={divider}></div>
-                <button className={clearBtn}>+</button>
                 <Button
                   title={"Update"}
                   variant="v1"
@@ -880,15 +910,11 @@ const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
 `);
 const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2
+w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl
 `);
-const clearBtn = ctl(`
-plus text-brand-primary text-[28px] leading-[28px] border-2 border-gray-shade-3 rounded-10px w-[50px] h-[40.08px]
-`);
-
 const uploadBtn = ctl(`
 flex items-center gap-3 text-14px font-medium 
 `);
@@ -899,5 +925,5 @@ const imageDelBtn = ctl(`
   absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
   `);
 const repliesContainer = ctl(`
-flex flex-col gap-4 overflow-y-scroll 
+flex flex-col gap-4  
   `);
