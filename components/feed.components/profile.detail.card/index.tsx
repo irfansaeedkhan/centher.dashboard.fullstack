@@ -23,13 +23,15 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div className={profileDetailCardContainer}>
       <Link href={`/profile/${user?.account_address}`}>
-        <Image
-          src={getProfileImage(user)}
-          className={profilePic}
-          alt={user.display_name}
-          width={60}
-          height={60}
-        />
+        <a>
+          <Image
+            src={getProfileImage(user)}
+            className={profilePic}
+            alt={user.display_name}
+            width={60}
+            height={60}
+          />
+        </a>
       </Link>
       <Link href={`/profile/${user?.account_address}`}>
         <h3 className={profileName}>{user.display_name}</h3>

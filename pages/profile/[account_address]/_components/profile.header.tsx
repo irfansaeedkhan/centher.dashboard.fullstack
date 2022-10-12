@@ -206,19 +206,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       <CopyIcon />
                     </button>
                   </div>
-                  <button>
-                    <TwitterShareButton
-                      className="flex items-center"
-                      url={shareUrl}
-                    >
-                      <Image
-                        src="/images/twitter2.png"
-                        width={24}
-                        height={24}
-                        alt="icon"
-                      />
-                    </TwitterShareButton>
-                  </button>
+                  <TwitterShareButton
+                    className="flex items-center"
+                    url={shareUrl}
+                  >
+                    <Image
+                      src="/images/twitter2.png"
+                      width={24}
+                      height={24}
+                      alt="icon"
+                    />
+                  </TwitterShareButton>
                   <button>{user.website_url ? <Website /> : ""}</button>
                 </div>
               </div>
