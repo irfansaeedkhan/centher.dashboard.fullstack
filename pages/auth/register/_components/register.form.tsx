@@ -261,7 +261,9 @@ const feeModalWrapper = ctl(`flex justify-center`);
 
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
 
-const feeModalProgress = ctl(`font-semibold text-lg text-center text-white"`);
+const feeModalProgress = ctl(
+  `font-semibold text-lg text-center text-white text-brand-primary"`
+);
 
 const textFee = ctl(
   `text-brand-primary text-center font-semibold tracking-wider text-base`
