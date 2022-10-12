@@ -10,6 +10,7 @@ import moment from "moment";
 import { toast } from "react-hot-toast";
 
 // App imports
+import useUser from "@/hooks/use.user";
 import {
   MessageIcon,
   LikeIcon,
@@ -34,6 +35,7 @@ interface ReplyPostProps {
 
 export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   // states
+  const { user } = useUser();
   const [togglePop, setTogglePop] = useState<boolean>(false);
   const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
   const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
@@ -44,6 +46,7 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
   const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
     post.liked_by_loggedin_user
   );
+
   useEffect(() => {
     //   const post_id = router.query.post_id;
     //   const account_address = router.query.account_address;
@@ -94,6 +97,17 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
     }
   };
 
+  const deletePost = async () => {
+    await axiosNodeApi
+      .delete(`api/socials/posts/${post._id}`)
+      .then(() => {
+        toast.success("Post Deleted Successfully");
+      })
+      .catch((error: any) => {
+        toast.error(error.response?.data?.message_description || "Waqar  bhai");
+      });
+  };
+
   // toggle function to show/hide edit/delete popup
   const togglePopFunc = async () => {
     setTogglePop((prev) => !prev);
@@ -115,6 +129,11 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
     setToggleSharePop(false);
     setToggleSharePop_2(false);
   });
+
+  // Timer to check 15 min difference
+  const timeNow = moment();
+  const timeAfter15Minutes = moment(post.createdAt).add(15, "minutes");
+
   return (
     <div
       className={`${replyBoxContainer} ${
@@ -150,19 +169,21 @@ export const ReplyPost: React.FC<ReplyPostProps> = ({ post }) => {
               <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
             </div>
           </div>
-          <div ref={ref} className={toggleContainer}>
-            <button onClick={togglePopFunc}>
-              <DotsIcon />
-            </button>
-            <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-              <button className={toggleListBtn}>
-                <EditIcon className={toggleListIcons} /> Edit
-              </button>
-              <button className={toggleListBtn}>
-                <TrashIcon className={toggleListIcons} /> Delete
-              </button>
+
+          {post.user._id === user?._id && timeNow <= timeAfter15Minutes ? (
+            <div ref={ref} className={toggleContainer}>
+              <button onClick={togglePopFunc}>
+                <DotsIcon />
+              </button>{" "}
+              <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+                <button className={toggleListBtn} onClick={deletePost}>
+                  <TrashIcon className={toggleListIcons} /> Delete
+                </button>
+              </div>{" "}
             </div>
-          </div>
+          ) : (
+            ""
+          )}
         </div>
         <div
           className={maincontentContainer}
