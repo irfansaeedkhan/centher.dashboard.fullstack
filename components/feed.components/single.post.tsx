@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 //import Image from "next/future/image";
 import Image from "next/image";
 import { userAgent } from "next/server";
@@ -54,756 +54,763 @@ interface IEditPostData {
   editDeletedItems: number[];
   media?: [];
 }
+export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
+  ({ post, onDelete }, ref) => {
+    const router = useRouter();
+    const { user } = useUser();
+    const [_post, setPost] = useState<Post>(post);
+    const [replies, setReplies] = useState<Post[]>([]);
+    const [skip, setSkip] = useState(0);
+    const [loader, setLoader] = useState(false);
 
-export const SinglePost: React.FC<FeedCardLevel1Props> = ({
-  post,
-  onDelete,
-}) => {
-  const router = useRouter();
-  const { user } = useUser();
-  const [_post, setPost] = useState<Post>(post);
-  const [replies, setReplies] = useState<Post[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loader, setLoader] = useState(false);
+    // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
+    const [editPostData, setEditPostData] = useState<IEditPostData>({
+      isEditModalVisible: false,
+      editedPostText: _post.text_content ?? "",
+      editDeletedItems: [],
+      // media: _post.media,
+    });
 
-  // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
-  const [editPostData, setEditPostData] = useState<IEditPostData>({
-    isEditModalVisible: false,
-    editedPostText: _post.text_content ?? "",
-    editDeletedItems: [],
-    // media: _post.media,
-  });
+    const [togglePop, setTogglePop] = useState(false);
+    const [toggleSharePop, setToggleSharePop] = useState(false);
+    const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
+    const [shareUrl, setShareUrl] = useState("");
 
-  const [togglePop, setTogglePop] = useState(false);
-  const [toggleSharePop, setToggleSharePop] = useState(false);
-  const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
-  const [shareUrl, setShareUrl] = useState("");
-
-  const currentPageRoute = useMemo(
-    () => ({
-      isSinglePostPage: router.pathname === AppRoutes.single_post,
-      isFeedPage: router.pathname === AppRoutes.feed,
-      isProfilePage: router.pathname === AppRoutes.user_profile,
-    }),
-    [router.pathname]
-  );
-
-  // Update post
-  useEffect(() => {
-    setPost(post);
-  }, [post]);
-
-  // Set updated post share url
-  useEffect(() => {
-    setShareUrl(
-      `${window.location.origin}${AppRoutes.feed}/${_post.user.account_address}/post/${_post._id}`
+    const currentPageRoute = useMemo(
+      () => ({
+        isSinglePostPage: router.pathname === AppRoutes.single_post,
+        isFeedPage: router.pathname === AppRoutes.feed,
+        isProfilePage: router.pathname === AppRoutes.user_profile,
+      }),
+      [router.pathname]
     );
-  }, [router, _post]);
 
-  // Fetch post replies
-  useEffect(() => {
-    const fetchRepliesPostData = async () => {
-      setLoader(true);
-      try {
-        const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
-        );
+    // Update post
+    useEffect(() => {
+      setPost(post);
+    }, [post]);
 
-        const _replies = data.postData;
+    // Set updated post share url
+    useEffect(() => {
+      setShareUrl(
+        `${window.location.origin}${AppRoutes.feed}/${_post.user.account_address}/post/${_post._id}`
+      );
+    }, [router, _post]);
 
-        setReplies((prev) => {
-          const filteredReplies = _replies.filter((reply: Post) => {
-            return prev.every((prevReply) => prevReply._id !== reply._id);
+    // Fetch post replies
+    useEffect(() => {
+      const fetchRepliesPostData = async () => {
+        setLoader(true);
+        try {
+          const { data } = await axiosNodeApi.get(
+            `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
+          );
+
+          const _replies = data.postData;
+
+          setReplies((prev) => {
+            const filteredReplies = _replies.filter((reply: Post) => {
+              return prev.every((prevReply) => prevReply._id !== reply._id);
+            });
+
+            return [...prev, ...filteredReplies];
           });
+          setLoader(false);
+        } catch (error: any) {
+          setLoader(false);
+          toast.error(
+            error.response.data?.message_description || "Something went wrong"
+          );
+        }
+      };
 
-          return [...prev, ...filteredReplies];
+      // Temporary fix for replies
+      if (currentPageRoute.isSinglePostPage) {
+        fetchRepliesPostData();
+      }
+    }, [_post, skip, currentPageRoute.isSinglePostPage]);
+
+    // Copy post share url to clipboard
+    const copyShareUrl = () => {
+      navigator.clipboard.writeText(shareUrl);
+      toast.success("Copy Link Successfully!");
+    };
+
+    // ref for toggle function
+    const toggleContainerRef = useRef<HTMLDivElement>(null);
+    useOnClickOutside(toggleContainerRef, () => {
+      setTogglePop(false);
+    });
+
+    const ref2 = useRef<HTMLDivElement>(null);
+    useOnClickOutside(ref2, () => {
+      setToggleSharePop(false);
+      setToggleSharePop_2(false);
+    });
+
+    const {
+      showModal,
+      setShowModal,
+      previewFilesUI,
+      handleTextLength,
+      createPost,
+      closePostModel,
+      handleSelectFile,
+    } = usePostUpload({
+      reply: true,
+      reply_address: _post.user.account_address,
+      reply_post_id: _post._id,
+    });
+
+    const handleScroll = (event: any): void => {
+      const { offsetHeight, scrollTop, scrollHeight } = event.target;
+
+      if (offsetHeight + scrollTop >= scrollHeight) {
+        setSkip(replies?.length);
+        setLoader(false);
+      }
+    };
+
+    const likePost = async (post_id: string) => {
+      try {
+        // putting it before the api call to make it feel faster
+        if (_post.liked_by_loggedin_user) {
+          setPost((prev) => ({
+            ...prev,
+            likes_count: prev.likes_count - 1,
+            liked_by_loggedin_user: false,
+          }));
+        } else {
+          setPost((prev) => ({
+            ...prev,
+            likes_count: prev.likes_count + 1,
+            liked_by_loggedin_user: true,
+          }));
+        }
+        await axiosNodeApi.post("api/socials/analytics/likes", {
+          post_id,
         });
-        setLoader(false);
       } catch (error: any) {
-        setLoader(false);
+        setPost((prev) => ({
+          ...prev,
+          likes_count: post.likes_count,
+          liked_by_loggedin_user: post.liked_by_loggedin_user,
+        }));
+
         toast.error(
           error.response.data?.message_description || "Something went wrong"
         );
       }
     };
 
-    // Temporary fix for replies
-    if (currentPageRoute.isSinglePostPage) {
-      fetchRepliesPostData();
-    }
-  }, [_post, skip, currentPageRoute.isSinglePostPage]);
+    const sharePost = async () => {
+      try {
+        const { data } = await axiosNodeApi.post(
+          "api/socials/analytics/shares",
+          {
+            post_id: _post._id,
+          }
+        );
 
-  // Copy post share url to clipboard
-  const copyShareUrl = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("Copy Link Successfully!");
-  };
-
-  // ref for toggle function
-  const ref = useRef<HTMLDivElement>(null);
-  useOnClickOutside(ref, () => {
-    setTogglePop(false);
-  });
-
-  const ref2 = useRef<HTMLDivElement>(null);
-  useOnClickOutside(ref2, () => {
-    setToggleSharePop(false);
-    setToggleSharePop_2(false);
-  });
-
-  const {
-    showModal,
-    setShowModal,
-    previewFilesUI,
-    handleTextLength,
-    createPost,
-    closePostModel,
-    handleSelectFile,
-  } = usePostUpload({
-    reply: true,
-    reply_address: _post.user.account_address,
-    reply_post_id: _post._id,
-  });
-
-  const handleScroll = (event: any): void => {
-    const { offsetHeight, scrollTop, scrollHeight } = event.target;
-
-    if (offsetHeight + scrollTop >= scrollHeight) {
-      setSkip(replies?.length);
-      setLoader(false);
-    }
-  };
-
-  const likePost = async (post_id: string) => {
-    try {
-      // putting it before the api call to make it feel faster
-      if (_post.liked_by_loggedin_user) {
+        // Update share count
         setPost((prev) => ({
           ...prev,
-          likes_count: prev.likes_count - 1,
-          liked_by_loggedin_user: false,
+          shares_count: data.shares_count,
         }));
-      } else {
+      } catch (error: any) {
+        // Reset share count
         setPost((prev) => ({
           ...prev,
-          likes_count: prev.likes_count + 1,
-          liked_by_loggedin_user: true,
+          shares_count: post.shares_count,
         }));
+
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
       }
-      await axiosNodeApi.post("api/socials/analytics/likes", {
-        post_id,
-      });
-    } catch (error: any) {
-      setPost((prev) => ({
-        ...prev,
-        likes_count: post.likes_count,
-        liked_by_loggedin_user: post.liked_by_loggedin_user,
-      }));
+    };
 
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  };
+    const archivePost = async (post_id: string) => {
+      try {
+        await axiosNodeApi.post(`/api/socials/posts/archive`, {
+          post_id,
+        });
 
-  const sharePost = async () => {
-    try {
-      const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
-        post_id: _post._id,
-      });
+        toast.success("Post Archived Successfully");
 
-      // Update share count
-      setPost((prev) => ({
-        ...prev,
-        shares_count: data.shares_count,
-      }));
-    } catch (error: any) {
-      // Reset share count
-      setPost((prev) => ({
-        ...prev,
-        shares_count: post.shares_count,
-      }));
+        if (currentPageRoute.isSinglePostPage) {
+          router.replace(AppRoutes.feed);
+          return;
+        }
 
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  };
-
-  const archivePost = async (post_id: string) => {
-    try {
-      await axiosNodeApi.post(`/api/socials/posts/archive`, {
-        post_id,
-      });
-
-      toast.success("Post Archived Successfully");
-
-      if (currentPageRoute.isSinglePostPage) {
-        router.replace(AppRoutes.feed);
-        return;
+        // Using onDeleted prop to remove the post from the feed page as archiving the post is same as deleting it
+        onDelete(post_id);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
       }
+    };
 
-      // Using onDeleted prop to remove the post from the feed page as archiving the post is same as deleting it
-      onDelete(post_id);
-    } catch (error: any) {
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  };
+    const deletePost = async () => {
+      try {
+        await axiosNodeApi.delete(`api/socials/posts/${_post._id}`);
 
-  const deletePost = async () => {
-    try {
-      await axiosNodeApi.delete(`api/socials/posts/${_post._id}`);
+        toast.success("Post Deleted Successfully");
 
-      toast.success("Post Deleted Successfully");
-
-      onDelete(_post._id);
-    } catch (error: any) {
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  };
-
-  const editPost = async (
-    post_id: string,
-    text: string,
-    delete_file_index: number[]
-  ) => {
-    try {
-      await axiosNodeApi.post(`api/socials/posts/edit`, {
-        post_id,
-        text,
-        delete_file_index,
-      });
-
-      // Get Updated Post
-      const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/${_post._id}`
-      );
-      setPost(data.post);
-      toast.success("Post Edited Successfully");
-      setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
-    } catch (error: any) {
-      setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
-      toast.error(
-        error?.response?.data?.message_description || "Something went wrong"
-      );
-    }
-  };
-
-  const handleMediaDel = (id: number) => {
-    // Append deleted item in array
-    setEditPostData((prev) => ({
-      ...prev,
-      editDeletedItems: [...prev.editDeletedItems, id],
-    }));
-  };
-
-  // toggle function to show/hide edit/delete popup
-  const togglePopFunc = async () => {
-    setTogglePop((prev) => !prev);
-  };
-  const toggleSharePopFunc = async () => {
-    setToggleSharePop((prev) => !prev);
-  };
-  const toggleSharePopFunc_2 = async () => {
-    setToggleSharePop_2((prev) => !prev);
-  };
-
-  // function to set max value of text
-  const handleEditTextLength = (e: any) => {
-    var box: HTMLElement | null = document.getElementById("trashRectedit");
-    if (box) {
-      box.style.transform = `translateY(${
-        -(e.target.value.length * 100) / 200 + 100
-      }%)`;
-      if ((e.target.value.length * 100) / 200 > 80) {
-        box.style.fill = `#E03434`;
-      } else {
-        box.style.fill = `#FEBF32`;
+        onDelete(_post._id);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
       }
-    }
-    setEditPostData((prev) => ({
-      ...prev,
-      editedPostText: e.target.value,
-    }));
-  };
+    };
 
-  // Timer to check 15 min difference
-  const timeNow = moment();
-  const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
-  // useEffect(() => {}, [editPostData.media]);
-  // console.log("editPostData::", editPostData);
-  return (
-    <div className={postCardContainer}>
-      {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
-        <div className={connectLines}></div>
-      )}
-      <div className={topCard}>
-        <div className={profileDetail}>
-          <Image
-            src={
-              _post.user.custom_image
-                ? _post.user.profile_image
-                : `${NODE_API_URL}${_post.user.profile_image}`
-            }
-            width={48}
-            height={48}
-            className="rounded-full dpImagePreview"
-            alt={_post.user.display_name}
-          />
-          <div>
-            <h5 className={PFName}>{_post.user.display_name}</h5>
-            <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
-          </div>
-        </div>
-        {_post.user._id === user?._id && (
-          <div ref={ref} className={toggleContainer}>
-            <button onClick={togglePopFunc}>
-              <DotsIcon />
-            </button>
-            {timeNow >= timeAfter15Minutes ? (
-              <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-                <button
-                  className={toggleListBtn}
-                  onClick={() => {
-                    archivePost(_post._id);
-                  }}
-                >
-                  <TrashIcon className={toggleListIcons} /> Archive
-                </button>
-              </div>
-            ) : (
-              <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-                <button
-                  className={toggleListBtn}
-                  onClick={() => {
-                    setEditPostData((prev) => ({
-                      ...prev,
-                      isEditModalVisible: true,
-                    }));
-                  }}
-                >
-                  <EditIcon className={toggleListIcons} /> Edit
-                </button>
-                <button
-                  className={toggleListBtn}
-                  onClick={() => {
-                    archivePost(_post._id);
-                  }}
-                >
-                  <TrashIcon className={toggleListIcons} /> Archive
-                </button>
-                <button className={toggleListBtn} onClick={deletePost}>
-                  <TrashIcon className={toggleListIcons} /> Delete
-                </button>
-              </div>
-            )}
-          </div>
+    const editPost = async (
+      post_id: string,
+      text: string,
+      delete_file_index: number[]
+    ) => {
+      try {
+        await axiosNodeApi.post(`api/socials/posts/edit`, {
+          post_id,
+          text,
+          delete_file_index,
+        });
+
+        // Get Updated Post
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/posts/${_post._id}`
+        );
+        setPost(data.post);
+        toast.success("Post Edited Successfully");
+        setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
+      } catch (error: any) {
+        setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
+        toast.error(
+          error?.response?.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
+    const handleMediaDel = (id: number) => {
+      // Append deleted item in array
+      setEditPostData((prev) => ({
+        ...prev,
+        editDeletedItems: [...prev.editDeletedItems, id],
+      }));
+    };
+
+    // toggle function to show/hide edit/delete popup
+    const togglePopFunc = async () => {
+      setTogglePop((prev) => !prev);
+    };
+    const toggleSharePopFunc = async () => {
+      setToggleSharePop((prev) => !prev);
+    };
+    const toggleSharePopFunc_2 = async () => {
+      setToggleSharePop_2((prev) => !prev);
+    };
+
+    // function to set max value of text
+    const handleEditTextLength = (e: any) => {
+      var box: HTMLElement | null = document.getElementById("trashRectedit");
+      if (box) {
+        box.style.transform = `translateY(${
+          -(e.target.value.length * 100) / 200 + 100
+        }%)`;
+        if ((e.target.value.length * 100) / 200 > 80) {
+          box.style.fill = `#E03434`;
+        } else {
+          box.style.fill = `#FEBF32`;
+        }
+      }
+      setEditPostData((prev) => ({
+        ...prev,
+        editedPostText: e.target.value,
+      }));
+    };
+
+    // Timer to check 15 min difference
+    const timeNow = moment();
+    const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
+    // useEffect(() => {}, [editPostData.media]);
+    // console.log("editPostData::", editPostData);
+    return (
+      <div className={postCardContainer} ref={ref}>
+        {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+          <div className={connectLines}></div>
         )}
-      </div>
-      <div
-        className={`${maincontentContainer} ${
-          (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-          " ml-16 "
-        }`}
-      >
-        <div className={mediaContainer}>
-          {_post.media && (
-            <Carousel
-              showStatus={false}
-              showThumbs={false}
-              showIndicators={false}
-              showArrows={
-                _post.media && _post.media.length === 1 ? false : true
+        <div className={topCard}>
+          <div className={profileDetail}>
+            <Image
+              src={
+                _post.user.custom_image
+                  ? _post.user.profile_image
+                  : `${NODE_API_URL}${_post.user.profile_image}`
               }
-            >
-              {_post.media.map((media, index) =>
-                media.type == "image" ? (
-                  <Image
-                    key={index}
-                    src={media.url}
-                    width={452}
-                    height={312}
-                    alt={String(index) + "post image"}
-                    className={postImageStyling}
-                  />
-                ) : (
-                  <video
-                    key={index}
-                    src={media.url}
-                    width={452}
-                    height={312}
-                    //alt="post media"
-                    className={postImageStyling}
-                    controls
-                  />
-                )
+              width={48}
+              height={48}
+              className="rounded-full dpImagePreview"
+              alt={_post.user.display_name}
+            />
+            <div>
+              <h5 className={PFName}>{_post.user.display_name}</h5>
+              <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
+            </div>
+          </div>
+          {_post.user._id === user?._id && (
+            <div ref={toggleContainerRef} className={toggleContainer}>
+              <button onClick={togglePopFunc}>
+                <DotsIcon />
+              </button>
+              {timeNow >= timeAfter15Minutes ? (
+                <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+                  <button
+                    className={toggleListBtn}
+                    onClick={() => {
+                      archivePost(_post._id);
+                    }}
+                  >
+                    <TrashIcon className={toggleListIcons} /> Archive
+                  </button>
+                </div>
+              ) : (
+                <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+                  <button
+                    className={toggleListBtn}
+                    onClick={() => {
+                      setEditPostData((prev) => ({
+                        ...prev,
+                        isEditModalVisible: true,
+                      }));
+                    }}
+                  >
+                    <EditIcon className={toggleListIcons} /> Edit
+                  </button>
+                  <button
+                    className={toggleListBtn}
+                    onClick={() => {
+                      archivePost(_post._id);
+                    }}
+                  >
+                    <TrashIcon className={toggleListIcons} /> Archive
+                  </button>
+                  <button className={toggleListBtn} onClick={deletePost}>
+                    <TrashIcon className={toggleListIcons} /> Delete
+                  </button>
+                </div>
               )}
-            </Carousel>
+            </div>
           )}
         </div>
-        {_post.text_content && (
-          <div className={textContainer}>
-            <p className={textContainerContent}>{_post.text_content}</p>
+        <div
+          className={`${maincontentContainer} ${
+            (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            " ml-16 "
+          }`}
+        >
+          <div className={mediaContainer}>
+            {_post.media && (
+              <Carousel
+                showStatus={false}
+                showThumbs={false}
+                showIndicators={false}
+                showArrows={
+                  _post.media && _post.media.length === 1 ? false : true
+                }
+              >
+                {_post.media.map((media, index) =>
+                  media.type == "image" ? (
+                    <Image
+                      key={index}
+                      src={media.url}
+                      width={452}
+                      height={312}
+                      alt={String(index) + "post image"}
+                      className={postImageStyling}
+                    />
+                  ) : (
+                    <video
+                      key={index}
+                      src={media.url}
+                      width={452}
+                      height={312}
+                      //alt="post media"
+                      className={postImageStyling}
+                      controls
+                    />
+                  )
+                )}
+              </Carousel>
+            )}
           </div>
-        )}
-      </div>
-      <div
-        className={`${footerBtnContainer} ${
-          (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-          " ml-16 "
-        } ${
-          !(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-          " pb-4 border-b-2 border-gray-shade-3 "
-        }`}
-      >
-        {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+          {_post.text_content && (
+            <div className={textContainer}>
+              <p className={textContainerContent}>{_post.text_content}</p>
+            </div>
+          )}
+        </div>
+        <div
+          className={`${footerBtnContainer} ${
+            (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            " ml-16 "
+          } ${
+            !(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            " pb-4 border-b-2 border-gray-shade-3 "
+          }`}
+        >
+          {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+            <button
+              className={footerdetailReplyBtn}
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              <MessageIcon /> Reply
+            </button>
+          )}
+          <button className={footerdetailBtn}>
+            <MessageIcon /> {_post.replies_count}
+          </button>
           <button
-            className={footerdetailReplyBtn}
-            onClick={() => {
-              setShowModal(true);
-            }}
+            className={footerdetailBtn}
+            onClick={() => likePost(_post._id)}
           >
-            <MessageIcon /> Reply
+            <LikeIcon
+              className={
+                _post.liked_by_loggedin_user ? "stroke-brand-primary" : ""
+              }
+            />{" "}
+            <span
+              className={`${
+                _post.liked_by_loggedin_user ? "text-brand-primary" : ""
+              }`}
+            >
+              {_post.likes_count > 0 && _post.likes_count}
+            </span>
           </button>
-        )}
-        <button className={footerdetailBtn}>
-          <MessageIcon /> {_post.replies_count}
-        </button>
-        <button className={footerdetailBtn} onClick={() => likePost(_post._id)}>
-          <LikeIcon
-            className={
-              _post.liked_by_loggedin_user ? "stroke-brand-primary" : ""
-            }
-          />{" "}
-          <span
-            className={`${
-              _post.liked_by_loggedin_user ? "text-brand-primary" : ""
-            }`}
-          >
-            {_post.likes_count > 0 && _post.likes_count}
-          </span>
-        </button>
-        <div ref={ref2} className={toggleContainer}>
-          <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-            <ShareIcon /> {_post.shares_count}
-          </button>
+          <div ref={ref2} className={toggleContainer}>
+            <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
+              <ShareIcon /> {_post.shares_count}
+            </button>
 
-          <div
-            className={`${SharetoggleList} ${toggleSharePop && "!block z-50"}`}
-          >
-            {/* <button className={SharetoggleListBtn}>
+            <div
+              className={`${SharetoggleList} ${
+                toggleSharePop && "!block z-50"
+              }`}
+            >
+              {/* <button className={SharetoggleListBtn}>
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
           </button> */}
-            <button onClick={copyShareUrl} className={SharetoggleListBtn}>
-              <LinkIcon className={SharetoggleListIcons} /> Copy link
-            </button>
-            <button
-              className={shareBtnContainer}
-              onClick={toggleSharePopFunc_2}
-            >
-              <div className={SharetoggleListBtn}>
-                <WorldIcon className={SharetoggleListIcons} /> Share Via...
-              </div>
-              <ArrowRightIcon />
-            </button>
-          </div>
-          <div
-            className={`${SharetoggleList} ${
-              toggleSharePop_2 && "!block z-50"
-            }`}
-          >
-            <button
-              className={SharetoggleListBtn}
-              onClick={toggleSharePopFunc_2}
-            >
-              <ArrowLeftIcon /> Share Via
-            </button>
-            <div className={SharetoggleListBtn2}>
-              <WhatsappShareButton
-                onClick={sharePost}
-                url={shareUrl}
-                className="flex items-center gap-3 w-full h-full !px-5 !py-4"
+              <button onClick={copyShareUrl} className={SharetoggleListBtn}>
+                <LinkIcon className={SharetoggleListIcons} /> Copy link
+              </button>
+              <button
+                className={shareBtnContainer}
+                onClick={toggleSharePopFunc_2}
               >
-                <Image
-                  src="/images/whatsapp.png"
-                  width={24}
-                  height={24}
-                  alt="whatapp"
-                />
-                WhatsApp
-              </WhatsappShareButton>
+                <div className={SharetoggleListBtn}>
+                  <WorldIcon className={SharetoggleListIcons} /> Share Via...
+                </div>
+                <ArrowRightIcon />
+              </button>
             </div>
-            <div className={SharetoggleListBtn2}>
-              <TwitterShareButton
-                onClick={sharePost}
-                url={shareUrl}
-                className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
+            <div
+              className={`${SharetoggleList} ${
+                toggleSharePop_2 && "!block z-50"
+              }`}
+            >
+              <button
+                className={SharetoggleListBtn}
+                onClick={toggleSharePopFunc_2}
               >
-                <Image
-                  src="/images/twitter2.png"
-                  width={24}
-                  height={24}
-                  alt="twitter"
-                />
-                Twitter
-              </TwitterShareButton>
+                <ArrowLeftIcon /> Share Via
+              </button>
+              <div className={SharetoggleListBtn2}>
+                <WhatsappShareButton
+                  onClick={sharePost}
+                  url={shareUrl}
+                  className="flex items-center gap-3 w-full h-full !px-5 !py-4"
+                >
+                  <Image
+                    src="/images/whatsapp.png"
+                    width={24}
+                    height={24}
+                    alt="whatapp"
+                  />
+                  WhatsApp
+                </WhatsappShareButton>
+              </div>
+              <div className={SharetoggleListBtn2}>
+                <TwitterShareButton
+                  onClick={sharePost}
+                  url={shareUrl}
+                  className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
+                >
+                  <Image
+                    src="/images/twitter2.png"
+                    width={24}
+                    height={24}
+                    alt="twitter"
+                  />
+                  Twitter
+                </TwitterShareButton>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
-        <div className={showThreadBtnContainer}>
-          <Image
-            src={
-              _post?.user?.custom_image
-                ? _post.user.profile_image
-                : `${NODE_API_URL}${_post.user.profile_image}`
-            }
-            width={30}
-            height={30}
-            className="rounded-full dpImagePreview"
-            alt={_post.user.display_name}
-          />
-          <Link
-            href={{
-              pathname: AppRoutes.single_post,
-              query: {
-                account_address: _post.user.account_address,
-                post_id: _post._id,
-              },
+        {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+          <div className={showThreadBtnContainer}>
+            <Image
+              src={
+                _post?.user?.custom_image
+                  ? _post.user.profile_image
+                  : `${NODE_API_URL}${_post.user.profile_image}`
+              }
+              width={30}
+              height={30}
+              className="rounded-full dpImagePreview"
+              alt={_post.user.display_name}
+            />
+            <Link
+              href={{
+                pathname: AppRoutes.single_post,
+                query: {
+                  account_address: _post.user.account_address,
+                  post_id: _post._id,
+                },
+              }}
+            >
+              <a className={showThreadBtn}>Show Thread</a>
+            </Link>
+          </div>
+        )}
+        <div className={repliesContainer} onScroll={handleScroll}>
+          {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
+            <>
+              {replies?.length > 0 &&
+                replies.map((reply) => {
+                  return <ReplyPost key={reply._id} post={reply} />;
+                })}
+              {loader && (
+                <div className="componentLoaderContainer">
+                  <Bars
+                    height="25"
+                    width="25"
+                    color="#FEBF32"
+                    ariaLabel="bars-loading"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Reply Post Modal */}
+        {showModal && (
+          <CustomModal onClose={closePostModel} title={"Reply"}>
+            <div className={modalBodyWrapper}>
+              <div className={contactDetail}>
+                <Image
+                  src={`${NODE_API_URL}${user?.profile_image}`}
+                  width={44}
+                  height={44}
+                  alt={user?.display_name ?? "profile image"}
+                  className="rounded-full dpImagePreview"
+                />
+                <h5 className={cdName}>{user?.display_name}</h5>
+              </div>
+              <div className={maincontentContainer}>
+                <div
+                  className={`${mediaContainer}
+                    `}
+                >
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={previewFilesUI.length === 1 ? false : true}
+                  >
+                    {previewFilesUI}
+                  </Carousel>
+                </div>
+                <div className={inputTextContainer}>
+                  <textarea
+                    className={ModaltextContainerContent}
+                    name=""
+                    id="posttext"
+                    cols={12}
+                    rows={4}
+                    placeholder="Type Here"
+                    maxLength={200}
+                    onChange={handleTextLength}
+                  ></textarea>
+                </div>
+              </div>
+              <div className={modalFooter}>
+                <div className={leftActionBtns}>
+                  <label className={`${uploadBtn} text-yellow-theme`}>
+                    <PhotoIcon />
+                    Photo
+                    <input
+                      type="file"
+                      id="files-photo"
+                      name="photos-file"
+                      accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "images");
+                      }}
+                    />
+                  </label>
+                  <label className={`${uploadBtn} text-[#157AFB]`}>
+                    <VideoIcon />
+                    Video
+                    <input
+                      type="file"
+                      id="files-videos"
+                      name="videos-file"
+                      accept=".webm,.mp4,.mpg,.avi,.m4v"
+                      style={{ display: "none" }}
+                      multiple
+                      onChange={(e) => {
+                        handleSelectFile(e, "videos");
+                      }}
+                    />
+                  </label>
+                  <button className={`${uploadBtn} text-[#00BF96]`}>
+                    <EmojiIcon />
+                    Emoji
+                  </button>
+                </div>
+                <div className={RightActionBtns}>
+                  <AnimateTrashIcon />
+                  <div className={divider}></div>
+                  <Button
+                    title={"Post"}
+                    variant="v1"
+                    className="max-w-[140px]"
+                    onClick={createPost}
+                  />
+                </div>
+              </div>
+            </div>
+          </CustomModal>
+        )}
+
+        {/* edit modal */}
+        {editPostData.isEditModalVisible && (
+          <CustomModal
+            onClose={() => {
+              setEditPostData((prev) => ({
+                ...prev,
+                isEditModalVisible: false,
+              }));
             }}
+            title={"Edit post"}
           >
-            <a className={showThreadBtn}>Show Thread</a>
-          </Link>
-        </div>
-      )}
-      <div className={repliesContainer} onScroll={handleScroll}>
-        {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
-          <>
-            {replies?.length > 0 &&
-              replies.map((reply) => {
-                return <ReplyPost key={reply._id} post={reply} />;
-              })}
-            {loader && (
-              <div className="componentLoaderContainer">
-                <Bars
-                  height="25"
-                  width="25"
-                  color="#FEBF32"
-                  ariaLabel="bars-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  visible={true}
+            <div className={modalBodyWrapper}>
+              <div className={contactDetail}>
+                <Image
+                  src={`${NODE_API_URL}${user?.profile_image}`}
+                  width={44}
+                  height={44}
+                  className="rounded-full dpImagePreview"
+                  alt={user?.display_name ?? "profile image"}
                 />
+                <h5 className={cdName}>{user?.display_name}</h5>
               </div>
-            )}
-          </>
+              <div className={maincontentContainer}>
+                <div
+                  className={`${mediaContainer}
+                    `}
+                >
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={previewFilesUI.length === 1 ? false : true}
+                  >
+                    {/* {editPostData.media?.map((data, index) => { */}
+                    {post.media?.map((data, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="h-full flex items-center justify-center relative"
+                        >
+                          <Image
+                            src={data?.url}
+                            width={452}
+                            height={312}
+                            className={
+                              "object-contain object-center w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block"
+                            }
+                            alt={user?.display_name ?? "profile image"}
+                          />
+                          <button
+                            className={imageDelBtn}
+                            onClick={() => {
+                              handleMediaDel(index);
+                              // setEditPostData((prev) => ({
+                              //   ...prev,
+                              //   media: prev.media.filter(
+                              //     (filterdata) => filterdata.url !== data.url
+                              //   ),
+                              // }));
+                            }}
+                          >
+                            x
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </Carousel>
+                </div>
+                <div className={inputTextContainer}>
+                  <textarea
+                    className={ModaltextContainerContent}
+                    id="posttext"
+                    cols={12}
+                    rows={4}
+                    placeholder="Type Here"
+                    maxLength={200}
+                    onChange={handleEditTextLength}
+                    value={editPostData.editedPostText}
+                  ></textarea>
+                </div>
+              </div>
+              <div className={`${modalFooter} justify-end`}>
+                <div className={RightActionBtns}>
+                  <AnimateTrashIcon />
+                  <div className={divider}></div>
+                  <Button
+                    title={"Update"}
+                    variant="v1"
+                    className="max-w-[140px]"
+                    onClick={() => {
+                      editPost(
+                        _post._id,
+                        editPostData.editedPostText,
+                        editPostData.editDeletedItems
+                      );
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </CustomModal>
         )}
       </div>
-
-      {/* Reply Post Modal */}
-      {showModal && (
-        <CustomModal onClose={closePostModel} title={"Reply"}>
-          <div className={modalBodyWrapper}>
-            <div className={contactDetail}>
-              <Image
-                src={`${NODE_API_URL}${user?.profile_image}`}
-                width={44}
-                height={44}
-                alt={user?.display_name ?? "profile image"}
-                className="rounded-full dpImagePreview"
-              />
-              <h5 className={cdName}>{user?.display_name}</h5>
-            </div>
-            <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer}
-                    `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
-                >
-                  {previewFilesUI}
-                </Carousel>
-              </div>
-              <div className={inputTextContainer}>
-                <textarea
-                  className={ModaltextContainerContent}
-                  name=""
-                  id="posttext"
-                  cols={12}
-                  rows={4}
-                  placeholder="Type Here"
-                  maxLength={200}
-                  onChange={handleTextLength}
-                ></textarea>
-              </div>
-            </div>
-            <div className={modalFooter}>
-              <div className={leftActionBtns}>
-                <label className={`${uploadBtn} text-yellow-theme`}>
-                  <PhotoIcon />
-                  Photo
-                  <input
-                    type="file"
-                    id="files-photo"
-                    name="photos-file"
-                    accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
-                    style={{ display: "none" }}
-                    multiple
-                    onChange={(e) => {
-                      handleSelectFile(e, "images");
-                    }}
-                  />
-                </label>
-                <label className={`${uploadBtn} text-[#157AFB]`}>
-                  <VideoIcon />
-                  Video
-                  <input
-                    type="file"
-                    id="files-videos"
-                    name="videos-file"
-                    accept=".webm,.mp4,.mpg,.avi,.m4v"
-                    style={{ display: "none" }}
-                    multiple
-                    onChange={(e) => {
-                      handleSelectFile(e, "videos");
-                    }}
-                  />
-                </label>
-                <button className={`${uploadBtn} text-[#00BF96]`}>
-                  <EmojiIcon />
-                  Emoji
-                </button>
-              </div>
-              <div className={RightActionBtns}>
-                <AnimateTrashIcon />
-                <div className={divider}></div>
-                <Button
-                  title={"Post"}
-                  variant="v1"
-                  className="max-w-[140px]"
-                  onClick={createPost}
-                />
-              </div>
-            </div>
-          </div>
-        </CustomModal>
-      )}
-
-      {/* edit modal */}
-      {editPostData.isEditModalVisible && (
-        <CustomModal
-          onClose={() => {
-            setEditPostData((prev) => ({
-              ...prev,
-              isEditModalVisible: false,
-            }));
-          }}
-          title={"Edit post"}
-        >
-          <div className={modalBodyWrapper}>
-            <div className={contactDetail}>
-              <Image
-                src={`${NODE_API_URL}${user?.profile_image}`}
-                width={44}
-                height={44}
-                className="rounded-full dpImagePreview"
-                alt={user?.display_name ?? "profile image"}
-              />
-              <h5 className={cdName}>{user?.display_name}</h5>
-            </div>
-            <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer}
-                    `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
-                >
-                  {/* {editPostData.media?.map((data, index) => { */}
-                  {post.media?.map((data, index) => {
-                    return (
-                      <div
-                        key={index}
-                        className="h-full flex items-center justify-center relative"
-                      >
-                        <Image
-                          src={data?.url}
-                          width={452}
-                          height={312}
-                          className={
-                            "object-contain object-center w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block"
-                          }
-                          alt={user?.display_name ?? "profile image"}
-                        />
-                        <button
-                          className={imageDelBtn}
-                          onClick={() => {
-                            handleMediaDel(index);
-                            // setEditPostData((prev) => ({
-                            //   ...prev,
-                            //   media: prev.media.filter(
-                            //     (filterdata) => filterdata.url !== data.url
-                            //   ),
-                            // }));
-                          }}
-                        >
-                          x
-                        </button>
-                      </div>
-                    );
-                  })}
-                </Carousel>
-              </div>
-              <div className={inputTextContainer}>
-                <textarea
-                  className={ModaltextContainerContent}
-                  id="posttext"
-                  cols={12}
-                  rows={4}
-                  placeholder="Type Here"
-                  maxLength={200}
-                  onChange={handleEditTextLength}
-                  value={editPostData.editedPostText}
-                ></textarea>
-              </div>
-            </div>
-            <div className={`${modalFooter} justify-end`}>
-              <div className={RightActionBtns}>
-                <AnimateTrashIcon />
-                <div className={divider}></div>
-                <Button
-                  title={"Update"}
-                  variant="v1"
-                  className="max-w-[140px]"
-                  onClick={() => {
-                    editPost(
-                      _post._id,
-                      editPostData.editedPostText,
-                      editPostData.editDeletedItems
-                    );
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-        </CustomModal>
-      )}
-    </div>
-  );
-};
+    );
+  }
+);
+SinglePost.displayName = "SinglePost";
 
 // styling
 const postCardContainer = ctl(`
