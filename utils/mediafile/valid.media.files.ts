@@ -53,6 +53,14 @@ export const checkValidVideoFile = (file_details: File): string => {
   return "";
 };
 
+export type fileAlreadySelected = {
+  file_name: string;
+  file_size: number;
+  file_type: string;
+  lastModified: number;
+  index_of_file_list: number;
+  index_of_file: number;
+};
 // Function will check if file already exits in selected file list or not
 // Function will check following things
 // file name
@@ -61,7 +69,8 @@ export const checkValidVideoFile = (file_details: File): string => {
 export const checkFileAlreadyAddedInSelectedFile = (
   fileListArray: Array<FileList>,
   selected_files: FileList
-): boolean => {
+): fileAlreadySelected[] => {
+  let fileAlreadyExits: fileAlreadySelected[] = [];
   //
   for (
     let selected_file_index = 0;
@@ -83,13 +92,20 @@ export const checkFileAlreadyAddedInSelectedFile = (
           fileListArray[files_list_index][file_index].lastModified ==
             selected_files[selected_file_index].lastModified
         ) {
-          return true;
+          fileAlreadyExits.push({
+            file_name: selected_files[selected_file_index].name,
+            file_size: selected_files[selected_file_index].size,
+            file_type: selected_files[selected_file_index].type,
+            lastModified: selected_files[selected_file_index].lastModified,
+            index_of_file_list: Number(files_list_index),
+            index_of_file: file_index,
+          });
         }
       }
     }
   }
 
-  return false;
+  return fileAlreadyExits;
 };
 
 export type FileChunksChunksCalculations = {
@@ -156,4 +172,45 @@ export const post_file_details = async (
   }
 
   return fileChunksDetails;
+};
+
+export type DuplicateFileDetails = {
+  deletedFiles: string[];
+  duplicateFiles: string[];
+};
+
+export const checkIfSelectedFileExitsInDeletedFile = (
+  duplicateFileDetails: fileAlreadySelected[],
+  deletedFileList: string[]
+): DuplicateFileDetails => {
+  //
+  let duplicateFiles: string[] = [];
+  let deletedFiles: string[] = [];
+
+  for (
+    let file_index = 0;
+    file_index < duplicateFileDetails.length;
+    file_index++
+  ) {
+    let fileExistsInDeleted = deletedFileList.indexOf(
+      duplicateFileDetails[file_index].index_of_file_list +
+        "," +
+        duplicateFileDetails[file_index].index_of_file
+    );
+    if (fileExistsInDeleted > -1) {
+      //Remove from deleted list
+      deletedFileList.splice(fileExistsInDeleted, 1);
+    } else {
+      duplicateFiles.push(
+        duplicateFileDetails[file_index].index_of_file_list +
+          "," +
+          duplicateFileDetails[file_index].index_of_file
+      );
+    }
+  }
+  let response: DuplicateFileDetails = {
+    duplicateFiles: duplicateFiles,
+    deletedFiles: deletedFiles,
+  };
+  return response;
 };

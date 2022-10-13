@@ -12,6 +12,8 @@ import {
   checkFileAlreadyAddedInSelectedFile,
   post_file_details,
   FileChunksChunksCalculations,
+  fileAlreadySelected,
+  checkIfSelectedFileExitsInDeletedFile,
 } from "@/utils/mediafile/valid.media.files";
 import { Post } from "@/models/post";
 import {
@@ -128,7 +130,6 @@ export function usePostUpload({
         post_id: currentPostID,
         file_index: file_index,
       });
-      console.log("Uploading new file : ", file_index);
       await UploadFiles(FileListDetails, file_index + 1);
     } catch (error) {
       console.log("Failed to complete upload : ", error);
@@ -178,8 +179,6 @@ export function usePostUpload({
           //Storing data
           let dataRead = event?.target?.result;
 
-          console.log("Data Read : ", dataRead);
-
           let header = {
             headers: {
               "Content-Type": "application/octet-stream",
@@ -200,25 +199,15 @@ export function usePostUpload({
 
           await axiosNodeApi
             .post("/api/socials/posts-media/upload", dataRead, header)
-            .then((image_upload_result) => {
-              console.log("Chunk uploaded success fully");
+            .then(() => {
               //Checking all chunks are uploaded
-              console.log(
-                file_details,
-                "\n ",
-                file_details.chunks_range,
-                file_details.chunks_range.length,
-                chunk_index
-              );
               if (file_details.chunks_range.length - 1 == chunk_index) {
-                console.log("File upload complete");
                 //All chunks are uploaded now need to upload new file
                 CompleteMultipartUpload(
                   filesChunksDetails,
                   uploading_file_index
                 );
               } else {
-                console.log("Uploading chunks");
                 //Upload Next Chunk
                 UploadChunks(
                   filesChunksDetails,
@@ -244,16 +233,8 @@ export function usePostUpload({
     uploading_file_index: number
   ) => {
     try {
-      console.log(
-        "File chunks details : ",
-        filesChunksDetails,
-        filesChunksDetails.length,
-        uploading_file_index
-      );
       if (uploading_file_index >= filesChunksDetails.length) {
         // TODO: Checking if file list
-        console.log("File Upload complete show message ");
-
         await getNewPostAndUpdateState();
 
         // Close Post Modal on successful upload
@@ -274,14 +255,6 @@ export function usePostUpload({
     previewIndex: string
   ) => {
     try {
-      console.log(
-        "Delete file index : ",
-        fileIndex,
-        fileIndex,
-        previewIndex,
-        "\n Preview : ",
-        previewFileList
-      );
       //Check if single file in fileList
       let singleFileInArray = false;
 
@@ -300,10 +273,6 @@ export function usePostUpload({
             return true;
           }
         );
-        console.log(
-          "Removed value from array because no file : ",
-          updatedFileListArray
-        );
 
         setuserSelectedFileListArray(updatedFileListArray);
       } else {
@@ -321,29 +290,26 @@ export function usePostUpload({
 
           //Doesn't exits in the database
           await setDeletedFileIndex(deleted_file_index);
-          console.log(
-            "Cannot remove file because their is more than one file so adding it "
-          );
         }
       }
 
       //Remove Selected file
-      console.log("Before removing file : ", previewFileList);
+      //console.log("Before removing file : ", previewFileList);
       let updateFile = await previewFileList.filter((value, index) => {
-        console.log(value, "Index ", index, "Delte index ", previewIndex);
+        //console.log(value, "Index ", index, "Delte index ", previewIndex);
         if (Number(index) == Number(previewIndex)) {
           return false;
         }
         return true;
       });
 
-      console.log("After removing file ", updateFile);
+      //console.log("After removing file ", updateFile);
       previewFileList = updateFile;
 
       // If all files are deleted then clearning array
       if (previewFileList.length < 1) {
         //
-        console.log("Updating it empty");
+        //console.log("Updating it empty");
         setuserSelectedFileListArray([]);
       }
 
@@ -366,18 +332,18 @@ export function usePostUpload({
     setLoadingState(true);
     setPostError("");
     try {
-      console.log("Create post function called : ", event);
-      console.log("User Selected List array : ", userSelectedFileListArray);
+      //console.log("Create post function called : ", event);
+      //console.log("User Selected List array : ", userSelectedFileListArray);
 
-      console.log("Deleted index : ", deletedFileIndexs);
+      //console.log("Deleted index : ", deletedFileIndexs);
       let filesChunksDetails: Array<FileChunksChunksCalculations> =
         await post_file_details(userSelectedFileListArray, deletedFileIndexs);
 
-      console.log("Calculated chunks : ", filesChunksDetails);
+      //console.log("Calculated chunks : ", filesChunksDetails);
       //Setting details in filesChunksDetails
       setselectedFileDetail(filesChunksDetails);
 
-      console.log("Reply address : ", reply_address, reply_post_id);
+      //console.log("Reply address : ", reply_address, reply_post_id);
       // No need to pass user address
       let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
         post_files_detail: filesChunksDetails,
@@ -432,8 +398,8 @@ export function usePostUpload({
     let listParent: any = document.querySelector(".slider.animated");
     let ListItem = e.target?.parentElement?.parentElement?.parentElement;
     // adding transform when last element is deleted
-    console.log("e.target", ListItem);
-    console.log("listParent.lastElementChild", listParent.lastElementChild);
+    //console.log("e.target", ListItem);
+    //console.log("listParent.lastElementChild", listParent.lastElementChild);
 
     if (
       ListItem.classList.contains("slide") &&
@@ -446,7 +412,7 @@ export function usePostUpload({
       let listCount = listParent?.childElementCount - 2;
       listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
       setLastItem(listCount);
-      console.log("last Item", lastItem);
+      //console.log("last Item", lastItem);
 
       // ListItem?.previousSibling?.classList.replace("previous", "selected");
       // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
@@ -455,7 +421,7 @@ export function usePostUpload({
   // Function will display social media in pop up
   const createSelectedFileUI = (previewUrlList: Array<PreviewSelectedFile>) => {
     try {
-      console.log("Preview list : ", previewUrlList);
+      //console.log("Preview list : ", previewUrlList);
       //
       let displaySelectedFile: JSX.Element[] = [];
 
@@ -537,7 +503,12 @@ export function usePostUpload({
           );
         }
       }
-      console.log("Display created for image : ", displaySelectedFile);
+      //console.log("Display created for image : ", displaySelectedFile);
+      if (displaySelectedFile.length == 0) {
+        setDeletedFileIndex([]);
+        previewFileList = [];
+        setselectedFileDetail([]);
+      }
       // Displaying preview
       setpreviewFilesUI(displaySelectedFile);
     } catch (error) {
@@ -545,35 +516,47 @@ export function usePostUpload({
     }
   };
 
+  //selected_files list will contain all the files selected by user
+  //
   const addSelectedFiles = (selected_files: FileList): boolean => {
     try {
-      console.log("Add selected file event called!!");
       //TO DO : Remove Selected filed
       let alreadyAddedFileList: Array<FileList> = userSelectedFileListArray;
 
-      console.log("Currently Selected filelist is : ", alreadyAddedFileList);
+      let addFile = true;
 
-      // Checking file already exits in selected file or not
-      let fileExits: boolean = checkFileAlreadyAddedInSelectedFile(
-        alreadyAddedFileList,
-        selected_files
-      );
-
-      // If file exits
-      if (fileExits) {
-        console.log(
-          "Selected file already exits in the database : ",
-          fileExits
+      // Fetching list of files already selected by user already or deleted
+      let filesAlreadySelectedByUser: fileAlreadySelected[] =
+        checkFileAlreadyAddedInSelectedFile(
+          alreadyAddedFileList,
+          selected_files
         );
-        //TO DO : Show error message that file already exits in the selected file
-        return false;
+      // Files already selected by user
+      if (filesAlreadySelectedByUser.length > 1) {
+        // Checking if file earlier delete by user or not
+        //
+        let duplicateFileDetails = checkIfSelectedFileExitsInDeletedFile(
+          filesAlreadySelectedByUser,
+          deletedFileIndexs
+        );
+
+        if (filesAlreadySelectedByUser.length > 0) {
+          addFile = false;
+        }
+        setDeletedFileIndex(duplicateFileDetails.deletedFiles);
+
+        if (duplicateFileDetails.duplicateFiles.length > 0) {
+          //TO DO : Show error message file already exits
+          //Duplicate file is more than selected file
+          return false;
+        }
       }
 
-      console.log("Already existing files are :  ", alreadyAddedFileList);
-      console.log("Selected file : ", selected_files);
       // Pushing FileList to Array of FileList
-      alreadyAddedFileList.push(selected_files);
-      setuserSelectedFileListArray(alreadyAddedFileList);
+      if (addFile) {
+        alreadyAddedFileList.push(selected_files);
+        setuserSelectedFileListArray(alreadyAddedFileList);
+      }
 
       //
       let previewUrlList: Array<PreviewSelectedFile> = [];
@@ -585,28 +568,28 @@ export function usePostUpload({
         filelist_index < alreadyAddedFileList.length;
         filelist_index++
       ) {
-        console.log("XXXX Checking fileList index : ", typeof filelist_index);
         // Running loop on each file
         for (
           let file_index = 0;
           file_index < alreadyAddedFileList[filelist_index].length;
           file_index++
         ) {
-          console.log("XXX Type of : ", typeof file_index);
-          console.log(
-            "Creating blob for filr : ",
-            alreadyAddedFileList[filelist_index][file_index]
-          );
-          // Check if file is not deleted by user
-          // To Add FileListArray Index with FileList check if exists in file
-          previewUrlList.push({
-            fileListIndex: filelist_index,
-            fileIndex: file_index,
-            fileType: alreadyAddedFileList[filelist_index][file_index].type,
-            fileBlobURL: URL.createObjectURL(
-              alreadyAddedFileList[filelist_index][file_index]
-            ),
-          });
+          if (
+            deletedFileIndexs.indexOf(
+              String(filelist_index) + "," + String(file_index)
+            ) == -1
+          ) {
+            // Check if file is not deleted by user
+            // To Add FileListArray Index with FileList check if exists in file
+            previewUrlList.push({
+              fileListIndex: filelist_index,
+              fileIndex: file_index,
+              fileType: alreadyAddedFileList[filelist_index][file_index].type,
+              fileBlobURL: URL.createObjectURL(
+                alreadyAddedFileList[filelist_index][file_index]
+              ),
+            });
+          }
         }
       }
 
@@ -659,7 +642,6 @@ export function usePostUpload({
 
       //
       if (validFileType !== "") {
-        console.log("Invalid file type");
         toast.error(validFileType);
         return;
       }
