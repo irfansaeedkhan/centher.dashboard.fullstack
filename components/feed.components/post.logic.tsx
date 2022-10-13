@@ -22,6 +22,7 @@ import {
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
 import { CrossIcon } from "@/assets/svgs";
+import { number } from "joi";
 
 type PreviewSelectedFile = {
   fileListIndex: number;
@@ -35,12 +36,14 @@ interface PostUploadOptions {
   reply?: boolean;
   reply_address?: string;
   reply_post_id?: string;
+  replyCount?: number;
 }
 
 export function usePostUpload({
   reply = false,
   reply_address = "",
   reply_post_id = "",
+  replyCount = 0,
   onPostCreated,
 }: PostUploadOptions) {
   const incrementPostsCount = useProfileCardStore(
@@ -51,6 +54,7 @@ export function usePostUpload({
   const [loadingState, setLoadingState] = useState(false);
   const [lastItem, setLastItem] = useState<number>();
   const [postError, setPostError] = useState("");
+  const [totalReplyCount, setTotalReplyCount] = useState<number>(replyCount);
   //It will store list of files selected by the user
   // const [userSelectedFileListArray, setuserSelectedFileListArray] = useState<
   //   FileList[]
@@ -357,6 +361,10 @@ export function usePostUpload({
         reply_address: reply_address,
         reply_post_id: reply_post_id,
       });
+
+      if (reply && data.message_description == "Post created successfully") {
+        setTotalReplyCount((prev) => Number(prev) + 1);
+      }
 
       currentPostID = data.post_id;
 
@@ -673,6 +681,7 @@ export function usePostUpload({
     showModal,
     setShowModal,
     previewFilesUI,
+    totalReplyCount,
     handleTextLength,
     createPost,
     closePostModel,
