@@ -1,7 +1,8 @@
 // React, Next, NPM Packages
 import { useState, useRef, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
-import Image from "next/future/image";
+//import Image from "next/future/image";
+import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
@@ -62,7 +63,13 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     <div className={postCardContainer}>
       <div className={topCard}>
         <Image
-          src={"/images/feedprofilepic.png"}
+          src={
+            user?.custom_image != undefined
+              ? user?.custom_image
+                ? user?.profile_image
+                : `${NODE_API_URL}${user?.profile_image}`
+              : ""
+          }
           width={48}
           height={48}
           className="rounded-full dpImagePreview"

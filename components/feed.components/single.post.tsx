@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
 //import Image from "next/future/image";
+import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import { userAgent } from "next/server";
 import ctl from "@netlify/classnames-template-literals";
@@ -62,6 +63,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [replies, setReplies] = useState<Post[]>([]);
     const [skip, setSkip] = useState(0);
     const [loader, setLoader] = useState(false);
+    const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
     // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
     const [editPostData, setEditPostData] = useState<IEditPostData>({
@@ -84,6 +86,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }),
       [router.pathname]
     );
+
+    useEffect(() => {
+      if (lastPostInView) {
+        setSkip(replies.length);
+      }
+    }, [replies, lastPostRef, lastPostInView, lastPostEntry]);
 
     // Update post
     useEffect(() => {
@@ -161,15 +169,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       reply_address: _post.user.account_address,
       reply_post_id: _post._id,
     });
-
-    const handleScroll = (event: any): void => {
-      const { offsetHeight, scrollTop, scrollHeight } = event.target;
-
-      if (offsetHeight + scrollTop >= scrollHeight) {
-        setSkip(replies?.length);
-        setLoader(false);
-      }
-    };
 
     const likePost = async (post_id: string) => {
       try {
@@ -587,11 +586,21 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             </Link>
           </div>
         )}
-        <div className={repliesContainer} onScroll={handleScroll}>
+        {/* // */}
+        <div className={repliesContainer}>
           {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
             <>
               {replies?.length > 0 &&
                 replies.map((reply) => {
+                  if (reply._id === replies[replies.length - 1]._id) {
+                    return (
+                      <ReplyPost
+                        ref={lastPostRef}
+                        key={reply._id}
+                        post={reply}
+                      />
+                    );
+                  }
                   return <ReplyPost key={reply._id} post={reply} />;
                 })}
               {loader && (
