@@ -62,7 +62,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     <div className={postCardContainer}>
       <div className={topCard}>
         <Image
-          src={"/images/feedprofilepic.png"}
+          src={`${NODE_API_URL}${user?.profile_image}`}
           width={48}
           height={48}
           className="rounded-full dpImagePreview"
