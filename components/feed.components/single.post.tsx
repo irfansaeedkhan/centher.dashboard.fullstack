@@ -168,6 +168,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       reply: true,
       reply_address: _post.user.account_address,
       reply_post_id: _post._id,
+      onPostCreated: (replies) => {
+        setReplies((prev) => [replies, ...prev]);
+      },
     });
 
     const likePost = async (post_id: string) => {

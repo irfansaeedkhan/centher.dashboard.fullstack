@@ -142,8 +142,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             style={{
               backgroundImage: displayImage
                 ? `url(${imageUrl})`
-                : user.cover_image
-                ? `url(${user.cover_image})`
+                : user.cover_image?.url
+                ? `url(${user.cover_image?.url})`
                 : `url(/images/coverImage.png)`,
             }}
           >
