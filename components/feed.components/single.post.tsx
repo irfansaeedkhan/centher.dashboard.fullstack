@@ -160,6 +160,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       showModal,
       setShowModal,
       previewFilesUI,
+      totalReplyCount,
       handleTextLength,
       createPost,
       closePostModel,
@@ -168,6 +169,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       reply: true,
       reply_address: _post.user.account_address,
       reply_post_id: _post._id,
+      replyCount: _post.replies_count,
       onPostCreated: (replies) => {
         setReplies((prev) => [replies, ...prev]);
       },
@@ -473,7 +475,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             </button>
           )}
           <button className={footerdetailBtn}>
-            <MessageIcon /> {_post.replies_count}
+            <MessageIcon /> {totalReplyCount}
           </button>
           <button
             className={footerdetailBtn}
