@@ -51,6 +51,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const togglePopFunc = async () => {
     setTogglePop((prev) => !prev);
   };
+
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
     setTogglePop(false);
@@ -59,6 +60,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const { user } = useUser();
 
   useEffect(() => {}, [previewFilesUI]);
+
   return (
     <div className={postCardContainer}>
       <div className={topCard}>

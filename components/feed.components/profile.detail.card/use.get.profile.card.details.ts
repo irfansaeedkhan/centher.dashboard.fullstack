@@ -2,31 +2,15 @@
 import { useEffect, useState } from "react";
 
 // App imports
+import {
+  initialProfileCard,
+  useProfileCardStore,
+} from "@/store/profile.card.store";
 import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
-interface ProfileCardDetailsState {
-  _id: string;
-  account_address: string;
-  posts_count: number;
-  followers_count: number;
-  following_count: number | null;
-  posts_views_count: number | null;
-  profile_views_count: number | null;
-}
-
-const initialState: ProfileCardDetailsState = {
-  _id: "",
-  account_address: "",
-  followers_count: 0,
-  posts_count: 0,
-  following_count: null,
-  posts_views_count: null,
-  profile_views_count: null,
-};
-
 export const useGetProfileCardDetails = (user: User) => {
-  const [profileCardDetails, setProfileCardDetails] = useState(initialState);
+  const { profileCard, setProfileCard } = useProfileCardStore();
 
   useEffect(() => {
     const account_address = user.account_address;
@@ -34,22 +18,17 @@ export const useGetProfileCardDetails = (user: User) => {
       (async () => {
         try {
           const res = await getProfileCardDetails(account_address);
-          setProfileCardDetails((prev) => ({
-            ...prev,
-            ...res.profileCardDetails,
-          }));
+          setProfileCard(res.profileCardDetails);
         } catch (error: any) {
           process.env.NEXT_PUBLIC_WEB3_MODE !== "production" &&
             console.dir(error);
-          setProfileCardDetails(initialState);
+          setProfileCard(initialProfileCard);
         }
       })();
     }
-  }, [user]);
+  }, [user, setProfileCard]);
 
-  return {
-    profileCardDetails,
-  };
+  return profileCard;
 };
 
 const getProfileCardDetails = async (account_address: string) => {

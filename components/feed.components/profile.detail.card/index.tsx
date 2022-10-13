@@ -5,9 +5,10 @@ import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
 
 // app imports
+import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 import { User } from "@/models/user";
 import { getProfileImage } from "@/utils/helpers/get.profile.image";
-import { useGetProfileCardDetails } from "./use.get.profile.card.details";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface ProfileDetailCardProps {
   user: User;
@@ -18,11 +19,18 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
   isLoggedInUser,
 }) => {
-  const { profileCardDetails } = useGetProfileCardDetails(user);
+  const profileCardDetails = useGetProfileCardDetails(user);
 
   return (
     <div className={profileDetailCardContainer}>
-      <Link href={`/profile/${user?.account_address}`}>
+      <Link
+        href={{
+          pathname: AppRoutes.profile.account_address,
+          query: {
+            account_address: user.account_address,
+          },
+        }}
+      >
         <a>
           <Image
             src={getProfileImage(user)}
@@ -33,7 +41,14 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           />
         </a>
       </Link>
-      <Link href={`/profile/${user?.account_address}`}>
+      <Link
+        href={{
+          pathname: AppRoutes.profile.account_address,
+          query: {
+            account_address: user.account_address,
+          },
+        }}
+      >
         <h3 className={profileName}>{user.display_name}</h3>
       </Link>
       <div className={numberDetails}>
