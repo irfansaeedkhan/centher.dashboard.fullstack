@@ -9,7 +9,8 @@ import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { TwitterShareButton } from "react-share";
 
-//App imports
+// App imports
+import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
@@ -26,6 +27,13 @@ interface FollowUser {
 }
 
 const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
+  const { incrementFollowersCount, decrementFollowersCount } =
+    useProfileCardStore((state) => {
+      return {
+        incrementFollowersCount: state.incrementFollowersCount,
+        decrementFollowersCount: state.decrementFollowersCount,
+      };
+    });
   const {
     displayImage,
     imageUrl,
@@ -84,11 +92,13 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
       if (response.data.message_description == "Follow user successfully") {
         setFollowUser && setFollowUser(true);
         setFollow(true);
+        incrementFollowersCount();
       } else if (
         response.data.message_description == "Unfollow user successfully"
       ) {
         setFollowUser && setFollowUser(false);
         setFollow(false);
+        decrementFollowersCount();
       }
     } catch (error: any) {
       toast.error(

@@ -15,6 +15,8 @@ export interface ProfileCardStore {
   profileCard: ProfileCard;
   setProfileCard: (profileCard: ProfileCard) => void;
   incrementPostsCount: () => void;
+  incrementFollowersCount: () => void;
+  decrementFollowersCount: () => void;
 }
 
 export const initialProfileCard: ProfileCard = {
@@ -37,6 +39,20 @@ export const useProfileCardStore = create<ProfileCardStore>()(
           profileCard: {
             ...state.profileCard,
             posts_count: state.profileCard.posts_count + 1,
+          },
+        })),
+      incrementFollowersCount: () =>
+        set((state) => ({
+          profileCard: {
+            ...state.profileCard,
+            followers_count: state.profileCard.followers_count + 1,
+          },
+        })),
+      decrementFollowersCount: () =>
+        set((state) => ({
+          profileCard: {
+            ...state.profileCard,
+            followers_count: state.profileCard.followers_count - 1,
           },
         })),
     }),
