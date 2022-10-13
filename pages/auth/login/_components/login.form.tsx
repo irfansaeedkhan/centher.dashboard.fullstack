@@ -10,11 +10,10 @@ import Image from "next/future/image";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
+import { SpinIcon3, MetamaskIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-import { SpinIcon, SpinIcon3 } from "@/assets/svgs";
-import { MetamaskIcon } from "@/assets/svgs/metamask.icon";
-import { log } from "console";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
@@ -26,17 +25,14 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
   const { connectWallet } = useConnectWallet();
   const { account, library } = useWeb3React();
-  const [isLoading, setisLoading] = useState("loaded");
+  const [isLoading, setisLoading] = useState<LoadingState>("idle");
 
   const handleMetamaskLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    // TODO: Waqar - add a spinner on button
-    console.log(e.currentTarget);
-
     const button = e.currentTarget;
     button.disabled = true;
-    button.innerText = ButtonsText.loading;
+
     setisLoading("loading");
 
     // Get Nonce from backend
@@ -60,8 +56,7 @@ export const LoginForm: React.FC = () => {
       router.push(AppRoutes.home);
     } catch (error: any) {
       button.disabled = false;
-      button.innerText = ButtonsText.login_metamask;
-      setisLoading("loaded");
+      setisLoading("failed");
       if (error.code === "ACTION_REJECTED") {
         toast.error("Login request rejected.");
         return;
@@ -92,8 +87,14 @@ export const LoginForm: React.FC = () => {
           </div>
 
           <button className={button} onClick={handleMetamaskLogin}>
-            {/* {isLoading === "loading" && <SpinIcon3 />} */}
-            {ButtonsText.login_metamask}
+            {isLoading === "loading" ? (
+              <>
+                <SpinIcon3 />
+                {ButtonsText.loading}
+              </>
+            ) : (
+              ButtonsText.login_metamask
+            )}
           </button>
         </>
       ) : (

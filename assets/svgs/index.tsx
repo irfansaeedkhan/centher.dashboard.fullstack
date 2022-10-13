@@ -2,6 +2,8 @@ interface IconProps {
   className?: string;
 }
 
+export { default as MetamaskIcon } from "./metamask.icon.svg";
+
 export const Feed: React.FC<IconProps> = (props) => {
   return (
     <svg

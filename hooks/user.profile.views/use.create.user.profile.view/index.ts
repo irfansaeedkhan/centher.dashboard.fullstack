@@ -11,22 +11,27 @@ export const useCreateUserProfileView = () => {
   const [userProfileViews, setUserProfileViews] = useState<number | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const account_address = router.query.account_address
       ?.toString()
       ?.toLowerCase();
     if (account_address) {
       (async () => {
         try {
-          const res = await createProfileView(account_address);
+          const res = await createProfileView(account_address, controller);
           setUserProfileViews(res.views_count);
         } catch (error: any) {
-          process.env.NEXT_PUBLIC_WEB3_MODE !== "production" &&
-            console.dir(error);
+          process.env.NODE_ENV !== "production" && console.dir(error);
           setUserProfileViews(null);
         }
       })();
     }
-  }, [router]);
+
+    return () => {
+      controller?.abort();
+    };
+  }, [router.query.account_address]);
 
   return {
     userProfileViews,

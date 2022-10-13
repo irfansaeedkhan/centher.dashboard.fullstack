@@ -19,7 +19,7 @@ import {
   registerWithSmartContract,
 } from "./register.with.smart.contract";
 import Image from "next/future/image";
-import { MetamaskIcon } from "@/assets/svgs/metamask.icon";
+import { MetamaskIcon } from "@/assets/svgs";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
