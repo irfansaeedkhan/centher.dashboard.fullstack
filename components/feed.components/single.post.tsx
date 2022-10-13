@@ -207,6 +207,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }
     };
 
+    const handleDeleteReply = (post_id: string) => {
+      setReplies(replies.filter((rep) => rep._id !== post_id));
+    };
+
     const sharePost = async () => {
       try {
         const { data } = await axiosNodeApi.post(
@@ -603,10 +607,17 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         ref={lastPostRef}
                         key={reply._id}
                         post={reply}
+                        onDelete={handleDeleteReply}
                       />
                     );
                   }
-                  return <ReplyPost key={reply._id} post={reply} />;
+                  return (
+                    <ReplyPost
+                      key={reply._id}
+                      post={reply}
+                      onDelete={handleDeleteReply}
+                    />
+                  );
                 })}
               {loader && (
                 <div className="componentLoaderContainer">

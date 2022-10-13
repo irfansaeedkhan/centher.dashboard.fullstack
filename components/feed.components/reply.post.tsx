@@ -7,6 +7,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Image from "next/future/image";
 import Link from "next/link";
 import moment from "moment";
+import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 
 // App imports
@@ -31,11 +32,19 @@ import { axiosNodeApi } from "@/utils/axios";
 
 interface ReplyPostProps {
   post: Post;
+  onDelete: (post_id: string) => void;
 }
 
+interface IEditPostData {
+  isEditModalVisible: boolean;
+  editedPostText: string;
+  editDeletedItems: number[];
+  media?: [];
+}
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
-  ({ post }, ref) => {
+  ({ post, onDelete }, ref) => {
     // states
+    const router = useRouter();
     const { user } = useUser();
     const [togglePop, setTogglePop] = useState<boolean>(false);
     const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
@@ -47,6 +56,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
       post.liked_by_loggedin_user
     );
+
+    const [editPostData, setEditPostData] = useState<IEditPostData>({
+      isEditModalVisible: false,
+      editedPostText: post.text_content ?? "",
+      editDeletedItems: [],
+      // media: _post.media,
+    });
 
     useEffect(() => {
       //   const post_id = router.query.post_id;
@@ -64,6 +80,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
           const { data } = await axiosNodeApi.get(
             `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
           );
+
           setReplies(data.postData);
         } catch (error: any) {
           toast.error(
@@ -103,12 +120,31 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
         .delete(`api/socials/posts/${post._id}`)
         .then(() => {
           toast.success("Post Deleted Successfully");
+          onDelete(post._id);
         })
         .catch((error: any) => {
+          console.dir("Error inside Delete", error);
           toast.error(
-            error.response?.data?.message_description || "Waqar  bhai"
+            error.response?.data?.message_description || "Something Went Wrong"
           );
         });
+    };
+
+    const archivePost = async (post_id: string) => {
+      try {
+        await axiosNodeApi.post(`/api/socials/posts/archive`, {
+          post_id,
+        });
+
+        toast.success("Reply Archived Successfully");
+
+        onDelete(post_id);
+      } catch (error: any) {
+        console.dir("Error inside Archive", error);
+        toast.error(
+          error.response?.data?.message_description || "Something went wrong"
+        );
+      }
     };
 
     // toggle function to show/hide edit/delete popup
@@ -174,19 +210,53 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               </div>
             </div>
 
-            {post.user._id === user?._id && timeNow <= timeAfter15Minutes ? (
+            {post.user._id === user?._id && (
               <div ref={toggleContainerRef} className={toggleContainer}>
                 <button onClick={togglePopFunc}>
                   <DotsIcon />
-                </button>{" "}
-                <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-                  <button className={toggleListBtn} onClick={deletePost}>
-                    <TrashIcon className={toggleListIcons} /> Delete
-                  </button>
-                </div>{" "}
+                </button>
+                {timeNow >= timeAfter15Minutes ? (
+                  <div
+                    className={`${toggleList} ${togglePop && "!block z-50"}`}
+                  >
+                    <button
+                      className={toggleListBtn}
+                      onClick={() => {
+                        archivePost(post._id);
+                      }}
+                    >
+                      <TrashIcon className={toggleListIcons} /> Archive
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className={`${toggleList} ${togglePop && "!block z-50"}`}
+                  >
+                    {/* <button
+                      className={toggleListBtn}
+                      onClick={() => {
+                        setEditPostData((prev) => ({
+                          ...prev,
+                          isEditModalVisible: true,
+                        }));
+                      }}
+                    >
+                      <EditIcon className={toggleListIcons} /> Edit
+                    </button> */}
+                    <button
+                      className={toggleListBtn}
+                      onClick={() => {
+                        archivePost(post._id);
+                      }}
+                    >
+                      <TrashIcon className={toggleListIcons} /> Archive
+                    </button>
+                    <button className={toggleListBtn} onClick={deletePost}>
+                      <TrashIcon className={toggleListIcons} /> Delete
+                    </button>
+                  </div>
+                )}
               </div>
-            ) : (
-              ""
             )}
           </div>
           <div
@@ -325,7 +395,15 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
           </div>
         </div>
         {replies.map((reply) => {
-          return <ReplyPost key={reply._id} post={reply} />;
+          return (
+            <ReplyPost
+              key={reply._id}
+              post={reply}
+              onDelete={(post_id) => {
+                setReplies(replies.filter((p) => p._id !== post_id));
+              }}
+            />
+          );
         })}
       </div>
     );
