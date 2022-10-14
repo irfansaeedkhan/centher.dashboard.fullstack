@@ -54,6 +54,7 @@ interface IEditPostData {
   editDeletedItems: number[];
   media?: [];
 }
+
 export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
   ({ post, onDelete }, ref) => {
     const router = useRouter();

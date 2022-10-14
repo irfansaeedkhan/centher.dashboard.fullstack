@@ -4,7 +4,6 @@ import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 import { Bars } from "react-loader-spinner";
-import ScrollTrigger from "react-scroll-trigger";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -26,21 +25,12 @@ const Feed: NextPageWithLayout = () => {
   const [skip, setSkip] = useState(0);
   const [loader, setLoader] = useState(false);
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
-  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     if (lastPostInView) {
       setSkip(posts.length);
     }
   }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
-
-  const onEnterViewport = (post_id: string) => {
-    console.log("post_id", post_id);
-  };
-
-  const onExitViewport = () => {
-    setVisible(false);
-  };
 
   const fetchFeedsData = useCallback(async () => {
     setLoader(true);
