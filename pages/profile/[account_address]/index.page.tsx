@@ -68,13 +68,17 @@ const Profile: NextPageWithLayout = () => {
   }, [skip, user?._id]);
 
   useEffect(() => {
-    if (user?._id && followUser) {
-      fetchUserFeedsData();
-    } else {
-      setPosts([]);
-      setSkip(0);
+    if (user && loggedInUser) {
+      if (loggedInUser._id === user._id) {
+        fetchUserFeedsData();
+      } else if (loggedInUser._id !== user._id && followUser) {
+        fetchUserFeedsData();
+      } else {
+        setPosts([]);
+        setSkip(0);
+      }
     }
-  }, [fetchUserFeedsData, user?._id, followUser]);
+  }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
