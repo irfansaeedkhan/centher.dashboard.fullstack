@@ -33,15 +33,15 @@ import {
   ArrowRightIcon,
   WorldIcon,
 } from "@/assets/svgs";
-import { Post } from "@/models/post";
+import { Post, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
-import { NODE_API_URL } from "@/constants/common";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logic";
 import { createPostView } from "./create.post.view";
+import { PostCarousel } from "./post.carousel";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -51,9 +51,16 @@ interface FeedCardLevel1Props {
 interface IEditPostData {
   isEditModalVisible: boolean;
   editedPostText: string;
-  editDeletedItems: number[];
-  media?: [];
+  media: PostMedia[];
+  deletedMedia: string[];
 }
+
+const initialEditPostData: IEditPostData = {
+  isEditModalVisible: false,
+  editedPostText: "",
+  media: [],
+  deletedMedia: [],
+};
 
 export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
   ({ post, onDelete }, ref) => {
@@ -68,13 +75,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       threshold: 0.8,
     });
 
-    // TODO: Mubashir - need your help in this when url API is complete let me know then i will remove the images on cross, already did the function but needed some more tweaks
-    const [editPostData, setEditPostData] = useState<IEditPostData>({
-      isEditModalVisible: false,
-      editedPostText: _post.text_content ?? "",
-      editDeletedItems: [],
-      // media: _post.media,
-    });
+    const [editPostData, setEditPostData] =
+      useState<IEditPostData>(initialEditPostData);
 
     const [togglePop, setTogglePop] = useState(false);
     const [toggleSharePop, setToggleSharePop] = useState(false);
@@ -89,6 +91,14 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }),
       [router.pathname]
     );
+
+    useEffect(() => {
+      setEditPostData((prev) => ({
+        ...prev,
+        editedPostText: _post.text_content ?? "",
+        media: _post.media ?? [],
+      }));
+    }, [_post]);
 
     useEffect(() => {
       (async () => {
@@ -299,16 +309,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }
     };
 
-    const editPost = async (
-      post_id: string,
-      text: string,
-      delete_file_index: number[]
-    ) => {
+    const editPost = async () => {
       try {
-        await axiosNodeApi.post(`api/socials/posts/edit`, {
-          post_id,
-          text,
-          delete_file_index,
+        await axiosNodeApi.patch(`api/socials/posts/edit`, {
+          post_id: post._id,
+          text: editPostData.editedPostText,
+          deleted_media: editPostData.deletedMedia,
         });
 
         // Get Updated Post
@@ -317,21 +323,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         );
         setPost(data.post);
         toast.success("Post Edited Successfully");
-        setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
       } catch (error: any) {
-        setEditPostData((prev) => ({ ...prev, isEditModalVisible: false }));
+        setPost(post);
         toast.error(
           error?.response?.data?.message_description || "Something went wrong"
         );
       }
-    };
-
-    const handleMediaDel = (id: number) => {
-      // Append deleted item in array
-      setEditPostData((prev) => ({
-        ...prev,
-        editDeletedItems: [...prev.editDeletedItems, id],
-      }));
     };
 
     // toggle function to show/hide edit/delete popup
@@ -346,13 +343,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     };
 
     // function to set max value of text
-    const handleEditTextLength = (e: any) => {
+    const handleEditTextLength = (postText: string) => {
       var box: HTMLElement | null = document.getElementById("trashRectedit");
       if (box) {
         box.style.transform = `translateY(${
-          -(e.target.value.length * 100) / 200 + 100
+          -(postText.length * 100) / 200 + 100
         }%)`;
-        if ((e.target.value.length * 100) / 200 > 80) {
+        if ((postText.length * 100) / 200 > 80) {
           box.style.fill = `#E03434`;
         } else {
           box.style.fill = `#FEBF32`;
@@ -360,7 +357,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }
       setEditPostData((prev) => ({
         ...prev,
-        editedPostText: e.target.value,
+        editedPostText: postText,
       }));
     };
 
@@ -777,6 +774,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 setEditPostData((prev) => ({
                   ...prev,
                   isEditModalVisible: false,
+                  deletedMedia: [],
+                  media: _post.media ?? [],
+                  editedPostText: _post.text_content ?? "",
                 }));
               }}
               title={"Edit post"}
@@ -792,65 +792,22 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   />
                   <h5 className={cdName}>{user.display_name}</h5>
                 </div>
-                <div className={maincontentContainer}>
-                  <div
-                    className={`${mediaContainer}
-                    `}
-                  >
-                    <Carousel
-                      showStatus={false}
-                      showThumbs={false}
-                      showIndicators={false}
-                      showArrows={previewFilesUI.length === 1 ? false : true}
-                    >
-                      {/* {editPostData.media?.map((data, index) => { */}
-                      {post.media?.map((data, index) => {
-                        return (
-                          <div
-                            key={index}
-                            className="h-full flex items-center justify-center relative"
-                          >
-                            <Image
-                              src={data?.url}
-                              width={452}
-                              height={312}
-                              className={
-                                "object-contain object-center w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block"
-                              }
-                              alt={user.display_name ?? "profile image"}
-                            />
-                            <button
-                              className={imageDelBtn}
-                              onClick={() => {
-                                handleMediaDel(index);
-                                // setEditPostData((prev) => ({
-                                //   ...prev,
-                                //   media: prev.media.filter(
-                                //     (filterdata) => filterdata.url !== data.url
-                                //   ),
-                                // }));
-                              }}
-                            >
-                              x
-                            </button>
-                          </div>
-                        );
-                      })}
-                    </Carousel>
-                  </div>
-                  <div className={inputTextContainer}>
-                    <textarea
-                      className={ModaltextContainerContent}
-                      id="posttext"
-                      cols={12}
-                      rows={4}
-                      placeholder="Type Here"
-                      maxLength={200}
-                      onChange={handleEditTextLength}
-                      value={editPostData.editedPostText}
-                    ></textarea>
-                  </div>
-                </div>
+
+                <PostCarousel
+                  editedText={editPostData.editedPostText}
+                  postMedia={editPostData.media}
+                  previewFilesUI={previewFilesUI}
+                  user={user}
+                  onPostTextEdit={handleEditTextLength}
+                  onMediaDelete={(media) => {
+                    setEditPostData((prev) => ({
+                      ...prev,
+                      deletedMedia: [...prev.deletedMedia, media.url],
+                      media: prev.media.filter((m) => m.url !== media.url),
+                    }));
+                  }}
+                />
+
                 <div className={`${modalFooter} justify-end`}>
                   <div className={RightActionBtns}>
                     <AnimateTrashIcon />
@@ -859,13 +816,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       title={"Update"}
                       variant="v1"
                       className="max-w-[140px]"
-                      onClick={() => {
-                        editPost(
-                          _post._id,
-                          editPostData.editedPostText,
-                          editPostData.editDeletedItems
-                        );
-                      }}
+                      onClick={editPost}
                     />
                   </div>
                 </div>
@@ -877,6 +828,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     );
   }
 );
+
 SinglePost.displayName = "SinglePost";
 
 // styling
@@ -901,9 +853,7 @@ const connectLines = ctl(`
 const maincontentContainer = ctl(`
 px-4
 `);
-const mediaContainer = ctl(`
-   
-`);
+const mediaContainer = ctl(``);
 const textContainer = ctl(`
 pt-4 pb-2 
 `);

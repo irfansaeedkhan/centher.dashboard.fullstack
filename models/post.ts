@@ -8,7 +8,7 @@ export interface Post {
   };
   text_content?: string;
   user: PostUser;
-  media?: Media[];
+  media?: PostMedia[];
   viewed_by_loggedin_user: boolean;
   liked_by_loggedin_user: boolean;
   replies_count: number;
@@ -17,7 +17,7 @@ export interface Post {
   createdAt: string;
 }
 
-interface Media {
+export interface PostMedia {
   url: string;
   type: "image" | "video";
   alt?: string;
