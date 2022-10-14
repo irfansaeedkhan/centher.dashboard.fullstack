@@ -5,6 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
 // App imports
+import { useProfileCardStore } from "@/store/profile.card.store";
 import { axiosNodeApi } from "@/utils/axios";
 import {
   checkValidImageFile,
@@ -45,6 +46,10 @@ export function usePostUpload({
   replyCount = 0,
   onPostCreated,
 }: PostUploadOptions) {
+  const incrementPostsCount = useProfileCardStore(
+    (state) => state.incrementPostsCount
+  );
+
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState(false);
   const [lastItem, setLastItem] = useState<number>();
@@ -392,6 +397,8 @@ export function usePostUpload({
       );
 
       onPostCreated && onPostCreated(newPostData.post as Post);
+      // Increment the post count
+      incrementPostsCount();
     } catch {
       toast.error("Failed to get new post");
     }

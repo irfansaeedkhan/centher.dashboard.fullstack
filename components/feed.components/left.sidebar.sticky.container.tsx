@@ -20,7 +20,7 @@ export const LeftSidebarStickyContainer = () => {
         {!isLoggedInUserLoading && loggedInUser ? (
           <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
         ) : (
-          <div className="componentLoaderContainer">
+          <div className={componentLoader}>
             <Bars
               height="25"
               width="25"
@@ -49,3 +49,5 @@ textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
 const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
 `);
+
+const componentLoader = ctl(`componentLoaderContainer`);
