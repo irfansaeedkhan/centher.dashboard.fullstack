@@ -147,7 +147,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 Disconnect
               </button>
             ) : (
-              <button onClick={async () => await connectWallet()}>
+              <button
+                className={connectButton}
+                onClick={async () => await connectWallet()}
+              >
                 Connect
               </button>
             )}
