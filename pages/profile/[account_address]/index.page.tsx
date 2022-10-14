@@ -40,6 +40,11 @@ const Profile: NextPageWithLayout = () => {
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
+  // FIXME: this is a quick fix to change the feed posts when navigating from one user profile to another
+  useEffect(() => {
+    setFollowUser(false);
+  }, [router]);
+
   useEffect(() => {
     if (lastPostInView) {
       setSkip(posts.length);
@@ -65,16 +70,20 @@ const Profile: NextPageWithLayout = () => {
         error.response.data?.message_description || "Something went wrong"
       );
     }
-  }, [skip, user?._id]);
+  }, [skip, user]);
 
   useEffect(() => {
-    if (user?._id && followUser) {
-      fetchUserFeedsData();
-    } else {
-      setPosts([]);
-      setSkip(0);
+    if (user && loggedInUser) {
+      if (loggedInUser._id === user._id) {
+        fetchUserFeedsData();
+      } else if (loggedInUser._id !== user._id && followUser) {
+        fetchUserFeedsData();
+      } else {
+        setPosts([]);
+        setSkip(0);
+      }
     }
-  }, [fetchUserFeedsData, user?._id, followUser]);
+  }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
