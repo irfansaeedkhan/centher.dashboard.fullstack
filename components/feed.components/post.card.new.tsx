@@ -61,17 +61,11 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   useEffect(() => {}, [previewFilesUI]);
 
-  return (
+  return user ? (
     <div className={postCardContainer}>
       <div className={topCard}>
         <Image
-          src={
-            user?.custom_image != undefined
-              ? user?.custom_image
-                ? user?.profile_image
-                : `${NODE_API_URL}${user?.profile_image}`
-              : ""
-          }
+          src={user.profile_image.path}
           width={48}
           height={48}
           className={profileImagePreview}
@@ -129,18 +123,19 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           Emoji
         </label>
       </div>
+
       {showModal && (
         <CustomModal onClose={closePostModel} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
-                src={`${NODE_API_URL}${user?.profile_image}`}
+                src={user.profile_image.path}
                 width={44}
                 height={44}
                 className="rounded-full dpImagePreview"
-                alt={user?.display_name ?? "profile image"}
+                alt={user.display_name ?? "profile image"}
               />
-              <h5 className={cdName}>{user?.display_name}</h5>
+              <h5 className={cdName}>{user.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
               <div
@@ -285,7 +280,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
         </CustomModal>
       )}
     </div>
-  );
+  ) : null;
 };
 
 // styling

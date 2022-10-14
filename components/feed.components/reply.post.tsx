@@ -202,11 +202,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             <div className={topCard}>
               <div className={profileDetail}>
                 <Image
-                  src={
-                    post.user.custom_image
-                      ? post.user.profile_image
-                      : `${NODE_API_URL}${post.user.profile_image}`
-                  }
+                  src={post.user.profile_image.path}
                   width={48}
                   height={48}
                   className="rounded-full dpImagePreview"

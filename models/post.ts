@@ -25,5 +25,5 @@ interface Media {
 
 type PostUser = Pick<
   User,
-  "_id" | "account_address" | "display_name" | "profile_image" | "custom_image"
+  "_id" | "account_address" | "display_name" | "profile_image"
 >;

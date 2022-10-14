@@ -377,11 +377,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           <div className={topCard}>
             <div className={profileDetail}>
               <Image
-                src={
-                  _post.user.custom_image
-                    ? _post.user.profile_image
-                    : `${NODE_API_URL}${_post.user.profile_image}`
-                }
+                src={_post.user.profile_image.path}
                 width={48}
                 height={48}
                 className="rounded-full dpImagePreview"
@@ -604,11 +600,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
             <div className={showThreadBtnContainer}>
               <Image
-                src={
-                  _post?.user?.custom_image
-                    ? _post.user.profile_image
-                    : `${NODE_API_URL}${_post.user.profile_image}`
-                }
+                src={_post.user.profile_image.path}
                 width={30}
                 height={30}
                 className="rounded-full dpImagePreview"
@@ -671,12 +663,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           </div>
 
           {/* Reply Post Modal */}
-          {showModal && (
+          {showModal && user && (
             <CustomModal onClose={closePostModel} title={"Reply"}>
               <div className={modalBodyWrapper}>
                 <div className={contactDetail}>
                   <Image
-                    src={`${NODE_API_URL}${user?.profile_image}`}
+                    src={user.profile_image.path}
                     width={44}
                     height={44}
                     alt={user?.display_name ?? "profile image"}
@@ -779,7 +771,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           )}
 
           {/* edit modal */}
-          {editPostData.isEditModalVisible && (
+          {editPostData.isEditModalVisible && user && (
             <CustomModal
               onClose={() => {
                 setEditPostData((prev) => ({
@@ -792,13 +784,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               <div className={modalBodyWrapper}>
                 <div className={contactDetail}>
                   <Image
-                    src={`${NODE_API_URL}${user?.profile_image}`}
+                    src={user.profile_image.path}
                     width={44}
                     height={44}
                     className="rounded-full dpImagePreview"
-                    alt={user?.display_name ?? "profile image"}
+                    alt={user.display_name ?? "profile image"}
                   />
-                  <h5 className={cdName}>{user?.display_name}</h5>
+                  <h5 className={cdName}>{user.display_name}</h5>
                 </div>
                 <div className={maincontentContainer}>
                   <div
@@ -825,7 +817,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                               className={
                                 "object-contain object-center w-full h-auto rounded-xl max-w-[25rem] max-h-[25rem] block"
                               }
-                              alt={user?.display_name ?? "profile image"}
+                              alt={user.display_name ?? "profile image"}
                             />
                             <button
                               className={imageDelBtn}
