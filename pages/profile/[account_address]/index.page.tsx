@@ -40,6 +40,11 @@ const Profile: NextPageWithLayout = () => {
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
+  // FIXME: this is a quick fix to change the feed posts when navigating from one user profile to another
+  useEffect(() => {
+    setFollowUser(false);
+  }, [router]);
+
   useEffect(() => {
     if (lastPostInView) {
       setSkip(posts.length);
@@ -65,7 +70,7 @@ const Profile: NextPageWithLayout = () => {
         error.response.data?.message_description || "Something went wrong"
       );
     }
-  }, [skip, user?._id]);
+  }, [skip, user]);
 
   useEffect(() => {
     if (user && loggedInUser) {
