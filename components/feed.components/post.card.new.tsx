@@ -74,7 +74,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           }
           width={48}
           height={48}
-          className="rounded-full dpImagePreview"
+          className={profileImagePreview}
           alt={"icon"}
         />
         <button
@@ -180,7 +180,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               </div>
             </div>
             {postError && (
-              <div className="postErrorMessage">
+              <div className={postErrorMessage}>
                 <p className="px-6 text-14 text-[#ec5858] font-semibold">
                   {postError}
                 </p>
@@ -345,3 +345,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
 const imageDelBtn = ctl(`
 absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
 `);
+
+const profileImagePreview = ctl(`rounded-full dpImagePreview`);
+
+const postErrorMessage = ctl(`postErrorMessage`);

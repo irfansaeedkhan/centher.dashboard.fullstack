@@ -81,7 +81,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
           );
 
-          setReplies(data.postData);
+          setReplies(data.posts);
         } catch (error: any) {
           toast.error(
             error.response.data?.message_description || "Something went wrong"
@@ -232,17 +232,17 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   <div
                     className={`${toggleList} ${togglePop && "!block z-50"}`}
                   >
-                    {/* <button
+                    <button
                       className={toggleListBtn}
-                      onClick={() => {
-                        setEditPostData((prev) => ({
-                          ...prev,
-                          isEditModalVisible: true,
-                        }));
-                      }}
+                      // onClick={() => {
+                      //   setEditPostData((prev) => ({
+                      //     ...prev,
+                      //     isEditModalVisible: true,
+                      //   }));
+                      // }}
                     >
                       <EditIcon className={toggleListIcons} /> Edit
-                    </button> */}
+                    </button>
                     <button
                       className={toggleListBtn}
                       onClick={() => {
