@@ -7,33 +7,60 @@ import toast from "react-hot-toast";
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { axiosNodeApi } from "@/utils/axios";
-import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
-import { PasswordForm } from "./password.form";
+import { PasswordForm } from "./account.profile.form";
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
 
-export const EditProfileForm: React.FC = () => {
+interface EditProfileFormProps {
+  user: any;
+  // TODO: Mubashir Add type for user
+}
+
+export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
+  // TODO: Mubashir Add type for user
+  const [updatedUser, setUpdatedUser] = React.useState(props.user);
   const updateProfile = async () => {
-    // try {
-    //   const { data } = await axiosNodeApi.post("api/socials/analytics/shares", {
-    //     post_id: post._id,
-    //   });
-    //   return data;
-    // } catch (error: any) {
-    //   toast.error(
-    //     error.response.data?.message_description || "Something went wrong"
-    //   );
-    // }
+    try {
+      await axiosNodeApi.patch("api/users/me", {
+        pseudonym: updatedUser.pseudonym,
+        first_name: updatedUser.first_name,
+        last_name: updatedUser.last_name,
+        profile_bio: updatedUser.profile_bio,
+        website_url: updatedUser.website_url,
+      });
+      toast.success("Profile updated successfully");
+    } catch (error: any) {
+      toast.error(
+        error.response.data?.message_description || "Something went wrong"
+      );
+    }
   };
+
+  console.log("props", props.user);
   return (
     <div className="bg-background-shade-1 py-10 flex justify-center items-center">
       <div className="flex flex-col gap-6 max-w-[496px] w-full">
         <ProfilePicture />
-        {PasswordForm.slice(0, 5).map((formField) => {
+        {PasswordForm.map((formField) => {
+          console.log(
+            updatedUser && updatedUser[formField.id as keyof typeof updatedUser]
+          );
+
           return (
             <InputField
+              value={
+                updatedUser &&
+                updatedUser[formField.id as keyof typeof updatedUser]
+              }
+              onChange={(e) => {
+                updatedUser &&
+                  setUpdatedUser({
+                    ...updatedUser,
+                    [formField.id as keyof typeof updatedUser]: e.target.value,
+                  });
+              }}
               key={formField.id}
               {...formField}
               // {...register(formField.id)}
@@ -45,11 +72,44 @@ export const EditProfileForm: React.FC = () => {
           <label htmlFor="textarea" className={fieldTitle}>
             Display Name
           </label>
-          <select className={inputField}>
+          <select
+            onChange={(e) => {
+              updatedUser &&
+                setUpdatedUser({
+                  ...updatedUser,
+                  display_name_field: e.target.value,
+                });
+            }}
+            value={props.user?.display_name_field}
+            className={inputField}
+          >
             <option value="">Select</option>
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
+            <option
+              selected={
+                props.user.display_name_field === "pseudonym" ? true : false
+              }
+              value="pseudonym"
+            >
+              Pseudonym
+            </option>
+            <option
+              selected={
+                props.user.display_name_field === "real_name" ? true : false
+              }
+              value="real_name"
+            >
+              Real Name
+            </option>
+            <option
+              selected={
+                props.user.display_name_field === "account_address"
+                  ? true
+                  : false
+              }
+              value="account_address"
+            >
+              Account Address
+            </option>
           </select>
         </div>
         <div className="flex flex-col gap-2">
@@ -57,6 +117,14 @@ export const EditProfileForm: React.FC = () => {
             Profile bio
           </label>
           <textarea
+            onChange={(e) => {
+              updatedUser &&
+                setUpdatedUser({
+                  ...updatedUser,
+                  profile_bio: e.target.value,
+                });
+            }}
+            value={updatedUser?.profile_bio}
             placeholder="Enter Your bio!"
             name=""
             id=""
@@ -66,7 +134,9 @@ export const EditProfileForm: React.FC = () => {
           ></textarea>
         </div>
 
-        <button className={connectButton}>Update profile</button>
+        <button onClick={updateProfile} className={connectButton}>
+          Update profile
+        </button>
       </div>
     </div>
   );

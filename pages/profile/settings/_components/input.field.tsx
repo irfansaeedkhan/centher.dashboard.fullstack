@@ -6,7 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { ErrorMessage } from "@/components/error.message";
 
 // Current directory imports
-import { PasswordFormProps } from "./password.form";
+import { PasswordFormProps } from "./account.profile.form";
 
 export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
   ({ label, id, error, ...props }, ref) => {
