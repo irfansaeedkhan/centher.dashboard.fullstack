@@ -8,6 +8,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { TwitterShareButton } from "react-share";
+import { Rings } from "react-loader-spinner";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -55,6 +56,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   );
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
+  const [loadingState, setLoadingState] = useState<boolean>(false);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -87,6 +89,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
 
   const followUser = async (follower_id: string) => {
     try {
+      setLoadingState(true);
       const response = await axiosNodeApi.post("api/socials/follows", {
         follower_id,
       });
@@ -101,6 +104,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         setFollow(false);
         decrementFollowersCount();
       }
+      setLoadingState(false);
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
@@ -242,14 +246,29 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   />
                 </Link>
               ) : (
-                showFollowButton && (
+                showFollowButton &&
+                (loadingState ? (
+                  <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
+                    {/* TODO: Waqar Fix Loader size issue*/}
+                    <Rings
+                      height="20"
+                      width="20"
+                      color="#1C1F29"
+                      radius="6"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      ariaLabel="rings-loading"
+                    />
+                  </button>
+                ) : (
                   <Button
                     title={follow ? "Unfollow" : "Follow"}
                     variant="v1"
                     className={editProfileBtn}
                     onClick={() => followUser(user._id)}
                   />
-                )
+                ))
               )}
             </div>
             <div className={textContent}>
