@@ -8,7 +8,7 @@ import { useInView } from "react-intersection-observer";
 import moment from "moment";
 import { toast } from "react-hot-toast";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import { Bars } from "react-loader-spinner";
+import { Bars, Rings } from "react-loader-spinner";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
@@ -137,7 +137,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
           );
 
-          const _replies = data.postData;
+          const _replies = data.posts;
 
           setReplies((prev) => {
             const filteredReplies = _replies.filter((reply: Post) => {
@@ -184,6 +184,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setShowModal,
       previewFilesUI,
       totalReplyCount,
+      loadingState,
       handleTextLength,
       createPost,
       closePostModel,
@@ -749,12 +750,27 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   <div className={RightActionBtns}>
                     <AnimateTrashIcon />
                     <div className={divider}></div>
-                    <Button
-                      title={"Post"}
-                      variant="v1"
-                      className="max-w-[140px]"
-                      onClick={createPost}
-                    />
+                    {loadingState ? (
+                      <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
+                        <Rings
+                          height="30"
+                          width="30"
+                          color="#ffffff"
+                          radius="6"
+                          wrapperStyle={{}}
+                          wrapperClass=""
+                          visible={true}
+                          ariaLabel="rings-loading"
+                        />
+                      </button>
+                    ) : (
+                      <Button
+                        title={"Post"}
+                        variant="v1"
+                        className="max-w-[140px]"
+                        onClick={createPost}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
