@@ -1,0 +1,39 @@
+// React, Next, NPM Packages
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
+// Current directory imports
+import { createProfileView } from "./create.profile.view";
+
+export const useCreateUserProfileView = () => {
+  const router = useRouter();
+
+  const [userProfileViews, setUserProfileViews] = useState<number | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const account_address = router.query.account_address
+      ?.toString()
+      ?.toLowerCase();
+    if (account_address) {
+      (async () => {
+        try {
+          const res = await createProfileView(account_address, controller);
+          setUserProfileViews(res.views_count);
+        } catch (error: any) {
+          process.env.NODE_ENV !== "production" && console.dir(error);
+          setUserProfileViews(null);
+        }
+      })();
+    }
+
+    return () => {
+      controller?.abort();
+    };
+  }, [router.query.account_address]);
+
+  return {
+    userProfileViews,
+  };
+};
