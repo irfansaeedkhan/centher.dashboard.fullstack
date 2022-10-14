@@ -49,7 +49,7 @@ const Profile: NextPageWithLayout = () => {
   const fetchUserFeedsData = useCallback(async () => {
     try {
       const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/users/${user?._id}?off_set=${skip}`
+        `/api/socials/posts/user/${user?._id}?off_set=${skip}`
       );
 
       const _posts = data.posts;
@@ -68,10 +68,13 @@ const Profile: NextPageWithLayout = () => {
   }, [skip, user?._id]);
 
   useEffect(() => {
-    if (user?._id) {
+    if (user?._id && followUser) {
       fetchUserFeedsData();
+    } else {
+      setPosts([]);
+      setSkip(0);
     }
-  }, [fetchUserFeedsData, user?._id]);
+  }, [fetchUserFeedsData, user?._id, followUser]);
 
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
