@@ -338,6 +338,12 @@ export function usePostUpload({
       setPostError("Post content is empty");
       return;
     }
+
+    if (previewFilesUI.length > 5) {
+      setPostError("Maximum 5 files is allowed");
+      return;
+    }
+
     setLoadingState(true);
     setPostError("");
     try {
