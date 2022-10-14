@@ -81,7 +81,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
           );
 
-          setReplies(data.postData);
+          setReplies(data.posts);
         } catch (error: any) {
           toast.error(
             error.response.data?.message_description || "Something went wrong"

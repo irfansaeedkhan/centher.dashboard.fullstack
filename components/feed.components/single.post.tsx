@@ -115,7 +115,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
           );
 
-          const _replies = data.postData;
+          const _replies = data.posts;
 
           setReplies((prev) => {
             const filteredReplies = _replies.filter((reply: Post) => {
