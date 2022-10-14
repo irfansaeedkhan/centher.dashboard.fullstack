@@ -18,6 +18,11 @@ export const PasswordForm: PasswordFormProps[] = [
     label: "Last Name",
     placeholder: "Enter your last name",
   },
+  {
+    id: "website_url",
+    label: "Website URL",
+    placeholder: "Enter your website",
+  },
 ];
 
 // Password State Schema
@@ -50,13 +55,9 @@ export interface PasswordFormProps
 }
 
 export type FieldName =
-  | "website"
-  | "email"
+  | "website_url"
   | "last_name"
   | "first_name"
-  | "pseudonym"
-  | "old_password"
-  | "password"
-  | "confirm_password";
+  | "pseudonym";
 
 export type SignupState = Record<FieldName, string>;
