@@ -227,6 +227,8 @@ export function usePostUpload({
             });
         } catch (error) {
           console.log("Failed to upload data to : ", error);
+          setLoadingState(false);
+          toast.error("Failed to create post");
         }
       };
 
