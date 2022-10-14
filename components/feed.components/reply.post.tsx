@@ -232,17 +232,17 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   <div
                     className={`${toggleList} ${togglePop && "!block z-50"}`}
                   >
-                    {/* <button
+                    <button
                       className={toggleListBtn}
-                      onClick={() => {
-                        setEditPostData((prev) => ({
-                          ...prev,
-                          isEditModalVisible: true,
-                        }));
-                      }}
+                      // onClick={() => {
+                      //   setEditPostData((prev) => ({
+                      //     ...prev,
+                      //     isEditModalVisible: true,
+                      //   }));
+                      // }}
                     >
                       <EditIcon className={toggleListIcons} /> Edit
-                    </button> */}
+                    </button>
                     <button
                       className={toggleListBtn}
                       onClick={() => {
