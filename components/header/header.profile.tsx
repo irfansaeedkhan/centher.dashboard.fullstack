@@ -5,10 +5,10 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
-
 import { FiArrowUpRight } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { useCopyToClipboard, useOnClickOutside } from "usehooks-ts";
+import { useWeb3React } from "@web3-react/core";
 
 // App Imports
 import useUser from "@/hooks/use.user";
@@ -16,6 +16,7 @@ import { axiosNodeApi } from "@/utils/axios";
 import { Polygon } from "@/assets/svgs";
 import { NODE_API_URL } from "@/constants/common";
 import { AppRoutes } from "@/constants/app.routes";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -30,6 +31,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const router = useRouter();
   const { user } = useUser();
   const [_, copy] = useCopyToClipboard();
+  const { connectWallet, disconnectWallet } = useConnectWallet();
+  const { active } = useWeb3React();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -136,9 +139,18 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             </div>
           </div>
           <div className={disconnectButton}>
-            <button className={disconnectButtonStyle} onClick={handleLogout}>
-              Disconnect
-            </button>
+            {active ? (
+              <button
+                className={disconnectButtonStyle}
+                onClick={() => disconnectWallet()}
+              >
+                Disconnect
+              </button>
+            ) : (
+              <button onClick={async () => await connectWallet()}>
+                Connect
+              </button>
+            )}
           </div>
           <hr className={userProfile} />
           <div className={userLink}>
@@ -217,3 +229,19 @@ const myProfileLink = ctl(
 const profileSettingLink = ctl(
   `whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary`
 );
+
+const connectButton = ctl(`
+  mt-2 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  transition-all 
+  justify-center 
+  bg-brand-primary 
+  text-gray-shade-5 
+  hover:bg-brand-primary-dark
+`);
