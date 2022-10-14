@@ -29,9 +29,7 @@ export const Sidebar = () => {
       .then(({ data }) => {
         button.disabled = false;
         toast.success(data.message_description ?? "Logged out successfully!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
+        window.location.replace(AppRoutes.home);
       })
       .catch((err: any) => {
         // If user is already logged out, reload the page
