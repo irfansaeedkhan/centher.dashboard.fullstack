@@ -14,6 +14,7 @@ import Link from "next/link";
 import moment from "moment";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { Bars } from "react-loader-spinner";
+import { Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -161,6 +162,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setShowModal,
       previewFilesUI,
       totalReplyCount,
+      loadingState,
       handleTextLength,
       createPost,
       closePostModel,
@@ -717,12 +719,27 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 <div className={RightActionBtns}>
                   <AnimateTrashIcon />
                   <div className={divider}></div>
-                  <Button
-                    title={"Post"}
-                    variant="v1"
-                    className="max-w-[140px]"
-                    onClick={createPost}
-                  />
+                  {loadingState ? (
+                    <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
+                      <Rings
+                        height="30"
+                        width="30"
+                        color="#ffffff"
+                        radius="6"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        ariaLabel="rings-loading"
+                      />
+                    </button>
+                  ) : (
+                    <Button
+                      title={"Post"}
+                      variant="v1"
+                      className="max-w-[140px]"
+                      onClick={createPost}
+                    />
+                  )}
                 </div>
               </div>
             </div>
