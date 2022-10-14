@@ -230,7 +230,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   </button>
                   {timeNow >= timeAfter15Minutes ? (
                     <div
-                      className={`${toggleList} ${togglePop && "!block z-50"}`}
+                      className={`${toggleList} ${
+                        togglePop ? "!block z-50" : "hidden"
+                      }`}
                     >
                       <button
                         className={toggleListBtn}
@@ -243,7 +245,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     </div>
                   ) : (
                     <div
-                      className={`${toggleList} ${togglePop && "!block z-50"}`}
+                      className={`${toggleList} ${
+                        togglePop ? "!block z-50" : "hidden"
+                      }`}
                     >
                       <button
                         className={toggleListBtn}
@@ -469,7 +473,7 @@ const toggleContainer = ctl(`
 relative
 `);
 const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[170px]
+ absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm w-[170px]
 `);
 const toggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
@@ -478,7 +482,7 @@ const toggleListIcons = ctl(`
 w-[18px] h-[18px]
 `);
 const replyBoxContainer = ctl(`
-  flex flex-col gap-4 overflow-hidden
+  flex flex-col gap-4
 `);
 const firstReplyBox = ctl(`
 relative
