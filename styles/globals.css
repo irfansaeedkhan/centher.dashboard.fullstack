@@ -26,6 +26,9 @@ input:-webkit-autofill {
 }
 
 @layer components {
+  .carousel.carousel-slider {
+    border-radius: 12px !important;
+  }
   .componentLoaderContainer {
     @apply w-full h-full flex items-center justify-center;
   }
