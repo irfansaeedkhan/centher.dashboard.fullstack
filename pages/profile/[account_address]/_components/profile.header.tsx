@@ -176,12 +176,34 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                     accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
                     style={{ display: "none" }}
                     onChange={(e) => {
+                      setLoadingState(false);
                       handleSelectedFile(e);
                     }}
                   />{" "}
                 </label>
+              ) : loadingState ? (
+                <button
+                  className={` ${editCover} bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                >
+                  <Rings
+                    height="20"
+                    width="20"
+                    color="#1C1F29"
+                    radius="6"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="rings-loading"
+                  />
+                </button>
               ) : (
-                <button className={editCover} onClick={uploadImage}>
+                <button
+                  className={editCover}
+                  onClick={() => {
+                    setLoadingState(true);
+                    uploadImage();
+                  }}
+                >
                   <CameraIcon />
                   Upload cover
                 </button>
