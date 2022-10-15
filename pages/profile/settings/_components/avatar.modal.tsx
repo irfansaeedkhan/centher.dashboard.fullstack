@@ -6,7 +6,6 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import { useAvatars } from "@/hooks/use.avatars";
 import { ModalWrapper } from "@/components/modal";
-import { NODE_API_URL } from "@/constants/common";
 
 const AvatarModal = () => {
   const { avatars } = useAvatars();
@@ -20,7 +19,7 @@ const AvatarModal = () => {
           return (
             <Image
               key={avatar.path}
-              src={`${NODE_API_URL}${avatar.path}`}
+              src={avatar.path}
               alt={avatar.name}
               className={profileImageClass2}
               width={80}
