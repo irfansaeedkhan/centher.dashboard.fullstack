@@ -7,7 +7,6 @@ import Link from "next/link";
 // app imports
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 import { User } from "@/models/user";
-import { getProfileImage } from "@/utils/helpers/get.profile.image";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface ProfileDetailCardProps {
@@ -33,7 +32,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       >
         <a>
           <Image
-            src={getProfileImage(user)}
+            src={user.profile_image.path}
             className={profilePic}
             alt={user.display_name}
             width={60}

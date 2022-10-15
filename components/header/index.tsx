@@ -54,7 +54,7 @@ const Header = () => {
                 role="button"
               >
                 <Image
-                  src={`${NODE_API_URL}${user.profile_image}`}
+                  src={user.profile_image.path}
                   alt="userProfile"
                   width={40}
                   height={40}

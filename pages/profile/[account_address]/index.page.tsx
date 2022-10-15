@@ -40,6 +40,11 @@ const Profile: NextPageWithLayout = () => {
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
+  // FIXME: this is a quick fix to change the feed posts when navigating from one user profile to another
+  useEffect(() => {
+    setFollowUser(false);
+  }, [router]);
+
   useEffect(() => {
     if (lastPostInView) {
       setSkip(posts.length);
@@ -49,7 +54,7 @@ const Profile: NextPageWithLayout = () => {
   const fetchUserFeedsData = useCallback(async () => {
     try {
       const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/users/${user?._id}?off_set=${skip}`
+        `/api/socials/posts/user/${user?._id}?off_set=${skip}`
       );
 
       const _posts = data.posts;
@@ -65,13 +70,20 @@ const Profile: NextPageWithLayout = () => {
         error.response.data?.message_description || "Something went wrong"
       );
     }
-  }, [skip, user?._id]);
+  }, [skip, user]);
 
   useEffect(() => {
-    if (user?._id) {
-      fetchUserFeedsData();
+    if (user && loggedInUser) {
+      if (loggedInUser._id === user._id) {
+        fetchUserFeedsData();
+      } else if (loggedInUser._id !== user._id && followUser) {
+        fetchUserFeedsData();
+      } else {
+        setPosts([]);
+        setSkip(0);
+      }
     }
-  }, [fetchUserFeedsData, user?._id]);
+  }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>

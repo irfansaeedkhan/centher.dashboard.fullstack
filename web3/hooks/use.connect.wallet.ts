@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import { injectedConnector } from "@/web3/connector";
 
 export const useConnectWallet = () => {
-  const { activate, error } = useWeb3React();
+  const { activate, error, deactivate } = useWeb3React();
 
   useEffect(() => {
     if (error) {
@@ -24,6 +24,11 @@ export const useConnectWallet = () => {
     await activate(injectedConnector);
   }, [activate]);
 
+  const disconnectWallet = useCallback(() => {
+    deactivate();
+    toast.success("Metamask Disconnected Successfully");
+  }, [deactivate]);
+
   const getConnectedAccount = useCallback(async () => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -33,5 +38,5 @@ export const useConnectWallet = () => {
     }
   }, []);
 
-  return { connectWallet, getConnectedAccount };
+  return { connectWallet, getConnectedAccount, disconnectWallet };
 };

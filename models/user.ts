@@ -2,29 +2,30 @@ export interface User {
   _id: string;
   account_address: string;
   display_name: string;
-  profile_image: string;
-  custom_image: boolean;
-  cover_image?: {
-    url: string;
-  };
+  profile_image: UserImage;
+  cover_image: UserImage;
   website_url: string;
+}
+
+interface UserImage {
+  name: string;
+  path: string;
+  object_name: string;
 }
 
 export interface LoggedInUser {
   _id: string;
-  account_address?: string;
-  display_name?: string;
-  profile_image?: string;
-  custom_image?: boolean;
-  first_name?: string;
-  last_name?: string;
-  profile_bio?: string;
-  pseudonym?: string;
-  cover_image?: {
-    url: string;
-  };
-  website_url?: string;
+  account_address: string;
+  display_name: string;
+  profile_image: UserImage;
+  first_name: string;
+  last_name: string;
+  profile_bio: string;
+  pseudonym: string;
+  cover_image: UserImage;
+  website_url: string;
 }
+
 type UserRole =
   | "user"
   | "admin"

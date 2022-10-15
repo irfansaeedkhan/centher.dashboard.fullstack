@@ -15,7 +15,6 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { getProfileImage } from "@/utils/helpers/get.profile.image";
 import { Website } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
@@ -144,7 +143,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           }}
         >
           <Button
-            title={"My NFT Profile"}
+            title={
+              loggedInUser?._id === user?._id ? "My NFT Profile" : "NFT Profile"
+            }
             variant={`${isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8"
           />
@@ -157,8 +158,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             style={{
               backgroundImage: displayImage
                 ? `url(${imageUrl})`
-                : user.cover_image?.url
-                ? `url(${user.cover_image?.url})`
+                : user.cover_image.path
+                ? `url(${user.cover_image.path})`
                 : `url(/images/coverImage.png)`,
             }}
           >
@@ -192,7 +193,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             </button> */}
             <div className={profileImage}>
               <Image
-                src={getProfileImage(user)}
+                src={user.profile_image.path}
                 alt={user.display_name}
                 width={111}
                 height={112}

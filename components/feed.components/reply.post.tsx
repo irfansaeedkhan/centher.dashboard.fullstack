@@ -7,7 +7,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import Image from "next/future/image";
 import Link from "next/link";
 import moment from "moment";
-import { useRouter } from "next/router";
+import { useInView } from "react-intersection-observer";
 import { toast } from "react-hot-toast";
 
 // App imports
@@ -30,6 +30,8 @@ import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";
 
+import { createPostView } from "./single.post/create.post.view";
+
 interface ReplyPostProps {
   post: Post;
   onDelete: (post_id: string) => void;
@@ -43,8 +45,7 @@ interface IEditPostData {
 }
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
   ({ post, onDelete }, ref) => {
-    // states
-    const router = useRouter();
+    const [_post, setPost] = useState(post);
     const { user } = useUser();
     const [togglePop, setTogglePop] = useState<boolean>(false);
     const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
@@ -56,6 +57,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [isLikedByLoggedInUser, setIsLikedByLoggedInUser] = useState(
       post.liked_by_loggedin_user
     );
+    const [currentPostRef, currentPostInView, currentPostEntry] = useInView({
+      threshold: 0.8,
+    });
 
     const [editPostData, setEditPostData] = useState<IEditPostData>({
       isEditModalVisible: false,
@@ -65,18 +69,30 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     });
 
     useEffect(() => {
-      //   const post_id = router.query.post_id;
-      //   const account_address = router.query.account_address;
+      (async () => {
+        if (
+          currentPostEntry &&
+          currentPostEntry.intersectionRatio > 0.8 &&
+          !_post.viewed_by_loggedin_user
+        ) {
+          try {
+            await createPostView(_post._id);
 
-      //   const _replies = posts.filter(
-      //     (p) =>
-      //       p.parent_post?._id === post_id &&
-      //       p.parent_post?.user.account_address === account_address
-      //   );
-      //   setReplies(_replies);
+            setPost((prev) => ({
+              ...prev,
+              viewed_by_loggedin_user: true,
+            }));
+          } catch (error) {
+            process.env.NODE_ENV !== "production" && console.dir(error);
+          }
+        }
+      })();
+    }, [_post, currentPostEntry]);
+
+    useEffect(() => {
       const fetchRepliesPostData = async () => {
         try {
-          // Create a user with registration_pending state in database
+          // Fetch a single reply of reply
           const { data } = await axiosNodeApi.get(
             `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
           );
@@ -174,237 +190,245 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const timeAfter15Minutes = moment(post.createdAt).add(15, "minutes");
 
     return (
-      <div
-        className={`${replyBoxContainer} ${
-          replies.length === 0 && " border-b-2 border-gray-shade-3"
-        } `}
-        ref={ref}
-      >
-        <div className={firstReplyBox}>
-          {replies.length > 0 && <div className={connectLines}></div>}
-          <div className={topCard}>
-            <div className={profileDetail}>
-              <Image
-                src={
-                  post.user.custom_image
-                    ? post.user.profile_image
-                    : `${NODE_API_URL}${post.user.profile_image}`
-                }
-                width={48}
-                height={48}
-                className="rounded-full dpImagePreview"
-                alt={post.user.display_name}
-              />
-              <div>
-                <div className={replyToBox}>
-                  <h5 className={PFName}>{post.user.display_name}</h5>
-                  <button className={replyToContent}>
-                    Replying to{" "}
-                    <span className={repliedToPersonName}>
-                      {" "}
-                      {post.parent_post?.user.display_name}
-                    </span>
-                  </button>
+      <div ref={currentPostRef}>
+        <div
+          className={`${replyBoxContainer} ${
+            replies.length === 0 && " border-b-2 border-gray-shade-3"
+          } `}
+          ref={ref}
+        >
+          <div className={firstReplyBox}>
+            {replies.length > 0 && <div className={connectLines}></div>}
+            <div className={topCard}>
+              <div className={profileDetail}>
+                <Image
+                  src={post.user.profile_image.path}
+                  width={48}
+                  height={48}
+                  className="rounded-full dpImagePreview"
+                  alt={post.user.display_name}
+                />
+                <div>
+                  <div className={replyToBox}>
+                    <h5 className={PFName}>{post.user.display_name}</h5>
+                    <button className={replyToContent}>
+                      Replying to{" "}
+                      <span className={repliedToPersonName}>
+                        {" "}
+                        {post.parent_post?.user.display_name}
+                      </span>
+                    </button>
+                  </div>
+                  <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
                 </div>
-                <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
               </div>
-            </div>
 
-            {post.user._id === user?._id && (
-              <div ref={toggleContainerRef} className={toggleContainer}>
-                <button onClick={togglePopFunc}>
-                  <DotsIcon />
-                </button>
-                {timeNow >= timeAfter15Minutes ? (
-                  <div
-                    className={`${toggleList} ${togglePop && "!block z-50"}`}
-                  >
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        archivePost(post._id);
-                      }}
+              {post.user._id === user?._id && (
+                <div ref={toggleContainerRef} className={toggleContainer}>
+                  <button onClick={togglePopFunc}>
+                    <DotsIcon />
+                  </button>
+                  {timeNow >= timeAfter15Minutes ? (
+                    <div
+                      className={`${toggleList} ${
+                        togglePop ? "!block z-50" : "hidden"
+                      }`}
                     >
-                      <TrashIcon className={toggleListIcons} /> Archive
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className={`${toggleList} ${togglePop && "!block z-50"}`}
-                  >
-                    <button
-                      className={toggleListBtn}
-                      // onClick={() => {
-                      //   setEditPostData((prev) => ({
-                      //     ...prev,
-                      //     isEditModalVisible: true,
-                      //   }));
-                      // }}
+                      <button
+                        className={toggleListBtn}
+                        onClick={() => {
+                          archivePost(post._id);
+                        }}
+                      >
+                        <TrashIcon className={toggleListIcons} /> Archive
+                      </button>
+                    </div>
+                  ) : (
+                    <div
+                      className={`${toggleList} ${
+                        togglePop ? "!block z-50" : "hidden"
+                      }`}
                     >
-                      <EditIcon className={toggleListIcons} /> Edit
-                    </button>
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        archivePost(post._id);
-                      }}
-                    >
-                      <TrashIcon className={toggleListIcons} /> Archive
-                    </button>
-                    <button className={toggleListBtn} onClick={deletePost}>
-                      <TrashIcon className={toggleListIcons} /> Delete
-                    </button>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div
-            className={maincontentContainer}
-            onClick={() => {
-              // props.setLevelFunc("level3");
-            }}
-          >
-            <div className={mediaContainer}>
-              {post.media && post.media.length > 0 && (
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={
-                    post.media && post.media.length === 1 ? false : true
-                  }
-                >
-                  {post.media.map((media, index) =>
-                    media.type == "image" ? (
-                      <Image
-                        key={index}
-                        src={media.url}
-                        width={452}
-                        height={312}
-                        alt="post media"
-                        className="w-full"
-                      />
-                    ) : (
-                      <video
-                        key={index}
-                        src={media.url}
-                        width={452}
-                        height={312}
-                        className="w-full"
-                        controls
-                      />
-                    )
+                      <button
+                        className={toggleListBtn}
+                        // onClick={() => {
+                        //   setEditPostData((prev) => ({
+                        //     ...prev,
+                        //     isEditModalVisible: true,
+                        //   }));
+                        // }}
+                      >
+                        <EditIcon className={toggleListIcons} /> Edit
+                      </button>
+                      <button
+                        className={toggleListBtn}
+                        onClick={() => {
+                          archivePost(post._id);
+                        }}
+                      >
+                        <TrashIcon className={toggleListIcons} /> Archive
+                      </button>
+                      <button className={toggleListBtn} onClick={deletePost}>
+                        <TrashIcon className={toggleListIcons} /> Delete
+                      </button>
+                    </div>
                   )}
-                </Carousel>
+                </div>
               )}
             </div>
-            {post.text_content && (
-              <div className={textContainer}>
-                <p className={textContainerContent}>{post.text_content}</p>
-              </div>
-            )}
-          </div>
-          <div className={footerBtnContainer}>
-            <Link
-              href={{
-                pathname: AppRoutes.single_post,
-                query: {
-                  post_id: post._id,
-                  account_address: post.user.account_address,
-                },
+            <div
+              className={maincontentContainer}
+              onClick={() => {
+                // props.setLevelFunc("level3");
               }}
             >
-              <a className={footerdetailBtn}>
-                <MessageIcon /> {post.replies_count}
-              </a>
-            </Link>
-            <button
-              className={footerdetailBtn}
-              onClick={() => likePost(post._id)}
-            >
-              <LikeIcon
-                className={isLikedByLoggedInUser ? "stroke-brand-primary" : ""}
-              />{" "}
-              <span
-                className={`${
-                  isLikedByLoggedInUser ? "text-brand-primary" : ""
-                }`}
-              >
-                {totalPostLikes > 0 && totalPostLikes}
-              </span>
-            </button>
-            <div ref={ref2} className={toggleContainer}>
-              <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-                <ShareIcon /> {post.shares_count}
-              </button>
-
-              <div
-                className={`${SharetoggleList} ${
-                  toggleSharePop && "!block z-50"
-                }`}
-              >
-                <button className={SharetoggleListBtn}>
-                  <MessageIcon2 className={SharetoggleListIcons} /> Search in
-                  message
-                </button>
-                <button className={SharetoggleListBtn}>
-                  <LinkIcon className={SharetoggleListIcons} /> Copy link
-                </button>
-                <button
-                  className={shareBtnContainer}
-                  onClick={toggleSharePopFunc_2}
-                >
-                  <div className={SharetoggleListBtn}>
-                    <WorldIcon className={SharetoggleListIcons} /> Share Via...
-                  </div>
-                  <ArrowRightIcon />
-                </button>
+              <div className={mediaContainer}>
+                {post.media && post.media.length > 0 && (
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={
+                      post.media && post.media.length === 1 ? false : true
+                    }
+                  >
+                    {post.media.map((media, index) =>
+                      media.type == "image" ? (
+                        <Image
+                          key={index}
+                          src={media.url}
+                          width={452}
+                          height={312}
+                          alt="post media"
+                          className="w-full"
+                        />
+                      ) : (
+                        <video
+                          key={index}
+                          src={media.url}
+                          width={452}
+                          height={312}
+                          className="w-full"
+                          controls
+                        />
+                      )
+                    )}
+                  </Carousel>
+                )}
               </div>
-              <div
-                className={`${SharetoggleList} ${
-                  toggleSharePop_2 && "!block z-50"
-                }`}
+              {post.text_content && (
+                <div className={textContainer}>
+                  <p className={textContainerContent}>{post.text_content}</p>
+                </div>
+              )}
+            </div>
+            <div className={footerBtnContainer}>
+              <Link
+                href={{
+                  pathname: AppRoutes.single_post,
+                  query: {
+                    post_id: post._id,
+                    account_address: post.user.account_address,
+                  },
+                }}
               >
-                <button
-                  className={SharetoggleListBtn}
-                  onClick={toggleSharePopFunc_2}
+                <a className={footerdetailBtn}>
+                  <MessageIcon /> {post.replies_count}
+                </a>
+              </Link>
+              <button
+                className={footerdetailBtn}
+                onClick={() => likePost(post._id)}
+              >
+                <LikeIcon
+                  className={
+                    isLikedByLoggedInUser ? "stroke-brand-primary" : ""
+                  }
+                />{" "}
+                <span
+                  className={`${
+                    isLikedByLoggedInUser ? "text-brand-primary" : ""
+                  }`}
                 >
-                  <ArrowLeftIcon /> Share Via
+                  {totalPostLikes > 0 && totalPostLikes}
+                </span>
+              </button>
+              <div ref={ref2} className={toggleContainer}>
+                <button
+                  className={footerdetailBtn}
+                  onClick={toggleSharePopFunc}
+                >
+                  <ShareIcon /> {post.shares_count}
                 </button>
-                <button className={SharetoggleListBtn}>
-                  <Image
-                    src="/images/whatsapp.png"
-                    width={24}
-                    height={24}
-                    alt="icon"
-                  />
-                  WhatsApp
-                </button>
-                <button className={SharetoggleListBtn}>
-                  <Image
-                    src="/images/twitter2.png"
-                    width={24}
-                    height={24}
-                    alt="icon"
-                  />
-                  Twitter
-                </button>
+
+                <div
+                  className={`${SharetoggleList} ${
+                    toggleSharePop && "!block z-50"
+                  }`}
+                >
+                  <button className={SharetoggleListBtn}>
+                    <MessageIcon2 className={SharetoggleListIcons} /> Search in
+                    message
+                  </button>
+                  <button className={SharetoggleListBtn}>
+                    <LinkIcon className={SharetoggleListIcons} /> Copy link
+                  </button>
+                  <button
+                    className={shareBtnContainer}
+                    onClick={toggleSharePopFunc_2}
+                  >
+                    <div className={SharetoggleListBtn}>
+                      <WorldIcon className={SharetoggleListIcons} /> Share
+                      Via...
+                    </div>
+                    <ArrowRightIcon />
+                  </button>
+                </div>
+                <div
+                  className={`${SharetoggleList} ${
+                    toggleSharePop_2 && "!block z-50"
+                  }`}
+                >
+                  <button
+                    className={SharetoggleListBtn}
+                    onClick={toggleSharePopFunc_2}
+                  >
+                    <ArrowLeftIcon /> Share Via
+                  </button>
+                  <button className={SharetoggleListBtn}>
+                    <Image
+                      src="/images/whatsapp.png"
+                      width={24}
+                      height={24}
+                      alt="icon"
+                    />
+                    WhatsApp
+                  </button>
+                  <button className={SharetoggleListBtn}>
+                    <Image
+                      src="/images/twitter2.png"
+                      width={24}
+                      height={24}
+                      alt="icon"
+                    />
+                    Twitter
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+          {replies.map((reply) => {
+            return (
+              <ReplyPost
+                key={reply._id}
+                post={reply}
+                onDelete={(post_id) => {
+                  setReplies(replies.filter((p) => p._id !== post_id));
+                }}
+              />
+            );
+          })}
         </div>
-        {replies.map((reply) => {
-          return (
-            <ReplyPost
-              key={reply._id}
-              post={reply}
-              onDelete={(post_id) => {
-                setReplies(replies.filter((p) => p._id !== post_id));
-              }}
-            />
-          );
-        })}
       </div>
     );
   }
@@ -449,7 +473,7 @@ const toggleContainer = ctl(`
 relative
 `);
 const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[170px]
+ absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm w-[170px]
 `);
 const toggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
@@ -458,7 +482,7 @@ const toggleListIcons = ctl(`
 w-[18px] h-[18px]
 `);
 const replyBoxContainer = ctl(`
-  flex flex-col gap-4 overflow-hidden
+  flex flex-col gap-4
 `);
 const firstReplyBox = ctl(`
 relative

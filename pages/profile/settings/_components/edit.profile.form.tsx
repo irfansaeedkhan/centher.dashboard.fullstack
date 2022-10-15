@@ -159,8 +159,6 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
 //     short_bio: Joi.string().label("Short Bio").trim().optional(),
 //     field: Joi.string().label("Field").trim().optional(),
 //     display_name: Joi.string().label("Display").trim().optional(),
-//     custom_image: Joi.boolean().label("Custom Image").optional(),
-//     profile_image: Joi.string().label("Profile Image").trim().optional(),
 //   })
 //   .messages({
 //     "string.empty": `{#label} is required`,

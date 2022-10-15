@@ -227,6 +227,8 @@ export function usePostUpload({
             });
         } catch (error) {
           console.log("Failed to upload data to : ", error);
+          setLoadingState(false);
+          toast.error("Failed to create post");
         }
       };
 
@@ -338,6 +340,12 @@ export function usePostUpload({
       setPostError("Post content is empty");
       return;
     }
+
+    if (previewFilesUI.length > 5) {
+      setPostError("Maximum 5 files is allowed");
+      return;
+    }
+
     setLoadingState(true);
     setPostError("");
     try {
