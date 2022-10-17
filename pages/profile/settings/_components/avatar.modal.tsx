@@ -25,10 +25,10 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={"Avatars"}
-      modalWrapperChildClassName="bg-red-500"
+      bodyWrapper="flex justify-center"
     >
       <div
-        className={`flex gap-4 w-full flex-wrap items-center sjustify-center`}
+        className={`flex gap-4 w-full flex-wrap items-center justify-center max-w-[28rem] m-0`}
       >
         {avatars.map((avatar) => {
           return (

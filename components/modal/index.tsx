@@ -7,19 +7,13 @@ interface ModalWrapperProps {
   title: string;
   isOpen: boolean;
   onClose: () => void;
-  modalWrapperChildClassName?: string;
+  bodyWrapper?: string;
 }
 
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
-  console.log(props.modalWrapperChildClassName);
   return props.isOpen ? (
     <div className={modalWrapper}>
-      <div
-        className={clsx(
-          "p-12 xl:p-4 lg:p-4 md:p-4 sm:p-12 relative",
-          props.modalWrapperChildClassName
-        )}
-      >
+      <div className={clsx("p-12 xl:p-4 lg:p-4 md:p-4 sm:p-12 relative")}>
         {/* content */}
         <div className={modalContent}>
           {/* header */}
@@ -34,7 +28,14 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
             </button>
           </div>
           {/* BodyWrapper */}
-          <div className={bodyWrapper}>{props.children}</div>
+          <div
+            className={clsx(
+              "maxHeight-[400px] overflow-y-scroll",
+              props.bodyWrapper
+            )}
+          >
+            {props.children}
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +86,9 @@ const modalHeader = ctl(`
   justify-between 
 `);
 
-const modalHeaderTitle = ctl(`animationTextHeading py-1`);
+const modalHeaderTitle = ctl(
+  `animationTextHeading lg:!text-[34px] sm:!text-2xl py-1`
+);
 
 const modalHeaderButton = ctl(`
   px-1 
@@ -101,10 +104,4 @@ const modalHeaderButton = ctl(`
   font-semibold 
   bg-transparent 
   focus:outline-none
-`);
-
-const bodyWrapper = ctl(`
-  scrollSet
-  maxHeight-[400px] 
-  overflow-y-scroll
 `);
