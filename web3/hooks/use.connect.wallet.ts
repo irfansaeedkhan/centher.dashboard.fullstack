@@ -26,7 +26,6 @@ export const useConnectWallet = () => {
 
   const disconnectWallet = useCallback(() => {
     deactivate();
-    toast.success("Metamask Disconnected Successfully");
   }, [deactivate]);
 
   const getConnectedAccount = useCallback(async () => {

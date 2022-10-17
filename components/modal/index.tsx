@@ -1,19 +1,22 @@
-import ctl from "@netlify/classnames-template-literals";
 import React from "react";
+import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 interface ModalWrapperProps {
   children: React.ReactNode;
   title: string;
+  isOpen: boolean;
   onClose: () => void;
+  bodyWrapper?: string;
 }
 
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
-  return (
+  return props.isOpen ? (
     <div className={modalWrapper}>
-      <div className={modalWrapperChild1}>
-        {/*content*/}
+      <div className={clsx("p-12 xl:p-4 lg:p-4 md:p-4 sm:p-12 relative")}>
+        {/* content */}
         <div className={modalContent}>
-          {/*header*/}
+          {/* header */}
           <div className={modalHeader}>
             <span className={modalHeaderTitle}>{props.title}</span>
             <button
@@ -25,11 +28,18 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
             </button>
           </div>
           {/* BodyWrapper */}
-          <div className={bodyWrapper}>{props.children}</div>
+          <div
+            className={clsx(
+              "maxHeight-[400px] overflow-y-scroll",
+              props.bodyWrapper
+            )}
+          >
+            {props.children}
+          </div>
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 const modalWrapper = ctl(`
@@ -45,15 +55,6 @@ const modalWrapper = ctl(`
   backdrop-blur-lg
   overflow-x-hidden 
   focus:outline-none 
-`);
-
-const modalWrapperChild1 = ctl(`
-  p-12
-  xl:p-4 
-  lg:p-4 
-  md:p-4 
-  sm:p-12 
-  relative 
 `);
 
 const modalContent = ctl(`
@@ -85,7 +86,9 @@ const modalHeader = ctl(`
   justify-between 
 `);
 
-const modalHeaderTitle = ctl(`animationTextHeading py-1`);
+const modalHeaderTitle = ctl(
+  `animationTextHeading lg:!text-[34px] sm:!text-2xl py-1`
+);
 
 const modalHeaderButton = ctl(`
   px-1 
@@ -101,10 +104,4 @@ const modalHeaderButton = ctl(`
   font-semibold 
   bg-transparent 
   focus:outline-none
-`);
-
-const bodyWrapper = ctl(`
-  scrollSet
-  maxHeight-[400px] 
-  overflow-y-scroll
 `);

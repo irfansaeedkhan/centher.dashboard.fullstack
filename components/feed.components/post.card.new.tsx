@@ -6,9 +6,9 @@ import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
-import { Rings } from "react-loader-spinner";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { Oval, Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -265,7 +265,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     {/* <Rings
                       height="30"
                       width="30"
-                      color="#ffffff"
+                      color="#1C1F29"
                       radius="6"
                       wrapperStyle={{}}
                       wrapperClass=""
