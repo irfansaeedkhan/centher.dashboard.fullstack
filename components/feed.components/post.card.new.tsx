@@ -6,6 +6,8 @@ import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 import { Oval, Rings } from "react-loader-spinner";
 
 // App imports
@@ -42,6 +44,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     loadingState,
     refe,
     tweetText,
+    uploadingFile,
+    file,
     onEmojiClick,
   } = usePostUpload({
     onPostCreated,
@@ -174,6 +178,11 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 ></textarea>
               </div>
             </div>
+            {/* {file && (
+              <p className="px-6 text-14 text-[#ec5858] font-semibold">
+                {file} - {uploadingFile} %
+              </p>
+            )} */}
             {postError && (
               <div className={postErrorMessage}>
                 <p className="px-6 text-14 text-[#ec5858] font-semibold">
@@ -253,7 +262,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 <div className={divider}></div>
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                    <Rings
+                    {/* <Rings
                       height="30"
                       width="30"
                       color="#1C1F29"
@@ -262,7 +271,18 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                       wrapperClass=""
                       visible={true}
                       ariaLabel="rings-loading"
-                    />
+                    /> */}
+                    <div style={{ width: 30, height: 30 }}>
+                      <CircularProgressbar
+                        value={uploadingFile ? uploadingFile : 0}
+                        text={`${uploadingFile ? uploadingFile : 0}%`}
+                        styles={buildStyles({
+                          textColor: "#ffffff",
+                          textSize: "20px",
+                          pathColor: "#1C1F29",
+                        })}
+                      />
+                    </div>
                   </button>
                 ) : (
                   <Button
