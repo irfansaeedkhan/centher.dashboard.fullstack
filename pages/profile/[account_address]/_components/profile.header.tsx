@@ -144,7 +144,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <Button
             title={
-              loggedInUser?._id === user?._id ? "My NFT Profile" : "NFT Profile"
+              loggedInUser?._id !== user?._id ? "NFT Profile" : "My NFT Profile"
             }
             variant={`${isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8"
