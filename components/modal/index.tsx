@@ -1,17 +1,25 @@
-import ctl from "@netlify/classnames-template-literals";
 import React from "react";
+import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 interface ModalWrapperProps {
   children: React.ReactNode;
   title: string;
   isOpen: boolean;
   onClose: () => void;
+  modalWrapperChildClassName?: string;
 }
 
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
+  console.log(props.modalWrapperChildClassName);
   return props.isOpen ? (
     <div className={modalWrapper}>
-      <div className={modalWrapperChild1}>
+      <div
+        className={clsx(
+          "p-12 xl:p-4 lg:p-4 md:p-4 sm:p-12 relative",
+          props.modalWrapperChildClassName
+        )}
+      >
         {/* content */}
         <div className={modalContent}>
           {/* header */}
@@ -46,15 +54,6 @@ const modalWrapper = ctl(`
   backdrop-blur-lg
   overflow-x-hidden 
   focus:outline-none 
-`);
-
-const modalWrapperChild1 = ctl(`
-  p-12
-  xl:p-4 
-  lg:p-4 
-  md:p-4 
-  sm:p-12 
-  relative 
 `);
 
 const modalContent = ctl(`

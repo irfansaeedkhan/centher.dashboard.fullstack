@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/future/image";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { useAvatars } from "@/hooks/use.avatars";
@@ -22,7 +21,12 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
   const { avatars } = useAvatars();
 
   return (
-    <ModalWrapper isOpen={isOpen} onClose={onClose} title={"Avatars"}>
+    <ModalWrapper
+      isOpen={isOpen}
+      onClose={onClose}
+      title={"Avatars"}
+      modalWrapperChildClassName="bg-red-500"
+    >
       <div
         className={`flex gap-4 w-full flex-wrap items-center sjustify-center`}
       >
