@@ -36,6 +36,7 @@ import {
 import { Post, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
+import { ArchiveIcon } from "@/assets/svgs";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
@@ -352,7 +353,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const toggleSharePopFunc_2 = async () => {
       setToggleSharePop_2((prev) => !prev);
     };
-
+    console.log("profile", post.user.account_address);
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
       var box: HTMLElement | null = document.getElementById("trashRectedit");
@@ -384,15 +385,33 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           )}
           <div className={topCard}>
             <div className={profileDetail}>
-              <Image
-                src={_post.user.profile_image.path}
-                width={48}
-                height={48}
-                className="rounded-full dpImagePreview"
-                alt={_post.user.display_name}
-              />
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.account_address,
+                  query: {
+                    account_address: post.user?.account_address,
+                  },
+                }}
+              >
+                <Image
+                  src={_post.user.profile_image.path}
+                  width={48}
+                  height={48}
+                  className="rounded-full dpImagePreview cursor-pointer"
+                  alt={_post.user.display_name}
+                />
+              </Link>
               <div>
-                <h5 className={PFName}>{_post.user.display_name}</h5>
+                <Link
+                  href={{
+                    pathname: AppRoutes.profile.account_address,
+                    query: {
+                      account_address: post.user?.account_address,
+                    },
+                  }}
+                >
+                  <h5 className={PFName}>{_post.user.display_name}</h5>
+                </Link>
                 <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
               </div>
             </div>
@@ -411,7 +430,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         archivePost(_post._id);
                       }}
                     >
-                      <TrashIcon className={toggleListIcons} /> Archive
+                      <ArchiveIcon className={toggleListIcons} /> Archive
                     </button>
                   </div>
                 ) : (
@@ -435,7 +454,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         archivePost(_post._id);
                       }}
                     >
-                      <TrashIcon className={toggleListIcons} /> Archive
+                      <ArchiveIcon className={toggleListIcons} /> Archive
                     </button>
                     <button className={toggleListBtn} onClick={deletePost}>
                       <TrashIcon className={toggleListIcons} /> Delete
@@ -853,7 +872,7 @@ const profileDetail = ctl(`
 flex items-center gap-3
 `);
 const PFName = ctl(`
-text-14px font-semibold text-white pb-1
+text-14px font-semibold text-white pb-1 cursor-pointer
 `);
 const PFTime = ctl(`
 text-12px font-ligth text-gray-shade-7

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
-import { Rings } from "react-loader-spinner";
+import { Oval, Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";

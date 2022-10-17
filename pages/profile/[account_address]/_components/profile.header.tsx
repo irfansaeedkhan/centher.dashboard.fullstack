@@ -8,7 +8,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { TwitterShareButton } from "react-share";
-import { Rings } from "react-loader-spinner";
+import { Bars, Rings } from "react-loader-spinner";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -48,6 +48,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     router.query.account_address?.toString()?.toLowerCase()
   );
   const [_, copy] = useCopyToClipboard();
+  const [loader, setLoader] = useState(false);
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
   const [shareUrl, setShareUrl] = useState("");
   const [description, setDescription] = useState<string>(
@@ -332,7 +333,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           </div>
         </div>
       ) : (
-        <>Loading...</>
+        <>
+          <Bars
+            height="25"
+            width="25"
+            color="#FEBF32"
+            ariaLabel="bars-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </>
       )}
     </div>
   );

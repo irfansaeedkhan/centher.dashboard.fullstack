@@ -27,6 +27,7 @@ import {
   AnimateTrashIcon,
   WorldIcon,
   MessageIcon2,
+  ArchiveIcon,
 } from "@/assets/svgs";
 import { Post, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
@@ -317,7 +318,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                           archivePost(post._id);
                         }}
                       >
-                        <TrashIcon className={toggleListIcons} /> Archive
+                        <ArchiveIcon className={toggleListIcons} /> Archive
                       </button>
                     </div>
                   ) : (
@@ -343,7 +344,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                           archivePost(post._id);
                         }}
                       >
-                        <TrashIcon className={toggleListIcons} /> Archive
+                        <ArchiveIcon className={toggleListIcons} /> Archive
                       </button>
                       <button className={toggleListBtn} onClick={deletePost}>
                         <TrashIcon className={toggleListIcons} /> Delete
