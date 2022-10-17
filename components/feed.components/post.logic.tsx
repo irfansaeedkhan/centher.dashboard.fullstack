@@ -77,6 +77,10 @@ export function usePostUpload({
 
   const [disablePostButton, setdisablePostButton] = useState<boolean>(false);
 
+  const [uploadingFile, setUploadingFile] = useState<number>();
+
+  const [file, setFile] = useState<string>("");
+
   let currentPostID: string = "";
 
   let previewFileList: Array<PreviewSelectedFile> = [];
@@ -139,6 +143,10 @@ export function usePostUpload({
         post_id: currentPostID,
         file_index: file_index,
       });
+      if (FileListDetails.length > file_index + 1) {
+        setFile(FileListDetails[file_index + 1].file_name);
+        setUploadingFile(0);
+      }
       await UploadFiles(FileListDetails, file_index + 1);
     } catch (error) {
       console.log("Failed to complete upload : ", error);
@@ -209,6 +217,10 @@ export function usePostUpload({
           await axiosNodeApi
             .post("/api/socials/posts-media/upload", dataRead, header)
             .then(() => {
+              setFile(file_details.file_name);
+              setUploadingFile(
+                (100 / file_details.chunks_range.length) * (chunk_index + 1)
+              );
               //Checking all chunks are uploaded
               if (file_details.chunks_range.length - 1 == chunk_index) {
                 //All chunks are uploaded now need to upload new file
@@ -247,12 +259,11 @@ export function usePostUpload({
       if (uploading_file_index >= filesChunksDetails.length) {
         // TODO: Checking if file list
         await getNewPostAndUpdateState();
-
+        setFile("");
         // Close Post Modal on successful upload
         closePostModel();
         return;
       }
-
       await UploadChunks(filesChunksDetails, uploading_file_index, 0);
     } catch (error) {
       console.log("Failed to delete post");
@@ -337,7 +348,13 @@ export function usePostUpload({
   // Start uploading it to server
   const createPost = async (event: any): Promise<any> => {
     if (tweetText === "" && previewFilesUI.length < 1) {
-      setPostError("Post content is empty");
+      // setPostError("Post content is empty");
+      toast.error("Empty Post Not Allowed");
+      return;
+    }
+
+    if (tweetText.trim().length == 0) {
+      toast.error("White Spaces are Not Allowed");
       return;
     }
 
@@ -359,6 +376,9 @@ export function usePostUpload({
       //console.log("Calculated chunks : ", filesChunksDetails);
       //Setting details in filesChunksDetails
       setselectedFileDetail(filesChunksDetails);
+
+      setUploadingFile(0);
+      setFile(filesChunksDetails[0].file_name);
 
       //console.log("Reply address : ", reply_address, reply_post_id);
       // No need to pass user address
@@ -697,8 +717,10 @@ export function usePostUpload({
     loadingState,
     lastItem,
     postError,
+    file,
     refe,
     onEmojiClick,
+    uploadingFile,
     tweetText,
   };
 }

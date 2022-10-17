@@ -78,13 +78,15 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
   return (
     <div className="flex gap-2 items-center">
-      <Image
-        src={profileImage.path}
-        width={80}
-        height={80}
-        alt="display-picture"
-        className="rounded-full object-cover !h-[80px] border border-[#45474d4d] bg-[#ffffff08]"
-      />
+      <div className="dpImagePreview">
+        <Image
+          src={profileImage.path}
+          width={80}
+          height={80}
+          alt="display-picture"
+          className="rounded-full object-cover !h-[80px] border border-[#45474d4d] bg-[#ffffff08]"
+        />
+      </div>
       <div className={fieldTitle}>
         <button onClick={() => setIsMenuOpen(true)}>
           Change Profile Image
@@ -97,8 +99,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             </div>
             <div
               ref={ref}
-              // TODO: Waqar: Extract this bg color to tailwind config
-              className="absolute flex flex-col gap-6 w-[380px] h-auto bg-[#0D0D0D] p-6 top-10 rounded-xl"
+              className="absolute flex flex-col gap-6 w-[380px] h-auto bg-black-shade-12 p-6 top-10 rounded-xl"
             >
               {/* Choose Avatar */}
               <div className="flex gap-2 items-center">
