@@ -50,6 +50,12 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
     const file = e.currentTarget.files[0];
 
+    // Only allow png, jpeg and jpg
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+      toast.error("Only png and jpg files are allowed");
+      return;
+    }
+
     const profileImageData: UserImage = {
       path: URL.createObjectURL(file),
       object_name: file.name,
@@ -90,6 +96,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       ) {
         errorMsg =
           "Profile image is too large. Please upload an image less than 5MB.";
+      } else if (error.response?.data?.message_description) {
+        errorMsg = error.response.data.message_description;
       }
 
       toast.error(errorMsg);
