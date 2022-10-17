@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/future/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -32,7 +32,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { user } = useUser();
   const [_, copy] = useCopyToClipboard();
   const { connectWallet, disconnectWallet } = useConnectWallet();
-  const { active } = useWeb3React();
+  const { active, account, deactivate } = useWeb3React();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -76,6 +76,16 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         );
       });
   };
+
+  useEffect(() => {
+    if (!account || !user) {
+      return;
+    }
+    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+      toast.error("Please connect to correct account");
+      deactivate();
+    }
+  }, [account, deactivate, user]);
 
   return (
     <>
@@ -142,14 +152,18 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             {active ? (
               <button
                 className={disconnectButtonStyle}
-                onClick={() => disconnectWallet()}
+                onClick={() => {
+                  disconnectWallet();
+                }}
               >
                 Disconnect
               </button>
             ) : (
               <button
                 className={connectButton}
-                onClick={async () => await connectWallet()}
+                onClick={async () => {
+                  await connectWallet();
+                }}
               >
                 Connect
               </button>
