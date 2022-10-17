@@ -6,19 +6,19 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import { ModalWrapper } from "@/components/modal";
 import { useAvatars } from "@/hooks/use.avatars";
-import { Avatar } from "@/models/avatars";
+import { UserImage } from "@/models/user";
 import { NODE_API_URL } from "@/constants/common";
 
 interface AvatarProps {
-  defaultAvatar: Avatar["path"];
-  onSelect: (avatart: Avatar["path"]) => void;
+  defaultAvatar: UserImage["path"];
+  onSelect: (avatart: UserImage["path"]) => void;
 }
 
 const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
   const { avatars } = useAvatars();
   const [avatarModal, setAvatarModal] = useState(false);
   const [profileImage, setProfileImage] =
-    useState<Avatar["name"]>(defaultAvatar);
+    useState<UserImage["name"]>(defaultAvatar);
 
   return (
     <div className={mainWrapper}>
@@ -36,29 +36,32 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
       >
         Profile Image
       </button>
-      {avatarModal && (
-        <ModalWrapper onClose={() => setAvatarModal(false)} title={"Avatars"}>
-          <div className={modalBodyWrapper}>
-            {avatars.map((avatar) => {
-              return (
-                <Image
-                  key={avatar.path}
-                  src={`${NODE_API_URL}${avatar.path}`}
-                  alt={avatar.name}
-                  className={profileImageClass2}
-                  width={80}
-                  height={80}
-                  onClick={() => {
-                    setAvatarModal(false);
-                    setProfileImage(avatar.path);
-                    onSelect(avatar.path);
-                  }}
-                />
-              );
-            })}
-          </div>
-        </ModalWrapper>
-      )}
+
+      <ModalWrapper
+        isOpen={avatarModal}
+        onClose={() => setAvatarModal(false)}
+        title={"Avatars"}
+      >
+        <div className={modalBodyWrapper}>
+          {avatars.map((avatar) => {
+            return (
+              <Image
+                key={avatar.path}
+                src={`${NODE_API_URL}${avatar.path}`}
+                alt={avatar.name}
+                className={profileImageClass2}
+                width={80}
+                height={80}
+                onClick={() => {
+                  setAvatarModal(false);
+                  setProfileImage(avatar.path);
+                  onSelect(avatar.path);
+                }}
+              />
+            );
+          })}
+        </div>
+      </ModalWrapper>
     </div>
   );
 };

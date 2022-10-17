@@ -1,12 +1,10 @@
 // React, Next, NPM Packages
 import React from "react";
+import { FieldError } from "react-hook-form";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { ErrorMessage } from "@/components/error.message";
-
-// Current directory imports
-import { PasswordFormProps } from "./account.profile.form";
 
 export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
   ({ label, id, error, ...props }, ref) => {
@@ -19,7 +17,7 @@ export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
           {...props}
           ref={ref}
         />
-        {/* {error && <ErrorMessage message={error.message} />} */}
+        {error && <ErrorMessage message={error.message} />}
       </div>
     );
   }
@@ -27,6 +25,21 @@ export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
 
 // Display name of the component for debugging
 InputField.displayName = "InputField";
+
+export interface PasswordFormProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  id: FieldName;
+  label: React.ReactNode;
+  placeholder: string;
+  error?: FieldError;
+}
+
+export type FieldName =
+  | "pseudonym"
+  | "first_name"
+  | "last_name"
+  | "website_url"
+  | "twitter_username";
 
 const fieldWrapper = ctl(`
   flex 

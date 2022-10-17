@@ -172,64 +172,62 @@ export const RegisterForm: React.FC = () => {
           </button>
         )}
 
-        {feeModal.isOpen && (
-          <ModalWrapper
-            title="Registeration Fee"
-            onClose={() => {
-              feeModal.status !== "progress" &&
-                setFeeModal((prev) => ({ ...prev, isOpen: false }));
-            }}
-          >
-            <div className={feeWrapper}>
-              <div className={feeModalWrapper}>
-                {feeModal.status === "start" ? (
-                  <WalletIconModal />
-                ) : feeModal.status === "progress" ? (
-                  <SpinIcon2 />
-                ) : (
-                  feeModal.status === "end" && <Successfully />
-                )}
-              </div>
-              <div className={feeModalStatus}>
-                <h2 className={feeModalProgress}>
-                  {feeModal.status === "start"
-                    ? "Pay Registeration Fee"
-                    : feeModal.status === "progress"
-                    ? "Transaction in progress"
-                    : feeModal.status === "end" && "Successfully"}
-                </h2>
-                {feeModal.status === "start" ? (
-                  <p className={textFee}>{`${feeModal.fee} BNB`}</p>
-                ) : feeModal.status === "progress" ? (
-                  <p className={modalInnerText}>
-                    Please do not close or refresh page.
-                  </p>
-                ) : (
-                  feeModal.status === "end" && (
-                    <p className={registrationCompleted}>
-                      Transaction done successfully. Registering user on
-                      platform
-                    </p>
-                  )
-                )}
-              </div>
-              <div>
-                {feeModal.status === "start" ? (
-                  <button className={button} type="submit">
-                    Pay
-                  </button>
-                ) : (
-                  (feeModal.status === "progress" ||
-                    feeModal.status === "end") && (
-                    <button className={button2} type="button" disabled>
-                      Ok
-                    </button>
-                  )
-                )}
-              </div>
+        <ModalWrapper
+          title="Registeration Fee"
+          isOpen={feeModal.isOpen}
+          onClose={() => {
+            feeModal.status !== "progress" &&
+              setFeeModal((prev) => ({ ...prev, isOpen: false }));
+          }}
+        >
+          <div className={feeWrapper}>
+            <div className={feeModalWrapper}>
+              {feeModal.status === "start" ? (
+                <WalletIconModal />
+              ) : feeModal.status === "progress" ? (
+                <SpinIcon2 />
+              ) : (
+                feeModal.status === "end" && <Successfully />
+              )}
             </div>
-          </ModalWrapper>
-        )}
+            <div className={feeModalStatus}>
+              <h2 className={feeModalProgress}>
+                {feeModal.status === "start"
+                  ? "Pay Registeration Fee"
+                  : feeModal.status === "progress"
+                  ? "Transaction in progress"
+                  : feeModal.status === "end" && "Successfully"}
+              </h2>
+              {feeModal.status === "start" ? (
+                <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+              ) : feeModal.status === "progress" ? (
+                <p className={modalInnerText}>
+                  Please do not close or refresh page.
+                </p>
+              ) : (
+                feeModal.status === "end" && (
+                  <p className={registrationCompleted}>
+                    Transaction done successfully. Registering user on platform
+                  </p>
+                )
+              )}
+            </div>
+            <div>
+              {feeModal.status === "start" ? (
+                <button className={button} type="submit">
+                  Pay
+                </button>
+              ) : (
+                (feeModal.status === "progress" ||
+                  feeModal.status === "end") && (
+                  <button className={button2} type="button" disabled>
+                    Ok
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        </ModalWrapper>
       </form>
     </>
   );
