@@ -58,7 +58,7 @@ const Header = () => {
                   alt="userProfile"
                   width={40}
                   height={40}
-                  className="rounded-full"
+                  className="rounded-full !h-[40px] object-cover"
                 />
               </div>
 

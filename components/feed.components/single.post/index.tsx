@@ -357,7 +357,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const toggleSharePopFunc_2 = async () => {
       setToggleSharePop_2((prev) => !prev);
     };
-    console.log("profile", post.user.account_address);
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
       var box: HTMLElement | null = document.getElementById("trashRectedit");

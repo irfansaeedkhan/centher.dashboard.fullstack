@@ -1,11 +1,13 @@
 // React, Next, NPM Packages
 import React, { useRef, useState } from "react";
 import Image from "next/future/image";
+import axios from "axios";
 import { useOnClickOutside } from "usehooks-ts";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { LoggedInUser, UserImage } from "@/models/user";
+import { axiosNodeApi } from "@/utils/axios";
 import { AvatarIcon, CameraIcon2, Polygon, UploadIcon } from "@/assets/svgs";
 
 // Current directory imports
@@ -33,6 +35,48 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   const handleSelectAvatar = (avatar: UserImage) => {
     setProfileImage(avatar);
     updateProfileImage(avatar);
+  };
+
+  const handleSelectCustomImage: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
+    // Close Menu
+    setIsMenuOpen(false);
+
+    if (!e.currentTarget.files || e.currentTarget.files.length < 1) {
+      return;
+    }
+
+    const file = e.currentTarget.files[0];
+
+    const profileImageData: UserImage = {
+      name: file.name,
+      path: URL.createObjectURL(file),
+      object_name: file.name,
+    };
+
+    try {
+      // Get pre-signed URL from API
+      const { data } = await axiosNodeApi.get(
+        "/api/s3-upload/profile-image?filename=" + file.name
+      );
+
+      profileImageData.name = data.objectName;
+      profileImageData.object_name = data.objectName;
+
+      // Update profile image in state with base64 image
+      setProfileImage(profileImageData);
+
+      // Upload file to S3
+      await axios.put(data.uploadURL, file);
+
+      profileImageData.path = data.uploadURL.split("?")[0];
+
+      // Update profile image in DB
+      updateProfileImage(profileImageData);
+    } catch (err) {
+      process.env.NODE_ENV !== "production" && console.dir(err);
+    }
   };
 
   return (
@@ -71,19 +115,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                 </span>
               </div>
 
-              {/* Take Selfie */}
-              {/* <div className="flex gap-2 items-center">
-                <CameraIcon2 />
-                <span
-                  className="text-sm font-medium hover:text-brand-primary"
-                  onClick={() => setProfileModal("selfie")}
-                >
-                  Take Selfie
-                </span>
-              </div> */}
-
               {/* Choose Image */}
-              {/* <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center">
                 <UploadIcon />
                 <label className="cursor-pointer">
                   <span className="text-sm font-medium hover:text-brand-primary">
@@ -93,8 +126,20 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                     type="file"
                     className="hidden"
                     accept="image/jpeg,image/png"
+                    onChange={handleSelectCustomImage}
                   />
                 </label>
+              </div>
+
+              {/* Take Selfie */}
+              {/* <div className="flex gap-2 items-center">
+                <CameraIcon2 />
+                <span
+                  className="text-sm font-medium hover:text-brand-primary"
+                  onClick={() => setProfileModal("selfie")}
+                >
+                  Take Selfie
+                </span>
               </div> */}
 
               {/* Choose NFT Image */}
