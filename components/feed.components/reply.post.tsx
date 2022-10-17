@@ -27,6 +27,7 @@ import {
   AnimateTrashIcon,
   WorldIcon,
   MessageIcon2,
+  ArchiveIcon,
 } from "@/assets/svgs";
 import { Post, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
@@ -317,7 +318,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                           archivePost(post._id);
                         }}
                       >
-                        <TrashIcon className={toggleListIcons} /> Archive
+                        <ArchiveIcon className={toggleListIcons} /> Archive
                       </button>
                     </div>
                   ) : (
@@ -343,7 +344,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                           archivePost(post._id);
                         }}
                       >
-                        <TrashIcon className={toggleListIcons} /> Archive
+                        <ArchiveIcon className={toggleListIcons} /> Archive
                       </button>
                       <button className={toggleListBtn} onClick={deletePost}>
                         <TrashIcon className={toggleListIcons} /> Delete
@@ -606,7 +607,7 @@ const toggleContainer = ctl(`
 relative
 `);
 const toggleList = ctl(`
- absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm w-[170px]
+ absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm w-[170px]
 `);
 const toggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
@@ -630,7 +631,7 @@ const repliedToPersonName = ctl(`
 text-brand-primary
 `);
 const SharetoggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[235px]
+ hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
 `);
 const SharetoggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
