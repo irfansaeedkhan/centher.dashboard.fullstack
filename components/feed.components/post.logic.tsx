@@ -337,7 +337,13 @@ export function usePostUpload({
   // Start uploading it to server
   const createPost = async (event: any): Promise<any> => {
     if (tweetText === "" && previewFilesUI.length < 1) {
-      setPostError("Post content is empty");
+      // setPostError("Post content is empty");
+      toast.error("Empty Post Not Allowed");
+      return;
+    }
+
+    if (tweetText.trim().length == 0) {
+      toast.error("White Spaces are Not Allowed");
       return;
     }
 
