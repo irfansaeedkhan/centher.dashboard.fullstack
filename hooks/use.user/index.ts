@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
+import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
-import { User } from "@/models/user";
 
 const useUser = () => {
   const { data, error } = useSWR(
@@ -9,7 +9,7 @@ const useUser = () => {
     async (url) => {
       try {
         const { data } = await axiosNodeApi.get(url);
-        return data.user as User;
+        return data.user as LoggedInUser;
       } catch (error: any) {
         throw (
           error.response.data ?? {

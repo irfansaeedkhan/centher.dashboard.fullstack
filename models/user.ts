@@ -5,6 +5,8 @@ export interface User {
   profile_image: UserImage;
   cover_image: UserImage;
   website_url: string;
+  profile_bio: string;
+  twitter_username: string;
 }
 
 interface UserImage {
@@ -13,17 +15,11 @@ interface UserImage {
   object_name: string;
 }
 
-export interface LoggedInUser {
-  _id: string;
-  account_address: string;
-  display_name: string;
-  profile_image: UserImage;
+export interface LoggedInUser extends User {
   first_name: string;
   last_name: string;
-  profile_bio: string;
   pseudonym: string;
-  cover_image: UserImage;
-  website_url: string;
+  display_name_field: "real_name" | "pseudonym" | "account_address";
 }
 
 type UserRole =
@@ -34,3 +30,18 @@ type UserRole =
   | "rejected_influencer";
 
 type UserStatus = "active" | "inactive" | "delete";
+
+/*
+  _id: string;
+  account_address: string;
+  display_name: string;
+  profile_image: UserImage;
+  cover_image: UserImage;
+  website_url: string;
+  profile_bio: string;
+  twitter_username: string;
+  first_name: string;
+  last_name: string;
+  pseudonym: string;
+  display_name_field: "real_name" | "pseudonym" | "account_address";
+*/
