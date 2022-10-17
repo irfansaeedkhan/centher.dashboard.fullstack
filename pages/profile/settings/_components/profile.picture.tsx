@@ -40,6 +40,9 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   const handleSelectCustomImage: React.ChangeEventHandler<
     HTMLInputElement
   > = async (e) => {
+    // Close Menu
+    setIsMenuOpen(false);
+
     if (!e.currentTarget.files || e.currentTarget.files.length < 1) {
       return;
     }

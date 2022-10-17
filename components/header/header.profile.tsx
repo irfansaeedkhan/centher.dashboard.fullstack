@@ -211,7 +211,7 @@ const profileImageInner = ctl(`flex gap-2 items-center px-6 py-4`);
 
 const mainImage = ctl(`dpImagePreview relative`);
 
-const innerImageStyle = ctl(`rounded-full`);
+const innerImageStyle = ctl(`rounded-full object-cover h-[40px] w-[40px]`);
 
 const accountAddressWrapper = ctl(`flex flex-col gap-1`);
 
