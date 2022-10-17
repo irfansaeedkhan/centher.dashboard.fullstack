@@ -12,6 +12,8 @@ import { toast } from "react-hot-toast";
 
 // App imports
 import useUser from "@/hooks/use.user";
+import { CustomModal } from "@/components/modal/custom.modal";
+import Button from "@/components/button";
 import {
   MessageIcon,
   LikeIcon,
@@ -22,15 +24,17 @@ import {
   LinkIcon,
   ArrowLeftIcon,
   ArrowRightIcon,
+  AnimateTrashIcon,
   WorldIcon,
   MessageIcon2,
 } from "@/assets/svgs";
-import { Post } from "@/models/post";
+import { Post, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";
-
 import { createPostView } from "./single.post/create.post.view";
+import { PostCarousel } from "././single.post/post.carousel";
+import { usePostUpload } from "./././../feed.components/post.logic";
 
 interface ReplyPostProps {
   post: Post;
@@ -40,9 +44,17 @@ interface ReplyPostProps {
 interface IEditPostData {
   isEditModalVisible: boolean;
   editedPostText: string;
-  editDeletedItems: number[];
-  media?: [];
+  media: PostMedia[];
+  deletedMedia: string[];
 }
+
+const initialEditPostData: IEditPostData = {
+  isEditModalVisible: false,
+  editedPostText: "",
+  media: [],
+  deletedMedia: [],
+};
+
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
   ({ post, onDelete }, ref) => {
     const [_post, setPost] = useState(post);
@@ -61,12 +73,16 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       threshold: 0.8,
     });
 
-    const [editPostData, setEditPostData] = useState<IEditPostData>({
-      isEditModalVisible: false,
-      editedPostText: post.text_content ?? "",
-      editDeletedItems: [],
-      // media: _post.media,
-    });
+    const [editPostData, setEditPostData] =
+      useState<IEditPostData>(initialEditPostData);
+
+    useEffect(() => {
+      setEditPostData((prev) => ({
+        ...prev,
+        editedPostText: _post.text_content ?? "",
+        media: _post.media ?? [],
+      }));
+    }, [_post]);
 
     useEffect(() => {
       (async () => {
@@ -163,6 +179,28 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       }
     };
 
+    const editPost = async () => {
+      try {
+        await axiosNodeApi.patch(`api/socials/posts/edit`, {
+          post_id: post._id,
+          text: editPostData.editedPostText,
+          deleted_media: editPostData.deletedMedia,
+        });
+
+        // Get Updated Post
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/posts/${_post._id}`
+        );
+        setPost(data.post);
+        toast.success("Post Edited Successfully");
+      } catch (error: any) {
+        setPost(post);
+        toast.error(
+          error?.response?.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
     // toggle function to show/hide edit/delete popup
     const togglePopFunc = async () => {
       setTogglePop((prev) => !prev);
@@ -184,6 +222,45 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       setToggleSharePop(false);
       setToggleSharePop_2(false);
     });
+
+    const {
+      showModal,
+      setShowModal,
+      previewFilesUI,
+      totalReplyCount,
+      loadingState,
+      handleTextLength,
+      createPost,
+      closePostModel,
+      handleSelectFile,
+    } = usePostUpload({
+      reply: true,
+      reply_address: post.user.account_address,
+      reply_post_id: post._id,
+      replyCount: post.replies_count,
+      onPostCreated: (replies) => {
+        setReplies((prev) => [replies, ...prev]);
+      },
+    });
+
+    // function to set max value of text
+    const handleEditTextLength = (postText: string) => {
+      var box: HTMLElement | null = document.getElementById("trashRectedit");
+      if (box) {
+        box.style.transform = `translateY(${
+          -(postText.length * 100) / 200 + 100
+        }%)`;
+        if ((postText.length * 100) / 200 > 80) {
+          box.style.fill = `#E03434`;
+        } else {
+          box.style.fill = `#FEBF32`;
+        }
+      }
+      setEditPostData((prev) => ({
+        ...prev,
+        editedPostText: postText,
+      }));
+    };
 
     // Timer to check 15 min difference
     const timeNow = moment();
@@ -251,12 +328,12 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     >
                       <button
                         className={toggleListBtn}
-                        // onClick={() => {
-                        //   setEditPostData((prev) => ({
-                        //     ...prev,
-                        //     isEditModalVisible: true,
-                        //   }));
-                        // }}
+                        onClick={() => {
+                          setEditPostData((prev) => ({
+                            ...prev,
+                            isEditModalVisible: true,
+                          }));
+                        }}
                       >
                         <EditIcon className={toggleListIcons} /> Edit
                       </button>
@@ -428,6 +505,62 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               />
             );
           })}
+          {/* edit modal */}
+          {editPostData.isEditModalVisible && user && (
+            <CustomModal
+              onClose={() => {
+                setEditPostData((prev) => ({
+                  ...prev,
+                  isEditModalVisible: false,
+                  deletedMedia: [],
+                  media: _post.media ?? [],
+                  editedPostText: _post.text_content ?? "",
+                }));
+              }}
+              title={"Edit Reply"}
+            >
+              <div className={modalBodyWrapper}>
+                <div className={contactDetail}>
+                  <Image
+                    src={user.profile_image.path}
+                    width={44}
+                    height={44}
+                    className="rounded-full dpImagePreview"
+                    alt={user.display_name ?? "profile image"}
+                  />
+                  <h5 className={cdName}>{user.display_name}</h5>
+                </div>
+
+                <PostCarousel
+                  editedText={editPostData.editedPostText}
+                  postMedia={editPostData.media}
+                  previewFilesUI={previewFilesUI}
+                  user={user}
+                  onPostTextEdit={handleEditTextLength}
+                  onMediaDelete={(media) => {
+                    setEditPostData((prev) => ({
+                      ...prev,
+                      deletedMedia: [...prev.deletedMedia, media.url],
+                      media: prev.media.filter((m) => m.url !== media.url),
+                    }));
+                  }}
+                />
+
+                <div className={`${modalFooter} justify-end`}>
+                  <div className={RightActionBtns}>
+                    <AnimateTrashIcon />
+                    <div className={divider}></div>
+                    <Button
+                      title={"Update"}
+                      variant="v1"
+                      className="max-w-[140px]"
+                      onClick={editPost}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CustomModal>
+          )}
         </div>
       </div>
     );
@@ -507,4 +640,26 @@ w-[20px] h-[20px]
 `);
 const shareBtnContainer = ctl(`
 w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
+`);
+
+// create post modal styling
+const modalBodyWrapper = ctl(`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`);
+const contactDetail = ctl(`
+  flex items-center  gap-3 px-6
+`);
+const cdName = ctl(`
+  text-14px font-semibold text-white
+`);
+
+const modalFooter = ctl(`
+flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`);
+
+const RightActionBtns = ctl(`
+w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
+`);
+const divider = ctl(`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
 `);
