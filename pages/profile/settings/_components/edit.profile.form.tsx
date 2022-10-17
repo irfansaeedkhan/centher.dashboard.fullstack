@@ -45,7 +45,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
   return (
     <div className="bg-background-shade-1 py-10 flex justify-center items-center">
       <div className="flex flex-col gap-6 max-w-[496px] w-full">
-        <ProfilePicture />
+        <ProfilePicture user={props.user} />
 
         <InputField
           id="pseudonym"

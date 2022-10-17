@@ -81,11 +81,14 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
         </div>
         <Button title={"Buy now"} variant={"v3"} className="py-4" />
       </div>
-      {avatarModal && (
-        <ModalWrapper onClose={() => setAvatarModal(false)} title={"Avatars"}>
-          <div className={modalBodyWrapper}>sdfsdf</div>
-        </ModalWrapper>
-      )}
+
+      <ModalWrapper
+        isOpen={avatarModal}
+        onClose={() => setAvatarModal(false)}
+        title={"Avatars"}
+      >
+        <div className={modalBodyWrapper}>sdfsdf</div>
+      </ModalWrapper>
     </div>
   );
 };

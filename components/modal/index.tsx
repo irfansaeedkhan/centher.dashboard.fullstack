@@ -4,16 +4,17 @@ import React from "react";
 interface ModalWrapperProps {
   children: React.ReactNode;
   title: string;
+  isOpen: boolean;
   onClose: () => void;
 }
 
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
-  return (
+  return props.isOpen ? (
     <div className={modalWrapper}>
       <div className={modalWrapperChild1}>
-        {/*content*/}
+        {/* content */}
         <div className={modalContent}>
-          {/*header*/}
+          {/* header */}
           <div className={modalHeader}>
             <span className={modalHeaderTitle}>{props.title}</span>
             <button
@@ -29,7 +30,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 const modalWrapper = ctl(`
