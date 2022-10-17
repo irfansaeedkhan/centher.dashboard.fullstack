@@ -14,6 +14,7 @@ import { AvatarIcon, CameraIcon2, Polygon, UploadIcon } from "@/assets/svgs";
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
 import { updateProfileImage } from "./update.profile.image";
+import toast from "react-hot-toast";
 
 interface ProfilePictureProps {
   user: LoggedInUser;
@@ -65,17 +66,35 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       profileImageData.object_name = data.objectName;
 
       // Update profile image in state with base64 image
-      setProfileImage(profileImageData);
+      setProfileImage({ ...profileImageData });
+
+      // Create form data
+      const presignedPostData = data.presignedPostData;
+      const formData = new FormData();
+      Object.keys(presignedPostData.fields).forEach((key) => {
+        formData.append(key, presignedPostData.fields[key]);
+      });
+      formData.append("file", file);
 
       // Upload file to S3
-      await axios.put(data.uploadURL, file);
+      await axios.post(presignedPostData.url, formData);
 
-      profileImageData.path = data.uploadURL.split("?")[0];
+      profileImageData.path = presignedPostData.url + "/" + data.objectName;
 
       // Update profile image in DB
       updateProfileImage(profileImageData);
-    } catch (err) {
-      process.env.NODE_ENV !== "production" && console.dir(err);
+    } catch (error: any) {
+      process.env.NODE_ENV !== "production" && console.dir(error);
+      let errorMsg = "Error uploading image";
+      if (
+        typeof error.response?.data === "string" &&
+        error.response?.data.includes("EntityTooLarge")
+      ) {
+        errorMsg =
+          "Profile image is too large. Please upload an image less than 5MB.";
+      }
+
+      toast.error(errorMsg);
     }
   };
 

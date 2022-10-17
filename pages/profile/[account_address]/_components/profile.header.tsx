@@ -220,7 +220,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 alt={user.display_name}
                 width={111}
                 height={112}
-                className="rounded-full dpImagePreview"
+                className="rounded-full dpImagePreview h-[112px] w-[111px] object-cover"
               />
             </div>
           </div>
