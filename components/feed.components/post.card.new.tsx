@@ -256,7 +256,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     <Rings
                       height="30"
                       width="30"
-                      color="#ffffff"
+                      color="#1C1F29"
                       radius="6"
                       wrapperStyle={{}}
                       wrapperClass=""
