@@ -12,6 +12,8 @@ import { Bars, Rings } from "react-loader-spinner";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -201,6 +203,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       createPost,
       closePostModel,
       handleSelectFile,
+      uploadingFile,
+      file,
     } = usePostUpload({
       reply: true,
       reply_address: _post.user.account_address,
@@ -772,7 +776,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     <div className={divider}></div>
                     {loadingState ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        <Rings
+                        {/* <Rings
                           height="30"
                           width="30"
                           color="#1C1F29"
@@ -781,7 +785,18 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                           wrapperClass=""
                           visible={true}
                           ariaLabel="rings-loading"
-                        />
+                        /> */}
+                        <div style={{ width: 30, height: 30 }}>
+                          <CircularProgressbar
+                            value={uploadingFile ? uploadingFile : 0}
+                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            styles={buildStyles({
+                              textColor: "#ffffff",
+                              textSize: "20px",
+                              pathColor: "#1C1F29",
+                            })}
+                          />
+                        </div>
                       </button>
                     ) : (
                       <Button

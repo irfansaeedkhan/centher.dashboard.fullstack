@@ -372,7 +372,7 @@ export function usePostUpload({
       setselectedFileDetail(filesChunksDetails);
 
       setUploadingFile(0);
-      setFile(filesChunksDetails[0].file_name);
+      setFile(filesChunksDetails[0]?.file_name);
 
       //console.log("Reply address : ", reply_address, reply_post_id);
       // No need to pass user address
@@ -392,6 +392,7 @@ export function usePostUpload({
 
       // If no file media that means only text was avaible in post
       if (filesChunksDetails.length == 0) {
+        setUploadingFile(100);
         await getNewPostAndUpdateState();
         closePostModel();
         setLoadingState(false);
