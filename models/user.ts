@@ -10,7 +10,7 @@ export interface User {
 }
 
 export interface UserImage {
-  name: string;
+  name: string; // TODO: Mubashir: No need of this. Remove it.
   path: string;
   object_name: string;
 }
