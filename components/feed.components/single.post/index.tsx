@@ -311,6 +311,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const editPost = async () => {
       try {
+        if (
+          editPostData.deletedMedia.length == _post.media?.length &&
+          !editPostData.editedPostText
+        ) {
+          toast.error("Post text is required");
+          return;
+        }
         await axiosNodeApi.patch(`api/socials/posts/edit`, {
           post_id: post._id,
           text: editPostData.editedPostText,
@@ -323,6 +330,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         );
         setPost(data.post);
         toast.success("Post Edited Successfully");
+        setEditPostData((prev) => ({
+          ...prev,
+          isEditModalVisible: false,
+        }));
       } catch (error: any) {
         setPost(post);
         toast.error(
