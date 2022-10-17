@@ -18,7 +18,7 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
   const { avatars } = useAvatars();
   const [avatarModal, setAvatarModal] = useState(false);
   const [profileImage, setProfileImage] =
-    useState<UserImage["name"]>(defaultAvatar);
+    useState<UserImage["path"]>(defaultAvatar);
 
   return (
     <div className={mainWrapper}>

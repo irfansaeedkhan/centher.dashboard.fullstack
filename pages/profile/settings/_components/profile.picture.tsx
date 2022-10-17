@@ -51,7 +51,6 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     const file = e.currentTarget.files[0];
 
     const profileImageData: UserImage = {
-      name: file.name,
       path: URL.createObjectURL(file),
       object_name: file.name,
     };
@@ -62,7 +61,6 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
         "/api/s3-upload/profile-image?filename=" + file.name
       );
 
-      profileImageData.name = data.objectName;
       profileImageData.object_name = data.objectName;
 
       // Update profile image in state with base64 image
