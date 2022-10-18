@@ -1,13 +1,7 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
 
-const supportedChainIds: number[] = [];
-
-if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-  supportedChainIds.push(56);
-} else {
-  supportedChainIds.push(97);
-}
+import { CHAIN } from "./constants/common";
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds,
+  supportedChainIds: [CHAIN],
 });
