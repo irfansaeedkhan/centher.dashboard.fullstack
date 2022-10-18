@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
+import { useSWRConfig } from "swr";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
@@ -16,11 +17,12 @@ interface EditProfileFormProps {
 }
 
 export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
+  const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
 
   const updateProfile = async () => {
     try {
-      const { data } = await axiosNodeApi.patch("api/users/me", {
+      const { data } = await axiosNodeApi.patch("/api/users/me", {
         pseudonym: updatedUser.pseudonym,
         first_name: updatedUser.first_name,
         last_name: updatedUser.last_name,
@@ -31,6 +33,8 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
       });
 
       setUpdatedUser(data.user as LoggedInUser);
+
+      await mutate("/api/users/me", data.user, false);
 
       toast.success("Profile updated successfully");
     } catch (error: any) {

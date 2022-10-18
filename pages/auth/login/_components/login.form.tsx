@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { useSWRConfig } from "swr";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
@@ -22,6 +23,7 @@ const ButtonsText = {
 };
 
 export const LoginForm: React.FC = () => {
+  const { mutate } = useSWRConfig();
   const router = useRouter();
   const { connectWallet } = useConnectWallet();
   const { account, library } = useWeb3React();
@@ -52,8 +54,10 @@ export const LoginForm: React.FC = () => {
 
       toast.success(loginData.message_description);
       setisLoading("loaded");
-      // Redirect to home page
-      router.push(AppRoutes.home);
+
+      await mutate("/api/users/me", loginData.user, false);
+
+      router.push(AppRoutes.feed);
     } catch (error: any) {
       button.disabled = false;
       setisLoading("failed");

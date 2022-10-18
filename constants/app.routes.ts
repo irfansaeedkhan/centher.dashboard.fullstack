@@ -13,6 +13,7 @@ export const AppRoutes = {
 
   // Anyone can access
   home: "/",
+  explore: "/explore",
   top_influencers: "/top-influencers",
 
   // Unauthenticated users can not access

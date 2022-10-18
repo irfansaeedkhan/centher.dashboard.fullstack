@@ -46,37 +46,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   useOnClickOutside(ref, handleClickOutside);
 
-  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    const button = e.currentTarget;
-    button.disabled = true;
-
-    axiosNodeApi
-      .post("/api/auth/logout")
-      .then(({ data }) => {
-        button.disabled = false;
-        toast.success(data.message_description ?? "Logged out successfully!");
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-
-        // Redirect to home page
-        router.push(AppRoutes.home);
-      })
-      .catch((err: any) => {
-        // If user is already logged out, reload the page
-        if (err.response?.data?.message === "unauthenticated") {
-          setTimeout(() => {
-            window.location.reload();
-          });
-          return;
-        }
-        button.disabled = false;
-        toast.error(
-          err.response?.data?.message_description ?? "Something went wrong!"
-        );
-      });
-  };
-
   useEffect(() => {
     if (!account || !user) {
       return;
