@@ -128,11 +128,13 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             },
           }}
         >
-          <Button
-            title={"Feed and Post"}
-            variant={`${isProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={"Feed and Post"}
+              variant={`${isProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
         <Link
           href={{
@@ -143,13 +145,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             },
           }}
         >
-          <Button
-            title={
-              loggedInUser?._id !== user?._id ? "NFT Profile" : "My NFT Profile"
-            }
-            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={
+                loggedInUser?._id !== user?._id
+                  ? "NFT Profile"
+                  : "My NFT Profile"
+              }
+              variant={`${isNFTProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
       </div>
       {user && loggedInUser ? (
@@ -184,7 +190,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 </label>
               ) : loadingState ? (
                 <button
-                  className={` ${editCover} bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                  className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
                 >
                   <Rings
                     height="20"
@@ -199,7 +205,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 </button>
               ) : (
                 <button
-                  className={editCover}
+                  className={uploadCover}
                   onClick={() => {
                     setLoadingState(true);
                     uploadImage();
@@ -409,4 +415,8 @@ absolute -top-2 w-[20px] h-[20px] [&>*]:stroke-[#FEBF32]
 `);
 const editTxtIcon = ctl(`
 ml-2 relative w-[20px] h-[20px]
+`);
+
+const uploadCover = ctl(`
+flex items-center gap-3 bg-brand-primary hover:bg-brand-primary-dark rounded-xl px-4 py-2 text-black-shade-3 font-semibold text-14px absolute right-6 bottom-4
 `);
