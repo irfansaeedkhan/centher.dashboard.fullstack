@@ -43,7 +43,7 @@ const Header = () => {
         )}
         {user && (
           <>
-            <Link href={AppRoutes.auth.login}>
+            <Link href={AppRoutes.create_nft}>
               <a className={connectButton}>Create NFT</a>
             </Link>
             <div className="relative">

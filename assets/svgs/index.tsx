@@ -989,7 +989,7 @@ export const SpinIcon = () => {
     <div role="status">
       <svg
         aria-hidden="true"
-        className="mr-2 w-5 h-5 text-gray-400 animate-spin dark:text-gray-600 fill-white"
+        className="mr-2 w-5 h-5 text-gray-400 animate-spin dark:text-gray-600 fillWhite"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -2048,6 +2048,34 @@ export const CrossIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const CrossFullIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle cx="10" cy="10" r="9.5" fill="#1B1C22" stroke="#2A2D3C" />
+      <path
+        d="M7 7L13 13"
+        stroke="white"
+        strokeWidth="1.125"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7 13L13 7"
+        stroke="white"
+        strokeWidth="1.125"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
 export const ImageIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
@@ -2195,6 +2223,40 @@ export const QuestionIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const AddIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 19C7.61305 19 5.32387 18.0518 3.63604 16.364C1.94821 14.6761 1 12.3869 1 10C1 7.61305 1.94821 5.32387 3.63604 3.63604C5.32387 1.94821 7.61305 1 10 1C12.3869 1 14.6761 1.94821 16.364 3.63604C18.0518 5.32387 19 7.61305 19 10C19 12.3869 18.0518 14.6761 16.364 16.364C14.6761 18.0518 12.3869 19 10 19V19Z"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M10 6V14"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 10H6"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
 
 export const ArchiveIcon: React.FC<IconProps> = (props) => {
   return (
@@ -2223,6 +2285,103 @@ export const ArchiveIcon: React.FC<IconProps> = (props) => {
       <path
         d="M10 13H14"
         stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const GreyWorldIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+        stroke="#45474D"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M2 12H22"
+        stroke="#45474D"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M12 2C14.5013 4.73835 15.9228 8.29203 16 12C15.9228 15.708 14.5013 19.2616 12 22C9.49872 19.2616 8.07725 15.708 8 12C8.07725 8.29203 9.49872 4.73835 12 2V2Z"
+        stroke="#45474D"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const GreyFBIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g clipPath="url(#clip0_7851_64991)">
+        <path
+          d="M9.68359 11.3125H14.3146"
+          stroke="#45474D"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M14.3175 7.45312H13.5075C12.9037 7.45339 12.3246 7.69337 11.8977 8.12034C11.4707 8.5473 11.2307 9.12631 11.2305 9.73013V16.5431"
+          stroke="#45474D"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M19.0707 4.92875C22.9757 8.83375 22.9757 15.1657 19.0707 19.0707C15.1657 22.9757 8.83375 22.9757 4.92875 19.0707C1.02375 15.1657 1.02375 8.83375 4.92875 4.92875C8.83375 1.02375 15.1657 1.02375 19.0707 4.92875"
+          stroke="#45474D"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </g>
+      <defs>
+        <clipPath id="clip0_7851_64991">
+          <rect width="24" height="24" fill="white" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};
+export const GreyTwitterIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M3 16.5516C3.029 16.5466 5.7 15.6516 5.7 15.6516C2.694 12.6126 2.466 8.11156 4.8 4.85156C5.907 6.91056 7.974 8.81056 10.2 9.35156C10.286 6.75156 12.049 4.85156 14.7 4.85156C16.505 4.85156 17.567 5.53956 18.3 6.65156H21L19.2 9.35156"
+        stroke="#45474D"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
