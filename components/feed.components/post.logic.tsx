@@ -353,7 +353,7 @@ export function usePostUpload({
       return;
     }
 
-    if (tweetText.trim().length == 0) {
+    if (tweetText.trim().length == 0 && previewFilesUI.length < 1) {
       toast.error("White Spaces are Not Allowed");
       return;
     }

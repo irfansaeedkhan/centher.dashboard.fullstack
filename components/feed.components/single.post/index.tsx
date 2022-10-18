@@ -359,7 +359,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     };
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
-      var box: HTMLElement | null = document.getElementById("trashRectedit");
+      var box: HTMLElement | null = document.getElementById("trashRect");
       if (box) {
         box.style.transform = `translateY(${
           -(postText.length * 100) / 200 + 100
@@ -396,13 +396,15 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   },
                 }}
               >
-                <Image
-                  src={_post.user.profile_image.path}
-                  width={48}
-                  height={48}
-                  className="rounded-full dpImagePreview cursor-pointer"
-                  alt={_post.user.display_name}
-                />
+                <a>
+                  <Image
+                    src={_post.user.profile_image.path}
+                    width={48}
+                    height={48}
+                    className="rounded-full dpImagePreview cursor-pointer"
+                    alt={_post.user.display_name}
+                  />
+                </a>
               </Link>
               <div>
                 <Link
@@ -413,7 +415,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     },
                   }}
                 >
-                  <h5 className={PFName}>{_post.user.display_name}</h5>
+                  <a>
+                    <h5 className={PFName}>{_post.user.display_name}</h5>
+                  </a>
                 </Link>
                 <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
               </div>
