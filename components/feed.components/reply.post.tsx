@@ -246,7 +246,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
-      var box: HTMLElement | null = document.getElementById("trashRectedit");
+      var box: HTMLElement | null = document.getElementById("trashRect");
       if (box) {
         box.style.transform = `translateY(${
           -(postText.length * 100) / 200 + 100
