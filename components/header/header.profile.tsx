@@ -103,7 +103,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 />
                 <a
                   href={
-                    process.env.NEXT_PUBLIC_WEB3_MODE === "production"
+                    process.env.NEXT_PUBLIC_APP_ENV === "production"
                       ? "https://bscscan.com/address/" + user?.account_address
                       : "https://testnet.bscscan.com/address/" +
                         user?.account_address

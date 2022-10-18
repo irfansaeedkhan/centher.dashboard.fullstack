@@ -48,7 +48,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
-        <h3 className={profileName}>{user.display_name}</h3>
+        <a>
+          <h3 className={profileName}>{user.display_name}</h3>
+        </a>
       </Link>
       <div className={numberDetails}>
         <div>

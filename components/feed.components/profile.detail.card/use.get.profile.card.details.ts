@@ -20,7 +20,7 @@ export const useGetProfileCardDetails = (user: User) => {
           const res = await getProfileCardDetails(account_address);
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
-          process.env.NEXT_PUBLIC_WEB3_MODE !== "production" &&
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.dir(error);
           setProfileCard(initialProfileCard);
         }
