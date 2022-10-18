@@ -174,7 +174,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                     type="file"
                     id="files-photo"
                     name="photos-file"
-                    accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                    accept="image/jpeg,image/png,image/jpg"
                     style={{ display: "none" }}
                     onChange={(e) => {
                       setLoadingState(false);
