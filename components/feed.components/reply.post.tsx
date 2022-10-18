@@ -193,6 +193,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
           `/api/socials/posts/${_post._id}`
         );
         setPost(data.post);
+        setEditPostData((prev) => ({
+          ...prev,
+          isEditModalVisible: false,
+          deletedMedia: [],
+          media: _post.media ?? [],
+          editedPostText: _post.text_content ?? "",
+        }));
         toast.success("Post Edited Successfully");
       } catch (error: any) {
         setPost(post);
