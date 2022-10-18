@@ -46,7 +46,7 @@ export const SidebarData = {
     items: [
       {
         label: "Explore",
-        url: AppRoutes.home,
+        url: AppRoutes.explore,
         icon: Explore,
       },
       {

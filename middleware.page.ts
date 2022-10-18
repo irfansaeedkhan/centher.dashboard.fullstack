@@ -1,14 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import {
+  changePaths,
+  checkMatch,
+  getSessionUser,
+} from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { NODE_API_URL } from "@/constants/common";
 
 export async function middleware(request: NextRequest) {
   const sessionId = request.cookies.get("sid");
 
-  if (onlyPublicPages.includes(request.nextUrl.pathname)) {
-    const user = await getUser(sessionId);
+  if (checkMatch(request.nextUrl, onlyPublicPages)) {
+    const user = await getSessionUser(sessionId);
     if (user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.feed.index}`
@@ -16,7 +20,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (comingSoonPages.includes(request.nextUrl.pathname)) {
+  if (checkMatch(request.nextUrl, comingSoonPages)) {
     if (
       process.env.NEXT_PUBLIC_APP_ENV === "production" ||
       process.env.NEXT_PUBLIC_APP_ENV === "staging"
@@ -27,8 +31,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (authenticatedUserPages.includes(request.nextUrl.pathname)) {
-    const user = await getUser(sessionId);
+  if (checkMatch(request.nextUrl, authenticatedUserPages)) {
+    const user = await getSessionUser(sessionId);
     if (!user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.auth.login}`
@@ -40,41 +44,23 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Get logged in user from Node JS API using session id
-async function getUser(sessionId: string | undefined) {
-  if (!sessionId) return null;
-
-  try {
-    const res = await fetch(`${NODE_API_URL}/api/auth/session`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        cookie: `sid=${sessionId}`,
-      },
-    });
-    const data = await res.json();
-    return data.user;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
-}
-
 // only public pages - logged in user can not access these pages
-const onlyPublicPages: string[] = [
+const _onlyPublicPages: string[] = [
   AppRoutes.auth.login,
   AppRoutes.auth.register,
 ];
+const onlyPublicPages = changePaths(_onlyPublicPages);
 
 // Authenticated Pages
-const authenticatedUserPages: string[] = [
+const _authenticatedUserPages: string[] = [
   AppRoutes.profile.settings,
   AppRoutes.feed.index,
   AppRoutes.notifications,
 ];
+const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
-const comingSoonPages: string[] = [
+const _comingSoonPages: string[] = [
   AppRoutes.home,
   AppRoutes.explore,
   AppRoutes.top_influencers,
@@ -96,3 +82,4 @@ const comingSoonPages: string[] = [
   AppRoutes.nfts.create_nft,
   AppRoutes.nfts.create_collection,
 ];
+const comingSoonPages = changePaths(_comingSoonPages);
