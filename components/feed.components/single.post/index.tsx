@@ -88,9 +88,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const currentPageRoute = useMemo(
       () => ({
-        isSinglePostPage: router.pathname === AppRoutes.single_post,
-        isFeedPage: router.pathname === AppRoutes.feed,
-        isProfilePage: router.pathname === AppRoutes.user_profile,
+        isSinglePostPage: router.pathname === AppRoutes.feed.single_post,
+        isFeedPage: router.pathname === AppRoutes.feed.index,
+        isProfilePage: router.pathname === AppRoutes.profile.account_address,
       }),
       [router.pathname]
     );
@@ -138,7 +138,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     // Set updated post share url
     useEffect(() => {
       setShareUrl(
-        `${window.location.origin}${AppRoutes.feed}/${_post.user.account_address}/post/${_post._id}`
+        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
       );
     }, [router, _post]);
 
@@ -287,7 +287,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         toast.success("Post Archived Successfully");
 
         if (currentPageRoute.isSinglePostPage) {
-          router.replace(AppRoutes.feed);
+          router.replace(AppRoutes.feed.index);
           return;
         }
 
@@ -642,7 +642,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               />
               <Link
                 href={{
-                  pathname: AppRoutes.single_post,
+                  pathname: AppRoutes.feed.single_post,
                   query: {
                     account_address: _post.user.account_address,
                     post_id: _post._id,

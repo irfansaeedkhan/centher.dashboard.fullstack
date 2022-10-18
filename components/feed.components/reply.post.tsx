@@ -1,14 +1,14 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef } from "react";
-import ctl from "@netlify/classnames-template-literals";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
-import { useOnClickOutside } from "usehooks-ts";
 import Image from "next/future/image";
 import Link from "next/link";
+import { useOnClickOutside } from "usehooks-ts";
 import moment from "moment";
 import { useInView } from "react-intersection-observer";
 import { toast } from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -31,11 +31,11 @@ import {
 } from "@/assets/svgs";
 import { Post, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
-import { NODE_API_URL } from "@/constants/common";
 import { axiosNodeApi } from "@/utils/axios";
+
+import { usePostUpload } from "./../feed.components/post.logic";
 import { createPostView } from "./single.post/create.post.view";
-import { PostCarousel } from "././single.post/post.carousel";
-import { usePostUpload } from "./././../feed.components/post.logic";
+import { PostCarousel } from "./single.post/post.carousel";
 
 interface ReplyPostProps {
   post: Post;
@@ -410,7 +410,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             <div className={footerBtnContainer}>
               <Link
                 href={{
-                  pathname: AppRoutes.single_post,
+                  pathname: AppRoutes.feed.single_post,
                   query: {
                     post_id: post._id,
                     account_address: post.user.account_address,

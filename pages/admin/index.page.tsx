@@ -13,7 +13,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
   // Redirect to staking pack page
   return {
     redirect: {
-      destination: AppRoutes.admin_staking_packs,
+      destination: AppRoutes.admin.staking_packs,
       permanent: false,
     },
   };

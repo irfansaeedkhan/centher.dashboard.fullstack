@@ -11,12 +11,23 @@ export async function middleware(request: NextRequest) {
     const user = await getUser(sessionId);
     if (user) {
       return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.home}`
+        `${request.nextUrl.origin}${AppRoutes.feed.index}`
       );
     }
   }
 
-  if (authenticatedAndActiveUserPages.includes(request.nextUrl.pathname)) {
+  if (comingSoonPages.includes(request.nextUrl.pathname)) {
+    if (
+      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
+      process.env.NEXT_PUBLIC_APP_ENV === "staging"
+    ) {
+      return NextResponse.redirect(
+        `${request.nextUrl.origin}${AppRoutes.coming_soon}`
+      );
+    }
+  }
+
+  if (authenticatedUserPages.includes(request.nextUrl.pathname)) {
     const user = await getUser(sessionId);
     if (!user) {
       return NextResponse.redirect(
@@ -49,22 +60,39 @@ async function getUser(sessionId: string | undefined) {
   }
 }
 
-// only public pages
+// only public pages - logged in user can not access these pages
 const onlyPublicPages: string[] = [
   AppRoutes.auth.login,
   AppRoutes.auth.register,
 ];
 
-// only authenticated pages
-const authenticatedAndActiveUserPages: string[] = [
-  AppRoutes.feed,
-  AppRoutes.chat,
+// Authenticated Pages
+const authenticatedUserPages: string[] = [
+  AppRoutes.profile.settings,
+  AppRoutes.feed.index,
   AppRoutes.notifications,
-  AppRoutes.create_collection,
+];
+
+// Coming soon pages - redirect to feed page
+const comingSoonPages: string[] = [
+  AppRoutes.home,
+  AppRoutes.explore,
+  AppRoutes.top_influencers,
+  AppRoutes.chat,
   AppRoutes.staking_packs,
   AppRoutes.network_rewards,
   AppRoutes.buy_ntr_dao,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
   AppRoutes.referral_program,
+
+  AppRoutes.profile.nfts,
+
+  AppRoutes.admin.index,
+  AppRoutes.admin.staking_packs,
+  AppRoutes.admin.create_staking_pack,
+  AppRoutes.admin.update_staking_pack,
+
+  AppRoutes.nfts.create_nft,
+  AppRoutes.nfts.create_collection,
 ];

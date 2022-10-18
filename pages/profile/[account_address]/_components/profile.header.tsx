@@ -113,8 +113,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   };
 
   // FIXME: Mubashir - Use memoization
-  const isProfilePage = router.pathname === AppRoutes.user_profile;
-  const isNFTProfilePage = router.pathname === AppRoutes.user_nfts_profile;
+  const isProfilePage = router.pathname === AppRoutes.profile.account_address;
+  const isNFTProfilePage = router.pathname === AppRoutes.profile.nfts;
 
   return (
     <div className={profilePageHeader}>
@@ -122,7 +122,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
       <div className={btnContainer}>
         <Link
           href={{
-            pathname: AppRoutes.user_profile,
+            pathname: AppRoutes.profile.account_address,
             query: {
               account_address: user?.account_address,
             },
@@ -138,7 +138,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: user?.account_address,
               tab: "owned",

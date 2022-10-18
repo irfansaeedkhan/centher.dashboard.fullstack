@@ -15,12 +15,12 @@ export const AdminSideBarData = {
     items: [
       {
         label: "Staking Pack",
-        url: AppRoutes.admin_staking_packs,
+        url: AppRoutes.admin.staking_packs,
         icon: StakingPack,
       },
       {
         label: "Network Rewards",
-        url: AppRoutes.admin_network_rewards,
+        url: AppRoutes.admin.network_rewards,
         icon: NetworkRewards,
       },
     ],
@@ -30,22 +30,22 @@ export const AdminSideBarData = {
     items: [
       {
         label: "Influencer Request",
-        url: AppRoutes.admin_influencer_request,
+        url: AppRoutes.admin.influencer_requests,
         icon: InfluencerRequest,
       },
       {
         label: "Influencer Details",
-        url: AppRoutes.admin_influencer_details,
+        url: AppRoutes.admin.influencer_details,
         icon: InfluencerDetails,
       },
       {
         label: "Transactions",
-        url: AppRoutes.admin_transactions,
+        url: AppRoutes.admin.transactions,
         icon: Transactions,
       },
       {
         label: "Users",
-        url: AppRoutes.admin_users,
+        url: AppRoutes.admin.users,
         icon: Users,
       },
     ],

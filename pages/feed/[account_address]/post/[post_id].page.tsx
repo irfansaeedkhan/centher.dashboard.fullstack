@@ -60,7 +60,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           {post.parent_post ? (
             <Link
               href={{
-                pathname: AppRoutes.single_post,
+                pathname: AppRoutes.feed.single_post,
                 query: {
                   account_address: post.parent_post.user.account_address,
                   post_id: post.parent_post._id,
@@ -72,7 +72,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           ) : (
             <Link
               href={{
-                pathname: AppRoutes.feed,
+                pathname: AppRoutes.feed.index,
               }}
             >
               <a className={backBtn}>Back</a>
@@ -81,7 +81,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           <SinglePost
             post={post}
             onDelete={() => {
-              router.replace(AppRoutes.feed);
+              router.replace(AppRoutes.feed.index);
             }}
           />
         </div>

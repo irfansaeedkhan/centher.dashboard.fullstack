@@ -9,6 +9,7 @@ import Button from "@/components/button";
 import { StakingPack } from "./admin.coinpack.list";
 import { DeleteIconBtnCoinPack } from "@/assets/svgs";
 import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface StakingPackCardProps {
   stakingPack: StakingPack;
@@ -60,7 +61,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             <h4 className={ContentItemData2}>{stakingPack.duration}</h4>
           </div>
         </div>
-        <Link href="/admin/update-staking-pack">
+        <Link href={AppRoutes.admin.update_staking_pack}>
           <a className="block">
             <Button title={"Update"} variant={"v3"} />
           </a>
