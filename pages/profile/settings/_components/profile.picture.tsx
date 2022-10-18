@@ -1,8 +1,10 @@
 // React, Next, NPM Packages
 import React, { useRef, useState } from "react";
 import Image from "next/future/image";
+import { useSWRConfig } from "swr";
 import axios from "axios";
 import { useOnClickOutside } from "usehooks-ts";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -14,13 +16,13 @@ import { AvatarIcon, CameraIcon2, Polygon, UploadIcon } from "@/assets/svgs";
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
 import { updateProfileImage } from "./update.profile.image";
-import toast from "react-hot-toast";
 
 interface ProfilePictureProps {
   user: LoggedInUser;
 }
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
+  const { mutate } = useSWRConfig();
   const [profileImage, setProfileImage] = useState(user.profile_image);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [profileModal, setProfileModal] = useState<
@@ -87,6 +89,12 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
       // Update profile image in DB
       updateProfileImage(profileImageData);
+
+      await mutate(
+        "/api/users/me",
+        { ...user, profile_image: profileImageData },
+        false
+      );
     } catch (error: any) {
       process.env.NODE_ENV !== "production" && console.dir(error);
       let errorMsg = "Error uploading image";

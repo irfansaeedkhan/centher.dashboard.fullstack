@@ -7,14 +7,13 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
-import { NODE_API_URL } from "@/constants/common";
 
 // Current directory imports
 // import Search from "./search";
 import HeaderProfile from "./header.profile";
 
 const Header = () => {
-  const { user } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
 
@@ -36,7 +35,7 @@ const Header = () => {
           <Search />
         </div> */}
         <span className={border}></span>
-        {!user && (
+        {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
             <a className={connectButton}>Connect</a>
           </Link>

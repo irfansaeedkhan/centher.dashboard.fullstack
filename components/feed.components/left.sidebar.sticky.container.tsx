@@ -50,4 +50,4 @@ const leftSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
 `);
 
-const componentLoader = ctl(`componentLoaderContainer`);
+const componentLoader = ctl(`componentLoaderContainer min-h-[272px]`);

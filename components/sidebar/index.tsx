@@ -18,7 +18,7 @@ import SidebarAuthModal from "./sidebar.auth.modal";
 
 export const Sidebar = () => {
   const router = useRouter();
-  const { user } = useUser();
+  const { user, isLoading: isUserLoading } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     const button = e.currentTarget;
@@ -29,14 +29,12 @@ export const Sidebar = () => {
       .then(({ data }) => {
         button.disabled = false;
         toast.success(data.message_description ?? "Logged out successfully!");
-        window.location.replace(AppRoutes.home);
+        window.location.replace(AppRoutes.auth.login);
       })
       .catch((err: any) => {
         // If user is already logged out, reload the page
         if (err.response?.data?.message === "unauthenticated") {
-          setTimeout(() => {
-            window.location.reload();
-          });
+          window.location.replace(AppRoutes.auth.login);
           return;
         }
         button.disabled = false;
@@ -53,7 +51,7 @@ export const Sidebar = () => {
           return <Section section={section} key={section.label} />;
         })}
       </div>
-      {user ? (
+      {user && (
         <div className="flex flex-col gap-8">
           <div className={sectionWrapper}>
             <div className={sectionWrapper2}>
@@ -91,9 +89,9 @@ export const Sidebar = () => {
             </div>
           </div>
         </div>
-      ) : (
-        <SidebarAuthModal />
       )}
+
+      {!user && !isUserLoading && <SidebarAuthModal />}
     </div>
   );
 };
