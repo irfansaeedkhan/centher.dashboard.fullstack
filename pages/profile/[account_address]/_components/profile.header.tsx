@@ -51,12 +51,14 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const [loader, setLoader] = useState(false);
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
   const [shareUrl, setShareUrl] = useState("");
-  const [description, setDescription] = useState<string>(
-    "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
-  );
+  const [description, setDescription] = useState<string | undefined>("");
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+
+  useEffect(() => {
+    setDescription(user?.profile_bio);
+  }, [user]);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -183,20 +185,22 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   />{" "}
                 </label>
               ) : loadingState ? (
-                <button
-                  className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
-                >
-                  <Rings
-                    height="20"
-                    width="20"
-                    color="#1C1F29"
-                    radius="6"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                    ariaLabel="rings-loading"
-                  />
-                </button>
+                <div className="w-full min-h-[499px] flex justify-center items-center">
+                  <button
+                    className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                  >
+                    <Rings
+                      height="20"
+                      width="20"
+                      color="#1C1F29"
+                      radius="6"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      ariaLabel="rings-loading"
+                    />
+                  </button>
+                </div>
               ) : (
                 <button
                   className={uploadCover}
@@ -296,39 +300,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
               )}
             </div>
             <div className={textContent}>
-              {desEditStatus ? (
-                <div>
-                  <textarea
-                    className={textInputArea}
-                    cols={12}
-                    rows={3}
-                    id="description"
-                    name="description"
-                    onChange={handleChange}
-                    value={description}
-                  />
-                  <Button
-                    title={"Save"}
-                    variant="v1"
-                    className={saveBtn}
-                    onClick={() => {
-                      setDesEditStatus(false);
-                    }}
-                  />
-                </div>
-              ) : (
-                <p className={profileDescription}>
-                  {description}
-                  <button
-                    className={editTxtIcon}
-                    onClick={() => {
-                      setDesEditStatus(true);
-                    }}
-                  >
-                    <EditIcon className={editIcon} />
-                  </button>
-                </p>
-              )}
+              <p className={profileDescription}>{description}</p>
             </div>
           </div>
         </div>
