@@ -15,7 +15,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { Website } from "@/assets/svgs";
+import { Website, WebsiteIcon } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
@@ -253,18 +253,25 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       <CopyIcon />
                     </button>
                   </div>
-                  <TwitterShareButton
-                    className="flex items-center"
-                    url={shareUrl}
-                  >
-                    <Image
-                      src="/images/twitter2.png"
-                      width={24}
-                      height={24}
-                      alt="icon"
-                    />
-                  </TwitterShareButton>
-                  <button>{user.website_url ? <Website /> : ""}</button>
+                  {user.twitter_username && (
+                    <a
+                      href={`https://twitter.com/${user.twitter_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Image
+                        src="/images/twitter2.png"
+                        width={24}
+                        height={24}
+                        alt="icon"
+                      />
+                    </a>
+                  )}
+                  {user.website_url && (
+                    <a href={user.website_url} target="_blank" rel="noreferrer">
+                      <WebsiteIcon />
+                    </a>
+                  )}
                 </div>
               </div>
               {loggedInUser.account_address.toLowerCase() ===
