@@ -191,22 +191,20 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   />{" "}
                 </label>
               ) : loadingState ? (
-                <div className="w-full min-h-[499px] flex justify-center items-center">
-                  <button
-                    className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
-                  >
-                    <Rings
-                      height="20"
-                      width="20"
-                      color="#1C1F29"
-                      radius="6"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                      ariaLabel="rings-loading"
-                    />
-                  </button>
-                </div>
+                <button
+                  className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                >
+                  <Rings
+                    height="20"
+                    width="20"
+                    color="#1C1F29"
+                    radius="6"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="rings-loading"
+                  />
+                </button>
               ) : (
                 <button
                   className={uploadCover}
@@ -311,7 +309,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           </div>
         </div>
       ) : (
-        <>
+        <div className="min-h-[499px] w-full flex justify-center items-center">
           <Bars
             height="25"
             width="25"
@@ -321,7 +319,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             wrapperClass=""
             visible={true}
           />
-        </>
+        </div>
       )}
     </div>
   );
