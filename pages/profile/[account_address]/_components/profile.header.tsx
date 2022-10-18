@@ -130,11 +130,13 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             },
           }}
         >
-          <Button
-            title={"Feed and Post"}
-            variant={`${isProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={"Feed and Post"}
+              variant={`${isProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
         <Link
           href={{
@@ -145,13 +147,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             },
           }}
         >
-          <Button
-            title={
-              loggedInUser?._id !== user?._id ? "NFT Profile" : "My NFT Profile"
-            }
-            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={
+                loggedInUser?._id !== user?._id
+                  ? "NFT Profile"
+                  : "My NFT Profile"
+              }
+              variant={`${isNFTProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
       </div>
       {user && loggedInUser ? (
