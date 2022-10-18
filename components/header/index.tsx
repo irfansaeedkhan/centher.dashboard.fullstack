@@ -43,7 +43,7 @@ const Header = () => {
         )}
         {user && (
           <>
-            <Link href={AppRoutes.auth.login}>
+            <Link href={AppRoutes.create_nft}>
               <a className={connectButton}>Create NFT</a>
             </Link>
             <div className="relative">
@@ -58,7 +58,7 @@ const Header = () => {
                   alt="userProfile"
                   width={40}
                   height={40}
-                  className="rounded-full"
+                  className="rounded-full !h-[40px] object-cover"
                 />
               </div>
 

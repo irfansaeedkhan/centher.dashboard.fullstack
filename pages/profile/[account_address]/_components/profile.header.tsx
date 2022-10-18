@@ -8,7 +8,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { TwitterShareButton } from "react-share";
-import { Rings } from "react-loader-spinner";
+import { Bars, Rings } from "react-loader-spinner";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -48,6 +48,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     router.query.account_address?.toString()?.toLowerCase()
   );
   const [_, copy] = useCopyToClipboard();
+  const [loader, setLoader] = useState(false);
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
   const [shareUrl, setShareUrl] = useState("");
   const [description, setDescription] = useState<string>(
@@ -144,7 +145,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <Button
             title={
-              loggedInUser?._id === user?._id ? "My NFT Profile" : "NFT Profile"
+              loggedInUser?._id !== user?._id ? "NFT Profile" : "My NFT Profile"
             }
             variant={`${isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8"
@@ -176,12 +177,34 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                     accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
                     style={{ display: "none" }}
                     onChange={(e) => {
+                      setLoadingState(false);
                       handleSelectedFile(e);
                     }}
                   />{" "}
                 </label>
+              ) : loadingState ? (
+                <button
+                  className={` ${editCover} bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                >
+                  <Rings
+                    height="20"
+                    width="20"
+                    color="#1C1F29"
+                    radius="6"
+                    wrapperStyle={{}}
+                    wrapperClass=""
+                    visible={true}
+                    ariaLabel="rings-loading"
+                  />
+                </button>
               ) : (
-                <button className={editCover} onClick={uploadImage}>
+                <button
+                  className={editCover}
+                  onClick={() => {
+                    setLoadingState(true);
+                    uploadImage();
+                  }}
+                >
                   <CameraIcon />
                   Upload cover
                 </button>
@@ -197,7 +220,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 alt={user.display_name}
                 width={111}
                 height={112}
-                className="rounded-full dpImagePreview"
+                className="rounded-full dpImagePreview h-[112px] w-[111px] object-cover"
               />
             </div>
           </div>
@@ -310,7 +333,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           </div>
         </div>
       ) : (
-        <>Loading...</>
+        <>
+          <Bars
+            height="25"
+            width="25"
+            color="#FEBF32"
+            ariaLabel="bars-loading"
+            wrapperStyle={{}}
+            wrapperClass=""
+            visible={true}
+          />
+        </>
       )}
     </div>
   );

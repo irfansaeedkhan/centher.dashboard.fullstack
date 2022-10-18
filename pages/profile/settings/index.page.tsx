@@ -19,7 +19,6 @@ const Setting: NextPageWithLayout = () => {
         <EditProfileForm user={user} />
       ) : (
         <div className="w-full flex justify-center items-center ">
-          {" "}
           <Bars
             height="25"
             width="25"

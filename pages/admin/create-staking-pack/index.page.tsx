@@ -54,7 +54,7 @@ const CreateStakingPack: NextPageWithLayout = () => {
             <div className="w-full">
               <label className={formLabel}>Status</label>
               {/* <input type="text" className={formField} /> */}
-              <select className="bg-white bg-opacity-5 block w-full placeholder:text-[#45474D] border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2">
+              <select className="bg-white bg-opacity-5 block w-full placeholder:text-gray-shade-17 border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2">
                 <option className="bg-black text-white">Active</option>
                 <option className="bg-black text-white">Disable</option>
               </select>
@@ -96,7 +96,7 @@ const formWrap = ctl(`py-10 mx-auto max-w-[496px]`);
 const formLabel = ctl(`block`);
 
 const formField = ctl(
-  `bg-white bg-opacity-5 block w-full placeholder:text-[#45474D] border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2`
+  `bg-white bg-opacity-5 block w-full placeholder:text-gray-shade-17 border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2`
 );
 
 const formDivider = ctl(`flex gap-x-3 mt-3`);

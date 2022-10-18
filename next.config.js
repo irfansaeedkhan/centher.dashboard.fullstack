@@ -7,6 +7,7 @@ const nextConfig = {
       "devapi.nethernft.io",
       "localhost",
       "nethernftdevelopment.s3.eu-west-3.amazonaws.com",
+      "s3.eu-west-3.amazonaws.com",
     ],
   },
   pageExtensions: ["page.tsx", "api.ts"],

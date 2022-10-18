@@ -12,6 +12,8 @@ import { Bars, Rings } from "react-loader-spinner";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -36,6 +38,7 @@ import {
 import { Post, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
+import { ArchiveIcon } from "@/assets/svgs";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
@@ -200,6 +203,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       createPost,
       closePostModel,
       handleSelectFile,
+      uploadingFile,
+      file,
     } = usePostUpload({
       reply: true,
       reply_address: _post.user.account_address,
@@ -311,6 +316,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const editPost = async () => {
       try {
+        if (
+          editPostData.deletedMedia.length == _post.media?.length &&
+          !editPostData.editedPostText
+        ) {
+          toast.error("Post text is required");
+          return;
+        }
         await axiosNodeApi.patch(`api/socials/posts/edit`, {
           post_id: post._id,
           text: editPostData.editedPostText,
@@ -323,6 +335,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         );
         setPost(data.post);
         toast.success("Post Edited Successfully");
+        setEditPostData((prev) => ({
+          ...prev,
+          isEditModalVisible: false,
+        }));
       } catch (error: any) {
         setPost(post);
         toast.error(
@@ -341,7 +357,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const toggleSharePopFunc_2 = async () => {
       setToggleSharePop_2((prev) => !prev);
     };
-
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
       var box: HTMLElement | null = document.getElementById("trashRectedit");
@@ -373,15 +388,33 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           )}
           <div className={topCard}>
             <div className={profileDetail}>
-              <Image
-                src={_post.user.profile_image.path}
-                width={48}
-                height={48}
-                className="rounded-full dpImagePreview"
-                alt={_post.user.display_name}
-              />
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.account_address,
+                  query: {
+                    account_address: post.user?.account_address,
+                  },
+                }}
+              >
+                <Image
+                  src={_post.user.profile_image.path}
+                  width={48}
+                  height={48}
+                  className="rounded-full dpImagePreview cursor-pointer"
+                  alt={_post.user.display_name}
+                />
+              </Link>
               <div>
-                <h5 className={PFName}>{_post.user.display_name}</h5>
+                <Link
+                  href={{
+                    pathname: AppRoutes.profile.account_address,
+                    query: {
+                      account_address: post.user?.account_address,
+                    },
+                  }}
+                >
+                  <h5 className={PFName}>{_post.user.display_name}</h5>
+                </Link>
                 <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
               </div>
             </div>
@@ -400,7 +433,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         archivePost(_post._id);
                       }}
                     >
-                      <TrashIcon className={toggleListIcons} /> Archive
+                      <ArchiveIcon className={toggleListIcons} /> Archive
                     </button>
                   </div>
                 ) : (
@@ -424,7 +457,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         archivePost(_post._id);
                       }}
                     >
-                      <TrashIcon className={toggleListIcons} /> Archive
+                      <ArchiveIcon className={toggleListIcons} /> Archive
                     </button>
                     <button className={toggleListBtn} onClick={deletePost}>
                       <TrashIcon className={toggleListIcons} /> Delete
@@ -742,16 +775,27 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     <div className={divider}></div>
                     {loadingState ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        <Rings
+                        {/* <Rings
                           height="30"
                           width="30"
-                          color="#ffffff"
+                          color="#1C1F29"
                           radius="6"
                           wrapperStyle={{}}
                           wrapperClass=""
                           visible={true}
                           ariaLabel="rings-loading"
-                        />
+                        /> */}
+                        <div style={{ width: 30, height: 30 }}>
+                          <CircularProgressbar
+                            value={uploadingFile ? uploadingFile : 0}
+                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            styles={buildStyles({
+                              textColor: "#ffffff",
+                              textSize: "20px",
+                              pathColor: "#1C1F29",
+                            })}
+                          />
+                        </div>
                       </button>
                     ) : (
                       <Button
@@ -842,7 +886,7 @@ const profileDetail = ctl(`
 flex items-center gap-3
 `);
 const PFName = ctl(`
-text-14px font-semibold text-white pb-1
+text-14px font-semibold text-white pb-1 cursor-pointer
 `);
 const PFTime = ctl(`
 text-12px font-ligth text-gray-shade-7
@@ -879,7 +923,7 @@ const toggleContainer = ctl(`
 relative
 `);
 const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[170px]
+ hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[170px]
 `);
 const toggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
@@ -888,7 +932,7 @@ const toggleListIcons = ctl(`
 w-[18px] h-[18px]
 `);
 const SharetoggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-[#0D0D0D] shadow-sm overflow-hidden w-[235px]
+ hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
 `);
 const SharetoggleListBtn = ctl(`
 w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4

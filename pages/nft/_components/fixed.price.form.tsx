@@ -10,7 +10,8 @@ import { toast } from "react-hot-toast";
 import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";
-
+import { AddIcon, CrossFullIcon } from "@/assets/svgs";
+import { CustomModal } from "@/components/modal/custom.modal";
 // form validations
 const schema = Joi.object({
   NFTName: Joi.string().required().max(150).label("NFT Name").messages({
@@ -42,15 +43,32 @@ const schema = Joi.object({
     "any.required": `Required Field`,
   }),
 });
+
+// TODO: Kindly fix any types
 const FixedPriceForm = () => {
   const [loadingState, setLoadingState] = useState(false);
+  const [propertyModal, setPropertyModal] = useState(false);
+  const [propertyDetails, setPropertyDetails] = useState<any>([]);
+  const [propertyList, setPropertyList] = useState<any>([]);
+  const [propertyErr, setPropertyErr] = useState<null | string>(null);
   const { handleSubmit, register, setError, formState, reset } = useForm({
     mode: "onChange",
     resolver: joiResolver(schema),
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    // let finalizedData = { ...data, [data.Properties]: propertyList };
+    let finalizedData = {
+      Category: data.Category,
+      Collection: data.Collection,
+      Description: data.Description,
+      NFTAmount: data.NFTAmount,
+      NFTName: data.NFTName,
+      NFTPrice: data.NFTPrice,
+      NFTSymbol: data.NFTSymbol,
+      PropertiesList: propertyList,
+    };
+    console.log(finalizedData);
     try {
       setLoadingState(true);
       let result = await axiosNodeApi.post("");
@@ -60,6 +78,37 @@ const FixedPriceForm = () => {
       setLoadingState(false);
       return 0;
     }
+  };
+
+  const handlePropertyChange = (e: any) => {
+    setPropertyDetails((prev: any) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const addNewPropertyFunc = () => {
+    if (
+      propertyDetails?.Type === null ||
+      propertyDetails?.Type?.match(/^ *$/) !== null
+    ) {
+      setPropertyErr("Type/Name value missing");
+      return;
+    } else if (
+      propertyDetails?.PropertyName === null ||
+      propertyDetails?.PropertyName?.match(/^ *$/) !== null
+    ) {
+      setPropertyErr("Type/Name value missing");
+      return;
+    }
+    setPropertyErr("");
+    setPropertyList((current: any) => [...current, propertyDetails]);
+    setPropertyModal(false);
+    setPropertyDetails([]);
+  };
+  const handlePropertyRemove = (prop: any) => {
+    setPropertyList(
+      propertyList.filter((item: any) => item?.PropertyName != prop)
+    );
   };
   return (
     <div className={formContainer}>
@@ -200,7 +249,38 @@ const FixedPriceForm = () => {
           </p>
         )}
       </div>
-
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>Properties</label>
+        <div className={addPropertyBtn}>
+          <span>Add new properties</span>
+          <button
+            onClick={() => {
+              setPropertyModal(true);
+            }}
+          >
+            <AddIcon />
+          </button>
+        </div>
+      </div>
+      <div className={propetiesListContainer}>
+        {propertyList?.length > 0 &&
+          propertyList.map((item: any, index: number) => {
+            return (
+              <div key={index} className={properyCard}>
+                <button
+                  className="absolute -top-2 -right-2"
+                  onClick={() => {
+                    handlePropertyRemove(item.PropertyName);
+                  }}
+                >
+                  <CrossFullIcon />
+                </button>
+                <h5 className={PropertyName}>{item.PropertyName}</h5>
+                <h6 className={Type}>{item.Type}</h6>
+              </div>
+            );
+          })}
+      </div>
       <Button
         title={"Create NFT"}
         variant={formState.isValid ? "v1" : "v2"}
@@ -208,6 +288,50 @@ const FixedPriceForm = () => {
         onClick={handleSubmit(onSubmit)}
         className="py-4 mt-2"
       />
+      {propertyModal && (
+        <CustomModal
+          onClose={() => {
+            setPropertyModal(false);
+          }}
+          title={"Add new properties"}
+        >
+          <div className={modalBodyWrapper}>
+            <div className={fieldWrapper}>
+              <label className={fieldTitle}>Type</label>
+              <input
+                type="text"
+                name="Type"
+                id="Type"
+                autoComplete="off"
+                placeholder="Character"
+                className={inputFieldModal}
+                onChange={handlePropertyChange}
+              />
+            </div>
+            <div className={fieldWrapper}>
+              <label className={fieldTitle}>Name</label>
+              <input
+                type="text"
+                name="PropertyName"
+                id="PropertyName"
+                autoComplete="off"
+                placeholder="Male"
+                className={inputFieldModal}
+                onChange={handlePropertyChange}
+              />
+            </div>
+            {propertyErr && (
+              <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
+            )}
+            <Button
+              title={"Save"}
+              variant="v2"
+              onClick={addNewPropertyFunc}
+              className="py-4 mt-2"
+            />
+          </div>
+        </CustomModal>
+      )}
     </div>
   );
 };
@@ -228,7 +352,10 @@ const fieldTitle = ctl(`
   text-14px  font-normal text-white
 `);
 const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3  text-[#45474D] font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-3   text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
+`);
+const inputFieldModal = ctl(`
+  w-full py-3 px-5  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
 const inputFieldError = ctl(`
   ${inputField}
@@ -245,4 +372,22 @@ text-[#838B8F] text-12px font-normal
 `);
 const serviceFeeNumber = ctl(`
  text-white text-12px font-normal
+`);
+const addPropertyBtn = ctl(`
+flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
+`);
+const modalBodyWrapper = ctl(`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5
+`);
+const propetiesListContainer = ctl(`
+flex flex-wrap gap-[2%]
+`);
+const properyCard = ctl(`
+border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
+`);
+const PropertyName = ctl(`
+text-12px font-medium text-yellow-theme
+`);
+const Type = ctl(`
+text-14px font-semibold text-white
 `);

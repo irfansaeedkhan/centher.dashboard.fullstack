@@ -11,7 +11,7 @@ const CreateNFT: NextPageWithLayout = () => {
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
-      <div className="flex gap-9 [@media(max-width:1279px)]:flex-col">
+      <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
         <UploadNFT />
         <CreateNFTForm />
       </div>
