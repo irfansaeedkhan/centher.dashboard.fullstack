@@ -12,7 +12,7 @@ export const useConnectWallet = () => {
     if (error) {
       if (error.message.toLocaleLowerCase().includes("unsupported chain id")) {
         let network = "testnet";
-        if (process.env.NEXT_PUBLIC_WEB3_MODE === "production") {
+        if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
           network = "mainnet";
         }
         toast.error(`Please connect to the BSC ${network}!`);
