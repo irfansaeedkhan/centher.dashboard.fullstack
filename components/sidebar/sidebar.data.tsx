@@ -24,7 +24,7 @@ export const SidebarData = {
     items: [
       {
         label: "Feed",
-        url: AppRoutes.feed,
+        url: AppRoutes.feed.index,
         icon: Feed,
       },
       {
@@ -46,7 +46,7 @@ export const SidebarData = {
     items: [
       {
         label: "Explore",
-        url: AppRoutes.home,
+        url: AppRoutes.explore,
         icon: Explore,
       },
       {
@@ -56,7 +56,7 @@ export const SidebarData = {
       },
       {
         label: "Create Collection",
-        url: AppRoutes.create_collection,
+        url: AppRoutes.nfts.create_collection,
         icon: CreateCollection,
       },
     ],

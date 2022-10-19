@@ -58,7 +58,7 @@ const dashboardContentContainer = ctl(`
   stakingpack bg-black-shade-3 w-full min-h-screen font-monto
 `);
 const title = ctl(`
-textGradient  pb-6 animationTextHeading text-34px
+textGradient  pb-6 animationTextHeading lg:text-34px sm:text-2xl
 `);
 const btnContainer = ctl(`
   ToggleBtnsContainer flex max-w-[428px] bg-black-shade-6 p-1.5 rounded-2xl mb-6 

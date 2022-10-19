@@ -216,12 +216,12 @@ const profileSettingLink = ctl(
   `whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white hover:text-brand-primary`
 );
 
-const connectButton = ctl(`
-  mt-2 
-  py-3 
+const connectButton = ctl(` 
+  p-3 
   flex
   gap-2
   w-full 
+  text-sm
   font-bold 
   rounded-lg 
   items-center 

@@ -19,7 +19,7 @@ const NFTProfile: NextPageWithLayout = () => {
       <div className={tabsContainer}>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: router.query.account_address,
               tab: "owned",
@@ -42,7 +42,7 @@ const NFTProfile: NextPageWithLayout = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: router.query.account_address,
               tab: "purchased",
@@ -65,7 +65,7 @@ const NFTProfile: NextPageWithLayout = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: router.query.account_address,
               tab: "collections",
@@ -88,7 +88,7 @@ const NFTProfile: NextPageWithLayout = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: router.query.account_address,
               tab: "followers",
@@ -111,7 +111,7 @@ const NFTProfile: NextPageWithLayout = () => {
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: router.query.account_address,
               tab: "following",
@@ -184,5 +184,5 @@ tabContent flex items-center justify-center w-full h-[250px]
 `);
 
 const tabContent = ctl(`
-textGradient font-semibold leading-[42px] pb-6 animationTextHeading text-34px w-fit
+textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-34px sm:text-2xl w-fit
 `);

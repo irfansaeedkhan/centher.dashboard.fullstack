@@ -1,5 +1,4 @@
 export const AppRoutes = {
-  // Only unauthenticated users can access
   // onlyPublicPages
   auth: {
     login: "/auth/login",
@@ -7,35 +6,54 @@ export const AppRoutes = {
   },
 
   profile: {
+    // Public Pages
     account_address: "/profile/[account_address]",
+
+    // Coming soon pages
+    nfts: "/profile/[account_address]/nfts",
+
+    // Authenticated Pages
     settings: "/profile/settings",
   },
 
-  // Anyone can access
+  feed: {
+    // Authenticated Pages
+    index: "/feed",
+    // Public Pages
+    single_post: "/feed/[account_address]/post/[post_id]",
+  },
+
+  // Authenticated Pages
+  notifications: "/notifications",
+
+  // Coming soon pages
+  coming_soon: "/coming-soon",
   home: "/",
   explore: "/explore",
   top_influencers: "/top-influencers",
 
-  // Unauthenticated users can not access
-  // authenticatedAndActiveUserPages
-  feed: "/feed",
-  single_post: "/feed/[account_address]/post/[post_id]",
-  user_profile: "/profile/[account_address]",
-  user_nfts_profile: "/profile/[account_address]/nfts",
+  admin: {
+    index: "/admin",
+    staking_packs: "/admin/staking-packs",
+    create_staking_pack: "/admin/create-staking-pack",
+    update_staking_pack: "/admin/update-staking-pack",
+    network_rewards: "/admin/network-rewards",
+    influencer_requests: "/admin/influencer-requests",
+    influencer_details: "/admin/influencer-details",
+    transactions: "/admin/transactions",
+    users: "/admin/users",
+  },
+
   chat: "/chat",
-  notifications: "/notifications",
-  create_nft: "/nft/create",
-  create_collection: "/nft/create-collection",
-  staking_packs: "/staking-pack",
-  network_rewards: "/network-rewards",
   buy_ntr_dao: "/buy-ntr-dao",
+  network_rewards: "/network-rewards",
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",
-  admin_staking_packs: "/admin/staking-packs",
-  admin_network_rewards: "/admin/network-rewards",
-  admin_influencer_request: "/admin/influencer-request",
-  admin_transactions: "/admin/transaction",
-  admin_users: "/admin/user",
-  admin_influencer_details: "/admin/influencer-detail",
+  staking_packs: "/staking-pack",
+
+  nfts: {
+    create_nft: "/nfts/create",
+    create_collection: "/nfts/create-collection",
+  },
 } as const;

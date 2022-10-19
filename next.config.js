@@ -10,7 +10,7 @@ const nextConfig = {
       "s3.eu-west-3.amazonaws.com",
     ],
   },
-  pageExtensions: ["page.tsx", "api.ts"],
+  pageExtensions: ["page.tsx", "page.ts", "api.ts"],
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
