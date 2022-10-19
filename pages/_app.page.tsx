@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 
 // App Imports
 import { getLibrary } from "@/web3";
+import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
 import "@/styles/globals.css";
 
@@ -18,6 +19,9 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  // Create a socket.io connection
+  useCreateSocketIOConnection();
+
   const getLayout = Component.getLayout || ((page) => page);
 
   return (
