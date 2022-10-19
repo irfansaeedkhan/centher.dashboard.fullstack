@@ -916,7 +916,7 @@ SinglePost.displayName = "SinglePost";
 
 // styling
 const postCardContainer = ctl(`
-w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
+sm:w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
 `);
 const topCard = ctl(`
 top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4

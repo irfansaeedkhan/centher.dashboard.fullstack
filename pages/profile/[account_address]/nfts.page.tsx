@@ -184,5 +184,5 @@ tabContent flex items-center justify-center w-full h-[250px]
 `);
 
 const tabContent = ctl(`
-textGradient font-semibold leading-[42px] pb-6 animationTextHeading text-34px w-fit
+textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-34px sm:text-2xl w-fit
 `);
