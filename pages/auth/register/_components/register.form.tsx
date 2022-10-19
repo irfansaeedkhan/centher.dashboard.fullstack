@@ -156,7 +156,7 @@ export const RegisterForm: React.FC = () => {
             onClick={() => setIsChecked(!isChecked)}
           />
           <p className="text-white text-sm">
-            I have read aand agree to Binance&apos;s{" "}
+            I have read and agree to Binance&apos;s{" "}
             <span className="font-semibold underline">Terms of Service</span>{" "}
             and <span className="font-semibold underline">Privacy Policy.</span>
           </p>
@@ -173,7 +173,7 @@ export const RegisterForm: React.FC = () => {
         )}
 
         <ModalWrapper
-          title="Registeration Fee"
+          title="Registration Fee"
           isOpen={feeModal.isOpen}
           onClose={() => {
             feeModal.status !== "progress" &&
@@ -193,7 +193,7 @@ export const RegisterForm: React.FC = () => {
             <div className={feeModalStatus}>
               <h2 className={feeModalProgress}>
                 {feeModal.status === "start"
-                  ? "Pay Registeration Fee"
+                  ? "Pay Registration Fee"
                   : feeModal.status === "progress"
                   ? "Transaction in progress"
                   : feeModal.status === "end" && "Successfully"}
@@ -302,14 +302,16 @@ const button2 = ctl(`
 `);
 
 const feeWrapper = ctl(`
-px-10 flex flex-col gap-6 pt-5 pb-8
+lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
 `);
 
 const feeModalWrapper = ctl(`flex justify-center`);
 
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
 
-const feeModalProgress = ctl(`font-semibold text-lg text-center text-white`);
+const feeModalProgress = ctl(
+  `font-semibold lg:text-lg sm:text-xs text-center text-white`
+);
 
 const textFee = ctl(
   `text-brand-primary text-center font-semibold tracking-wider text-base`
