@@ -1,8 +1,10 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/future/image";
+import Styles from "./header.module.css";
 import ctl from "@netlify/classnames-template-literals";
+import { GoThreeBars } from "react-icons/go";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -11,11 +13,25 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current directory imports
 // import Search from "./search";
 import HeaderProfile from "./header.profile";
+import { SidebarMobile } from "../sidebar/sidebar.mobile";
 
 const Header = () => {
   const { user, isLoading: isUserLoading } = useUser();
   const [openModal, setOpenModal] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div className={headerWraper}>
@@ -34,7 +50,7 @@ const Header = () => {
         {/* <div>
           <Search />
         </div> */}
-        <span className={border}></span>
+        {/* <span className={border}></span> */}
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
             <a className={connectButton}>Connect</a>
@@ -42,9 +58,11 @@ const Header = () => {
         )}
         {user && (
           <>
-            <Link href={AppRoutes.nfts.create_nft}>
-              <a className={connectButton}>Create NFT</a>
-            </Link>
+            <span className="lg:block sm:hidden">
+              <Link href={AppRoutes.nfts.create_nft}>
+                <a className={connectButton}>Create NFT</a>
+              </Link>
+            </span>
             <div className="relative">
               <div
                 ref={modalOpenerRef}
@@ -68,8 +86,23 @@ const Header = () => {
                 />
               )}
             </div>
+            <div
+              id={Styles.menu}
+              className={
+                `lg:hidden sm:flex cursor-pointer ` +
+                (sidebarOpen ? Styles.menuHover : "")
+              }
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <div
+                className={
+                  `${Styles.barre} ` + (sidebarOpen ? Styles.menubarre : "")
+                }
+              ></div>
+            </div>
           </>
         )}
+        {sidebarOpen && <SidebarMobile onClose={() => setSidebarOpen(false)} />}
       </div>
     </div>
   );
@@ -81,6 +114,7 @@ const headerWraper = ctl(`
   flex 
   px-5
   h-[60px]
+  relative
   items-center
   justify-between 
   border-b-[1.5px] 
@@ -91,6 +125,7 @@ const headerWraper = ctl(`
 const rightWraper = ctl(`
   flex 
   gap-6
+  items-center
 `);
 
 const border = ctl(`

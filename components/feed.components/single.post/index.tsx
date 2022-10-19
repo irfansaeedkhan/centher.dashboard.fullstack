@@ -85,6 +85,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [toggleSharePop, setToggleSharePop] = useState(false);
     const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
     const [shareUrl, setShareUrl] = useState("");
+    const [updateLoadingButton, setUpdateLoadingButton] = useState<
+      true | false
+    >(false);
 
     const currentPageRoute = useMemo(
       () => ({
@@ -315,12 +318,15 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     };
 
     const editPost = async () => {
+      setUpdateLoadingButton(true);
       try {
         if (
           editPostData.deletedMedia.length == _post.media?.length &&
           !editPostData.editedPostText
         ) {
+          setUpdateLoadingButton(false);
           toast.error("Post text is required");
+
           return;
         }
         await axiosNodeApi.patch(`api/socials/posts/edit`, {
@@ -334,6 +340,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           `/api/socials/posts/${_post._id}`
         );
         setPost(data.post);
+        setUpdateLoadingButton(false);
         toast.success("Post Edited Successfully");
         setEditPostData((prev) => ({
           ...prev,
@@ -341,6 +348,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         }));
       } catch (error: any) {
         setPost(post);
+        setUpdateLoadingButton(false);
         toast.error(
           error?.response?.data?.message_description || "Something went wrong"
         );
@@ -860,12 +868,39 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   <div className={RightActionBtns}>
                     <AnimateTrashIcon />
                     <div className={divider}></div>
-                    <Button
-                      title={"Update"}
-                      variant="v1"
-                      className="max-w-[140px]"
-                      onClick={editPost}
-                    />
+
+                    {updateLoadingButton ? (
+                      <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
+                        <Rings
+                          height="30"
+                          width="30"
+                          color="#1C1F29"
+                          radius="6"
+                          wrapperStyle={{}}
+                          wrapperClass=""
+                          visible={true}
+                          ariaLabel="rings-loading"
+                        />
+                        {/* <div style={{ width: 30, height: 30 }}>
+                          <CircularProgressbar
+                            value={uploadingFile ? uploadingFile : 0}
+                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            styles={buildStyles({
+                              textColor: "#ffffff",
+                              textSize: "20px",
+                              pathColor: "#1C1F29",
+                            })}
+                          />
+                        </div> */}
+                      </button>
+                    ) : (
+                      <Button
+                        title={"Update"}
+                        variant="v1"
+                        className="max-w-[140px]"
+                        onClick={editPost}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -881,7 +916,7 @@ SinglePost.displayName = "SinglePost";
 
 // styling
 const postCardContainer = ctl(`
-w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
+sm:w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
 `);
 const topCard = ctl(`
 top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4
@@ -906,7 +941,7 @@ const textContainer = ctl(`
 pt-4 pb-2 
 `);
 const textContainerContent = ctl(`
-text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap
+text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all
 `);
 const showThreadBtnContainer = ctl(`
 z-10 flex gap-3 pl-6 items-center 

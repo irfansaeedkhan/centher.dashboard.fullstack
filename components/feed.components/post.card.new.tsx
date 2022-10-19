@@ -343,7 +343,7 @@ const inputTextContainer = ctl(`
 pt-4 pb-2 w-full
 `);
 const textContainerContent = ctl(`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3
+text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all
 `);
 const modalFooter = ctl(`
 flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6

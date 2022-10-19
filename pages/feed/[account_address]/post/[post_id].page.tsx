@@ -116,7 +116,7 @@ const dashboardContentContainer = ctl(`
  bg-black-shade-3 w-full flex flex-start min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 const feedContainer = ctl(`
 flex flex-col lg:flex-row  gap-5 lg:items-start
