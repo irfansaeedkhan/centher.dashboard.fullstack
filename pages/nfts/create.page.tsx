@@ -36,7 +36,7 @@ const dashboardContentContainer = ctl(`
  bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
 `);
 const feedContainer = ctl(`
 flex flex-col lg:flex-row  gap-5 lg:items-start 
