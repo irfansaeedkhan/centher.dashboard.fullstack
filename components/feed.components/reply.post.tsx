@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Bars, Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -73,6 +74,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [currentPostRef, currentPostInView, currentPostEntry] = useInView({
       threshold: 0.8,
     });
+    const [updateLoadingButton, setUpdateLoadingButton] = useState<
+      true | false
+    >(false);
 
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
@@ -181,6 +185,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     };
 
     const editPost = async () => {
+      setUpdateLoadingButton(true);
       try {
         await axiosNodeApi.patch(`api/socials/posts/edit`, {
           post_id: post._id,
@@ -200,9 +205,11 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
           media: _post.media ?? [],
           editedPostText: _post.text_content ?? "",
         }));
+        setUpdateLoadingButton(false);
         toast.success("Post Edited Successfully");
       } catch (error: any) {
         setPost(post);
+        setUpdateLoadingButton(false);
         toast.error(
           error?.response?.data?.message_description || "Something went wrong"
         );
@@ -558,12 +565,38 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   <div className={RightActionBtns}>
                     <AnimateTrashIcon />
                     <div className={divider}></div>
-                    <Button
-                      title={"Update"}
-                      variant="v1"
-                      className="max-w-[140px]"
-                      onClick={editPost}
-                    />
+                    {updateLoadingButton ? (
+                      <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
+                        <Rings
+                          height="30"
+                          width="30"
+                          color="#1C1F29"
+                          radius="6"
+                          wrapperStyle={{}}
+                          wrapperClass=""
+                          visible={true}
+                          ariaLabel="rings-loading"
+                        />
+                        {/* <div style={{ width: 30, height: 30 }}>
+                          <CircularProgressbar
+                            value={uploadingFile ? uploadingFile : 0}
+                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            styles={buildStyles({
+                              textColor: "#ffffff",
+                              textSize: "20px",
+                              pathColor: "#1C1F29",
+                            })}
+                          />
+                        </div> */}
+                      </button>
+                    ) : (
+                      <Button
+                        title={"Update"}
+                        variant="v1"
+                        className="max-w-[140px]"
+                        onClick={editPost}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -602,7 +635,7 @@ const textContainer = ctl(`
 pt-4 pb-3 
 `);
 const textContainerContent = ctl(`
-text-14px font-light text-[#E7E8EE] whitespace-pre-wrap
+text-14px font-light text-[#E7E8EE] whitespace-pre-wrap break-all
 `);
 const footerBtnContainer = ctl(`
   flex items-items justify-between ml-16 pb-3 pr-4  

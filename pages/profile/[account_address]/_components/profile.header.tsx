@@ -337,7 +337,7 @@ export default ProfileHeader;
 const profilePageHeader = ctl(`
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
 `);
 const btnContainer = ctl(`
   flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
