@@ -1,15 +1,16 @@
 // React, Next, NPM Packages
+import { AppRoutes } from "@/constants/app.routes";
 import { GetServerSideProps, NextPage } from "next";
 
 const Home: NextPage = () => {
   return null;
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Redirect to /explore
+export const getServerSideProps: GetServerSideProps = async () => {
+  // Redirect to Feed Page
   return {
     redirect: {
-      destination: "/explore",
+      destination: AppRoutes.feed.index,
       permanent: false,
     },
   };

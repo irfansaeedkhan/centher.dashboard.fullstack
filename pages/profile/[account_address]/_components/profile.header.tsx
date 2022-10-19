@@ -15,7 +15,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { Website } from "@/assets/svgs";
+import { Website, WebsiteIcon } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
@@ -51,12 +51,14 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const [loader, setLoader] = useState(false);
   const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
   const [shareUrl, setShareUrl] = useState("");
-  const [description, setDescription] = useState<string>(
-    "🔸 UIUX 🔥 Designer, check out my work on Dribbble and Instagram 👉 @uixamjad, please don't contact me contact me for yourproject 📮 hellouix.amjad@gmail.com, this email is just for receiving good and funny vibes. 🤣"
-  );
+  const [description, setDescription] = useState<string | undefined>("");
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+
+  useEffect(() => {
+    setDescription(user?.profile_bio);
+  }, [user]);
 
   useEffect(() => {
     setShareUrl(`${window.location.origin}${router.asPath}`);
@@ -113,8 +115,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   };
 
   // FIXME: Mubashir - Use memoization
-  const isProfilePage = router.pathname === AppRoutes.user_profile;
-  const isNFTProfilePage = router.pathname === AppRoutes.user_nfts_profile;
+  const isProfilePage = router.pathname === AppRoutes.profile.account_address;
+  const isNFTProfilePage = router.pathname === AppRoutes.profile.nfts;
 
   return (
     <div className={profilePageHeader}>
@@ -122,34 +124,40 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
       <div className={btnContainer}>
         <Link
           href={{
-            pathname: AppRoutes.user_profile,
+            pathname: AppRoutes.profile.account_address,
             query: {
               account_address: user?.account_address,
             },
           }}
         >
-          <Button
-            title={"Feed and Post"}
-            variant={`${isProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={"Feed and Post"}
+              variant={`${isProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
         <Link
           href={{
-            pathname: AppRoutes.user_nfts_profile,
+            pathname: AppRoutes.profile.nfts,
             query: {
               account_address: user?.account_address,
               tab: "owned",
             },
           }}
         >
-          <Button
-            title={
-              loggedInUser?._id !== user?._id ? "NFT Profile" : "My NFT Profile"
-            }
-            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-            className="px-8"
-          />
+          <a className="w-full">
+            <Button
+              title={
+                loggedInUser?._id !== user?._id
+                  ? "NFT Profile"
+                  : "My NFT Profile"
+              }
+              variant={`${isNFTProfilePage ? "v1" : "v2"}`}
+              className="px-8 py-4"
+            />
+          </a>
         </Link>
       </div>
       {user && loggedInUser ? (
@@ -184,7 +192,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 </label>
               ) : loadingState ? (
                 <button
-                  className={` ${editCover} bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
+                  className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
                 >
                   <Rings
                     height="20"
@@ -199,7 +207,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 </button>
               ) : (
                 <button
-                  className={editCover}
+                  className={uploadCover}
                   onClick={() => {
                     setLoadingState(true);
                     uploadImage();
@@ -245,18 +253,25 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       <CopyIcon />
                     </button>
                   </div>
-                  <TwitterShareButton
-                    className="flex items-center"
-                    url={shareUrl}
-                  >
-                    <Image
-                      src="/images/twitter2.png"
-                      width={24}
-                      height={24}
-                      alt="icon"
-                    />
-                  </TwitterShareButton>
-                  <button>{user.website_url ? <Website /> : ""}</button>
+                  {user.twitter_username && (
+                    <a
+                      href={`https://twitter.com/${user.twitter_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Image
+                        src="/images/twitter2.png"
+                        width={24}
+                        height={24}
+                        alt="icon"
+                      />
+                    </a>
+                  )}
+                  {user.website_url && (
+                    <a href={user.website_url} target="_blank" rel="noreferrer">
+                      <WebsiteIcon />
+                    </a>
+                  )}
                 </div>
               </div>
               {loggedInUser.account_address.toLowerCase() ===
@@ -296,44 +311,12 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
               )}
             </div>
             <div className={textContent}>
-              {desEditStatus ? (
-                <div>
-                  <textarea
-                    className={textInputArea}
-                    cols={12}
-                    rows={3}
-                    id="description"
-                    name="description"
-                    onChange={handleChange}
-                    value={description}
-                  />
-                  <Button
-                    title={"Save"}
-                    variant="v1"
-                    className={saveBtn}
-                    onClick={() => {
-                      setDesEditStatus(false);
-                    }}
-                  />
-                </div>
-              ) : (
-                <p className={profileDescription}>
-                  {description}
-                  <button
-                    className={editTxtIcon}
-                    onClick={() => {
-                      setDesEditStatus(true);
-                    }}
-                  >
-                    <EditIcon className={editIcon} />
-                  </button>
-                </p>
-              )}
+              <p className={profileDescription}>{description}</p>
             </div>
           </div>
         </div>
       ) : (
-        <>
+        <div className="min-h-[499px] w-full flex justify-center items-center">
           <Bars
             height="25"
             width="25"
@@ -343,7 +326,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             wrapperClass=""
             visible={true}
           />
-        </>
+        </div>
       )}
     </div>
   );
@@ -354,7 +337,7 @@ export default ProfileHeader;
 const profilePageHeader = ctl(`
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
 `);
 const btnContainer = ctl(`
   flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
@@ -409,4 +392,8 @@ absolute -top-2 w-[20px] h-[20px] [&>*]:stroke-[#FEBF32]
 `);
 const editTxtIcon = ctl(`
 ml-2 relative w-[20px] h-[20px]
+`);
+
+const uploadCover = ctl(`
+flex items-center gap-3 bg-brand-primary hover:bg-brand-primary-dark rounded-xl px-4 py-2 text-black-shade-3 font-semibold text-14px absolute right-6 bottom-4
 `);

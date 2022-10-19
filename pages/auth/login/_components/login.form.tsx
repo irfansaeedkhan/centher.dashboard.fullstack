@@ -57,7 +57,7 @@ export const LoginForm: React.FC = () => {
 
       await mutate("/api/users/me", loginData.user, false);
 
-      router.push(AppRoutes.feed);
+      router.push(AppRoutes.feed.index);
     } catch (error: any) {
       button.disabled = false;
       setisLoading("failed");

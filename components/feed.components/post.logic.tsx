@@ -412,6 +412,7 @@ export function usePostUpload({
         console.log("Error ", error);
       });
     } catch (error) {
+      process.env.NEXT_PUBLIC_APP_ENV !== "production" && console.dir(error);
       setLoadingState(false);
       toast.error("Failed to create post");
     }

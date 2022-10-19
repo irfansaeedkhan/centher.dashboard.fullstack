@@ -60,7 +60,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           {post.parent_post ? (
             <Link
               href={{
-                pathname: AppRoutes.single_post,
+                pathname: AppRoutes.feed.single_post,
                 query: {
                   account_address: post.parent_post.user.account_address,
                   post_id: post.parent_post._id,
@@ -72,7 +72,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           ) : (
             <Link
               href={{
-                pathname: AppRoutes.feed,
+                pathname: AppRoutes.feed.index,
               }}
             >
               <a className={backBtn}>Back</a>
@@ -81,7 +81,7 @@ const SinglePostPage: NextPageWithLayout = () => {
           <SinglePost
             post={post}
             onDelete={() => {
-              router.replace(AppRoutes.feed);
+              router.replace(AppRoutes.feed.index);
             }}
           />
         </div>
@@ -113,10 +113,10 @@ export default SinglePostPage;
 
 // styling
 const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
+ bg-black-shade-3 w-full flex flex-start min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading text-34px
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
 `);
 const feedContainer = ctl(`
 flex flex-col lg:flex-row  gap-5 lg:items-start

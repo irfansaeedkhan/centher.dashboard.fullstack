@@ -97,7 +97,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 
 // styling
 const profileDetailCardContainer = ctl(`
-  w-full max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
+  w-full lg:sticky lg:top-0 max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
 `);
 const profilePic = ctl(`
   w-[60px] h-[60px] mx-auto rounded-full cursor-pointer dpImagePreview
