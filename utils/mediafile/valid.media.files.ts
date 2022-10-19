@@ -126,25 +126,8 @@ export const post_file_details = async (
   let fileChunksDetails: Array<FileChunksChunksCalculations> = [];
   //
   for (let files_list_index in fileListArray) {
-    console.log(
-      "Checking list of filelist array ",
-      fileListArray[files_list_index]
-    );
     //
     for (let file = 0; file < fileListArray[files_list_index].length; file++) {
-      console.log(
-        "Checking Each file : ",
-        fileListArray[files_list_index][file]
-      );
-      console.log(
-        "Checking if file is inclued in delete file list : ",
-        String(files_list_index) + "," + String(file)
-      );
-      console.log(
-        "If condition value : ",
-        removedFiles.indexOf(String(files_list_index) + "," + String(file)) ==
-          -1
-      );
       // Cheking if file is not inclued in list of deleted files
       if (
         removedFiles.indexOf(String(files_list_index) + "," + String(file)) ==
@@ -153,10 +136,6 @@ export const post_file_details = async (
         //C
         let { chunks_range, no_of_chunks } = await calculateFileChunksSizes(
           fileListArray[files_list_index][file].size
-        );
-        console.log(
-          "Calculating file name for : ",
-          fileListArray[files_list_index][file].name
         );
         await fileChunksDetails.push({
           file_name: fileListArray[files_list_index][file].name,
