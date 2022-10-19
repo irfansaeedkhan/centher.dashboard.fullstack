@@ -19,7 +19,7 @@ module.exports = {
       ...defaultTheme.screens,
       sm: "320px",
       md: "800px",
-      lg: "990px",
+      lg: "1024px",
       xl: "1440px",
       xxl: "1680px",
     },
