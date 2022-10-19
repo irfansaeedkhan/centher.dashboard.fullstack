@@ -1,0 +1,87 @@
+/* Hover Line Effect Start */
+#lineEffect span.active {
+  color: #febf32;
+}
+#lineEffect span:hover {
+  color: #febf32 !important;
+}
+#lineEffect span {
+  position: relative;
+}
+#lineEffect span::before {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0%;
+  background-color: #febf32;
+  position: absolute;
+  transition: all ease-in-out 250ms;
+  margin: -7px 0 0 0%;
+}
+#lineEffect span:hover::before {
+  width: 100%;
+}
+
+/* Hover Line Effect End */
+
+#menu {
+  height: 30px;
+  width: 20px;
+  position: relative;
+  /* margin: auto; */
+}
+
+.barre,
+.barre:before,
+.barre:after {
+  height: 2px;
+  width: 20px;
+  border-radius: 5px;
+  background: #febf32;
+  position: absolute;
+  top: 13px;
+  left: 0;
+  -webkit-transform-origin: 50%;
+  -moz-transform-origin: 50%;
+  -ms-transform-origin: 50%;
+  -o-transform-origin: 50%;
+  transform-origin: 50%;
+  transition: 0.1s linear all;
+}
+
+.barre:before {
+  content: "";
+  top: -8px;
+}
+
+.barre:after {
+  content: "";
+  top: 8px;
+}
+
+/* menu Icon start  */
+
+.menuHover:hover .menubarre {
+  background: transparent;
+}
+
+.menuHover:hover .menubarre:before {
+  top: 0;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.menuHover:hover .menubarre:after {
+  top: 0;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  -o-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  opacity: 1;
+}
+
+/* menu Icon End  */

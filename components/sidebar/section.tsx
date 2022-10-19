@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 
 export interface SectionProps {
   section: SidebarSection | AdminSideBarType;
+  onClose?: () => void;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
@@ -31,6 +32,7 @@ export const Section: React.FC<SectionProps> = (props) => {
               />
               <Link href={item.url}>
                 <a
+                  onClick={props.onClose}
                   className={
                     router.pathname
                       .replaceAll("-", " ")

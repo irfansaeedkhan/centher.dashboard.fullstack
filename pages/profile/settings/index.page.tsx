@@ -41,5 +41,5 @@ Setting.getLayout = (page) => {
 export default Setting;
 
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
