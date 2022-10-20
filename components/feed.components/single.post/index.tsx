@@ -1012,13 +1012,13 @@ const ModaltextContainerContent = ctl(`
 text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
 `);
 const modalFooter = ctl(`
-flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
 `);
 const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
 `);
 const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
+w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl

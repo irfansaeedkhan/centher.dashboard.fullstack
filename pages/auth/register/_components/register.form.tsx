@@ -106,17 +106,33 @@ export const RegisterForm: React.FC = () => {
       <form className={wrapper} onSubmit={payFee}>
         {account ? (
           <>
-            <div className="flex flex-col gap-2">
+            <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
               <MetamaskIcon />
+              <div className="">
+                <p className="md:text-lg sm:text-base font-semibold text-white md:mt-4">
+                  Metamask wallet connected
+                </p>
+                <div className="flex items-center gap-1">
+                  <p className="text-[#6B7280] text-sm">Wallet Address:</p>
+                  <p className="text-white text-sm">
+                    {signupState.account_address.slice(0, 6) +
+                      "..." +
+                      signupState.account_address.slice(38, 42)}
+                  </p>
+                </div>
+              </div>
             </div>
-            <InputField
-              id="account_address"
-              label="Wallet Address"
-              placeholder="Enter your account address"
-              type="text"
-              readOnly
-              defaultValue={signupState.account_address}
-            />
+
+            <div className="hidden">
+              <InputField
+                id="account_address"
+                label="Wallet Address"
+                placeholder="Enter your account address"
+                type="text"
+                readOnly
+                defaultValue={signupState.account_address}
+              />
+            </div>
           </>
         ) : (
           <button
@@ -156,7 +172,7 @@ export const RegisterForm: React.FC = () => {
             onClick={() => setIsChecked(!isChecked)}
           />
           <p className="text-white text-sm">
-            I have read aand agree to Binance&apos;s{" "}
+            I have read and agree to Binance&apos;s{" "}
             <span className="font-semibold underline">Terms of Service</span>{" "}
             and <span className="font-semibold underline">Privacy Policy.</span>
           </p>
@@ -173,7 +189,7 @@ export const RegisterForm: React.FC = () => {
         )}
 
         <ModalWrapper
-          title="Registeration Fee"
+          title="Registration Fee"
           isOpen={feeModal.isOpen}
           onClose={() => {
             feeModal.status !== "progress" &&
@@ -193,7 +209,7 @@ export const RegisterForm: React.FC = () => {
             <div className={feeModalStatus}>
               <h2 className={feeModalProgress}>
                 {feeModal.status === "start"
-                  ? "Pay Registeration Fee"
+                  ? "Pay Registration Fee"
                   : feeModal.status === "progress"
                   ? "Transaction in progress"
                   : feeModal.status === "end" && "Successfully"}
@@ -302,14 +318,16 @@ const button2 = ctl(`
 `);
 
 const feeWrapper = ctl(`
-px-10 flex flex-col gap-6 pt-5 pb-8
+lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
 `);
 
 const feeModalWrapper = ctl(`flex justify-center`);
 
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
 
-const feeModalProgress = ctl(`font-semibold text-lg text-center text-white`);
+const feeModalProgress = ctl(
+  `font-semibold lg:text-lg sm:text-xs text-center text-white`
+);
 
 const textFee = ctl(
   `text-brand-primary text-center font-semibold tracking-wider text-base`

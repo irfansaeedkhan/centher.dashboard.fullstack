@@ -2454,3 +2454,58 @@ export const BNBIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const AuctionIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="25"
+      height="24"
+      viewBox="0 0 25 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.5 7.5V6C21.5 5.46957 21.2893 4.96086 20.9142 4.58579C20.5391 4.21071 20.0304 4 19.5 4H5.5C4.96957 4 4.46086 4.21071 4.08579 4.58579C3.71071 4.96086 3.5 5.46957 3.5 6V20C3.5 20.5304 3.71071 21.0391 4.08579 21.4142C4.46086 21.7893 4.96957 22 5.5 22H9"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.5 2V6"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.5 2V6"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.5 10H8.5"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18 17.5L16.5 16.25V14"
+        stroke="#E35259"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22.5 16C22.5 17.5913 21.8679 19.1174 20.7426 20.2426C19.6174 21.3679 18.0913 22 16.5 22C14.9087 22 13.3826 21.3679 12.2574 20.2426C11.1321 19.1174 10.5 17.5913 10.5 16C10.5 14.4087 11.1321 12.8826 12.2574 11.7574C13.3826 10.6321 14.9087 10 16.5 10C18.0913 10 19.6174 10.6321 20.7426 11.7574C21.8679 12.8826 22.5 14.4087 22.5 16V16Z"
+        stroke="#E35259"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
