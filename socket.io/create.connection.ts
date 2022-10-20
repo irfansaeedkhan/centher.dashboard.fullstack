@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { io } from "socket.io-client";
 
 import { useSocketIOStore } from "@/store/socket.io.store";
+import {
+  Notification,
+  useNotificationsStore,
+} from "@/store/notifications.store";
 import useUser from "@/hooks/use.user";
 import { SOCKET_IO_URL } from "@/constants/common";
 
@@ -11,6 +15,9 @@ export const useCreateSocketIOConnection = () => {
     socket: state.socket,
     setSocket: state.setSocket,
   }));
+  const addNotification = useNotificationsStore(
+    (state) => state.addNotification
+  );
 
   useEffect(() => {
     if (!socket && user) {
@@ -20,11 +27,17 @@ export const useCreateSocketIOConnection = () => {
 
     if (socket) {
       socket.on("connect", () => {
-        console.log("connected");
+        process.env.NODE_ENV !== "production" &&
+          console.log("socket connected");
       });
 
       socket.on("disconnect", () => {
-        console.log("disconnected");
+        process.env.NODE_ENV !== "production" &&
+          console.log("socket disconnected");
+      });
+
+      socket.on("notification", (notification: Notification) => {
+        addNotification(notification);
       });
     }
 
@@ -32,6 +45,7 @@ export const useCreateSocketIOConnection = () => {
       if (!socket) return;
       socket.off("connect");
       socket.off("disconnect");
+      socket.off("notification");
     };
-  }, [socket, setSocket, user]);
+  }, [socket, setSocket, user, addNotification]);
 };
