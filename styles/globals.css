@@ -661,3 +661,16 @@ input:-webkit-autofill {
 .dateInput::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+.linearCircle1 {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(91.26deg, #70a2ff 0%, #f76e64 100%);
+  border-radius: 9999px;
+}
+.linearCircle2 {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(91.26deg, #70a2ff 0%, #54f0d1 100%);
+  border-radius: 9999px;
+}

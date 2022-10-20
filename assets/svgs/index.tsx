@@ -4,6 +4,7 @@ interface IconProps {
 
 export { default as MetamaskIcon } from "./metamask.icon.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
+export { default as TwitterSvg } from "./twitter.link.icon.svg";
 
 export const Feed: React.FC<IconProps> = (props) => {
   return (
@@ -1746,6 +1747,31 @@ export const ArrowLeftIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const ArrowLeftSimpleIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M17.5 12L5.5 12"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M9.5 16.5L5.5 12L9.5 7.5"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
 export const MessageIcon2: React.FC<IconProps> = (props) => {
   return (
     <svg
@@ -2386,6 +2412,44 @@ export const GreyTwitterIcon: React.FC<IconProps> = (props) => {
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const ShareBigIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="20"
+      height="17"
+      viewBox="0 0 20 17"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M19.475 7.83076L9.58594 0.582031V5.03441H7.27344C3.54552 5.03441 0.523438 8.05646 0.523438 11.7844V16.4157L4.32042 13.0898C5.27773 12.2513 6.50703 11.789 7.77964 11.789H9.58594V16.4046L19.475 7.83076Z"
+        fill="white"
+      />
+    </svg>
+  );
+};
+export const BNBIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M5.41316 6.93871L8.0026 4.34927L10.5933 6.93983L12.0999 5.43316L8.0026 1.33594L3.9066 5.43194L5.41322 6.9386L5.41316 6.93871ZM1.33594 8.0026L2.84266 6.49567L4.34927 8.00228L2.84255 9.509L1.33594 8.0026ZM5.41316 9.06666L8.0026 11.6559L10.5932 9.06543L12.1007 10.5713L12.0999 10.5721L8.0026 14.6693L3.9066 10.5733L3.90447 10.5711L5.41332 9.0665L5.41316 9.06666ZM11.6559 8.00324L13.1627 6.49652L14.6693 8.00314L13.1626 9.50986L11.6559 8.00324Z"
+        fill="#F3BA2F"
+      />
+      <path
+        d="M9.53042 8.00154H9.53106L8.00231 6.47266L6.87234 7.60233L6.74252 7.7322L6.47479 8L6.47266 8.00208L6.47479 8.00426L8.00231 9.53203L9.53116 8.00314L9.53191 8.00229L9.53052 8.00154"
+        fill="#F3BA2F"
       />
     </svg>
   );

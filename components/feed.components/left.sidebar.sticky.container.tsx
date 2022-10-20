@@ -43,7 +43,7 @@ lg:sticky  lg:top-0
 `);
 
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 
 const leftSidebar = ctl(`

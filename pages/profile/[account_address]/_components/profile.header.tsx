@@ -15,7 +15,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { Website, WebsiteIcon } from "@/assets/svgs";
+import { TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
@@ -253,18 +253,20 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       <CopyIcon />
                     </button>
                   </div>
+
                   {user.twitter_username && (
                     <a
                       href={`https://twitter.com/${user.twitter_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <Image
+                      {/* <Image
                         src="/images/twitter2.png"
                         width={24}
                         height={24}
                         alt="icon"
-                      />
+                      /> */}
+                      <TwitterSvg />
                     </a>
                   )}
                   {user.website_url && (
@@ -337,7 +339,7 @@ export default ProfileHeader;
 const profilePageHeader = ctl(`
 `);
 const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-34px sm:text-2xl
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 const btnContainer = ctl(`
   flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
