@@ -9,7 +9,9 @@ import {
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
-export const AdminSideBarData = {
+import { SidebarData } from "./shared";
+
+export const adminSideBarData: SidebarData = {
   decentralized_finance: {
     label: "DECENTRALIZED FINANCE",
     items: [
@@ -53,9 +55,6 @@ export const AdminSideBarData = {
 };
 
 export const AdminSidebarSections = [
-  AdminSideBarData.decentralized_finance,
-  AdminSideBarData.influencer,
+  adminSideBarData.decentralized_finance,
+  adminSideBarData.influencer,
 ];
-
-export type AdminSideBarData = typeof AdminSideBarData;
-export type AdminSideBarType = typeof AdminSideBarData[keyof AdminSideBarData];

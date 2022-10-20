@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import * as React from "react";
+import React, { useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 import Link from "next/link";

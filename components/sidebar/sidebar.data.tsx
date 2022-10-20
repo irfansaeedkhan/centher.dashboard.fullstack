@@ -18,7 +18,9 @@ import {
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
-export const SidebarData = {
+import { SidebarData } from "./shared";
+
+export const sidebarData: SidebarData = {
   social_network: {
     label: "SOCIAL NETWORK",
     items: [
@@ -31,13 +33,13 @@ export const SidebarData = {
         label: "Chat",
         url: AppRoutes.chat,
         icon: Chat,
-        countType: "chats",
+        countType: "chat",
       },
       {
         label: "Notifications",
         url: AppRoutes.notifications,
         icon: Notification,
-        countType: "notifications",
+        countType: "notification",
       },
     ],
   },
@@ -114,12 +116,9 @@ export const SidebarData = {
 };
 
 export const SidebarSections = [
-  SidebarData.social_network,
-  SidebarData.nft_marketplace,
-  SidebarData.decentralized_finance,
-  SidebarData.dao_government,
-  SidebarData.referral_program,
+  sidebarData.social_network,
+  sidebarData.nft_marketplace,
+  sidebarData.decentralized_finance,
+  sidebarData.dao_government,
+  sidebarData.referral_program,
 ];
-
-export type SidebarData = typeof SidebarData;
-export type SidebarSection = typeof SidebarData[keyof SidebarData];
