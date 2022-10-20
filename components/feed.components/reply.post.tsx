@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/future/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import moment from "moment";
 import { useInView } from "react-intersection-observer";
@@ -59,6 +60,7 @@ const initialEditPostData: IEditPostData = {
 
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
   ({ post, onDelete }, ref) => {
+    const router = useRouter();
     const [_post, setPost] = useState(post);
     const { user } = useUser();
     const [togglePop, setTogglePop] = useState<boolean>(false);
@@ -77,6 +79,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [updateLoadingButton, setUpdateLoadingButton] = useState<
       true | false
     >(false);
+    const [shareUrl, setShareUrl] = useState("");
 
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
@@ -129,6 +132,19 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
         fetchRepliesPostData();
       }
     }, [post]);
+
+    // Set updated post share url
+    useEffect(() => {
+      setShareUrl(
+        `${window.location.origin}${AppRoutes.feed.index}/${post.user.account_address}/post/${post._id}`
+      );
+    }, [router, post]);
+
+    // Copy post share url to clipboard
+    const copyShareUrl = () => {
+      navigator.clipboard.writeText(shareUrl);
+      toast.success("Copy Link Successfully!");
+    };
 
     const likePost = async (post_id: string) => {
       try {
@@ -458,11 +474,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     toggleSharePop && "!block z-50"
                   }`}
                 >
-                  <button className={SharetoggleListBtn}>
-                    <MessageIcon2 className={SharetoggleListIcons} /> Search in
-                    message
-                  </button>
-                  <button className={SharetoggleListBtn}>
+                  <button onClick={copyShareUrl} className={SharetoggleListBtn}>
                     <LinkIcon className={SharetoggleListIcons} /> Copy link
                   </button>
                   <button
