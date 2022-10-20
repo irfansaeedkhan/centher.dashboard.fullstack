@@ -616,7 +616,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       src="/images/whatsapp.png"
                       width={24}
                       height={24}
-                      alt="whatapp"
+                      alt="whatsapp"
                     />
                     WhatsApp
                   </WhatsappShareButton>
@@ -1012,7 +1012,7 @@ const ModaltextContainerContent = ctl(`
 text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
 `);
 const modalFooter = ctl(`
-flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
 `);
 const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
