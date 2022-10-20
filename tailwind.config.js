@@ -65,6 +65,9 @@ module.exports = {
         yellow: {
           theme: "#FEBF32",
         },
+        red: {
+          theme: "#E35259",
+        },
         danger: "#EA3943",
         "gray-shade": {
           1: "#ADADAD",
