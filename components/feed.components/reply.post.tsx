@@ -474,7 +474,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     toggleSharePop && "!block z-50"
                   }`}
                 >
-                  <button className={SharetoggleListBtn}>
+                  <button onClick={copyShareUrl} className={SharetoggleListBtn}>
                     <LinkIcon className={SharetoggleListIcons} /> Copy link
                   </button>
                   <button
