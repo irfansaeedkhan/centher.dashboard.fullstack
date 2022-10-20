@@ -11,6 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current page imports
 import { RegisterForm } from "./_components";
+import Image from "next/future/image";
 
 const Register: NextPageWithLayout = () => {
   return <RegisterForm />;
@@ -25,15 +26,23 @@ Register.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <AuthLeft
-          variant="mobile"
-          title={signupLeftData.title}
-          content={signupLeftData.content}
-        />
+        <div className="w-fit md:hidden sm:flex mb-8">
+          <Image
+            src="/images/nether.nft.logo.svg"
+            alt="logo"
+            width={166}
+            height={40}
+          />
+        </div>
         <AboutMember
           asked="Already a member?"
           title="Log in now"
           link={AppRoutes.auth.login}
+        />
+        <AuthLeft
+          variant="mobile"
+          title={signupLeftData.title}
+          content={signupLeftData.content}
         />
 
         {page}

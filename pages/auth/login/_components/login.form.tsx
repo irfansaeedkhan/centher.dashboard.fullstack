@@ -77,16 +77,18 @@ export const LoginForm: React.FC = () => {
     <div className={wrapper}>
       {account ? (
         <>
-          <div className="flex flex-col gap-2">
+          <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
             <MetamaskIcon />
-            <p className="text-lg font-semibold text-white mt-4">
-              Metamask wallet connected
-            </p>
-            <div className="flex items-center gap-1">
-              <p className="text-[#6B7280] text-sm">Wallet Address:</p>
-              <p className="text-white text-sm">
-                {account.slice(0, 6) + "..." + account.slice(38, 42)}
+            <div>
+              <p className="md:text-lg sm:text-base font-semibold text-white md:mt-4">
+                Metamask wallet connected
               </p>
+              <div className="flex items-center gap-1">
+                <p className="text-[#6B7280] text-sm">Wallet Address:</p>
+                <p className="text-white text-sm">
+                  {account.slice(0, 6) + "..." + account.slice(38, 42)}
+                </p>
+              </div>
             </div>
           </div>
 

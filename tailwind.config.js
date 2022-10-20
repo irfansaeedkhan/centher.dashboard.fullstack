@@ -18,7 +18,7 @@ module.exports = {
       // From Small to big
       ...defaultTheme.screens,
       sm: "320px",
-      md: "800px",
+      md: "767px",
       lg: "1024px",
       xl: "1440px",
       xxl: "1680px",
