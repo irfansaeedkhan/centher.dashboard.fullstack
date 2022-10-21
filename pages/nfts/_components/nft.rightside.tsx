@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // same directory imports
-import { NFTDescription } from "./nft.description";
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
 import { NFTHistory } from "./nft.history";
@@ -17,7 +16,6 @@ export const NFTRightSideComponent = () => {
   // states of nfts: fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   return (
     <div className={rightSideContainer}>
-      {/* <NFTDescription /> */}
       {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription />}
       {nftState === "fixedPriceNFTBuyer" && <FixedPriceNFTBuyerDescription />}
       {nftState === "timeAuctionedNFT" && <AuctionNftDescription />}
