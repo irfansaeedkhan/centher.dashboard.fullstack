@@ -1,4 +1,5 @@
 // React, Next, NPM Packages
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
@@ -16,7 +17,16 @@ export interface SectionProps {
 
 export const Section: React.FC<SectionProps> = (props) => {
   const router = useRouter();
-  const notifications = useNotificationsStore((state) => state.notifications);
+  const { notifications, fetchNotifications } = useNotificationsStore(
+    (state) => ({
+      notifications: state.notifications,
+      fetchNotifications: state.fetchNotifications,
+    })
+  );
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
 
   return (
     <div className={sectionWrapper}>

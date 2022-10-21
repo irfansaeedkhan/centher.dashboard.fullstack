@@ -104,7 +104,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         editedPostText: _post.text_content ?? "",
         media: _post.media ?? [],
       }));
-    }, [_post]);
+    }, [_post.text_content, _post.media]);
 
     useEffect(() => {
       (async () => {
@@ -125,7 +125,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           }
         }
       })();
-    }, [_post, currentPostEntry]);
+    }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
 
     useEffect(() => {
       if (lastPostInView) {
@@ -143,7 +143,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setShareUrl(
         `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
       );
-    }, [router, _post]);
+    }, [router, _post.user.account_address, _post._id]);
 
     // Fetch post replies
     useEffect(() => {
@@ -176,7 +176,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       if (currentPageRoute.isSinglePostPage) {
         fetchRepliesPostData();
       }
-    }, [_post, skip, currentPageRoute.isSinglePostPage]);
+    }, [
+      _post.user.account_address,
+      _post._id,
+      skip,
+      currentPageRoute.isSinglePostPage,
+    ]);
 
     // Copy post share url to clipboard
     const copyShareUrl = () => {

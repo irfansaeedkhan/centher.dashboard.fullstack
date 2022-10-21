@@ -1,22 +1,57 @@
+// React, Next, NPM Packages
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
+// App imports
+import { axiosNodeApi } from "@/utils/axios";
+
 export interface NotificationsStore {
   notifications: Notification[];
-  addNotification: (notification: Notification) => void;
+  fetchNotifications: (offset?: number, limit?: number) => Promise<void>;
+  offset: number;
+  limit: number;
 }
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
     (set) => ({
       notifications: [],
-      addNotification: (notification: Notification) =>
-        set((state) => {
-          const filtered = state.notifications.filter(
-            (n) => n._id !== notification._id
-          );
-          return { notifications: [notification, ...filtered] };
-        }),
+      limit: 10,
+      offset: 0,
+
+      fetchNotifications: async (offset, limit) => {
+        try {
+          let url = "/api/notifications";
+
+          if (offset || limit) {
+            url += "?";
+            if (offset) url += `offset=${offset}`;
+            if (limit) url += `&limit=${limit}`;
+          }
+
+          const { data } = await axiosNodeApi.get(url);
+
+          set((state) => {
+            const filteredNotifications = data.notifications.filter(
+              (notification: Notification) =>
+                !state.notifications.some(
+                  (stateNotification) =>
+                    stateNotification._id === notification._id
+                )
+            );
+
+            return {
+              notifications: [
+                ...filteredNotifications,
+                ...state.notifications,
+              ] as Notification[],
+              offset: state.offset + filteredNotifications.length,
+            };
+          });
+        } catch (error) {
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
     }),
     { name: "NotificationsStore" }
   )

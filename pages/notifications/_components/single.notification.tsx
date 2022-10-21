@@ -1,12 +1,13 @@
 // React, Next, NPM Packages
 import React from "react";
-import Image from "next/future/image";
-import type { Notification } from "@/store/notifications.store";
-import moment from "moment";
 import Link from "next/link";
+import Image from "next/future/image";
+import moment from "moment";
+
+// App imports
+import type { Notification } from "@/store/notifications.store";
 
 export const SingleNotification: React.FC<Notification> = (props) => {
-  console.log(props);
   return (
     <div
       className={
