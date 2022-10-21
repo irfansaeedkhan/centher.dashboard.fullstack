@@ -136,10 +136,11 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 
     // Set updated post share url
     useEffect(() => {
+      console.log("this reply is called");
       setShareUrl(
-        `${window.location.origin}${AppRoutes.feed.index}/${post.user.account_address}/post/${post._id}`
+        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
       );
-    }, [router, post]);
+    }, [router, _post]);
 
     // Copy post share url to clipboard
     const copyShareUrl = () => {
@@ -493,7 +494,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   className={footerdetailBtn}
                   onClick={toggleSharePopFunc}
                 >
-                  <ShareIcon /> {post.shares_count}
+                  <ShareIcon /> {_post.shares_count}
                 </button>
 
                 <div
