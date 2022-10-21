@@ -32,32 +32,39 @@ export const Section: React.FC<SectionProps> = (props) => {
           }
 
           return (
-            <div className={itemWrapper} key={item.label}>
-              <item.icon
-                className={
-                  router.pathname
-                    .replaceAll("-", " ")
-                    .includes(item.label.toLowerCase())
-                    ? itemIconsActive
-                    : itemIcons
-                }
-              />
-              <Link href={item.url}>
-                <a
-                  onClick={props.onClose}
+            <div key={item.label} className="flex justify-between">
+              <div className={itemWrapper}>
+                <item.icon
                   className={
                     router.pathname
                       .replaceAll("-", " ")
                       .includes(item.label.toLowerCase())
-                      ? itemLabelActive
-                      : itemLabel
+                      ? itemIconsActive
+                      : itemIcons
                   }
-                >
-                  {item.label}
-                </a>
-              </Link>
-
-              {!!count && <span className="text-brand-primary">{count}</span>}
+                />
+                <Link href={item.url}>
+                  <a
+                    onClick={props.onClose}
+                    className={
+                      router.pathname
+                        .replaceAll("-", " ")
+                        .includes(item.label.toLowerCase())
+                        ? itemLabelActive
+                        : itemLabel
+                    }
+                  >
+                    {item.label}
+                  </a>
+                </Link>
+              </div>
+              {!!count && (
+                // <div>
+                <span className="bg-brand-primary rounded-lg w-8 h-fit flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
+                  {count}
+                </span>
+                // </div>
+              )}
             </div>
           );
         })}

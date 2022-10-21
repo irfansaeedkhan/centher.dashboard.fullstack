@@ -33,7 +33,7 @@ interface NotificationPost {
 interface NotificationBy {
   _id: string;
   display_name: string;
-  profile_picture: {
+  profile_image: {
     path: string;
     object_name: string;
   };

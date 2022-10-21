@@ -1,17 +1,47 @@
 // React, Next, NPM Packages
 import React from "react";
 import Image from "next/future/image";
+import type { Notification } from "@/store/notifications.store";
+import moment from "moment";
+import Link from "next/link";
 
-export const SingleNotification: React.FC = () => {
+export const SingleNotification: React.FC<Notification> = (props) => {
+  console.log(props);
   return (
-    <div className="w-full max-w-[1005px] h-[104px] p-6 bg-[#1D1F29] flex justify-between rounded-xl">
+    <div
+      className={
+        `w-full max-w-[1005px] h-[104px] p-6 flex justify-between rounded-xl ` +
+        (props.status === "unread"
+          ? "bg-background-shade-2"
+          : "bg-background-shade-3")
+      }
+    >
       <div className="flex items-center gap-2">
-        <Image src="/images/a1.png" alt="dp" width={56} height={56} />
-        <p className="text-sm text-white">
-          Your NFT has been purchased by Hafiz Waqar Ali.
-        </p>
+        <Link href={`/profile/${props.by.account_address}`}>
+          <a className="dpImagePreview">
+            <Image
+              src={props.by?.profile_image?.path}
+              alt="dp"
+              width={56}
+              height={56}
+            />
+          </a>
+        </Link>
+        <Link
+          href={`/feed/${props.post.user.account_address}/post/${props.post._id}`}
+        >
+          <a className="text-sm text-white hover:text-brand-primary">
+            {props.by.display_name}{" "}
+            {props.type === "post_like"
+              ? "liked "
+              : props.type === "post_reply" && "replied to"}{" "}
+            your post.
+          </a>
+        </Link>
       </div>
-      <p className="text-sm text-gray-shade-2 ">30m ago</p>
+      <p className="text-sm text-gray-shade-2 ">
+        {moment(props.createdAt).format("LT")}
+      </p>
     </div>
   );
 };
