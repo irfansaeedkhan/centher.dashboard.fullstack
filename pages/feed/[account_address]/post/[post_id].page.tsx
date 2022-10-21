@@ -115,15 +115,11 @@ export default SinglePostPage;
 const dashboardContentContainer = ctl(`
  bg-black-shade-3 w-full flex flex-start min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
 `);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
+
 const feedContainer = ctl(`
 flex flex-col lg:flex-row  gap-5 lg:items-start
 `);
-const leftSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
-`);
+
 const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
@@ -135,7 +131,4 @@ text-brand-primary text-[11px] px-4 py-2 bg-brand-primary/10 rounded-full hover:
 `);
 const postsMainContainer = ctl(`
 flex flex-col gap-3
-`);
-const leftSidebarStickyContainer = ctl(`
-lg:sticky  lg:top-0
 `);

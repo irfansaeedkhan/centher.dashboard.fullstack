@@ -27,6 +27,7 @@ export const PostCarousel: React.FC<PostCarouselProps> = ({
   return (
     <div className={`px-4`}>
       <div>
+        const mediaItem = ctl(` `);
         <Carousel
           onChange={(index) => {
             setSelectedItem(index);

@@ -113,6 +113,3 @@ border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
 const td = ctl(` 
 text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
 `);
-const tdh = ctl(` 
-text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
-`);

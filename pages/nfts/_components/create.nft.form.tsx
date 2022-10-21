@@ -50,6 +50,3 @@ w-full py-3 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
 const activeTab = ctl(`
  text-black-shade-3 [&>*>*]:stroke-black-shade-3
 `);
-const nftBoxContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-6
-`);
