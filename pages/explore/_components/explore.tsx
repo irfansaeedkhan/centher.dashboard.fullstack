@@ -77,5 +77,3 @@ const allButtonWrapper = ctl(
 const categoryButtonWrapper = ctl(
   `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
 );
-
-const mainNftCard = ctl(`flex gap-10 flex-wrap nftCardContainer`);

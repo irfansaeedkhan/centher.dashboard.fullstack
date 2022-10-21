@@ -380,20 +380,9 @@ mt-5 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]
 const textContent = ctl(`
 mt-6
 `);
-const textInputArea = ctl(`
-bg-transparent w-full rounded-10px text-16px font-normal leading-6 text-gray-shade-16 h-[203px] lg:h-[110px]
-`);
-const saveBtn = ctl(`
-flex ml-auto mr-0  mt-2 w-full max-w-[90px] items-center justify-center
-`);
+
 const profileDescription = ctl(`
 text-16px font-normal leading-6 text-gray-shade-16
-`);
-const editIcon = ctl(`
-absolute -top-2 w-[20px] h-[20px] [&>*]:stroke-[#FEBF32]
-`);
-const editTxtIcon = ctl(`
-ml-2 relative w-[20px] h-[20px]
 `);
 
 const uploadCover = ctl(`
