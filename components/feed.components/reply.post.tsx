@@ -136,7 +136,6 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 
     // Set updated post share url
     useEffect(() => {
-      console.log("this reply is called");
       setShareUrl(
         `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
       );
