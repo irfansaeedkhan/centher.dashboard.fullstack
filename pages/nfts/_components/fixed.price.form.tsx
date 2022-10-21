@@ -5,12 +5,13 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import { toast } from "react-hot-toast";
+import Image from "next/future/image";
 
 // App imports
 import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";
-import { AddIcon, CrossFullIcon } from "@/assets/svgs";
+import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 // form validations
 const schema = Joi.object({
@@ -51,35 +52,112 @@ const FixedPriceForm = () => {
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
+  // modal states
+  const [Modal, setModal] = useState(false);
+  const [ModalTitle, setModalTitle] = useState("");
+  const [ModalContent, setModalContent] = useState<any>();
+
+  // creating modals
+  const buyNFTStep1Func = () => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper2}>
+        <Image
+          className={ImgStyling}
+          src={"/images/nftAsset.png"}
+          alt="image"
+          height={64}
+          width={64}
+        />
+        <h2 className="text-18px text-white font-semibold">Maradona sport</h2>
+        <h3 className="text-white text-14px font-normal">Gas fee 10%</h3>
+        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+          <span>Price:</span>
+          <BNBIcon />
+          89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
+        </h6>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Checkout"}
+            variant="v1"
+            className="py-4"
+            onClick={buyNFTStep2Func}
+          />
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+  const buyNFTStep2Func = () => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper2}>
+        <LoaderIcon className="mx-auto" />
+        <h3 className="text-white text-18px font-semibold leading-6">
+          Transaction in progress
+        </h3>
+        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Your transaction is in progress, Please wait.
+          </p> */}
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Hash
+          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
+        </p>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Cancel"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+  const buyNFTSuccessFunc = () => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper2}>
+        <Image
+          className={ImgStyling}
+          src={"/images/nftAsset.png"}
+          alt="image"
+          height={64}
+          width={64}
+        />
+        <h2 className="text-18px text-white font-semibold">Purchased</h2>
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Congratulations! You have successfully bought{" "}
+          <span className="text-white">Maradona sport</span> NFT on Nether NFT
+          platform.
+        </p>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"View item"}
+            variant="v4"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+
   const { handleSubmit, register, setError, formState, reset } = useForm({
     mode: "onChange",
     resolver: joiResolver(schema),
   });
-
-  const onSubmit = async (data: any) => {
-    // let finalizedData = { ...data, [data.Properties]: propertyList };
-    let finalizedData = {
-      Category: data.Category,
-      Collection: data.Collection,
-      Description: data.Description,
-      NFTAmount: data.NFTAmount,
-      NFTName: data.NFTName,
-      NFTPrice: data.NFTPrice,
-      NFTSymbol: data.NFTSymbol,
-      PropertiesList: propertyList,
-    };
-    console.log(finalizedData);
-    try {
-      setLoadingState(true);
-      let result = await axiosNodeApi.post("");
-      setLoadingState(result && false);
-    } catch (e: any) {
-      toast.error(e.message || "Something went wrong");
-      setLoadingState(false);
-      return 0;
-    }
-  };
-
+  // functions to add/remove dynamic properties
   const handlePropertyChange = (e: any) => {
     setPropertyDetails((prev: any) => ({
       ...prev,
@@ -109,6 +187,22 @@ const FixedPriceForm = () => {
     setPropertyList(
       propertyList.filter((item: any) => item?.PropertyName != prop)
     );
+  };
+
+  // handle submit data
+  const onSubmit = async (data: any) => {
+    let finalizedData = {
+      Category: data.Category,
+      Collection: data.Collection,
+      Description: data.Description,
+      NFTAmount: data.NFTAmount,
+      NFTName: data.NFTName,
+      NFTPrice: data.NFTPrice,
+      NFTSymbol: data.NFTSymbol,
+      PropertiesList: propertyList,
+    };
+    console.log(finalizedData);
+    buyNFTStep1Func();
   };
   return (
     <div className={formContainer}>
@@ -332,6 +426,16 @@ const FixedPriceForm = () => {
           </div>
         </CustomModal>
       )}
+      {Modal && (
+        <CustomModal
+          onClose={() => {
+            setModal(false);
+          }}
+          title={ModalTitle}
+        >
+          {ModalContent}
+        </CustomModal>
+      )}
     </div>
   );
 };
@@ -339,6 +443,15 @@ const FixedPriceForm = () => {
 export default FixedPriceForm;
 
 // styling
+const modalBodyWrapper2 = ctl(`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+`);
+const footerBtnContainer = ctl(`
+flex items-center gap-4 mt-3
+`);
+const ImgStyling = ctl(`
+w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
+`);
 const formContainer = ctl(`
  flex flex-col gap-4
 `);

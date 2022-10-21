@@ -4,7 +4,7 @@ export interface IconProps {
 
 export { default as MetamaskIcon } from "./metamask.icon.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
-export { default as TwitterSvg } from "./twitter.link.icon.svg";
+export { default as TwitterSvg } from "./twitter.svg";
 
 export const Feed: React.FC<IconProps> = (props) => {
   return (
