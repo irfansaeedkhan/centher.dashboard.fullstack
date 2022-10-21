@@ -266,7 +266,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                         height={24}
                         alt="icon"
                       /> */}
-                      <TwitterSvg />
+                      <TwitterSvg className="hover:stroke-brand-primary" />
                     </a>
                   )}
                   {user.website_url && (
@@ -366,7 +366,7 @@ const profileName = ctl(`
 text-white text-20px font-semibold
 `);
 const shareBtns = ctl(`
-flex items-center gap-4
+flex items-center gap-2
 `);
 const copyContainer = ctl(`
 copyContainer pt-1 flex items-center gap-2 relative
