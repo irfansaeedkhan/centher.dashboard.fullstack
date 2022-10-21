@@ -106,17 +106,33 @@ export const RegisterForm: React.FC = () => {
       <form className={wrapper} onSubmit={payFee}>
         {account ? (
           <>
-            <div className="flex flex-col gap-2">
+            <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
               <MetamaskIcon />
+              <div className="">
+                <p className="md:text-lg sm:text-base font-semibold text-white md:mt-4">
+                  Metamask wallet connected
+                </p>
+                <div className="flex items-center gap-1">
+                  <p className="text-[#6B7280] text-sm">Wallet Address:</p>
+                  <p className="text-white text-sm">
+                    {signupState.account_address.slice(0, 6) +
+                      "..." +
+                      signupState.account_address.slice(38, 42)}
+                  </p>
+                </div>
+              </div>
             </div>
-            <InputField
-              id="account_address"
-              label="Wallet Address"
-              placeholder="Enter your account address"
-              type="text"
-              readOnly
-              defaultValue={signupState.account_address}
-            />
+
+            <div className="hidden">
+              <InputField
+                id="account_address"
+                label="Wallet Address"
+                placeholder="Enter your account address"
+                type="text"
+                readOnly
+                defaultValue={signupState.account_address}
+              />
+            </div>
           </>
         ) : (
           <button

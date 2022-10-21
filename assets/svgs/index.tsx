@@ -1,4 +1,4 @@
-interface IconProps {
+export interface IconProps {
   className?: string;
 }
 
@@ -2506,6 +2506,52 @@ export const AuctionIcon: React.FC<IconProps> = (props) => {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+    </svg>
+  );
+};
+export const LoaderIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse
+        cx="31.9983"
+        cy="32.0002"
+        rx="24.01"
+        ry="24.01"
+        stroke="#2A2D3C"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M56.0122 32.0002C56.0122 36.749 54.604 41.391 51.9658 45.3395C49.3275 49.2879 45.5777 52.3653 41.1904 54.1826C36.8032 55.9998 31.9756 56.4753 27.3181 55.5489C22.6606 54.6225 18.3824 52.3357 15.0246 48.9779C11.6667 45.62 9.37996 41.3418 8.45353 36.6844C7.5271 32.0269 8.00258 27.1993 9.81984 22.812C11.6371 18.4248 14.7145 14.6749 18.6629 12.0366C22.6114 9.3984 27.2535 7.99023 32.0022 7.99023"
+        stroke="url(#paint0_linear_8027_75054)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_8027_75054"
+          x1="7.99219"
+          y1="7.99023"
+          x2="57.0425"
+          y2="9.06678"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#A9CDFF" />
+          <stop offset="0.21875" stopColor="#72F6D1" />
+          <stop offset="0.557292" stopColor="#A0ED8D" />
+          <stop offset="0.817708" stopColor="#FED365" />
+          <stop offset="1" stopColor="#FAA49E" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

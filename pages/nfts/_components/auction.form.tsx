@@ -124,7 +124,7 @@ const AuctionForm = () => {
           id="NFTName"
           autoComplete="off"
           {...register("NFTName")}
-          placeholder="eg. ‘big skull’"
+          placeholder="eg. &#34;big skull&#34;"
           className={!formState.errors.NFTName ? inputField : inputFieldError}
         />
         {formState.errors.NFTName && (
