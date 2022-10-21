@@ -1,49 +1,80 @@
 // React, Next, NPM Packages
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 
+// App imports
+import { useNotificationsStore } from "@/store/notifications.store";
+
 // Current directory imports
-import { SidebarSection } from "./sidebar.data";
-import { AdminSideBarType } from "./admin.sidebar.data";
-import { useRouter } from "next/router";
+import { SidebarSection } from "./shared";
 
 export interface SectionProps {
-  section: SidebarSection | AdminSideBarType;
+  section: SidebarSection;
   onClose?: () => void;
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
   const router = useRouter();
+  const { notifications, fetchNotifications } = useNotificationsStore(
+    (state) => ({
+      notifications: state.notifications,
+      fetchNotifications: state.fetchNotifications,
+    })
+  );
+
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
   return (
     <div className={sectionWrapper}>
       <span className={sectionLabel}>{props.section.label}</span>
       <div className={sectionWrapper}>
         {props.section.items.map((item) => {
+          let count = 0;
+
+          if (item.countType === "notification") {
+            count = notifications.filter((n) => n.status === "unread").length;
+          } else if (item.countType === "chat") {
+            count = 0;
+          }
+
           return (
-            <div className={itemWrapper} key={item.label}>
-              <item.icon
-                className={
-                  router.pathname
-                    .replaceAll("-", " ")
-                    .includes(item.label.toLowerCase())
-                    ? itemIconsActive
-                    : itemIcons
-                }
-              />
-              <Link href={item.url}>
-                <a
-                  onClick={props.onClose}
+            <div key={item.label} className="flex justify-between">
+              <div className={itemWrapper}>
+                <item.icon
                   className={
                     router.pathname
                       .replaceAll("-", " ")
                       .includes(item.label.toLowerCase())
-                      ? itemLabelActive
-                      : itemLabel
+                      ? itemIconsActive
+                      : itemIcons
                   }
-                >
-                  {item.label}
-                </a>
-              </Link>
+                />
+                <Link href={item.url}>
+                  <a
+                    onClick={props.onClose}
+                    className={
+                      router.pathname
+                        .replaceAll("-", " ")
+                        .includes(item.label.toLowerCase())
+                        ? itemLabelActive
+                        : itemLabel
+                    }
+                  >
+                    {item.label}
+                  </a>
+                </Link>
+              </div>
+              {!!count && (
+                // <div>
+                <span className="bg-brand-primary rounded-lg w-8 h-fit flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
+                  {count}
+                </span>
+                // </div>
+              )}
             </div>
           );
         })}

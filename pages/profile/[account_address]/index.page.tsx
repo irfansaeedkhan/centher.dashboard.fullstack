@@ -90,15 +90,17 @@ const Profile: NextPageWithLayout = () => {
       <div>
         <div className={feedContainer}>
           <div className={leftSidebar}>
-            {userLoading === "loaded" && user && (
-              <ProfileDetailCard
-                user={user}
-                isLoggedInUser={
-                  user.account_address === loggedInUser?.account_address
-                }
-              />
-            )}
-            <DiscoverCard />
+            <div className={stickySidebar}>
+              {userLoading === "loaded" && user && (
+                <ProfileDetailCard
+                  user={user}
+                  isLoggedInUser={
+                    user.account_address === loggedInUser?.account_address
+                  }
+                />
+              )}
+              <DiscoverCard />
+            </div>
           </div>
 
           <div className={postsContainer}>
@@ -164,4 +166,7 @@ w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
 w-full max-w-[544px] flex flex-col gap-3 
+`);
+const stickySidebar = ctl(`
+lg:sticky lg:top-0 flex flex-col gap-4
 `);

@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Image from "next/future/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import moment from "moment";
 import { useInView } from "react-intersection-observer";
@@ -10,6 +11,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Bars, Rings } from "react-loader-spinner";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -59,6 +61,7 @@ const initialEditPostData: IEditPostData = {
 
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
   ({ post, onDelete }, ref) => {
+    const router = useRouter();
     const [_post, setPost] = useState(post);
     const { user } = useUser();
     const [togglePop, setTogglePop] = useState<boolean>(false);
@@ -77,6 +80,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [updateLoadingButton, setUpdateLoadingButton] = useState<
       true | false
     >(false);
+    const [shareUrl, setShareUrl] = useState("");
 
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
@@ -129,6 +133,19 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
         fetchRepliesPostData();
       }
     }, [post]);
+
+    // Set updated post share url
+    useEffect(() => {
+      setShareUrl(
+        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
+      );
+    }, [router, _post]);
+
+    // Copy post share url to clipboard
+    const copyShareUrl = () => {
+      navigator.clipboard.writeText(shareUrl);
+      toast.success("Copy Link Successfully!");
+    };
 
     const likePost = async (post_id: string) => {
       try {
@@ -216,6 +233,32 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       }
     };
 
+    const sharePost = async () => {
+      try {
+        const { data } = await axiosNodeApi.post(
+          "api/socials/analytics/shares",
+          {
+            post_id: post._id,
+          }
+        );
+
+        // Update share count
+        setPost((prev) => ({
+          ...prev,
+          shares_count: data.shares_count,
+        }));
+      } catch (error: any) {
+        // Reset share count
+        setPost((prev) => ({
+          ...prev,
+          shares_count: post.shares_count,
+        }));
+
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
     // toggle function to show/hide edit/delete popup
     const togglePopFunc = async () => {
       setTogglePop((prev) => !prev);
@@ -375,16 +418,16 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               }}
             >
               <div className={mediaContainer}>
-                {post.media && post.media.length > 0 && (
+                {_post.media && _post.media.length > 0 && (
                   <Carousel
                     showStatus={false}
                     showThumbs={false}
                     showIndicators={false}
                     showArrows={
-                      post.media && post.media.length === 1 ? false : true
+                      _post.media && _post.media.length === 1 ? false : true
                     }
                   >
-                    {post.media.map((media, index) =>
+                    {_post.media.map((media, index) =>
                       media.type == "image" ? (
                         <Image
                           key={index}
@@ -408,9 +451,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   </Carousel>
                 )}
               </div>
-              {post.text_content && (
+              {_post.text_content && (
                 <div className={textContainer}>
-                  <p className={textContainerContent}>{post.text_content}</p>
+                  <p className={textContainerContent}>{_post.text_content}</p>
                 </div>
               )}
             </div>
@@ -450,7 +493,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   className={footerdetailBtn}
                   onClick={toggleSharePopFunc}
                 >
-                  <ShareIcon /> {post.shares_count}
+                  <ShareIcon /> {_post.shares_count}
                 </button>
 
                 <div
@@ -458,11 +501,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     toggleSharePop && "!block z-50"
                   }`}
                 >
-                  <button className={SharetoggleListBtn}>
-                    <MessageIcon2 className={SharetoggleListIcons} /> Search in
-                    message
-                  </button>
-                  <button className={SharetoggleListBtn}>
+                  <button onClick={copyShareUrl} className={SharetoggleListBtn}>
                     <LinkIcon className={SharetoggleListIcons} /> Copy link
                   </button>
                   <button
@@ -487,24 +526,36 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   >
                     <ArrowLeftIcon /> Share Via
                   </button>
-                  <button className={SharetoggleListBtn}>
-                    <Image
-                      src="/images/whatsapp.png"
-                      width={24}
-                      height={24}
-                      alt="icon"
-                    />
-                    WhatsApp
-                  </button>
-                  <button className={SharetoggleListBtn}>
-                    <Image
-                      src="/images/twitter2.png"
-                      width={24}
-                      height={24}
-                      alt="icon"
-                    />
-                    Twitter
-                  </button>
+                  <div className={SharetoggleListBtn}>
+                    <WhatsappShareButton
+                      onClick={sharePost}
+                      url={shareUrl}
+                      className="flex items-center gap-3 w-full h-full !px-5"
+                    >
+                      <Image
+                        src="/images/whatsapp.png"
+                        width={24}
+                        height={24}
+                        alt="whatsapp"
+                      />
+                      WhatsApp
+                    </WhatsappShareButton>
+                  </div>
+                  <div className={SharetoggleListBtn}>
+                    <TwitterShareButton
+                      onClick={sharePost}
+                      url={shareUrl}
+                      className="flex items-center  gap-3 w-full h-full !px-5"
+                    >
+                      <Image
+                        src="/images/twitter2.png"
+                        width={24}
+                        height={24}
+                        alt="icon"
+                      />
+                      Twitter
+                    </TwitterShareButton>
+                  </div>
                 </div>
               </div>
             </div>

@@ -7,13 +7,23 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current page imports
 import { SingleNotification } from "./_components";
+import { useNotificationsStore } from "@/store/notifications.store";
 
 const Notifications: NextPageWithLayout = () => {
+  const notifications = useNotificationsStore((state) => state.notifications);
+
   return (
     <div>
       <div className={sectionName}>Notifications</div>
       {/* <NoNotification /> */}
-      <SingleNotification />
+      <div className="flex flex-col gap-2">
+        {notifications.map((notification) => {
+          return (
+            <SingleNotification {...notification} key={notification._id} />
+          );
+        })}
+      </div>
+      {/* <SingleNotification /> */}
     </div>
   );
 };
@@ -24,4 +34,6 @@ Notifications.getLayout = (page) => {
 
 export default Notifications;
 
-const sectionName = ctl(`animationTextHeading`);
+const sectionName = ctl(
+  `animationTextHeading mb-8 lg:!text-[34px] sm:!text-2xl`
+);

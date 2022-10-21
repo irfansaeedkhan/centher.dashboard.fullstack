@@ -104,7 +104,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         editedPostText: _post.text_content ?? "",
         media: _post.media ?? [],
       }));
-    }, [_post]);
+    }, [_post.text_content, _post.media]);
 
     useEffect(() => {
       (async () => {
@@ -125,7 +125,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           }
         }
       })();
-    }, [_post, currentPostEntry]);
+    }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
 
     useEffect(() => {
       if (lastPostInView) {
@@ -143,7 +143,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setShareUrl(
         `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
       );
-    }, [router, _post]);
+    }, [router, _post.user.account_address, _post._id]);
 
     // Fetch post replies
     useEffect(() => {
@@ -176,7 +176,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       if (currentPageRoute.isSinglePostPage) {
         fetchRepliesPostData();
       }
-    }, [_post, skip, currentPageRoute.isSinglePostPage]);
+    }, [
+      _post.user.account_address,
+      _post._id,
+      skip,
+      currentPageRoute.isSinglePostPage,
+    ]);
 
     // Copy post share url to clipboard
     const copyShareUrl = () => {
@@ -616,7 +621,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       src="/images/whatsapp.png"
                       width={24}
                       height={24}
-                      alt="whatapp"
+                      alt="whatsapp"
                     />
                     WhatsApp
                   </WhatsappShareButton>
@@ -996,15 +1001,7 @@ const contactDetail = ctl(`
 const cdName = ctl(`
   text-14px font-semibold text-white
 `);
-const ModalmaincontentContainer = ctl(`
-px-6
-`);
-const ModalmediaContainer = ctl(`
- w-full flex gap-2 
-`);
-const mediaItem = ctl(`  
 
-`);
 const inputTextContainer = ctl(`
 pt-4 pb-2 w-full px-6
 `);
@@ -1030,9 +1027,7 @@ flex items-center gap-3 text-14px font-medium
 const postImageStyling = ctl(`
   object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
 `);
-const imageDelBtn = ctl(`
-  absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
-  `);
+
 const repliesContainer = ctl(`
 flex flex-col gap-4  
   `);

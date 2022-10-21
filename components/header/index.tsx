@@ -128,15 +128,6 @@ const rightWraper = ctl(`
   items-center
 `);
 
-const border = ctl(`
-  my-3
-  md:block
-  sm:hidden
-  border-l-2 
-  rounded-xl 
-  border-gray-shade-12/30
-`);
-
 const connectButton = ctl(`
   px-6 
   py-2

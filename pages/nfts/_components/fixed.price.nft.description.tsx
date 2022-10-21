@@ -1,12 +1,46 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon } from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, WarningIcon } from "@/assets/svgs";
+import { CustomModal } from "@/components/modal/custom.modal";
+export const FixedPriceNFTDescription = () => {
+  const [Modal, setModal] = useState(false);
+  const [ModalTitle, setModalTitle] = useState("");
+  const [ModalContent, setModalContent] = useState<any>();
 
-export const NFTDescription = () => {
+  const cancelListingFunc = () => {
+    setModalTitle("Cancel listing");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <WarningIcon className="mx-auto" />
+        <h3 className="text-white text-18px font-semibold leading-6">
+          Are you sure you want to cancel your Listing?
+        </h3>
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Canceling your listing will unpublish this sale from market and You
+          will be asked to confirm the transaction through your wallet.
+        </p>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Go back"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModalTitle("");
+              setModalContent(null);
+              setModal(false);
+            }}
+          />
+          <Button title={"Proceed"} variant="v1" className="py-4" />
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={titleContainer}>
@@ -54,13 +88,36 @@ export const NFTDescription = () => {
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <Button title={"Cancel Listing"} variant="v1" className="py-4" />
+        <Button
+          title={"Cancel Listing"}
+          variant="v1"
+          className="py-4"
+          onClick={cancelListingFunc}
+        />
         <Button title={"Edit"} variant="v4" className="py-4" />
       </div>
+
+      {Modal && (
+        <CustomModal
+          onClose={() => {
+            setModal(false);
+          }}
+          title={ModalTitle}
+        >
+          {ModalContent}
+        </CustomModal>
+      )}
     </div>
   );
 };
 // styling
+const modalBodyWrapper = ctl(`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+`);
+const footerBtnContainer = ctl(`
+flex items-center gap-4
+`);
+
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
 `);

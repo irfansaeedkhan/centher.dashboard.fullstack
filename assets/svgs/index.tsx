@@ -1,10 +1,10 @@
-interface IconProps {
+export interface IconProps {
   className?: string;
 }
 
 export { default as MetamaskIcon } from "./metamask.icon.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
-export { default as TwitterSvg } from "./twitter.link.icon.svg";
+export { default as TwitterSvg } from "./twitter.svg";
 
 export const Feed: React.FC<IconProps> = (props) => {
   return (
@@ -2451,6 +2451,107 @@ export const BNBIcon: React.FC<IconProps> = (props) => {
         d="M9.53042 8.00154H9.53106L8.00231 6.47266L6.87234 7.60233L6.74252 7.7322L6.47479 8L6.47266 8.00208L6.47479 8.00426L8.00231 9.53203L9.53116 8.00314L9.53191 8.00229L9.53052 8.00154"
         fill="#F3BA2F"
       />
+    </svg>
+  );
+};
+export const AuctionIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="25"
+      height="24"
+      viewBox="0 0 25 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.5 7.5V6C21.5 5.46957 21.2893 4.96086 20.9142 4.58579C20.5391 4.21071 20.0304 4 19.5 4H5.5C4.96957 4 4.46086 4.21071 4.08579 4.58579C3.71071 4.96086 3.5 5.46957 3.5 6V20C3.5 20.5304 3.71071 21.0391 4.08579 21.4142C4.46086 21.7893 4.96957 22 5.5 22H9"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M16.5 2V6"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M8.5 2V6"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M3.5 10H8.5"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M18 17.5L16.5 16.25V14"
+        stroke="#E35259"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22.5 16C22.5 17.5913 21.8679 19.1174 20.7426 20.2426C19.6174 21.3679 18.0913 22 16.5 22C14.9087 22 13.3826 21.3679 12.2574 20.2426C11.1321 19.1174 10.5 17.5913 10.5 16C10.5 14.4087 11.1321 12.8826 12.2574 11.7574C13.3826 10.6321 14.9087 10 16.5 10C18.0913 10 19.6174 10.6321 20.7426 11.7574C21.8679 12.8826 22.5 14.4087 22.5 16V16Z"
+        stroke="#E35259"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+export const LoaderIcon: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse
+        cx="31.9983"
+        cy="32.0002"
+        rx="24.01"
+        ry="24.01"
+        stroke="#2A2D3C"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M56.0122 32.0002C56.0122 36.749 54.604 41.391 51.9658 45.3395C49.3275 49.2879 45.5777 52.3653 41.1904 54.1826C36.8032 55.9998 31.9756 56.4753 27.3181 55.5489C22.6606 54.6225 18.3824 52.3357 15.0246 48.9779C11.6667 45.62 9.37996 41.3418 8.45353 36.6844C7.5271 32.0269 8.00258 27.1993 9.81984 22.812C11.6371 18.4248 14.7145 14.6749 18.6629 12.0366C22.6114 9.3984 27.2535 7.99023 32.0022 7.99023"
+        stroke="url(#paint0_linear_8027_75054)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_8027_75054"
+          x1="7.99219"
+          y1="7.99023"
+          x2="57.0425"
+          y2="9.06678"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#A9CDFF" />
+          <stop offset="0.21875" stopColor="#72F6D1" />
+          <stop offset="0.557292" stopColor="#A0ED8D" />
+          <stop offset="0.817708" stopColor="#FED365" />
+          <stop offset="1" stopColor="#FAA49E" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

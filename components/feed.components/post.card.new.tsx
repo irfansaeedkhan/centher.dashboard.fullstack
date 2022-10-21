@@ -336,9 +336,7 @@ px-6
 const mediaContainer = ctl(`
  w-full grid, gap-3,
 `);
-const mediaItem = ctl(`  
 
-`);
 const inputTextContainer = ctl(`
 pt-4 pb-2 w-full
 `);
@@ -346,7 +344,7 @@ const textContainerContent = ctl(`
 text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all
 `);
 const modalFooter = ctl(`
-flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
 `);
 const leftActionBtns = ctl(`
 w-[100%] lg:w-[48%] flex items-center justify-between
@@ -356,9 +354,6 @@ w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between
 `);
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
-const imageDelBtn = ctl(`
-absolute top-2 right-6 ml-auto border-0 text-gray-shade-3 opacity-100 outline-none leading-none font-semibold focus:outline-none transition bg-white/70  rounded-full hover:scale-110 z-30 w-[24px] h-[24px] flex items-center justify-center leading-0 text-2xl
 `);
 
 const profileImagePreview = ctl(`rounded-full dpImagePreview`);

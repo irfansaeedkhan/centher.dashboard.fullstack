@@ -25,7 +25,8 @@ const componentWrapper = ctl(`
   text-sm 
   font-medium 
   justify-end
-  items-center 
+  items-center
+  mb-8 
 `);
 
 const linkWrappper = ctl(`

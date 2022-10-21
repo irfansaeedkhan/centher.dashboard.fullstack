@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /feed/*
+Disallow: /admin/
+
+Sitemap: https://app.nethernft.io/sitemap.xml
