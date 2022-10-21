@@ -27,16 +27,17 @@ export const useCreateSocketIOConnection = () => {
 
     if (socket) {
       socket.on("connect", () => {
-        process.env.NODE_ENV !== "production" &&
-          console.log("socket connected");
+        process.env.APP_ENV !== "production" && console.log("socket connected");
       });
 
       socket.on("disconnect", () => {
-        process.env.NODE_ENV !== "production" &&
+        process.env.APP_ENV !== "production" &&
           console.log("socket disconnected");
       });
 
       socket.on("notification", (notification: Notification) => {
+        process.env.APP_ENV !== "production" &&
+          console.log("notification", notification);
         addNotification(notification);
       });
     }
