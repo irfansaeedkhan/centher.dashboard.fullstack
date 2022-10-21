@@ -25,6 +25,7 @@ export const SingleNotification: React.FC<Notification> = (props) => {
               alt="dp"
               width={56}
               height={56}
+              className="rounded-full"
             />
           </a>
         </Link>
