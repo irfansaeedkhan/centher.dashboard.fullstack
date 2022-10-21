@@ -29,5 +29,6 @@ bg-black-shade-3
 `);
 
 const childrenWrapper = ctl(`
+  w-[496px]
   max-w-[496px]
 `);
