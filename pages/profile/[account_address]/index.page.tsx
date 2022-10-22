@@ -104,11 +104,13 @@ const Profile: NextPageWithLayout = () => {
           </div>
 
           <div className={postsContainer}>
-            <PostCardNew
-              onPostCreated={(post) => {
-                setPosts((prev) => [post, ...prev]);
-              }}
-            />
+            {loggedInUser?.account_address === router.query.account_address && (
+              <PostCardNew
+                onPostCreated={(post) => {
+                  setPosts((prev) => [post, ...prev]);
+                }}
+              />
+            )}
             {(followUser ||
               user?.account_address === loggedInUser?.account_address) &&
               posts
