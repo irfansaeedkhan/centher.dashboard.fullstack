@@ -27,6 +27,10 @@ const Feed: NextPageWithLayout = () => {
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (lastPostInView) {
       setSkip(posts.length);
     }
