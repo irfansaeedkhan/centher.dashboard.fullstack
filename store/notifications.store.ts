@@ -12,6 +12,7 @@ export interface NotificationsStore {
   offset: number;
   updateOffset: () => void;
   limit: number;
+  markAsRead: (id: string) => Promise<void>;
 }
 
 export const useNotificationsStore = create<NotificationsStore>()(
@@ -74,6 +75,21 @@ export const useNotificationsStore = create<NotificationsStore>()(
               notifications: [...filteredNotifications, ...state.notifications],
             };
           });
+        } catch (error) {
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      markAsRead: async (id) => {
+        try {
+          await axiosNodeApi.patch(`/api/notifications/${id}`);
+          set((state) => ({
+            notifications: state.notifications.map((notification) =>
+              notification._id === id
+                ? { ...notification, status: "read" }
+                : notification
+            ),
+          }));
         } catch (error) {
           process.env.APP_ENV !== "production" && console.error(error);
         }
