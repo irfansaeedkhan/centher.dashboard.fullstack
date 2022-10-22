@@ -7,9 +7,13 @@ import moment from "moment";
 // App imports
 import type { Notification } from "@/store/notifications.store";
 
-export const SingleNotification: React.FC<Notification> = (props) => {
+export const SingleNotification = React.forwardRef<
+  HTMLDivElement,
+  Notification
+>((props, ref) => {
   return (
     <div
+      ref={ref}
       className={
         `w-full max-w-[1005px] h-[104px] p-6 flex justify-between rounded-xl ` +
         (props.status === "unread"
@@ -25,7 +29,7 @@ export const SingleNotification: React.FC<Notification> = (props) => {
               alt="dp"
               width={56}
               height={56}
-              className="rounded-full"
+              className="rounded-full h-[56px] w-[56px] object-cover"
             />
           </a>
         </Link>
@@ -46,4 +50,6 @@ export const SingleNotification: React.FC<Notification> = (props) => {
       </p>
     </div>
   );
-};
+});
+
+SingleNotification.displayName = "SingleNotification";
