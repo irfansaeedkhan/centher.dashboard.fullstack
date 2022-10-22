@@ -8,7 +8,6 @@ import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Oval, Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -65,8 +64,57 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   useEffect(() => {}, [previewFilesUI]);
 
+  const [fileList, setFileList] = useState<File[]>([]);
+
+  useEffect(() => {
+    console.log("fileList", fileList);
+  }, [fileList]);
+
   return user ? (
     <div className={postCardContainer}>
+      <div>
+        <div>
+          <input
+            type={"file"}
+            accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+            multiple
+            onChange={(e) => {
+              if (e.target.files) {
+                const files = Array.from(e.target.files);
+                setFileList((prev) => [...prev, ...files]);
+              }
+              // Empty the input value so that onChange is triggered even if the same file is selected again
+              e.target.value = "";
+            }}
+          />
+        </div>
+
+        <div>
+          {/* Map over files */}
+          {fileList.map((file, i) => (
+            <div
+              key={i}
+              onClick={() => {
+                // remove the file from the array
+                setFileList((prev) => {
+                  const sliced = prev.slice(0);
+                  sliced.splice(i, 1);
+                  return sliced;
+                });
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={URL.createObjectURL(file)}
+                width={100}
+                height={100}
+                alt={file.name}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className={topCard}>
         <Image
           src={user.profile_image.path}
@@ -203,6 +251,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     style={{ display: "none" }}
                     multiple
                     onChange={(e) => {
+                      console.log("e.target.files", e.target.files);
+
                       handleSelectFile(e, "images");
                     }}
                   />
