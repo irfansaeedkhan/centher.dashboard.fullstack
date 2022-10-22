@@ -23,7 +23,7 @@ import {
 } from "@/assets/svgs";
 
 // Current directory imports
-import { usePostUpload } from "./post.logic";
+import { usePostUpload } from "./post.logicv1";
 
 interface PostCardNewProps {
   onPostCreated: (post: Post) => void;
@@ -33,19 +33,21 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const {
     showModal,
     setShowModal,
-    previewFilesUI,
+    displaySelectedFiles,
+    totalReplyCount,
     handleTextLength,
     createPost,
-    closePostModel,
+    closePostModal,
     handleSelectFile,
+    loadingState,
     lastItem,
     postError,
-    loadingState,
-    refe,
-    tweetText,
-    uploadingFile,
     file,
+    refe,
     onEmojiClick,
+    uploadingFileStatus,
+    tweetText,
+    //userSelectedFiles,
   } = usePostUpload({
     onPostCreated,
   });
@@ -62,7 +64,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   const { user } = useUser();
 
-  useEffect(() => {}, [previewFilesUI]);
+  useEffect(() => {}, [displaySelectedFiles]);
 
   const [fileList, setFileList] = useState<File[]>([]);
 
@@ -72,49 +74,6 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   return user ? (
     <div className={postCardContainer}>
-      <div>
-        <div>
-          <input
-            type={"file"}
-            accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
-            multiple
-            onChange={(e) => {
-              if (e.target.files) {
-                const files = Array.from(e.target.files);
-                setFileList((prev) => [...prev, ...files]);
-              }
-              // Empty the input value so that onChange is triggered even if the same file is selected again
-              e.target.value = "";
-            }}
-          />
-        </div>
-
-        <div>
-          {/* Map over files */}
-          {fileList.map((file, i) => (
-            <div
-              key={i}
-              onClick={() => {
-                // remove the file from the array
-                setFileList((prev) => {
-                  const sliced = prev.slice(0);
-                  sliced.splice(i, 1);
-                  return sliced;
-                });
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={URL.createObjectURL(file)}
-                width={100}
-                height={100}
-                alt={file.name}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className={topCard}>
         <Image
           src={user.profile_image.path}
@@ -177,7 +136,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
       </div>
 
       {showModal && (
-        <CustomModal onClose={closePostModel} title={"Create post"}>
+        <CustomModal onClose={closePostModal} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
@@ -190,24 +149,27 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               <h5 className={cdName}>{user.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer} 
-                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+              {displaySelectedFiles && (
+                <div
+                  className={`${mediaContainer} 
+                    // ${displaySelectedFiles.length === 1 && "grid-cols-1"} 
+                    // ${displaySelectedFiles.length === 2 && "grid-cols-2"} 
+                    // ${displaySelectedFiles.length > 2 && "grid-cols-3"} 
                     `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
-                  selectedItem={lastItem}
                 >
-                  {previewFilesUI}
-                </Carousel>
-                {/* {previewFilesUI} */}
-              </div>
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={
+                      displaySelectedFiles.length === 1 ? false : true
+                    }
+                    selectedItem={lastItem}
+                  >
+                    {displaySelectedFiles}
+                  </Carousel>
+                </div>
+              )}
               <div className={inputTextContainer}>
                 <textarea
                   className={textContainerContent}
@@ -228,7 +190,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
             </div>
             {/* {file && (
               <p className="px-6 text-14 text-[#ec5858] font-semibold">
-                {file} - {uploadingFile} %
+                {file} - {uploadingFileStatus} %
               </p>
             )} */}
             {postError && (
@@ -324,8 +286,10 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     /> */}
                     <div style={{ width: 30, height: 30 }}>
                       <CircularProgressbar
-                        value={uploadingFile ? uploadingFile : 0}
-                        text={`${uploadingFile ? uploadingFile : 0}%`}
+                        value={uploadingFileStatus ? uploadingFileStatus : 0}
+                        text={`${
+                          uploadingFileStatus ? uploadingFileStatus : 0
+                        }%`}
                         styles={buildStyles({
                           textColor: "#ffffff",
                           textSize: "20px",
