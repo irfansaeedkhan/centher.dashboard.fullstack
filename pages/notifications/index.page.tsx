@@ -32,6 +32,10 @@ const Notifications: NextPageWithLayout = () => {
     fetchNotifications(offset);
   }, [fetchNotifications, offset]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
       <div className={sectionName}>Notifications</div>

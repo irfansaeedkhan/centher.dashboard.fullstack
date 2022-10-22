@@ -74,17 +74,19 @@ const Profile: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (user && loggedInUser) {
-      if (loggedInUser._id === user._id) {
-        fetchUserFeedsData();
-      } else if (loggedInUser._id !== user._id && followUser) {
-        fetchUserFeedsData();
-      } else {
-        setPosts([]);
-        setSkip(0);
-      }
+      // if (loggedInUser._id === user._id) {
+      //   fetchUserFeedsData();
+      // } else if (loggedInUser._id !== user._id) {
+      //   fetchUserFeedsData();
+      // } else {
+      //   setPosts([]);
+      //   setSkip(0);
+      // }
+      fetchUserFeedsData();
     }
   }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
+  // console.log(posts);
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
       <div>
@@ -104,30 +106,20 @@ const Profile: NextPageWithLayout = () => {
           </div>
 
           <div className={postsContainer}>
-            <PostCardNew
-              onPostCreated={(post) => {
-                setPosts((prev) => [post, ...prev]);
-              }}
-            />
-            {(followUser ||
-              user?.account_address === loggedInUser?.account_address) &&
-              posts
-                .filter((p) => !p.parent_post)
-                .map((post) => {
-                  if (post._id === posts[posts.length - 1]._id) {
-                    return (
-                      <SinglePost
-                        ref={lastPostRef}
-                        key={post._id}
-                        post={post}
-                        onDelete={(post_id) => {
-                          setPosts(posts.filter((p) => p._id !== post_id));
-                        }}
-                      />
-                    );
-                  }
+            {loggedInUser?.account_address === router.query.account_address && (
+              <PostCardNew
+                onPostCreated={(post) => {
+                  setPosts((prev) => [post, ...prev]);
+                }}
+              />
+            )}
+            {posts
+              .filter((p) => !p.parent_post)
+              .map((post) => {
+                if (post._id === posts[posts.length - 1]._id) {
                   return (
                     <SinglePost
+                      ref={lastPostRef}
                       key={post._id}
                       post={post}
                       onDelete={(post_id) => {
@@ -135,7 +127,17 @@ const Profile: NextPageWithLayout = () => {
                       }}
                     />
                   );
-                })}
+                }
+                return (
+                  <SinglePost
+                    key={post._id}
+                    post={post}
+                    onDelete={(post_id) => {
+                      setPosts(posts.filter((p) => p._id !== post_id));
+                    }}
+                  />
+                );
+              })}
           </div>
 
           <div className={rightSidebar}>
