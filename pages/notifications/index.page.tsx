@@ -47,13 +47,16 @@ const Notifications: NextPageWithLayout = () => {
             return (
               <SingleNotification
                 ref={lastNotiRef}
-                {...notification}
+                notification={notification}
                 key={notification._id}
               />
             );
           }
           return (
-            <SingleNotification {...notification} key={notification._id} />
+            <SingleNotification
+              notification={notification}
+              key={notification._id}
+            />
           );
         })}
       </div>
