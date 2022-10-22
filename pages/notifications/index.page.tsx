@@ -8,9 +8,14 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 // Current page imports
 import { SingleNotification } from "./_components";
 import { useNotificationsStore } from "@/store/notifications.store";
+import { useEffect } from "react";
 
 const Notifications: NextPageWithLayout = () => {
   const notifications = useNotificationsStore((state) => state.notifications);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div>

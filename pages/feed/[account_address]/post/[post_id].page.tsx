@@ -27,6 +27,10 @@ const SinglePostPage: NextPageWithLayout = () => {
   const router = useRouter();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     const fetchSinglePostData = async () => {
       setLoadingState("loading");
       try {
