@@ -59,8 +59,6 @@ const Profile: NextPageWithLayout = () => {
 
       const _posts = data.posts;
 
-      console.log(posts);
-
       setPosts((prev) => {
         const filteredPosts = _posts.filter((post: Post) => {
           return prev.every((prevPost) => prevPost._id !== post._id);
