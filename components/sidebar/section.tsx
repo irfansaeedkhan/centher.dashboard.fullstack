@@ -33,10 +33,11 @@ export const Section: React.FC<SectionProps> = (props) => {
       <span className={sectionLabel}>{props.section.label}</span>
       <div className={sectionWrapper}>
         {props.section.items.map((item) => {
-          let count = 0;
+          let count: number | string = 0;
 
           if (item.countType === "notification") {
             count = notifications.filter((n) => n.status === "unread").length;
+            count = count > 9 ? "9+" : count;
           } else if (item.countType === "chat") {
             count = 0;
           }
