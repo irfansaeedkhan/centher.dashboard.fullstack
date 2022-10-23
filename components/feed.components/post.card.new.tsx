@@ -47,7 +47,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     onEmojiClick,
     uploadingFileStatus,
     tweetText,
-    //userSelectedFiles,
+    deleteText,
   } = usePostUpload({
     onPostCreated,
   });
@@ -270,7 +270,12 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 </div> */}
               </div>
               <div className={RightActionBtns}>
-                <AnimateTrashIcon />
+                {/*
+                TO DO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
+                */}
+                <span onClick={deleteText}>
+                  <AnimateTrashIcon />
+                </span>
                 <div className={divider}></div>
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">

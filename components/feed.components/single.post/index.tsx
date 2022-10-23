@@ -218,6 +218,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       onEmojiClick,
       uploadingFileStatus,
       tweetText,
+      deleteText,
     } = usePostUpload({
       reply: true,
       reply_address: _post.user.account_address,
@@ -795,7 +796,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     </button>
                   </div>
                   <div className={RightActionBtns}>
-                    <AnimateTrashIcon />
+                    <span onClick={deleteText}>
+                      <AnimateTrashIcon />
+                    </span>
                     <div className={divider}></div>
                     {loadingState ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">

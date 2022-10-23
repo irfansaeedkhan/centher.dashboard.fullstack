@@ -91,8 +91,6 @@ export function usePostUpload({
   const [uploadingFileStatus, setUploadingFileStatus] = useState<number>();
 
   let currentPostID: string = "";
-  var userSelectedFilesv1: File[] = [];
-  var detailsOfUserSelectedv1: string[] = [];
 
   const closePostModal = () => {
     try {
@@ -106,6 +104,8 @@ export function usePostUpload({
       setUserSelectedFilesList([]);
       //
       setdisplaySelectedFiles([]);
+      //
+      setweetText("");
     } catch (error) {
       console.log("Failed to close post modal ", error);
       setPostError("Failed to close");
@@ -128,6 +128,13 @@ export function usePostUpload({
     }
   };
 
+  const deleteText = () => {
+    try {
+      setweetText("");
+    } catch (error) {
+      toast.error("Failed to delete text from post");
+    }
+  };
   // TODO: mubashir kindly fix any types
   // emoji toggle functions
   const refe: any = useRef(null);
@@ -234,7 +241,7 @@ export function usePostUpload({
           };
         }
       );
-      userSelectedFilesv1 = selectedFiles;
+      //userSelectedFilesv1 = selectedFiles;
 
       createObjectURLOfFiles(filesPreview, selectedFiles, selectedFileDetails);
 
@@ -334,6 +341,10 @@ export function usePostUpload({
       let alreadySelectedFiles: File[] = userSelectedFiles;
       let newFilesToAdd: Array<File> = [];
       let already_added: string[] = detailsOfUserSelected;
+
+      if (alreadySelectedFiles.length >= 5) {
+        toast.error("Maximum 5 files is allowed in post");
+      }
       //
       for (let index = 0; index < selected_files.length; index++) {
         let file_details =
@@ -341,6 +352,10 @@ export function usePostUpload({
           selected_files[index].size +
           selected_files[index].lastModified;
 
+        if (alreadySelectedFiles.length >= 5) {
+          toast.error("Maximum 5 files is allowed in post");
+          break;
+        }
         if (!detailsOfUserSelected.includes(file_details)) {
           setdetailsOfUserSelected((prev) => [...prev, file_details]);
           already_added.push(file_details);
@@ -363,7 +378,7 @@ export function usePostUpload({
         }
       );
 
-      userSelectedFilesv1 = alreadySelectedFiles;
+      //userSelectedFilesv1 = alreadySelectedFiles;
       createObjectURLOfFiles(filesPreview, alreadySelectedFiles, already_added);
       return true;
     } catch (error) {
@@ -643,6 +658,7 @@ export function usePostUpload({
     onEmojiClick,
     uploadingFileStatus,
     tweetText,
+    deleteText,
     //userSelectedFiles,
   };
 }
