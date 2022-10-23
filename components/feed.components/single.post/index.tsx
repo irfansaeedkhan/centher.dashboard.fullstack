@@ -42,7 +42,7 @@ import { ArchiveIcon } from "@/assets/svgs";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
-import { usePostUpload } from "../post.logic";
+import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
 
@@ -204,15 +204,21 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const {
       showModal,
       setShowModal,
-      previewFilesUI,
+      displaySelectedFiles,
       totalReplyCount,
-      loadingState,
       handleTextLength,
       createPost,
-      closePostModel,
+      closePostModal,
       handleSelectFile,
-      uploadingFile,
+      loadingState,
+      lastItem,
+      postError,
       file,
+      refe,
+      onEmojiClick,
+      uploadingFileStatus,
+      tweetText,
+      deleteText,
     } = usePostUpload({
       reply: true,
       reply_address: _post.user.account_address,
@@ -711,7 +717,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
           {/* Reply Post Modal */}
           {showModal && user && (
-            <CustomModal onClose={closePostModel} title={"Reply"}>
+            <CustomModal onClose={closePostModal} title={"Reply"}>
               <div className={modalBodyWrapper}>
                 <div className={contactDetail}>
                   <Image
@@ -732,9 +738,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       showStatus={false}
                       showThumbs={false}
                       showIndicators={false}
-                      showArrows={previewFilesUI.length === 1 ? false : true}
+                      showArrows={
+                        displaySelectedFiles.length === 1 ? false : true
+                      }
                     >
-                      {previewFilesUI}
+                      {displaySelectedFiles}
                     </Carousel>
                   </div>
                   <div className={inputTextContainer}>
@@ -788,7 +796,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     </button>
                   </div>
                   <div className={RightActionBtns}>
-                    <AnimateTrashIcon />
+                    <span onClick={deleteText}>
+                      <AnimateTrashIcon />
+                    </span>
                     <div className={divider}></div>
                     {loadingState ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
@@ -804,8 +814,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         /> */}
                         <div style={{ width: 30, height: 30 }}>
                           <CircularProgressbar
-                            value={uploadingFile ? uploadingFile : 0}
-                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            value={
+                              uploadingFileStatus ? uploadingFileStatus : 0
+                            }
+                            text={`${
+                              uploadingFileStatus ? uploadingFileStatus : 0
+                            }%`}
                             styles={buildStyles({
                               textColor: "#ffffff",
                               textSize: "20px",
@@ -857,7 +871,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 <PostCarousel
                   editedText={editPostData.editedPostText}
                   postMedia={editPostData.media}
-                  previewFilesUI={previewFilesUI}
+                  previewFilesUI={displaySelectedFiles}
                   user={user}
                   onPostTextEdit={handleEditTextLength}
                   onMediaDelete={(media) => {
@@ -888,8 +902,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         />
                         {/* <div style={{ width: 30, height: 30 }}>
                           <CircularProgressbar
-                            value={uploadingFile ? uploadingFile : 0}
-                            text={`${uploadingFile ? uploadingFile : 0}%`}
+                            value={uploadingFileStatus ? uploadingFileStatus : 0}
+                            text={`${uploadingFileStatus ? uploadingFileStatus : 0}%`}
                             styles={buildStyles({
                               textColor: "#ffffff",
                               textSize: "20px",

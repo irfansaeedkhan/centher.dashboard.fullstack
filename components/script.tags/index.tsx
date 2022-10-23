@@ -29,46 +29,19 @@ const ScriptTags = () => {
         <meta property="og:description" content="Nether-NFT Platform" />
         <meta property="og:url" content="https://app.nethernft.io/" />
         <meta property="og:site_name" content="Nether-NFT  Platform" />
-        <meta
-          property="og:image"
-          content="https://app.nethernft.io/change-to-logo-file-name"
-        />
+        <meta property="og:image" content="/images/nether.nft.logo.svg" />
         <meta property="og:image:width" content="420" />
         <meta property="og:image:height" content="420" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:description" content="Uroboro Platform" />
         <meta name="twitter:title" content="Nether-NFT Platform" />
-        <meta
-          name="twitter:image"
-          content="https://app.nethernft.io/change-to-logo-file-name"
-        />
+        <meta name="twitter:image" content="/images/nether.nft.logo.svg" />
         <meta name="google-site-verification" content="Will-Provide-later" />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="https://app.nethernft.io/change-to-logo-file-name"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="https://app.nethernft.io/change-to-logo-file-name"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="https://app.nethernft.io/change-to-logo-file-name"
-        />
-        <link
-          rel="manifest"
-          href="https://app.nethernft.io/change-to-logo-file-name/manifest.json"
-        />
-        <link
-          rel="mask-icon"
-          href="https://app.nethernft.io/change-to-logo-file-name"
-          color="#B59A5A"
-        ></link>
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="mask-icon" href="/favicon.ico" color="#B59A5A"></link>
       </Head>
       <Script src="https://unpkg.com/flowbite@1.5.3/dist/flowbite.js"></Script>
       <link

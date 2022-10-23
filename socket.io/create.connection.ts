@@ -13,8 +13,8 @@ export const useCreateSocketIOConnection = () => {
     setSocket: state.setSocket,
   }));
 
-  const { fetchNotifications } = useNotificationsStore((state) => ({
-    fetchNotifications: state.fetchNotifications,
+  const { fetchNewNotifications } = useNotificationsStore((state) => ({
+    fetchNewNotifications: state.fetchNewNotifications,
   }));
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const useCreateSocketIOConnection = () => {
       socket.on("notification", () => {
         process.env.APP_ENV !== "production" &&
           console.log("notification received");
-        fetchNotifications();
+        fetchNewNotifications();
       });
     }
 
@@ -46,5 +46,5 @@ export const useCreateSocketIOConnection = () => {
       socket.off("disconnect");
       socket.off("notification");
     };
-  }, [socket, setSocket, user, fetchNotifications]);
+  }, [socket, setSocket, user, fetchNewNotifications]);
 };

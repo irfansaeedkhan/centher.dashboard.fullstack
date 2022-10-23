@@ -8,8 +8,11 @@ import { axiosNodeApi } from "@/utils/axios";
 export interface NotificationsStore {
   notifications: Notification[];
   fetchNotifications: (offset?: number, limit?: number) => Promise<void>;
+  fetchNewNotifications: () => Promise<void>;
   offset: number;
+  updateOffset: () => void;
   limit: number;
+  markAsRead: (id: string) => Promise<void>;
 }
 
 export const useNotificationsStore = create<NotificationsStore>()(
@@ -18,6 +21,8 @@ export const useNotificationsStore = create<NotificationsStore>()(
       notifications: [],
       limit: 10,
       offset: 0,
+      updateOffset: () =>
+        set((state) => ({ offset: state.notifications.length })),
 
       fetchNotifications: async (offset, limit) => {
         try {
@@ -42,12 +47,49 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             return {
               notifications: [
-                ...filteredNotifications,
                 ...state.notifications,
+                ...filteredNotifications,
               ] as Notification[],
-              offset: state.offset + filteredNotifications.length,
             };
           });
+        } catch (error) {
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      fetchNewNotifications: async () => {
+        try {
+          const { data } = await axiosNodeApi.get("/api/notifications?limit=5");
+
+          set((state) => {
+            // Filter out notifications that are already in the store
+            const filteredNotifications = data.notifications.filter(
+              (notification: Notification) =>
+                !state.notifications.some(
+                  (stateNotification) =>
+                    stateNotification._id === notification._id
+                )
+            );
+
+            return {
+              notifications: [...filteredNotifications, ...state.notifications],
+            };
+          });
+        } catch (error) {
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      markAsRead: async (id) => {
+        try {
+          await axiosNodeApi.patch(`/api/notifications/${id}`);
+          set((state) => ({
+            notifications: state.notifications.map((notification) =>
+              notification._id === id
+                ? { ...notification, status: "read" }
+                : notification
+            ),
+          }));
         } catch (error) {
           process.env.APP_ENV !== "production" && console.error(error);
         }

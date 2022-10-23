@@ -8,7 +8,6 @@ import Picker, { Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-import { Oval, Rings } from "react-loader-spinner";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -24,7 +23,7 @@ import {
 } from "@/assets/svgs";
 
 // Current directory imports
-import { usePostUpload } from "./post.logic";
+import { usePostUpload } from "./post.logicv1";
 
 interface PostCardNewProps {
   onPostCreated: (post: Post) => void;
@@ -34,19 +33,21 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const {
     showModal,
     setShowModal,
-    previewFilesUI,
+    displaySelectedFiles,
+    totalReplyCount,
     handleTextLength,
     createPost,
-    closePostModel,
+    closePostModal,
     handleSelectFile,
+    loadingState,
     lastItem,
     postError,
-    loadingState,
-    refe,
-    tweetText,
-    uploadingFile,
     file,
+    refe,
     onEmojiClick,
+    uploadingFileStatus,
+    tweetText,
+    deleteText,
   } = usePostUpload({
     onPostCreated,
   });
@@ -63,7 +64,13 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   const { user } = useUser();
 
-  useEffect(() => {}, [previewFilesUI]);
+  useEffect(() => {}, [displaySelectedFiles]);
+
+  const [fileList, setFileList] = useState<File[]>([]);
+
+  useEffect(() => {
+    console.log("fileList", fileList);
+  }, [fileList]);
 
   return user ? (
     <div className={postCardContainer}>
@@ -129,7 +136,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
       </div>
 
       {showModal && (
-        <CustomModal onClose={closePostModel} title={"Create post"}>
+        <CustomModal onClose={closePostModal} title={"Create post"}>
           <div className={modalBodyWrapper}>
             <div className={contactDetail}>
               <Image
@@ -142,24 +149,27 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               <h5 className={cdName}>{user.display_name}</h5>
             </div>
             <div className={maincontentContainer}>
-              <div
-                className={`${mediaContainer} 
-                    // ${previewFilesUI.length === 1 && "grid-cols-1"} 
-                    // ${previewFilesUI.length === 2 && "grid-cols-2"} 
-                    // ${previewFilesUI.length > 2 && "grid-cols-3"} 
+              {displaySelectedFiles && (
+                <div
+                  className={`${mediaContainer} 
+                    // ${displaySelectedFiles.length === 1 && "grid-cols-1"} 
+                    // ${displaySelectedFiles.length === 2 && "grid-cols-2"} 
+                    // ${displaySelectedFiles.length > 2 && "grid-cols-3"} 
                     `}
-              >
-                <Carousel
-                  showStatus={false}
-                  showThumbs={false}
-                  showIndicators={false}
-                  showArrows={previewFilesUI.length === 1 ? false : true}
-                  selectedItem={lastItem}
                 >
-                  {previewFilesUI}
-                </Carousel>
-                {/* {previewFilesUI} */}
-              </div>
+                  <Carousel
+                    showStatus={false}
+                    showThumbs={false}
+                    showIndicators={false}
+                    showArrows={
+                      displaySelectedFiles.length === 1 ? false : true
+                    }
+                    selectedItem={lastItem}
+                  >
+                    {displaySelectedFiles}
+                  </Carousel>
+                </div>
+              )}
               <div className={inputTextContainer}>
                 <textarea
                   className={textContainerContent}
@@ -180,7 +190,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
             </div>
             {/* {file && (
               <p className="px-6 text-14 text-[#ec5858] font-semibold">
-                {file} - {uploadingFile} %
+                {file} - {uploadingFileStatus} %
               </p>
             )} */}
             {postError && (
@@ -203,6 +213,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     style={{ display: "none" }}
                     multiple
                     onChange={(e) => {
+                      console.log("e.target.files", e.target.files);
+
                       handleSelectFile(e, "images");
                     }}
                   />
@@ -258,7 +270,12 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 </div> */}
               </div>
               <div className={RightActionBtns}>
-                <AnimateTrashIcon />
+                {/*
+                TO DO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
+                */}
+                <span onClick={deleteText}>
+                  <AnimateTrashIcon />
+                </span>
                 <div className={divider}></div>
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
@@ -274,8 +291,10 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                     /> */}
                     <div style={{ width: 30, height: 30 }}>
                       <CircularProgressbar
-                        value={uploadingFile ? uploadingFile : 0}
-                        text={`${uploadingFile ? uploadingFile : 0}%`}
+                        value={uploadingFileStatus ? uploadingFileStatus : 0}
+                        text={`${
+                          uploadingFileStatus ? uploadingFileStatus : 0
+                        }%`}
                         styles={buildStyles({
                           textColor: "#ffffff",
                           textSize: "20px",
