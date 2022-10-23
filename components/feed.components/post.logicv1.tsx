@@ -155,29 +155,35 @@ export function usePostUpload({
   // TODO: fix any types please
   // delete parent Element while deleting image
   const handleDeleteItemStyling = (e: any) => {
-    // dom elements
-    let topParent: any = document.querySelector(
-      ".slider-wrapper.axis-horizontal"
-    );
-    let listParent: any = document.querySelector(".slider.animated");
-    let ListItem = e.target?.parentElement?.parentElement?.parentElement;
-    // adding transform when last element is deleted
+    try {
+      console.log("Deleted file styling called ");
+      // dom elements
+      let topParent: any = document.querySelector(
+        ".slider-wrapper.axis-horizontal"
+      );
+      let listParent: any = document.querySelector(".slider.animated");
+      let ListItem = e.target?.parentElement?.parentElement?.parentElement;
+      // adding transform when last element is deleted
 
-    if (
-      ListItem.classList.contains("slide") &&
-      listParent.lastElementChild == ListItem
-    ) {
-      if (listParent?.childElementCount === 2) {
-        topParent.classList.add("transformChild");
-        return;
+      if (
+        ListItem.classList.contains("slide") &&
+        listParent.lastElementChild == ListItem
+      ) {
+        if (listParent?.childElementCount === 2) {
+          topParent.classList.add("transformChild");
+          return;
+        }
+        let listCount = listParent?.childElementCount - 2;
+        listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
+        console.log("Listcount : ", listCount);
+        setLastItem(listCount);
+        //console.log("last Item", lastItem);
+
+        // ListItem?.previousSibling?.classList.replace("previous", "selected");
+        // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
       }
-      let listCount = listParent?.childElementCount - 2;
-      listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
-      setLastItem(listCount);
-      //console.log("last Item", lastItem);
-
-      // ListItem?.previousSibling?.classList.replace("previous", "selected");
-      // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
+    } catch (error) {
+      console.log("Delted file : ", error);
     }
   };
 
@@ -512,6 +518,7 @@ export function usePostUpload({
         await getNewPostAndUpdateState();
         setFile("");
         // Close Post Modal on successful upload
+        toast.success("Post created");
         closePostModal();
         return;
       }
