@@ -4,7 +4,7 @@ import ctl from "@netlify/classnames-template-literals";
 //import Image from "next/future/image";
 import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
-import Picker, { Theme } from "emoji-picker-react";
+import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -255,19 +255,11 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                       height={400}
                       width={300}
                       autoFocusSearch={false}
+                      emojiStyle={EmojiStyle.NATIVE}
                       theme={Theme.AUTO}
                     />
                   </div>
                 )}
-                {/* <div className="emojiContainer absolute left-[212px] bottom-[-390px]">
-                  <EmojiPicker
-                    height={400}
-                    width={300}
-                    onEmojiClick={onClick}
-                    autoFocusSearch={false}
-                    theme={Theme.AUTO}
-                  />
-                </div> */}
               </div>
               <div className={RightActionBtns}>
                 {/*
