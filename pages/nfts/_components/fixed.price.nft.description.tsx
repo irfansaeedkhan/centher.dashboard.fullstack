@@ -43,12 +43,6 @@ export const FixedPriceNFTDescription = () => {
 
   return (
     <div className={nftDescriptionContainer}>
-      <div className={titleContainer}>
-        <h1 className={title}>Maradona sport</h1>
-        <button>
-          <ShareBigIcon />
-        </button>
-      </div>
       <div className={desNameContainer}>
         <div className={nameBox}>
           <div className="linearCircle1"></div>
@@ -121,15 +115,11 @@ flex items-center gap-4
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
 `);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
+
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap
 `);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
+
 const nameBox = ctl(`
 flex items-start gap-3
 `);

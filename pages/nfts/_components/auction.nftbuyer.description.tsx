@@ -84,12 +84,6 @@ export const AuctionNFTBuyerDescription = () => {
   }, [!formState.isValid]);
   return (
     <div className={nftDescriptionContainer}>
-      <div className={titleContainer}>
-        <h1 className={title}>Maradona sport</h1>
-        <button>
-          <ShareBigIcon />
-        </button>
-      </div>
       <div className={desNameContainer}>
         <div className={nameBox}>
           <div className="linearCircle1"></div>
