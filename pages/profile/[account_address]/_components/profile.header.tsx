@@ -15,7 +15,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
+import { CopySvg, TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
 import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
@@ -248,7 +248,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                         toast.success("Account Address Copied!");
                       }}
                     >
-                      <CopyIcon />
+                      <CopySvg className="hover:stroke-brand-primary" />
                     </button>
                   </div>
 
@@ -269,7 +269,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   )}
                   {user.website_url && (
                     <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <WebsiteIcon />
+                      <WebsiteIcon className="hover:stroke-brand-primary" />
                     </a>
                   )}
                 </div>
@@ -364,7 +364,7 @@ const profileName = ctl(`
 text-white text-20px font-semibold
 `);
 const shareBtns = ctl(`
-flex items-center gap-2
+flex items-center gap-5
 `);
 const copyContainer = ctl(`
 copyContainer pt-1 flex items-center gap-2 relative
