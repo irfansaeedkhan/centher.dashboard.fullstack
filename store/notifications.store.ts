@@ -37,18 +37,18 @@ export const useNotificationsStore = create<NotificationsStore>()(
           const { data } = await axiosNodeApi.get(url);
 
           set((state) => {
-            const filteredNotifications = data.notifications.filter(
-              (notification: Notification) =>
-                !state.notifications.some(
-                  (stateNotification) =>
+            const filteredNotifications = state.notifications.filter(
+              (stateNotification) =>
+                !data.notifications.some(
+                  (notification: Notification) =>
                     stateNotification._id === notification._id
                 )
             );
 
             return {
               notifications: [
-                ...state.notifications,
                 ...filteredNotifications,
+                ...data.notifications,
               ] as Notification[],
             };
           });
@@ -63,16 +63,16 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
           set((state) => {
             // Filter out notifications that are already in the store
-            const filteredNotifications = data.notifications.filter(
-              (notification: Notification) =>
-                !state.notifications.some(
-                  (stateNotification) =>
+            const filteredNotifications = state.notifications.filter(
+              (stateNotification) =>
+                !data.notifications.some(
+                  (notification: Notification) =>
                     stateNotification._id === notification._id
                 )
             );
 
             return {
-              notifications: [...filteredNotifications, ...state.notifications],
+              notifications: [...data.notifications, ...filteredNotifications],
             };
           });
         } catch (error) {
@@ -134,9 +134,16 @@ interface PostLikeNotification extends BaseNotification {
   post: NotificationPost;
 }
 
-interface PostreplyNotification extends BaseNotification {
+interface PostReplyNotification extends BaseNotification {
   type: "post_reply";
   post: NotificationPost;
 }
 
-export type Notification = PostLikeNotification | PostreplyNotification;
+interface FollowNotification extends BaseNotification {
+  type: "follow";
+}
+
+export type Notification =
+  | PostLikeNotification
+  | PostReplyNotification
+  | FollowNotification;
