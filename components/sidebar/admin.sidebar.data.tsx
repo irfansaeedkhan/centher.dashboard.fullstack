@@ -6,6 +6,7 @@ import {
   InfluencerRequest,
   Users,
   Transactions,
+  LiquidityPoolSvg,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -18,7 +19,7 @@ export const adminSideBarData: SidebarData = {
       {
         label: "Liquidity Pool",
         url: AppRoutes.liquidity_pool,
-        icon: NetworkRewards,
+        icon: LiquidityPoolSvg,
       },
       {
         label: "Staking Pack",

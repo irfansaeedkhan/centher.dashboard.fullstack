@@ -15,6 +15,7 @@ import {
   VotingChain,
   Multilevel,
   NetworkGenealogy,
+  LiquidityPoolSvg,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -69,7 +70,7 @@ export const sidebarData: SidebarData = {
       {
         label: "Liquidity Pool",
         url: AppRoutes.liquidity_pool,
-        icon: NetworkRewards,
+        icon: LiquidityPoolSvg,
       },
       {
         label: "Staking Pack",
