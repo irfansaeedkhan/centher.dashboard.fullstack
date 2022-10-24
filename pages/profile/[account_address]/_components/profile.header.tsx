@@ -130,9 +130,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={"Feed and Post"}
+              title={"Social Profile"}
               variant={`${isProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -147,13 +147,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={
-                loggedInUser?._id !== user?._id
-                  ? "NFT Profile"
-                  : "My NFT Profile"
-              }
+              title={"NFT Profile"}
               variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -340,7 +336,7 @@ const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 const btnContainer = ctl(`
-  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
+  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6 space-x-2
 `);
 const coverCard = ctl(`
 bg-background-shade-3 rounded-xl
