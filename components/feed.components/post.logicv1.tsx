@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import { useState, useRef, useEffect } from "react";
-import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
@@ -305,7 +304,8 @@ export function usePostUpload({
           // Checking if supported image type
           displaySelectedFile.push(
             <div className={ImageStyleContainer}>
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={filesPreview[index].fileBlobURL}
                 width={452}
                 height={312}
