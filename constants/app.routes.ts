@@ -48,6 +48,7 @@ export const AppRoutes = {
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",
   staking_packs: "/staking-pack",
+  liquidity_pool: "/liquidity-pool",
 
   nfts: {
     create_nft: "/nfts/create",

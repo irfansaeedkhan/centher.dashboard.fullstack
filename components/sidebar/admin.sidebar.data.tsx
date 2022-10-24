@@ -16,6 +16,11 @@ export const adminSideBarData: SidebarData = {
     label: "DECENTRALIZED FINANCE",
     items: [
       {
+        label: "Liquidity Pool",
+        url: AppRoutes.liquidity_pool,
+        icon: NetworkRewards,
+      },
+      {
         label: "Staking Pack",
         url: AppRoutes.admin.staking_packs,
         icon: StakingPack,
