@@ -435,34 +435,6 @@ export function usePostUpload({
   };
   // TODO: fix any types please
   // delete parent Element while deleting image
-  const handleDeleteItemStyling = (e: any) => {
-    // dom elements
-    let topParent: any = document.querySelector(
-      ".slider-wrapper.axis-horizontal"
-    );
-    let listParent: any = document.querySelector(".slider.animated");
-    let ListItem = e.target?.parentElement?.parentElement?.parentElement;
-    // adding transform when last element is deleted
-    //console.log("e.target", ListItem);
-    //console.log("listParent.lastElementChild", listParent.lastElementChild);
-
-    if (
-      ListItem.classList.contains("slide") &&
-      listParent.lastElementChild == ListItem
-    ) {
-      if (listParent?.childElementCount === 2) {
-        topParent.classList.add("transformChild");
-        return;
-      }
-      let listCount = listParent?.childElementCount - 2;
-      listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
-      setLastItem(listCount);
-      //console.log("last Item", lastItem);
-
-      // ListItem?.previousSibling?.classList.replace("previous", "selected");
-      // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
-    }
-  };
   // Function will display social media in pop up
   const createSelectedFileUI = (previewUrlList: Array<PreviewSelectedFile>) => {
     try {
@@ -492,19 +464,12 @@ export function usePostUpload({
                 />
               </video>
               <button
-                onClick={(e: any) => {
-                  if (
-                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
-                      "slide"
-                    )
-                  ) {
-                    deleteFileIndexs(
-                      previewUrlList[fileDetails].fileListIndex,
-                      previewUrlList[fileDetails].fileIndex,
-                      fileDetails
-                    );
-                    handleDeleteItemStyling(e);
-                  }
+                onClick={() => {
+                  deleteFileIndexs(
+                    previewUrlList[fileDetails].fileListIndex,
+                    previewUrlList[fileDetails].fileIndex,
+                    fileDetails
+                  );
                 }}
                 className={imageDelBtn}
               >
@@ -526,19 +491,12 @@ export function usePostUpload({
                 className={createPostImageStyling}
               />
               <button
-                onClick={(e: any) => {
-                  if (
-                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
-                      "slide"
-                    )
-                  ) {
-                    deleteFileIndexs(
-                      previewUrlList[fileDetails].fileListIndex,
-                      previewUrlList[fileDetails].fileIndex,
-                      fileDetails
-                    );
-                    handleDeleteItemStyling(e);
-                  }
+                onClick={() => {
+                  deleteFileIndexs(
+                    previewUrlList[fileDetails].fileListIndex,
+                    previewUrlList[fileDetails].fileIndex,
+                    fileDetails
+                  );
                 }}
                 className={imageDelBtn}
               >

@@ -73,7 +73,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     const fetchFollow = async () => {
       try {
         const { data } = await axiosNodeApi.get(
-          `api/socials/follows/${user?._id}`
+          `/api/socials/follows/${user?._id}`
         );
         setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
@@ -89,19 +89,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     }
   }, [user, setFollowUser]);
 
-  const followUser = async (follower_id: string) => {
+  const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
       const response = await axiosNodeApi.post("api/socials/follows", {
-        follower_id,
+        following_id,
       });
-      if (response.data.message_description == "Follow user successfully") {
+      if (response.data.message == "follow_success") {
         setFollowUser && setFollowUser(true);
         setFollow(true);
         incrementFollowersCount();
-      } else if (
-        response.data.message_description == "Unfollow user successfully"
-      ) {
+      } else if (response.data.message == "unfollow_success") {
         setFollowUser && setFollowUser(false);
         setFollow(false);
         decrementFollowersCount();

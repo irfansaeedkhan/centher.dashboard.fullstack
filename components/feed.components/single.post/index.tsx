@@ -523,7 +523,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         width={452}
                         height={312}
                         //alt="post media"
-                        className={postImageStyling}
+                        className={postVideoStyling}
                         controls
                       />
                     )
@@ -1040,6 +1040,9 @@ flex items-center gap-3 text-14px font-medium
 
 const postImageStyling = ctl(`
   object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
+`);
+const postVideoStyling = ctl(`
+  object-left  !w-[99%] h-auto rounded-xl  !block !m-0   !object-contain 
 `);
 
 const repliesContainer = ctl(`

@@ -674,3 +674,8 @@ input:-webkit-autofill {
   background: linear-gradient(91.26deg, #70a2ff 0%, #54f0d1 100%);
   border-radius: 9999px;
 }
+
+.slider-wrapper .slide span:nth-child(1) {
+  border-radius: 16px;
+  overflow: hidden;
+}
