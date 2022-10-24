@@ -72,11 +72,11 @@ export const AuctionNFTBuyerDescription = () => {
         />
       </div>
     );
-    setModal(true);
   };
 
   const onSubmit = async (data: any) => {
     console.log(data);
+    setModal(false);
   };
 
   useEffect(() => {
@@ -170,7 +170,10 @@ export const AuctionNFTBuyerDescription = () => {
           title={"Place bid"}
           variant="v1"
           className="py-4"
-          onClick={bidNFTModalFunc}
+          onClick={() => {
+            bidNFTModalFunc();
+            setModal(true);
+          }}
         />
       </div>
 
