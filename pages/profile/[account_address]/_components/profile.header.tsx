@@ -364,7 +364,7 @@ const profileName = ctl(`
 text-white text-20px font-semibold
 `);
 const shareBtns = ctl(`
-flex items-center gap-5
+flex items-center gap-3
 `);
 const copyContainer = ctl(`
 copyContainer pt-1 flex items-center gap-2 relative
