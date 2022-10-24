@@ -281,6 +281,8 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       setToggleSharePop_2(false);
     });
 
+    //TO DO : Check if this is in user by looking at code it doest seems be used in code.
+    //If it is being used in code then need to change according to the post.card.new.tsx
     const {
       showModal,
       setShowModal,
@@ -418,16 +420,16 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               }}
             >
               <div className={mediaContainer}>
-                {post.media && post.media.length > 0 && (
+                {_post.media && _post.media.length > 0 && (
                   <Carousel
                     showStatus={false}
                     showThumbs={false}
                     showIndicators={false}
                     showArrows={
-                      post.media && post.media.length === 1 ? false : true
+                      _post.media && _post.media.length === 1 ? false : true
                     }
                   >
-                    {post.media.map((media, index) =>
+                    {_post.media.map((media, index) =>
                       media.type == "image" ? (
                         <Image
                           key={index}
@@ -451,9 +453,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   </Carousel>
                 )}
               </div>
-              {post.text_content && (
+              {_post.text_content && (
                 <div className={textContainer}>
-                  <p className={textContainerContent}>{post.text_content}</p>
+                  <p className={textContainerContent}>{_post.text_content}</p>
                 </div>
               )}
             </div>

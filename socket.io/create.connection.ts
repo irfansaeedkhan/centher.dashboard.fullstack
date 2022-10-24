@@ -1,11 +1,8 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
+import { useNotificationsStore } from "@/store/notifications.store";
 import { useSocketIOStore } from "@/store/socket.io.store";
-import {
-  Notification,
-  useNotificationsStore,
-} from "@/store/notifications.store";
 import useUser from "@/hooks/use.user";
 import { SOCKET_IO_URL } from "@/constants/common";
 
@@ -15,9 +12,10 @@ export const useCreateSocketIOConnection = () => {
     socket: state.socket,
     setSocket: state.setSocket,
   }));
-  const addNotification = useNotificationsStore(
-    (state) => state.addNotification
-  );
+
+  const { fetchNewNotifications } = useNotificationsStore((state) => ({
+    fetchNewNotifications: state.fetchNewNotifications,
+  }));
 
   useEffect(() => {
     if (!socket && user) {
@@ -35,10 +33,10 @@ export const useCreateSocketIOConnection = () => {
           console.log("socket disconnected");
       });
 
-      socket.on("notification", (notification: Notification) => {
+      socket.on("notification", () => {
         process.env.APP_ENV !== "production" &&
-          console.log("notification", notification);
-        addNotification(notification);
+          console.log("notification received");
+        fetchNewNotifications();
       });
     }
 
@@ -48,5 +46,5 @@ export const useCreateSocketIOConnection = () => {
       socket.off("disconnect");
       socket.off("notification");
     };
-  }, [socket, setSocket, user, addNotification]);
+  }, [socket, setSocket, user, fetchNewNotifications]);
 };

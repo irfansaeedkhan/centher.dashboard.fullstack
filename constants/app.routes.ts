@@ -6,20 +6,17 @@ export const AppRoutes = {
   },
 
   profile: {
-    // Public Pages
+    // Authenticated Pages
     account_address: "/profile/[account_address]",
+    settings: "/profile/settings",
 
     // Coming soon pages
     nfts: "/profile/[account_address]/nfts",
-
-    // Authenticated Pages
-    settings: "/profile/settings",
   },
 
   feed: {
     // Authenticated Pages
     index: "/feed",
-    // Public Pages
     single_post: "/feed/[account_address]/post/[post_id]",
   },
 
