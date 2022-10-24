@@ -51,10 +51,10 @@ export function usePostUpload({
     (state) => state.incrementPostsCount
   );
 
-  //Show create pop modal
+  // Show create pop modal
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  //Index
+  // Index
   const [lastItem, setLastItem] = useState<number>();
 
   // Loader status
@@ -66,11 +66,10 @@ export function usePostUpload({
   // Total reply counts
   const [totalReplyCount, setTotalReplyCount] = useState<number>(replyCount);
 
-  //Files selected by user
+  // Files selected by user
   const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
 
-  //User_Selected_Files
-  //let detailsOfUserSelected: string[] = [];
+  // User_Selected_Files
   const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
     []
   );
@@ -83,28 +82,25 @@ export function usePostUpload({
     Array<JSX.Element>
   );
 
-  //
   const [file, setFile] = useState<string>("");
 
-  //
   const [uploadingFileStatus, setUploadingFileStatus] = useState<number>();
 
   let currentPostID: string = "";
 
   const closePostModal = () => {
     try {
-      // Hiding popup
-      setShowModal(false);
+      // reseting user selected file list
+      setUserSelectedFilesList([]);
+      setdisplaySelectedFiles([]);
+      setdetailsOfUserSelected([]);
+      setweetText("");
       // Hiding loader
       setLoadingState(false);
       // Reseting error message on hiding popup
       setPostError("");
-      // reseting user selected file list
-      setUserSelectedFilesList([]);
-      //
-      setdisplaySelectedFiles([]);
-      //
-      setweetText("");
+      // Hiding popup
+      setShowModal(false);
     } catch (error) {
       console.log("Failed to close post modal ", error);
       setPostError("Failed to close");
