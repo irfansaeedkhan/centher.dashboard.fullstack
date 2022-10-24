@@ -12,11 +12,10 @@ import { useWeb3React } from "@web3-react/core";
 
 // App Imports
 import useUser from "@/hooks/use.user";
-import { axiosNodeApi } from "@/utils/axios";
-import { Polygon } from "@/assets/svgs";
-import { NODE_API_URL } from "@/constants/common";
-import { AppRoutes } from "@/constants/app.routes";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { sliceAccountAddress } from "@/utils/user.helpers";
+import { Polygon } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -90,9 +89,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               <div className={displayName}>{user?.display_name}</div>
               <div className={accountAddressInner}>
                 <p className={textStyle}>
-                  {user?.account_address.slice(0, 4) +
-                    "..." +
-                    user?.account_address.slice(38, 42)}
+                  {sliceAccountAddress(user?.account_address ?? "")}
                 </p>
                 <MdContentCopy
                   className={copyButton}

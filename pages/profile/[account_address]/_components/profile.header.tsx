@@ -15,10 +15,16 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { CopySvg, TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
-import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
+import {
+  CopySvg,
+  TwitterSvg,
+  WebsiteIcon,
+  CameraIcon,
+  EditIcon,
+} from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";
+import { sliceAccountAddress } from "@/utils/user.helpers";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { useUserMediaUpload } from "./upload.media.logic";
@@ -233,9 +239,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 <div className={shareBtns}>
                   <div className={copyContainer}>
                     <h6 className={code}>
-                      {user.account_address.slice(0, 6) +
-                        "..." +
-                        user.account_address.slice(38, 42)}
+                      {sliceAccountAddress(user.account_address)}
                     </h6>
                     <button
                       className="copyBtn"
