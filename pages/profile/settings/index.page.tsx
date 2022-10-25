@@ -13,7 +13,7 @@ const Setting: NextPageWithLayout = () => {
   const { user } = useUser();
 
   return (
-    <div className="AppWrapper flex flex-col gap-10">
+    <div className="otherAppWrapper flex flex-col lg:gap-10 sm:gap-5">
       <h1 className={title}>Profile Setting</h1>
       {user ? (
         <EditProfileForm user={user} />
