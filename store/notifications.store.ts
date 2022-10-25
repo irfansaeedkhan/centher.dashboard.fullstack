@@ -143,7 +143,12 @@ interface FollowNotification extends BaseNotification {
   type: "follow";
 }
 
+interface NewReferralNotification extends BaseNotification {
+  type: "new_referral";
+}
+
 export type Notification =
   | PostLikeNotification
   | PostReplyNotification
-  | FollowNotification;
+  | FollowNotification
+  | NewReferralNotification;

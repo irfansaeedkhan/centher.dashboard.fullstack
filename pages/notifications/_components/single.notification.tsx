@@ -49,6 +49,14 @@ export const SingleNotification = React.forwardRef<
         </a>
       </Link>
     );
+  } else if (notification.type === "new_referral") {
+    notificationLink = (
+      <Link href={`/profile/${notification.by.account_address}`}>
+        <a className="text-sm text-white hover:text-brand-primary">
+          {notification.by.display_name} has joined your network.
+        </a>
+      </Link>
+    );
   }
 
   return (
