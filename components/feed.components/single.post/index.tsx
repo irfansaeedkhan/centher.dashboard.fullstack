@@ -201,10 +201,22 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setToggleSharePop_2(false);
     });
 
+    // Files selected by user
+    const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
+
+    // User_Selected_Files
+    const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<
+      string[]
+    >([]);
+
+    // Images that will be displayed after it is selected
+    const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
+      Array<JSX.Element>
+    );
     const {
       showModal,
       setShowModal,
-      displaySelectedFiles,
+      //displaySelectedFiles,
       totalReplyCount,
       handleTextLength,
       createPost,
@@ -227,6 +239,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       onPostCreated: (replies) => {
         setReplies((prev) => [replies, ...prev]);
       },
+      userSelectedFiles,
+      setUserSelectedFilesList,
+      detailsOfUserSelected,
+      setdetailsOfUserSelected,
+      displaySelectedFiles,
+      setdisplaySelectedFiles,
     });
 
     const likePost = async (post_id: string) => {

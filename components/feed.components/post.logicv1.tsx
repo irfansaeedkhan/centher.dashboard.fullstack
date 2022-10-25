@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
@@ -38,6 +38,12 @@ interface PostUploadOptions {
   reply_address?: string;
   reply_post_id?: string;
   replyCount?: number;
+  userSelectedFiles: File[];
+  setUserSelectedFilesList: Dispatch<SetStateAction<File[]>>;
+  detailsOfUserSelected: string[];
+  setdetailsOfUserSelected: Dispatch<SetStateAction<string[]>>;
+  displaySelectedFiles: Array<JSX.Element>;
+  setdisplaySelectedFiles: Dispatch<SetStateAction<JSX.Element[]>>;
 }
 
 export function usePostUpload({
@@ -46,6 +52,12 @@ export function usePostUpload({
   reply_post_id = "",
   replyCount = 0,
   onPostCreated,
+  userSelectedFiles,
+  setUserSelectedFilesList,
+  detailsOfUserSelected,
+  setdetailsOfUserSelected,
+  displaySelectedFiles,
+  setdisplaySelectedFiles,
 }: PostUploadOptions) {
   const incrementPostsCount = useProfileCardStore(
     (state) => state.incrementPostsCount
@@ -67,20 +79,20 @@ export function usePostUpload({
   const [totalReplyCount, setTotalReplyCount] = useState<number>(replyCount);
 
   // Files selected by user
-  const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
+  //const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
 
   // User_Selected_Files
-  const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
-    []
-  );
+  // const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
+  //   []
+  // );
 
   //Tweet set by user
   const [tweetText, setweetText] = useState<string>("");
 
   // Images that will be displayed after it is selected
-  const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
-    Array<JSX.Element>
-  );
+  // const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
+  //   Array<JSX.Element>
+  // );
 
   const [file, setFile] = useState<string>("");
 
@@ -265,7 +277,10 @@ export function usePostUpload({
       for (let index = 0; index < filesPreview.length; index++) {
         if (SUPPORTED_VIDEO_TYPES.includes(filesPreview[index].fileType)) {
           displaySelectedFile.push(
-            <div className={ImageStyleContainer}>
+            <div
+              className={ImageStyleContainer}
+              key={filesPreview[index].fileIndex}
+            >
               <video
                 width={452}
                 height={312}
@@ -299,7 +314,10 @@ export function usePostUpload({
         ) {
           // Checking if supported image type
           displaySelectedFile.push(
-            <div className={ImageStyleContainer}>
+            <div
+              className={ImageStyleContainer}
+              key={filesPreview[index].fileIndex}
+            >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={filesPreview[index].fileBlobURL}
@@ -647,7 +665,7 @@ export function usePostUpload({
   return {
     showModal,
     setShowModal,
-    displaySelectedFiles,
+    //displaySelectedFiles,
     totalReplyCount,
     handleTextLength,
     createPost,

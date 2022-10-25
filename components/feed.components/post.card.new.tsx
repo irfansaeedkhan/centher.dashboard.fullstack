@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
 //import Image from "next/future/image";
 import Image from "next/image";
@@ -30,10 +30,23 @@ interface PostCardNewProps {
 }
 
 export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
+  // Files selected by user
+  const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
+
+  // User_Selected_Files
+  const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
+    []
+  );
+
+  // Images that will be displayed after it is selected
+  const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
+    Array<JSX.Element>
+  );
+
   const {
     showModal,
     setShowModal,
-    displaySelectedFiles,
+    //displaySelectedFiles,
     totalReplyCount,
     handleTextLength,
     createPost,
@@ -50,6 +63,12 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     deleteText,
   } = usePostUpload({
     onPostCreated,
+    userSelectedFiles,
+    setUserSelectedFilesList,
+    detailsOfUserSelected,
+    setdetailsOfUserSelected,
+    displaySelectedFiles,
+    setdisplaySelectedFiles,
   });
 
   const [togglePop, setTogglePop] = useState(false);
