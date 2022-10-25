@@ -43,6 +43,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     Array<JSX.Element>
   );
 
+  const [lastItem, setLastItem] = useState<number>(-1);
+
   const {
     showModal,
     setShowModal,
@@ -53,7 +55,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     closePostModal,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,
@@ -69,6 +71,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     setdetailsOfUserSelected,
     displaySelectedFiles,
     setdisplaySelectedFiles,
+    lastItem,
+    setLastItem,
   });
 
   const [togglePop, setTogglePop] = useState(false);

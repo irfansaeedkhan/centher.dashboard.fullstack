@@ -213,6 +213,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
       Array<JSX.Element>
     );
+
+    const [lastItem, setLastItem] = useState<number>(-1);
     const {
       showModal,
       setShowModal,
@@ -223,7 +225,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       closePostModal,
       handleSelectFile,
       loadingState,
-      lastItem,
       postError,
       file,
       refe,
@@ -245,6 +246,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setdetailsOfUserSelected,
       displaySelectedFiles,
       setdisplaySelectedFiles,
+      lastItem,
+      setLastItem,
     });
 
     const likePost = async (post_id: string) => {

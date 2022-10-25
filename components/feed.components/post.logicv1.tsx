@@ -44,6 +44,8 @@ interface PostUploadOptions {
   setdetailsOfUserSelected: Dispatch<SetStateAction<string[]>>;
   displaySelectedFiles: Array<JSX.Element>;
   setdisplaySelectedFiles: Dispatch<SetStateAction<JSX.Element[]>>;
+  lastItem: number;
+  setLastItem: Dispatch<SetStateAction<number>>;
 }
 
 export function usePostUpload({
@@ -58,6 +60,8 @@ export function usePostUpload({
   setdetailsOfUserSelected,
   displaySelectedFiles,
   setdisplaySelectedFiles,
+  lastItem,
+  setLastItem,
 }: PostUploadOptions) {
   const incrementPostsCount = useProfileCardStore(
     (state) => state.incrementPostsCount
@@ -67,7 +71,7 @@ export function usePostUpload({
   const [showModal, setShowModal] = useState<boolean>(false);
 
   // Index
-  const [lastItem, setLastItem] = useState<number>();
+  //const [lastItem, setLastItem] = useState<number>();
 
   // Loader status
   const [loadingState, setLoadingState] = useState(false);
@@ -113,6 +117,8 @@ export function usePostUpload({
       setPostError("");
       // Hiding popup
       setShowModal(false);
+      //
+      setLastItem(0);
     } catch (error) {
       console.log("Failed to close post modal ", error);
       setPostError("Failed to close");
@@ -348,7 +354,7 @@ export function usePostUpload({
       }
       setdisplaySelectedFiles((prev) => displaySelectedFile);
       //setdisplaySelectedFiles(displaySelectedFile);
-      //setLastItem(0);
+      setLastItem(0);
     } catch (error) {
       console.log("Failed to create ", error);
       toast.error("Failed to display image");
@@ -653,7 +659,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
-        //setLastItem(0);
+        setLastItem(0);
         setPostError("");
       }
       event.target.value = "";
@@ -672,7 +678,7 @@ export function usePostUpload({
     closePostModal,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,

@@ -675,7 +675,7 @@ export function usePostUpload({
     closePostModel,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,
