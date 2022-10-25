@@ -23,7 +23,7 @@ export const LeftSidebarStickyContainer = () => {
         ) : (
           <ProfileDetailCardSkeleton />
         )}
-        <DiscoverCard />
+        {/* <DiscoverCard /> */}
       </div>
     </div>
   );
