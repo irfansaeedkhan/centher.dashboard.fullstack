@@ -104,7 +104,10 @@ export function usePostUpload({
   };
 
   // function to set max value of text
-  const handleTextLength = (e: any) => {
+  interface HandleNameChangeInterface {
+    target: HTMLInputElement;
+  }
+  const handleTextLength = (e: HandleNameChangeInterface) => {
     var box: HTMLElement | null = document.getElementById("trashRect");
     if (box) {
       box.style.transform = `translateY(${
@@ -122,7 +125,7 @@ export function usePostUpload({
   // TODO: mubashir kindly fix any types
   // emoji toggle functions
   const refe: any = useRef(null);
-  const onEmojiClick = (emojiObject: any, event: any) => {
+  const onEmojiClick = (emojiObject: { emoji: string }) => {
     const cursor = refe?.current?.selectionStart;
     const text =
       tweetText.slice(0, cursor) + emojiObject?.emoji + tweetText.slice(cursor);
@@ -675,7 +678,7 @@ export function usePostUpload({
     closePostModel,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,
