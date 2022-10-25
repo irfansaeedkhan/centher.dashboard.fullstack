@@ -15,10 +15,16 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
-import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
+import {
+  CopySvg,
+  TwitterSvg,
+  WebsiteIcon,
+  CameraIcon,
+  EditIcon,
+} from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";
+import { sliceAccountAddress } from "@/utils/user.helpers";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { useUserMediaUpload } from "./upload.media.logic";
@@ -73,7 +79,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     const fetchFollow = async () => {
       try {
         const { data } = await axiosNodeApi.get(
-          `api/socials/follows/${user?._id}`
+          `/api/socials/follows/${user?._id}`
         );
         setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
@@ -89,19 +95,17 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     }
   }, [user, setFollowUser]);
 
-  const followUser = async (follower_id: string) => {
+  const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
       const response = await axiosNodeApi.post("api/socials/follows", {
-        follower_id,
+        following_id,
       });
-      if (response.data.message_description == "Follow user successfully") {
+      if (response.data.message == "follow_success") {
         setFollowUser && setFollowUser(true);
         setFollow(true);
         incrementFollowersCount();
-      } else if (
-        response.data.message_description == "Unfollow user successfully"
-      ) {
+      } else if (response.data.message == "unfollow_success") {
         setFollowUser && setFollowUser(false);
         setFollow(false);
         decrementFollowersCount();
@@ -132,9 +136,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={"Feed and Post"}
+              title={"Social Profile"}
               variant={`${isProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -149,13 +153,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={
-                loggedInUser?._id !== user?._id
-                  ? "NFT Profile"
-                  : "My NFT Profile"
-              }
+              title={"NFT Profile"}
               variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -239,9 +239,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 <div className={shareBtns}>
                   <div className={copyContainer}>
                     <h6 className={code}>
-                      {user.account_address.slice(0, 6) +
-                        "..." +
-                        user.account_address.slice(38, 42)}
+                      {sliceAccountAddress(user.account_address)}
                     </h6>
                     <button
                       className="copyBtn"
@@ -250,7 +248,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                         toast.success("Account Address Copied!");
                       }}
                     >
-                      <CopyIcon />
+                      <CopySvg className="hover:stroke-brand-primary" />
                     </button>
                   </div>
 
@@ -271,7 +269,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                   )}
                   {user.website_url && (
                     <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <WebsiteIcon />
+                      <WebsiteIcon className="hover:stroke-brand-primary" />
                     </a>
                   )}
                 </div>
@@ -342,7 +340,7 @@ const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 const btnContainer = ctl(`
-  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
+  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6 space-x-2
 `);
 const coverCard = ctl(`
 bg-background-shade-3 rounded-xl
@@ -366,7 +364,7 @@ const profileName = ctl(`
 text-white text-20px font-semibold
 `);
 const shareBtns = ctl(`
-flex items-center gap-2
+flex items-center gap-3
 `);
 const copyContainer = ctl(`
 copyContainer pt-1 flex items-center gap-2 relative

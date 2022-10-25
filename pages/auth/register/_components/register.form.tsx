@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/future/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
@@ -8,8 +9,14 @@ import { toast } from "react-hot-toast";
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
+import { sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { SpinIcon2, Successfully, WalletIconModal } from "@/assets/svgs";
+import {
+  SpinIcon2,
+  Successfully,
+  WalletIconModal,
+  MetamaskIcon,
+} from "@/assets/svgs";
 
 // Current directory imports
 import { InputField } from "./input.field";
@@ -18,8 +25,6 @@ import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
-import Image from "next/future/image";
-import { MetamaskIcon } from "@/assets/svgs";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -115,9 +120,7 @@ export const RegisterForm: React.FC = () => {
                 <div className="flex items-center gap-1">
                   <p className="text-[#6B7280] text-sm">Wallet Address:</p>
                   <p className="text-white text-sm">
-                    {signupState.account_address.slice(0, 6) +
-                      "..." +
-                      signupState.account_address.slice(38, 42)}
+                    {sliceAccountAddress(signupState.account_address)}
                   </p>
                 </div>
               </div>

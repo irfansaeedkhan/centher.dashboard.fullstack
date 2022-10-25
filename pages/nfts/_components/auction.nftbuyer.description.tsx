@@ -72,11 +72,11 @@ export const AuctionNFTBuyerDescription = () => {
         />
       </div>
     );
-    setModal(true);
   };
 
   const onSubmit = async (data: any) => {
     console.log(data);
+    setModal(false);
   };
 
   useEffect(() => {
@@ -84,12 +84,6 @@ export const AuctionNFTBuyerDescription = () => {
   }, [!formState.isValid]);
   return (
     <div className={nftDescriptionContainer}>
-      <div className={titleContainer}>
-        <h1 className={title}>Maradona sport</h1>
-        <button>
-          <ShareBigIcon />
-        </button>
-      </div>
       <div className={desNameContainer}>
         <div className={nameBox}>
           <div className="linearCircle1"></div>
@@ -170,7 +164,10 @@ export const AuctionNFTBuyerDescription = () => {
           title={"Place bid"}
           variant="v1"
           className="py-4"
-          onClick={bidNFTModalFunc}
+          onClick={() => {
+            bidNFTModalFunc();
+            setModal(true);
+          }}
         />
       </div>
 

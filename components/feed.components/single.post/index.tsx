@@ -201,10 +201,22 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setToggleSharePop_2(false);
     });
 
+    // Files selected by user
+    const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
+
+    // User_Selected_Files
+    const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<
+      string[]
+    >([]);
+
+    // Images that will be displayed after it is selected
+    const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
+      Array<JSX.Element>
+    );
     const {
       showModal,
       setShowModal,
-      displaySelectedFiles,
+      //displaySelectedFiles,
       totalReplyCount,
       handleTextLength,
       createPost,
@@ -227,6 +239,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       onPostCreated: (replies) => {
         setReplies((prev) => [replies, ...prev]);
       },
+      userSelectedFiles,
+      setUserSelectedFilesList,
+      detailsOfUserSelected,
+      setdetailsOfUserSelected,
+      displaySelectedFiles,
+      setdisplaySelectedFiles,
     });
 
     const likePost = async (post_id: string) => {
@@ -523,7 +541,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         width={452}
                         height={312}
                         //alt="post media"
-                        className={postImageStyling}
+                        className={postVideoStyling}
                         controls
                       />
                     )
@@ -1040,6 +1058,9 @@ flex items-center gap-3 text-14px font-medium
 
 const postImageStyling = ctl(`
   object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
+`);
+const postVideoStyling = ctl(`
+  object-left  !w-[99%] h-auto rounded-xl  !block !m-0   !object-contain 
 `);
 
 const repliesContainer = ctl(`

@@ -26,6 +26,31 @@ export const SingleNotification = React.forwardRef<
     }
   };
 
+  let notificationLink: JSX.Element | null = null;
+  if (notification.type === "post_like" || notification.type === "post_reply") {
+    notificationLink = (
+      <Link
+        href={`/feed/${notification.post.user.account_address}/post/${notification.post._id}`}
+      >
+        <a className="text-sm text-white hover:text-brand-primary">
+          {notification.by.display_name}{" "}
+          {notification.type === "post_like"
+            ? "liked "
+            : notification.type === "post_reply" && "replied to"}{" "}
+          your post.
+        </a>
+      </Link>
+    );
+  } else if (notification.type === "follow") {
+    notificationLink = (
+      <Link href={`/profile/${notification.by.account_address}`}>
+        <a className="text-sm text-white hover:text-brand-primary">
+          {notification.by.display_name} started following you.
+        </a>
+      </Link>
+    );
+  }
+
   return (
     <div
       ref={ref}
@@ -49,17 +74,8 @@ export const SingleNotification = React.forwardRef<
             />
           </a>
         </Link>
-        <Link
-          href={`/feed/${notification.post.user.account_address}/post/${notification.post._id}`}
-        >
-          <a className="text-sm text-white hover:text-brand-primary">
-            {notification.by.display_name}{" "}
-            {notification.type === "post_like"
-              ? "liked "
-              : notification.type === "post_reply" && "replied to"}{" "}
-            your post.
-          </a>
-        </Link>
+
+        {notificationLink}
       </div>
       <p className="text-sm text-gray-shade-2 ">
         {moment(notification.createdAt).format("LT")}

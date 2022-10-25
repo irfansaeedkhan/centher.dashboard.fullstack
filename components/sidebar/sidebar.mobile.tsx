@@ -1,9 +1,10 @@
 // React, Next, NPM Packages
-import * as React from "react";
+import React, { RefObject, useRef } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useOnClickOutside } from "usehooks-ts";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -15,14 +16,17 @@ import { AppRoutes } from "@/constants/app.routes";
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
-import { useOnClickOutside } from "usehooks-ts";
 
 interface SidebarMobileProps {
   onClose: () => void;
+  openerRef: RefObject<HTMLDivElement | null>;
 }
 
-export const SidebarMobile: React.FC<SidebarMobileProps> = ({ onClose }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+export const SidebarMobile: React.FC<SidebarMobileProps> = ({
+  onClose,
+  openerRef,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
@@ -50,7 +54,12 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({ onClose }) => {
       });
   };
 
-  useOnClickOutside(ref, onClose);
+  useOnClickOutside(ref, (e) => {
+    if (openerRef.current?.contains(e.target as Node)) {
+      return;
+    }
+    onClose();
+  });
 
   return (
     <div ref={ref} className="absolute top-[60px] left-0 z-50">
