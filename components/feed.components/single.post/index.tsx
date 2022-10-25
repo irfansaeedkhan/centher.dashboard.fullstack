@@ -45,6 +45,8 @@ import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -213,6 +215,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
       Array<JSX.Element>
     );
+
+    const [lastItem, setLastItem] = useState<number>(0);
     const {
       showModal,
       setShowModal,
@@ -223,7 +227,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       closePostModal,
       handleSelectFile,
       loadingState,
-      lastItem,
       postError,
       file,
       refe,
@@ -245,6 +248,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setdetailsOfUserSelected,
       displaySelectedFiles,
       setdisplaySelectedFiles,
+      lastItem,
+      setLastItem,
     });
 
     const likePost = async (post_id: string) => {
@@ -717,17 +722,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     );
                   })}
                 {loader && (
-                  <div className="componentLoaderContainer">
-                    <Bars
-                      height="25"
-                      width="25"
-                      color="#FEBF32"
-                      ariaLabel="bars-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                    />
-                  </div>
+                  <>
+                    <SinglePostCardSkeleton />
+                    <SinglePostTextCardSkeleton />
+                    <SinglePostCardSkeleton />
+                  </>
                 )}
               </>
             )}
@@ -759,6 +758,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       showArrows={
                         displaySelectedFiles.length === 1 ? false : true
                       }
+                      selectedItem={lastItem}
+                      onChange={(i) => {
+                        setLastItem(i);
+                      }}
                     >
                       {displaySelectedFiles}
                     </Carousel>
@@ -808,7 +811,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         }}
                       />
                     </label>
-                    <button className={`${uploadBtn} text-[#00BF96]`}>
+                    <button
+                      className={`${uploadBtn} text-[#00BF96]`}
+                      onClick={() => {
+                        setTogglePop(true);
+                      }}
+                    >
                       <EmojiIcon />
                       Emoji
                     </button>

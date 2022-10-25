@@ -19,6 +19,8 @@ import {
   SinglePost,
   LeftSidebarStickyContainer,
 } from "@/components/feed.components";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -72,45 +74,39 @@ const Feed: NextPageWithLayout = () => {
           setPosts((prev) => [post, ...prev]);
         }}
       />
-      {posts.length > 0 &&
-        posts.map((post) => {
-          if (post._id === posts[posts.length - 1]._id) {
+      {posts.length > 0
+        ? posts.map((post) => {
+            if (post._id === posts[posts.length - 1]._id) {
+              return (
+                <SinglePost
+                  ref={lastPostRef}
+                  key={post._id}
+                  post={post}
+                  onDelete={(post_id) => {
+                    setPosts(posts.filter((p) => p._id !== post_id));
+                  }}
+                />
+              );
+            }
             return (
+              // <ScrollTrigger onEnter={()=>onEnterViewport(post._id)} onExit={onExitViewport} key={post._id}>
               <SinglePost
-                ref={lastPostRef}
                 key={post._id}
                 post={post}
                 onDelete={(post_id) => {
                   setPosts(posts.filter((p) => p._id !== post_id));
                 }}
               />
+              // </ScrollTrigger>
             );
-          }
-          return (
-            // <ScrollTrigger onEnter={()=>onEnterViewport(post._id)} onExit={onExitViewport} key={post._id}>
-            <SinglePost
-              key={post._id}
-              post={post}
-              onDelete={(post_id) => {
-                setPosts(posts.filter((p) => p._id !== post_id));
-              }}
-            />
-            // </ScrollTrigger>
-          );
-        })}
-      {loader && (
-        <div className="componentLoaderContainer">
-          <Bars
-            height="25"
-            width="25"
-            color="#FEBF32"
-            ariaLabel="bars-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
-      )}
+          })
+        : loader && (
+            <>
+              <SinglePostCardSkeleton />
+              <SinglePostTextCardSkeleton />
+              <SinglePostCardSkeleton />
+            </>
+          )}
     </div>
   );
 };

@@ -44,6 +44,8 @@ interface PostUploadOptions {
   setdetailsOfUserSelected: Dispatch<SetStateAction<string[]>>;
   displaySelectedFiles: Array<JSX.Element>;
   setdisplaySelectedFiles: Dispatch<SetStateAction<JSX.Element[]>>;
+  lastItem: number;
+  setLastItem: Dispatch<SetStateAction<number>>;
 }
 
 export function usePostUpload({
@@ -58,6 +60,8 @@ export function usePostUpload({
   setdetailsOfUserSelected,
   displaySelectedFiles,
   setdisplaySelectedFiles,
+  lastItem,
+  setLastItem,
 }: PostUploadOptions) {
   const incrementPostsCount = useProfileCardStore(
     (state) => state.incrementPostsCount
@@ -67,7 +71,7 @@ export function usePostUpload({
   const [showModal, setShowModal] = useState<boolean>(false);
 
   // Index
-  const [lastItem, setLastItem] = useState<number>();
+  //const [lastItem, setLastItem] = useState<number>();
 
   // Loader status
   const [loadingState, setLoadingState] = useState(false);
@@ -113,6 +117,8 @@ export function usePostUpload({
       setPostError("");
       // Hiding popup
       setShowModal(false);
+      //
+      setLastItem(0);
     } catch (error) {
       console.log("Failed to close post modal ", error);
       setPostError("Failed to close");
@@ -161,36 +167,11 @@ export function usePostUpload({
 
   // TODO: fix any types please
   // delete parent Element while deleting image
-  const handleDeleteItemStyling = (e: any) => {
-    try {
-      console.log("Deleted file styling called ");
-      // dom elements
-      let topParent: any = document.querySelector(
-        ".slider-wrapper.axis-horizontal"
-      );
-      let listParent: any = document.querySelector(".slider.animated");
-      let ListItem = e.target?.parentElement?.parentElement?.parentElement;
-      // adding transform when last element is deleted
-
-      if (
-        ListItem.classList.contains("slide") &&
-        listParent.lastElementChild == ListItem
-      ) {
-        if (listParent?.childElementCount === 2) {
-          topParent.classList.add("transformChild");
-          return;
-        }
-        let listCount = listParent?.childElementCount - 2;
-        listParent.style.transform = `translate3d(-${listCount}00%, 0px, 0px)`;
-        console.log("Listcount : ", listCount);
-        setLastItem(listCount);
-        //console.log("last Item", lastItem);
-
-        // ListItem?.previousSibling?.classList.replace("previous", "selected");
-        // ListItem?.previousSibling?.previousSibling?.classList.add("previous");
-      }
-    } catch (error) {
-      console.log("Delted file : ", error);
+  const handleDeleteItemStyling = (index: any) => {
+    if (index === 0) {
+      setLastItem(0);
+    } else {
+      setLastItem((prev) => prev - 1);
     }
   };
 
@@ -293,19 +274,20 @@ export function usePostUpload({
                 />
               </video>
               <button
-                onClick={(e: any) => {
-                  if (
-                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
-                      "slide"
-                    )
-                  ) {
-                    deleteFile(filesList[index], filesList, filesDetails);
-                    handleDeleteItemStyling(e);
-                  }
-                }}
+                // onClick={(e: any) => {
+                //   deleteFile(filesList[index], filesList, filesDetails);
+                //   handleDeleteItemStyling(index);
+                // }}
                 className={imageDelBtn}
               >
-                <CrossIcon />
+                <span
+                  onClick={(e: any) => {
+                    deleteFile(filesList[index], filesList, filesDetails);
+                    handleDeleteItemStyling(index);
+                  }}
+                >
+                  <CrossIcon />
+                </span>
               </button>
             </div>
           );
@@ -327,19 +309,20 @@ export function usePostUpload({
                 className={createPostImageStyling}
               />
               <button
-                onClick={(e: any) => {
-                  if (
-                    e.target?.parentElement?.parentElement?.parentElement.classList.contains(
-                      "slide"
-                    )
-                  ) {
-                    deleteFile(filesList[index], filesList, filesDetails);
-                    handleDeleteItemStyling(e);
-                  }
-                }}
+                // onClick={(e: any) => {
+                //   deleteFile(filesList[index], filesList, filesDetails);
+                //   handleDeleteItemStyling(index);
+                // }}
                 className={imageDelBtn}
               >
-                <CrossIcon className="z-0" />
+                <span
+                  onClick={(e: any) => {
+                    deleteFile(filesList[index], filesList, filesDetails);
+                    handleDeleteItemStyling(index);
+                  }}
+                >
+                  <CrossIcon />
+                </span>
               </button>
             </div>
           );
@@ -348,7 +331,7 @@ export function usePostUpload({
       }
       setdisplaySelectedFiles((prev) => displaySelectedFile);
       //setdisplaySelectedFiles(displaySelectedFile);
-      //setLastItem(0);
+      // setLastItem(0);
     } catch (error) {
       console.log("Failed to create ", error);
       toast.error("Failed to display image");
@@ -653,7 +636,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
-        //setLastItem(0);
+        setLastItem(0);
         setPostError("");
       }
       event.target.value = "";
@@ -672,7 +655,7 @@ export function usePostUpload({
     closePostModal,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,
