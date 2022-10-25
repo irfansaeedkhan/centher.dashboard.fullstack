@@ -24,6 +24,9 @@ import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import { ProfilePageWrapper } from "./_components";
+import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -36,6 +39,7 @@ const Profile: NextPageWithLayout = () => {
   );
   const [posts, setPosts] = useState<Post[]>([]);
   const [skip, setSkip] = useState(0);
+  const [loader, setLoader] = useState(false);
   const [followUser, setFollowUser] = useState<boolean>(false);
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
@@ -52,20 +56,22 @@ const Profile: NextPageWithLayout = () => {
   }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
 
   const fetchUserFeedsData = useCallback(async () => {
+    setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
         `/api/socials/posts/user/${user?._id}?off_set=${skip}`
       );
 
       const _posts = data.posts;
-
       setPosts((prev) => {
         const filteredPosts = _posts.filter((post: Post) => {
           return prev.every((prevPost) => prevPost._id !== post._id);
         });
         return [...prev, ...filteredPosts];
       });
+      setLoader(false);
     } catch (error: any) {
+      setLoader(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -74,34 +80,27 @@ const Profile: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (user && loggedInUser) {
-      // if (loggedInUser._id === user._id) {
-      //   fetchUserFeedsData();
-      // } else if (loggedInUser._id !== user._id) {
-      //   fetchUserFeedsData();
-      // } else {
-      //   setPosts([]);
-      //   setSkip(0);
-      // }
       fetchUserFeedsData();
     }
   }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
-  // console.log(posts);
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
       <div>
         <div className={feedContainer}>
           <div className={leftSidebar}>
             <div className={stickySidebar}>
-              {userLoading === "loaded" && user && (
+              {userLoading === "loaded" && user ? (
                 <ProfileDetailCard
                   user={user}
                   isLoggedInUser={
                     user.account_address === loggedInUser?.account_address
                   }
                 />
+              ) : (
+                <ProfileDetailCardSkeleton />
               )}
-              <DiscoverCard />
+              {/* <DiscoverCard /> */}
             </div>
           </div>
 
@@ -113,13 +112,24 @@ const Profile: NextPageWithLayout = () => {
                 }}
               />
             )}
-            {posts
-              .filter((p) => !p.parent_post)
-              .map((post) => {
-                if (post._id === posts[posts.length - 1]._id) {
+            {posts.length > 0 ? (
+              posts
+                .filter((p) => !p.parent_post)
+                .map((post) => {
+                  if (post._id === posts[posts.length - 1]._id) {
+                    return (
+                      <SinglePost
+                        ref={lastPostRef}
+                        key={post._id}
+                        post={post}
+                        onDelete={(post_id) => {
+                          setPosts(posts.filter((p) => p._id !== post_id));
+                        }}
+                      />
+                    );
+                  }
                   return (
                     <SinglePost
-                      ref={lastPostRef}
                       key={post._id}
                       post={post}
                       onDelete={(post_id) => {
@@ -127,17 +137,14 @@ const Profile: NextPageWithLayout = () => {
                       }}
                     />
                   );
-                }
-                return (
-                  <SinglePost
-                    key={post._id}
-                    post={post}
-                    onDelete={(post_id) => {
-                      setPosts(posts.filter((p) => p._id !== post_id));
-                    }}
-                  />
-                );
-              })}
+                })
+            ) : loader ? (
+              <>
+                <SinglePostCardSkeleton />
+                <SinglePostTextCardSkeleton />
+                <SinglePostCardSkeleton />
+              </>
+            ) : null}
           </div>
 
           <div className={rightSidebar}>

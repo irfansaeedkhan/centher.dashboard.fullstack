@@ -45,6 +45,8 @@ import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 interface FeedCardLevel1Props {
   post: Post;
@@ -720,17 +722,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     );
                   })}
                 {loader && (
-                  <div className="componentLoaderContainer">
-                    <Bars
-                      height="25"
-                      width="25"
-                      color="#FEBF32"
-                      ariaLabel="bars-loading"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                    />
-                  </div>
+                  <>
+                    <SinglePostCardSkeleton />
+                    <SinglePostTextCardSkeleton />
+                    <SinglePostCardSkeleton />
+                  </>
                 )}
               </>
             )}

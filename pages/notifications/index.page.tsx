@@ -10,6 +10,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current page imports
 import { SingleNotification } from "./_components";
+import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
 
 const Notifications: NextPageWithLayout = () => {
   const { notifications, fetchNotifications, offset, updateOffset } =
@@ -60,6 +61,7 @@ const Notifications: NextPageWithLayout = () => {
           );
         })}
       </div>
+      {notifications.length === 0 && <SingleNotificationSkeleton />}
     </div>
   );
 };
