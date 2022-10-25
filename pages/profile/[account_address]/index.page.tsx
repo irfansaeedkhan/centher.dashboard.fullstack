@@ -100,7 +100,7 @@ const Profile: NextPageWithLayout = () => {
               ) : (
                 <ProfileDetailCardSkeleton />
               )}
-              <DiscoverCard />
+              {/* <DiscoverCard /> */}
             </div>
           </div>
 
