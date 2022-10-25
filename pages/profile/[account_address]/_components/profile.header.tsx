@@ -15,13 +15,20 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
-import { CopySvg, TwitterSvg, Website, WebsiteIcon } from "@/assets/svgs";
-import { CameraIcon, CopyIcon, EditIcon } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
+import {
+  CopySvg,
+  TwitterSvg,
+  WebsiteIcon,
+  CameraIcon,
+  EditIcon,
+} from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";
+import { sliceAccountAddress } from "@/utils/user.helpers";
+import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { useUserMediaUpload } from "./upload.media.logic";
+import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 
 interface FollowUser {
   setFollowUser?: (arg0: boolean) => void;
@@ -130,9 +137,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={"Feed and Post"}
+              title={"Social Profile"}
               variant={`${isProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -147,13 +154,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <a className="w-full">
             <Button
-              title={
-                loggedInUser?._id !== user?._id
-                  ? "NFT Profile"
-                  : "My NFT Profile"
-              }
+              title={"NFT Profile"}
               variant={`${isNFTProfilePage ? "v1" : "v2"}`}
-              className="px-8 py-4"
+              className="px-8 py-3"
             />
           </a>
         </Link>
@@ -237,9 +240,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 <div className={shareBtns}>
                   <div className={copyContainer}>
                     <h6 className={code}>
-                      {user.account_address.slice(0, 6) +
-                        "..." +
-                        user.account_address.slice(38, 42)}
+                      {sliceAccountAddress(user.account_address)}
                     </h6>
                     <button
                       className="copyBtn"
@@ -316,17 +317,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           </div>
         </div>
       ) : (
-        <div className="min-h-[499px] w-full flex justify-center items-center">
-          <Bars
-            height="25"
-            width="25"
-            color="#FEBF32"
-            ariaLabel="bars-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
+        <UserProfileHeaderSkeleton />
       )}
     </div>
   );
@@ -340,7 +331,7 @@ const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
 `);
 const btnContainer = ctl(`
-  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6
+  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6 space-x-2
 `);
 const coverCard = ctl(`
 bg-background-shade-3 rounded-xl

@@ -35,8 +35,9 @@ const componentWrapper = ctl(`
 `);
 
 const childrenWrapper = ctl(`
-  md:p-8
-  sm:p-2 
+  md:px-8
+  py-8
+  sm:px-2
   w-full 
   bg-black-shade-3 
   overflow-y-scroll

@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/future/image";
-import Styles from "./header.module.css";
+import clsx from "clsx";
+import { useWindowSize } from "usehooks-ts";
 import ctl from "@netlify/classnames-template-literals";
 import { GoThreeBars } from "react-icons/go";
 
@@ -12,26 +13,23 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 // import Search from "./search";
-import HeaderProfile from "./header.profile";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
+import HeaderProfile from "./header.profile";
+import Styles from "./header.module.css";
 
 const Header = () => {
+  const { width } = useWindowSize();
   const { user, isLoading: isUserLoading } = useUser();
   const [openModal, setOpenModal] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const sidebarOpenerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 1024) {
-        setSidebarOpen(false);
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+    if (width > 1024) {
+      setSidebarOpen(false);
+    }
+  }, [width]);
 
   return (
     <div className={headerWraper}>
@@ -88,6 +86,7 @@ const Header = () => {
             </div>
             <div
               id={Styles.menu}
+              ref={sidebarOpenerRef}
               className={
                 `lg:hidden sm:flex cursor-pointer ` +
                 (sidebarOpen ? Styles.menuHover : "")
@@ -95,14 +94,17 @@ const Header = () => {
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               <div
-                className={
-                  `${Styles.barre} ` + (sidebarOpen ? Styles.menubarre : "")
-                }
+                className={clsx(Styles.barre, sidebarOpen && Styles.menubarre)}
               ></div>
             </div>
           </>
         )}
-        {sidebarOpen && <SidebarMobile onClose={() => setSidebarOpen(false)} />}
+
+        <SidebarMobile
+          sidebarOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          openerRef={sidebarOpenerRef}
+        />
       </div>
     </div>
   );

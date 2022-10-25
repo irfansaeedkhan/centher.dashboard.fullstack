@@ -1,9 +1,10 @@
 // React, Next, NPM Packages
-import * as React from "react";
+import React, { RefObject, useRef } from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useOnClickOutside } from "usehooks-ts";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -15,14 +16,20 @@ import { AppRoutes } from "@/constants/app.routes";
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
-import { useOnClickOutside } from "usehooks-ts";
+import clsx from "clsx";
 
 interface SidebarMobileProps {
+  sidebarOpen: boolean;
   onClose: () => void;
+  openerRef: RefObject<HTMLDivElement | null>;
 }
 
-export const SidebarMobile: React.FC<SidebarMobileProps> = ({ onClose }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
+export const SidebarMobile: React.FC<SidebarMobileProps> = ({
+  onClose,
+  openerRef,
+  sidebarOpen,
+}) => {
+  const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
@@ -50,28 +57,41 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({ onClose }) => {
       });
   };
 
-  useOnClickOutside(ref, onClose);
+  useOnClickOutside(ref, (e) => {
+    if (openerRef.current?.contains(e.target as Node)) {
+      return;
+    }
+    onClose();
+  });
 
   return (
-    <div ref={ref} className="absolute top-[60px] left-0 z-50">
+    <div
+      ref={ref}
+      className={clsx(
+        "absolute top-[60px] z-50 duration-500 ",
+        sidebarOpen ? " left-0" : " -left-full"
+      )}
+    >
       <div className={sideBarWrapper}>
-        {user && (
-          <Link href={AppRoutes.nfts.create_nft}>
-            <a className={connectButton} onClick={onClose}>
-              Create NFT
-            </a>
-          </Link>
-        )}
-        <div className={sideBarWrapperStyling}>
-          {SidebarSections.map((section) => {
-            return (
-              <Section
-                section={section}
-                key={section.label}
-                onClose={onClose}
-              />
-            );
-          })}
+        <div>
+          {user && (
+            <Link href={AppRoutes.nfts.create_nft}>
+              <a className={connectButton} onClick={onClose}>
+                Create NFT
+              </a>
+            </Link>
+          )}
+          <div className={sideBarWrapperStyling}>
+            {SidebarSections.map((section) => {
+              return (
+                <Section
+                  section={section}
+                  key={section.label}
+                  onClose={onClose}
+                />
+              );
+            })}
+          </div>
         </div>
         {user && (
           <div className="flex flex-col gap-8">
@@ -179,7 +199,7 @@ const itemIcons = ctl(`stroke-gray-shade-8`);
 
 const itemIconsActive = ctl(`stroke-white`);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
+const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5 mt-5`);
 
 const connectButton = ctl(`
   px-6 

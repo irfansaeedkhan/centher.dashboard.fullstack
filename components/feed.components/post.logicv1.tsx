@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
-import { useState, useRef, useEffect } from "react";
-import Image from "next/future/image";
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
@@ -39,6 +38,14 @@ interface PostUploadOptions {
   reply_address?: string;
   reply_post_id?: string;
   replyCount?: number;
+  userSelectedFiles: File[];
+  setUserSelectedFilesList: Dispatch<SetStateAction<File[]>>;
+  detailsOfUserSelected: string[];
+  setdetailsOfUserSelected: Dispatch<SetStateAction<string[]>>;
+  displaySelectedFiles: Array<JSX.Element>;
+  setdisplaySelectedFiles: Dispatch<SetStateAction<JSX.Element[]>>;
+  lastItem: number;
+  setLastItem: Dispatch<SetStateAction<number>>;
 }
 
 export function usePostUpload({
@@ -47,16 +54,24 @@ export function usePostUpload({
   reply_post_id = "",
   replyCount = 0,
   onPostCreated,
+  userSelectedFiles,
+  setUserSelectedFilesList,
+  detailsOfUserSelected,
+  setdetailsOfUserSelected,
+  displaySelectedFiles,
+  setdisplaySelectedFiles,
+  lastItem,
+  setLastItem,
 }: PostUploadOptions) {
   const incrementPostsCount = useProfileCardStore(
     (state) => state.incrementPostsCount
   );
 
-  //Show create pop modal
+  // Show create pop modal
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  //Index
-  const [lastItem, setLastItem] = useState<number>();
+  // Index
+  //const [lastItem, setLastItem] = useState<number>();
 
   // Loader status
   const [loadingState, setLoadingState] = useState(false);
@@ -67,45 +82,43 @@ export function usePostUpload({
   // Total reply counts
   const [totalReplyCount, setTotalReplyCount] = useState<number>(replyCount);
 
-  //Files selected by user
-  const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
+  // Files selected by user
+  //const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
 
-  //User_Selected_Files
-  //let detailsOfUserSelected: string[] = [];
-  const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
-    []
-  );
+  // User_Selected_Files
+  // const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<string[]>(
+  //   []
+  // );
 
   //Tweet set by user
   const [tweetText, setweetText] = useState<string>("");
 
   // Images that will be displayed after it is selected
-  const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
-    Array<JSX.Element>
-  );
+  // const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
+  //   Array<JSX.Element>
+  // );
 
-  //
   const [file, setFile] = useState<string>("");
 
-  //
   const [uploadingFileStatus, setUploadingFileStatus] = useState<number>();
 
   let currentPostID: string = "";
 
   const closePostModal = () => {
     try {
-      // Hiding popup
-      setShowModal(false);
+      // reseting user selected file list
+      setUserSelectedFilesList([]);
+      setdisplaySelectedFiles([]);
+      setdetailsOfUserSelected([]);
+      setweetText("");
       // Hiding loader
       setLoadingState(false);
       // Reseting error message on hiding popup
       setPostError("");
-      // reseting user selected file list
-      setUserSelectedFilesList([]);
+      // Hiding popup
+      setShowModal(false);
       //
-      setdisplaySelectedFiles([]);
-      //
-      setweetText("");
+      setLastItem(0);
     } catch (error) {
       console.log("Failed to close post modal ", error);
       setPostError("Failed to close");
@@ -270,7 +283,10 @@ export function usePostUpload({
       for (let index = 0; index < filesPreview.length; index++) {
         if (SUPPORTED_VIDEO_TYPES.includes(filesPreview[index].fileType)) {
           displaySelectedFile.push(
-            <div className={ImageStyleContainer}>
+            <div
+              className={ImageStyleContainer}
+              key={filesPreview[index].fileIndex}
+            >
               <video
                 width={452}
                 height={312}
@@ -304,8 +320,12 @@ export function usePostUpload({
         ) {
           // Checking if supported image type
           displaySelectedFile.push(
-            <div className={ImageStyleContainer}>
-              <Image
+            <div
+              className={ImageStyleContainer}
+              key={filesPreview[index].fileIndex}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={filesPreview[index].fileBlobURL}
                 width={452}
                 height={312}
@@ -334,7 +354,7 @@ export function usePostUpload({
       }
       setdisplaySelectedFiles((prev) => displaySelectedFile);
       //setdisplaySelectedFiles(displaySelectedFile);
-      //setLastItem(0);
+      setLastItem(0);
     } catch (error) {
       console.log("Failed to create ", error);
       toast.error("Failed to display image");
@@ -639,7 +659,7 @@ export function usePostUpload({
       // Showing modals
       if (showPopUp) {
         setShowModal(true);
-        //setLastItem(0);
+        setLastItem(0);
         setPostError("");
       }
       event.target.value = "";
@@ -651,14 +671,14 @@ export function usePostUpload({
   return {
     showModal,
     setShowModal,
-    displaySelectedFiles,
+    //displaySelectedFiles,
     totalReplyCount,
     handleTextLength,
     createPost,
     closePostModal,
     handleSelectFile,
     loadingState,
-    lastItem,
+    //lastItem,
     postError,
     file,
     refe,

@@ -8,28 +8,15 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import useUser from "@/hooks/use.user";
 
 import { EditProfileForm } from "./_components";
+import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setting";
 
 const Setting: NextPageWithLayout = () => {
   const { user } = useUser();
 
   return (
-    <div className="AppWrapper flex flex-col gap-10">
+    <div className="otherAppWrapper flex flex-col lg:gap-10 sm:gap-5">
       <h1 className={title}>Profile Setting</h1>
-      {user ? (
-        <EditProfileForm user={user} />
-      ) : (
-        <div className="w-full flex justify-center items-center ">
-          <Bars
-            height="25"
-            width="25"
-            color="#FEBF32"
-            ariaLabel="bars-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
-      )}
+      {user ? <EditProfileForm user={user} /> : <ProfileSettingSkeleton />}
     </div>
   );
 };

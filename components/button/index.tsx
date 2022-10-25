@@ -22,7 +22,6 @@ const Button: React.FC<ButtonProps> = ({
           ${variant === "v4" && "bg-black-shade-7 text-brand-primary "}
           text-14px flex gap-3 items-center justify-center font-bold py-2 px-2 rounded-xl w-full 
           ${className && className}
-          
           `}
       {...props}
     >

@@ -20,6 +20,8 @@ import {
   SinglePost,
   LeftSidebarStickyContainer,
 } from "@/components/feed.components";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const SinglePostPage: NextPageWithLayout = () => {
   const [post, setPost] = useState<Post>();
@@ -89,6 +91,13 @@ const SinglePostPage: NextPageWithLayout = () => {
             }}
           />
         </div>
+      )}
+      {loadingState && loadingState === "loading" && (
+        <>
+          <SinglePostCardSkeleton />
+          <SinglePostTextCardSkeleton />
+          <SinglePostCardSkeleton />
+        </>
       )}
     </div>
   );
