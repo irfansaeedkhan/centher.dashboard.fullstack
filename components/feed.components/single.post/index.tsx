@@ -216,7 +216,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       Array<JSX.Element>
     );
 
-    const [lastItem, setLastItem] = useState<number>(-1);
+    const [lastItem, setLastItem] = useState<number>(0);
     const {
       showModal,
       setShowModal,
@@ -758,6 +758,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       showArrows={
                         displaySelectedFiles.length === 1 ? false : true
                       }
+                      selectedItem={lastItem}
+                      onChange={(i) => {
+                        setLastItem(i);
+                      }}
                     >
                       {displaySelectedFiles}
                     </Carousel>
@@ -807,7 +811,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         }}
                       />
                     </label>
-                    <button className={`${uploadBtn} text-[#00BF96]`}>
+                    <button
+                      className={`${uploadBtn} text-[#00BF96]`}
+                      onClick={() => {
+                        setTogglePop(true);
+                      }}
+                    >
                       <EmojiIcon />
                       Emoji
                     </button>

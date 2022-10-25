@@ -274,10 +274,10 @@ export function usePostUpload({
                 />
               </video>
               <button
-                onClick={(e: any) => {
-                  deleteFile(filesList[index], filesList, filesDetails);
-                  handleDeleteItemStyling(index);
-                }}
+                // onClick={(e: any) => {
+                //   deleteFile(filesList[index], filesList, filesDetails);
+                //   handleDeleteItemStyling(index);
+                // }}
                 className={imageDelBtn}
               >
                 <span
@@ -309,10 +309,10 @@ export function usePostUpload({
                 className={createPostImageStyling}
               />
               <button
-                onClick={(e: any) => {
-                  deleteFile(filesList[index], filesList, filesDetails);
-                  handleDeleteItemStyling(index);
-                }}
+                // onClick={(e: any) => {
+                //   deleteFile(filesList[index], filesList, filesDetails);
+                //   handleDeleteItemStyling(index);
+                // }}
                 className={imageDelBtn}
               >
                 <span
