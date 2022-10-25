@@ -99,12 +99,12 @@ const Header = () => {
             </div>
           </>
         )}
-        {sidebarOpen && (
-          <SidebarMobile
-            onClose={() => setSidebarOpen(false)}
-            openerRef={sidebarOpenerRef}
-          />
-        )}
+
+        <SidebarMobile
+          sidebarOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          openerRef={sidebarOpenerRef}
+        />
       </div>
     </div>
   );

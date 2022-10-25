@@ -16,8 +16,10 @@ import { AppRoutes } from "@/constants/app.routes";
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
+import clsx from "clsx";
 
 interface SidebarMobileProps {
+  sidebarOpen: boolean;
   onClose: () => void;
   openerRef: RefObject<HTMLDivElement | null>;
 }
@@ -25,6 +27,7 @@ interface SidebarMobileProps {
 export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   onClose,
   openerRef,
+  sidebarOpen,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -62,25 +65,33 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   });
 
   return (
-    <div ref={ref} className="absolute top-[60px] left-0 z-50">
+    <div
+      ref={ref}
+      className={clsx(
+        "absolute top-[60px] z-50 duration-500 ",
+        sidebarOpen ? " left-0" : " -left-full"
+      )}
+    >
       <div className={sideBarWrapper}>
-        {user && (
-          <Link href={AppRoutes.nfts.create_nft}>
-            <a className={connectButton} onClick={onClose}>
-              Create NFT
-            </a>
-          </Link>
-        )}
-        <div className={sideBarWrapperStyling}>
-          {SidebarSections.map((section) => {
-            return (
-              <Section
-                section={section}
-                key={section.label}
-                onClose={onClose}
-              />
-            );
-          })}
+        <div>
+          {user && (
+            <Link href={AppRoutes.nfts.create_nft}>
+              <a className={connectButton} onClick={onClose}>
+                Create NFT
+              </a>
+            </Link>
+          )}
+          <div className={sideBarWrapperStyling}>
+            {SidebarSections.map((section) => {
+              return (
+                <Section
+                  section={section}
+                  key={section.label}
+                  onClose={onClose}
+                />
+              );
+            })}
+          </div>
         </div>
         {user && (
           <div className="flex flex-col gap-8">
@@ -188,7 +199,7 @@ const itemIcons = ctl(`stroke-gray-shade-8`);
 
 const itemIconsActive = ctl(`stroke-white`);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
+const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5 mt-5`);
 
 const connectButton = ctl(`
   px-6 
