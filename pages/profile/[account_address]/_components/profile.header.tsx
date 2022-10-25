@@ -28,6 +28,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
 import { useUserMediaUpload } from "./upload.media.logic";
+import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 
 interface FollowUser {
   setFollowUser?: (arg0: boolean) => void;
@@ -316,17 +317,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           </div>
         </div>
       ) : (
-        <div className="min-h-[499px] w-full flex justify-center items-center">
-          <Bars
-            height="25"
-            width="25"
-            color="#FEBF32"
-            ariaLabel="bars-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
+        <UserProfileHeaderSkeleton />
       )}
     </div>
   );

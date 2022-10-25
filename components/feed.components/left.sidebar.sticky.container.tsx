@@ -9,6 +9,7 @@ import useUser from "@/hooks/use.user";
 // same directory imports
 import { ProfileDetailCard } from "./profile.detail.card";
 import { DiscoverCard } from "./discover.card";
+import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 
 export const LeftSidebarStickyContainer = () => {
   const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
@@ -20,17 +21,7 @@ export const LeftSidebarStickyContainer = () => {
         {!isLoggedInUserLoading && loggedInUser ? (
           <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
         ) : (
-          <div className={componentLoader}>
-            <Bars
-              height="25"
-              width="25"
-              color="#FEBF32"
-              ariaLabel="bars-loading"
-              wrapperStyle={{}}
-              wrapperClass=""
-              visible={true}
-            />
-          </div>
+          <ProfileDetailCardSkeleton />
         )}
         <DiscoverCard />
       </div>

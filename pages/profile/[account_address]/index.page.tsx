@@ -24,6 +24,9 @@ import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import { ProfilePageWrapper } from "./_components";
+import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -93,13 +96,15 @@ const Profile: NextPageWithLayout = () => {
         <div className={feedContainer}>
           <div className={leftSidebar}>
             <div className={stickySidebar}>
-              {userLoading === "loaded" && user && (
+              {userLoading === "loaded" && user ? (
                 <ProfileDetailCard
                   user={user}
                   isLoggedInUser={
                     user.account_address === loggedInUser?.account_address
                   }
                 />
+              ) : (
+                <ProfileDetailCardSkeleton />
               )}
               <DiscoverCard />
             </div>
@@ -138,6 +143,13 @@ const Profile: NextPageWithLayout = () => {
                   />
                 );
               })}
+            {
+              <>
+                <SinglePostCardSkeleton />
+                <SinglePostTextCardSkeleton />
+                <SinglePostCardSkeleton />
+              </>
+            }
           </div>
 
           <div className={rightSidebar}>

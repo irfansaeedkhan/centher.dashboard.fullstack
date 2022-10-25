@@ -19,6 +19,8 @@ import {
   SinglePost,
   LeftSidebarStickyContainer,
 } from "@/components/feed.components";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Feed: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -98,19 +100,13 @@ const Feed: NextPageWithLayout = () => {
             // </ScrollTrigger>
           );
         })}
-      {loader && (
-        <div className="componentLoaderContainer">
-          <Bars
-            height="25"
-            width="25"
-            color="#FEBF32"
-            ariaLabel="bars-loading"
-            wrapperStyle={{}}
-            wrapperClass=""
-            visible={true}
-          />
-        </div>
-      )}
+      {
+        <>
+          <SinglePostCardSkeleton />
+          <SinglePostTextCardSkeleton />
+          <SinglePostCardSkeleton />
+        </>
+      }
     </div>
   );
 };
