@@ -43,7 +43,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
     Array<JSX.Element>
   );
 
-  const [lastItem, setLastItem] = useState<number>(-1);
+  const [lastItem, setLastItem] = useState<number>(0);
 
   const {
     showModal,
@@ -188,6 +188,9 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                       displaySelectedFiles.length === 1 ? false : true
                     }
                     selectedItem={lastItem}
+                    onChange={(i) => {
+                      setLastItem(i);
+                    }}
                   >
                     {displaySelectedFiles}
                   </Carousel>
