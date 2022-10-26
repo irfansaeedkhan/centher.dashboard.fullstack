@@ -8,7 +8,15 @@ export const SUPPORTED_VIDEO_TYPES = [
 ];
 
 //Image format allowed to upload on server
-export const SUPPORTED_IMAGE_TYPES = ["image/gif", "image/jpeg", "image/png"];
+export const SUPPORTED_IMAGE_TYPES = [
+  "image/gif",
+  "image/jpeg",
+  "image/png",
+  "image/jpg",
+  "image/jfif",
+  "image/pjpeg",
+  "image/pjp",
+];
 
 // Maximum 5 file images in post
 export const MAX_IMAGE_USER_UPLOAD = 5;

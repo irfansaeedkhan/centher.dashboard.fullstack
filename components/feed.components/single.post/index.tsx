@@ -786,7 +786,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         type="file"
                         id="files-photo"
                         name="photos-file"
-                        accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png,.svg"
+                        accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png"
                         style={{ display: "none" }}
                         multiple
                         onChange={(e) => {
