@@ -6,6 +6,7 @@ export interface BasePost {
     _id: string;
     user: PostUser;
   };
+  user: PostUser;
   viewed_by_loggedin_user: boolean;
   liked_by_loggedin_user: boolean;
   replies_count: number;
@@ -20,7 +21,6 @@ export interface DeletedPost extends BasePost {
 
 export interface CompletedPost extends BasePost {
   status: "complete";
-  user: PostUser;
   text_content?: string;
   media?: PostMedia[];
 }
