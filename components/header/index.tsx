@@ -12,7 +12,7 @@ import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
-// import Search from "./search";
+import Search from "./search";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import Styles from "./header.module.css";
@@ -45,10 +45,10 @@ const Header = () => {
       </Link>
 
       <div className={rightWraper}>
-        {/* <div>
+        <div>
           <Search />
-        </div> */}
-        {/* <span className={border}></span> */}
+        </div>
+        <span className={border}></span>
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
             <a className={connectButton}>Connect</a>
@@ -141,4 +141,13 @@ const connectButton = ctl(`
   bg-brand-primary 
   text-black-shade-2 
   hover:bg-brand-primary-dark 
+`);
+
+const border = ctl(`
+  my-3
+  md:block
+  sm:hidden
+  border-l-2 
+  rounded-xl 
+  border-gray-shade-12/30
 `);
