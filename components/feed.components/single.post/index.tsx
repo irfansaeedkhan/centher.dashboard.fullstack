@@ -339,7 +339,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const deletePost = async () => {
       try {
-        await axiosNodeApi.delete(`api/socials/posts/${_post._id}`);
+        await axiosNodeApi.delete(`/api/socials/posts/${_post._id}`);
 
         toast.success("Post Deleted Successfully");
 

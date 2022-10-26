@@ -554,8 +554,6 @@ export function usePostUpload({
       let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
         post_files_detail: filesChunksDetails,
         post_text: tweetText,
-        reply: reply,
-        reply_address: reply_address,
         reply_post_id: reply_post_id,
       });
 
