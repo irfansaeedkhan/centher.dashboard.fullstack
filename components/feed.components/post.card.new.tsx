@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
 //import Image from "next/image";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";
@@ -102,7 +102,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           src={user.profile_image.path}
           width={48}
           height={48}
-          className={profileImagePreview}
+          className={`rounded-full dpImagePreview w-[48px] h-[48px] object-cover`}
           alt={"icon"}
         />
         <button
@@ -166,7 +166,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 src={user.profile_image.path}
                 width={44}
                 height={44}
-                className="rounded-full dpImagePreview"
+                className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
                 alt={user.display_name ?? "profile image"}
               />
               <h5 className={cdName}>{user.display_name}</h5>
@@ -392,7 +392,5 @@ w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between
 const divider = ctl(`
 w-[2px] h-[10px] bg-[#333333]  rounded-xl
 `);
-
-const profileImagePreview = ctl(`rounded-full dpImagePreview`);
 
 const postErrorMessage = ctl(`postErrorMessage`);

@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useInView } from "react-intersection-observer";
@@ -442,7 +442,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   src={_post.user.profile_image.path}
                   width={48}
                   height={48}
-                  className="rounded-full dpImagePreview cursor-pointer"
+                  className="rounded-full dpImagePreview cursor-pointer w-[48px] h-[48px] object-cover"
                   alt={_post.user.display_name}
                 />
               </Link>
@@ -675,7 +675,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 src={_post.user.profile_image.path}
                 width={30}
                 height={30}
-                className="rounded-full dpImagePreview"
+                className="rounded-full dpImagePreview w-[30px] h-[30px] object-cover"
                 alt={_post.user.display_name}
               />
               <Link
@@ -739,7 +739,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     width={44}
                     height={44}
                     alt={user?.display_name ?? "profile image"}
-                    className="rounded-full dpImagePreview"
+                    className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
                   />
                   <h5 className={cdName}>{user?.display_name}</h5>
                 </div>
@@ -885,7 +885,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     src={user.profile_image.path}
                     width={44}
                     height={44}
-                    className="rounded-full dpImagePreview"
+                    className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
                     alt={user.display_name ?? "profile image"}
                   />
                   <h5 className={cdName}>{user.display_name}</h5>
