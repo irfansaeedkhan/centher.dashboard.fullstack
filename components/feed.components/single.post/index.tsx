@@ -16,9 +16,12 @@ import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
 // App imports
+import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
-import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
+import { CustomModal } from "@/components/modal/custom.modal";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import {
   MessageIcon,
   LikeIcon,
@@ -45,8 +48,6 @@ import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
-import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 interface FeedCardLevel1Props {
   post: CompletedPost;
@@ -71,6 +72,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
   ({ post, onDelete }, ref) => {
     const router = useRouter();
     const { user } = useUser();
+    const decrementPostsCount = useProfileCardStore(
+      (state) => state.decrementPostsCount
+    );
     const [_post, setPost] = useState<CompletedPost>(post);
     const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [skip, setSkip] = useState(0);
@@ -343,6 +347,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
         toast.success("Post Deleted Successfully");
 
+        // Remove the post from posts state
+        onDelete(_post._id);
+
+        // Decrement the posts count in profile card details
+        decrementPostsCount();
         onDelete(_post._id);
       } catch (error: any) {
         toast.error(
