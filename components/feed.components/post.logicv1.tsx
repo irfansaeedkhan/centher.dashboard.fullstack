@@ -153,6 +153,7 @@ export function usePostUpload({
   const refe: any = useRef(null);
 
   const onEmojiClick = (emojiObject: any, event: any) => {
+    console.log("emoji clicked");
     const cursor = refe?.current?.selectionStart;
     const text =
       tweetText.slice(0, cursor) + emojiObject?.emoji + tweetText.slice(cursor);
