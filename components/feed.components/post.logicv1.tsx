@@ -15,7 +15,7 @@ import {
   fileAlreadySelected,
   checkIfSelectedFileExitsInDeletedFile,
 } from "@/utils/mediafile/valid.media.filesv1";
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
@@ -33,7 +33,7 @@ type PreviewSelectedFile = {
 };
 
 interface PostUploadOptions {
-  onPostCreated?: (post: Post) => void;
+  onPostCreated?: (post: CompletedPost) => void;
   reply?: boolean;
   reply_address?: string;
   reply_post_id?: string;
@@ -183,7 +183,7 @@ export function usePostUpload({
         `/api/socials/posts/${currentPostID}`
       );
 
-      onPostCreated && onPostCreated(newPostData.post as Post);
+      onPostCreated && onPostCreated(newPostData.post as CompletedPost);
       // Increment the post count
       incrementPostsCount();
     } catch {

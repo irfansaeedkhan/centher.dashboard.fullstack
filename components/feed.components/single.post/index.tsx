@@ -35,7 +35,7 @@ import {
   ArrowRightIcon,
   WorldIcon,
 } from "@/assets/svgs";
-import { Post, PostMedia } from "@/models/post";
+import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 import { ArchiveIcon } from "@/assets/svgs";
@@ -49,7 +49,7 @@ import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 interface FeedCardLevel1Props {
-  post: Post;
+  post: CompletedPost;
   onDelete: (id: string) => void;
 }
 
@@ -71,8 +71,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
   ({ post, onDelete }, ref) => {
     const router = useRouter();
     const { user } = useUser();
-    const [_post, setPost] = useState<Post>(post);
-    const [replies, setReplies] = useState<Post[]>([]);
+    const [_post, setPost] = useState<CompletedPost>(post);
+    const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [skip, setSkip] = useState(0);
     const [loader, setLoader] = useState(false);
     const [lastPostRef, lastPostInView] = useInView();
@@ -159,7 +159,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           const _replies = data.posts;
 
           setReplies((prev) => {
-            const filteredReplies = _replies.filter((reply: Post) => {
+            const filteredReplies = _replies.filter((reply: CompletedPost) => {
               return prev.every((prevReply) => prevReply._id !== reply._id);
             });
 

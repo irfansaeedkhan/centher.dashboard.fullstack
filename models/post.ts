@@ -1,14 +1,11 @@
 import { User } from "./user";
 
-export interface Post {
+export interface BasePost {
   _id: string;
   parent_post?: {
     _id: string;
     user: PostUser;
   };
-  text_content?: string;
-  user: PostUser;
-  media?: PostMedia[];
   viewed_by_loggedin_user: boolean;
   liked_by_loggedin_user: boolean;
   replies_count: number;
@@ -16,6 +13,19 @@ export interface Post {
   likes_count: number;
   createdAt: string;
 }
+
+export interface DeletedPost extends BasePost {
+  status: "deleted";
+}
+
+export interface CompletedPost extends BasePost {
+  status: "complete";
+  user: PostUser;
+  text_content?: string;
+  media?: PostMedia[];
+}
+
+export type Post = DeletedPost | CompletedPost;
 
 export interface PostMedia {
   url: string;

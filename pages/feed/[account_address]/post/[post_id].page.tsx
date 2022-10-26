@@ -1,19 +1,11 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
-import { toast } from "react-hot-toast";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { Post } from "@/models/post";
-import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
-import { AppRoutes } from "@/constants/app.routes";
-
-// Current page imports
 import {
   MessagesCard,
   RecentActivitiesCard,
@@ -22,6 +14,13 @@ import {
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { Post } from "@/models/post";
+import { LoadingState } from "@/models/common";
+import { axiosNodeApi } from "@/utils/axios";
+import { AppRoutes } from "@/constants/app.routes";
+
+// Current page imports
+import { BackButton, NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
   const [post, setPost] = useState<Post>();
@@ -42,10 +41,11 @@ const SinglePostPage: NextPageWithLayout = () => {
         setPost(data.post);
         setLoadingState("loaded");
       } catch (error: any) {
+        if (error.response?.status === 404) {
+          setLoadingState("loaded");
+          return;
+        }
         setLoadingState("failed");
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
       }
     };
 
@@ -61,45 +61,41 @@ const SinglePostPage: NextPageWithLayout = () => {
 
   return (
     <div className={postsContainer}>
-      {loadingState === "loaded" && post && (
+      {loadingState === "loaded" && (
         <div className={postsMainContainer}>
-          {post.parent_post ? (
-            <Link
-              href={{
-                pathname: AppRoutes.feed.single_post,
-                query: {
-                  account_address: post.parent_post.user.account_address,
-                  post_id: post.parent_post._id,
-                },
+          <BackButton post={post} />
+
+          {post?.status === "complete" && (
+            <SinglePost
+              post={post}
+              onDelete={() => {
+                router.replace(AppRoutes.feed.index);
               }}
-              className={backBtn}
-            >
-              Back
-            </Link>
-          ) : (
-            <Link
-              href={{
-                pathname: AppRoutes.feed.index,
-              }}
-              className={backBtn}
-            >
-              Back
-            </Link>
+            />
           )}
-          <SinglePost
-            post={post}
-            onDelete={() => {
-              router.replace(AppRoutes.feed.index);
-            }}
-          />
+
+          {/* TODO: Waqar - create part according to design for deleted post */}
+          {post?.status === "deleted" && (
+            <NoPostMessage message="The post was deleted by author." />
+          )}
+
+          {!post && <NoPostMessage message="The post does not exist." />}
         </div>
       )}
-      {loadingState && loadingState === "loading" && (
+
+      {loadingState === "loading" && (
         <>
           <SinglePostCardSkeleton />
           <SinglePostTextCardSkeleton />
           <SinglePostCardSkeleton />
         </>
+      )}
+
+      {loadingState === "failed" && (
+        <div className={postsMainContainer}>
+          <BackButton post={post} />
+          <NoPostMessage message="Something went wrong!" />
+        </div>
       )}
     </div>
   );
@@ -141,9 +137,7 @@ w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 const postsContainer = ctl(`
 w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[1.3rem]
 `);
-const backBtn = ctl(`
-text-brand-primary text-[11px] px-4 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium w-fit 
-`);
+
 const postsMainContainer = ctl(`
 flex flex-col gap-3
 `);

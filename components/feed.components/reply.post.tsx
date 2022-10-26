@@ -32,7 +32,7 @@ import {
   MessageIcon2,
   ArchiveIcon,
 } from "@/assets/svgs";
-import { Post, PostMedia } from "@/models/post";
+import { CompletedPost, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
 
@@ -41,7 +41,7 @@ import { createPostView } from "./single.post/create.post.view";
 import { PostCarousel } from "./single.post/post.carousel";
 
 interface ReplyPostProps {
-  post: Post;
+  post: CompletedPost;
   onDelete: (post_id: string) => void;
 }
 
@@ -67,7 +67,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const [togglePop, setTogglePop] = useState<boolean>(false);
     const [toggleSharePop, setToggleSharePop] = useState<boolean>(false);
     const [toggleSharePop_2, setToggleSharePop_2] = useState<boolean>(false);
-    const [replies, setReplies] = useState<Post[]>([]);
+    const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [totalPostLikes, setTotalPostLikes] = useState<number>(
       post.likes_count
     );

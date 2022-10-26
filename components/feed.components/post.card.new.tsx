@@ -13,7 +13,7 @@ import "react-circular-progressbar/dist/styles.css";
 import useUser from "@/hooks/use.user";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import { NODE_API_URL } from "@/constants/common";
 import {
   PhotoIcon,
@@ -26,7 +26,7 @@ import {
 import { usePostUpload } from "./post.logicv1";
 
 interface PostCardNewProps {
-  onPostCreated: (post: Post) => void;
+  onPostCreated: (post: CompletedPost) => void;
 }
 
 export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {

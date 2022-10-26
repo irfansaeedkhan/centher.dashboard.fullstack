@@ -8,7 +8,7 @@ import { Bars } from "react-loader-spinner";
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
@@ -23,7 +23,7 @@ import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Feed: NextPageWithLayout = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<CompletedPost[]>([]);
   const [skip, setSkip] = useState(0);
   const [loader, setLoader] = useState(false);
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
@@ -48,7 +48,7 @@ const Feed: NextPageWithLayout = () => {
       const _posts = data.posts;
 
       setPosts((prev) => {
-        const filteredPosts = _posts.filter((post: Post) => {
+        const filteredPosts = _posts.filter((post: CompletedPost) => {
           return prev.every((prevPost) => prevPost._id !== post._id);
         });
         return [...prev, ...filteredPosts];

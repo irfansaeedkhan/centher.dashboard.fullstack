@@ -19,7 +19,7 @@ import {
   PostCardNew,
   SinglePost,
 } from "@/components/feed.components";
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
@@ -37,7 +37,7 @@ const Profile: NextPageWithLayout = () => {
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<CompletedPost[]>([]);
   const [skip, setSkip] = useState(0);
   const [loader, setLoader] = useState(false);
   const [followUser, setFollowUser] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const Profile: NextPageWithLayout = () => {
 
       const _posts = data.posts;
       setPosts((prev) => {
-        const filteredPosts = _posts.filter((post: Post) => {
+        const filteredPosts = _posts.filter((post: CompletedPost) => {
           return prev.every((prevPost) => prevPost._id !== post._id);
         });
         return [...prev, ...filteredPosts];
@@ -113,23 +113,11 @@ const Profile: NextPageWithLayout = () => {
               />
             )}
             {posts.length > 0 ? (
-              posts
-                .filter((p) => !p.parent_post)
-                .map((post) => {
-                  if (post._id === posts[posts.length - 1]._id) {
-                    return (
-                      <SinglePost
-                        ref={lastPostRef}
-                        key={post._id}
-                        post={post}
-                        onDelete={(post_id) => {
-                          setPosts(posts.filter((p) => p._id !== post_id));
-                        }}
-                      />
-                    );
-                  }
+              posts.map((post) => {
+                if (post._id === posts[posts.length - 1]._id) {
                   return (
                     <SinglePost
+                      ref={lastPostRef}
                       key={post._id}
                       post={post}
                       onDelete={(post_id) => {
@@ -137,7 +125,17 @@ const Profile: NextPageWithLayout = () => {
                       }}
                     />
                   );
-                })
+                }
+                return (
+                  <SinglePost
+                    key={post._id}
+                    post={post}
+                    onDelete={(post_id) => {
+                      setPosts(posts.filter((p) => p._id !== post_id));
+                    }}
+                  />
+                );
+              })
             ) : loader ? (
               <>
                 <SinglePostCardSkeleton />
