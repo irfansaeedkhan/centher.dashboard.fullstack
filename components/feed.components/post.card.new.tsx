@@ -1,8 +1,8 @@
 // React, Next, NPM Packages
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
-//import Image from "next/future/image";
-import Image from "next/image";
+//import Image from "next/image";
+import Image from "next/legacy/image";
 import { Carousel } from "react-responsive-carousel";
 import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 import { useOnClickOutside } from "usehooks-ts";

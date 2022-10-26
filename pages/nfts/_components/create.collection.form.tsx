@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import { toast } from "react-hot-toast";
-import Image from "next/future/image";
+import Image from "next/image";
 
 // App imports
 import Button from "@/components/button";

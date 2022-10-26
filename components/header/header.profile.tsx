@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React, { useRef, useEffect } from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import toast from "react-hot-toast";

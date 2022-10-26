@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React, { useMemo, useRef, useState } from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 import Webcam from "react-webcam";
 import ReactCrop, { Crop, PixelCrop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";

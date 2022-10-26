@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useInView } from "react-intersection-observer";

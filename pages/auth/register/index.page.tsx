@@ -11,7 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current page imports
 import { RegisterForm } from "./_components";
-import Image from "next/future/image";
+import Image from "next/image";
 
 const Register: NextPageWithLayout = () => {
   return <RegisterForm />;

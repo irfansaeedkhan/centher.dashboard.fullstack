@@ -11,7 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // Current page imports
 import { LoginForm } from "./_components";
-import Image from "next/future/image";
+import Image from "next/image";
 
 const Login: NextPageWithLayout = () => {
   return <LoginForm />;

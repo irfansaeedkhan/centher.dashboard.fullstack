@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/future/image";
+import Image from "next/image";
 import clsx from "clsx";
 import { useWindowSize } from "usehooks-ts";
 import ctl from "@netlify/classnames-template-literals";

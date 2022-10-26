@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
 export interface CollectionCardProps {

@@ -6,7 +6,7 @@ import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
 } from "@/constants/supported.media.type";
-import Image from "next/future/image";
+import Image from "next/image";
 import {
   calculateFileChunksSizes,
   FileChunksDetails,

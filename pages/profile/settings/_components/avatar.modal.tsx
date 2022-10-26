@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 
 // App imports
 import { useAvatars } from "@/hooks/use.avatars";

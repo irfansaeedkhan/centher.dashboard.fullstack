@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React, { useRef, useState } from "react";
-import Image from "next/future/image";
+import Image from "next/image";
 import { useSWRConfig } from "swr";
 import axios from "axios";
 import { useOnClickOutside } from "usehooks-ts";

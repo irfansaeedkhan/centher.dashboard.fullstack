@@ -2,7 +2,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/future/image";
+import Image from "next/image";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import { useCopyToClipboard } from "usehooks-ts";

@@ -7,7 +7,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
-import Image from "next/future/image";
+import Image from "next/image";
 
 // App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";

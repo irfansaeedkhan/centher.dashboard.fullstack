@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/future/image";
+import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
