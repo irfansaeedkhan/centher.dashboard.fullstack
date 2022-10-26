@@ -72,16 +72,18 @@ const SinglePostPage: NextPageWithLayout = () => {
                   post_id: post.parent_post._id,
                 },
               }}
+              className={backBtn}
             >
-              <a className={backBtn}>Back</a>
+              Back
             </Link>
           ) : (
             <Link
               href={{
                 pathname: AppRoutes.feed.index,
               }}
+              className={backBtn}
             >
-              <a className={backBtn}>Back</a>
+              Back
             </Link>
           )}
           <SinglePost

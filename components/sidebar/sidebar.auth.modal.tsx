@@ -10,11 +10,11 @@ const SidebarAuthModal: React.FC = () => {
   return (
     <div className={modalWrapper}>
       <div className={title}>Get in to trading</div>
-      <Link href={AppRoutes.auth.register}>
-        <a className={registerButton}>Register</a>
+      <Link href={AppRoutes.auth.register} className={registerButton}>
+        Register
       </Link>
-      <Link href={AppRoutes.auth.login}>
-        <a className={connectButton}>Connect</a>
+      <Link href={AppRoutes.auth.login} className={connectButton}>
+        Connect
       </Link>
     </div>
   );

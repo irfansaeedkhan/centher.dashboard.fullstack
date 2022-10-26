@@ -19,14 +19,12 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
       <section className={section_left}>
         <div className={sectionLeftInner}>
           <Link href={AppRoutes.home}>
-            <a>
-              <Image
-                src="/images/nether.nft.logo.svg"
-                alt="logo"
-                width={166}
-                height={40}
-              />
-            </a>
+            <Image
+              src="/images/nether.nft.logo.svg"
+              alt="logo"
+              width={166}
+              height={40}
+            />
           </Link>
         </div>
         <div className={section_left_content_wrapper}>

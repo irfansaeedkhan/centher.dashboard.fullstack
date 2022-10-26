@@ -54,19 +54,18 @@ export const Section: React.FC<SectionProps> = (props) => {
                       : itemIcons
                   }
                 />
-                <Link href={item.url}>
-                  <a
-                    onClick={props.onClose}
-                    className={
-                      router.pathname
-                        .replaceAll("-", " ")
-                        .includes(item.label.toLowerCase())
-                        ? itemLabelActive
-                        : itemLabel
-                    }
-                  >
-                    {item.label}
-                  </a>
+                <Link
+                  href={item.url}
+                  onClick={props.onClose}
+                  className={
+                    router.pathname
+                      .replaceAll("-", " ")
+                      .includes(item.label.toLowerCase())
+                      ? itemLabelActive
+                      : itemLabel
+                  }
+                >
+                  {item.label}
                 </Link>
               </div>
               {!!count && (

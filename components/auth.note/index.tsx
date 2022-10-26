@@ -13,8 +13,8 @@ export const AuthNote: React.FC<AuthNoteProps> = (props) => {
       <div className={note}>Note:</div>
       <p className={noteP}>{props.title}</p>
       {props.link === "/forgot-password" && (
-        <Link href={props.link}>
-          <a className={linkClass}>Forgot password</a>
+        <Link href={props.link} className={linkClass}>
+          Forgot password
         </Link>
       )}
     </div>

@@ -75,10 +75,12 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       <div className={sideBarWrapper}>
         <div>
           {user && (
-            <Link href={AppRoutes.nfts.create_nft}>
-              <a className={connectButton} onClick={onClose}>
-                Create NFT
-              </a>
+            <Link
+              href={AppRoutes.nfts.create_nft}
+              className={connectButton}
+              onClick={onClose}
+            >
+              Create NFT
             </Link>
           )}
           <div className={sideBarWrapperStyling}>
@@ -97,29 +99,27 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
           <div className="flex flex-col gap-8">
             <div className={sectionWrapper}>
               <div className={sectionWrapper2}>
-                <Link href={AppRoutes.profile.settings}>
-                  <a className={itemWrapper} onClick={onClose}>
-                    <SettingIcon
-                      className={
-                        router.pathname
-                          .replaceAll("-", " ")
-                          .includes("settings")
-                          ? itemIconsActive
-                          : itemIcons
-                      }
-                    />
-                    <div
-                      className={
-                        router.pathname
-                          .replaceAll("-", " ")
-                          .includes("settings")
-                          ? itemLabelActive
-                          : itemLabel
-                      }
-                    >
-                      Settings
-                    </div>
-                  </a>
+                <Link
+                  href={AppRoutes.profile.settings}
+                  className={itemWrapper}
+                  onClick={onClose}
+                >
+                  <SettingIcon
+                    className={
+                      router.pathname.replaceAll("-", " ").includes("settings")
+                        ? itemIconsActive
+                        : itemIcons
+                    }
+                  />
+                  <div
+                    className={
+                      router.pathname.replaceAll("-", " ").includes("settings")
+                        ? itemLabelActive
+                        : itemLabel
+                    }
+                  >
+                    Settings
+                  </div>
                 </Link>
               </div>
             </div>

@@ -19,14 +19,12 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
       <div className={headerWraper}>
         <div className={routerLink}>
           <Link href={AppRoutes.home}>
-            <a>
-              <Image
-                src="/images/MainLogo.svg"
-                alt="logo"
-                width={166}
-                height={38}
-              />
-            </a>
+            <Image
+              src="/images/MainLogo.svg"
+              alt="logo"
+              width={166}
+              height={38}
+            />
           </Link>
         </div>
         <div className={headerTitleWrapper}>
@@ -37,11 +35,9 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
           </div>
 
           {props.url && (
-            <Link href={props.url}>
-              <a className={createButton}>
-                <PlusIconBtn className={plusButtonStyle} />
-                <span>Create New</span>
-              </a>
+            <Link href={props.url} className={createButton}>
+              <PlusIconBtn className={plusButtonStyle} />
+              <span>Create New</span>
             </Link>
           )}
         </div>

@@ -55,25 +55,23 @@ export const Sidebar = () => {
         <div className="flex flex-col gap-8">
           <div className={sectionWrapper}>
             <div className={sectionWrapper2}>
-              <Link href={AppRoutes.profile.settings}>
-                <a className={itemWrapper}>
-                  <SettingIcon
-                    className={
-                      router.pathname.replaceAll("-", " ").includes("settings")
-                        ? itemIconsActive
-                        : itemIcons
-                    }
-                  />
-                  <div
-                    className={
-                      router.pathname.replaceAll("-", " ").includes("settings")
-                        ? itemLabelActive
-                        : itemLabel
-                    }
-                  >
-                    Settings
-                  </div>
-                </a>
+              <Link href={AppRoutes.profile.settings} className={itemWrapper}>
+                <SettingIcon
+                  className={
+                    router.pathname.replaceAll("-", " ").includes("settings")
+                      ? itemIconsActive
+                      : itemIcons
+                  }
+                />
+                <div
+                  className={
+                    router.pathname.replaceAll("-", " ").includes("settings")
+                      ? itemLabelActive
+                      : itemLabel
+                  }
+                >
+                  Settings
+                </div>
               </Link>
             </div>
           </div>

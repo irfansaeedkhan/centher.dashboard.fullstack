@@ -61,10 +61,8 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             <h4 className={ContentItemData2}>{stakingPack.duration}</h4>
           </div>
         </div>
-        <Link href={AppRoutes.admin.update_staking_pack}>
-          <a className="block">
-            <Button title={"Update"} variant={"v3"} />
-          </a>
+        <Link href={AppRoutes.admin.update_staking_pack} className="block">
+          <Button title={"Update"} variant={"v3"} />
         </Link>
       </div>
     </div>

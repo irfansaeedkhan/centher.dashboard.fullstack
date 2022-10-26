@@ -11,10 +11,11 @@ const ComingSoonPage: NextPageWithLayout = () => {
       <h1 className="text-2xl text-center text-brand-primary font-bold">
         Coming Soon...
       </h1>
-      <Link href={AppRoutes.feed.index}>
-        <a className="text-brand-primary underline my-8 text-center w-max block mx-auto">
-          Go to Feed
-        </a>
+      <Link
+        href={AppRoutes.feed.index}
+        className="text-brand-primary underline my-8 text-center w-max block mx-auto"
+      >
+        Go to Feed
       </Link>
     </div>
   );

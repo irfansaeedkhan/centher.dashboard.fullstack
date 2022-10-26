@@ -34,14 +34,12 @@ const Header = () => {
   return (
     <div className={headerWraper}>
       <Link href={AppRoutes.home}>
-        <a>
-          <Image
-            src="/images/nether.nft.logo.svg"
-            alt="Nether NFT Logo"
-            width={166}
-            height={38}
-          />
-        </a>
+        <Image
+          src="/images/nether.nft.logo.svg"
+          alt="Nether NFT Logo"
+          width={166}
+          height={38}
+        />
       </Link>
 
       <div className={rightWraper}>
@@ -50,15 +48,15 @@ const Header = () => {
         </div> */}
         {/* <span className={border}></span> */}
         {!user && !isUserLoading && (
-          <Link href={AppRoutes.auth.login}>
-            <a className={connectButton}>Connect</a>
+          <Link href={AppRoutes.auth.login} className={connectButton}>
+            Connect
           </Link>
         )}
         {user && (
           <>
             <span className="lg:block sm:hidden">
-              <Link href={AppRoutes.nfts.create_nft}>
-                <a className={connectButton}>Create NFT</a>
+              <Link href={AppRoutes.nfts.create_nft} className={connectButton}>
+                Create NFT
               </Link>
             </span>
             <div className="relative">

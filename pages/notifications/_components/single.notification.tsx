@@ -31,30 +31,31 @@ export const SingleNotification = React.forwardRef<
     notificationLink = (
       <Link
         href={`/feed/${notification.post.user.account_address}/post/${notification.post._id}`}
+        className="text-sm text-white hover:text-brand-primary"
       >
-        <a className="text-sm text-white hover:text-brand-primary">
-          {notification.by.display_name}{" "}
-          {notification.type === "post_like"
-            ? "liked "
-            : notification.type === "post_reply" && "replied to"}{" "}
-          your post.
-        </a>
+        {notification.by.display_name}{" "}
+        {notification.type === "post_like"
+          ? "liked "
+          : notification.type === "post_reply" && "replied to"}{" "}
+        your post.
       </Link>
     );
   } else if (notification.type === "follow") {
     notificationLink = (
-      <Link href={`/profile/${notification.by.account_address}`}>
-        <a className="text-sm text-white hover:text-brand-primary">
-          {notification.by.display_name} started following you.
-        </a>
+      <Link
+        href={`/profile/${notification.by.account_address}`}
+        className="text-sm text-white hover:text-brand-primary"
+      >
+        {notification.by.display_name}started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
     notificationLink = (
-      <Link href={`/profile/${notification.by.account_address}`}>
-        <a className="text-sm text-white hover:text-brand-primary">
-          {notification.by.display_name} has joined your network.
-        </a>
+      <Link
+        href={`/profile/${notification.by.account_address}`}
+        className="text-sm text-white hover:text-brand-primary"
+      >
+        {notification.by.display_name}has joined your network.
       </Link>
     );
   }
@@ -71,16 +72,17 @@ export const SingleNotification = React.forwardRef<
       onClick={readNotification}
     >
       <div className="flex items-center gap-2">
-        <Link href={`/profile/${notification.by.account_address}`}>
-          <a className="dpImagePreview">
-            <Image
-              src={notification.by?.profile_image?.path}
-              alt="dp"
-              width={56}
-              height={56}
-              className="rounded-full h-[56px] w-[56px] object-cover"
-            />
-          </a>
+        <Link
+          href={`/profile/${notification.by.account_address}`}
+          className="dpImagePreview"
+        >
+          <Image
+            src={notification.by?.profile_image?.path}
+            alt="dp"
+            width={56}
+            height={56}
+            className="rounded-full h-[56px] w-[56px] object-cover"
+          />
         </Link>
 
         {notificationLink}

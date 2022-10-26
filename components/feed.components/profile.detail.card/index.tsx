@@ -30,15 +30,13 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
-        <a>
-          <Image
-            src={user.profile_image.path}
-            className={profilePic}
-            alt={user.display_name}
-            width={60}
-            height={60}
-          />
-        </a>
+        <Image
+          src={user.profile_image.path}
+          className={profilePic}
+          alt={user.display_name}
+          width={60}
+          height={60}
+        />
       </Link>
       <Link
         href={{
@@ -48,9 +46,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
-        <a>
-          <h3 className={profileName}>{user.display_name}</h3>
-        </a>
+        <h3 className={profileName}>{user.display_name}</h3>
       </Link>
       <div className={numberDetails}>
         <div>

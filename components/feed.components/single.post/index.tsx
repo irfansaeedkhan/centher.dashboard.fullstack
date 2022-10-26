@@ -438,15 +438,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   },
                 }}
               >
-                <a>
-                  <Image
-                    src={_post.user.profile_image.path}
-                    width={48}
-                    height={48}
-                    className="rounded-full dpImagePreview cursor-pointer"
-                    alt={_post.user.display_name}
-                  />
-                </a>
+                <Image
+                  src={_post.user.profile_image.path}
+                  width={48}
+                  height={48}
+                  className="rounded-full dpImagePreview cursor-pointer"
+                  alt={_post.user.display_name}
+                />
               </Link>
               <div>
                 <Link
@@ -457,9 +455,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     },
                   }}
                 >
-                  <a>
-                    <h5 className={PFName}>{_post.user.display_name}</h5>
-                  </a>
+                  <h5 className={PFName}>{_post.user.display_name}</h5>
                 </Link>
                 <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
               </div>
@@ -690,8 +686,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     post_id: _post._id,
                   },
                 }}
+                className={showThreadBtn}
               >
-                <a className={showThreadBtn}>Show Thread</a>
+                Show Thread
               </Link>
             </div>
           )}

@@ -468,10 +468,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     account_address: post.user.account_address,
                   },
                 }}
+                className={footerdetailBtn}
               >
-                <a className={footerdetailBtn}>
-                  <MessageIcon /> {post.replies_count}
-                </a>
+                <MessageIcon /> {post.replies_count}
               </Link>
               <button
                 className={footerdetailBtn}

@@ -48,6 +48,7 @@ const NFTProfile: NextPageWithLayout = () => {
               tab: "purchased",
             },
           }}
+          legacyBehavior
         >
           <div
             className={`${tab} ${
@@ -71,6 +72,7 @@ const NFTProfile: NextPageWithLayout = () => {
               tab: "collections",
             },
           }}
+          legacyBehavior
         >
           <div
             className={`${tab} ${
@@ -94,6 +96,7 @@ const NFTProfile: NextPageWithLayout = () => {
               tab: "followers",
             },
           }}
+          legacyBehavior
         >
           <div
             className={`${tab} ${
@@ -117,6 +120,7 @@ const NFTProfile: NextPageWithLayout = () => {
               tab: "following",
             },
           }}
+          legacyBehavior
         >
           <div
             className={`${tab} ${
