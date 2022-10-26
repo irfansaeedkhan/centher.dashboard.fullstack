@@ -42,7 +42,7 @@ const Feed: NextPageWithLayout = () => {
     setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
-        `/api/socials/posts?off_set=${skip}`
+        `/api/socials/posts?offset=${skip}`
       );
 
       const _posts = data.posts;

@@ -552,7 +552,7 @@ export function usePostUpload({
       setUploadingFileStatus(0);
       setFile(filesChunksDetails[0]?.file_name);
 
-      let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
+      let { data } = await axiosNodeApi.post(`/api/socials/posts`, {
         post_files_detail: filesChunksDetails,
         post_text: tweetText,
         reply_post_id: reply_post_id,

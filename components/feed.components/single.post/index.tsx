@@ -157,7 +157,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         setLoader(true);
         try {
           const { data } = await axiosNodeApi.get(
-            `/api/socials/posts/'${_post.user.account_address}'/post/${_post._id}/replies?off_set=${skip}`
+            `/api/socials/posts/${_post._id}/replies?offset=${skip}`
           );
 
           const _replies = data.posts;
@@ -321,9 +321,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const archivePost = async (post_id: string) => {
       try {
-        await axiosNodeApi.post(`/api/socials/posts/archive`, {
-          post_id,
-        });
+        await axiosNodeApi.patch(`/api/socials/posts/${post_id}/archive`);
 
         toast.success("Post Archived Successfully");
 
@@ -372,8 +370,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
           return;
         }
-        await axiosNodeApi.patch(`api/socials/posts/edit`, {
-          post_id: post._id,
+        await axiosNodeApi.patch(`/api/socials/posts/${post._id}/edit`, {
           text: editPostData.editedPostText,
           deleted_media: editPostData.deletedMedia,
         });

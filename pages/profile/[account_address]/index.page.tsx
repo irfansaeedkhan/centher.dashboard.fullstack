@@ -59,7 +59,7 @@ const Profile: NextPageWithLayout = () => {
     setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/user/${user?._id}?off_set=${skip}`
+        `/api/socials/posts/user/${user?._id}?offset=${skip}`
       );
 
       const _posts = data.posts;

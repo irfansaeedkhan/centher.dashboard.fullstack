@@ -119,7 +119,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
         try {
           // Fetch a single reply of reply
           const { data } = await axiosNodeApi.get(
-            `/api/socials/posts/'${post.user.account_address}'/post/${post._id}/replies?limit=1`
+            `/api/socials/posts/${post._id}/replies?limit=1`
           );
 
           setReplies(data.posts);
@@ -186,9 +186,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 
     const archivePost = async (post_id: string) => {
       try {
-        await axiosNodeApi.post(`/api/socials/posts/archive`, {
-          post_id,
-        });
+        await axiosNodeApi.patch(`/api/socials/posts/${post_id}/archive`);
 
         toast.success("Reply Archived Successfully");
 
@@ -204,8 +202,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     const editPost = async () => {
       setUpdateLoadingButton(true);
       try {
-        await axiosNodeApi.patch(`api/socials/posts/edit`, {
-          post_id: post._id,
+        await axiosNodeApi.patch(`/api/socials/posts/${post._id}/edit`, {
           text: editPostData.editedPostText,
           deleted_media: editPostData.deletedMedia,
         });

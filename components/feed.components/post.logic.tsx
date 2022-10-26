@@ -385,7 +385,7 @@ export function usePostUpload({
 
       //console.log("Reply address : ", reply_address, reply_post_id);
       // No need to pass user address
-      let { data } = await axiosNodeApi.post(`/api/socials/posts/insert`, {
+      let { data } = await axiosNodeApi.post(`/api/socials/posts`, {
         post_files_detail: filesChunksDetails,
         post_text: tweetText,
         reply_post_id: reply_post_id,
