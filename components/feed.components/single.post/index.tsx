@@ -14,7 +14,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
-
+import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 // App imports
 import useUser from "@/hooks/use.user";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -772,6 +772,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       rows={4}
                       placeholder="Type Here"
                       maxLength={200}
+                      value={tweetText}
                       onChange={handleTextLength}
                     ></textarea>
                   </div>
@@ -817,6 +818,23 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       <EmojiIcon />
                       Emoji
                     </button>
+                    {togglePop && (
+                      <div
+                        ref={ref}
+                        className={`emojiContainer absolute right-[0] top-[287px] ${
+                          togglePop && "!block z-50"
+                        }`}
+                      >
+                        <Picker
+                          onEmojiClick={onEmojiClick}
+                          height={400}
+                          width={300}
+                          autoFocusSearch={false}
+                          emojiStyle={EmojiStyle.NATIVE}
+                          theme={Theme.AUTO}
+                        />
+                      </div>
+                    )}
                   </div>
                   <div className={RightActionBtns}>
                     <span onClick={deleteText}>
