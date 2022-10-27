@@ -12,7 +12,7 @@ import SingleSearchUser from "./_components/single.search.user";
 
 // Current page imports
 
-const Notifications: NextPageWithLayout = () => {
+const Search: NextPageWithLayout = () => {
   const router = useRouter();
   const [searchResult, setSearchResult] = useState([]);
 
@@ -34,9 +34,13 @@ const Notifications: NextPageWithLayout = () => {
   return (
     <div className="w-full flex justify-center">
       <div className="md:w-auto sm:w-full">
-        <div className={sectionName}>Search Result:</div>
+        <div
+          className={`animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
+        >
+          Search Result:
+        </div>
         <div className="flex flex-col gap-3">
-          {searchResult.length < 0 ? (
+          {searchResult.length > 0 ? (
             searchResult.map((result, i) => {
               return <SingleSearchUser key={i} result={result} />;
             })
@@ -51,12 +55,8 @@ const Notifications: NextPageWithLayout = () => {
   );
 };
 
-Notifications.getLayout = (page) => {
+Search.getLayout = (page) => {
   return <AllPagesWrapper pageTitle="Search">{page}</AllPagesWrapper>;
 };
 
-export default Notifications;
-
-const sectionName = ctl(
-  `animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`
-);
+export default Search;
