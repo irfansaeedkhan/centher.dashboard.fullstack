@@ -455,7 +455,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   src={_post.user.profile_image.path}
                   width={48}
                   height={48}
-                  className="rounded-full dpImagePreview cursor-pointer w-[48px] h-[48px] object-cover"
+                  className="rounded-full cursor-pointer w-[48px] h-[48px] object-cover border border-gray-shade-3"
                   alt={_post.user.display_name}
                 />
               </Link>
@@ -698,7 +698,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 src={_post.user.profile_image.path}
                 width={30}
                 height={30}
-                className="rounded-full dpImagePreview w-[30px] h-[30px] object-cover"
+                className="rounded-full w-[30px] h-[30px] object-cover border border-gray-shade-3"
                 alt={_post.user.display_name}
               />
               <Link
@@ -762,7 +762,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     width={44}
                     height={44}
                     alt={user?.display_name ?? "profile image"}
-                    className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
+                    className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
                   />
                   <h5 className={cdName}>{user?.display_name}</h5>
                 </div>
@@ -927,7 +927,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     src={user.profile_image.path}
                     width={44}
                     height={44}
-                    className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
+                    className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
                     alt={user.display_name ?? "profile image"}
                   />
                   <h5 className={cdName}>{user.display_name}</h5>

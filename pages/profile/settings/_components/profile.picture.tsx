@@ -114,13 +114,13 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
   return (
     <div className="flex gap-2 items-center">
-      <div className="dpImagePreview">
+      <div className="">
         <Image
           src={profileImage.path}
           width={80}
           height={80}
           alt="display-picture"
-          className="rounded-full object-cover !h-[80px] border border-[#45474d4d] bg-[#ffffff08]"
+          className="rounded-full !h-[80px] object-cover border border-gray-shade-3 bg-[#ffffff08]"
         />
       </div>
       <div className={fieldTitle}>
