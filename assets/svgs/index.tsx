@@ -2602,20 +2602,20 @@ export const DeleteCrossIcon: React.FC<IconProps> = (props) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="32" cy="32" r="24" stroke="#EA3943" stroke-width="1.5" />
+      <circle cx="32" cy="32" r="24" stroke="#EA3943" strokeWidth="1.5" />
       <path
         d="M24 24L40 40"
         stroke="#EA3943"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M24 40L40 24"
         stroke="#EA3943"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

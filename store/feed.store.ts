@@ -1,0 +1,78 @@
+import create from "zustand";
+import { devtools } from "zustand/middleware";
+
+import { CompletedPost } from "@/models/post";
+import { LoadingState } from "@/models/common";
+import { axiosNodeApi } from "@/utils/axios";
+
+export interface FeedStore {
+  posts: CompletedPost[];
+  fetchPosts: () => Promise<void>;
+
+  addNewPost: (post: CompletedPost) => void;
+  deletePost: (postId: string) => void;
+
+  offset: number;
+  updateOffset: () => void;
+
+  loading: LoadingState;
+}
+
+export const useFeedStore = create<FeedStore>()(
+  devtools(
+    (set, get) => ({
+      loading: "idle",
+
+      offset: 0,
+
+      updateOffset: () => set((state) => ({ offset: state.posts.length })),
+
+      posts: [],
+
+      fetchPosts: async () => {
+        try {
+          set({ loading: "loading" });
+
+          const offset = get().offset;
+          const limit = 50;
+
+          const url = `/api/socials/posts?offset=${offset}&limit=${limit}`;
+
+          const { data } = await axiosNodeApi.get(url);
+
+          set((state) => {
+            const filteredPosts = state.posts.filter(
+              (statePost) =>
+                !data.posts.some(
+                  (notification: CompletedPost) =>
+                    statePost._id === notification._id
+                )
+            );
+
+            return {
+              posts: [...filteredPosts, ...data.posts] as CompletedPost[],
+              loading: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loading: "failed" });
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
+      addNewPost: (post) => {
+        set((state) => ({
+          posts: [post, ...state.posts],
+        }));
+      },
+
+      deletePost: (postId) => {
+        set((state) => ({
+          posts: state.posts.filter((post) => post._id !== postId),
+        }));
+      },
+    }),
+    { name: "FeedStore" }
+  )
+);

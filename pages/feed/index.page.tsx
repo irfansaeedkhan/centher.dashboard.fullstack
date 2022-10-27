@@ -1,17 +1,9 @@
-// React, Next, NPM Packages
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import ctl from "@netlify/classnames-template-literals";
-import { toast } from "react-hot-toast";
-import { Bars } from "react-loader-spinner";
 
-// App imports
+import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { CompletedPost } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
-
-// Current page imports
 import {
   MessagesCard,
   RecentActivitiesCard,
@@ -23,90 +15,91 @@ import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Feed: NextPageWithLayout = () => {
-  const [posts, setPosts] = useState<CompletedPost[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loader, setLoader] = useState(false);
-  const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
+  const {
+    posts,
+    fetchPosts,
+    addNewPost,
+    deletePost,
+    offset,
+    updateOffset,
+    loading,
+  } = useFeedStore((state) => ({
+    posts: state.posts,
+    fetchPosts: state.fetchPosts,
+
+    addNewPost: state.addNewPost,
+    deletePost: state.deletePost,
+
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+
+    loading: state.loading,
+  }));
+
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    if (lastPostInView) {
-      setSkip(posts.length);
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
     }
-  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
-
-  const fetchFeedsData = useCallback(async () => {
-    setLoader(true);
-    try {
-      const { data } = await axiosNodeApi.get(
-        `/api/socials/posts?offset=${skip}`
-      );
-
-      const _posts = data.posts;
-
-      setPosts((prev) => {
-        const filteredPosts = _posts.filter((post: CompletedPost) => {
-          return prev.every((prevPost) => prevPost._id !== post._id);
-        });
-        return [...prev, ...filteredPosts];
-      });
-
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  }, [skip]);
+  }, [lastPostRef, lastPostEntry, updateOffset]);
 
   useEffect(() => {
-    fetchFeedsData();
-  }, [fetchFeedsData]);
+    if (offset > 0) {
+      fetchPosts();
+    }
+  }, [offset, fetchPosts]);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
   return (
-    <div className={postsContainer}>
+    <div
+      className={`w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]`}
+    >
       <PostCardNew
         onPostCreated={(post) => {
-          setPosts((prev) => [post, ...prev]);
+          addNewPost(post);
         }}
       />
-      {posts.length > 0
-        ? posts.map((post) => {
-            if (post._id === posts[posts.length - 1]._id) {
-              return (
-                <SinglePost
-                  ref={lastPostRef}
-                  key={post._id}
-                  post={post}
-                  onDelete={(post_id) => {
-                    setPosts(posts.filter((p) => p._id !== post_id));
-                  }}
-                />
-              );
-            }
+
+      {!!posts.length &&
+        posts.map((post) => {
+          if (post._id === posts[posts.length - 1]._id) {
             return (
-              // <ScrollTrigger onEnter={()=>onEnterViewport(post._id)} onExit={onExitViewport} key={post._id}>
               <SinglePost
+                ref={lastPostRef}
                 key={post._id}
                 post={post}
                 onDelete={(post_id) => {
-                  setPosts(posts.filter((p) => p._id !== post_id));
+                  deletePost(post_id);
                 }}
               />
-              // </ScrollTrigger>
             );
-          })
-        : loader && (
-            <>
-              <SinglePostCardSkeleton />
-              <SinglePostTextCardSkeleton />
-              <SinglePostCardSkeleton />
-            </>
-          )}
+          }
+          return (
+            <SinglePost
+              key={post._id}
+              post={post}
+              onDelete={(post_id) => {
+                deletePost(post_id);
+              }}
+            />
+          );
+        })}
+
+      {(loading === "loading" || loading === "idle") && (
+        <>
+          <SinglePostCardSkeleton />
+          <SinglePostTextCardSkeleton />
+          <SinglePostCardSkeleton />
+        </>
+      )}
     </div>
   );
 };
@@ -114,13 +107,15 @@ const Feed: NextPageWithLayout = () => {
 Feed.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Feed">
-      <div className={dashboardContentContainer}>
-        <div className={feedContainer}>
+      <div
+        className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto relative`}
+      >
+        <div className={`flex flex-col lg:flex-row gap-5 lg:items-start`}>
           <LeftSidebarStickyContainer />
 
           {page}
 
-          <div className={rightSidebar}>
+          <div className={`w-full max-w-[272px] flex-col gap-3 hidden xl:flex`}>
             <MessagesCard />
             <RecentActivitiesCard />
           </div>
@@ -131,19 +126,3 @@ Feed.getLayout = (page) => {
 };
 
 export default Feed;
-
-// styling
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto relative
-`);
-
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start 
-`);
-
-const rightSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
-`);
-const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]
-`);

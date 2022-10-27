@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useRef, Dispatch, SetStateAction } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
@@ -9,22 +9,15 @@ import { axiosNodeApi } from "@/utils/axios";
 import {
   checkValidImageFile,
   checkValidVideoFile,
-  checkFileAlreadyAddedInSelectedFile,
   post_file_details,
   FileChunksChunksCalculations,
-  fileAlreadySelected,
-  checkIfSelectedFileExitsInDeletedFile,
 } from "@/utils/mediafile/valid.media.filesv1";
 import { CompletedPost } from "@/models/post";
 import {
   SUPPORTED_VIDEO_TYPES,
   SUPPORTED_IMAGE_TYPES,
-  MAX_IMAGE_USER_UPLOAD,
-  MAX_VIDEO_USER_UPLOAD,
 } from "@/constants/supported.media.type";
 import { CrossIcon } from "@/assets/svgs";
-import { number, string } from "joi";
-import { indexOf } from "lodash";
 
 type PreviewSelectedFile = {
   fileIndex: number;
