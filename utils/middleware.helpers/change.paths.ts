@@ -5,7 +5,11 @@
  */
 export const changePaths = (paths: string[]) => {
   return paths.map((path) => {
-    const changed = path.replaceAll("[", ":");
-    return changed.replaceAll("]", "");
+    let changed = path;
+    while (changed.includes("[")) {
+      changed = changed.replace("[", ":");
+    }
+    changed.replace("]", "");
+    return changed;
   });
 };
