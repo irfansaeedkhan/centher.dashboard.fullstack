@@ -72,13 +72,13 @@ const initialEditPostData: IEditPostData = {
 
 export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
   ({ post, onDelete }, ref) => {
+    const [_post, setPost] = useState<CompletedPost>(post);
     const router = useRouter();
     const { user } = useUser();
     const decrementPostsCount = useProfileCardStore(
       (state) => state.decrementPostsCount
     );
     const [deleteModal, setDeleteModal] = useState(false);
-    const [_post, setPost] = useState<CompletedPost>(post);
     const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [skip, setSkip] = useState(0);
     const [loader, setLoader] = useState(false);
@@ -439,9 +439,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     return (
       <div ref={currentPostRef}>
         <div className={postCardContainer} ref={ref}>
-          {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
-            <div className={connectLines}></div>
-          )}
+          {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            !!totalReplyCount && <div className={connectLines}></div>}
           <div className={topCard}>
             <div className={profileDetail}>
               <Link
@@ -588,21 +587,33 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               ) && " pb-4 border-b-2 border-gray-shade-3 "
             }`}
           >
-            {!(
-              currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
-            ) && (
+            {currentPageRoute.isFeedPage || currentPageRoute.isProfilePage ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    account_address: _post.user.account_address,
+                    post_id: _post._id,
+                  },
+                }}
+              >
+                <button className={footerdetailBtn}>
+                  <MessageIcon /> {totalReplyCount}
+                </button>
+              </Link>
+            ) : (
               <button
-                className={footerdetailReplyBtn}
+                className={footerdetailBtn}
                 onClick={() => {
                   setShowModal(true);
                 }}
               >
-                <MessageIcon /> Reply
+                <MessageIcon /> {totalReplyCount}
               </button>
             )}
-            <button className={footerdetailBtn}>
+            {/* <button className={footerdetailBtn}>
               <MessageIcon /> {totalReplyCount}
-            </button>
+            </button> */}
             <button
               className={footerdetailBtn}
               onClick={() => likePost(_post._id)}
@@ -691,30 +702,31 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </div>
             </div>
           </div>
-          {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) && (
-            <div className={showThreadBtnContainer}>
-              <Image
-                src={_post.user.profile_image.path}
-                width={30}
-                height={30}
-                className="rounded-full w-[30px] h-[30px] object-cover border border-gray-shade-3"
-                alt={_post.user.display_name}
-                sizes="256px"
-              />
-              <Link
-                href={{
-                  pathname: AppRoutes.feed.single_post,
-                  query: {
-                    account_address: _post.user.account_address,
-                    post_id: _post._id,
-                  },
-                }}
-                className={showThreadBtn}
-              >
-                Show Thread
-              </Link>
-            </div>
-          )}
+          {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            !!totalReplyCount && (
+              <div className={showThreadBtnContainer}>
+                <Image
+                  src={_post.user.profile_image.path}
+                  width={30}
+                  height={30}
+                  className="rounded-full w-[30px] h-[30px] object-cover border border-gray-shade-3"
+                  alt={_post.user.display_name}
+                  sizes="256px"
+                />
+                <Link
+                  href={{
+                    pathname: AppRoutes.feed.single_post,
+                    query: {
+                      account_address: _post.user.account_address,
+                      post_id: _post._id,
+                    },
+                  }}
+                  className={showThreadBtn}
+                >
+                  Show Thread
+                </Link>
+              </div>
+            )}
           {/* // */}
           <div className={repliesContainer}>
             {!(
@@ -1046,7 +1058,7 @@ const PFTime = ctl(`
 text-12px font-ligth text-gray-shade-7
 `);
 const connectLines = ctl(`
-  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-65px)]  bg-gray-shade-3  
+  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
 `);
 const maincontentContainer = ctl(`
 px-4

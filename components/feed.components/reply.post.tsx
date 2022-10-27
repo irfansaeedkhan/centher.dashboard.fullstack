@@ -338,24 +338,51 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             {replies.length > 0 && <div className={connectLines}></div>}
             <div className={topCard}>
               <div className={profileDetail}>
-                <Image
-                  src={post.user.profile_image.path}
-                  width={48}
-                  height={48}
-                  className="rounded-full object-cover border border-gray-shade-3 w-[48px] h-[48px]"
-                  alt={post.user.display_name}
-                  sizes={"256px"}
-                />
+                <Link
+                  href={{
+                    pathname: "/profile/[account_address]",
+                    query: { account_address: post.user.account_address },
+                  }}
+                >
+                  <Image
+                    src={post.user.profile_image.path}
+                    width={48}
+                    height={48}
+                    className="rounded-full object-cover border border-gray-shade-3 w-[48px] h-[48px]"
+                    alt={post.user.display_name}
+                    sizes={"256px"}
+                  />
+                </Link>
                 <div>
                   <div className={replyToBox}>
-                    <h5 className={PFName}>{post.user.display_name}</h5>
-                    <button className={replyToContent}>
-                      Replying to{" "}
-                      <span className={repliedToPersonName}>
-                        {" "}
-                        {post.parent_post?.user.display_name}
-                      </span>
-                    </button>
+                    <Link
+                      href={{
+                        pathname: "/profile/[account_address]",
+                        query: { account_address: post.user.account_address },
+                      }}
+                      className={PFName}
+                    >
+                      {post.user.display_name}
+                    </Link>
+
+                    {post.parent_post && (
+                      <div className={replyToContent}>
+                        Replying to{" "}
+                        <Link
+                          href={{
+                            pathname: "/profile/[account_address]",
+                            query: {
+                              account_address:
+                                post.parent_post.user.account_address,
+                            },
+                          }}
+                          className={repliedToPersonName}
+                        >
+                          {" "}
+                          {post.parent_post.user.display_name}
+                        </Link>
+                      </div>
+                    )}
                   </div>
                   <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
                 </div>
@@ -420,12 +447,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                 </div>
               )}
             </div>
-            <div
-              className={maincontentContainer}
-              onClick={() => {
-                // props.setLevelFunc("level3");
-              }}
-            >
+            <div className={"ml-16"}>
               <div className={mediaContainer}>
                 {_post.media && _post.media.length > 0 && (
                   <Carousel
@@ -720,9 +742,6 @@ text-12px font-ligth text-gray-shade-7 pt-1
 `);
 const connectLines = ctl(`
   absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%)]  bg-gray-shade-3  
-`);
-const maincontentContainer = ctl(`
-ml-16   cursor-pointer
 `);
 const mediaContainer = ctl(`
 pr-4
