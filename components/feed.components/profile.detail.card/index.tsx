@@ -38,6 +38,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           alt={user.display_name}
           width={60}
           height={60}
+          sizes={"256px"}
         />
       </Link>
       <Link

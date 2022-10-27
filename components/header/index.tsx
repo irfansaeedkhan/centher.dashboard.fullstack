@@ -69,6 +69,7 @@ const Header = () => {
                   width={40}
                   height={40}
                   className="rounded-full !h-[40px] object-cover border border-gray-shade-3"
+                  sizes={"256px"}
                 />
               </div>
 

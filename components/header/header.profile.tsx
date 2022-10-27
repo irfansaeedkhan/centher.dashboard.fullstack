@@ -80,6 +80,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                       width={40}
                       height={40}
                       className={innerImageStyle}
+                      sizes={"256px"}
                     />
                   </div>
                 )}

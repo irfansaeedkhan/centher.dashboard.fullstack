@@ -458,6 +458,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   height={48}
                   className="rounded-full cursor-pointer w-[48px] h-[48px] object-cover border border-gray-shade-3"
                   alt={_post.user.display_name}
+                  sizes="256px"
                 />
               </Link>
               <div>
@@ -698,6 +699,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 height={30}
                 className="rounded-full w-[30px] h-[30px] object-cover border border-gray-shade-3"
                 alt={_post.user.display_name}
+                sizes="256px"
               />
               <Link
                 href={{
@@ -754,6 +756,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     height={44}
                     alt={user?.display_name ?? "profile image"}
                     className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
+                    sizes="256px"
                   />
                   <h5 className={cdName}>{user?.display_name}</h5>
                 </div>
@@ -920,6 +923,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     height={44}
                     className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
                     alt={user.display_name ?? "profile image"}
+                    sizes="256px"
                   />
                   <h5 className={cdName}>{user.display_name}</h5>
                 </div>

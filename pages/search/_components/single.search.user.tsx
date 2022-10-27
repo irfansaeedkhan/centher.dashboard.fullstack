@@ -52,6 +52,7 @@ const SingleSearchUser = React.forwardRef<
             width={40}
             height={40}
             className="!w-10 !h-10 rounded-full object-cover"
+            sizes={"256px"}
           />
         </Link>
         <div className="flex flex-col gap-1">

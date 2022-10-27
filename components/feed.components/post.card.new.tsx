@@ -104,6 +104,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           height={48}
           className={`rounded-full object-cover border border-gray-shade-3 w-[48px] h-[48px]`}
           alt={"icon"}
+          sizes={"256px"}
         />
         <button
           className={postBtn}
@@ -168,6 +169,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 height={44}
                 className="rounded-full object-cover border border-gray-shade-3 w-[44px] h-[44px]"
                 alt={user.display_name ?? "profile image"}
+                sizes={"256px"}
               />
               <h5 className={cdName}>{user.display_name}</h5>
             </div>
