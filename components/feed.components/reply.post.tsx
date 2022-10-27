@@ -339,7 +339,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   src={post.user.profile_image.path}
                   width={48}
                   height={48}
-                  className="rounded-full dpImagePreview w-[48px] h-[48px] object-cover"
+                  className="rounded-full object-cover border border-gray-shade-3 w-[48px] h-[48px]"
                   alt={post.user.display_name}
                 />
                 <div>
@@ -589,7 +589,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     src={user.profile_image.path}
                     width={44}
                     height={44}
-                    className="rounded-full dpImagePreview w-[44px] h-[44px] object-cover"
+                    className="rounded-full object-cover border border-gray-shade-3 w-[44px] h-[44px]"
                     alt={user.display_name ?? "profile image"}
                   />
                   <h5 className={cdName}>{user.display_name}</h5>

@@ -38,7 +38,7 @@ textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[3
 `);
 
 const leftSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
+w-[272px]  flex-col gap-3 hidden lg:flex
 `);
 
 const componentLoader = ctl(`componentLoaderContainer min-h-[272px]`);

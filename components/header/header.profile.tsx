@@ -73,7 +73,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             <button>
               <div>
                 {user && (
-                  <div className={mainImage}>
+                  <div>
                     <Image
                       src={user.profile_image.path}
                       alt="userProfile"
@@ -177,9 +177,9 @@ const profileImageWrapper = ctl(`flex flex-col gap-3 text-white`);
 
 const profileImageInner = ctl(`flex gap-2 items-center px-6 py-4`);
 
-const mainImage = ctl(`dpImagePreview relative`);
-
-const innerImageStyle = ctl(`rounded-full object-cover h-[40px] w-[40px]`);
+const innerImageStyle = ctl(
+  `rounded-full object-cover border border-gray-shade-3 h-[40px] w-[40px]`
+);
 
 const accountAddressWrapper = ctl(`flex flex-col gap-1`);
 

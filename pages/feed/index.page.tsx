@@ -145,5 +145,5 @@ const rightSidebar = ctl(`
 w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
 `);
 const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[4.125rem]
+w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]
 `);

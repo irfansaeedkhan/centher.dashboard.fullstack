@@ -72,16 +72,13 @@ export const SingleNotification = React.forwardRef<
       onClick={readNotification}
     >
       <div className="flex items-center gap-2">
-        <Link
-          href={`/profile/${notification.by.account_address}`}
-          className="dpImagePreview"
-        >
+        <Link href={`/profile/${notification.by.account_address}`} className="">
           <Image
             src={notification.by?.profile_image?.path}
             alt="dp"
             width={56}
             height={56}
-            className="rounded-full h-[56px] w-[56px] object-cover"
+            className="rounded-full h-[56px] w-[56px] object-cover border border-gray-shade-3"
           />
         </Link>
 

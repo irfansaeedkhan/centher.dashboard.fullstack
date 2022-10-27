@@ -96,7 +96,7 @@ const profileDetailCardContainer = ctl(`
   w-full lg:sticky lg:top-0 max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
 `);
 const profilePic = ctl(`
-  w-[60px] h-[60px] mx-auto rounded-full cursor-pointer dpImagePreview
+  w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover border border-gray-shade-3
 `);
 const profileName = ctl(`
   text-14px font-bold pt-3 pb-6 text-white cursor-pointer

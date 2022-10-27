@@ -43,9 +43,7 @@ const Header = () => {
       </Link>
 
       <div className={rightWraper}>
-        <div>
-          <Search />
-        </div>
+        <Search />
         <span className={border}></span>
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>
@@ -62,7 +60,6 @@ const Header = () => {
             <div className="relative">
               <div
                 ref={modalOpenerRef}
-                className="dpImagePreview"
                 onClick={() => setOpenModal((prev) => !prev)}
                 role="button"
               >
@@ -71,7 +68,7 @@ const Header = () => {
                   alt="userProfile"
                   width={40}
                   height={40}
-                  className="rounded-full !h-[40px] object-cover"
+                  className="rounded-full !h-[40px] object-cover border border-gray-shade-3"
                 />
               </div>
 
