@@ -44,7 +44,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
 
 const modalWrapper = ctl(`
   flex 
-  z-[100] 
+  z-[100]
   fixed 
   inset-0 
   items-center 
@@ -86,7 +86,7 @@ const modalHeader = ctl(`
 `);
 
 const modalHeaderTitle = ctl(
-  `animationTextHeading lg:!text-[34px] md:!text-2xl sm:!text-lg py-1`
+  `text-white lg:!text-[34px] md:!text-2xl sm:!text-lg py-1`
 );
 
 const modalHeaderButton = ctl(`

@@ -31,6 +31,7 @@ import {
   WorldIcon,
   MessageIcon2,
   ArchiveIcon,
+  DeleteCrossIcon,
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
@@ -39,6 +40,7 @@ import { axiosNodeApi } from "@/utils/axios";
 import { usePostUpload } from "./../feed.components/post.logic";
 import { createPostView } from "./single.post/create.post.view";
 import { PostCarousel } from "./single.post/post.carousel";
+import { ModalWrapper } from "../modal";
 
 interface ReplyPostProps {
   post: CompletedPost;
@@ -62,6 +64,7 @@ const initialEditPostData: IEditPostData = {
 export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
   ({ post, onDelete }, ref) => {
     const router = useRouter();
+    const [deleteModal, setDeleteModal] = useState(false);
     const [_post, setPost] = useState(post);
     const { user } = useUser();
     const [togglePop, setTogglePop] = useState<boolean>(false);
@@ -402,7 +405,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                       >
                         <ArchiveIcon className={toggleListIcons} /> Archive
                       </button>
-                      <button className={toggleListBtn} onClick={deletePost}>
+                      <button
+                        className={toggleListBtn}
+                        onClick={() => {
+                          togglePopFunc();
+                          setDeleteModal(true);
+                        }}
+                      >
                         <TrashIcon className={toggleListIcons} /> Delete
                       </button>
                     </div>
@@ -652,6 +661,42 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
             </CustomModal>
           )}
         </div>
+        <ModalWrapper
+          isOpen={deleteModal}
+          onClose={() => setDeleteModal(false)}
+          title={"Delete Post"}
+        >
+          <div className="lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8">
+            <div className="flex justify-center">
+              <DeleteCrossIcon />
+            </div>
+            <div className="flex flex-col gap-2 items-center">
+              <h2 className="font-semibold lg:text-lg sm:text-lg text-center text-white">
+                Are you sure?
+              </h2>
+              <h2 className="font-[400px] lg:text-lg sm:text-sm text-center text-[#ABAFC4]">
+                Do you want to delete this post? This process cannot be undone.
+              </h2>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeleteModal(false)}
+                className="mt-2 py-3 w-full font-bold rounded-lg items-center justify-center !bg-black-shade-7 hover:!bg-gray-900 transition-all text-[#666C8F]"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setDeleteModal(false);
+                  deletePost();
+                }}
+                className="mt-2 py-3 w-full font-bold rounded-lg items-center justify-center !bg-[#EA3943] hover:!bg-red-900  text-white"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </ModalWrapper>
       </div>
     );
   }
