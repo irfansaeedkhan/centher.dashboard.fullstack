@@ -21,7 +21,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   const profileCardDetails = useGetProfileCardDetails(user);
 
   return (
-    <div className={profileDetailCardContainer}>
+    <div
+      className={`w-11/12 sm:w-[272px] lg:sticky lg:top-0 py-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`}
+    >
       <Link
         href={{
           pathname: AppRoutes.profile.account_address,
@@ -48,7 +50,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       >
         <h3 className={profileName}>{user.display_name}</h3>
       </Link>
-      <div className={numberDetails}>
+      <div
+        className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
+      >
         <div>
           <h4 className={detailnumTitle}>Post</h4>
           <h5 className={detailNumValue}>
@@ -92,17 +96,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 };
 
 // styling
-const profileDetailCardContainer = ctl(`
-  w-full lg:sticky lg:top-0 max-w-[272px] pt-6  rounded-10px text-center bg-background-shade-3 overflow-hidden
-`);
+
 const profilePic = ctl(`
   w-[60px] h-[60px] mx-auto rounded-full cursor-pointer dpImagePreview
 `);
 const profileName = ctl(`
   text-14px font-bold pt-3 pb-6 text-white cursor-pointer
-`);
-const numberDetails = ctl(`
-  bg-background-shade-2 p-3 flex items-center justify-center gap-8 
 `);
 const detailnumTitle = ctl(`
   text-12px font-medium text-gray-shade-7 mb-2
@@ -110,9 +109,7 @@ const detailnumTitle = ctl(`
 const detailNumValue = ctl(`
   text-14px font-semibold text-white
 `);
-const viewBox = ctl(`
-   flex items-center justify-between px-4 py-2
-`);
+const viewBox = `flex items-center justify-between px-4 py-2`;
 const viewBoxTitle = ctl(`
   text-12px font-medium text-gray-shade-7
 `);
