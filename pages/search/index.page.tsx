@@ -1,44 +1,52 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import ctl from "@netlify/classnames-template-literals";
 
+import { useSearchStore } from "@/store/search.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { useRouter } from "next/router";
-import { axiosNodeApi } from "@/utils/axios";
-import { LoadingState } from "@/models/common";
 
 import { SingleSearchUser } from "./_components";
-import type { SearchResult } from "./_components";
 
-// Current page imports
 const Search: NextPageWithLayout = () => {
-  const router = useRouter();
-  const [searchResult, setSearchResult] = useState<SearchResult[]>([]);
-  const [isDataLoading, setIsDataLoading] = useState<LoadingState>("idle");
+  // For infinite scrolling
+  const {
+    searchQuery,
+    searchOffset,
+    searchLoadingState,
+    searchResults,
+    fetchSearchResults,
+    updateSearchOffset,
+    resetSearchResults,
+  } = useSearchStore((state) => ({
+    searchQuery: state.searchQuery,
+    searchOffset: state.searchOffset,
+    searchLoadingState: state.searchLoadingState,
+    searchResults: state.searchResults,
+    fetchSearchResults: state.fetchSearchResults,
+    updateSearchOffset: state.updateSearchOffset,
+    resetSearchResults: state.resetSearchResults,
+  }));
+
+  const { ref: lastResultRef, entry: lastResultEntry } = useInView();
 
   useEffect(() => {
-    if (router.query.q) {
-      getReults(router.query.q.toString());
-    } else {
-      setSearchResult([]);
-      setIsDataLoading("loaded");
+    if (lastResultEntry?.isIntersecting) {
+      updateSearchOffset();
     }
-  }, [router.query.q]);
+  }, [updateSearchOffset, lastResultEntry]);
 
-  const getReults = (query: string) => {
-    setIsDataLoading("loading");
-    axiosNodeApi
-      .get(`/api/search?q=${query}&limit=10&offset=0`)
-      .then((response) => {
-        setSearchResult(response.data.users as SearchResult[]);
-        setIsDataLoading("loaded");
-      })
-      .catch(() => {
-        setIsDataLoading("failed");
-        setSearchResult([]);
-      });
-  };
+  useEffect(() => {
+    if (searchOffset > 0) {
+      fetchSearchResults();
+    }
+  }, [fetchSearchResults, searchOffset]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      resetSearchResults("loading");
+      fetchSearchResults();
+    }
+  }, [searchQuery, resetSearchResults, fetchSearchResults]);
 
   return (
     <div className="w-full flex justify-center">
@@ -49,24 +57,33 @@ const Search: NextPageWithLayout = () => {
           Search Result:
         </div>
         <div className="flex flex-col gap-3">
-          {searchResult.length > 0 &&
-            isDataLoading === "loaded" &&
-            searchResult.map((result) => {
+          {searchResults.length > 0 &&
+            searchResults.map((result, i) => {
+              if (i === searchResults.length - 1) {
+                return (
+                  <SingleSearchUser
+                    key={result._id}
+                    result={result}
+                    ref={lastResultRef}
+                  />
+                );
+              }
               return <SingleSearchUser key={result._id} result={result} />;
             })}
 
-          {searchResult.length <= 0 && isDataLoading === "loaded" && (
+          {searchResults.length <= 0 && searchLoadingState === "loaded" && (
             <div className="text-brand-primary font-semibold">
               There is no result for this query!
             </div>
           )}
 
           {/* TODO: Talha - implement loading skeleton here */}
-          {(isDataLoading === "loading" || isDataLoading === "idle") && (
+          {(searchLoadingState === "loading" ||
+            searchLoadingState === "idle") && (
             <div className="text-brand-primary font-semibold">Searching...</div>
           )}
 
-          {isDataLoading === "failed" && (
+          {searchLoadingState === "failed" && (
             <div className="text-brand-primary font-semibold">
               Something went wrong!
             </div>

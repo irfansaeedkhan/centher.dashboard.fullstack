@@ -15,7 +15,10 @@ interface SingleSearchUserProps {
   result: SearchResult;
 }
 
-const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
+const SingleSearchUser = React.forwardRef<
+  HTMLDivElement,
+  SingleSearchUserProps
+>(({ result }, ref) => {
   const [_result, setResult] = useState<SearchResult>(result);
   const { user: loggedInUser } = useUser();
 
@@ -37,7 +40,10 @@ const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
   };
 
   return (
-    <div className="p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between">
+    <div
+      ref={ref}
+      className="p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between"
+    >
       <div className="flex gap-2 items-center">
         <Link href={`/profile/${_result.account_address}`}>
           <Image
@@ -74,7 +80,9 @@ const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
       )}
     </div>
   );
-};
+});
+
+SingleSearchUser.displayName = "SingleSearchUser";
 
 export default SingleSearchUser;
 

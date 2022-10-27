@@ -1,22 +1,37 @@
-import { SearchIcon } from "@/assets/svgs";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+
+import { useSearchStore } from "@/store/search.store";
+import { SearchIcon } from "@/assets/svgs";
 
 const Search = () => {
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  const { setSearchQuery } = useSearchStore((state) => ({
+    setSearchQuery: state.setSearchQuery,
+  }));
+
+  const [searchQueryInput, setSearchQueryInput] = useState("");
+
+  useEffect(() => {
+    if (router.query.q) {
+      setSearchQuery(router.query.q.toString());
+      setSearchQueryInput(router.query.q.toString());
+    } else {
+      setSearchQuery("");
+      setSearchQueryInput("");
+    }
+  }, [router.query.q, setSearchQuery]);
 
   const submitData: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    if (searchQuery.trim() === "") {
+
+    if (searchQueryInput.trim() === "") {
       return;
     }
-    router.push(`/search?q=${searchQuery.trim()}`);
-    setSearchQuery("");
+
+    setSearchQuery(searchQueryInput);
+    router.push(`/search?q=${searchQueryInput.trim()}`);
   };
 
   return (
@@ -29,8 +44,8 @@ const Search = () => {
           type="text"
           placeholder="Search"
           className="focus:outline-none p-0 focus:ring-0 w-full text-white bg-transparent border-0"
-          value={searchQuery}
-          onChange={handleChange}
+          value={searchQueryInput}
+          onChange={(e) => setSearchQueryInput(e.target.value)}
         />
         <button type="submit">
           <SearchIcon />
