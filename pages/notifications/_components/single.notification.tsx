@@ -46,7 +46,7 @@ export const SingleNotification = React.forwardRef<
         href={`/profile/${notification.by.account_address}`}
         className="text-sm text-white hover:text-brand-primary"
       >
-        {notification.by.display_name}started following you.
+        {notification.by.display_name} started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -55,7 +55,7 @@ export const SingleNotification = React.forwardRef<
         href={`/profile/${notification.by.account_address}`}
         className="text-sm text-white hover:text-brand-primary"
       >
-        {notification.by.display_name}has joined your network.
+        {notification.by.display_name} has joined your network.
       </Link>
     );
   }

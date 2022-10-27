@@ -1,45 +1,47 @@
+import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import clsx from "clsx";
+import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
+
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
-import ctl from "@netlify/classnames-template-literals";
-import clsx from "clsx";
-import Image from "next/image";
-import Link from "next/link";
-import React, { useState } from "react";
-import toast from "react-hot-toast";
+
+import type { SearchResult } from "./types";
 
 interface SingleSearchUserProps {
-  result: any;
+  result: SearchResult;
 }
 
 const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
-  const [isFollow, setIsFollow] = useState(result.is_followed_by_loggedin_user);
+  const [_result, setResult] = useState<SearchResult>(result);
   const { user: loggedInUser } = useUser();
 
-  const followUser = async (following_id: string, name: string) => {
+  const followUser = async (following_id: string) => {
     try {
-      const response = await axiosNodeApi.post("api/socials/follows", {
+      setResult((prev) => ({
+        ...prev,
+        is_followed_by_loggedin_user: !prev.is_followed_by_loggedin_user,
+      }));
+
+      await axiosNodeApi.post("api/socials/follows", {
         following_id,
       });
-      if (response.data.message == "follow_success") {
-        setIsFollow(true);
-        toast.success(`You are now following ${name}`);
-      } else if (response.data.message == "unfollow_success") {
-        setIsFollow(false);
-        toast.success(`You are no longer following ${name}`);
-      }
     } catch (error: any) {
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
     }
   };
+
   return (
-    <div className="md:w-[544px] sm:w-full p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between">
+    <div className="p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between">
       <div className="flex gap-2 items-center">
-        <Link href={`/profile/${result.account_address}`}>
+        <Link href={`/profile/${_result.account_address}`}>
           <Image
-            src={result.profile_image.path}
+            src={_result.profile_image.path}
             alt=""
             width={40}
             height={40}
@@ -48,22 +50,26 @@ const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
         </Link>
         <div className="flex flex-col gap-1">
           <Link
-            href={`/profile/${result.account_address}`}
+            href={`/profile/${_result.account_address}`}
             className="text-base font-semibold text-white hover:text-brand-primary"
           >
-            {result.display_name}
+            {_result.display_name}
           </Link>
           <div className="text-sm text-gray-shade-2">
-            {sliceAccountAddress(result.account_address)}
+            {sliceAccountAddress(_result.account_address)}
           </div>
         </div>
       </div>
-      {loggedInUser?._id !== result._id && (
+      {loggedInUser?._id !== _result._id && (
         <button
-          className={clsx(isFollow ? followingButton : connectButton)}
-          onClick={() => followUser(result._id, result.display_name)}
+          className={clsx(
+            _result.is_followed_by_loggedin_user
+              ? followingButton
+              : connectButton
+          )}
+          onClick={() => followUser(_result._id)}
         >
-          {isFollow ? "Following" : "Follow"}
+          {_result.is_followed_by_loggedin_user ? "Following" : "Follow"}
         </button>
       )}
     </div>
