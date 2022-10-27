@@ -1,3 +1,4 @@
+import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import ctl from "@netlify/classnames-template-literals";
@@ -13,6 +14,7 @@ interface SingleSearchUserProps {
 
 const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
   const [isFollow, setIsFollow] = useState(result.is_followed_by_loggedin_user);
+  const { user: loggedInUser } = useUser();
 
   const followUser = async (following_id: string, name: string) => {
     try {
@@ -35,14 +37,15 @@ const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
   return (
     <div className="md:w-[544px] sm:w-full p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between">
       <div className="flex gap-2 items-center">
-        <Image
-          src={result.profile_image.path}
-          alt=""
-          width={40}
-          height={40}
-          className="!w-10 !h-10 rounded-full object-cover"
-        />
-
+        <Link href={`/profile/${result.account_address}`}>
+          <Image
+            src={result.profile_image.path}
+            alt=""
+            width={40}
+            height={40}
+            className="!w-10 !h-10 rounded-full object-cover"
+          />
+        </Link>
         <div className="flex flex-col gap-1">
           <Link
             href={`/profile/${result.account_address}`}
@@ -55,12 +58,14 @@ const SingleSearchUser: React.FC<SingleSearchUserProps> = ({ result }) => {
           </div>
         </div>
       </div>
-      <button
-        className={clsx(isFollow ? followingButton : connectButton)}
-        onClick={() => followUser(result._id, result.display_name)}
-      >
-        {isFollow ? "Following" : "Follow"}
-      </button>
+      {loggedInUser?._id !== result._id && (
+        <button
+          className={clsx(isFollow ? followingButton : connectButton)}
+          onClick={() => followUser(result._id, result.display_name)}
+        >
+          {isFollow ? "Following" : "Follow"}
+        </button>
+      )}
     </div>
   );
 };
