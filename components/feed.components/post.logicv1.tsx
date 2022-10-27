@@ -153,17 +153,15 @@ export function usePostUpload({
   const refe: any = useRef(null);
 
   const onEmojiClick = (emojiObject: any, event: any) => {
-    console.log("emoji clicked");
-    const cursor = refe?.current?.selectionStart;
-    const text =
-      tweetText.slice(0, cursor) + emojiObject?.emoji + tweetText.slice(cursor);
-    // setweetText((prev) => prev + text);
-    setweetText(text);
+    // const cursor = refe?.current?.selectionStart;
+    // const text = emojiObject?.emoji;
+    setweetText((prev) => prev + emojiObject?.emoji);
+    // setweetText(text);
     // setTotalPostLikes((prev) => prev + 1);
     // setShowModal(true);
     //Codes added for the new cursor
-    const newCursor = cursor + emojiObject?.emoji?.length;
-    setTimeout(() => refe.current.setSelectionRange(newCursor, newCursor), 10);
+    // const newCursor = cursor + emojiObject?.emoji?.length;
+    // setTimeout(() => refe.current.setSelectionRange(newCursor, newCursor), 10);
   };
 
   // TODO: fix any types please

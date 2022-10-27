@@ -89,6 +89,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
 
+    // For Emoji Picker
+    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+    useOnClickOutside(emojiPickerRef, () => setIsEmojiPickerVisible(false));
+
     const [togglePop, setTogglePop] = useState(false);
     const [toggleSharePop, setToggleSharePop] = useState(false);
     const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
@@ -830,17 +835,18 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     <button
                       className={`${uploadBtn} text-[#00BF96]`}
                       onClick={() => {
-                        setTogglePop(true);
+                        setTogglePop((prev) => !prev);
+                        setIsEmojiPickerVisible((prev) => !prev);
                       }}
                     >
                       <EmojiIcon />
                       Emoji
                     </button>
-                    {togglePop && (
+                    {isEmojiPickerVisible && (
                       <div
-                        ref={ref}
+                        ref={emojiPickerRef}
                         className={`emojiContainer absolute right-[0] top-[287px] ${
-                          togglePop && "!block z-40"
+                          isEmojiPickerVisible && "!block z-40"
                         }`}
                       >
                         <Picker
