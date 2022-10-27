@@ -74,7 +74,6 @@ const SinglePostPage: NextPageWithLayout = () => {
             />
           )}
 
-          {/* TODO: Waqar - create part according to design for deleted post */}
           {post?.status === "deleted" && (
             <NoPostMessage message="The post was deleted by author." />
           )}
@@ -83,12 +82,10 @@ const SinglePostPage: NextPageWithLayout = () => {
         </div>
       )}
 
-      {loadingState === "loading" && (
-        <>
+      {(loadingState === "loading" || loadingState === "idle") && (
+        <div className="mt-9">
           <SinglePostCardSkeleton />
-          <SinglePostTextCardSkeleton />
-          <SinglePostCardSkeleton />
-        </>
+        </div>
       )}
 
       {loadingState === "failed" && (
