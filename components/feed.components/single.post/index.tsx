@@ -48,6 +48,7 @@ import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
+import { ModalWrapper } from "@/components/modal";
 
 interface FeedCardLevel1Props {
   post: CompletedPost;
@@ -75,6 +76,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const decrementPostsCount = useProfileCardStore(
       (state) => state.decrementPostsCount
     );
+    const [deleteModal, setDeleteModal] = useState(false);
     const [_post, setPost] = useState<CompletedPost>(post);
     const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [skip, setSkip] = useState(0);
@@ -86,6 +88,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
+
+    // For Emoji Picker
+    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
+    const emojiPickerRef = useRef<HTMLDivElement>(null);
+    useOnClickOutside(emojiPickerRef, () => setIsEmojiPickerVisible(false));
 
     const [togglePop, setTogglePop] = useState(false);
     const [toggleSharePop, setToggleSharePop] = useState(false);
@@ -473,7 +480,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 </button>
                 {timeNow >= timeAfter15Minutes ? (
                   <div
-                    className={`${toggleList} ${togglePop && "!block z-50"}`}
+                    className={`${toggleList} ${togglePop && "!block z-40"}`}
                   >
                     <button
                       className={toggleListBtn}
@@ -486,7 +493,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   </div>
                 ) : (
                   <div
-                    className={`${toggleList} ${togglePop && "!block z-50"}`}
+                    className={`${toggleList} ${togglePop && "!block z-40"}`}
                   >
                     <button
                       className={toggleListBtn}
@@ -507,7 +514,17 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     >
                       <ArchiveIcon className={toggleListIcons} /> Archive
                     </button>
-                    <button className={toggleListBtn} onClick={deletePost}>
+                    <ModalWrapper
+                      isOpen={deleteModal}
+                      onClose={() => setDeleteModal(false)}
+                      title={"Delete Post"}
+                    >
+                      <div>hellooo</div>
+                    </ModalWrapper>
+                    <button
+                      className={toggleListBtn}
+                      onClick={() => setDeleteModal(true)}
+                    >
                       <TrashIcon className={toggleListIcons} /> Delete
                     </button>
                   </div>
@@ -611,7 +628,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
               <div
                 className={`${SharetoggleList} ${
-                  toggleSharePop && "!block z-50"
+                  toggleSharePop && "!block z-40"
                 }`}
               >
                 {/* <button className={SharetoggleListBtn}>
@@ -633,7 +650,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </div>
               <div
                 className={`${SharetoggleList} ${
-                  toggleSharePop_2 && "!block z-50"
+                  toggleSharePop_2 && "!block z-40"
                 }`}
               >
                 <button
@@ -818,17 +835,18 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     <button
                       className={`${uploadBtn} text-[#00BF96]`}
                       onClick={() => {
-                        setTogglePop(true);
+                        setTogglePop((prev) => !prev);
+                        setIsEmojiPickerVisible((prev) => !prev);
                       }}
                     >
                       <EmojiIcon />
                       Emoji
                     </button>
-                    {togglePop && (
+                    {isEmojiPickerVisible && (
                       <div
-                        ref={ref}
+                        ref={emojiPickerRef}
                         className={`emojiContainer absolute right-[0] top-[287px] ${
-                          togglePop && "!block z-50"
+                          isEmojiPickerVisible && "!block z-40"
                         }`}
                       >
                         <Picker

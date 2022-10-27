@@ -44,7 +44,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
 
 const modalWrapper = ctl(`
   flex 
-  z-50 
+  z-[100] 
   fixed 
   inset-0 
   items-center 
