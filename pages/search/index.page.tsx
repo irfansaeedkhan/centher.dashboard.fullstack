@@ -15,20 +15,24 @@ import SingleSearchUser from "./_components/single.search.user";
 const Search: NextPageWithLayout = () => {
   const router = useRouter();
   const [searchResult, setSearchResult] = useState([]);
+  const [isDataLoading, setIsDataLoading] = useState(true);
 
   useEffect(() => {
     if (router.query.q) {
       getReults(router.query.q);
+    } else {
+      setIsDataLoading(false);
     }
   }, [router]);
 
   const getReults = (query: any) => {
+    setIsDataLoading(true);
     axiosNodeApi
       .get(`api/search?q=${query}&limit=10&offset=0`)
       .then((response) => {
         setSearchResult(response.data.users);
-        console.log(response.data.users);
       });
+    setIsDataLoading(false);
   };
 
   return (
@@ -40,15 +44,16 @@ const Search: NextPageWithLayout = () => {
           Search Result:
         </div>
         <div className="flex flex-col gap-3">
-          {searchResult.length > 0 ? (
-            searchResult.map((result, i) => {
-              return <SingleSearchUser key={i} result={result} />;
-            })
-          ) : (
-            <div className="text-brand-primary font-semibold">
-              There is no result for this query!
-            </div>
-          )}
+          {searchResult.length > 0 && !isDataLoading
+            ? searchResult.map((result, i) => {
+                return <SingleSearchUser key={i} result={result} />;
+              })
+            : searchResult.length <= 0 &&
+              !isDataLoading && (
+                <div className="text-brand-primary font-semibold">
+                  There is no result for this query!
+                </div>
+              )}
         </div>
       </div>
     </div>

@@ -29,6 +29,9 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current directory imports
 import { useUserMediaUpload } from "./upload.media.logic";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
+import { type } from "os";
+import UserProfileTabs from "./user.profile.tabs";
+import type { SelectedTab } from "./types";
 
 interface FollowUser {
   setFollowUser?: (arg0: boolean) => void;
@@ -62,6 +65,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [selectedTab, setSelectedTab] = useState<SelectedTab>("Posts");
 
   useEffect(() => {
     setDescription(user?.profile_bio);
@@ -227,7 +231,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                 alt={user.display_name}
                 width={111}
                 height={112}
-                className="rounded-full h-[112px] w-[111px] object-cover border border-gray-shade-3"
+                className="rounded-full h-[112px] w-[111px] object-cover border-2 border-background-shade-3"
               />
             </div>
           </div>
@@ -312,6 +316,10 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             <div className={textContent}>
               <p className={profileDescription}>{description}</p>
             </div>
+            <UserProfileTabs
+              onSelect={setSelectedTab}
+              selectedTab={selectedTab}
+            />
           </div>
         </div>
       ) : (
@@ -344,7 +352,7 @@ const profileImage = ctl(`
 cursor-pointer absolute left-6 -bottom-12
 `);
 const coverDetails = ctl(`
-mt-8 lg:mt-10 p-7
+mt-8 lg:mt-10 px-7 pt-7
 `);
 const topDetais = ctl(`
  flex flex-col lg:flex-row items-baseline justify-between
