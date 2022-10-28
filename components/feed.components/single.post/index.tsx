@@ -609,7 +609,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   src={_post.user.profile_image.path}
                   width={30}
                   height={30}
-                  className="rounded-full w-[30px] h-[30px] object-cover border border-gray-shade-3"
+                  className="rounded-full w-[30px] h-[30px] object-cover"
                   alt={_post.user.display_name}
                   sizes="256px"
                 />
@@ -667,7 +667,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     width={44}
                     height={44}
                     alt={user?.display_name ?? "profile image"}
-                    className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
+                    className="rounded-full w-[44px] h-[44px] object-cover"
                     sizes="256px"
                   />
                   <h5 className={cdName}>{user?.display_name}</h5>
@@ -832,7 +832,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     src={user.profile_image.path}
                     width={44}
                     height={44}
-                    className="rounded-full w-[44px] h-[44px] object-cover border border-gray-shade-3"
+                    className="rounded-full w-[44px] h-[44px] object-cover"
                     alt={user.display_name ?? "profile image"}
                     sizes="256px"
                   />

@@ -78,7 +78,7 @@ export const SingleNotification = React.forwardRef<
             alt="dp"
             width={56}
             height={56}
-            className="rounded-full h-[56px] w-[56px] object-cover border border-gray-shade-3"
+            className="rounded-full h-[56px] w-[56px] object-cover"
           />
         </Link>
 

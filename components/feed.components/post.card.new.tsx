@@ -102,7 +102,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           src={user.profile_image.path}
           width={48}
           height={48}
-          className={`rounded-full object-cover border border-gray-shade-3 w-[48px] h-[48px]`}
+          className={`rounded-full object-cover w-[48px] h-[48px]`}
           alt={"icon"}
           sizes={"256px"}
         />
@@ -167,7 +167,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 src={user.profile_image.path}
                 width={44}
                 height={44}
-                className="rounded-full object-cover border border-gray-shade-3 w-[44px] h-[44px]"
+                className="rounded-full object-cover w-[44px] h-[44px]"
                 alt={user.display_name ?? "profile image"}
                 sizes={"256px"}
               />

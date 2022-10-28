@@ -25,7 +25,7 @@ const PostUserDetails: React.FC<PostUserDetailsProps> = ({ post }) => {
           src={post.user.profile_image.path}
           width={48}
           height={48}
-          className="rounded-full cursor-pointer w-[48px] h-[48px] object-cover border border-gray-shade-3"
+          className="rounded-full cursor-pointer w-[48px] h-[48px] object-cover"
           alt={post.user.display_name}
           sizes="256px"
         />

@@ -120,7 +120,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
           width={80}
           height={80}
           alt="display-picture"
-          className="rounded-full !h-[80px] object-cover border border-gray-shade-3 bg-[#ffffff08]"
+          className="rounded-full !h-[80px] object-cover bg-[#ffffff08]"
         />
       </div>
       <div className={fieldTitle}>
