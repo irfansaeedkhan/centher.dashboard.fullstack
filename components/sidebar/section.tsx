@@ -130,6 +130,6 @@ const itemLabelActive = ctl(`
   text-white 
 `);
 
-const itemIcons = ctl(`stroke-gray-shade-8`);
+const itemIcons = ctl(`stroke-gray-shade-7 stroke-[1.5]`);
 
-const itemIconsActive = ctl(`stroke-white`);
+const itemIconsActive = ctl(`stroke-white stroke-[1.5]`);
