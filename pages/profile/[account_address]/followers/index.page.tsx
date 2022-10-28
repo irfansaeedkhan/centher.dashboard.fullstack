@@ -49,6 +49,7 @@ const Followers: NextPageWithLayout = () => {
         </div>
       </div>
       <div className="flex flex-col gap-3 w-full">
+        {/* TODO: Talha add the Skeletons  */}
         {followers.map((result) => {
           return <UserWithFollow key={result._id} result={result} />;
         })}
