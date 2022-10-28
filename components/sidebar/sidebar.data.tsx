@@ -5,17 +5,15 @@ import {
   CreateCollection,
   DaoGovernment,
   Explore,
-  Logout,
-  NetworkRewards,
   Notification,
   ProfitsDashboard,
-  ReferralProgram,
-  StakingPack,
   TopInfluencer,
   VotingChain,
   Multilevel,
   NetworkGenealogy,
   LiquidityPoolSvg,
+  NetworkRewards,
+  StakingContract,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -73,14 +71,29 @@ export const sidebarData: SidebarData = {
         icon: LiquidityPoolSvg,
       },
       {
-        label: "Staking Pack",
+        label: "Staking Contract",
         url: AppRoutes.staking_packs,
-        icon: StakingPack,
+        icon: StakingContract,
       },
       {
         label: "Network Rewards",
         url: AppRoutes.network_rewards,
         icon: NetworkRewards,
+      },
+    ],
+  },
+  referral_program: {
+    label: "REFERRAL PROGRAM",
+    items: [
+      {
+        label: "Multilevel License",
+        url: AppRoutes.referral_program,
+        icon: Multilevel,
+      },
+      {
+        label: "Network Genealogy",
+        url: AppRoutes.referral_program,
+        icon: NetworkGenealogy,
       },
     ],
   },
@@ -104,27 +117,12 @@ export const sidebarData: SidebarData = {
       },
     ],
   },
-  referral_program: {
-    label: "REFERRAL PROGRAM",
-    items: [
-      {
-        label: "Multilevel License",
-        url: AppRoutes.referral_program,
-        icon: Multilevel,
-      },
-      {
-        label: "Network Genealogy",
-        url: AppRoutes.referral_program,
-        icon: NetworkGenealogy,
-      },
-    ],
-  },
 };
 
 export const SidebarSections = [
   sidebarData.social_network,
   sidebarData.nft_marketplace,
   sidebarData.decentralized_finance,
-  sidebarData.dao_government,
   sidebarData.referral_program,
+  sidebarData.dao_government,
 ];

@@ -3,17 +3,9 @@ import { devtools } from "zustand/middleware";
 
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
+import { IUserWithFollow } from "@/components/user.with.follow/types";
 
-export interface SearchResult {
-  _id: string;
-  display_name: string;
-  account_address: string;
-  profile_image: {
-    path: string;
-    object_name: string;
-  };
-  is_followed_by_loggedin_user: boolean;
-}
+export interface SearchResult extends IUserWithFollow {}
 
 export interface SearchStore {
   searchQuery: string;

@@ -8,6 +8,8 @@ export const AppRoutes = {
   profile: {
     // Authenticated Pages
     account_address: "/profile/[account_address]",
+    following: "/profile/[account_address]/following",
+    followers: "/profile/[account_address]/followers",
     settings: "/profile/settings",
 
     // Coming soon pages
@@ -47,7 +49,7 @@ export const AppRoutes = {
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",
-  staking_packs: "/staking-pack",
+  staking_packs: "/staking-contract",
   liquidity_pool: "/liquidity-pool",
 
   nfts: {
