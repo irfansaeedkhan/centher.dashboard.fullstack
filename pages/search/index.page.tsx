@@ -5,7 +5,7 @@ import { useSearchStore } from "@/store/search.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
-import { SingleSearchUser } from "./_components";
+import { UserWithFollow } from "./_components";
 
 const Search: NextPageWithLayout = () => {
   // For infinite scrolling
@@ -61,14 +61,14 @@ const Search: NextPageWithLayout = () => {
             searchResults.map((result, i) => {
               if (i === searchResults.length - 1) {
                 return (
-                  <SingleSearchUser
+                  <UserWithFollow
                     key={result._id}
                     result={result}
                     ref={lastResultRef}
                   />
                 );
               }
-              return <SingleSearchUser key={result._id} result={result} />;
+              return <UserWithFollow key={result._id} result={result} />;
             })}
 
           {searchResults.length <= 0 && searchLoadingState === "loaded" && (
