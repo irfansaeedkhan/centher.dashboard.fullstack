@@ -54,6 +54,8 @@ const onlyPublicPages = changePaths(_onlyPublicPages);
 // Authenticated Pages
 const _authenticatedUserPages: string[] = [
   AppRoutes.profile.account_address,
+  AppRoutes.profile.followers,
+  AppRoutes.profile.following,
   AppRoutes.profile.settings,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
