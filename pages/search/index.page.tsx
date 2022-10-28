@@ -6,6 +6,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 import { SingleSearchUser } from "./_components";
+import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 
 const Search: NextPageWithLayout = () => {
   // For infinite scrolling
@@ -79,9 +80,7 @@ const Search: NextPageWithLayout = () => {
 
           {/* TODO: Talha - implement loading skeleton here */}
           {(searchLoadingState === "loading" ||
-            searchLoadingState === "idle") && (
-            <div className="text-brand-primary font-semibold">Searching...</div>
-          )}
+            searchLoadingState === "idle") && <SearchUserSkeleton />}
 
           {searchLoadingState === "failed" && (
             <div className="text-brand-primary font-semibold">
