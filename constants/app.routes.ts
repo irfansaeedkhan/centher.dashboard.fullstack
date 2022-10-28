@@ -49,7 +49,7 @@ export const AppRoutes = {
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",
-  staking_packs: "/staking-pack",
+  staking_packs: "/staking-contract",
   liquidity_pool: "/liquidity-pool",
 
   nfts: {

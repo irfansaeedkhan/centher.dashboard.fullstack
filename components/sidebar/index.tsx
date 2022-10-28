@@ -53,7 +53,7 @@ export const Sidebar = () => {
       </div>
       {user && (
         <div className="flex flex-col gap-8">
-          <div className={sectionWrapper}>
+          {/* <div className={sectionWrapper}>
             <div className={sectionWrapper2}>
               <Link href={AppRoutes.profile.settings} className={itemWrapper}>
                 <SettingIcon
@@ -74,8 +74,8 @@ export const Sidebar = () => {
                 </div>
               </Link>
             </div>
-          </div>
-          <div className={sectionWrapper}>
+          </div> */}
+          <div className={sectionWrapper3}>
             <span className={sectionLabel}>WILL YOU GET OUT?</span>
             <div className={sectionWrapper2}>
               <div className={itemWrapper}>
@@ -115,6 +115,12 @@ const sectionWrapper = ctl(`
   flex-col
   px-5
 `);
+const sectionWrapper3 = ctl(`
+  flex
+  gap-[6px] 
+  flex-col
+  px-5
+`);
 
 const sectionWrapper2 = ctl(`
   flex
@@ -125,7 +131,7 @@ const sectionWrapper2 = ctl(`
 const sectionLabel = ctl(`
   font-bold
   text-[11px] 
-  text-gray-shade-7 
+  text-gray-shade-11 
 `);
 
 const itemWrapper = ctl(`
@@ -137,7 +143,7 @@ const itemWrapper = ctl(`
 const itemLabel = ctl(`
   text-sm
   font-semibold 
-  text-gray-shade-8 
+  text-gray-shade-7 
 `);
 
 const itemLabelActive = ctl(`
@@ -150,4 +156,4 @@ const itemIcons = ctl(`stroke-gray-shade-8`);
 
 const itemIconsActive = ctl(`stroke-white`);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
+const sideBarWrapperStyling = ctl(`flex flex-col gap-5`);
