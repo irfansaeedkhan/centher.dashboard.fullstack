@@ -9,6 +9,7 @@ import { useNotificationsStore } from "@/store/notifications.store";
 
 // Current directory imports
 import { SidebarSection } from "./shared";
+import clsx from "clsx";
 
 export interface SectionProps {
   section: SidebarSection;
@@ -31,7 +32,7 @@ export const Section: React.FC<SectionProps> = (props) => {
   return (
     <div className={sectionWrapper}>
       <span className={sectionLabel}>{props.section.label}</span>
-      <div className={sectionWrapper}>
+      <div className={sectionWrapper2}>
         {props.section.items.map((item) => {
           let count: number | string = 0;
 
@@ -43,7 +44,15 @@ export const Section: React.FC<SectionProps> = (props) => {
           }
 
           return (
-            <div key={item.label} className="flex justify-between">
+            <div
+              key={item.label}
+              className={clsx(
+                router.pathname
+                  .replaceAll("-", " ")
+                  .includes(item.label.toLowerCase()) && "bg-black-shade-7",
+                "flex justify-between pl-6 pr-4 py-[6px]"
+              )}
+            >
               <div className={itemWrapper}>
                 <item.icon
                   className={
@@ -70,7 +79,7 @@ export const Section: React.FC<SectionProps> = (props) => {
               </div>
               {!!count && (
                 // <div>
-                <span className="bg-brand-primary rounded-lg w-8 h-fit flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
+                <span className="bg-brand-primary rounded-lg w-9 h-5 flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
                   {count}
                 </span>
                 // </div>
@@ -85,14 +94,22 @@ export const Section: React.FC<SectionProps> = (props) => {
 
 const sectionWrapper = ctl(`
   flex
-  gap-6 
+  gap-1 
+  flex-col
+`);
+const sectionWrapper2 = ctl(`
+  flex
+  gap-[2px] 
   flex-col
 `);
 
 const sectionLabel = ctl(`
   font-bold
   text-[11px] 
-  text-gray-shade-7 
+  pl-6
+  pr-4
+  
+  text-gray-shade-11
 `);
 
 const itemWrapper = ctl(`
@@ -104,7 +121,7 @@ const itemWrapper = ctl(`
 const itemLabel = ctl(`
   text-sm
   font-semibold 
-  text-gray-shade-8 
+  text-gray-shade-7 
 `);
 
 const itemLabelActive = ctl(`
