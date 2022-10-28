@@ -1,34 +1,33 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useInView } from "react-intersection-observer";
-import moment from "moment";
+import clsx from "clsx";
 import { toast } from "react-hot-toast";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import { Bars, Rings } from "react-loader-spinner";
+import { Rings } from "react-loader-spinner";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
-// App imports
+
+import { useFeedStore } from "@/store/feed.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { ModalWrapper } from "@/components/modal";
 import {
   MessageIcon,
   LikeIcon,
   ShareIcon,
-  DotsIcon,
-  EditIcon,
-  TrashIcon,
   PhotoIcon,
   VideoIcon,
   EmojiIcon,
@@ -42,14 +41,15 @@ import {
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
-import { ArchiveIcon } from "@/assets/svgs";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
-import { ModalWrapper } from "@/components/modal";
+import PostUserDetails from "./post.user.details";
+import Post3DotsMenu from "./post.3.dots.menu";
+import { useCurrentPageRoute } from "./use.current.page.route";
 
 interface FeedCardLevel1Props {
   post: CompletedPost;
@@ -78,12 +78,17 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const decrementPostsCount = useProfileCardStore(
       (state) => state.decrementPostsCount
     );
+    const incrementPostRepliesCount = useFeedStore(
+      (state) => state.incrementPostRepliesCount
+    );
     const [deleteModal, setDeleteModal] = useState(false);
+    const [shareUrl, setShareUrl] = useState("");
+
     const [replies, setReplies] = useState<CompletedPost[]>([]);
     const [skip, setSkip] = useState(0);
     const [loader, setLoader] = useState(false);
     const [lastPostRef, lastPostInView] = useInView();
-    const [currentPostRef, currentPostInView, currentPostEntry] = useInView({
+    const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
       threshold: 0.8,
     });
 
@@ -95,31 +100,27 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const emojiPickerRef = useRef<HTMLDivElement>(null);
     useOnClickOutside(emojiPickerRef, () => setIsEmojiPickerVisible(false));
 
-    const [togglePop, setTogglePop] = useState(false);
     const [toggleSharePop, setToggleSharePop] = useState(false);
     const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
-    const [shareUrl, setShareUrl] = useState("");
     const [updateLoadingButton, setUpdateLoadingButton] = useState<
       true | false
     >(false);
 
-    const currentPageRoute = useMemo(
-      () => ({
-        isSinglePostPage: router.pathname === AppRoutes.feed.single_post,
-        isFeedPage: router.pathname === AppRoutes.feed.index,
-        isProfilePage: router.pathname === AppRoutes.profile.account_address,
-      }),
-      [router.pathname]
-    );
+    const currentPageRoute = useCurrentPageRoute();
 
+    // Update post from props
     useEffect(() => {
-      setEditPostData((prev) => ({
-        ...prev,
-        editedPostText: _post.text_content ?? "",
-        media: _post.media ?? [],
-      }));
-    }, [_post.text_content, _post.media]);
+      setPost(post);
+    }, [post]);
 
+    // Set updated post share url
+    useEffect(() => {
+      setShareUrl(
+        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
+      );
+    }, [router, _post.user.account_address, _post._id]);
+
+    // Create Post View
     useEffect(() => {
       (async () => {
         if (
@@ -135,29 +136,110 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               viewed_by_loggedin_user: true,
             }));
           } catch (error) {
-            process.env.NODE_ENV !== "production" && console.dir(error);
+            process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+              console.dir(error);
           }
         }
       })();
     }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
+
+    const likePost = async (post_id: string) => {
+      try {
+        // putting it before the api call to make it feel faster
+        if (_post.liked_by_loggedin_user) {
+          setPost((prev) => ({
+            ...prev,
+            likes_count: prev.likes_count - 1,
+            liked_by_loggedin_user: false,
+          }));
+        } else {
+          setPost((prev) => ({
+            ...prev,
+            likes_count: prev.likes_count + 1,
+            liked_by_loggedin_user: true,
+          }));
+        }
+        await axiosNodeApi.post("api/socials/analytics/likes", {
+          post_id,
+        });
+      } catch (error: any) {
+        setPost((prev) => ({
+          ...prev,
+          likes_count: post.likes_count,
+          liked_by_loggedin_user: post.liked_by_loggedin_user,
+        }));
+
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
+    const sharePost = async () => {
+      try {
+        const { data } = await axiosNodeApi.post(
+          "api/socials/analytics/shares",
+          {
+            post_id: _post._id,
+          }
+        );
+
+        // Update share count
+        setPost((prev) => ({
+          ...prev,
+          shares_count: data.shares_count,
+        }));
+      } catch (error: any) {
+        // Reset share count
+        setPost((prev) => ({
+          ...prev,
+          shares_count: post.shares_count,
+        }));
+
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
+    const deletePost = async () => {
+      try {
+        await axiosNodeApi.delete(`/api/socials/posts/${_post._id}`);
+
+        toast.success("Post Deleted Successfully");
+
+        // Remove the post from posts state
+        onDelete(_post._id);
+
+        // Decrement the posts count in profile card details
+        decrementPostsCount();
+        onDelete(_post._id);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+
+    // Copy post share url to clipboard
+    const copyShareUrl = () => {
+      navigator.clipboard.writeText(shareUrl);
+      toast.success("Copy Link Successfully!");
+    };
+
+    useEffect(() => {
+      setEditPostData((prev) => ({
+        ...prev,
+        editedPostText: _post.text_content ?? "",
+        media: _post.media ?? [],
+      }));
+    }, [_post.text_content, _post.media]);
 
     useEffect(() => {
       if (lastPostInView) {
         setSkip(replies.length);
       }
     }, [replies, lastPostInView]);
-
-    // Update post
-    useEffect(() => {
-      setPost(post);
-    }, [post]);
-
-    // Set updated post share url
-    useEffect(() => {
-      setShareUrl(
-        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
-      );
-    }, [router, _post.user.account_address, _post._id]);
 
     // Fetch post replies
     useEffect(() => {
@@ -196,18 +278,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       skip,
       currentPageRoute.isSinglePostPage,
     ]);
-
-    // Copy post share url to clipboard
-    const copyShareUrl = () => {
-      navigator.clipboard.writeText(shareUrl);
-      toast.success("Copy Link Successfully!");
-    };
-
-    // ref for toggle function
-    const toggleContainerRef = useRef<HTMLDivElement>(null);
-    useOnClickOutside(toggleContainerRef, () => {
-      setTogglePop(false);
-    });
 
     const ref2 = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref2, () => {
@@ -251,8 +321,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       reply_address: _post.user.account_address,
       reply_post_id: _post._id,
       replyCount: _post.replies_count,
-      onPostCreated: (replies) => {
-        setReplies((prev) => [replies, ...prev]);
+      onPostCreated: (newPost) => {
+        setReplies((prev) => [newPost, ...prev]);
+        incrementPostRepliesCount(newPost.parent_post?._id);
       },
       userSelectedFiles,
       setUserSelectedFilesList,
@@ -264,106 +335,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setLastItem,
     });
 
-    const likePost = async (post_id: string) => {
-      try {
-        // putting it before the api call to make it feel faster
-        if (_post.liked_by_loggedin_user) {
-          setPost((prev) => ({
-            ...prev,
-            likes_count: prev.likes_count - 1,
-            liked_by_loggedin_user: false,
-          }));
-        } else {
-          setPost((prev) => ({
-            ...prev,
-            likes_count: prev.likes_count + 1,
-            liked_by_loggedin_user: true,
-          }));
-        }
-        await axiosNodeApi.post("api/socials/analytics/likes", {
-          post_id,
-        });
-      } catch (error: any) {
-        setPost((prev) => ({
-          ...prev,
-          likes_count: post.likes_count,
-          liked_by_loggedin_user: post.liked_by_loggedin_user,
-        }));
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-
     const handleDeleteReply = (post_id: string) => {
       setReplies(replies.filter((rep) => rep._id !== post_id));
-    };
-
-    const sharePost = async () => {
-      try {
-        const { data } = await axiosNodeApi.post(
-          "api/socials/analytics/shares",
-          {
-            post_id: _post._id,
-          }
-        );
-
-        // Update share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: data.shares_count,
-        }));
-      } catch (error: any) {
-        // Reset share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: post.shares_count,
-        }));
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-
-    const archivePost = async (post_id: string) => {
-      try {
-        await axiosNodeApi.patch(`/api/socials/posts/${post_id}/archive`);
-
-        toast.success("Post Archived Successfully");
-
-        if (currentPageRoute.isSinglePostPage) {
-          router.replace(AppRoutes.feed.index);
-          return;
-        }
-
-        // Using onDeleted prop to remove the post from the feed page as archiving the post is same as deleting it
-        onDelete(post_id);
-      } catch (error: any) {
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-
-    const deletePost = async () => {
-      try {
-        await axiosNodeApi.delete(`/api/socials/posts/${_post._id}`);
-
-        toast.success("Post Deleted Successfully");
-
-        // Remove the post from posts state
-        onDelete(_post._id);
-
-        // Decrement the posts count in profile card details
-        decrementPostsCount();
-        onDelete(_post._id);
-      } catch (error: any) {
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
     };
 
     const editPost = async () => {
@@ -403,16 +376,14 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }
     };
 
-    // toggle function to show/hide edit/delete popup
-    const togglePopFunc = async () => {
-      setTogglePop((prev) => !prev);
-    };
     const toggleSharePopFunc = async () => {
       setToggleSharePop((prev) => !prev);
     };
+
     const toggleSharePopFunc_2 = async () => {
       setToggleSharePop_2((prev) => !prev);
     };
+
     // function to set max value of text
     const handleEditTextLength = (postText: string) => {
       var box: HTMLElement | null = document.getElementById("trashRect");
@@ -432,104 +403,36 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }));
     };
 
-    // Timer to check 15 min difference
-    const timeNow = moment();
-    const timeAfter15Minutes = moment(_post.createdAt).add(15, "minutes");
-
     return (
       <div ref={currentPostRef}>
-        <div className={postCardContainer} ref={ref}>
+        <div
+          className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+          ref={ref}
+        >
+          {/* Connect Lines */}
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && <div className={connectLines}></div>}
-          <div className={topCard}>
-            <div className={profileDetail}>
-              <Link
-                href={{
-                  pathname: AppRoutes.profile.account_address,
-                  query: {
-                    account_address: post.user?.account_address,
-                  },
-                }}
-              >
-                <Image
-                  src={_post.user.profile_image.path}
-                  width={48}
-                  height={48}
-                  className="rounded-full cursor-pointer w-[48px] h-[48px] object-cover border border-gray-shade-3"
-                  alt={_post.user.display_name}
-                  sizes="256px"
-                />
-              </Link>
-              <div>
-                <Link
-                  href={{
-                    pathname: AppRoutes.profile.account_address,
-                    query: {
-                      account_address: post.user?.account_address,
-                    },
-                  }}
-                >
-                  <h5 className={PFName}>{_post.user.display_name}</h5>
-                </Link>
-                <h6 className={PFTime}>{moment(_post.createdAt).fromNow()}</h6>
-              </div>
-            </div>
-            {_post.user._id === user?._id && (
-              <div ref={toggleContainerRef} className={toggleContainer}>
-                <button onClick={togglePopFunc}>
-                  <DotsIcon />
-                </button>
-                {timeNow >= timeAfter15Minutes ? (
-                  <div
-                    className={`${toggleList} ${togglePop && "!block z-40"}`}
-                  >
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        archivePost(_post._id);
-                      }}
-                    >
-                      <ArchiveIcon className={toggleListIcons} /> Archive
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    className={`${toggleList} ${togglePop && "!block z-40"}`}
-                  >
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        setEditPostData((prev) => ({
-                          ...prev,
-                          isEditModalVisible: true,
-                        }));
-                      }}
-                    >
-                      <EditIcon className={toggleListIcons} /> Edit
-                    </button>
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        archivePost(_post._id);
-                      }}
-                    >
-                      <ArchiveIcon className={toggleListIcons} /> Archive
-                    </button>
 
-                    <button
-                      className={toggleListBtn}
-                      onClick={() => {
-                        togglePopFunc();
-                        setDeleteModal(true);
-                      }}
-                    >
-                      <TrashIcon className={toggleListIcons} /> Delete
-                    </button>
-                  </div>
-                )}
-              </div>
+          <div
+            className={`top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4`}
+          >
+            <PostUserDetails post={_post} />
+
+            {_post.user._id === user?._id && (
+              <Post3DotsMenu
+                post={_post}
+                onClickDelete={() => setDeleteModal(true)}
+                onArchive={(postId) => onDelete(postId)}
+                onClickEdit={() =>
+                  setEditPostData((prev) => ({
+                    ...prev,
+                    isEditModalVisible: true,
+                  }))
+                }
+              />
             )}
           </div>
+
           <div
             className={`${maincontentContainer} ${
               (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
@@ -577,15 +480,14 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </div>
             )}
           </div>
+
           <div
-            className={`${footerBtnContainer} ${
-              (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-              " ml-16 "
-            } ${
-              !(
-                currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
-              ) && " pb-4 border-b-2 border-gray-shade-3 "
-            }`}
+            className={clsx(
+              `flex items-items justify-between px-4`,
+              currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
+                ? "ml-16"
+                : "pb-4 border-b-2 border-gray-shade-3"
+            )}
           >
             {currentPageRoute.isFeedPage || currentPageRoute.isProfilePage ? (
               <Link
@@ -611,9 +513,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 <MessageIcon /> {totalReplyCount}
               </button>
             )}
-            {/* <button className={footerdetailBtn}>
-              <MessageIcon /> {totalReplyCount}
-            </button> */}
             <button
               className={footerdetailBtn}
               onClick={() => likePost(_post._id)}
@@ -631,7 +530,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 {_post.likes_count > 0 && _post.likes_count}
               </span>
             </button>
-            <div ref={ref2} className={toggleContainer}>
+            <div ref={ref2} className={`relative`}>
               <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
                 <ShareIcon /> {_post.shares_count}
               </button>
@@ -702,6 +601,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </div>
             </div>
           </div>
+
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && (
               <div className={showThreadBtnContainer}>
@@ -841,7 +741,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     <button
                       className={`${uploadBtn} text-[#00BF96]`}
                       onClick={() => {
-                        setTogglePop((prev) => !prev);
                         setIsEmojiPickerVisible((prev) => !prev);
                       }}
                     >
@@ -998,6 +897,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             </CustomModal>
           )}
         </div>
+
         <ModalWrapper
           isOpen={deleteModal}
           onClose={() => setDeleteModal(false)}
@@ -1042,21 +942,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 SinglePost.displayName = "SinglePost";
 
 // styling
-const postCardContainer = ctl(`
-sm:w-full lg:w-[544px] relative  py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4
-`);
-const topCard = ctl(`
-top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4
-`);
-const profileDetail = ctl(`
-flex items-center gap-3
-`);
-const PFName = ctl(`
-text-14px font-semibold text-white pb-1 cursor-pointer
-`);
-const PFTime = ctl(`
-text-12px font-ligth text-gray-shade-7
-`);
+
 const connectLines = ctl(`
   absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
 `);
@@ -1076,27 +962,11 @@ z-10 flex gap-3 pl-6 items-center
 const showThreadBtn = ctl(`
 text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium
 `);
-const footerBtnContainer = ctl(`
-  flex items-items justify-between px-4  
-`);
+
 const footerdetailBtn = ctl(`
 flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
 `);
-const footerdetailReplyBtn = ctl(`
-flex items-center gap-3 text-14px font-medium  text-white
-`);
-const toggleContainer = ctl(`
-relative
-`);
-const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[170px]
-`);
-const toggleListBtn = ctl(`
-w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
-`);
-const toggleListIcons = ctl(`
-w-[18px] h-[18px]
-`);
+
 const SharetoggleList = ctl(`
  hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
 `);

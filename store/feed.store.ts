@@ -11,6 +11,7 @@ export interface FeedStore {
 
   addNewPost: (post: CompletedPost) => void;
   deletePost: (postId: string) => void;
+  incrementPostRepliesCount: (postId?: string) => void;
 
   offset: number;
   updateOffset: () => void;
@@ -70,6 +71,22 @@ export const useFeedStore = create<FeedStore>()(
       deletePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
+        }));
+      },
+
+      incrementPostRepliesCount: (postId) => {
+        if (!postId) return;
+
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                replies_count: post.replies_count + 1,
+              };
+            }
+            return post;
+          }),
         }));
       },
     }),
