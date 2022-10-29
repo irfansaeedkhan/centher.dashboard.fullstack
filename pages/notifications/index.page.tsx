@@ -16,25 +16,37 @@ const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
   useMarkNotificationsPageAsSeen();
 
-  const { notifications, fetchNotifications, offset, updateOffset } =
-    useNotificationsStore((state) => ({
-      notifications: state.notifications,
-      fetchNotifications: state.fetchNotifications,
-      offset: state.offset,
-      updateOffset: state.updateOffset,
-    }));
+  const {
+    notifications,
+    fetchNotifications,
+    fetchNewNotifications,
+    offset,
+    updateOffset,
+  } = useNotificationsStore((state) => ({
+    notifications: state.notifications,
+    fetchNotifications: state.fetchNotifications,
+    fetchNewNotifications: state.fetchNewNotifications,
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+  }));
 
-  const [lastNotiRef, lastNotiInView] = useInView();
+  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
-    if (lastNotiInView) {
+    if (lastNotiEntry?.isIntersecting) {
       updateOffset();
     }
-  }, [lastNotiInView, updateOffset]);
+  }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
-    fetchNotifications(offset);
+    if (offset > 0) {
+      fetchNotifications();
+    }
   }, [fetchNotifications, offset]);
+
+  useEffect(() => {
+    fetchNewNotifications();
+  }, [fetchNewNotifications]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
