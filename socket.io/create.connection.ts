@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
 
-import { useNotificationsStore } from "@/store/notifications.store";
 import { useSocketIOStore } from "@/store/socket.io.store";
+import { useCountsStore } from "@/store/counts.store";
 import useUser from "@/hooks/use.user";
 import { SOCKET_IO_URL } from "@/constants/common";
 
 export const useCreateSocketIOConnection = () => {
-  const { user } = useUser();
+  const { user, updateUser } = useUser();
   const { socket, setSocket } = useSocketIOStore((state) => ({
     socket: state.socket,
     setSocket: state.setSocket,
   }));
 
-  const { fetchNewNotifications } = useNotificationsStore((state) => ({
-    fetchNewNotifications: state.fetchNewNotifications,
+  const { fetchCounts } = useCountsStore((state) => ({
+    fetchCounts: state.fetchCounts,
   }));
 
   useEffect(() => {
@@ -37,7 +37,10 @@ export const useCreateSocketIOConnection = () => {
       socket.on("notification", () => {
         process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
           console.log("notification received");
-        fetchNewNotifications();
+        fetchCounts();
+        updateUser({
+          has_seen_notifications_page: false,
+        });
       });
     }
 
@@ -47,5 +50,5 @@ export const useCreateSocketIOConnection = () => {
       socket.off("disconnect");
       socket.off("notification");
     };
-  }, [socket, setSocket, user, fetchNewNotifications]);
+  }, [socket, setSocket, user, updateUser, fetchCounts]);
 };

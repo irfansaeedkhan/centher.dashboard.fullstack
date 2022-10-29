@@ -1,37 +1,52 @@
-// React, Next, NPM Packages
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
 
-// App imports
 import { useNotificationsStore } from "@/store/notifications.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-// Current page imports
-import { SingleNotification } from "./_components";
 import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
 
-const Notifications: NextPageWithLayout = () => {
-  const { notifications, fetchNotifications, offset, updateOffset } =
-    useNotificationsStore((state) => ({
-      notifications: state.notifications,
-      fetchNotifications: state.fetchNotifications,
-      offset: state.offset,
-      updateOffset: state.updateOffset,
-    }));
+import {
+  SingleNotification,
+  useMarkNotificationsPageAsSeen,
+} from "./_components";
 
-  const [lastNotiRef, lastNotiInView] = useInView();
+const Notifications: NextPageWithLayout = () => {
+  // Mark notifications page as seen
+  useMarkNotificationsPageAsSeen();
+
+  const {
+    notifications,
+    fetchNotifications,
+    fetchNewNotifications,
+    offset,
+    updateOffset,
+  } = useNotificationsStore((state) => ({
+    notifications: state.notifications,
+    fetchNotifications: state.fetchNotifications,
+    fetchNewNotifications: state.fetchNewNotifications,
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+  }));
+
+  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
-    if (lastNotiInView) {
+    if (lastNotiEntry?.isIntersecting) {
       updateOffset();
     }
-  }, [lastNotiInView, updateOffset]);
+  }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
-    fetchNotifications(offset);
+    if (offset > 0) {
+      fetchNotifications();
+    }
   }, [fetchNotifications, offset]);
+
+  useEffect(() => {
+    fetchNewNotifications();
+  }, [fetchNewNotifications]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

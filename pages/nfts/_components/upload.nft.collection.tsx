@@ -121,7 +121,7 @@ const title = ctl(`
 text-14px font-semibold text-white pb-2
 `);
 const description = ctl(`
-text-14px font-normal text-[#B7BBCC] leading-6
+text-14px font-normal text-gray-shade-18 leading-6
 `);
 const imgBox = ctl(`
 bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full  mt-3 p-6 flex flex-col gap-5

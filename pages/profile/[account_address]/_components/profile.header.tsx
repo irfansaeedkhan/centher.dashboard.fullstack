@@ -124,7 +124,11 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   };
 
   // FIXME: Mubashir - Use memoization
-  const isProfilePage = router.pathname === AppRoutes.profile.account_address;
+  const isProfilePage =
+    router.pathname === AppRoutes.profile.account_address ||
+    router.pathname === AppRoutes.profile.following ||
+    router.pathname === AppRoutes.profile.followers ||
+    router.pathname === AppRoutes.profile.replies;
   const isNFTProfilePage = router.pathname === AppRoutes.profile.nfts;
 
   return (
@@ -318,8 +322,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
               <p className={profileDescription}>{description}</p>
             </div>
             <UserProfileTabs
-              onSelect={setSelectedTab}
-              selectedTab={selectedTab}
+              loggedInUser={loggedInUser.account_address}
+              account_address={router.query.account_address}
             />
           </div>
         </div>

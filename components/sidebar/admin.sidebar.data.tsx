@@ -1,12 +1,12 @@
 // App imports
 import {
   NetworkRewards,
-  StakingPack,
   InfluencerDetails,
   InfluencerRequest,
   Users,
   Transactions,
   LiquidityPoolSvg,
+  StakingContract,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -24,7 +24,7 @@ export const adminSideBarData: SidebarData = {
       {
         label: "Staking Pack",
         url: AppRoutes.admin.staking_packs,
-        icon: StakingPack,
+        icon: StakingContract,
       },
       {
         label: "Network Rewards",

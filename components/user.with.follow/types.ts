@@ -1,4 +1,4 @@
-export interface SearchResult {
+export interface IUserWithFollow {
   _id: string;
   display_name: string;
   account_address: string;

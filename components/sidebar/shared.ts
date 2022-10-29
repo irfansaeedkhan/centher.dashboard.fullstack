@@ -1,3 +1,4 @@
+import { CountType } from "@/store/counts.store";
 import { IconProps } from "@/assets/svgs";
 
 export type SidebarData = {
@@ -7,7 +8,7 @@ export type SidebarData = {
       label: string;
       url: string;
       icon: React.FC<IconProps>;
-      countType?: "notification" | "chat";
+      countType?: CountType;
     }[];
   };
 };

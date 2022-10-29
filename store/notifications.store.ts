@@ -7,7 +7,7 @@ import { axiosNodeApi } from "@/utils/axios";
 
 export interface NotificationsStore {
   notifications: Notification[];
-  fetchNotifications: (offset?: number, limit?: number) => Promise<void>;
+  fetchNotifications: () => Promise<void>;
   fetchNewNotifications: () => Promise<void>;
   offset: number;
   updateOffset: () => void;
@@ -17,22 +17,19 @@ export interface NotificationsStore {
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       notifications: [],
       limit: 10,
       offset: 0,
       updateOffset: () =>
         set((state) => ({ offset: state.notifications.length })),
 
-      fetchNotifications: async (offset, limit) => {
+      fetchNotifications: async () => {
         try {
-          let url = "/api/notifications";
+          const offset = get().offset;
+          const limit = get().limit;
 
-          if (offset || limit) {
-            url += "?";
-            if (offset) url += `offset=${offset}`;
-            if (limit) url += `&limit=${limit}`;
-          }
+          const url = `/api/notifications?offset=${offset}&limit=${limit}`;
 
           const { data } = await axiosNodeApi.get(url);
 
@@ -60,7 +57,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       fetchNewNotifications: async () => {
         try {
-          const { data } = await axiosNodeApi.get("/api/notifications?limit=5");
+          const limit = get().limit;
+          const { data } = await axiosNodeApi.get(
+            `/api/notifications?limit=${limit}`
+          );
 
           set((state) => {
             // Filter out notifications that are already in the store
