@@ -32,7 +32,7 @@ const Followers: NextPageWithLayout = () => {
   };
 
   return (
-    <div className="flex  gap-5 max-w-[835px]">
+    <div className="flex gap-5">
       <div className="w-full max-w-[272px]  flex-col gap-3 hidden lg:flex">
         <div className="lg:sticky lg:top-0 flex flex-col gap-4">
           {userLoading === "loaded" && user ? (

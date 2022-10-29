@@ -78,7 +78,6 @@ const Search: NextPageWithLayout = () => {
             </div>
           )}
 
-          {/* TODO: Talha - implement loading skeleton here */}
           {(searchLoadingState === "loading" ||
             searchLoadingState === "idle") && <SearchUserSkeleton />}
 

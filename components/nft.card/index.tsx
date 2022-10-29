@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
-import { YellowTick } from "@/assets/svgs";
+import { YellowTick, BNBIcon } from "@/assets/svgs";
 import { NTRIcon } from "@/assets/svgs/ntr.icon";
 
 export interface NFTCardProps {
@@ -13,6 +13,7 @@ export interface NFTCardProps {
   nftOwnerDp: string;
   nftPriceNether: number;
   nftPriceDollar: number;
+  TokenIcon?: string;
 }
 
 const NFTCard: React.FC<NFTCardProps> = (props) => {
@@ -38,10 +39,18 @@ const NFTCard: React.FC<NFTCardProps> = (props) => {
           <YellowTick />
         </div> */}
         <div className={nftPriceWrapper}>
-          <span className={nftPrice}>
-            <NTRIcon />
-            <span>{props.nftPriceNether.toLocaleString()} NTR</span>
-          </span>
+          {props?.TokenIcon === "BNB" ? (
+            <span className={nftPrice}>
+              <BNBIcon />
+              <span>{props.nftPriceNether.toLocaleString()} BNB</span>
+            </span>
+          ) : (
+            <span className={nftPrice}>
+              <NTRIcon />
+              <span>{props.nftPriceNether.toLocaleString()} NTR</span>
+            </span>
+          )}
+
           <span className={textSimple}>
             ${props.nftPriceDollar.toLocaleString()}
           </span>

@@ -127,7 +127,8 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const isProfilePage =
     router.pathname === AppRoutes.profile.account_address ||
     router.pathname === AppRoutes.profile.following ||
-    router.pathname === AppRoutes.profile.followers;
+    router.pathname === AppRoutes.profile.followers ||
+    router.pathname === AppRoutes.profile.replies;
   const isNFTProfilePage = router.pathname === AppRoutes.profile.nfts;
 
   return (
@@ -320,7 +321,10 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
             <div className={textContent}>
               <p className={profileDescription}>{description}</p>
             </div>
-            <UserProfileTabs account_address={router.query.account_address} />
+            <UserProfileTabs
+              loggedInUser={loggedInUser.account_address}
+              account_address={router.query.account_address}
+            />
           </div>
         </div>
       ) : (
