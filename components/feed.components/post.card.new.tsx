@@ -291,7 +291,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               </div>
               <div className={RightActionBtns}>
                 {/*
-                TO DO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
+                TODO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
                 */}
                 <span onClick={deleteText}>
                   <AnimateTrashIcon />
