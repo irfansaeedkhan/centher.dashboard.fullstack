@@ -2,10 +2,9 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import clsx from "clsx";
 import { useWindowSize } from "usehooks-ts";
 import ctl from "@netlify/classnames-template-literals";
-import { GoThreeBars } from "react-icons/go";
+import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -15,8 +14,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import Search from "./search";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
-import Styles from "./header.module.css";
-import { LogoText } from "@/assets/svgs";
+import { LogoText, MenuClose } from "@/assets/svgs";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -90,17 +88,15 @@ const Header = () => {
               )}
             </div>
             <div
-              id={Styles.menu}
               ref={sidebarOpenerRef}
-              className={
-                `lg:hidden sm:flex cursor-pointer ` +
-                (sidebarOpen ? Styles.menuHover : "")
-              }
+              className={`lg:hidden sm:flex cursor-pointer `}
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
-              <div
-                className={clsx(Styles.barre, sidebarOpen && Styles.menubarre)}
-              ></div>
+              {sidebarOpen ? (
+                <MenuClose className="text-2xl text-white" />
+              ) : (
+                <HiOutlineMenuAlt3 className="text-2xl text-white" />
+              )}
             </div>
           </>
         )}
