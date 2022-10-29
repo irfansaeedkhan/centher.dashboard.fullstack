@@ -64,16 +64,16 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
           set((state) => {
             // Filter out notifications that are already in the store
-            const filteredNotifications = state.notifications.filter(
-              (stateNotification) =>
-                !data.notifications.some(
-                  (notification: Notification) =>
+            const filteredNotifications = data.notifications.filter(
+              (notification: Notification) =>
+                !state.notifications.some(
+                  (stateNotification) =>
                     stateNotification._id === notification._id
                 )
             );
 
             return {
-              notifications: [...data.notifications, ...filteredNotifications],
+              notifications: [...filteredNotifications, ...state.notifications],
             };
           });
         } catch (error) {

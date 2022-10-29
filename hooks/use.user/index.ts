@@ -1,10 +1,11 @@
+import { useCallback } from "react";
 import useSWR from "swr";
 
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
 const useUser = () => {
-  const { data, error } = useSWR(
+  const { data, error, mutate } = useSWR(
     `/api/users/me`,
     async (url) => {
       try {
@@ -40,10 +41,29 @@ const useUser = () => {
     }
   );
 
+  const updateUser = useCallback(
+    async (user: Partial<LoggedInUser>) => {
+      try {
+        const { data } = await axiosNodeApi.patch(`/api/users/me`, user);
+        mutate(data.user, false);
+      } catch (error: any) {
+        throw (
+          error.response.data ?? {
+            status: "error",
+            message: "server_error",
+            message_description: "Something went wrong",
+          }
+        );
+      }
+    },
+    [mutate]
+  );
+
   return {
     user: data,
     isLoading: !error && !data,
     error,
+    updateUser,
   };
 };
 

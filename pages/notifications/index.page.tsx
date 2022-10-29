@@ -1,18 +1,21 @@
-// React, Next, NPM Packages
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
 
-// App imports
 import { useNotificationsStore } from "@/store/notifications.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-// Current page imports
-import { SingleNotification } from "./_components";
 import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
 
+import {
+  SingleNotification,
+  useMarkNotificationsPageAsSeen,
+} from "./_components";
+
 const Notifications: NextPageWithLayout = () => {
+  // Mark notifications page as seen
+  useMarkNotificationsPageAsSeen();
+
   const { notifications, fetchNotifications, offset, updateOffset } =
     useNotificationsStore((state) => ({
       notifications: state.notifications,
