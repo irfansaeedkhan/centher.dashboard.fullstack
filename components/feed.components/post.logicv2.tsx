@@ -461,24 +461,40 @@ export function usePostUpload({
           //       file_details.file_size,
           //   },
           // };
-          let header = {
-            headers: {
-              "Access-Control-Allow-Credentials": "true",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Allow-Methods":
-                "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-              "Access-Control-Allow-Headers":
-                "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, ETag, Etag",
-              "Access-Control-Expose-Headers": "*",
-            },
-          };
-          const axios = Axios.create();
+          // let header = {
+          //   headers: {
+          //     "Access-Control-Allow-Credentials": "true",
+          //     "Access-Control-Allow-Origin": "*",
+          //     "Access-Control-Allow-Methods":
+          //       "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+          //     "Access-Control-Allow-Headers":
+          //       "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, ETag, Etag",
+          //     "Access-Control-Expose-Headers": "*",
+          //   },
+          // };
+          const axios = await Axios.create();
           delete axios.defaults.headers.put["Content-Type"];
+
+          axios.interceptors.response.use(
+            function (response) {
+              console.log("Response interceptor : ", response);
+              // Any status code that lie within the range of 2xx cause this function to trigger
+              // Do something with response data
+              return response;
+            },
+            function (error) {
+              console.log("Error  : ", error);
+              // Any status codes that falls outside the range of 2xx cause this function to trigger
+              // Do something with response error
+              return Promise.reject(error);
+            }
+          );
+
           //delete axiosNodeApi.defaults.headers.put['Content-Type']
           let resultupload = await axios.put(
             signed_url[uploading_file_index][chunk_index],
-            dataRead,
-            header
+            dataRead
+            //header
           );
           console.log("\nResult of upload : ", resultupload);
           console.log("Etags : ", resultupload.headers.etag);
