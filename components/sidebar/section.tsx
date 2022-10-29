@@ -2,16 +2,18 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import clsx from "clsx";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { useNotificationsStore } from "@/store/notifications.store";
+import { LoggedInUser } from "@/models/user";
 
 // Current directory imports
 import { SidebarSection } from "./shared";
-import clsx from "clsx";
 
 export interface SectionProps {
+  user: LoggedInUser | undefined;
   section: SidebarSection;
   onClose?: () => void;
 }
@@ -42,6 +44,8 @@ export const Section: React.FC<SectionProps> = (props) => {
           } else if (item.countType === "chat") {
             count = 0;
           }
+
+          count = props.user?.has_seen_notifications_page ? "" : count;
 
           return (
             <div

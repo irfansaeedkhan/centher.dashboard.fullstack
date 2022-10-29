@@ -1,15 +1,13 @@
 // React, Next, NPM Packages
-import React, { useEffect } from "react";
+import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
-import { Logout, SettingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import { Logout } from "@/assets/svgs";
 
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
@@ -17,7 +15,6 @@ import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 
 export const Sidebar = () => {
-  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -48,7 +45,7 @@ export const Sidebar = () => {
     <div className={sideBarWrapper}>
       <div className={sideBarWrapperStyling}>
         {SidebarSections.map((section) => {
-          return <Section section={section} key={section.label} />;
+          return <Section user={user} section={section} key={section.label} />;
         })}
       </div>
       {user && (

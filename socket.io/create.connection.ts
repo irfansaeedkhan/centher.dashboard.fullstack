@@ -7,7 +7,7 @@ import useUser from "@/hooks/use.user";
 import { SOCKET_IO_URL } from "@/constants/common";
 
 export const useCreateSocketIOConnection = () => {
-  const { user } = useUser();
+  const { user, updateUser } = useUser();
   const { socket, setSocket } = useSocketIOStore((state) => ({
     socket: state.socket,
     setSocket: state.setSocket,
@@ -38,6 +38,9 @@ export const useCreateSocketIOConnection = () => {
         process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
           console.log("notification received");
         fetchNewNotifications();
+        updateUser({
+          has_seen_notifications_page: false,
+        });
       });
     }
 
@@ -47,5 +50,5 @@ export const useCreateSocketIOConnection = () => {
       socket.off("disconnect");
       socket.off("notification");
     };
-  }, [socket, setSocket, user, fetchNewNotifications]);
+  }, [socket, setSocket, user, fetchNewNotifications, updateUser]);
 };

@@ -1,16 +1,18 @@
-// React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
-// Current directory imports
+import useUser from "@/hooks/use.user";
+
 import { AdminSidebarSections } from "./admin.sidebar.data";
 import { Section } from "./section";
 
 export const AdminSidebar = () => {
+  const { user } = useUser();
+
   return (
     <div className={sideBarWrapper}>
       {AdminSidebarSections.map((section) => {
-        return <Section section={section} key={section.label} />;
+        return <Section user={user} section={section} key={section.label} />;
       })}
     </div>
   );
