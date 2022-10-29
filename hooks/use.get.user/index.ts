@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // App imports
 import { User } from "@/models/user";
@@ -29,9 +29,24 @@ const useGetUser = (account_address?: string) => {
     }
   }, [account_address]);
 
+  const mutateUser = useCallback(
+    async (userPartial: Partial<User>) => {
+      if (user) {
+        setUser((prev) => ({
+          ...(prev as User),
+          ...userPartial,
+        }));
+      } else {
+        setUser(null);
+      }
+    },
+    [user]
+  );
+
   return {
     user,
     loading,
+    mutateUser,
   };
 };
 

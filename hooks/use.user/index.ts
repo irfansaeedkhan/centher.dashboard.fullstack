@@ -5,7 +5,11 @@ import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
 const useUser = () => {
-  const { data, error, mutate } = useSWR(
+  const {
+    data: user,
+    error,
+    mutate,
+  } = useSWR(
     `/api/users/me`,
     async (url) => {
       try {
@@ -59,11 +63,19 @@ const useUser = () => {
     [mutate]
   );
 
+  const mutateUser = useCallback(
+    async (userPartial: Partial<LoggedInUser>) => {
+      mutate({ ...user, ...(userPartial as LoggedInUser) }, false);
+    },
+    [mutate, user]
+  );
+
   return {
-    user: data,
-    isLoading: !error && !data,
+    user: user,
+    isLoading: !error && !user,
     error,
     updateUser,
+    mutateUser,
   };
 };
 
