@@ -6,6 +6,7 @@ import Link from "next/link";
 
 // App imports
 import { AppRoutes } from "@/constants/app.routes";
+import { LogoText } from "@/assets/svgs";
 
 interface SignupProps {
   title: string;
@@ -18,13 +19,18 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
     return (
       <section className={section_left}>
         <div className={sectionLeftInner}>
-          <Link href={AppRoutes.home}>
+          <Link
+            href={AppRoutes.home}
+            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+          >
             <Image
-              src="/images/nether.nft.logo.svg"
-              alt="logo"
+              src="/images/nether.nft.favicon.svg"
+              alt="Nether NFT Logo"
               width={166}
-              height={40}
+              height={38}
+              className="!w-[22px] !h-[38px]"
             />
+            <LogoText />
           </Link>
         </div>
         <div className={section_left_content_wrapper}>

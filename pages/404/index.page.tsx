@@ -8,7 +8,7 @@ import Image from "next/image";
 
 const ErrorPage: NextPageWithLayout = () => {
   return (
-    <div className="h-[calc(100vh-60px-64px)] flex items-center">
+    <div className="min-h-[calc(100vh-60px-64px)] h-auto flex items-center">
       <div className="flex md:flex-col sm:flex-col-reverse w-full justify-center items-center">
         <div className="w-full flex flex-col gap-3 items-center justify-center">
           <div className="text-white font-semibold md:!text-[34px] sm:!text-[30px]">

@@ -12,6 +12,8 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current page imports
 import { LoginForm } from "./_components";
 import Image from "next/image";
+import Link from "next/link";
+import { LogoText } from "@/assets/svgs";
 
 const Login: NextPageWithLayout = () => {
   return <LoginForm />;
@@ -27,12 +29,19 @@ Login.getLayout = (page) => {
       />
       <AuthRight>
         <div className="w-fit md:hidden sm:flex mb-8">
-          <Image
-            src="/images/nether.nft.logo.svg"
-            alt="logo"
-            width={166}
-            height={40}
-          />
+          <Link
+            href={AppRoutes.home}
+            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+          >
+            <Image
+              src="/images/nether.nft.favicon.svg"
+              alt="Nether NFT Logo"
+              width={166}
+              height={38}
+              className="!w-[22px] !h-[38px]"
+            />
+            <LogoText />
+          </Link>
         </div>
         <AboutMember
           asked="Not a member?"

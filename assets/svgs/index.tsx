@@ -20,6 +20,9 @@ export { default as Notification } from "./notification.svg";
 export { default as Explore } from "./explore.svg";
 export { default as TopInfluencer } from "./top.influencers.svg";
 export { default as CreateCollection } from "./create.collection.svg";
+export { default as LogoText } from "./logo.text.svg";
+export { default as CloseIcon } from "./close.icon.svg";
+export { default as MenuClose } from "./menu.close.svg";
 
 export const Logout = () => {
   return (
