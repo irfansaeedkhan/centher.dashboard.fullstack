@@ -44,7 +44,7 @@ const Header = () => {
 
       <div className={rightWraper}>
         <Search />
-        <span className={border}></span>
+        {/* <span className={border}></span> */}
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>
             Connect
