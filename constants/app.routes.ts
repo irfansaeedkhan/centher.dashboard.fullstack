@@ -8,6 +8,7 @@ export const AppRoutes = {
   profile: {
     // Authenticated Pages
     account_address: "/profile/[account_address]",
+    replies: "/profile/[account_address]/replies",
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
     settings: "/profile/settings",

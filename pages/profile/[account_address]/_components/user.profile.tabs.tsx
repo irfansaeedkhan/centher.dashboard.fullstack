@@ -3,13 +3,16 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import type { SelectedTab } from "./types";
 
 interface ProfileProps {
   account_address: string | string[] | undefined;
+  loggedInUser: string | string[] | undefined;
 }
 
-const UserProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
+const UserProfileTabs: React.FC<ProfileProps> = ({
+  account_address,
+  loggedInUser,
+}) => {
   const router = useRouter();
 
   return (
@@ -25,6 +28,19 @@ const UserProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
       >
         My Post
       </Link>
+      {loggedInUser === account_address && (
+        <Link
+          href={`/profile/${account_address}/replies`}
+          className={clsx(
+            router.pathname === AppRoutes.profile.replies
+              ? "border-b-2 text-white"
+              : "text-gray-shade-7",
+            "py-[10px] px-4 cursor-pointer"
+          )}
+        >
+          Replies
+        </Link>
+      )}
       <Link
         href={`/profile/${account_address}/followers`}
         className={clsx(
