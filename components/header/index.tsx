@@ -16,6 +16,7 @@ import Search from "./search";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import Styles from "./header.module.css";
+import { LogoText } from "@/assets/svgs";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -33,13 +34,20 @@ const Header = () => {
 
   return (
     <div className={headerWraper}>
-      <Link href={AppRoutes.home}>
+      <Link
+        href={AppRoutes.home}
+        className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+      >
         <Image
-          src="/images/nether.nft.logo.svg"
+          src="/images/nether.nft.favicon.svg"
           alt="Nether NFT Logo"
           width={166}
           height={38}
+          className="!w-[22px] !h-[38px]"
         />
+        <span className="md:flex sm:hidden">
+          <LogoText />
+        </span>
       </Link>
 
       <div className={rightWraper}>
@@ -62,13 +70,14 @@ const Header = () => {
                 ref={modalOpenerRef}
                 onClick={() => setOpenModal((prev) => !prev)}
                 role="button"
+                className="w-10 h-10 rounded-full"
               >
                 <Image
                   src={user.profile_image.path}
                   alt="userProfile"
                   width={40}
                   height={40}
-                  className="rounded-full !h-[40px] object-cover"
+                  className="rounded-full !h-[40px] !w-[40px] object-cover"
                   sizes={"256px"}
                 />
               </div>
@@ -109,7 +118,8 @@ const Header = () => {
 export default Header;
 
 const headerWraper = ctl(`
-  flex 
+  flex
+  gap-10 
   px-5
   h-[60px]
   relative
