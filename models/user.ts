@@ -19,4 +19,5 @@ export interface LoggedInUser extends User {
   last_name: string;
   pseudonym: string;
   display_name_field: "real_name" | "pseudonym" | "account_address";
+  has_seen_notifications_page: boolean;
 }

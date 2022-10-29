@@ -1,15 +1,13 @@
 // React, Next, NPM Packages
-import React, { useEffect } from "react";
+import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
-import { Logout, SettingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import { Logout } from "@/assets/svgs";
 
 // Current directory imports
 import { SidebarSections } from "./sidebar.data";
@@ -17,7 +15,6 @@ import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 
 export const Sidebar = () => {
-  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -48,12 +45,12 @@ export const Sidebar = () => {
     <div className={sideBarWrapper}>
       <div className={sideBarWrapperStyling}>
         {SidebarSections.map((section) => {
-          return <Section section={section} key={section.label} />;
+          return <Section user={user} section={section} key={section.label} />;
         })}
       </div>
       {user && (
         <div className="flex flex-col gap-8">
-          <div className={sectionWrapper}>
+          {/* <div className={sectionWrapper}>
             <div className={sectionWrapper2}>
               <Link href={AppRoutes.profile.settings} className={itemWrapper}>
                 <SettingIcon
@@ -74,8 +71,8 @@ export const Sidebar = () => {
                 </div>
               </Link>
             </div>
-          </div>
-          <div className={sectionWrapper}>
+          </div> */}
+          <div className={sectionWrapper3}>
             <span className={sectionLabel}>WILL YOU GET OUT?</span>
             <div className={sectionWrapper2}>
               <div className={itemWrapper}>
@@ -115,6 +112,12 @@ const sectionWrapper = ctl(`
   flex-col
   px-5
 `);
+const sectionWrapper3 = ctl(`
+  flex
+  gap-[6px] 
+  flex-col
+  px-5
+`);
 
 const sectionWrapper2 = ctl(`
   flex
@@ -125,7 +128,7 @@ const sectionWrapper2 = ctl(`
 const sectionLabel = ctl(`
   font-bold
   text-[11px] 
-  text-gray-shade-7 
+  text-gray-shade-11 
 `);
 
 const itemWrapper = ctl(`
@@ -137,7 +140,7 @@ const itemWrapper = ctl(`
 const itemLabel = ctl(`
   text-sm
   font-semibold 
-  text-gray-shade-8 
+  text-gray-shade-7 
 `);
 
 const itemLabelActive = ctl(`
@@ -150,4 +153,4 @@ const itemIcons = ctl(`stroke-gray-shade-8`);
 
 const itemIconsActive = ctl(`stroke-white`);
 
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5`);
+const sideBarWrapperStyling = ctl(`flex flex-col gap-5`);

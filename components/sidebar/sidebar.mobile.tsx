@@ -87,8 +87,9 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
             {SidebarSections.map((section) => {
               return (
                 <Section
-                  section={section}
                   key={section.label}
+                  user={user}
+                  section={section}
                   onClose={onClose}
                 />
               );

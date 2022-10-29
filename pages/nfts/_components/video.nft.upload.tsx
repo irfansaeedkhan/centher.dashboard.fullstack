@@ -64,7 +64,7 @@ const VideoNFTUpload = () => {
         <h4 className="text-14px font-semibold text-white pb-2">
           Preview image
         </h4>
-        <p className="text-14px font-normal text-[#B7BBCC] leading-6">
+        <p className="text-14px font-normal text-gray-shade-18 leading-6">
           Because you’ve included multimedia, you’ll need to provide an image
           (PNG, JPG, or GIF) for the card display of your item.
         </p>

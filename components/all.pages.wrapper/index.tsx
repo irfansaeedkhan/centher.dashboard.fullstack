@@ -1,9 +1,10 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import { useCountsStore } from "@/store/counts.store";
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 
@@ -13,6 +14,12 @@ interface AllPagesWrapperProps {
 }
 
 export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
+  const fetchCounts = useCountsStore((state) => state.fetchCounts);
+
+  useEffect(() => {
+    fetchCounts();
+  }, [fetchCounts]);
+
   return (
     <div className={componentWrapper}>
       <Head>

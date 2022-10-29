@@ -194,7 +194,7 @@ export const CreateNFTCollectionForm = () => {
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Description</label>
-          <span className="text-12px leading-4 text-[#B7BBCC]">
+          <span className="text-12px leading-4 text-gray-shade-18">
             The description will be included in the collection page underneath
             its image.{" "}
           </span>
