@@ -5,6 +5,7 @@ import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
 
 // App Imports
+import { RefreshContextProvider } from "@/web3/context/refresh.context";
 import { getLibrary } from "@/web3";
 import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
@@ -33,6 +34,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         }}
       />
       <ScriptTags />
+      <RefreshContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
         <Toaster
           position="top-center"
@@ -58,6 +60,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
         />
         {getLayout(<Component {...pageProps} />)}
       </Web3ReactProvider>
+      </RefreshContextProvider>
     </>
   );
 }

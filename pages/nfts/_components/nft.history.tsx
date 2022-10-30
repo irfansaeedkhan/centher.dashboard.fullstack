@@ -4,6 +4,7 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App import
 import { LineChart } from "@/components/charts";
+import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 let chartData = {
   // x-axis label values
   labels: [
@@ -28,8 +29,10 @@ let chartData = {
     },
   ],
 };
-
-export const NFTHistory = () => {
+interface NFTHistoryProps {
+  data: IListHistory[] | undefined
+}
+export const NFTHistory = ({data} : NFTHistoryProps) => {
   return (
     <div className={NFTHistoryContainer}>
       <div className="accordion" id="accordionExample">
@@ -75,7 +78,7 @@ export const NFTHistory = () => {
               </div>
 
               <div className="p-6">
-                <LineChart />
+                <LineChart history={data}/>
               </div>
             </div>
           </div>

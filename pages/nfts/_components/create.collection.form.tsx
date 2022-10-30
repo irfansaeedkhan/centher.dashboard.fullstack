@@ -1,21 +1,17 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
+import { ethers } from "ethers";
 import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
-import { toast } from "react-hot-toast";
-import Image from "next/image";
 
 // App imports
 import Button from "@/components/button";
-import { CustomModal } from "@/components/modal/custom.modal";
 import {
   GreyWorldIcon,
   GreyFBIcon,
   GreyTwitterIcon,
-  LoaderIcon,
-  BNBIcon,
 } from "@/assets/svgs";
 // form validations
 const schema = Joi.object({
@@ -23,8 +19,16 @@ const schema = Joi.object({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
+  Symbol: Joi.string().required().max(150).label("NFT Name").messages({
+    "string.empty": `NFT Name Required`,
+    "any.required": `Required Field`,
+  }),
   Description: Joi.string().required().max(550).label("Description").messages({
     "string.empty": `Description Required`,
+    "any.required": `Required Field`,
+  }),
+  Category: Joi.string().required().max(150).label("Category").messages({
+    "string.empty": `Category Required`,
     "any.required": `Required Field`,
   }),
   Url: Joi.string().allow("").optional().max(50).label("Url").messages({
@@ -60,117 +64,42 @@ const schema = Joi.object({
     }),
 });
 
-export const CreateNFTCollectionForm = () => {
-  const [loadingState, setLoadingState] = useState(false);
-  const [Modal, setModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
-  // creating modals
-  const buyNFTStep1Func = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={"/images/nftAsset.png"}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">Maradona sport</h2>
-        <h3 className="text-white text-14px font-normal">Gas fee 10%</h3>
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
-          <span>Price:</span>
-          <BNBIcon />
-          89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
-        </h6>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Checkout"}
-            variant="v1"
-            className="py-4"
-            onClick={buyNFTStep2Func}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const buyNFTStep2Func = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
-          Transaction in progress
-        </h3>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Your transaction is in progress, Please wait.
-        </p> */}
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const buyNFTSuccessFunc = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={"/images/nftAsset.png"}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">Purchased</h2>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully bought{" "}
-          <span className="text-white">Maradona sport</span> NFT on Nether NFT
-          platform.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"View item"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-
+interface CreateNFTCollectionFormProps {
+  createCollection: any
+}
+export interface ICollectionData {
+  name: string
+  symbol: string
+  totalsupply: number
+  description: string
+  category: string
+  url: string
+  yoursite: string
+  facebook: string
+  twitter: string
+}
+export const CreateNFTCollectionForm = ({
+  createCollection,
+} : CreateNFTCollectionFormProps) => {
   const { handleSubmit, register, setError, formState, reset } = useForm({
     mode: "onChange",
     resolver: joiResolver(schema),
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-    buyNFTStep1Func();
+    const collectionData = {
+      name: data.CollectionName,
+      symbol: data.Symbol,
+      totalsupply: ethers.constants.MaxUint256,
+      description: data.Description,
+      url: data.Url,
+      yoursite: data.OwnSite,
+      facebook: data.FBLink,
+      twitter: data.TwitterLink,
+    }
+    createCollection(collectionData);
   };
+
   return (
     <div className={CreateNFTCollectionFormContainer}>
       <div className={formContainer}>
@@ -193,8 +122,26 @@ export const CreateNFTCollectionForm = () => {
           )}
         </div>
         <div className={fieldWrapper}>
+          <label className={fieldTitle}>Symbol</label>
+          <input
+            type="text"
+            id="Symbol"
+            autoComplete="off"
+            {...register("Symbol")}
+            placeholder="eg. ‘NTD’ "
+            className={
+              !formState.errors.Symbol ? inputField : inputFieldError
+            }
+          />
+          {formState.errors.Symbol && (
+            <p className={`text-red-500 ${errMessage}`}>
+              {/* {formState.errors.Symbol.message} */}
+            </p>
+          )}
+        </div>
+        <div className={fieldWrapper}>
           <label className={fieldTitle}>Description</label>
-          <span className="text-12px leading-4 text-gray-shade-18">
+          <span className="text-12px leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
             its image.{" "}
           </span>
@@ -212,6 +159,26 @@ export const CreateNFTCollectionForm = () => {
           {formState.errors.Description && (
             <p className={`text-red-500 ${errMessage}`}>
               {/* {formState.errors.Description.message} */}
+            </p>
+          )}
+        </div>        
+        <div className={fieldWrapper}>
+          <label htmlFor="textarea" className={fieldTitle}>
+            Category
+          </label>
+          <select
+            id="Category"
+            {...register("Category")}
+            className={!formState.errors.Category ? inputField : inputFieldError}
+          >
+            <option value="">Select</option>
+            <option value="Category1">Category1</option>
+            <option value="Category2">Category2</option>
+          </select>
+          {formState.errors.Category && (
+            <p className={`text-red-500 ${errMessage}`}>
+              {/* TODO: kindly solve this error type issue */}
+              {/* {formState.errors.Category.message} */}
             </p>
           )}
         </div>
@@ -306,29 +273,10 @@ export const CreateNFTCollectionForm = () => {
           className="py-4 mt-2"
         />
       </div>
-      {Modal && (
-        <CustomModal
-          onClose={() => {
-            setModal(false);
-          }}
-          title={ModalTitle}
-        >
-          {ModalContent}
-        </CustomModal>
-      )}
     </div>
   );
 };
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
-`);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
 const CreateNFTCollectionFormContainer = ctl(`
  bg-black-shade-9 rounded-2xl relative w-full border   border-gray-shade-3 py-8 px-6 flex flex-col gap-6
 `);

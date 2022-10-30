@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef, useMemo } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { useOnClickOutside } from "usehooks-ts";
 
+import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 // same directory imports
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
@@ -17,12 +18,40 @@ import {
   LinkIcon,
   TwitterSvg,
 } from "@/assets/svgs";
-
-export const NFTRightSideComponent = () => {
-  // states of nfts: fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
-  const [nftState, setNftState] = useState("fixedPriceNFT");
+import { useWeb3React } from "@web3-react/core";
+import { NonNFTDescription } from "./non.nft.description";
+import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
+import { formatAddress } from "@/utils/format.address";
+interface NFTRightSideComponentProps {
+  data: INFTDetailData | undefined
+  reload: boolean
+  setReload: any
+}
+export const NFTRightSideComponent = ({data, reload, setReload} : NFTRightSideComponentProps) => {
+  // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
+  const {library, account} = useWeb3React()
+  const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
-
+  useEffect(() => {
+    if(data) {
+      if(account && account.toLocaleLowerCase() === data.owner.toLocaleLowerCase()) {
+        if(data.saleState === "Auction")
+          setNftState("timeAuctionedNFT")
+        else if(data.saleState === "List")
+          setNftState("fixedPriceNFT")
+        else if(data.saleState === "NON")
+          setNftState("nonNFT")
+      } else {
+        if(data.saleState === "Auction")
+          setNftState("timeAuctionedNFTBuyer")
+        else if(data.saleState === "List")
+          setNftState("fixedPriceNFTBuyer")
+        else if(data.saleState === "NON")
+          setNftState("nonNFTBuyer")
+      }
+      
+    }
+  }, [account, data])
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -35,7 +64,7 @@ export const NFTRightSideComponent = () => {
   return (
     <div className={rightSideContainer}>
       <div className={titleContainer}>
-        <h1 className={title}>Maradona sport</h1>
+        <h1 className={title}>{data?.name}</h1>
         <div ref={toggleContainerRef} className={toggleContainer}>
           <button onClick={togglePopFunc}>
             <ShareBigIcon />
@@ -54,13 +83,40 @@ export const NFTRightSideComponent = () => {
           </div>
         </div>
       </div>
-      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription />}
-      {nftState === "fixedPriceNFTBuyer" && <FixedPriceNFTBuyerDescription />}
-      {nftState === "timeAuctionedNFT" && <AuctionNftDescription />}
-      {nftState === "auctionNFTBuyer" && <AuctionNFTBuyerDescription />}
-      <NFTListing />
-      <NFTOffers />
-      <NFTHistory />
+      
+      <div className={desNameContainer}>
+        <div className={nameBox}>
+          <div className="linearCircle1"></div>
+          <div className="flex flex-col gap-1">
+            <h5 className={nameBoxTitle}>Creator</h5>
+            <h6 className={nameBoxZValue}>{formatAddress(data?.creator)}</h6>
+          </div>
+        </div>
+        <div className={nameBox}>
+          <div className="linearCircle2"></div>
+          <div className="flex flex-col gap-1">
+            <h5 className={nameBoxTitle}>Owner</h5>
+            <h6 className={nameBoxZValue}>{formatAddress(data?.owner)}</h6>
+          </div>
+        </div>
+        <div className={nameBox}>
+          <div className="flex flex-col gap-1">
+            <h5 className={nameBoxTitle}>Collection</h5>
+            <h6 className={nameBoxZValue}>{formatAddress(data?.collection)}</h6>
+          </div>
+        </div>
+      </div>
+      {nftState === "nonNFT" && <NonNFTDescription data={data}/>}
+      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data}/>}
+      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data}/>}
+      {nftState === "fixedPriceNFTBuyer" && <FixedPriceNFTBuyerDescription data={data}/>}
+      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data}/>}
+      {nftState === "timeAuctionedNFTBuyer" && <AuctionNFTBuyerDescription data={data}/>}
+      <NFTListing data={data?.listingHistory}/>
+      {data?.saleState === "Auction" && <NFTOffers data={data?.auctionInfo.bids} />}
+      {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
+      {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
+      {/* <NFTHistory data={data?.priceHistory}/> */}
     </div>
   );
 };
@@ -86,3 +142,16 @@ w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 trans
 const toggleListIcons = ctl(`
 w-[24px] h-[24px] stroke-white
 `);
+const nameBox = ctl(`
+flex items-start gap-3
+`);
+const nameBoxTitle = ctl(`
+text-12px font-normal text-gray-shade-2
+`);
+const nameBoxZValue = ctl(`
+text-14px font-semibold text-white
+`);
+const desNameContainer = ctl(`
+flex gap-6 [@media(max-width:600px)]:flex-wrap
+`);
+

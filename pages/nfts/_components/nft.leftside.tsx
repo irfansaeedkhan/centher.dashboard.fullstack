@@ -6,23 +6,30 @@ import ctl from "@netlify/classnames-template-literals";
 // Same directory imports
 import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
-
-export const NFTLeftSideComponent = () => {
+import { IProperty } from "./create.nft.form";
+interface NFTLeftSideComponentProps {
+  image: string | undefined
+  nftId: number | undefined
+  mintTx: string | undefined
+  collection: string | undefined
+  attributes: IProperty[] | undefined
+}
+export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
     <div className={leftSideContainer}>
       <div className={ImgContainer}>
         <div>
           <Image
             className={ImgStyling}
-            src={"/images/nftAsset.png"}
+            src={props.image ? props.image : ""}
             alt="image"
             height={270}
             width={270}
           />
         </div>
       </div>
-      <NFTDetails />
-      <NFTProperties />
+      <NFTDetails nftId={props.nftId} mintTx={props.mintTx} collection={props.collection}/>
+      <NFTProperties attributes={props.attributes}/>
     </div>
   );
 };

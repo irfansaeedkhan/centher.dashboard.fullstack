@@ -1,3 +1,13 @@
+
+export interface Address {
+  97: string;
+  56: string;
+  5: string;
+  4: string;
+  1: string;
+}
+
+
 export interface RoundInfo {
   price: number;
   startTime: number;

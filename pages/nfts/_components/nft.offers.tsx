@@ -2,8 +2,12 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
-
-export const NFTOffers = () => {
+import { IBid } from "@/hooks/use.get.nft.data.ts";
+import { formatAddress, formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+interface NFTOffersProps {
+  data: IBid[]
+}
+export const NFTOffers = ({data}: NFTOffersProps) => {
   return (
     <div className={NFTOffersContainer}>
       <div className="accordion" id="accordionExample">
@@ -43,38 +47,29 @@ export const NFTOffers = () => {
                       <th scope="col" className={th}>
                         From
                       </th>
-                      <th scope="col" className={th}>
+                      {/* <th scope="col" className={th}>
                         Action
-                      </th>
+                      </th> */}
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className={tbodyTR}>
-                      <td className={`${td} !text-gray-shade-7`}>0.69 BNB</td>
-                      <td className={td}>$200.99</td>
-                      <td className={td}>1 month</td>
-                      <td className={`${td} !text-yellow-theme`}>Farah</td>
-                      <td className={td}>
-                        <Button
-                          title="Buy"
-                          variant="v1"
-                          className="max-w-[80px]"
-                        />
-                      </td>
-                    </tr>
-                    <tr className={tbodyTR}>
-                      <td className={`${td} !text-gray-shade-7`}>1.69 BNB</td>
-                      <td className={td}>$500.99</td>
-                      <td className={td}>2 month</td>
-                      <td className={`${td} !text-yellow-theme`}>Jhon</td>
-                      <td className={td}>
-                        <Button
-                          title="Buy"
-                          variant="v1"
-                          className="max-w-[80px]"
-                        />
-                      </td>
-                    </tr>
+                    {data.map((item, index) => {
+                      const current = Date.now() / 1000
+                      const month = (current - item.txTime) / 86400 / 30
+                      return <tr className={tbodyTR} key={index}>
+                        <td className={`${td} !text-gray-shade-7`}>{formatEther2Number(item.price)} BNB</td>
+                        <td className={td}>${formatBNB2USD(item.price)}</td>
+                        <td className={td}>{month.toFixed(2)} month</td>
+                        <td className={`${td} !text-yellow-theme`}>{formatAddress(item.bidder)}</td>
+                        {/* <td className={td}>
+                          <Button
+                            title="Accept"
+                            variant="v1"
+                            className="max-w-[80px]"
+                          />
+                        </td> */}
+                      </tr>
+                    })}
                   </tbody>
                 </table>
               </div>

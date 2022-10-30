@@ -1,26 +1,81 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, AuctionIcon, WarningIcon } from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, AuctionIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-export const AuctionNftDescription = () => {
+import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
+import { useWeb3React } from "@web3-react/core";
+import { formatAddress, formatBNB2USD } from "@/utils/format.address";
+
+interface AuctionNftDescriptionProps {
+  data: INFTDetailData | undefined
+  reload?: boolean
+  setReload?: any
+}
+export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescriptionProps) => {
+  const {library} = useWeb3React()
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const cancelListingFunc = () => {
-    setModalTitle("Cancel listing");
+  const [end, setEnd] = useState(true)
+  const [days, setDays] = useState<number>(0);
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+
+  useEffect(() => {
+
+    if(data) {
+      var updateTime = setInterval(() => {
+        var now = new Date().getTime();
+  
+        var difference = data.auctionInfo.endTime * 1000 - now;
+  
+        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+        var newHours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var newMinutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
+  
+        setDays(newDays);
+        setHours(newHours);
+        setMinutes(newMinutes);
+        setSeconds(newSeconds);
+  
+  
+        if (difference <= 0) {
+          clearInterval(updateTime);
+          setDays(0);
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
+          setEnd(true)
+        }
+      })
+    }
+
+    return () => {
+      clearInterval(updateTime);
+    }
+
+  }, [data]);
+
+
+  const cancelAuctionFunc = () => {
+    setModalTitle("Cancel Auction");
     setModalContent(
       <div className={modalBodyWrapper}>
         <WarningIcon className="mx-auto" />
         <h3 className="text-white text-18px font-semibold leading-6">
-          Are you sure you want to cancel your Listing?
+          Are you sure you want to cancel your Auction?
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Canceling your listing will unpublish this sale from market and You
+          Canceling your auction will unpublish this sale from market and You
           will be asked to confirm the transaction through your wallet.
         </p>
         <div className={footerBtnContainer}>
@@ -34,44 +89,135 @@ export const AuctionNftDescription = () => {
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} variant="v1" className="py-4" />
+          <Button title={"Proceed"} onClick={handleCancelAuction} variant="v1" className="py-4" />
         </div>
       </div>
     );
     setModal(true);
   };
-
-  return (
-    <div className={nftDescriptionContainer}>
-      <div className={desNameContainer}>
-        <div className={nameBox}>
-          <div className="linearCircle1"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Creator</h5>
-            <h6 className={nameBoxZValue}>You</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="linearCircle2"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Owner</h5>
-            <h6 className={nameBoxZValue}>You</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Collection</h5>
-            <h6 className={nameBoxZValue}>Collection Name</h6>
-          </div>
+  const endAuctionFunc = () => {
+    setModalTitle("End Auction");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <WarningIcon className="mx-auto" />
+        <h3 className="text-white text-18px font-semibold leading-6">
+          Are you sure you want to end your Auction Price?
+        </h3>
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Your NFT will go to {formatAddress(data?.auctionInfo.highestBidAddress)} and you will receive {data?.auctionInfo.highestBidPrice}
+        </p>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Go back"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModalTitle("");
+              setModalContent(null);
+              setModal(false);
+            }}
+          />
+          <Button title={"Proceed"} onClick={handleEndAuction} variant="v1" className="py-4" />
         </div>
       </div>
-
+    );
+    setModal(true);
+  };
+  const ProceedFunc = () => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <LoaderIcon className="mx-auto" />
+        <h3 className="text-white text-18px font-semibold leading-6">
+          Transaction in progress
+        </h3>
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Your transaction is in progress, Please wait.
+          </p>
+        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Hash
+          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
+        </p> */}
+        {/* <div className={footerBtnContainer}>
+          <Button
+            title={"Cancel"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        </div> */}
+      </div>
+    );
+    setModal(true);
+  };
+  const SuccessFunc = (txStatus: boolean) => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <Image
+          className={ImgStyling}
+          src={data? data.image : ""}
+          alt="image"
+          height={64}
+          width={64}
+        />
+        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
+        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Congratulations! You have successfully created{" "}
+          <span className="text-white">{data?.name}</span> NFT on Nether NFT
+          platform.
+        </p>}
+        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Failed.
+        </p>}
+        {/* <Link href={{
+              pathname: AppRoutes.nfts.nft,
+              query: {
+                collection: nftData?.collection,
+                nftId: 2,
+              }}} 
+          className={footerBtnContainer}
+        > */}
+        <div className={footerBtnContainer} >
+          <Button
+            title={"Ok"}
+            variant="v4"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        {/* </Link> */}
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+  
+  const handleEndAuction = async () => {
+    ProceedFunc()
+    const result = await callEndAuction(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId)
+    SuccessFunc(result.success)
+  }
+  const handleCancelAuction = async () => {
+    ProceedFunc()
+    const result = await callCancelAuction(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId)
+    SuccessFunc(result.success)
+  }
+  return (
+    <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>32.08 BNB</h5>
-          <h6 className={greyTxt}> =$65000.6</h6>
+          <h5 className={BnBNum}>{data?.auctionInfo.highestBidPrice} BNB</h5>
+          <h6 className={greyTxt}> =${formatBNB2USD(data?.auctionInfo.highestBidPrice)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
@@ -92,25 +238,25 @@ export const AuctionNftDescription = () => {
           <div className="flex w-full justify-center p-4">
             <div className="timerBox flex items-center gap-5">
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">13</h5>
+                <h5 className="text-white text-20px font-semibold">{days}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Days
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">22</h5>
+                <h5 className="text-white text-20px font-semibold">{hours}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Hours
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">24</h5>
+                <h5 className="text-white text-20px font-semibold">{minutes}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Minutes
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">02</h5>
+                <h5 className="text-white text-20px font-semibold">{seconds}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Seconds
                 </h6>
@@ -121,12 +267,12 @@ export const AuctionNftDescription = () => {
       </div>
       <div className="buttonContainer flex items-center gap-4">
         <Button
-          title={"Cancel Listing"}
+          title={"Cancel Auction"}
           variant="v1"
           className="py-4"
-          onClick={cancelListingFunc}
+          onClick={cancelAuctionFunc}
         />
-        <Button title={"Edit"} variant="v4" className="py-4" />
+        <Button title={"End Auction"} disabled={!end} onClick={endAuctionFunc} variant="v4" className="py-4" />
       </div>
       {Modal && (
         <CustomModal
@@ -181,4 +327,8 @@ text-14px font-semibold text-white
 `);
 const BnBNum = ctl(`
 text-16px font-bold text-white
+`);
+
+const ImgStyling = ctl(`
+w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
 `);

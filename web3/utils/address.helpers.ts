@@ -1,12 +1,6 @@
 import { CHAIN } from "../constants/common";
 import addresses from "../constants/contracts";
-
-export interface Address {
-  97: string;
-  56: string;
-  4: string;
-  1: string;
-}
+import { Address } from "../constants/types";
 
 export const getAddress = (address: Address): string => {
   const chainId = CHAIN;
@@ -33,4 +27,7 @@ export const getWBNBAddress = () => {
 };
 export const getBusdAddress = () => {
   return getAddress(addresses.busd);
+};
+export const getMarketplaceAddress = () => {
+  return getAddress(addresses.marketplace);
 };
