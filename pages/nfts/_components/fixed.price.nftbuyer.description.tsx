@@ -7,7 +7,18 @@ import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-export const FixedPriceNFTBuyerDescription = () => {
+import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { FEE } from "@/web3/constants/common";
+import { useWeb3React } from "@web3-react/core";
+import { callBuyListedItem } from "@/web3/utils/call.helpers";
+interface FixedPriceNFTBuyerDescriptionProps {
+  data: INFTDetailData | undefined
+  reload?: boolean
+  setReload?: any
+}
+export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPriceNFTBuyerDescriptionProps) => {
+  const {account, library} = useWeb3React()
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -18,24 +29,26 @@ export const FixedPriceNFTBuyerDescription = () => {
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={"/images/nftAsset.png"}
+          src={data? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">Maradona sport</h2>
-        <h3 className="text-white text-14px font-normal">Gas fee 10%</h3>
+        <h2 className="text-18px text-white font-semibold">{data?.name}</h2>
+        <h3 className="text-white text-14px font-normal">Marketplace Fee {FEE.buyItemFeeForMarketplace}%</h3>
+        <h3 className="text-white text-14px font-normal">Collection Fee {FEE.buyItemFeeForCreator}%</h3>
+        <h3 className="text-white text-14px font-normal">Multilevel Fee {FEE.buyItemFeeForMultilevel}%</h3>
         <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />
-          89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
+          {formatEther2Number(data?.listInfo.price)} BNB <span className="text-gray-shade-2 "> =${formatBNB2USD(data?.listInfo.price)}</span>
         </h6>
         <div className={footerBtnContainer}>
           <Button
             title={"Checkout"}
             variant="v1"
             className="py-4"
-            onClick={buyNFTStep2Func}
+            onClick={handleBuyNFT}
           />
         </div>
       </div>
@@ -50,14 +63,14 @@ export const FixedPriceNFTBuyerDescription = () => {
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Your transaction is in progress, Please wait.
-        </p> */}
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Your transaction is in progress, Please wait.
+          </p>
+        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p>
-        <div className={footerBtnContainer}>
+        </p> */}
+        {/* <div className={footerBtnContainer}>
           <Button
             title={"Cancel"}
             variant="v2"
@@ -68,31 +81,42 @@ export const FixedPriceNFTBuyerDescription = () => {
               setModalContent(null);
             }}
           />
-        </div>
+        </div> */}
       </div>
     );
     setModal(true);
   };
-  const buyNFTSuccessFunc = () => {
+  const SuccessFunc = (txStatus: boolean) => {
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={"/images/nftAsset.png"}
+          src={data? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">Purchased</h2>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully bought{" "}
-          <span className="text-white">Maradona sport</span> NFT on Nether NFT
+        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
+        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Congratulations! You have successfully created{" "}
+          <span className="text-white">{data?.name}</span> NFT on Nether NFT
           platform.
-        </p>
-        <div className={footerBtnContainer}>
+        </p>}
+        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Failed.
+        </p>}
+        {/* <Link href={{
+              pathname: AppRoutes.nfts.nft,
+              query: {
+                collection: nftData?.collection,
+                nftId: 2,
+              }}} 
+          className={footerBtnContainer}
+        > */}
+        <div className={footerBtnContainer} >
           <Button
-            title={"View item"}
+            title={"Ok"}
             variant="v4"
             className="py-4"
             onClick={() => {
@@ -101,50 +125,31 @@ export const FixedPriceNFTBuyerDescription = () => {
               setModalContent(null);
             }}
           />
+        {/* </Link> */}
         </div>
       </div>
     );
     setModal(true);
   };
-
+  const handleBuyNFT = async () => {
+    buyNFTStep2Func()
+    const result = await callBuyListedItem(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId, (data as INFTDetailData).listInfo.price)
+    SuccessFunc(result.success)
+  }
   return (
     <div className={nftDescriptionContainer}>
-      <div className={desNameContainer}>
-        <div className={nameBox}>
-          <div className="linearCircle1"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Creator</h5>
-            <h6 className={nameBoxZValue}>Dannathaos ART</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="linearCircle2"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Owner</h5>
-            <h6 className={nameBoxZValue}>YDannathaos ARTou</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Collection</h5>
-            <h6 className={nameBoxZValue}>Collection Name</h6>
-          </div>
-        </div>
-      </div>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon />
-          <h5 className={BnBNum}>89.08 BNB</h5>
-          <h6 className={greyTxt}> =$24190.19</h6>
+          <h5 className={BnBNum}>{formatEther2Number(data?.listInfo.price)} BNB</h5>
+          <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} leading-6`}>
-          This NFT is a &quot;bismuth edition&quot; version of Paracelsus. It is
-          a tribute to the great Alchemist Paracelsus as Bismuth is one of the
-          minerals with which the Philosopher&apos;s Stone can be made.
+          {data?.description}
         </p>
       </div>
       <div className="buttonContainer flex items-center">

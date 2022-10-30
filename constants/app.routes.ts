@@ -54,6 +54,7 @@ export const AppRoutes = {
   liquidity_pool: "/liquidity-pool",
 
   nfts: {
+    nft: "/nfts/[collection]/[tokenId]",
     create_nft: "/nfts/create",
     create_collection: "/nfts/create-collection",
   },

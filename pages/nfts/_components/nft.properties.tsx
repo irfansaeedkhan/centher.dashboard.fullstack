@@ -1,8 +1,12 @@
 // React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
+import { IProperty } from "./create.nft.form";
 
-export const NFTProperties = () => {
+interface NFTPropertiesProps {  
+  attributes: IProperty[] | undefined
+}
+export const NFTProperties = (props: NFTPropertiesProps) => {
   return (
     <div className={NFTPropertiesContainer}>
       <div className="accordion" id="accordionExample">
@@ -27,11 +31,13 @@ export const NFTProperties = () => {
           >
             <div className="accordion-body p-6">
               <div className={propetiesListContainer}>
-                <div className={properyCard}>
-                  <h4 className={PropertyName}>Artist</h4>
-                  <h5 className={Type}>Reo Cragun</h5>
-                  <h6 className={percentage}>100% have this trail</h6>
-                </div>
+                {props.attributes && props.attributes.map((attribute, index) => 
+                  <div className={properyCard} key={index}>
+                    <h4 className={PropertyName}>{attribute.Type}</h4>
+                    <h5 className={Type}>{attribute.PropertyName}</h5>
+                    {/* <h6 className={percentage}>100% have this trail</h6> */}
+                  </div>
+                )}                
               </div>
             </div>
           </div>

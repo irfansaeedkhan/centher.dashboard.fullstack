@@ -1,13 +1,17 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CollectionCard } from "@/components/collection.card";
 import { AppRoutes } from "@/constants/app.routes";
+import { Collection } from "@/store/explore.store";
 
-export const HotCollections: React.FC = () => {
+interface HotCollectionsProps {
+  hotCollections: Collection[]
+}
+export const HotCollections: React.FC<HotCollectionsProps> = ({hotCollections}) => {
   return (
     <div className={hotCollectionWrapper}>
       <div className={hotCollectionGap}>
@@ -17,25 +21,17 @@ export const HotCollections: React.FC = () => {
         </Link>
       </div>
       <div className={collectionCardStyle}>
-        <CollectionCard
-          collectionName={Data.Name}
-          collectionDescription={Data.Description}
-          ownerName={Data.ownerName}
-          coverImage={Data.collectionCoverImage}
-          logoImage={Data.collectionLogoImage}
-        />
+        {hotCollections.map((collection) => {
+          return (
+            <CollectionCard
+              data={collection}
+              key={collection.id}
+            />
+          );
+        })}
       </div>
     </div>
   );
-};
-
-const Data = {
-  Name: "karyanya bang Rakajana wooy",
-  Description:
-    "0,000 Moonbird pellets, regurgitated from the imagination of artist Gremplin aand revealed in July 2022 each of them",
-  ownerName: "Dannathos ART -",
-  collectionCoverImage: "/images/collection.png",
-  collectionLogoImage: "/images/nft.png",
 };
 
 const hotCollectionWrapper = ctl(`flex flex-col gap-8`);

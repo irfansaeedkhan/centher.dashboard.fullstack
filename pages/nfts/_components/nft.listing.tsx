@@ -1,8 +1,12 @@
 // React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
-
-export const NFTListing = () => {
+import { IListHistory } from "@/hooks/use.get.nft.data.ts";
+import { formatAddress } from "@/utils/format.address";
+interface NFTListingProps {
+  data: IListHistory[] | undefined
+}
+export const NFTListing = ({data}: NFTListingProps) => {
   return (
     <div className={NFTlistingsContainer}>
       <div className="accordion" id="accordionExample">
@@ -27,26 +31,33 @@ export const NFTListing = () => {
           >
             <div className="accordion-body p-6">
               <div className={listingsList}>
-                <div className={listingBox}>
-                  <div className={circle}></div>
-                  <div className="flex flex-col gap-3">
-                    <h5 className={title}>
-                      Listed by{" "}
-                      <span className="font-semibold">Ricky Ammeandola</span>
-                    </h5>
-                    <h6 className={date}>2022-01-25 11:02:44</h6>
+                {data && data.map((item, index) => {
+                  let prefix = "Listed"
+                  if(item.type === "ListForSale") {
+                    prefix = "Listed"
+                  } else if(item.type === "CancelForSale") {
+                    prefix = "Canceled"
+                  } else if(item.type === "EditForSale") {
+                    prefix = "Price Changed"
+                  } else if(item.type === "CreateAuction") {
+                    prefix = "Auction Created"
+                  } else if(item.type === "BuyItem" || item.type === "AcceptBid" || item.type === "EndAuction") {
+                    prefix = "Bought"
+                  } else {
+                    return
+                  }
+                  return <div className={listingBox} key={index}>
+                    <div className={circle}></div>
+                    <div className="flex flex-col gap-3">
+                      <h5 className={title}>
+                        {prefix} by{" "}
+                        <span className="font-semibold">{formatAddress(item.seller)}</span>
+                      </h5>
+                      <h6 className={date}>{(new Date(item.txTime * 1000)).toString()}</h6>
+                    </div>
                   </div>
-                </div>
-                <div className={listingBox}>
-                  <div className={circle}></div>
-                  <div className="flex flex-col gap-3">
-                    <h5 className={title}>
-                      Minted by{" "}
-                      <span className="font-semibold">Ricky Ammeandola</span>
-                    </h5>
-                    <h6 className={date}>2022-01-25 11:02:44</h6>
-                  </div>
-                </div>
+                  })
+                }
               </div>
             </div>
           </div>

@@ -5,15 +5,15 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CrossIcon } from "@/assets/svgs";
+import { UploadNFTProps } from "./upload.nft";
 
-const GifNFTUpload = () => {
+const GifNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
-  const [previewSecImg, setPreviewSecImg] = useState<string | null>("");
 
   // upload image to preview
   const uploadFile = (e: any) => {
-    const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setPreviewSecImg(previewUrl);
+    const previewUrl = e.target.files[0];
+    setAsset(previewUrl);
     setShowSecPreivew(true);
   };
   return (
@@ -23,7 +23,7 @@ const GifNFTUpload = () => {
           <Image
             className={imageStyling}
             // src="/images/nftImage.png"
-            src={previewSecImg ?? ""}
+            src={asset? URL.createObjectURL(asset) : ""}
             alt="nft"
             height={543}
             width={543}
@@ -32,7 +32,7 @@ const GifNFTUpload = () => {
             className={imageDelBtn}
             onClick={() => {
               setShowSecPreivew(false);
-              setPreviewSecImg(null);
+              setAsset(null);
             }}
           >
             <CrossIcon />

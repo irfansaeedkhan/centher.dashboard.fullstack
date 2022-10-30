@@ -1,8 +1,13 @@
 // React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
-
-export const NFTDetails = () => {
+import { formatAddress } from "@/utils/format.address";
+interface NFTDetailsProps {
+  nftId: number | undefined
+  mintTx: string | undefined
+  collection: string | undefined
+}
+export const NFTDetails = (props: NFTDetailsProps) => {
   return (
     <div className={NFTDetailsContainer}>
       <div className="accordion" id="accordionExample">
@@ -29,15 +34,15 @@ export const NFTDetails = () => {
               <div className={detailsList}>
                 <div className={detailBox}>
                   <h5 className={title}>NFT ID</h5>
-                  <h6 className={value}>214919</h6>
+                  <h6 className={value}>{props.nftId}</h6>
                 </div>
                 <div className={detailBox}>
                   <h5 className={title}>MINT TRANSACTION</h5>
-                  <h6 className={value}>0x6d...4556</h6>
+                  <h6 className={value}>{formatAddress(props.mintTx)}</h6>
                 </div>
                 <div className={detailBox}>
                   <h5 className={title}>CONTRACT ADDRESS</h5>
-                  <h6 className={value}>0x6d...4556</h6>
+                  <h6 className={value}>{formatAddress(props.collection)}</h6>
                 </div>
               </div>
             </div>

@@ -6,17 +6,18 @@ import {
   getMulticallAddress,
   getRegistrationAddress,
   getRouterAddress,
+  getMarketplaceAddress,
 } from "./address.helpers";
 
 // ABI
 import ntrdaoAbi from "../abis/ntrdao.json";
 import presaleAbi from "../abis/presale.json";
+import marketplaceAbi from "../abis/marketplace.json";
 import registrationAbi from "../abis/registration.json";
 import multicallAbi from "../abis/multicall.json";
 import busdAbi from "../abis/erc20.json";
 import routerAbi from "../abis/router.json";
-import { Web3Provider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
+import ERC721Abi from "../abis/erc721.json"
 import { simpleRpcProvider } from "./providers";
 import { ethers } from "ethers";
 // const getContract = (abi: any, address: string, library: Web3Provider) => {
@@ -47,6 +48,14 @@ export const getRegistrationContract = (signer?: SignerOrProvider) => {
 
 export const getPresaleContract = (signer: any) => {
   return getContract(presaleAbi, getPresaleAddress(), signer);
+};
+
+export const getMarketplaceContract = (signer: any) => {
+  return getContract(marketplaceAbi, getMarketplaceAddress(), signer);
+};
+
+export const getStandardNFTContract = (signer: any, nftAddress: string) => {
+  return getContract(ERC721Abi, nftAddress, signer);
 };
 
 export const getMulticallContract = (
