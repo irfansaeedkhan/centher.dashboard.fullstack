@@ -1,20 +1,25 @@
 // React, Next, NPM Packages
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useMemo } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
+import axios from "axios";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
-import { TwitterShareButton } from "react-share";
-import { Bars, Rings } from "react-loader-spinner";
+import ctl from "@netlify/classnames-template-literals";
+import { Rings } from "react-loader-spinner";
+import { CgSpinner } from "react-icons/cg";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
+import { UserImage } from "@/models/user";
 import Button from "@/components/button";
+import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
+import { axiosNodeApi } from "@/utils/axios";
+import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import {
   CopySvg,
   TwitterSvg,
@@ -22,20 +27,20 @@ import {
   CameraIcon,
   EditIcon,
 } from "@/assets/svgs";
-import { axiosNodeApi } from "@/utils/axios";
-import { sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
-import { useUserMediaUpload } from "./upload.media.logic";
-import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
-import { type } from "os";
 import UserProfileTabs from "./user.profile.tabs";
-import type { SelectedTab } from "./types";
+import { CoverUploadButton } from "./cover.upload.button";
 
 interface FollowUser {
   setFollowUser?: (arg0: boolean) => void;
 }
+
+type CoverImageWithFile = Partial<UserImage> & {
+  blob: File | null;
+  newImage: boolean;
+};
 
 const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
   const { incrementFollowersCount, decrementFollowersCount } =
@@ -45,39 +50,172 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         decrementFollowersCount: state.decrementFollowersCount,
       };
     });
-  const {
-    displayImage,
-    imageUrl,
-    uploadImageButton,
-    uploadImage,
-    handleSelectedFile,
-  } = useUserMediaUpload("cover image");
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { user } = useGetUser(
+  const { user, mutateUser } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
+
+  const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
+    ...user?.cover_image,
+    blob: null,
+    newImage: false,
+  });
+
+  const coverImageInputRef = useRef<HTMLInputElement>(null);
+
   const [_, copy] = useCopyToClipboard();
-  const [loader, setLoader] = useState(false);
-  const [desEditStatus, setDesEditStatus] = useState<boolean>(false);
-  const [shareUrl, setShareUrl] = useState("");
   const [description, setDescription] = useState<string | undefined>("");
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [selectedTab, setSelectedTab] = useState<SelectedTab>("Posts");
+
+  const isCurrentUserLoggedInUser = useMemo(() => {
+    return (
+      loggedInUser &&
+      user &&
+      loggedInUser.account_address.toLowerCase() ===
+        user.account_address.toLowerCase()
+    );
+  }, [user, loggedInUser]);
+
+  const currentPageRoute = useMemo(
+    () => ({
+      isProfilePage:
+        router.pathname === AppRoutes.profile.account_address ||
+        router.pathname === AppRoutes.profile.following ||
+        router.pathname === AppRoutes.profile.followers ||
+        router.pathname === AppRoutes.profile.replies,
+      isNFTProfilePage: router.pathname === AppRoutes.profile.nfts,
+    }),
+    [router.pathname]
+  );
+
+  // Set to initial cover image state
+  const setInitialCoverImage = useCallback(() => {
+    if (user?.cover_image) {
+      setCoverImage({
+        ...user.cover_image,
+        blob: null,
+        newImage: false,
+      });
+    }
+  }, [user?.cover_image]);
 
   useEffect(() => {
-    setDescription(user?.profile_bio);
-  }, [user]);
+    setInitialCoverImage();
+  }, [setInitialCoverImage]);
 
   useEffect(() => {
-    setShareUrl(`${window.location.origin}${router.asPath}`);
-  }, [router.asPath, user?.account_address]);
+    if (user?.profile_bio) {
+      setDescription(user.profile_bio);
+    }
+  }, [user?.profile_bio]);
 
-  // handle description data
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(event.target.value);
+  // Handle cover image change
+  const handleSelectCoverImage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+
+    // Make input value empty
+    event.target.value = "";
+
+    if (!file) {
+      return;
+    }
+
+    // Only allow png, jpeg and jpg
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+      toast.error("Only png and jpg files are allowed");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setCoverImage((prev) => ({
+        ...prev,
+        object_name: file.name,
+        path: reader.result as string,
+        blob: file,
+        newImage: true,
+      }));
+    };
+  };
+
+  // Upload cover image change
+  const handleUploadCoverImage = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    if (!coverImage.blob) {
+      return;
+    }
+
+    const button = e.currentTarget as HTMLButtonElement;
+    button.disabled = true;
+
+    try {
+      const coverImageData: CoverImageWithFile = {
+        ...coverImage,
+      };
+
+      // Get pre-signed URL from API
+      const { data } = await axiosNodeApi.get(
+        "/api/s3-upload/user-image?filename=" + coverImageData.object_name
+      );
+
+      coverImageData.object_name = data.objectName;
+
+      // Create form data
+      const presignedPostData = data.presignedPostData;
+      const formData = new FormData();
+      Object.keys(presignedPostData.fields).forEach((key) => {
+        formData.append(key, presignedPostData.fields[key]);
+      });
+      formData.append("file", coverImage.blob);
+
+      // Upload file to S3
+      await axios.post(presignedPostData.url, formData);
+
+      coverImageData.path = presignedPostData.url + "/" + data.objectName;
+
+      // Update profile image in DB
+      updateUserImage({
+        type: "cover_image",
+        object_name: coverImageData.object_name!,
+        path: coverImageData.path,
+      });
+
+      setCoverImage((prev) => ({
+        ...prev,
+        blob: null,
+        newImage: false,
+      }));
+
+      mutateUser({
+        cover_image: {
+          object_name: coverImageData.object_name!,
+          path: coverImageData.path,
+        },
+      });
+
+      button.disabled = false;
+    } catch (error: any) {
+      button.disabled = false;
+      process.env.NODE_ENV !== "production" && console.dir(error);
+      let errorMsg = "Error uploading image";
+      if (
+        typeof error.response?.data === "string" &&
+        error.response?.data.includes("EntityTooLarge")
+      ) {
+        errorMsg =
+          "User image is too large. Please upload an image less than 5MB.";
+      } else if (error.response?.data?.message_description) {
+        errorMsg = error.response.data.message_description;
+      }
+      toast.error(errorMsg);
+    }
   };
 
   useEffect(() => {
@@ -123,14 +261,6 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     }
   };
 
-  // FIXME: Mubashir - Use memoization
-  const isProfilePage =
-    router.pathname === AppRoutes.profile.account_address ||
-    router.pathname === AppRoutes.profile.following ||
-    router.pathname === AppRoutes.profile.followers ||
-    router.pathname === AppRoutes.profile.replies;
-  const isNFTProfilePage = router.pathname === AppRoutes.profile.nfts;
-
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -146,7 +276,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <Button
             title={"Social Profile"}
-            variant={`${isProfilePage ? "v1" : "v2"}`}
+            variant={`${currentPageRoute.isProfilePage ? "v1" : "v2"}`}
             className="px-8 py-3"
           />
         </Link>
@@ -162,7 +292,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         >
           <Button
             title={"NFT Profile"}
-            variant={`${isNFTProfilePage ? "v1" : "v2"}`}
+            variant={`${currentPageRoute.isNFTProfilePage ? "v1" : "v2"}`}
             className="px-8 py-3"
           />
         </Link>
@@ -172,63 +302,53 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
           <div
             className={coverImageContainer}
             style={{
-              backgroundImage: displayImage
-                ? `url(${imageUrl})`
-                : user.cover_image.path
-                ? `url(${user.cover_image.path})`
-                : `url(/images/coverImage.png)`,
+              backgroundImage: `url(${coverImage.path})`,
             }}
           >
-            {loggedInUser.account_address.toLowerCase() ===
-            user.account_address.toLowerCase() ? (
-              !uploadImageButton ? (
-                <label className={`${editCover} `}>
-                  <CameraIcon />
-                  Edit cover
+            {isCurrentUserLoggedInUser && (
+              <>
+                <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
                   <input
                     type="file"
-                    id="files-photo"
-                    name="photos-file"
+                    ref={coverImageInputRef}
                     accept="image/jpeg,image/png,image/jpg"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      setLoadingState(false);
-                      handleSelectedFile(e);
-                    }}
-                  />{" "}
-                </label>
-              ) : loadingState ? (
-                <button
-                  className={` ${editCover} !bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`}
-                >
-                  <Rings
-                    height="20"
-                    width="20"
-                    color="#1C1F29"
-                    radius="6"
-                    wrapperStyle={{}}
-                    wrapperClass=""
-                    visible={true}
-                    ariaLabel="rings-loading"
+                    onChange={handleSelectCoverImage}
                   />
-                </button>
-              ) : (
-                <button
-                  className={uploadCover}
-                  onClick={() => {
-                    setLoadingState(true);
-                    uploadImage();
-                  }}
-                >
-                  <CameraIcon />
-                  Upload cover
-                </button>
-              )
-            ) : null}
-            {/* <button className={editCover}>
-              <CameraIcon />
-              Edit cover
-            </button> */}
+                  {!coverImage.newImage && (
+                    <CoverUploadButton
+                      onClick={() => {
+                        coverImageInputRef.current?.click();
+                      }}
+                    >
+                      <CameraIcon />
+                      Edit cover
+                    </CoverUploadButton>
+                  )}
+                  {coverImage.newImage && (
+                    <>
+                      <CoverUploadButton
+                        variant="dark"
+                        onClick={setInitialCoverImage}
+                      >
+                        Cancel
+                      </CoverUploadButton>
+                      <CoverUploadButton
+                        onClick={handleUploadCoverImage}
+                        className={`group`}
+                      >
+                        <CgSpinner
+                          className={`group-disabled:block hidden animate-spin w-4 h-4`}
+                        />
+                        <CameraIcon className={`group-disabled:hidden`} />
+                        Upload Cover
+                      </CoverUploadButton>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
             <div className={profileImage}>
               <Image
                 src={user.profile_image.path}
@@ -266,12 +386,6 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      {/* <Image
-                        src="/images/twitter2.png"
-                        width={24}
-                        height={24}
-                        alt="icon"
-                      /> */}
                       <TwitterSvg className="hover:stroke-brand-primary" />
                     </a>
                   )}
@@ -350,9 +464,7 @@ bg-background-shade-3 rounded-xl
 const coverImageContainer = ctl(`
 coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[31vh] bg-[url('/images/coverImage.png')]
 `);
-const editCover = ctl(`
-flex items-center gap-3 bg-white rounded-xl px-4 py-2 text-black-shade-3 font-semibold text-14px absolute right-6 bottom-4
-`);
+
 const profileImage = ctl(`
 cursor-pointer absolute left-6 -bottom-12
 `);
@@ -375,7 +487,7 @@ const code = ctl(`
 text-white text-14px font-semibold
 `);
 const editProfileBtn = ctl(`
-mt-5 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]
+mt-5 !px-4 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]
 `);
 const textContent = ctl(`
 mt-6
@@ -383,8 +495,4 @@ mt-6
 
 const profileDescription = ctl(`
 text-16px font-normal leading-6 text-gray-shade-16
-`);
-
-const uploadCover = ctl(`
-flex items-center gap-3 bg-brand-primary hover:bg-brand-primary-dark rounded-xl px-4 py-2 text-black-shade-3 font-semibold text-14px absolute right-6 bottom-4
 `);

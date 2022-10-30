@@ -3,5 +3,8 @@
   "scss.lint.unknownAtRules": "ignore",
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
-  "tailwindCSS.experimental.classRegex": ["ctl\\(`([^)]*)`\\)"]
+  "tailwindCSS.experimental.classRegex": [
+    ["ctl\\(`([^)]*)`\\)"],
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ]
 }

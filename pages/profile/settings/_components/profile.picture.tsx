@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { useSWRConfig } from "swr";
@@ -7,15 +6,13 @@ import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
-// App imports
 import { LoggedInUser, UserImage } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
+import { updateUserImage } from "@/utils/user.helpers";
 import { AvatarIcon, CameraIcon2, Polygon, UploadIcon } from "@/assets/svgs";
 
-// Current directory imports
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
-import { updateProfileImage } from "./update.profile.image";
 
 interface ProfilePictureProps {
   user: LoggedInUser;
@@ -37,7 +34,11 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
   const handleSelectAvatar = (avatar: UserImage) => {
     setProfileImage(avatar);
-    updateProfileImage(avatar);
+    updateUserImage({
+      type: "profile_image",
+      object_name: avatar.object_name,
+      path: avatar.path,
+    });
   };
 
   const handleSelectCustomImage: React.ChangeEventHandler<
@@ -46,11 +47,11 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     // Close Menu
     setIsMenuOpen(false);
 
-    if (!e.currentTarget.files || e.currentTarget.files.length < 1) {
+    const file = e.currentTarget.files?.[0];
+
+    if (!file) {
       return;
     }
-
-    const file = e.currentTarget.files[0];
 
     // Only allow png, jpeg and jpg
     if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
@@ -66,7 +67,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     try {
       // Get pre-signed URL from API
       const { data } = await axiosNodeApi.get(
-        "/api/s3-upload/profile-image?filename=" + file.name
+        "/api/s3-upload/user-image?filename=" + file.name
       );
 
       profileImageData.object_name = data.objectName;
@@ -88,7 +89,11 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       profileImageData.path = presignedPostData.url + "/" + data.objectName;
 
       // Update profile image in DB
-      updateProfileImage(profileImageData);
+      updateUserImage({
+        type: "profile_image",
+        object_name: profileImageData.object_name,
+        path: profileImageData.path,
+      });
 
       await mutate(
         "/api/users/me",

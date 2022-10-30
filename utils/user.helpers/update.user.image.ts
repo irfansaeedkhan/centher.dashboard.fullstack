@@ -1,9 +1,11 @@
 import { UserImage } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
-export const updateProfileImage = async (userImage: UserImage) => {
+export const updateUserImage = async (
+  userImage: UserImage & { type: "cover_image" | "profile_image" }
+) => {
   try {
-    await axiosNodeApi.patch("/api/users/me/profile-image", userImage);
+    await axiosNodeApi.patch("/api/users/me/user-image", userImage);
   } catch (error: any) {
     throw (
       error.response?.data ?? {
