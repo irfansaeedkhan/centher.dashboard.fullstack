@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { BNBIcon, YellowTick } from "@/assets/svgs";
-import { NTRIcon } from "@/assets/svgs/ntr.icon";
 import { NFT } from "@/store/explore.store";
 import axios from "axios";
 import Link from "next/link";
