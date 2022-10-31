@@ -39,46 +39,53 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <Link href={`/nfts/${collection}/${data.tokenId}`}>
-      <div className={nftCardWrapper}>
-        <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
-          <div className={ownerDpWrapper}>
-            <Image src="/images/a1.png" alt="profile" height={28} width={28} />
-            <span className={nftOwnerName}>{formatAddress(data.creator)}</span>
-            <YellowTick />
-          </div>
+    <Link
+      href={`/nfts/${collection}/${data.tokenId}`}
+      className={nftCardWrapper}
+    >
+      <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
+        <div className={ownerDpWrapper}>
+          <Image src="/images/a1.png" alt="profile" height={28} width={28} />
+          <span className={nftOwnerName}>{formatAddress(data.creator)}</span>
+          <YellowTick />
         </div>
-        <div className={nftImageWrapper}>
-          {imageUrl ? (
-            <Image src={imageUrl} alt="nft" height={210} width={286} />
-          ) : (
-            <p className="h-[220px] text-grey pt-5">Invalid Image</p>
-          )}
-        </div>
-        <div className={nftDetailWrapper}>
-          <div className={nftName}>{name}</div>
-        </div>
-        <div className={nftOwnerWrapper}>
-          {/* <div className={ownerDpWrapper}>
+      </div>
+      <div className={nftImageWrapper}>
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt="nft"
+            height={222}
+            width={293}
+            className="!w-[293px] !h-[222px] object-cover rounded-md"
+          />
+        ) : (
+          <p className="h-[220px] text-grey pt-5">Invalid Image</p>
+        )}
+      </div>
+      <div className={nftDetailWrapper}>
+        <div className={nftName}>{name}</div>
+      </div>
+      <div className={nftOwnerWrapper}>
+        {/* <div className={ownerDpWrapper}>
             <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
             <span className={nftOwnerName}>{props.nftOwnerName}</span>
             <YellowTick />
           </div> */}
-          <div className={nftPriceWrapper}>
-            <span className={nftPrice}>
-              <BNBIcon />
-              <span>{formatEther2Number(data.price)} BNB</span>
-            </span>
-          </div>
-          {/* ) : (
+        <div className={nftPriceWrapper}>
+          <span className={nftPrice}>
+            <BNBIcon />
+            <span>{formatEther2Number(data.price)} BNB</span>
+          </span>
+        </div>
+        {/* ) : (
             <span className={nftPrice}>
               <NTRIcon />
               <span>{props.nftPriceNether.toLocaleString()} NTR</span>
             </span>
           )} */}
 
-          <span className={textSimple}>${formatBNB2USD(data.price)}</span>
-        </div>
+        {/* <span className={textSimple}>${formatBNB2USD(data.price)}</span> */}
       </div>
     </Link>
   );
@@ -87,19 +94,19 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 export default NFTCard;
 
 const nftCardWrapper = ctl(
-  `w-[16.688rem] nftCardStyling h-auto border border-gray-shade-3 rounded-[10px]  flex flex-col gap-3 bg-transparent relative`
+  `w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
 );
 
-const nftImageWrapper = ctl(`w-full flex justify-center p-2 mt-10`);
+const nftImageWrapper = ctl(`w-full flex justify-center px-2 mt-10`);
 
 const textSimple = ctl(`text-gray-shade-7 text-xs font-medium`);
 
-const nftDetailWrapper = ctl(`flex flex-col gap-1 p-2`);
+const nftDetailWrapper = ctl(`flex flex-col gap-1 px-2 py-3`);
 
 const nftName = ctl(`font-semibold text-white`);
 
 const nftOwnerWrapper = ctl(
-  `bg-background-shade-3 flex flex-col p-3 gap-2 rounded-b-[10px]`
+  `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
 );
 
 const nftOwnerName = ctl(`text-white text-xs font-medium`);

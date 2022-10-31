@@ -30,38 +30,39 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
     }
   }, [data]);
   return (
-    <Link href={`/collections/${data.collection}`}>
-      <div className={collectionWrapper}>
-        <div className={imagesWrapper}>
-          <Image
-            src={coverImage}
-            alt="collection Image"
-            width={390}
-            height={244}
-            className={imageStyle}
-          />
-          <Image
-            src={profileImage}
-            alt="Logo Image"
-            width={64}
-            height={64}
-            className={logoImage}
-          />
-        </div>
-        <div className={contentWrapper}>
-          <div className={collectionName}>{data.name}</div>
-          <a href="#" className={collectionOwner}>
-            {formatAddress(data.creator)}
-          </a>
-          <p className={collectionDescription}>{description}</p>
-        </div>
+    <Link
+      href={`/collections/${data.collection}`}
+      className={collectionWrapper}
+    >
+      <div className={imagesWrapper}>
+        <Image
+          src={coverImage}
+          alt="collection Image"
+          width={340}
+          height={180}
+          className={imageStyle}
+        />
+        <Image
+          src={profileImage}
+          alt="Logo Image"
+          width={64}
+          height={64}
+          className={logoImage}
+        />
+      </div>
+      <div className={contentWrapper}>
+        <div className={collectionName}>{data.name}</div>
+        <a href="#" className={collectionOwner}>
+          {formatAddress(data.creator)}
+        </a>
+        <p className={collectionDescription}>{description}</p>
       </div>
     </Link>
   );
 };
 
 const collectionWrapper = ctl(
-  `w-[340px] border border-gray-shade-3 h-auto rounded-lg flex flex-col gap-12`
+  `w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12`
 );
 
 const imagesWrapper = ctl(`relative flex justify-center`);
@@ -70,14 +71,14 @@ const logoImage = ctl(
   `rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem]`
 );
 
-const contentWrapper = ctl(`flex flex-col gap-3 px-4 items-center`);
+const contentWrapper = ctl(`flex flex-col px-4 items-center`);
 
 const collectionName = ctl(`text-base text-white font-bold`);
 
-const collectionOwner = ctl(`text-sm text-white font-semibold`);
+const collectionOwner = ctl(`text-sm text-white font-semibold mt-1`);
 
 const collectionDescription = ctl(
-  `font-medium text-xs text-gray-shade-14 text-center mb-8 line-clamp-3 whitespace-pre-wrap`
+  `font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`
 );
 
-const imageStyle = ctl(`rounded-t-lg`);
+const imageStyle = ctl(`rounded-t-lg w-[340px] h-[180px] object-cover`);
