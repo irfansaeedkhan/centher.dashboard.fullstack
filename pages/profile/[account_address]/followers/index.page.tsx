@@ -6,9 +6,11 @@ import { IUserWithFollow } from "@/components/user.with.follow/types";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { useFollowersStore } from "@/store/followers.store";
 import { axiosNodeApi } from "@/utils/axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 import { ProfilePageWrapper } from "../_components";
 
 const Followers: NextPageWithLayout = () => {
@@ -17,19 +19,50 @@ const Followers: NextPageWithLayout = () => {
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [followers, setFollowers] = useState<IUserWithFollow[]>([]);
+
+  const {
+    followersLoading,
+    offset,
+    updateOffset,
+    followers,
+    fetchFollowers,
+    resetFollowers,
+  } = useFollowersStore((state) => ({
+    followersLoading: state.loading,
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+    followers: state.followers,
+    fetchFollowers: state.fetchFollowers,
+    resetFollowers: state.resetFollowers,
+  }));
+
+  const { ref: lastUserRef, entry: lastUserEntry } = useInView();
+
+  useEffect(() => {
+    if (lastUserEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [updateOffset, lastUserEntry]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchFollowers();
+    }
+  }, [fetchFollowers, offset]);
 
   useEffect(() => {
     if (router.query.account_address) {
-      getFollowers(router.query.account_address.toString());
+      resetFollowers(
+        router.query.account_address.toString().toLowerCase(),
+        "loading"
+      );
+      fetchFollowers();
     }
-  }, [router.query.account_address]);
 
-  const getFollowers = (account_address: string) => {
-    axiosNodeApi.get(`/api/users/${account_address}/followers`).then((res) => {
-      setFollowers(res.data.followers);
-    });
-  };
+    return () => {
+      resetFollowers("", "idle");
+    };
+  }, [router.query.account_address, resetFollowers, fetchFollowers]);
 
   return (
     <div className="flex gap-5">
@@ -50,9 +83,26 @@ const Followers: NextPageWithLayout = () => {
       </div>
       <div className="flex flex-col gap-3 w-full">
         {/* TODO: Talha add the Skeletons  */}
-        {followers.map((result) => {
-          return <UserWithFollow key={result._id} result={result} />;
+        {followers.map((user) => {
+          if (user._id === followers[followers.length - 1]._id) {
+            return (
+              <UserWithFollow key={user._id} result={user} ref={lastUserRef} />
+            );
+          }
+          return <UserWithFollow key={user._id} result={user} />;
         })}
+        {followersLoading === "loaded" && followers.length === 0 && (
+          // TODO: Talha - Ask amjad for design when there is no following, also for posts on profile page
+          <div className="flex justify-center">
+            <p className="text-gray-500">No followers!</p>
+          </div>
+        )}
+        {followersLoading === "failed" && (
+          // TODO: Talha - Ask amjad for design when something went wrong
+          <div className="flex justify-center">
+            <p className="text-gray-500">Something went wrong!</p>
+          </div>
+        )}
       </div>
     </div>
   );
