@@ -11,28 +11,27 @@ import FixedPriceForm from "./fixed.price.form";
 import AuctionForm from "./auction.form";
 
 export interface CreateNFTFormProps {
-  createNFT: any
+  createNFT: any;
 }
 export interface IProperty {
-  Type: string
-  PropertyName: string
+  Type: string;
+  PropertyName: string;
 }
 export interface INFTData {
-  name: string
-  description: string
-  supply: number
-  price: number
-  collection: string
-  properties: IProperty[]
+  name: string;
+  description: string;
+  supply: number;
+  price: number;
+  collection: string;
+  properties: IProperty[];
 }
-export const CreateNFTForm = ({createNFT} : CreateNFTFormProps) => {
+export const CreateNFTForm = ({ createNFT }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
-  const {collections, fetchCollections} = 
-  useExploreStore((state) => ({    
+  const { collections, fetchCollections } = useExploreStore((state) => ({
     collections: state.collections,
     fetchCollections: state.fetchCollections,
-  }))
-  
+  }));
+
   useEffect(() => {
     fetchCollections(0, 1000);
   }, [fetchCollections]);
@@ -59,7 +58,7 @@ export const CreateNFTForm = ({createNFT} : CreateNFTFormProps) => {
       </div>
       {/* {tab === "Fixed" && <FixedPriceForm createNFT={createNFT} collections={collections}/>}
       {tab === "Auction" && <AuctionForm />} */}
-      <FixedPriceForm createNFT={createNFT} collections={collections}/>
+      <FixedPriceForm createNFT={createNFT} collections={collections} />
     </div>
   );
 };

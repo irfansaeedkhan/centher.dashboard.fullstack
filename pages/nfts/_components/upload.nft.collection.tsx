@@ -7,13 +7,18 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 
 interface UploadNFTCollectionProps {
-  profile: Blob | undefined
-  setProfile: any
-  cover: Blob | undefined
-  setCover: any
+  profile: Blob | undefined;
+  setProfile: any;
+  cover: Blob | undefined;
+  setCover: any;
 }
 
-export const UploadNFTCollection = ({profile, setProfile, cover, setCover}: UploadNFTCollectionProps) => {
+export const UploadNFTCollection = ({
+  profile,
+  setProfile,
+  cover,
+  setCover,
+}: UploadNFTCollectionProps) => {
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
     false
@@ -55,7 +60,7 @@ export const UploadNFTCollection = ({profile, setProfile, cover, setCover}: Uplo
               <div>
                 <Image
                   className={profileStyling}
-                  src={profile? URL.createObjectURL(profile) : ""}
+                  src={profile ? URL.createObjectURL(profile) : ""}
                   alt="image"
                   height={270}
                   width={270}
@@ -85,7 +90,7 @@ export const UploadNFTCollection = ({profile, setProfile, cover, setCover}: Uplo
             <div>
               <Image
                 className={coverStyling}
-                src={cover? URL.createObjectURL(cover) : ""}
+                src={cover ? URL.createObjectURL(cover) : ""}
                 alt="image"
                 height={270}
                 width={270}

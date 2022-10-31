@@ -1,4 +1,3 @@
-
 export interface Address {
   97: string;
   56: string;
@@ -6,7 +5,6 @@ export interface Address {
   4: string;
   1: string;
 }
-
 
 export interface RoundInfo {
   price: number;

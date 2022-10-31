@@ -13,17 +13,21 @@ import VideoNFTUpload from "./video.nft.upload";
 import AudioNFTUpload from "./audio.nft.upload";
 
 export interface UploadNFTProps {
-  asset: Blob | undefined
-  setAsset: any
+  asset: Blob | undefined;
+  setAsset: any;
 }
 export interface UploadNFTProps1 {
-  asset: Blob | undefined
-  setAsset: any
-  assetTab: string
-  setAssetTab: any
+  asset: Blob | undefined;
+  setAsset: any;
+  assetTab: string;
+  setAssetTab: any;
 }
-export const UploadNFT = ({asset, setAsset, assetTab, setAssetTab} : UploadNFTProps1) => {
-
+export const UploadNFT = ({
+  asset,
+  setAsset,
+  assetTab,
+  setAssetTab,
+}: UploadNFTProps1) => {
   return (
     <div className={nftBoxContainer}>
       <div className={tabsBtnContainer}>
@@ -64,10 +68,16 @@ export const UploadNFT = ({asset, setAsset, assetTab, setAssetTab} : UploadNFTPr
           className={`${Tab} ${assetTab === "Audio" && activeTab}`}
         />
       </div>
-      {assetTab === "Image" && <ImageNFTUpload asset={asset} setAsset={setAsset}/>}
-      {assetTab === "Gif" && <GifNFTUpload asset={asset} setAsset={setAsset}/>}
-      {assetTab === "Video" && <VideoNFTUpload asset={asset} setAsset={setAsset}/>}
-      {assetTab === "Audio" && <AudioNFTUpload asset={asset} setAsset={setAsset}/>}
+      {assetTab === "Image" && (
+        <ImageNFTUpload asset={asset} setAsset={setAsset} />
+      )}
+      {assetTab === "Gif" && <GifNFTUpload asset={asset} setAsset={setAsset} />}
+      {assetTab === "Video" && (
+        <VideoNFTUpload asset={asset} setAsset={setAsset} />
+      )}
+      {assetTab === "Audio" && (
+        <AudioNFTUpload asset={asset} setAsset={setAsset} />
+      )}
     </div>
   );
 };

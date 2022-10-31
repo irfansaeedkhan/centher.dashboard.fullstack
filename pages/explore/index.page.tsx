@@ -8,13 +8,22 @@ import { useEffect } from "react";
 import { HotNFTs, HotCollections, Explore } from "./_components";
 import { useExploreStore } from "@/store/explore.store";
 
-const MAX_HOT_NFTS = 10
-const MAX_COLLECTIONS = 10
+const MAX_HOT_NFTS = 10;
+const MAX_COLLECTIONS = 10;
 
 const ExplorePage: NextPageWithLayout = () => {
   // const collections = useCollections()
-  const {hotNFTs, collections, allNFTs, fetchHotNFTs, fetchCollections, fetchAllNFTs, allNFTsOffset, updateOffset, limit} = 
-  useExploreStore((state) => ({    
+  const {
+    hotNFTs,
+    collections,
+    allNFTs,
+    fetchHotNFTs,
+    fetchCollections,
+    fetchAllNFTs,
+    allNFTsOffset,
+    updateOffset,
+    limit,
+  } = useExploreStore((state) => ({
     hotNFTs: state.hotNFTs,
     collections: state.collections,
     allNFTs: state.allNFTs,
@@ -23,9 +32,9 @@ const ExplorePage: NextPageWithLayout = () => {
     fetchAllNFTs: state.fetchAllNFTs,
     allNFTsOffset: state.allNFTsOffset,
     updateOffset: state.updateOffset,
-    limit: state.limit
-  }))
-  
+    limit: state.limit,
+  }));
+
   const [lastNotiRef, lastNotiInView] = useInView();
 
   useEffect(() => {
@@ -45,9 +54,9 @@ const ExplorePage: NextPageWithLayout = () => {
 
   return (
     <div className="AppWrapper flex flex-col gap-10">
-      <HotNFTs hotNFTs={hotNFTs}/>
-      <HotCollections hotCollections={collections}/>
-      <Explore allNFTs={allNFTs}/>
+      <HotNFTs hotNFTs={hotNFTs} />
+      <HotCollections hotCollections={collections} />
+      <Explore allNFTs={allNFTs} />
     </div>
   );
 };

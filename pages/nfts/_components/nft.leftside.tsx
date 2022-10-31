@@ -8,11 +8,11 @@ import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
 interface NFTLeftSideComponentProps {
-  image: string | undefined
-  nftId: number | undefined
-  mintTx: string | undefined
-  collection: string | undefined
-  attributes: IProperty[] | undefined
+  image: string | undefined;
+  nftId: number | undefined;
+  mintTx: string | undefined;
+  collection: string | undefined;
+  attributes: IProperty[] | undefined;
 }
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
@@ -28,8 +28,12 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
           />
         </div>
       </div>
-      <NFTDetails nftId={props.nftId} mintTx={props.mintTx} collection={props.collection}/>
-      <NFTProperties attributes={props.attributes}/>
+      <NFTDetails
+        nftId={props.nftId}
+        mintTx={props.mintTx}
+        collection={props.collection}
+      />
+      <NFTProperties attributes={props.attributes} />
     </div>
   );
 };
