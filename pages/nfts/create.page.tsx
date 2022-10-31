@@ -14,7 +14,13 @@ import Button from "@/components/button";
 import { callCreateNFT } from "@/web3/utils/call.helpers";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
-import { FEE, NEXT_PUBLIC_API_Secret, NEXT_PUBLIC_IPFS_HOST, NEXT_PUBLIC_IPFS_URL, NEXT_PUBLIC_Project_ID } from "@/web3/constants/common";
+import {
+  FEE,
+  NEXT_PUBLIC_API_Secret,
+  NEXT_PUBLIC_IPFS_HOST,
+  NEXT_PUBLIC_IPFS_URL,
+  NEXT_PUBLIC_Project_ID,
+} from "@/web3/constants/common";
 
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
@@ -24,16 +30,16 @@ import { AppRoutes } from "@/constants/app.routes";
 import Link from "next/link";
 
 const CreateNFT: NextPageWithLayout = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const [asset, setAsset] = useState<Blob | undefined>(undefined)
-  const [assetTab, setAssetTab] = useState("Image")
+  const [asset, setAsset] = useState<Blob | undefined>(undefined);
+  const [assetTab, setAssetTab] = useState("Image");
 
   // const [nftData, setNFTData] = useState<INFTData>()
-  
+
   const { account, library } = useWeb3React();
 
   // creating modals
@@ -54,7 +60,8 @@ const CreateNFT: NextPageWithLayout = () => {
         <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />
-          {nftData?.price} BNB <span className="text-gray-shade-2 "> =${nftData?.price * 300}</span>
+          {nftData?.price} BNB{" "}
+          <span className="text-gray-shade-2 "> =${nftData?.price * 300}</span>
         </h6>
         <div className={footerBtnContainer}>
           <Button
@@ -77,8 +84,8 @@ const CreateNFT: NextPageWithLayout = () => {
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -110,15 +117,21 @@ const CreateNFT: NextPageWithLayout = () => {
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully created{" "}
-          <span className="text-white">{nftData?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully created{" "}
+            <span className="text-white">{nftData?.name}</span> NFT on Nether
+            NFT platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -127,7 +140,7 @@ const CreateNFT: NextPageWithLayout = () => {
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -138,7 +151,7 @@ const CreateNFT: NextPageWithLayout = () => {
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
@@ -146,34 +159,37 @@ const CreateNFT: NextPageWithLayout = () => {
   };
 
   const handleCreateCollection = (nftData: any) => {
-    buyNFTStep2Func()
+    buyNFTStep2Func();
     try {
-      const auth = 'Basic ' + Buffer.from(NEXT_PUBLIC_Project_ID + ':' + NEXT_PUBLIC_API_Secret).toString('base64')
-      
+      const auth =
+        "Basic " +
+        Buffer.from(
+          NEXT_PUBLIC_Project_ID + ":" + NEXT_PUBLIC_API_Secret
+        ).toString("base64");
+
       const ipfs: IPFSHTTPClient | undefined = ipfsCreate({
         host: NEXT_PUBLIC_IPFS_HOST,
         port: 5001,
         protocol: "https",
         headers: {
-          authorization: auth
-        }
+          authorization: auth,
+        },
       });
 
       const assetReader = new window.FileReader();
-      
+
       assetReader.onloadend = async () => {
         try {
-          
           let assetBuffer = Buffer.from(assetReader.result as ArrayBuffer);
-          console.log("sniper: assetBuffer: ", assetBuffer)
+          console.log("sniper: assetBuffer: ", assetBuffer);
 
           const assetAdded = await (ipfs as IPFSHTTPClient).add(assetBuffer);
-          console.log("sniper: assetAdded: ", assetAdded)
+          console.log("sniper: assetAdded: ", assetAdded);
           const assetHash = assetAdded.path;
           const assetIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + assetHash;
-          console.log("sniper: asset: ", assetIPFSHash)
-          
-          const cd = nftData as INFTData
+          console.log("sniper: asset: ", assetIPFSHash);
+
+          const cd = nftData as INFTData;
           const metadata = {
             name: cd.name,
             description: cd.description,
@@ -182,36 +198,43 @@ const CreateNFT: NextPageWithLayout = () => {
             type: assetTab,
             collection: cd.collection,
             attributes: cd.properties,
-          }     
+          };
           const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
           const jsonHash = jsonFileAdded.path;
           const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-          console.log("sniper: jsonIPFShash: ", jsonIPFShash); 
+          console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
-          // console.log("sniper: metadata: ", metadata); 
-          const result = await callCreateNFT(library, cd.collection, jsonIPFShash, cd.supply, cd.price, (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) * cd.supply)
-          buyNFTSuccessFunc(result.success, nftData)
+          // console.log("sniper: metadata: ", metadata);
+          const result = await callCreateNFT(
+            library,
+            cd.collection,
+            jsonIPFShash,
+            cd.supply,
+            cd.price,
+            (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) *
+              cd.supply
+          );
+          buyNFTSuccessFunc(result.success, nftData);
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
-      }
-      console.log("sniper: asset: ", asset)
+      };
+      console.log("sniper: asset: ", asset);
       assetReader.readAsArrayBuffer(asset as Blob);
-
     } catch (error) {
-      console.error(error)
-      toast.error("Failed to create a collection.")
+      console.error(error);
+      toast.error("Failed to create a collection.");
     }
-  }
+  };
 
   const createNFT = (values: INFTData) => {
-    if(asset === undefined) {
+    if (asset === undefined) {
       toast.error("Choose banner image.");
-      return
+      return;
     }
     // setNFTData(values)
-    buyNFTStep1Func(values)
-  }
+    buyNFTStep1Func(values);
+  };
 
   // useEffect(() => {
   //   console.log("sniper: nftdata: ", nftData as INFTData, library)
@@ -219,21 +242,18 @@ const CreateNFT: NextPageWithLayout = () => {
   //     buyNFTStep1Func()
   //   }
   // }, [nftData])
-  
-  
+
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
-        <UploadNFT 
+        <UploadNFT
           asset={asset}
           setAsset={setAsset}
           assetTab={assetTab}
           setAssetTab={setAssetTab}
         />
-        <CreateNFTForm 
-          createNFT={createNFT}
-        />
+        <CreateNFTForm createNFT={createNFT} />
       </div>
 
       {Modal && (

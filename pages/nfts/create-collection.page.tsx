@@ -12,11 +12,14 @@ import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { LoaderIcon, BNBIcon } from "@/assets/svgs";
 import {
-  LoaderIcon,
-  BNBIcon,
-} from "@/assets/svgs";
-import { FEE, NEXT_PUBLIC_API_Secret, NEXT_PUBLIC_IPFS_HOST, NEXT_PUBLIC_IPFS_URL, NEXT_PUBLIC_Project_ID } from "@/web3/constants/common";
+  FEE,
+  NEXT_PUBLIC_API_Secret,
+  NEXT_PUBLIC_IPFS_HOST,
+  NEXT_PUBLIC_IPFS_URL,
+  NEXT_PUBLIC_Project_ID,
+} from "@/web3/constants/common";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
@@ -28,11 +31,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const [profile, setProfile] = useState<Blob | undefined>(undefined)
-  const [cover, setCover] = useState<Blob | undefined>(undefined)
+  const [profile, setProfile] = useState<Blob | undefined>(undefined);
+  const [cover, setCover] = useState<Blob | undefined>(undefined);
 
   // const [collectionData, setCollectionData] = useState<ICollectionData>()
-  
+
   const { account, library } = useWeb3React();
 
   // creating modals
@@ -47,7 +50,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{collectionData?.name}</h2>
+        <h2 className="text-18px text-white font-semibold">
+          {collectionData?.name}
+        </h2>
         <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createCollectionFee}BNB`}</h3>
         {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
@@ -75,8 +80,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -108,15 +113,21 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully created{" "}
-          <span className="text-white">{collectionData?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully created{" "}
+            <span className="text-white">{collectionData?.name}</span> NFT on
+            Nether NFT platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -125,7 +136,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -136,7 +147,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
@@ -144,48 +155,55 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   };
 
   const handleCreateCollection = (collectionData: any) => {
-    buyNFTStep2Func()
+    buyNFTStep2Func();
     try {
-      const auth = 'Basic ' + Buffer.from(NEXT_PUBLIC_Project_ID + ':' + NEXT_PUBLIC_API_Secret).toString('base64')
-      
+      const auth =
+        "Basic " +
+        Buffer.from(
+          NEXT_PUBLIC_Project_ID + ":" + NEXT_PUBLIC_API_Secret
+        ).toString("base64");
+
       const ipfs: IPFSHTTPClient | undefined = ipfsCreate({
         host: NEXT_PUBLIC_IPFS_HOST,
         port: 5001,
         protocol: "https",
         headers: {
-          authorization: auth
-        }
+          authorization: auth,
+        },
       });
 
       const profileReader = new window.FileReader();
-      
+
       profileReader.onloadend = async () => {
         try {
-          
-          let profileFileBuffer = Buffer.from(profileReader.result as ArrayBuffer);
-          console.log("sniper: profileFileBuffer: ", profileFileBuffer)
+          let profileFileBuffer = Buffer.from(
+            profileReader.result as ArrayBuffer
+          );
+          console.log("sniper: profileFileBuffer: ", profileFileBuffer);
 
-          const profileAdded = await (ipfs as IPFSHTTPClient).add(profileFileBuffer);
-          console.log("sniper: profileAdded: ", profileAdded)
+          const profileAdded = await (ipfs as IPFSHTTPClient).add(
+            profileFileBuffer
+          );
+          console.log("sniper: profileAdded: ", profileAdded);
           const hash = profileAdded.path;
           const profileIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-          console.log("sniper: profileIPFSHash: ", profileIPFSHash)
-          
-          const coverReader = new window.FileReader();          
+          console.log("sniper: profileIPFSHash: ", profileIPFSHash);
+
+          const coverReader = new window.FileReader();
           coverReader.onloadend = async () => {
             try {
-              
               let fileBuffer = Buffer.from(coverReader.result as ArrayBuffer);
-              console.log("sniper: fileBuffer: ", fileBuffer)
+              console.log("sniper: fileBuffer: ", fileBuffer);
 
-              const coverfileAdded = await (ipfs as IPFSHTTPClient).add(fileBuffer);
-              console.log("sniper: coverfileAdded: ", coverfileAdded)
+              const coverfileAdded = await (ipfs as IPFSHTTPClient).add(
+                fileBuffer
+              );
+              console.log("sniper: coverfileAdded: ", coverfileAdded);
               const hash = coverfileAdded.path;
               const coverIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-              console.log("sniper: coverIPFSHash: ", coverIPFSHash)
+              console.log("sniper: coverIPFSHash: ", coverIPFSHash);
 
-              
-              const cd = collectionData as ICollectionData
+              const cd = collectionData as ICollectionData;
               const metadata = {
                 name: cd.name,
                 Symbol: cd.symbol,
@@ -197,68 +215,72 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 facebook: cd.facebook,
                 twitter: cd.twitter,
                 profileIPFSHash: profileIPFSHash,
-                coverIPFSHash: coverIPFSHash
-              }     
+                coverIPFSHash: coverIPFSHash,
+              };
               const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
               const jsonHash = jsonFileAdded.path;
               const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-              console.log("sniper: jsonIPFShash: ", jsonIPFShash); 
+              console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
-              console.log("sniper: metadata: ", metadata); 
-              const result = await callCreateCollection(library, cd.name, cd.symbol, jsonIPFShash, cd.totalsupply, FEE.createCollectionFee)
-              buyNFTSuccessFunc(result.success, collectionData)
+              console.log("sniper: metadata: ", metadata);
+              const result = await callCreateCollection(
+                library,
+                cd.name,
+                cd.symbol,
+                jsonIPFShash,
+                cd.totalsupply,
+                FEE.createCollectionFee
+              );
+              buyNFTSuccessFunc(result.success, collectionData);
             } catch (error) {
-              console.error(error)
+              console.error(error);
             }
-          }
+          };
           coverReader.readAsArrayBuffer(cover as Blob);
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
-      }
+      };
       profileReader.readAsArrayBuffer(profile as Blob);
-
     } catch (error) {
-      console.error(error)
-      toast.error("Failed to create a collection.")
+      console.error(error);
+      toast.error("Failed to create a collection.");
     }
-  }
+  };
 
   const createCollection = (values: ICollectionData) => {
-    if(profile === undefined) {
+    if (profile === undefined) {
       toast.error("Choose profile image.");
-      return
+      return;
     }
-    if(cover === undefined) {
+    if (cover === undefined) {
       toast.error("Choose banner image.");
-      return
+      return;
     }
-    
+
     // setCollectionData(values)
-    buyNFTStep1Func(values)
-  }
+    buyNFTStep1Func(values);
+  };
 
   // useEffect(() => {
   //   if(collectionData as ICollectionData && library) {
   //     buyNFTStep1Func()
   //   }
   // }, [collectionData, library])
-  
+
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create New Collection</h1>
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
-        <UploadNFTCollection 
+        <UploadNFTCollection
           profile={profile}
           setProfile={setProfile}
           cover={cover}
           setCover={setCover}
         />
-        <CreateNFTCollectionForm 
-          createCollection={createCollection}
-        />
+        <CreateNFTCollectionForm createCollection={createCollection} />
       </div>
-      
+
       {Modal && (
         <CustomModal
           onClose={() => {

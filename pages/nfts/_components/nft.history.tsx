@@ -30,9 +30,9 @@ let chartData = {
   ],
 };
 interface NFTHistoryProps {
-  data: IListHistory[] | undefined
+  data: IListHistory[] | undefined;
 }
-export const NFTHistory = ({data} : NFTHistoryProps) => {
+export const NFTHistory = ({ data }: NFTHistoryProps) => {
   return (
     <div className={NFTHistoryContainer}>
       <div className="accordion" id="accordionExample">
@@ -78,7 +78,7 @@ export const NFTHistory = ({data} : NFTHistoryProps) => {
               </div>
 
               <div className="p-6">
-                <LineChart history={data}/>
+                <LineChart history={data} />
               </div>
             </div>
           </div>

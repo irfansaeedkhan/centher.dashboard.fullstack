@@ -11,28 +11,26 @@ export interface CollectionCardProps {
   data: Collection;
 }
 
-export const CollectionCard: React.FC<CollectionCardProps> = ({data}) => {
-  const [coverImage, setCoverImage] = useState("")
-  const [profileImage, setProfileImage] = useState("")
-  const [description, setDescription] = useState("")
+export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
+  const [coverImage, setCoverImage] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const metadata = await axios.get(ipfs)
-        setCoverImage(metadata.data.coverIPFSHash)
-        setProfileImage(metadata.data.profileIPFSHash)
-        setDescription(metadata.data.description)
-      } catch (error) {
-        
-      }
+        const metadata = await axios.get(ipfs);
+        setCoverImage(metadata.data.coverIPFSHash);
+        setProfileImage(metadata.data.profileIPFSHash);
+        setDescription(metadata.data.description);
+      } catch (error) {}
+    };
+    if (data && data.ipfs) {
+      fetchMetadata(data.ipfs);
     }
-    if(data && data.ipfs) {
-      fetchMetadata(data.ipfs)
-    }
-  }, [data])
+  }, [data]);
   return (
-    <Link href={`/collections/${data.collection}`} >
+    <Link href={`/collections/${data.collection}`}>
       <div className={collectionWrapper}>
         <div className={imagesWrapper}>
           <Image
@@ -52,7 +50,9 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({data}) => {
         </div>
         <div className={contentWrapper}>
           <div className={collectionName}>{data.name}</div>
-          <a href="#" className={collectionOwner}>{formatAddress(data.creator)}</a>
+          <a href="#" className={collectionOwner}>
+            {formatAddress(data.creator)}
+          </a>
           <p className={collectionDescription}>{description}</p>
         </div>
       </div>

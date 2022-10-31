@@ -12,12 +12,16 @@ import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 interface NonNFTBuyerDescriptionProps {
-  data: INFTDetailData | undefined
-  reload?: boolean
-  setReload?: any
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
 }
-export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDescriptionProps) => {
-  const {library} = useWeb3React()
+export const NonNFTBuyerDescription = ({
+  data,
+  reload,
+  setReload,
+}: NonNFTBuyerDescriptionProps) => {
+  const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -61,8 +65,8 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -89,20 +93,26 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully bidded{" "}
-          <span className="text-white">{data?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully bidded{" "}
+            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -111,7 +121,7 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -122,7 +132,7 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
@@ -130,14 +140,19 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
   };
 
   const handleBuyNFT = async () => {
-    ProceedFunc()
-    if(library && data) {
-      const result = await callBuyListedItem(library, data.collection, data.nftId, data.listInfo.price )
-      SuccessFunc(result.success)
+    ProceedFunc();
+    if (library && data) {
+      const result = await callBuyListedItem(
+        library,
+        data.collection,
+        data.nftId,
+        data.listInfo.price
+      );
+      SuccessFunc(result.success);
     } else {
-      SuccessFunc(false)
-    }    
-  }
+      SuccessFunc(false);
+    }
+  };
 
   return (
     <div className={nftDescriptionContainer}>
@@ -145,15 +160,15 @@ export const NonNFTBuyerDescription = ({data, reload, setReload}: NonNFTBuyerDes
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon />
-          <h5 className={BnBNum}>{formatEther2Number(data?.listInfo.price)} BNB</h5>
+          <h5 className={BnBNum}>
+            {formatEther2Number(data?.listInfo.price)} BNB
+          </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>
-          {data?.description}
-        </p>
+        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
       </div>
       <div className="buttonContainer flex items-center">
         <Button

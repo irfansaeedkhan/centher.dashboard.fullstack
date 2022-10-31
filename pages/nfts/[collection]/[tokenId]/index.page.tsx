@@ -11,12 +11,16 @@ import { INFTDetailData, useGetNftData } from "@/hooks/use.get.nft.data.ts";
 import { useState } from "react";
 
 const NFT: NextPageWithLayout = () => {
-  const [reload, setReload] = useState(false)
+  const [reload, setReload] = useState(false);
   const router = useRouter();
-  const collection = router.query.collection
-  const tokenId = router.query.tokenId
+  const collection = router.query.collection;
+  const tokenId = router.query.tokenId;
 
-  const data : INFTDetailData | undefined = useGetNftData(collection, tokenId, reload)
+  const data: INFTDetailData | undefined = useGetNftData(
+    collection,
+    tokenId,
+    reload
+  );
 
   return (
     <div className="w-full pb-16">
@@ -24,14 +28,18 @@ const NFT: NextPageWithLayout = () => {
         <ArrowLeftSimpleIcon />
       </button>
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
-        <NFTLeftSideComponent 
+        <NFTLeftSideComponent
           image={data?.image}
           nftId={data?.nftId}
           mintTx={data?.mintTx}
           collection={data?.collection}
           attributes={data?.attributes}
         />
-        <NFTRightSideComponent data={data} reload={reload} setReload={setReload}/>
+        <NFTRightSideComponent
+          data={data}
+          reload={reload}
+          setReload={setReload}
+        />
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 
-const VideoNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
+const VideoNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
   const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
     false
@@ -31,7 +31,10 @@ const VideoNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
         {showSecPreview ? (
           <div>
             <video controls={true} className={videoStyling}>
-              <source src={asset? URL.createObjectURL(asset) : ""} type="video/mp4" />
+              <source
+                src={asset ? URL.createObjectURL(asset) : ""}
+                type="video/mp4"
+              />
             </video>
             <button
               className={imageDelBtn}

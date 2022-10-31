@@ -5,12 +5,28 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon, QuestionIcon } from "@/assets/svgs";
+import {
+  ShareBigIcon,
+  BNBIcon,
+  WarningIcon,
+  LoaderIcon,
+  QuestionIcon,
+} from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { formatAddress, formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatEther2Number,
+} from "@/utils/format.address";
 import { ethers } from "ethers";
-import { callApproveNFTToMarketplace, callCancelItemForSale, callCreateAuction, callEditItemForSale, callListItemForSale } from "@/web3/utils/call.helpers";
+import {
+  callApproveNFTToMarketplace,
+  callCancelItemForSale,
+  callCreateAuction,
+  callEditItemForSale,
+  callListItemForSale,
+} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useForm } from "react-hook-form";
@@ -18,12 +34,16 @@ import Joi from "joi";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 
 interface NonNFTDescriptionProps {
-  data: INFTDetailData | undefined
-  reload?: boolean
-  setReload?: any
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
 }
-export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionProps) => {
-  const {library, account} = useWeb3React()
+export const NonNFTDescription = ({
+  data,
+  reload,
+  setReload,
+}: NonNFTDescriptionProps) => {
+  const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -73,34 +93,33 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
     setModalTitle("Auction");
     setModalContent(
       <form onSubmit={handleAuction} className={modalBodyWrapper}>
-
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Set Auction End Time</label>
-        <input
-          type="date"
-          id="AuctionEndTime"
-          autoComplete="off"
-          placeholder="Enter NFT Price"
-          className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
-        />
-      </div>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Starting price for NFT</label>
-        <input
-          type="text"
-          id="StartingNFTPrice"
-          autoComplete="off"
-          placeholder="Enter NFT Price"
-          className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
-        />
-        <div className={serviceFee}>
-          <div className={serviceFeeTitle}>
-            <span className={serviceFeeName}>Service fee</span>
-            <QuestionIcon />
-          </div>
-          <span className={serviceFeeNumber}>0.0370 BNB</span>
+        <div className={fieldWrapper}>
+          <label className={fieldTitle}>Set Auction End Time</label>
+          <input
+            type="date"
+            id="AuctionEndTime"
+            autoComplete="off"
+            placeholder="Enter NFT Price"
+            className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
+          />
         </div>
-      </div>
+        <div className={fieldWrapper}>
+          <label className={fieldTitle}>Starting price for NFT</label>
+          <input
+            type="text"
+            id="StartingNFTPrice"
+            autoComplete="off"
+            placeholder="Enter NFT Price"
+            className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
+          />
+          <div className={serviceFee}>
+            <div className={serviceFeeTitle}>
+              <span className={serviceFeeName}>Service fee</span>
+              <QuestionIcon />
+            </div>
+            <span className={serviceFeeNumber}>0.0370 BNB</span>
+          </div>
+        </div>
         <Button
           title={"Next"}
           variant="v1"
@@ -113,12 +132,12 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
   };
   const handleAuction = async (event: any) => {
     setModal(false);
-    saleWithAuction(event.target[1].value, event.target[0].value)
-  }
+    saleWithAuction(event.target[1].value, event.target[0].value);
+  };
   const handleListNFT = async (data: any) => {
     setModal(false);
-    saleWithListing(data.target[0].value)
-  }
+    saleWithListing(data.target[0].value);
+  };
   const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
     setModalTitle("Cancel listing");
     setModalContent(
@@ -142,7 +161,12 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={() => handleAuctionProc(auctionPrice, auctionDate)} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={() => handleAuctionProc(auctionPrice, auctionDate)}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -170,7 +194,12 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={() => handleListing(listingPrice)} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={() => handleListing(listingPrice)}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -185,8 +214,8 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -213,20 +242,26 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully listed{" "}
-          <span className="text-white">{data?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully listed{" "}
+            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -235,7 +270,7 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -246,62 +281,81 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
     setModal(true);
   };
-  
-  const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
-    const now = Date.now() / 1000
-    const endDate = new Date(auctionDate).getTime() / 1000;
-    const endTime = Math.floor(endDate - now)
 
-    ProceedFunc()
-    if(library && data) {
-      const result = await callCreateAuction(library, data.collection, data.nftId, Number(auctionPrice), endTime)
-      SuccessFunc(result.success)
+  const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
+    const now = Date.now() / 1000;
+    const endDate = new Date(auctionDate).getTime() / 1000;
+    const endTime = Math.floor(endDate - now);
+
+    ProceedFunc();
+    if (library && data) {
+      const result = await callCreateAuction(
+        library,
+        data.collection,
+        data.nftId,
+        Number(auctionPrice),
+        endTime
+      );
+      SuccessFunc(result.success);
     } else {
-      SuccessFunc(false)
+      SuccessFunc(false);
     }
-  }
-  const isApproved = useGetApprovedForAll(account, data?.collection)
+  };
+  const isApproved = useGetApprovedForAll(account, data?.collection);
   const handleListing = async (listingPrice: any) => {
-    ProceedFunc()
-    if(library && data) {      
-      if(isApproved) {
-        const approveResult = await callApproveNFTToMarketplace(library, data.collection)
-        if(approveResult.success) {
-          const result = await callListItemForSale(library, data.collection, data.nftId, listingPrice)
-          SuccessFunc(result.success)
+    ProceedFunc();
+    if (library && data) {
+      if (isApproved) {
+        const approveResult = await callApproveNFTToMarketplace(
+          library,
+          data.collection
+        );
+        if (approveResult.success) {
+          const result = await callListItemForSale(
+            library,
+            data.collection,
+            data.nftId,
+            listingPrice
+          );
+          SuccessFunc(result.success);
         } else {
-          SuccessFunc(false)
+          SuccessFunc(false);
         }
-      } else {        
-        const result = await callListItemForSale(library, data.collection, data.nftId, listingPrice)
-        SuccessFunc(result.success)
+      } else {
+        const result = await callListItemForSale(
+          library,
+          data.collection,
+          data.nftId,
+          listingPrice
+        );
+        SuccessFunc(result.success);
       }
     } else {
-      SuccessFunc(false)
+      SuccessFunc(false);
     }
-  }
-  
+  };
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon />
-          <h5 className={BnBNum}>{formatEther2Number(data?.listInfo.price)} BNB</h5>
+          <h5 className={BnBNum}>
+            {formatEther2Number(data?.listInfo.price)} BNB
+          </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>
-          {data?.description}
-        </p>
+        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
         <Button
@@ -309,14 +363,19 @@ export const NonNFTDescription = ({data, reload, setReload}: NonNFTDescriptionPr
           variant="v1"
           className="py-4"
           onClick={() => {
-            auctionModal()
-            setModal(true)
+            auctionModal();
+            setModal(true);
           }}
         />
-        <Button title={"List"} onClick={() => {
-            listingModal()
-            setModal(true)
-          }} variant="v4" className="py-4" />
+        <Button
+          title={"List"}
+          onClick={() => {
+            listingModal();
+            setModal(true);
+          }}
+          variant="v4"
+          className="py-4"
+        />
       </div>
 
       {Modal && (
@@ -372,7 +431,6 @@ const fieldTitle = ctl(`
 const inputFieldModal = ctl(`
   w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
-
 
 const serviceFee = ctl(`
 flex justify-between items-center pt-1

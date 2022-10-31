@@ -23,35 +23,35 @@ import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { formatAddress } from "@/utils/format.address";
 interface NFTRightSideComponentProps {
-  data: INFTDetailData | undefined
-  reload: boolean
-  setReload: any
+  data: INFTDetailData | undefined;
+  reload: boolean;
+  setReload: any;
 }
-export const NFTRightSideComponent = ({data, reload, setReload} : NFTRightSideComponentProps) => {
+export const NFTRightSideComponent = ({
+  data,
+  reload,
+  setReload,
+}: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
-  const {library, account} = useWeb3React()
+  const { library, account } = useWeb3React();
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
   useEffect(() => {
-    if(data) {
-      if(account && account.toLocaleLowerCase() === data.owner.toLocaleLowerCase()) {
-        if(data.saleState === "Auction")
-          setNftState("timeAuctionedNFT")
-        else if(data.saleState === "List")
-          setNftState("fixedPriceNFT")
-        else if(data.saleState === "NON")
-          setNftState("nonNFT")
+    if (data) {
+      if (
+        account &&
+        account.toLocaleLowerCase() === data.owner.toLocaleLowerCase()
+      ) {
+        if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
+        else if (data.saleState === "List") setNftState("fixedPriceNFT");
+        else if (data.saleState === "NON") setNftState("nonNFT");
       } else {
-        if(data.saleState === "Auction")
-          setNftState("timeAuctionedNFTBuyer")
-        else if(data.saleState === "List")
-          setNftState("fixedPriceNFTBuyer")
-        else if(data.saleState === "NON")
-          setNftState("nonNFTBuyer")
+        if (data.saleState === "Auction") setNftState("timeAuctionedNFTBuyer");
+        else if (data.saleState === "List") setNftState("fixedPriceNFTBuyer");
+        else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
-      
     }
-  }, [account, data])
+  }, [account, data]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -83,7 +83,7 @@ export const NFTRightSideComponent = ({data, reload, setReload} : NFTRightSideCo
           </div>
         </div>
       </div>
-      
+
       <div className={desNameContainer}>
         <div className={nameBox}>
           <div className="linearCircle1"></div>
@@ -106,14 +106,20 @@ export const NFTRightSideComponent = ({data, reload, setReload} : NFTRightSideCo
           </div>
         </div>
       </div>
-      {nftState === "nonNFT" && <NonNFTDescription data={data}/>}
-      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data}/>}
-      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data}/>}
-      {nftState === "fixedPriceNFTBuyer" && <FixedPriceNFTBuyerDescription data={data}/>}
-      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data}/>}
-      {nftState === "timeAuctionedNFTBuyer" && <AuctionNFTBuyerDescription data={data}/>}
-      <NFTListing data={data?.listingHistory}/>
-      {data?.saleState === "Auction" && <NFTOffers data={data?.auctionInfo.bids} />}
+      {nftState === "nonNFT" && <NonNFTDescription data={data} />}
+      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data} />}
+      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data} />}
+      {nftState === "fixedPriceNFTBuyer" && (
+        <FixedPriceNFTBuyerDescription data={data} />
+      )}
+      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {nftState === "timeAuctionedNFTBuyer" && (
+        <AuctionNFTBuyerDescription data={data} />
+      )}
+      <NFTListing data={data?.listingHistory} />
+      {data?.saleState === "Auction" && (
+        <NFTOffers data={data?.auctionInfo.bids} />
+      )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
       {/* <NFTHistory data={data?.priceHistory}/> */}
@@ -154,4 +160,3 @@ text-14px font-semibold text-white
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap
 `);
-

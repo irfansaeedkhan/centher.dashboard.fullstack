@@ -40,11 +40,11 @@ const schema = Joi.object({
   }),
 });
 interface FixedPriceFormProps {
-  createNFT: any
-  collections: Collection[]
+  createNFT: any;
+  collections: Collection[];
 }
 // TODO: Kindly fix any types
-const FixedPriceForm = ({createNFT, collections} : FixedPriceFormProps) => {
+const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -97,7 +97,7 @@ const FixedPriceForm = ({createNFT, collections} : FixedPriceFormProps) => {
       price: data.NFTPrice,
       properties: propertyList,
     };
-    
+
     createNFT(finalizedData);
   };
   return (
@@ -193,9 +193,13 @@ const FixedPriceForm = ({createNFT, collections} : FixedPriceFormProps) => {
         >
           <option value="">Select</option>
           {collections.map((collection) => {
-            return <option value={collection.id} key={collection.id}>
-              {`${collection.name}  (${formatAddress(collection.collection)})`}
-            </option>
+            return (
+              <option value={collection.id} key={collection.id}>
+                {`${collection.name}  (${formatAddress(
+                  collection.collection
+                )})`}
+              </option>
+            );
           })}
         </select>
         {formState.errors.Collection && (

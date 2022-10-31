@@ -4,9 +4,9 @@ import ctl from "@netlify/classnames-template-literals";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatAddress } from "@/utils/format.address";
 interface NFTListingProps {
-  data: IListHistory[] | undefined
+  data: IListHistory[] | undefined;
 }
-export const NFTListing = ({data}: NFTListingProps) => {
+export const NFTListing = ({ data }: NFTListingProps) => {
   return (
     <div className={NFTlistingsContainer}>
       <div className="accordion" id="accordionExample">
@@ -31,33 +31,43 @@ export const NFTListing = ({data}: NFTListingProps) => {
           >
             <div className="accordion-body p-6">
               <div className={listingsList}>
-                {data && data.map((item, index) => {
-                  let prefix = "Listed"
-                  if(item.type === "ListForSale") {
-                    prefix = "Listed"
-                  } else if(item.type === "CancelForSale") {
-                    prefix = "Canceled"
-                  } else if(item.type === "EditForSale") {
-                    prefix = "Price Changed"
-                  } else if(item.type === "CreateAuction") {
-                    prefix = "Auction Created"
-                  } else if(item.type === "BuyItem" || item.type === "AcceptBid" || item.type === "EndAuction") {
-                    prefix = "Bought"
-                  } else {
-                    return
-                  }
-                  return <div className={listingBox} key={index}>
-                    <div className={circle}></div>
-                    <div className="flex flex-col gap-3">
-                      <h5 className={title}>
-                        {prefix} by{" "}
-                        <span className="font-semibold">{formatAddress(item.seller)}</span>
-                      </h5>
-                      <h6 className={date}>{(new Date(item.txTime * 1000)).toString()}</h6>
-                    </div>
-                  </div>
-                  })
-                }
+                {data &&
+                  data.map((item, index) => {
+                    let prefix = "Listed";
+                    if (item.type === "ListForSale") {
+                      prefix = "Listed";
+                    } else if (item.type === "CancelForSale") {
+                      prefix = "Canceled";
+                    } else if (item.type === "EditForSale") {
+                      prefix = "Price Changed";
+                    } else if (item.type === "CreateAuction") {
+                      prefix = "Auction Created";
+                    } else if (
+                      item.type === "BuyItem" ||
+                      item.type === "AcceptBid" ||
+                      item.type === "EndAuction"
+                    ) {
+                      prefix = "Bought";
+                    } else {
+                      return;
+                    }
+                    return (
+                      <div className={listingBox} key={index}>
+                        <div className={circle}></div>
+                        <div className="flex flex-col gap-3">
+                          <h5 className={title}>
+                            {prefix} by{" "}
+                            <span className="font-semibold">
+                              {formatAddress(item.seller)}
+                            </span>
+                          </h5>
+                          <h6 className={date}>
+                            {new Date(item.txTime * 1000).toString()}
+                          </h6>
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           </div>
