@@ -1,17 +1,17 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
-import { BNBIcon, YellowTick } from "@/assets/svgs";
-import { NFT } from "@/store/explore.store";
-import axios from "axios";
 import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
+import Image from "next/image";
+import axios from "axios";
+import ctl from "@netlify/classnames-template-literals";
+
+import { NFT } from "@/store/explore.store";
 import {
   formatAddress,
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import { BNBIcon, YellowTick } from "@/assets/svgs";
 
 export interface NFTCardProps {
   data: NFT;

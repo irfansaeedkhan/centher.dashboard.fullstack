@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
@@ -15,7 +16,6 @@ import {
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
-import { useWeb3React } from "@web3-react/core";
 import { formatAddress, formatBNB2USD } from "@/utils/format.address";
 
 interface AuctionNftDescriptionProps {

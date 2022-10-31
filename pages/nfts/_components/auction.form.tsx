@@ -1,18 +1,16 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
+import Image from "next/image";
+import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { toast } from "react-hot-toast";
-import Image from "next/image";
+import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
-import { axiosNodeApi } from "@/utils/axios";
-import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 
 // form validations
 const schema = Joi.object({
