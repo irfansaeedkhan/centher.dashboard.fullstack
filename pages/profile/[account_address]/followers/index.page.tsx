@@ -2,14 +2,12 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ProfileDetailCard } from "@/components/feed.components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 import UserWithFollow from "@/components/user.with.follow";
-import { IUserWithFollow } from "@/components/user.with.follow/types";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { useFollowersStore } from "@/store/followers.store";
-import { axiosNodeApi } from "@/utils/axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { ProfilePageWrapper } from "../_components";
 
