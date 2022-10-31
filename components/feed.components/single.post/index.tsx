@@ -44,7 +44,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 // import from same directory
 import { ReplyPost } from "../reply.post";
-import { usePostUpload } from "../post.logicv2";
+import { usePostUpload } from "../post.logicv1";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
 import PostUserDetails from "./post.user.details";
