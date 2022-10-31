@@ -8,11 +8,7 @@ import Joi from "joi";
 
 // App imports
 import Button from "@/components/button";
-import {
-  GreyWorldIcon,
-  GreyFBIcon,
-  GreyTwitterIcon,
-} from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon, GreyTwitterIcon } from "@/assets/svgs";
 // form validations
 const schema = Joi.object({
   CollectionName: Joi.string().required().max(150).label("NFT Name").messages({
@@ -65,22 +61,22 @@ const schema = Joi.object({
 });
 
 interface CreateNFTCollectionFormProps {
-  createCollection: any
+  createCollection: any;
 }
 export interface ICollectionData {
-  name: string
-  symbol: string
-  totalsupply: number
-  description: string
-  category: string
-  url: string
-  yoursite: string
-  facebook: string
-  twitter: string
+  name: string;
+  symbol: string;
+  totalsupply: number;
+  description: string;
+  category: string;
+  url: string;
+  yoursite: string;
+  facebook: string;
+  twitter: string;
 }
 export const CreateNFTCollectionForm = ({
   createCollection,
-} : CreateNFTCollectionFormProps) => {
+}: CreateNFTCollectionFormProps) => {
   const { handleSubmit, register, setError, formState, reset } = useForm({
     mode: "onChange",
     resolver: joiResolver(schema),
@@ -96,7 +92,7 @@ export const CreateNFTCollectionForm = ({
       yoursite: data.OwnSite,
       facebook: data.FBLink,
       twitter: data.TwitterLink,
-    }
+    };
     createCollection(collectionData);
   };
 
@@ -129,9 +125,7 @@ export const CreateNFTCollectionForm = ({
             autoComplete="off"
             {...register("Symbol")}
             placeholder="eg. ‘NTD’ "
-            className={
-              !formState.errors.Symbol ? inputField : inputFieldError
-            }
+            className={!formState.errors.Symbol ? inputField : inputFieldError}
           />
           {formState.errors.Symbol && (
             <p className={`text-red-500 ${errMessage}`}>
@@ -161,7 +155,7 @@ export const CreateNFTCollectionForm = ({
               {/* {formState.errors.Description.message} */}
             </p>
           )}
-        </div>        
+        </div>
         <div className={fieldWrapper}>
           <label htmlFor="textarea" className={fieldTitle}>
             Category
@@ -169,7 +163,9 @@ export const CreateNFTCollectionForm = ({
           <select
             id="Category"
             {...register("Category")}
-            className={!formState.errors.Category ? inputField : inputFieldError}
+            className={
+              !formState.errors.Category ? inputField : inputFieldError
+            }
           >
             <option value="">Select</option>
             <option value="Category1">Category1</option>

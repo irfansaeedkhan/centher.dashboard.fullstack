@@ -2,7 +2,12 @@ import { BigNumber, ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 
 import { getMarketplaceAddress, getPresaleAddress } from "./address.helpers";
-import { getBusdContract, getMarketplaceContract, getPresaleContract, getStandardNFTContract } from "./contract.helpers";
+import {
+  getBusdContract,
+  getMarketplaceContract,
+  getPresaleContract,
+  getStandardNFTContract,
+} from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
 import { delay, isEmpty } from "./utility";
 
@@ -106,17 +111,14 @@ export const claimNtrTokens = async (
 
 export const callApproveNFTToMarketplace = async (
   library: Web3Provider,
-  collection: string,
+  collection: string
 ) => {
   try {
     const nftContract = getStandardNFTContract(library.getSigner(), collection);
-    const operator = getMarketplaceAddress()
-    const tx = await nftContract.functions.setApprovalForAll(
-      operator,
-      true,
-    );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    const operator = getMarketplaceAddress();
+    const tx = await nftContract.functions.setApprovalForAll(operator, true);
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -128,7 +130,7 @@ export const callApproveNFTToMarketplace = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callCreateCollection = async (
   library: Web3Provider,
@@ -145,11 +147,11 @@ export const callCreateCollection = async (
       symbol,
       uri,
       maxsupply,
-      {value: ethers.utils.parseEther(fee.toString())}
+      { value: ethers.utils.parseEther(fee.toString()) }
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
-    console.log("sniper: maxsupply: ", maxsupply)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
+    console.log("sniper: maxsupply: ", maxsupply);
     return {
       success: true,
       hash: tx.hash,
@@ -161,7 +163,7 @@ export const callCreateCollection = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callCreateNFT = async (
   library: Web3Provider,
@@ -171,19 +173,19 @@ export const callCreateNFT = async (
   price: number,
   fee: number
 ) => {
-  console.log("sniper: library: ", library)
+  console.log("sniper: library: ", library);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: fee: ", fee)
+    console.log("sniper: fee: ", fee);
     const tx = await marketplaceContract.functions.createItems(
       collection,
       tokenUri,
       supply,
       ethers.utils.parseEther(price.toString()),
-      {value: ethers.utils.parseEther(fee.toFixed(10))}
+      { value: ethers.utils.parseEther(fee.toFixed(10)) }
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -195,21 +197,21 @@ export const callCreateNFT = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callCancelItemForSale = async (
   library: Web3Provider,
   collection: string,
-  tokenId: number,
+  tokenId: number
 ) => {
-  console.log("sniper: library: ", library)
+  console.log("sniper: library: ", library);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.cancelItemForSale(
       collection,
-      tokenId,
+      tokenId
     );
-    await tx.wait()
+    await tx.wait();
     return {
       success: true,
       hash: tx.hash,
@@ -221,7 +223,7 @@ export const callCancelItemForSale = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callEditItemForSale = async (
   library: Web3Provider,
@@ -231,15 +233,18 @@ export const callEditItemForSale = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: data: ", ethers.utils.parseEther(newPrice.toString()).toString());
+    console.log(
+      "sniper: data: ",
+      ethers.utils.parseEther(newPrice.toString()).toString()
+    );
     console.log("sniper: collection: ", collection, tokenId);
     const tx = await marketplaceContract.functions.editItemForSale(
       collection,
       tokenId,
       ethers.utils.parseEther(newPrice.toString())
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -251,7 +256,7 @@ export const callEditItemForSale = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callListItemForSale = async (
   library: Web3Provider,
@@ -266,8 +271,8 @@ export const callListItemForSale = async (
       tokenId,
       newPrice
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -279,7 +284,7 @@ export const callListItemForSale = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callBuyListedItem = async (
   library: Web3Provider,
@@ -287,16 +292,16 @@ export const callBuyListedItem = async (
   tokenId: number,
   price: number
 ) => {
-  console.log("sniper: price: ", price)
+  console.log("sniper: price: ", price);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.buyForListedItem(
       collection,
       tokenId,
-      {value: price}
+      { value: price }
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -308,7 +313,7 @@ export const callBuyListedItem = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callCreateAuction = async (
   library: Web3Provider,
@@ -319,15 +324,15 @@ export const callCreateAuction = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: auction: ", collection, tokenId, startPrice, period)
+    console.log("sniper: auction: ", collection, tokenId, startPrice, period);
     const tx = await marketplaceContract.functions.createAuction(
       collection,
       tokenId,
       ethers.utils.parseEther(startPrice.toString()),
       period
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -339,7 +344,7 @@ export const callCreateAuction = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callBidOnAuction = async (
   library: Web3Provider,
@@ -349,14 +354,14 @@ export const callBidOnAuction = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: call bid on auction: ", collection, tokenId, price)
+    console.log("sniper: call bid on auction: ", collection, tokenId, price);
     const tx = await marketplaceContract.functions.bidOnAuction(
       collection,
       tokenId,
-      {value: ethers.utils.parseEther(price.toString())}
+      { value: ethers.utils.parseEther(price.toString()) }
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -368,21 +373,21 @@ export const callBidOnAuction = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callEndAuction = async (
   library: Web3Provider,
   collection: string,
-  tokenId: number,
+  tokenId: number
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.endAuction(
       collection,
-      tokenId,
+      tokenId
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -394,21 +399,21 @@ export const callEndAuction = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
+};
 
 export const callCancelAuction = async (
   library: Web3Provider,
   collection: string,
-  tokenId: number,
+  tokenId: number
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.cancelAuction(
       collection,
-      tokenId,
+      tokenId
     );
-    await tx.wait()
-    console.log("sniper: tx: ", tx)
+    await tx.wait();
+    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -420,5 +425,4 @@ export const callCancelAuction = async (
       error: parseErrorMsg(error.message),
     };
   }
-}
-
+};

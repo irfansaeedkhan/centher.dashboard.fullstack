@@ -3,11 +3,15 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { IBid } from "@/hooks/use.get.nft.data.ts";
-import { formatAddress, formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatEther2Number,
+} from "@/utils/format.address";
 interface NFTOffersProps {
-  data: IBid[]
+  data: IBid[];
 }
-export const NFTOffers = ({data}: NFTOffersProps) => {
+export const NFTOffers = ({ data }: NFTOffersProps) => {
   return (
     <div className={NFTOffersContainer}>
       <div className="accordion" id="accordionExample">
@@ -54,21 +58,27 @@ export const NFTOffers = ({data}: NFTOffersProps) => {
                   </thead>
                   <tbody>
                     {data.map((item, index) => {
-                      const current = Date.now() / 1000
-                      const month = (current - item.txTime) / 86400 / 30
-                      return <tr className={tbodyTR} key={index}>
-                        <td className={`${td} !text-gray-shade-7`}>{formatEther2Number(item.price)} BNB</td>
-                        <td className={td}>${formatBNB2USD(item.price)}</td>
-                        <td className={td}>{month.toFixed(2)} month</td>
-                        <td className={`${td} !text-yellow-theme`}>{formatAddress(item.bidder)}</td>
-                        {/* <td className={td}>
+                      const current = Date.now() / 1000;
+                      const month = (current - item.txTime) / 86400 / 30;
+                      return (
+                        <tr className={tbodyTR} key={index}>
+                          <td className={`${td} !text-gray-shade-7`}>
+                            {formatEther2Number(item.price)} BNB
+                          </td>
+                          <td className={td}>${formatBNB2USD(item.price)}</td>
+                          <td className={td}>{month.toFixed(2)} month</td>
+                          <td className={`${td} !text-yellow-theme`}>
+                            {formatAddress(item.bidder)}
+                          </td>
+                          {/* <td className={td}>
                           <Button
                             title="Accept"
                             variant="v1"
                             className="max-w-[80px]"
                           />
                         </td> */}
-                      </tr>
+                        </tr>
+                      );
                     })}
                   </tbody>
                 </table>

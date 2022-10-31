@@ -7,20 +7,17 @@ import { NFT } from "@/store/explore.store";
 
 // Current directory imports
 interface HotNFTsProps {
-  hotNFTs: NFT[]
+  hotNFTs: NFT[];
 }
 
-export const HotNFTs: React.FC<HotNFTsProps> = ({hotNFTs}) => {
+export const HotNFTs: React.FC<HotNFTsProps> = ({ hotNFTs }) => {
   return (
     <div className={hotNftPageWrapper}>
       <div className={hotNftAnimation}>Hot NFTs</div>
       <div className={`${nftCardWrapper} nftCardContainer`}>
-        {hotNFTs.map((nft) => 
-          <NFTCard
-            data={nft}
-            key={nft.id}
-          />
-        )}
+        {hotNFTs.map((nft) => (
+          <NFTCard data={nft} key={nft.id} />
+        ))}
       </div>
     </div>
   );

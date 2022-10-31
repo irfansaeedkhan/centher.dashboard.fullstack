@@ -35,31 +35,31 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       />
       <ScriptTags />
       <RefreshContextProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-          toastOptions={{
-            // Define default options
-            className: "",
-            duration: 5000,
-            style: {
-              background: "#363636",
-              color: "#fff",
-            },
-
-            // Default options for specific types
-            success: {
-              duration: 3000,
-              theme: {
-                primary: "green",
-                secondary: "black",
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              // Define default options
+              className: "",
+              duration: 5000,
+              style: {
+                background: "#363636",
+                color: "#fff",
               },
-            },
-          }}
-        />
-        {getLayout(<Component {...pageProps} />)}
-      </Web3ReactProvider>
+
+              // Default options for specific types
+              success: {
+                duration: 3000,
+                theme: {
+                  primary: "green",
+                  secondary: "black",
+                },
+              },
+            }}
+          />
+          {getLayout(<Component {...pageProps} />)}
+        </Web3ReactProvider>
       </RefreshContextProvider>
     </>
   );

@@ -7,7 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 
-const ImageNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
+const ImageNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
 
   // upload image to preview
@@ -23,7 +23,7 @@ const ImageNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
           <Image
             className={imageStyling}
             // src="/images/nftImage.png"
-            src={asset? URL.createObjectURL(asset) : ""}
+            src={asset ? URL.createObjectURL(asset) : ""}
             alt="nft"
             height={543}
             width={543}

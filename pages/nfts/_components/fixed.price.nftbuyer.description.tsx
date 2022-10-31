@@ -13,12 +13,16 @@ import { FEE } from "@/web3/constants/common";
 import { useWeb3React } from "@web3-react/core";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
 interface FixedPriceNFTBuyerDescriptionProps {
-  data: INFTDetailData | undefined
-  reload?: boolean
-  setReload?: any
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
 }
-export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPriceNFTBuyerDescriptionProps) => {
-  const {account, library} = useWeb3React()
+export const FixedPriceNFTBuyerDescription = ({
+  data,
+  reload,
+  setReload,
+}: FixedPriceNFTBuyerDescriptionProps) => {
+  const { account, library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -29,19 +33,29 @@ export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPr
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
         <h2 className="text-18px text-white font-semibold">{data?.name}</h2>
-        <h3 className="text-white text-14px font-normal">Marketplace Fee {FEE.buyItemFeeForMarketplace}%</h3>
-        <h3 className="text-white text-14px font-normal">Collection Fee {FEE.buyItemFeeForCreator}%</h3>
-        <h3 className="text-white text-14px font-normal">Multilevel Fee {FEE.buyItemFeeForMultilevel}%</h3>
+        <h3 className="text-white text-14px font-normal">
+          Marketplace Fee {FEE.buyItemFeeForMarketplace}%
+        </h3>
+        <h3 className="text-white text-14px font-normal">
+          Collection Fee {FEE.buyItemFeeForCreator}%
+        </h3>
+        <h3 className="text-white text-14px font-normal">
+          Multilevel Fee {FEE.buyItemFeeForMultilevel}%
+        </h3>
         <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />
-          {formatEther2Number(data?.listInfo.price)} BNB <span className="text-gray-shade-2 "> =${formatBNB2USD(data?.listInfo.price)}</span>
+          {formatEther2Number(data?.listInfo.price)} BNB{" "}
+          <span className="text-gray-shade-2 ">
+            {" "}
+            =${formatBNB2USD(data?.listInfo.price)}
+          </span>
         </h6>
         <div className={footerBtnContainer}>
           <Button
@@ -64,8 +78,8 @@ export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPr
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -92,20 +106,26 @@ export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPr
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully created{" "}
-          <span className="text-white">{data?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully created{" "}
+            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -114,7 +134,7 @@ export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPr
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -125,32 +145,37 @@ export const FixedPriceNFTBuyerDescription = ({data, reload, setReload}: FixedPr
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
     setModal(true);
   };
   const handleBuyNFT = async () => {
-    buyNFTStep2Func()
-    const result = await callBuyListedItem(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId, (data as INFTDetailData).listInfo.price)
-    SuccessFunc(result.success)
-  }
+    buyNFTStep2Func();
+    const result = await callBuyListedItem(
+      library,
+      (data as INFTDetailData).collection,
+      (data as INFTDetailData).nftId,
+      (data as INFTDetailData).listInfo.price
+    );
+    SuccessFunc(result.success);
+  };
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon />
-          <h5 className={BnBNum}>{formatEther2Number(data?.listInfo.price)} BNB</h5>
+          <h5 className={BnBNum}>
+            {formatEther2Number(data?.listInfo.price)} BNB
+          </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>
-          {data?.description}
-        </p>
+        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
       </div>
       <div className="buttonContainer flex items-center">
         <Button

@@ -6,7 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 
-const AudioNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
+const AudioNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
 
   // upload image to preview
@@ -22,7 +22,7 @@ const AudioNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
           <audio
             className={audioStyling}
             controls
-            src={asset? URL.createObjectURL(asset) : ""}
+            src={asset ? URL.createObjectURL(asset) : ""}
           ></audio>
           <button
             className={imageDelBtn}

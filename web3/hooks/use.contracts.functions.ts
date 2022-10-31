@@ -6,7 +6,10 @@ import {
   RoundInfo,
   RoundState,
 } from "../constants/types";
-import { getMarketplaceAddress, getPresaleAddress } from "../utils/address.helpers";
+import {
+  getMarketplaceAddress,
+  getPresaleAddress,
+} from "../utils/address.helpers";
 import {
   getBusdContract,
   getNtrdaoContract,
@@ -154,7 +157,6 @@ export const useIsRegistered = (account: string | undefined | null) => {
   const registerContract = getRegistrationContract();
 
   useEffect(() => {
-
     const fetchIsRegistered = async (account: string) => {
       const _isRegistered = await registerContract.isUserRegisteredWithAddress(
         account
@@ -189,13 +191,16 @@ export const useIsRegistered = (account: string | undefined | null) => {
 //   return referrers;
 // };
 
-export const useGetApprovedForAll = (account: string | null | undefined, collection: string | undefined) => {
+export const useGetApprovedForAll = (
+  account: string | null | undefined,
+  collection: string | undefined
+) => {
   const [approve, setApprove] = useState(false);
-  const marketplaceAddress = getMarketplaceAddress()
+  const marketplaceAddress = getMarketplaceAddress();
 
   useEffect(() => {
     const fetchReferrers = async (account: string, collection: string) => {
-      console.log("sniper: collection: ", collection)
+      console.log("sniper: collection: ", collection);
       const nftContract = getStandardNFTContract(null, collection);
       const _approve = await nftContract.isApprovedForAll(
         account,

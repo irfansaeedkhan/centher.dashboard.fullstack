@@ -24,45 +24,50 @@ import { ICollectionData } from "@/pages/nfts/_components/create.collection.form
 import { formatAddress } from "@/utils/format.address";
 
 const Collection: NextPageWithLayout = () => {
-  const router = useRouter()
-  const collection = router.query.collection
+  const router = useRouter();
+  const collection = router.query.collection;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  const {info, nfts, fetchCollectionInfo, fetchNFTs, offset, updateOffset, limit} = 
-  useCollectionStore((state) => ({    
+  const {
+    info,
+    nfts,
+    fetchCollectionInfo,
+    fetchNFTs,
+    offset,
+    updateOffset,
+    limit,
+  } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,
     fetchCollectionInfo: state.fetchCollectionInfo,
     fetchNFTs: state.fetchNFTs,
     offset: state.offset,
     updateOffset: state.updateOffset,
-    limit: state.limit
-  }))
-  
-  const [metadata, setMetadata] = useState<any>()
+    limit: state.limit,
+  }));
+
+  const [metadata, setMetadata] = useState<any>();
   const [lastNotiRef, lastNotiInView] = useInView();
-  const [orderdir, setOrderDir] = useState("desc")
+  const [orderdir, setOrderDir] = useState("desc");
 
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const _metadata = await axios.get(ipfs)
-        console.log("sniper: metadata: ", metadata)
-        setMetadata(_metadata.data)
+        const _metadata = await axios.get(ipfs);
+        console.log("sniper: metadata: ", metadata);
+        setMetadata(_metadata.data);
         // setName(metadata.data.name)
         // setDescription(metadata.data.description)
         // setCollection(metadata.data.collection)
         // setImageUrl(metadata.data.image)
-      } catch (error) {
-        
-      }
+      } catch (error) {}
+    };
+    if (info && info.ipfs) {
+      fetchMetadata(info.ipfs);
     }
-    if(info && info.ipfs) {
-      fetchMetadata(info.ipfs)
-    }
-  }, [info])
+  }, [info]);
 
   useEffect(() => {
     if (lastNotiInView) {
@@ -71,16 +76,24 @@ const Collection: NextPageWithLayout = () => {
   }, [lastNotiInView, updateOffset]);
 
   useEffect(() => {
-    if(collection) {
+    if (collection) {
       fetchCollectionInfo(collection as string);
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, false )
+      fetchNFTs(collection as string, filter, orderdir, offset, limit, false);
     }
-  }, [fetchCollectionInfo, collection, fetchNFTs, offset, limit, orderdir, filter]);
+  }, [
+    fetchCollectionInfo,
+    collection,
+    fetchNFTs,
+    offset,
+    limit,
+    orderdir,
+    filter,
+  ]);
 
   useEffect(() => {
-    if(collection) {
+    if (collection) {
       fetchCollectionInfo(collection as string);
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, true )
+      fetchNFTs(collection as string, filter, orderdir, offset, limit, true);
     }
   }, [filter]);
 
@@ -88,7 +101,7 @@ const Collection: NextPageWithLayout = () => {
   const toggleMenu = async () => {
     setIsMenuVisible((prev) => !prev);
   };
-  
+
   return (
     <div className={dashboardContentContainer}>
       <div className={MainContentContainer}>
@@ -167,9 +180,7 @@ const Collection: NextPageWithLayout = () => {
               </div>
             </div>
             <div className={textContent}>
-              <p className={profileDescription}>
-                {metadata?.description}
-              </p>
+              <p className={profileDescription}>{metadata?.description}</p>
             </div>
           </div>
         </div>
@@ -202,7 +213,11 @@ const Collection: NextPageWithLayout = () => {
                   setFilter("Auction");
                 }}
               />
-              <select className={inputField} value={orderdir} onChange={(e) => setOrderDir(e.target.value)}>
+              <select
+                className={inputField}
+                value={orderdir}
+                onChange={(e) => setOrderDir(e.target.value)}
+              >
                 <option value="asc">Low to high</option>
                 <option value="desc">High to Low</option>
               </select>
@@ -211,10 +226,7 @@ const Collection: NextPageWithLayout = () => {
           <div className="tabsContent mt-10">
             <div className={`${nftCardWrapper} nftCardContainer`}>
               {nfts.map((data) => {
-                return <NFTCard
-                  data={data}
-                  key={data.id}
-                />
+                return <NFTCard data={data} key={data.id} />;
               })}
             </div>
           </div>

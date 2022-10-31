@@ -9,9 +9,11 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Collection } from "@/store/explore.store";
 
 interface HotCollectionsProps {
-  hotCollections: Collection[]
+  hotCollections: Collection[];
 }
-export const HotCollections: React.FC<HotCollectionsProps> = ({hotCollections}) => {
+export const HotCollections: React.FC<HotCollectionsProps> = ({
+  hotCollections,
+}) => {
   return (
     <div className={hotCollectionWrapper}>
       <div className={hotCollectionGap}>
@@ -22,12 +24,7 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({hotCollections}) 
       </div>
       <div className={collectionCardStyle}>
         {hotCollections.map((collection) => {
-          return (
-            <CollectionCard
-              data={collection}
-              key={collection.id}
-            />
-          );
+          return <CollectionCard data={collection} key={collection.id} />;
         })}
       </div>
     </div>
