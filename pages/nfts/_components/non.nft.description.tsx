@@ -28,9 +28,6 @@ import {
   callListItemForSale,
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
-import { joiResolver } from "@hookform/resolvers/joi";
-import { useForm } from "react-hook-form";
-import Joi from "joi";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 
 interface NonNFTDescriptionProps {
@@ -181,7 +178,7 @@ export const NonNFTDescription = ({
           Are you sure you want to List your NFT to sell?
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Listing Price will be {listingPrice}BNB.
+          Listing Price will be {listingPrice} BNB.
         </p>
         <div className={footerBtnContainer}>
           <Button

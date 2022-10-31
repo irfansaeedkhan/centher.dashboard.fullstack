@@ -5,6 +5,7 @@ import Image from "next/image";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
+import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
@@ -13,7 +14,6 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
-import { useWeb3React } from "@web3-react/core";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({

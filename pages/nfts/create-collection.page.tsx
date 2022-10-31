@@ -12,7 +12,7 @@ import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { formatBNB2USD } from "@/utils/format.address";
 import {
   FEE,
   NEXT_PUBLIC_API_Secret,
@@ -20,10 +20,10 @@ import {
   NEXT_PUBLIC_IPFS_URL,
   NEXT_PUBLIC_Project_ID,
 } from "@/web3/constants/common";
+import { LoaderIcon, BNBIcon } from "@/assets/svgs";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
-import { formatBNB2USD } from "@/utils/format.address";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
   const [loadingState, setLoadingState] = useState(false);
@@ -53,7 +53,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         <h2 className="text-18px text-white font-semibold">
           {collectionData?.name}
         </h2>
-        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createCollectionFee}BNB`}</h3>
+        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createCollectionFee} BNB`}</h3>
         {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />

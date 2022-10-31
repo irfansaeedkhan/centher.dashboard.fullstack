@@ -16,6 +16,7 @@ import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CreateNFTFormProps } from "./create.nft.form";
 import { formatAddress } from "@/utils/format.address";
+
 // form validations
 const schema = Joi.object({
   NFTName: Joi.string().required().max(150).label("NFT Name").messages({

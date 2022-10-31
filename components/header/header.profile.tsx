@@ -103,12 +103,12 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                   href={
                     process.env.NEXT_PUBLIC_APP_ENV === "production"
                       ? "https://bscscan.com/address/" + user?.account_address
-                      : "https://testnet.bscscan.com/address/" +
+                      : "https://goerli.etherscan.io/address/" +
                         user?.account_address
                   }
                   target={"_blank"}
                   rel="noreferrer"
-                  title="View on BSC Scan"
+                  title="View on Explorer"
                 >
                   <FiArrowUpRight className={arrowUp} />
                 </a>
