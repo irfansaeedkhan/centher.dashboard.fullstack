@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.1",
-    "@ethersproject/providers": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
     "@hookform/resolvers": "^2.9.8",
     "@netlify/classnames-template-literals": "^1.0.3",
     "@web3-react/core": "^6.1.9",

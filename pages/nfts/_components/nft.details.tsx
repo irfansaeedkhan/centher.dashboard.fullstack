@@ -3,9 +3,9 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { formatAddress } from "@/utils/format.address";
 interface NFTDetailsProps {
-  nftId: number | undefined
-  mintTx: string | undefined
-  collection: string | undefined
+  nftId: number | undefined;
+  mintTx: string | undefined;
+  collection: string | undefined;
 }
 export const NFTDetails = (props: NFTDetailsProps) => {
   return (

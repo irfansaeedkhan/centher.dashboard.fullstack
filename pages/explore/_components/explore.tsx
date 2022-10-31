@@ -10,11 +10,10 @@ import { NFT, useExploreStore } from "@/store/explore.store";
 // Current directory imports
 
 interface ExploreProps {
-  allNFTs: NFT[]
+  allNFTs: NFT[];
 }
 
-export const Explore: React.FC<ExploreProps> = ({allNFTs}) => {
-  
+export const Explore: React.FC<ExploreProps> = ({ allNFTs }) => {
   return (
     <div className={pageWrapper}>
       <div className={nameButtonWrapper}>
@@ -25,12 +24,9 @@ export const Explore: React.FC<ExploreProps> = ({allNFTs}) => {
         </div>
       </div>
       <div className="nftCardContainer">
-        {allNFTs.map((nft) => 
-          <NFTCard
-            data={nft}
-            key={nft.id}
-          />
-        )}
+        {allNFTs.map((nft) => (
+          <NFTCard data={nft} key={nft.id} />
+        ))}
       </div>
     </div>
   );

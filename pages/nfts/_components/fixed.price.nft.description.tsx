@@ -8,9 +8,16 @@ import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { formatAddress, formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatEther2Number,
+} from "@/utils/format.address";
 import { ethers } from "ethers";
-import { callCancelItemForSale, callEditItemForSale } from "@/web3/utils/call.helpers";
+import {
+  callCancelItemForSale,
+  callEditItemForSale,
+} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -23,12 +30,16 @@ const schema = Joi.object({
   }),
 });
 interface FixedPriceNFTDescriptionProps {
-  data: INFTDetailData | undefined
-  reload?: boolean
-  setReload?: any
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
 }
-export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNFTDescriptionProps) => {
-  const {library, account} = useWeb3React()
+export const FixedPriceNFTDescription = ({
+  data,
+  reload,
+  setReload,
+}: FixedPriceNFTDescriptionProps) => {
+  const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -61,7 +72,12 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={handleCancelListing} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={handleCancelListing}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -115,7 +131,7 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
   };
   const onSubmit = async (form: any) => {
     setModal(false);
-    editListingFunc(form.bidPrice)
+    editListingFunc(form.bidPrice);
   };
   const editListingFunc = (newPrice: any) => {
     setModalTitle("Edit listing");
@@ -139,7 +155,12 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={() => handleEditPrice(newPrice)} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={() => handleEditPrice(newPrice)}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -154,8 +175,8 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -182,20 +203,26 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully changed{" "}
-          <span className="text-white">{data?.name}</span> NFT price on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully changed{" "}
+            <span className="text-white">{data?.name}</span> NFT price on Nether
+            NFT platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -204,7 +231,7 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -215,28 +242,37 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
     setModal(true);
   };
-  
+
   const handleCancelListing = async () => {
-    ProceedFunc()
-    const result = await callCancelItemForSale(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId)
-    SuccessFunc(result.success)
-  }
+    ProceedFunc();
+    const result = await callCancelItemForSale(
+      library,
+      (data as INFTDetailData).collection,
+      (data as INFTDetailData).nftId
+    );
+    SuccessFunc(result.success);
+  };
   const handleEditPrice = async (newPrice: any) => {
-    ProceedFunc()
-    if(library && data) {
-      const result = await callEditItemForSale(library, data.collection, data.nftId, newPrice)
-      SuccessFunc(result.success)
+    ProceedFunc();
+    if (library && data) {
+      const result = await callEditItemForSale(
+        library,
+        data.collection,
+        data.nftId,
+        newPrice
+      );
+      SuccessFunc(result.success);
     } else {
-      SuccessFunc(false)
-    }   
-  }
-  
+      SuccessFunc(false);
+    }
+  };
+
   useEffect(() => {
     bidNFTModalFunc();
   }, [!formState.isValid]);
@@ -246,15 +282,15 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
         <h4 className={greyTxt}>Current Price</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon />
-          <h5 className={BnBNum}>{formatEther2Number(data?.listInfo.price)} BNB</h5>
+          <h5 className={BnBNum}>
+            {formatEther2Number(data?.listInfo.price)} BNB
+          </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>
-          {data?.description}
-        </p>
+        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
         <Button
@@ -263,11 +299,15 @@ export const FixedPriceNFTDescription = ({data, reload, setReload}: FixedPriceNF
           className="py-4"
           onClick={cancelListingFunc}
         />
-        <Button title={"Edit"} onClick={() => {
-              bidNFTModalFunc()
-              setModal(true)
-            }} 
-          variant="v4" className="py-4" />
+        <Button
+          title={"Edit"}
+          onClick={() => {
+            bidNFTModalFunc();
+            setModal(true);
+          }}
+          variant="v4"
+          className="py-4"
+        />
       </div>
 
       {Modal && (

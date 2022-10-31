@@ -22,7 +22,7 @@ export const hotNFTsQuery = `
       }
     }
   }
-`
+`;
 
 export const collectionsQuery = `
   query($first: Int!, $skip: Int!) {
@@ -38,7 +38,7 @@ export const collectionsQuery = `
       txTime
     }
   }
-`
+`;
 
 export const allNFTsQuery = `
   query($first: Int!, $skip: Int!) {
@@ -64,7 +64,7 @@ export const allNFTsQuery = `
       }
     }
   }
-`
+`;
 
 export const nftQuery = `
   query($collection: Bytes!, $tokenId: Int!) {
@@ -101,7 +101,7 @@ export const nftQuery = `
       }
     }
   }
-`
+`;
 
 export const saleQuery = `
   query($collection: Bytes!, $tokenId: Int!) {
@@ -113,7 +113,7 @@ export const saleQuery = `
       buyer
     }
   }
-`
+`;
 
 export const collectionQuery = `
   query($collection: Bytes!) {
@@ -130,8 +130,7 @@ export const collectionQuery = `
       collection
     }
   }
-`
-
+`;
 
 export const nftsQuery = `
   query($collection: Bytes!, $orderDirection: String, $skip: Int!, $first: Int!) {
@@ -157,8 +156,7 @@ export const nftsQuery = `
       }
     }
   }
-`
-
+`;
 
 export const nftsBySaleStateQuery = `
   query($collection: Bytes!, $orderDirection: String, $skip: Int!, $first: Int!, $saleState: String) {
@@ -184,5 +182,4 @@ export const nftsBySaleStateQuery = `
       }
     }
   }
-`
-
+`;

@@ -17,7 +17,7 @@ import registrationAbi from "../abis/registration.json";
 import multicallAbi from "../abis/multicall.json";
 import busdAbi from "../abis/erc20.json";
 import routerAbi from "../abis/router.json";
-import ERC721Abi from "../abis/erc721.json"
+import ERC721Abi from "../abis/erc721.json";
 import { simpleRpcProvider } from "./providers";
 import { ethers } from "ethers";
 // const getContract = (abi: any, address: string, library: Web3Provider) => {

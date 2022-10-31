@@ -5,7 +5,13 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, AuctionIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import {
+  ShareBigIcon,
+  BNBIcon,
+  AuctionIcon,
+  WarningIcon,
+  LoaderIcon,
+} from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
@@ -13,58 +19,62 @@ import { useWeb3React } from "@web3-react/core";
 import { formatAddress, formatBNB2USD } from "@/utils/format.address";
 
 interface AuctionNftDescriptionProps {
-  data: INFTDetailData | undefined
-  reload?: boolean
-  setReload?: any
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
 }
-export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescriptionProps) => {
-  const {library} = useWeb3React()
+export const AuctionNftDescription = ({
+  data,
+  reload,
+  setReload,
+}: AuctionNftDescriptionProps) => {
+  const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const [end, setEnd] = useState(true)
+  const [end, setEnd] = useState(true);
   const [days, setDays] = useState<number>(0);
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
 
   useEffect(() => {
-
-    if(data) {
+    if (data) {
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
-  
+
         var difference = data.auctionInfo.endTime * 1000 - now;
-  
+
         var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-        var newHours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var newMinutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        var newHours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        var newMinutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
+        );
         var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
-  
+
         setDays(newDays);
         setHours(newHours);
         setMinutes(newMinutes);
         setSeconds(newSeconds);
-  
-  
+
         if (difference <= 0) {
           clearInterval(updateTime);
           setDays(0);
           setHours(0);
           setMinutes(0);
           setSeconds(0);
-          setEnd(true)
+          setEnd(true);
         }
-      })
+      });
     }
 
     return () => {
       clearInterval(updateTime);
-    }
-
+    };
   }, [data]);
-
 
   const cancelAuctionFunc = () => {
     setModalTitle("Cancel Auction");
@@ -89,7 +99,12 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={handleCancelAuction} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={handleCancelAuction}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -104,7 +119,9 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
           Are you sure you want to end your Auction Price?
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Your NFT will go to {formatAddress(data?.auctionInfo.highestBidAddress)} and you will receive {data?.auctionInfo.highestBidPrice}
+          Your NFT will go to{" "}
+          {formatAddress(data?.auctionInfo.highestBidAddress)} and you will
+          receive {data?.auctionInfo.highestBidPrice}
         </p>
         <div className={footerBtnContainer}>
           <Button
@@ -117,7 +134,12 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
               setModal(false);
             }}
           />
-          <Button title={"Proceed"} onClick={handleEndAuction} variant="v1" className="py-4" />
+          <Button
+            title={"Proceed"}
+            onClick={handleEndAuction}
+            variant="v1"
+            className="py-4"
+          />
         </div>
       </div>
     );
@@ -132,8 +154,8 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
           Transaction in progress
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Your transaction is in progress, Please wait.
-          </p>
+          Your transaction is in progress, Please wait.
+        </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Transaction Hash
           <span className="text-yellow-theme ml-2">0x1204...23b350</span>
@@ -160,20 +182,26 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
       <div className={modalBodyWrapper}>
         <Image
           className={ImgStyling}
-          src={data? data.image : ""}
+          src={data ? data.image : ""}
           alt="image"
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
-        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully created{" "}
-          <span className="text-white">{data?.name}</span> NFT on Nether NFT
-          platform.
-        </p>}
-        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Failed.
-        </p>}
+        <h2 className="text-18px text-white font-semibold">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Congratulations! You have successfully created{" "}
+            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Transaction Failed.
+          </p>
+        )}
         {/* <Link href={{
               pathname: AppRoutes.nfts.nft,
               query: {
@@ -182,7 +210,7 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer} >
+        <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
@@ -193,23 +221,31 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
               setModalContent(null);
             }}
           />
-        {/* </Link> */}
+          {/* </Link> */}
         </div>
       </div>
     );
     setModal(true);
   };
-  
+
   const handleEndAuction = async () => {
-    ProceedFunc()
-    const result = await callEndAuction(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId)
-    SuccessFunc(result.success)
-  }
+    ProceedFunc();
+    const result = await callEndAuction(
+      library,
+      (data as INFTDetailData).collection,
+      (data as INFTDetailData).nftId
+    );
+    SuccessFunc(result.success);
+  };
   const handleCancelAuction = async () => {
-    ProceedFunc()
-    const result = await callCancelAuction(library, (data as INFTDetailData).collection, (data as INFTDetailData).nftId)
-    SuccessFunc(result.success)
-  }
+    ProceedFunc();
+    const result = await callCancelAuction(
+      library,
+      (data as INFTDetailData).collection,
+      (data as INFTDetailData).nftId
+    );
+    SuccessFunc(result.success);
+  };
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -217,7 +253,10 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
           <h5 className={BnBNum}>{data?.auctionInfo.highestBidPrice} BNB</h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(data?.auctionInfo.highestBidPrice)}</h6>
+          <h6 className={greyTxt}>
+            {" "}
+            =${formatBNB2USD(data?.auctionInfo.highestBidPrice)}
+          </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
@@ -250,13 +289,17 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">{minutes}</h5>
+                <h5 className="text-white text-20px font-semibold">
+                  {minutes}
+                </h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Minutes
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">{seconds}</h5>
+                <h5 className="text-white text-20px font-semibold">
+                  {seconds}
+                </h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Seconds
                 </h6>
@@ -272,7 +315,13 @@ export const AuctionNftDescription = ({data, reload, setReload}:AuctionNftDescri
           className="py-4"
           onClick={cancelAuctionFunc}
         />
-        <Button title={"End Auction"} disabled={!end} onClick={endAuctionFunc} variant="v4" className="py-4" />
+        <Button
+          title={"End Auction"}
+          disabled={!end}
+          onClick={endAuctionFunc}
+          variant="v4"
+          className="py-4"
+        />
       </div>
       {Modal && (
         <CustomModal

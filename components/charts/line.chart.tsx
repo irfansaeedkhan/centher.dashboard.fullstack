@@ -37,35 +37,41 @@ ChartJS.register(
 );
 
 interface LineChartPros {
-  history: IListHistory[] | undefined
+  history: IListHistory[] | undefined;
 }
-export const LineChart = ({history}: LineChartPros) => {
-
-  
-const labels = ["Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9", "Oct 10"];
-const data = {
-  labels,
-  datasets: [
-    {
-      type: "line" as const,
-      label: "Dataset 1",
-      borderColor: "#5F97FF",
-      borderWidth: 2,
-      fill: false,
-      data: [20, 10, 40, 30],
-      backgroundColor: "#fff",
-    },
-    {
-      type: "line" as const,
-      label: "Dataset 2",
-      borderColor: "#febf32",
-      borderWidth: 2,
-      fill: false,
-      data: [10, 5, 30, 20],
-      backgroundColor: "#fff",
-    },
-  ],
-};
+export const LineChart = ({ history }: LineChartPros) => {
+  const labels = [
+    "Oct 4",
+    "Oct 5",
+    "Oct 6",
+    "Oct 7",
+    "Oct 8",
+    "Oct 9",
+    "Oct 10",
+  ];
+  const data = {
+    labels,
+    datasets: [
+      {
+        type: "line" as const,
+        label: "Dataset 1",
+        borderColor: "#5F97FF",
+        borderWidth: 2,
+        fill: false,
+        data: [20, 10, 40, 30],
+        backgroundColor: "#fff",
+      },
+      {
+        type: "line" as const,
+        label: "Dataset 2",
+        borderColor: "#febf32",
+        borderWidth: 2,
+        fill: false,
+        data: [10, 5, 30, 20],
+        backgroundColor: "#fff",
+      },
+    ],
+  };
 
   const printDatasetAtEvent = (dataset: InteractionItem[]) => {
     if (!dataset.length) return;

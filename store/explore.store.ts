@@ -5,7 +5,11 @@ import { devtools } from "zustand/middleware";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { allNFTsQuery, collectionsQuery, hotNFTsQuery } from "@/subgraph/querys";
+import {
+  allNFTsQuery,
+  collectionsQuery,
+  hotNFTsQuery,
+} from "@/subgraph/querys";
 import axios from "axios";
 
 export interface ExploreStore {
@@ -15,7 +19,7 @@ export interface ExploreStore {
   fetchHotNFTs: (offset?: number, limit?: number) => Promise<void>;
   fetchCollections: (offset?: number, limit?: number) => Promise<void>;
   fetchAllNFTs: (offset?: number, limit?: number) => Promise<void>;
-  allNFTsOffset: number
+  allNFTsOffset: number;
   updateOffset: () => void;
   limit: number;
 }
@@ -29,7 +33,7 @@ export const useExploreStore = create<ExploreStore>()(
       allNFTsOffset: 0,
       limit: 10,
       updateOffset: () =>
-        set((state) => ({ 
+        set((state) => ({
           allNFTsOffset: state.allNFTs.length,
         })),
 
@@ -38,25 +42,33 @@ export const useExploreStore = create<ExploreStore>()(
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
-          })
-          let _hotNFTs: NFT[] = []
-          const { data: result, error, loading } = await client.query({
+          });
+          let _hotNFTs: NFT[] = [];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
             query: gql(hotNFTsQuery),
             variables: {
               first: limit,
               skip: offset,
             },
-            fetchPolicy: 'cache-first',
-          })
+            fetchPolicy: "cache-first",
+          });
           if (!loading) {
             if (result && !error) {
               _hotNFTs = result.nfts.map((item: any) => {
-                let _price = 0, _endTime = 0
-                if(item.saleState === "Auction") {
-                  _price = Number(item.auctionInfo.highestBidPrice) === 0? item.auctionInfo.startPrice : item.auctionInfo.highestBidPrice
-                  _endTime = item.auctionInfo.endTime
+                let _price = 0,
+                  _endTime = 0;
+                if (item.saleState === "Auction") {
+                  _price =
+                    Number(item.auctionInfo.highestBidPrice) === 0
+                      ? item.auctionInfo.startPrice
+                      : item.auctionInfo.highestBidPrice;
+                  _endTime = item.auctionInfo.endTime;
                 } else {
-                  _price = item.listInfo.price
+                  _price = item.listInfo.price;
                 }
                 return {
                   id: item.id,
@@ -67,9 +79,9 @@ export const useExploreStore = create<ExploreStore>()(
                   ipfs: item.ipfs,
                   saleState: item.saleState,
                   price: _price,
-                  endTime: _endTime
-                }
-              })
+                  endTime: _endTime,
+                };
+              });
             }
           }
 
@@ -88,21 +100,25 @@ export const useExploreStore = create<ExploreStore>()(
           const client = new ApolloClient({
             uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
             cache: new InMemoryCache(),
-          })
-          
-          let _collections: Collection[] = []
-          const { data: result, error, loading } = await client.query({
+          });
+
+          let _collections: Collection[] = [];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
             query: gql(collectionsQuery),
             variables: {
               first: limit,
-              skip: offset
+              skip: offset,
             },
-            fetchPolicy: 'cache-first',
-          })
-          
+            fetchPolicy: "cache-first",
+          });
+
           if (!loading) {
             if (result && !error) {
-              _collections = result.collections
+              _collections = result.collections;
             }
           }
 
@@ -121,25 +137,33 @@ export const useExploreStore = create<ExploreStore>()(
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
-          })
-          let _allNFTs: NFT[] = []
-          const { data: result, error, loading } = await client.query({
+          });
+          let _allNFTs: NFT[] = [];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
             query: gql(allNFTsQuery),
             variables: {
               first: limit,
               skip: offset,
             },
-            fetchPolicy: 'cache-first',
-          })
+            fetchPolicy: "cache-first",
+          });
           if (!loading) {
             if (result && !error) {
               _allNFTs = result.nfts.map((item: any) => {
-                let _price = 0, _endTime = 0
-                if(item.saleState === "Auction") {
-                  _price = Number(item.auctionInfo.highestBidPrice) === 0? item.auctionInfo.startPrice : item.auctionInfo.highestBidPrice
-                  _endTime = item.auctionInfo.endTime
+                let _price = 0,
+                  _endTime = 0;
+                if (item.saleState === "Auction") {
+                  _price =
+                    Number(item.auctionInfo.highestBidPrice) === 0
+                      ? item.auctionInfo.startPrice
+                      : item.auctionInfo.highestBidPrice;
+                  _endTime = item.auctionInfo.endTime;
                 } else {
-                  _price = item.listInfo.price
+                  _price = item.listInfo.price;
                 }
                 return {
                   id: item.id,
@@ -150,9 +174,9 @@ export const useExploreStore = create<ExploreStore>()(
                   ipfs: item.ipfs,
                   saleState: item.saleState,
                   price: item.price,
-                  endTime: _endTime
-                }
-              })
+                  endTime: _endTime,
+                };
+              });
             }
           }
 
@@ -160,10 +184,7 @@ export const useExploreStore = create<ExploreStore>()(
             // Filter out all nfts that are already in the store
             const filteredAllNFTs = state.allNFTs.filter(
               (stateNFTs) =>
-                !_allNFTs.some(
-                  (nfts: NFT) =>
-                    stateNFTs.id === nfts.id
-                )
+                !_allNFTs.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
 
             return {
@@ -180,25 +201,25 @@ export const useExploreStore = create<ExploreStore>()(
 );
 
 export interface NFT {
-  id: string
-  collection: string
-  tokenId: number
-  creator: string
-  createTime: number
-  ipfs: string
-  saleState: string
-  price: number
-  endTime: number
+  id: string;
+  collection: string;
+  tokenId: number;
+  creator: string;
+  createTime: number;
+  ipfs: string;
+  saleState: string;
+  price: number;
+  endTime: number;
 }
 
 export interface Collection {
-  id: string
-  collection: string
-  name: string
-  symbol: string
-  maxSupply: number
-  totalSupply: number
-  creator: string
-  ipfs: string
-  txTime: number
+  id: string;
+  collection: string;
+  name: string;
+  symbol: string;
+  maxSupply: number;
+  totalSupply: number;
+  creator: string;
+  ipfs: string;
+  txTime: number;
 }
