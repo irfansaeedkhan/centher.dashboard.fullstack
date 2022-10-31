@@ -1,41 +1,62 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import axios from "axios";
+import { Collection } from "@/store/explore.store";
+import { formatAddress } from "@/utils/format.address";
+import Link from "next/link";
 
 export interface CollectionCardProps {
-  collectionName: string;
-  ownerName: string;
-  collectionDescription: string;
-  coverImage: string;
-  logoImage: string;
+  data: Collection;
 }
 
-export const CollectionCard: React.FC<CollectionCardProps> = (props) => {
+export const CollectionCard: React.FC<CollectionCardProps> = ({data}) => {
+  const [coverImage, setCoverImage] = useState("")
+  const [profileImage, setProfileImage] = useState("")
+  const [description, setDescription] = useState("")
+
+  useEffect(() => {
+    const fetchMetadata = async (ipfs: string) => {
+      try {
+        const metadata = await axios.get(ipfs)
+        setCoverImage(metadata.data.coverIPFSHash)
+        setProfileImage(metadata.data.profileIPFSHash)
+        setDescription(metadata.data.description)
+      } catch (error) {
+        
+      }
+    }
+    if(data && data.ipfs) {
+      fetchMetadata(data.ipfs)
+    }
+  }, [data])
   return (
-    <div className={collectionWrapper}>
-      <div className={imagesWrapper}>
-        <Image
-          src={props.coverImage}
-          alt="collection Image"
-          width={390}
-          height={244}
-          className={imageStyle}
-        />
-        <Image
-          src={props.logoImage}
-          alt="Logo Image"
-          width={64}
-          height={64}
-          className={logoImage}
-        />
+    <Link href={`/collections/${data.collection}`} >
+      <div className={collectionWrapper}>
+        <div className={imagesWrapper}>
+          <Image
+            src={coverImage}
+            alt="collection Image"
+            width={390}
+            height={244}
+            className={imageStyle}
+          />
+          <Image
+            src={profileImage}
+            alt="Logo Image"
+            width={64}
+            height={64}
+            className={logoImage}
+          />
+        </div>
+        <div className={contentWrapper}>
+          <div className={collectionName}>{data.name}</div>
+          <a href="#" className={collectionOwner}>{formatAddress(data.creator)}</a>
+          <p className={collectionDescription}>{description}</p>
+        </div>
       </div>
-      <div className={contentWrapper}>
-        <div className={collectionName}>{props.collectionName}</div>
-        <div className={collectionOwner}>{props.ownerName}</div>
-        <p className={collectionDescription}>{props.collectionDescription}</p>
-      </div>
-    </div>
+    </Link>
   );
 };
 

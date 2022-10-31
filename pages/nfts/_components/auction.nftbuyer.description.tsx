@@ -1,14 +1,19 @@
 // React, Next, NPM Packages
 import React, { useState, useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
+import Image from "next/image";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, AuctionIcon } from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, AuctionIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { callBidOnAuction } from "@/web3/utils/call.helpers";
+import { useWeb3React } from "@web3-react/core";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -16,11 +21,60 @@ const schema = Joi.object({
     "any.required": `Required Field`,
   }),
 });
-
-export const AuctionNFTBuyerDescription = () => {
+interface AuctionNFTBuyerDescriptionProps {
+  data: INFTDetailData | undefined
+  reload?: boolean
+  setReload?: any
+}
+export const AuctionNFTBuyerDescription = ({data, reload, setReload}: AuctionNFTBuyerDescriptionProps) => {
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
+
+  const {library} = useWeb3React()
+
+  const price = Number(data?.auctionInfo.highestBidPrice) === 0? data?.auctionInfo.startPrice : data?.auctionInfo.highestBidPrice
+  
+  const [newTime, setNewTime] = useState<number>(0)
+  const [days, setDays] = useState<number>(0);
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+
+  useEffect(() => {
+
+    if(data) {
+      var updateTime = setInterval(() => {
+        var now = new Date().getTime();
+  
+        var difference = data.auctionInfo.endTime * 1000 - now;
+  
+        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+        var newHours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var newMinutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
+  
+        setDays(newDays);
+        setHours(newHours);
+        setMinutes(newMinutes);
+        setSeconds(newSeconds);
+  
+  
+        if (difference <= 0) {
+          clearInterval(updateTime);
+          setDays(0);
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
+        }
+      })
+    }
+
+    return () => {
+      clearInterval(updateTime);
+    }
+
+  }, [data]);
 
   const { handleSubmit, register, setError, formState, reset } = useForm({
     mode: "onChange",
@@ -73,10 +127,91 @@ export const AuctionNFTBuyerDescription = () => {
       </div>
     );
   };
-
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  const ProceedFunc = () => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper1}>
+        <LoaderIcon className="mx-auto" />
+        <h3 className="text-white text-18px font-semibold leading-6">
+          Transaction in progress
+        </h3>
+        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Your transaction is in progress, Please wait.
+          </p>
+        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Hash
+          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
+        </p> */}
+        {/* <div className={footerBtnContainer}>
+          <Button
+            title={"Cancel"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        </div> */}
+      </div>
+    );
+    setModal(true);
+  };
+  const SuccessFunc = (txStatus: boolean) => {
+    setModalTitle("Complete checkout");
+    setModalContent(
+      <div className={modalBodyWrapper1}>
+        <Image
+          className={ImgStyling}
+          src={data? data.image : ""}
+          alt="image"
+          height={64}
+          width={64}
+        />
+        <h2 className="text-18px text-white font-semibold">{txStatus? 'Success!' : 'Failed!'}</h2>
+        {txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Congratulations! You have successfully bidded{" "}
+          <span className="text-white">{data?.name}</span> NFT on Nether NFT
+          platform.
+        </p>}
+        {!txStatus && <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          Transaction Failed.
+        </p>}
+        {/* <Link href={{
+              pathname: AppRoutes.nfts.nft,
+              query: {
+                collection: nftData?.collection,
+                nftId: 2,
+              }}} 
+          className={footerBtnContainer}
+        > */}
+        <div className={footerBtnContainer} >
+          <Button
+            title={"Ok"}
+            variant="v4"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        {/* </Link> */}
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+  const onSubmit = async (event: any) => {
     setModal(false);
+    ProceedFunc()
+    if(library && data) {
+      const result = await callBidOnAuction(library, data.collection, data.nftId, event.bidPrice)
+      SuccessFunc(result.success)
+    } else {
+      SuccessFunc(false)
+    }
   };
 
   useEffect(() => {
@@ -84,42 +219,18 @@ export const AuctionNFTBuyerDescription = () => {
   }, [!formState.isValid]);
   return (
     <div className={nftDescriptionContainer}>
-      <div className={desNameContainer}>
-        <div className={nameBox}>
-          <div className="linearCircle1"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Creator</h5>
-            <h6 className={nameBoxZValue}>Dannathaos ART</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="linearCircle2"></div>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Owner</h5>
-            <h6 className={nameBoxZValue}>YDannathaos ARTou</h6>
-          </div>
-        </div>
-        <div className={nameBox}>
-          <div className="flex flex-col gap-1">
-            <h5 className={nameBoxTitle}>Collection</h5>
-            <h6 className={nameBoxZValue}>##1232</h6>
-          </div>
-        </div>
-      </div>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>32.08 BNB</h5>
-          <h6 className={greyTxt}> =$65000.6</h6>
+          <h5 className={BnBNum}>{formatEther2Number(price)} BNB</h5>
+          <h6 className={greyTxt}> =${formatBNB2USD(price)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} leading-6`}>
-          This NFT is a &quot;bismuth edition&quot; version of Paracelsus. It is
-          a tribute to the great Alchemist Paracelsus as Bismuth is one of the
-          minerals with which the Philosopher&apos;s Stone can be made.
+          {data?.description}
         </p>
 
         <div className="auctionTimerBox flex flex-row [@media(max-width:600px)]:!flex-col gap-3 rounded-10px relative overflow-hidden border-2 border-gray-shade-3">
@@ -132,25 +243,25 @@ export const AuctionNFTBuyerDescription = () => {
           <div className="flex w-full justify-center p-4">
             <div className="timerBox flex items-center gap-5">
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">13</h5>
+                <h5 className="text-white text-20px font-semibold">{days}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Days
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">22</h5>
+                <h5 className="text-white text-20px font-semibold">{hours}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Hours
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">24</h5>
+                <h5 className="text-white text-20px font-semibold">{minutes}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Minutes
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">02</h5>
+                <h5 className="text-white text-20px font-semibold">{seconds}</h5>
                 <h6 className="text-gray-shade-7 text-12px font-normal">
                   Seconds
                 </h6>
@@ -185,6 +296,9 @@ export const AuctionNFTBuyerDescription = () => {
   );
 };
 // styling
+const modalBodyWrapper1 = ctl(`
+flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 items-center
+`);
 const modalBodyWrapper = ctl(`
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 
 `);
@@ -232,4 +346,12 @@ text-14px font-semibold text-white
 `);
 const BnBNum = ctl(`
 text-16px font-bold text-white
+`);
+
+const ImgStyling = ctl(`
+w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
+`);
+
+const footerBtnContainer = ctl(`
+flex items-center gap-4
 `);

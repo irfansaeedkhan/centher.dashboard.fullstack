@@ -3,81 +3,27 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 // App imports
 import NFTCard from "@/components/nft.card";
+import { NFT } from "@/store/explore.store";
 
 // Current directory imports
+interface HotNFTsProps {
+  hotNFTs: NFT[]
+}
 
-export const HotNFTs: React.FC = () => {
+export const HotNFTs: React.FC<HotNFTsProps> = ({hotNFTs}) => {
   return (
     <div className={hotNftPageWrapper}>
       <div className={hotNftAnimation}>Hot NFTs</div>
       <div className={`${nftCardWrapper} nftCardContainer`}>
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
+        {hotNFTs.map((nft) => 
+          <NFTCard
+            data={nft}
+            key={nft.id}
+          />
+        )}
       </div>
     </div>
   );
-};
-
-const Data = {
-  nftImage: "/images/nft.png",
-  nftToken: "MARA Token",
-  nftName: "Barack Obama",
-  nftOwnerName: "Ricky Ammeandola",
-  nftOwnerDp: "/images/a1.png",
-  nftPriceNether: 65000,
-  nftPriceDollar: 650000,
 };
 
 const hotNftPageWrapper = ctl(`flex flex-col gap-8`);

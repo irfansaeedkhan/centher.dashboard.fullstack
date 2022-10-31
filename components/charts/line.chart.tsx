@@ -17,6 +17,7 @@ import {
   getElementAtEvent,
   getElementsAtEvent,
 } from "react-chartjs-2";
+import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 
 const options = {
   scales: {
@@ -26,6 +27,21 @@ const options = {
   },
 };
 
+ChartJS.register(
+  LinearScale,
+  CategoryScale,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip
+);
+
+interface LineChartPros {
+  history: IListHistory[] | undefined
+}
+export const LineChart = ({history}: LineChartPros) => {
+
+  
 const labels = ["Oct 4", "Oct 5", "Oct 6", "Oct 7", "Oct 8", "Oct 9", "Oct 10"];
 const data = {
   labels,
@@ -50,15 +66,7 @@ const data = {
     },
   ],
 };
-ChartJS.register(
-  LinearScale,
-  CategoryScale,
-  PointElement,
-  LineElement,
-  Legend,
-  Tooltip
-);
-export const LineChart = () => {
+
   const printDatasetAtEvent = (dataset: InteractionItem[]) => {
     if (!dataset.length) return;
 

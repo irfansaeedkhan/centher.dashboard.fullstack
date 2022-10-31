@@ -6,22 +6,27 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import { CrossIcon } from "@/assets/svgs";
 
-export const UploadNFTCollection = () => {
+interface UploadNFTCollectionProps {
+  profile: Blob | undefined
+  setProfile: any
+  cover: Blob | undefined
+  setCover: any
+}
+
+export const UploadNFTCollection = ({profile, setProfile, cover, setCover}: UploadNFTCollectionProps) => {
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
-  const [coverImage, setCoverImage] = useState<string | undefined>("");
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
     false
   );
-  const [profileImage, setProfileImage] = useState<string | undefined>("");
 
   const uploadCoverFile = (e: any) => {
-    const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setCoverImage(previewUrl);
+    // const previewUrl = URL.createObjectURL(e.target.files[0]);
+    setCover(e.target.files[0]);
     setShowCoverImage(true);
   };
   const uploadProfileFile = (e: any) => {
-    const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setProfileImage(previewUrl);
+    // const previewUrl = URL.createObjectURL(e.target.files[0]);
+    setProfile(e.target.files[0]);
     setShowProfileImage(true);
   };
   return (
@@ -39,7 +44,7 @@ export const UploadNFTCollection = () => {
               className={profileDelBtn}
               onClick={() => {
                 setShowProfileImage(false);
-                setProfileImage(undefined);
+                setProfile(undefined);
               }}
             >
               <CrossIcon />
@@ -50,7 +55,7 @@ export const UploadNFTCollection = () => {
               <div>
                 <Image
                   className={profileStyling}
-                  src={profileImage ?? ""}
+                  src={profile? URL.createObjectURL(profile) : ""}
                   alt="image"
                   height={270}
                   width={270}
@@ -80,7 +85,7 @@ export const UploadNFTCollection = () => {
             <div>
               <Image
                 className={coverStyling}
-                src={coverImage ?? ""}
+                src={cover? URL.createObjectURL(cover) : ""}
                 alt="image"
                 height={270}
                 width={270}
@@ -89,7 +94,7 @@ export const UploadNFTCollection = () => {
                 className={coverDelBtn}
                 onClick={() => {
                   setShowCoverImage(false);
-                  setCoverImage(undefined);
+                  setCover(undefined);
                 }}
               >
                 <CrossIcon />
@@ -121,7 +126,7 @@ const title = ctl(`
 text-14px font-semibold text-white pb-2
 `);
 const description = ctl(`
-text-14px font-normal text-gray-shade-18 leading-6
+text-14px font-normal text-[#B7BBCC] leading-6
 `);
 const imgBox = ctl(`
 bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full  mt-3 p-6 flex flex-col gap-5

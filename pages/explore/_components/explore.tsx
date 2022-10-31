@@ -1,13 +1,20 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
+import { useInView } from "react-intersection-observer";
 
 // App imports
 import NFTCard from "@/components/nft.card";
+import { NFT, useExploreStore } from "@/store/explore.store";
 
 // Current directory imports
 
-export const Explore: React.FC = () => {
+interface ExploreProps {
+  allNFTs: NFT[]
+}
+
+export const Explore: React.FC<ExploreProps> = ({allNFTs}) => {
+  
   return (
     <div className={pageWrapper}>
       <div className={nameButtonWrapper}>
@@ -18,33 +25,12 @@ export const Explore: React.FC = () => {
         </div>
       </div>
       <div className="nftCardContainer">
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
-        <NFTCard
-          nftImage={Data.nftImage}
-          nftToken={Data.nftToken}
-          nftName={Data.nftName}
-          nftOwnerName={Data.nftOwnerName}
-          nftOwnerDp={Data.nftOwnerDp}
-          nftPriceDollar={Data.nftPriceDollar}
-          nftPriceNether={Data.nftPriceNether}
-        />
+        {allNFTs.map((nft) => 
+          <NFTCard
+            data={nft}
+            key={nft.id}
+          />
+        )}
       </div>
     </div>
   );

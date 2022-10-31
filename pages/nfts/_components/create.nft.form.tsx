@@ -1,16 +1,41 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
+import { useExploreStore } from "@/store/explore.store";
 
 // same directory Imports
 import FixedPriceForm from "./fixed.price.form";
 import AuctionForm from "./auction.form";
 
-export const CreateNFTForm = () => {
+export interface CreateNFTFormProps {
+  createNFT: any
+}
+export interface IProperty {
+  Type: string
+  PropertyName: string
+}
+export interface INFTData {
+  name: string
+  description: string
+  supply: number
+  price: number
+  collection: string
+  properties: IProperty[]
+}
+export const CreateNFTForm = ({createNFT} : CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
+  const {collections, fetchCollections} = 
+  useExploreStore((state) => ({    
+    collections: state.collections,
+    fetchCollections: state.fetchCollections,
+  }))
+  
+  useEffect(() => {
+    fetchCollections(0, 1000);
+  }, [fetchCollections]);
 
   return (
     <div className={CreateNFTFormContainer}>
@@ -32,8 +57,9 @@ export const CreateNFTForm = () => {
           className={`${Tab} ${tab === "Auction" && activeTab}`}
         />
       </div>
-      {tab === "Fixed" && <FixedPriceForm />}
-      {tab === "Auction" && <AuctionForm />}
+      {/* {tab === "Fixed" && <FixedPriceForm createNFT={createNFT} collections={collections}/>}
+      {tab === "Auction" && <AuctionForm />} */}
+      <FixedPriceForm createNFT={createNFT} collections={collections}/>
     </div>
   );
 };

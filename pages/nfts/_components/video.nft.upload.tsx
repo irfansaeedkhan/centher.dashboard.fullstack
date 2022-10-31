@@ -5,10 +5,10 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CrossIcon } from "@/assets/svgs";
+import { UploadNFTProps } from "./upload.nft";
 
-const VideoNFTUpload = () => {
+const VideoNFTUpload = ({asset, setAsset} : UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
-  const [previewVideo, setPreviewVideo] = useState<string | undefined>("");
   const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
     false
   );
@@ -16,8 +16,8 @@ const VideoNFTUpload = () => {
 
   // upload image to preview
   const uploadFile = (e: any) => {
-    const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setPreviewVideo(previewUrl);
+    const previewUrl = e.target.files[0];
+    setAsset(previewUrl);
     setShowSecPreivew(true);
   };
   const uploadPreviewImageFile = (e: any) => {
@@ -31,13 +31,13 @@ const VideoNFTUpload = () => {
         {showSecPreview ? (
           <div>
             <video controls={true} className={videoStyling}>
-              <source src={previewVideo} type="video/mp4" />
+              <source src={asset? URL.createObjectURL(asset) : ""} type="video/mp4" />
             </video>
             <button
               className={imageDelBtn}
               onClick={() => {
                 setShowSecPreivew(false);
-                setPreviewVideo(undefined);
+                setAsset(undefined);
               }}
             >
               <CrossIcon />
@@ -64,7 +64,7 @@ const VideoNFTUpload = () => {
         <h4 className="text-14px font-semibold text-white pb-2">
           Preview image
         </h4>
-        <p className="text-14px font-normal text-gray-shade-18 leading-6">
+        <p className="text-14px font-normal text-[#B7BBCC] leading-6">
           Because you’ve included multimedia, you’ll need to provide an image
           (PNG, JPG, or GIF) for the card display of your item.
         </p>

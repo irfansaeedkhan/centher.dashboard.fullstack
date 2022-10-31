@@ -12,53 +12,62 @@ import GifNFTUpload from "./gif.nft.upload";
 import VideoNFTUpload from "./video.nft.upload";
 import AudioNFTUpload from "./audio.nft.upload";
 
-export const UploadNFT = () => {
-  const [tab, setTab] = useState("Image");
+export interface UploadNFTProps {
+  asset: Blob | undefined
+  setAsset: any
+}
+export interface UploadNFTProps1 {
+  asset: Blob | undefined
+  setAsset: any
+  assetTab: string
+  setAssetTab: any
+}
+export const UploadNFT = ({asset, setAsset, assetTab, setAssetTab} : UploadNFTProps1) => {
 
   return (
     <div className={nftBoxContainer}>
       <div className={tabsBtnContainer}>
         <Button
           title={"Image"}
-          variant={tab === "Image" ? "v1" : "v2"}
+          variant={assetTab === "Image" ? "v1" : "v2"}
           Icon={<ImageIcon />}
           onClick={() => {
-            setTab("Image");
+            setAssetTab("Image");
           }}
-          className={`${Tab} ${tab === "Image" && activeTab}`}
+          className={`${Tab} ${assetTab === "Image" && activeTab}`}
         />
         <Button
           title={"Gif"}
-          variant={tab === "Gif" ? "v1" : "v2"}
+          variant={assetTab === "Gif" ? "v1" : "v2"}
           Icon={<GifIcon />}
           onClick={() => {
-            setTab("Gif");
+            setAssetTab("Gif");
           }}
-          className={`${Tab} ${tab === "Gif" && activeTab}`}
+          className={`${Tab} ${assetTab === "Gif" && activeTab}`}
         />
         <Button
           title={"Video"}
-          variant={tab === "Video" ? "v1" : "v2"}
+          variant={assetTab === "Video" ? "v1" : "v2"}
           Icon={<VideosIcon />}
           onClick={() => {
-            setTab("Video");
+            setAssetTab("Video");
           }}
-          className={`${Tab} ${tab === "Video" && activeTab}`}
+          className={`${Tab} ${assetTab === "Video" && activeTab}`}
         />
         <Button
           title={"Audio"}
-          variant={tab === "Audio" ? "v1" : "v2"}
+          variant={assetTab === "Audio" ? "v1" : "v2"}
           Icon={<AudioIcon />}
           onClick={() => {
-            setTab("Audio");
+            setAssetTab("Audio");
           }}
-          className={`${Tab} ${tab === "Audio" && activeTab}`}
+          className={`${Tab} ${assetTab === "Audio" && activeTab}`}
         />
       </div>
-      {tab === "Image" && <ImageNFTUpload />}
-      {tab === "Gif" && <GifNFTUpload />}
-      {tab === "Video" && <VideoNFTUpload />}
-      {tab === "Audio" && <AudioNFTUpload />}
+      {assetTab === "Image" && <ImageNFTUpload asset={asset} setAsset={setAsset}/>}
+      {assetTab === "Gif" && <GifNFTUpload asset={asset} setAsset={setAsset}/>}
+      {assetTab === "Video" && <VideoNFTUpload asset={asset} setAsset={setAsset}/>}
+      {assetTab === "Audio" && <AudioNFTUpload asset={asset} setAsset={setAsset}/>}
     </div>
   );
 };

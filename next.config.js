@@ -4,6 +4,8 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: [
+      "deswap.infura-ipfs.io",
+      "nethernft.infura-ipfs.io",
       "devapi.nethernft.io",
       "localhost",
       "nethernftdevelopment.s3.eu-west-3.amazonaws.com",
