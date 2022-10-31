@@ -52,9 +52,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
       </div>
       <div className={contentWrapper}>
         <div className={collectionName}>{data.name}</div>
-        <a href="#" className={collectionOwner}>
-          {formatAddress(data.creator)}
-        </a>
+        <span className={collectionOwner}>{formatAddress(data.creator)}</span>
         <p className={collectionDescription}>{description}</p>
       </div>
     </Link>
