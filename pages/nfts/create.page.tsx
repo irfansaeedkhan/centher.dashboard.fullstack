@@ -1,11 +1,11 @@
 // React, Next, NPM Packages
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
-import { create as ipfsCreate, IPFSHTTPClient } from "ipfs-http-client";
+import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
+import { create as ipfsCreate, IPFSHTTPClient } from "ipfs-http-client";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -25,9 +25,6 @@ import {
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import { formatBNB2USD } from "@/utils/format.address";
-import { AppRoutes } from "@/constants/app.routes";
-import Link from "next/link";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,8 +52,8 @@ const CreateNFT: NextPageWithLayout = () => {
           width={64}
         />
         <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
-        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace}BNB`}</h3>
-        <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator}BNB`}</h3>
+        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
+        <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3>
         <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />

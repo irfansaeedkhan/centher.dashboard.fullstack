@@ -36,11 +36,11 @@ export const Columns: Column[] = [
     accessor: "amount",
   },
   {
-    Header: "Amount In BNB",
+    Header: `Amount In BNB`,
     accessor: "amount_in_bnb",
   },
   {
-    Header: "Correct In BNB",
+    Header: `Correct In BNB`,
     accessor: "correct_in_bnb",
   },
   {

@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
+import { useWeb3React } from "@web3-react/core";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -10,8 +11,8 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { FEE } from "@/web3/constants/common";
-import { useWeb3React } from "@web3-react/core";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
+
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
