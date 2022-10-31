@@ -23,7 +23,7 @@ import {
 } from "@/assets/svgs";
 
 // Current directory imports
-import { usePostUpload } from "./post.logicv2";
+import { usePostUpload } from "./post.logicv1";
 
 interface PostCardNewProps {
   onPostCreated: (post: CompletedPost) => void;
