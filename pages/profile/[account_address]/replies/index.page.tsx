@@ -59,12 +59,11 @@ const Replies: NextPageWithLayout = () => {
     setLoader(true);
     try {
       const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/user/${user?._id}?offset=${skip}`
+        `/api/socials/posts/user/replies/${user?._id}?offset=${skip}`
       );
-
-      const _posts = data.posts;
+      const _postsReplies = data.postsReplies;
       setPosts((prev) => {
-        const filteredPosts = _posts.filter((post: CompletedPost) => {
+        const filteredPosts = _postsReplies.filter((post: CompletedPost) => {
           return prev.every((prevPost) => prevPost._id !== post._id);
         });
         return [...prev, ...filteredPosts];

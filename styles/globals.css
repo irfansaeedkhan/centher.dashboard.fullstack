@@ -63,30 +63,35 @@ input:-webkit-autofill {
     margin: 0 auto;
   }
   /* media queries */
+  @media only screen and (max-width: 1920px) {
+    .AppWrapper {
+      max-width: 1300px;
+    }
+  }
   @media only screen and (max-width: 1728px) {
     .AppWrapper {
-      max-width: 1130px;
+      max-width: 1300px;
     }
   }
   @media only screen and (max-width: 1670px) {
     .AppWrapper {
-      max-width: 1130px;
+      max-width: 970px;
     }
   }
   @media only screen and (max-width: 1440px) {
     .AppWrapper {
-      max-width: 842px;
+      max-width: 640px;
     }
     .nftCardContainer {
       gap: 20px;
     }
   }
-  @media only screen and (max-width: 1152px) {
+  /* @media only screen and (max-width: 1152px) {
     .AppWrapper {
       max-width: 555px;
     }
-  }
-  @media only screen and (max-width: 617px) {
+  } */
+  @media only screen and (max-width: 659px) {
     .AppWrapper {
       max-width: 268px;
     }
