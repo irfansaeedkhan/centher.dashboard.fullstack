@@ -1,11 +1,8 @@
-// React, Next, NPM Packages
 import { BigNumber, ethers } from "ethers";
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers";
 
-// App imports
 import { getRegistrationContract } from "@/web3/utils/contract.helpers";
 
-// Current directory imports
 import { SignupState } from "./form.fields.data";
 
 export const registerWithSmartContract = async (
@@ -34,19 +31,18 @@ export const registerWithSmartContract = async (
       };
     }
 
-    // Get BNB balance of the user's account
+    // Get balance of the user's account
     const bnbBalance = await library.getBalance(address);
 
     // Convert registration fee to BigNumber
     const registrationFee = ethers.utils.parseEther(fee);
 
-    // If the user's BNB balance is less than the registration fee, return error
+    // If the user's balance is less than the registration fee, return error
     if (bnbBalance.lt(registrationFee)) {
       return {
         status: "error",
         message: "insufficient_funds",
-        message_description:
-          "You don't have enough BNBs to pay the registration fee",
+        message_description: `You don't have enough balance to pay the registration fee`,
         data: null,
       };
     }

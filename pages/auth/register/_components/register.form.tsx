@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -6,7 +5,6 @@ import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 
-// App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -18,7 +16,6 @@ import {
   MetamaskIcon,
 } from "@/assets/svgs";
 
-// Current directory imports
 import { InputField } from "./input.field";
 import { SignupState, FeeModalState } from "./form.fields.data";
 import {

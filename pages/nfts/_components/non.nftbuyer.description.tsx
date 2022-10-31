@@ -11,6 +11,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;

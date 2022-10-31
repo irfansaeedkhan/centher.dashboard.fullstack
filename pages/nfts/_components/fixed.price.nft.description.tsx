@@ -2,10 +2,14 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import { ethers } from "ethers";
+import Joi from "joi";
+import { useWeb3React } from "@web3-react/core";
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -13,15 +17,11 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
-import { ethers } from "ethers";
 import {
   callCancelItemForSale,
   callEditItemForSale,
 } from "@/web3/utils/call.helpers";
-import { useWeb3React } from "@web3-react/core";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
+import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -276,6 +276,7 @@ export const FixedPriceNFTDescription = ({
   useEffect(() => {
     bidNFTModalFunc();
   }, [!formState.isValid]);
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>

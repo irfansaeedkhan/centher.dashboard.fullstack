@@ -8,6 +8,7 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+
 interface NFTOffersProps {
   data: IBid[];
 }
