@@ -33,16 +33,12 @@ import { AppRoutes } from "@/constants/app.routes";
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
 
-interface FollowUser {
-  setFollowUser?: (arg0: boolean) => void;
-}
-
 type CoverImageWithFile = Partial<UserImage> & {
   blob: File | null;
   newImage: boolean;
 };
 
-const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
+const ProfileHeader: React.FC = () => {
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => {
       return {
@@ -224,7 +220,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         const { data } = await axiosNodeApi.get(
           `/api/socials/follows/${user?._id}`
         );
-        setFollowUser && setFollowUser(data.follow);
+        // setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
         setShowFollowButton(true);
       } catch (error: any) {
@@ -236,7 +232,7 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
     if (user?._id) {
       fetchFollow();
     }
-  }, [user, setFollowUser]);
+  }, [user]);
 
   const followUser = async (following_id: string) => {
     try {
@@ -245,11 +241,9 @@ const ProfileHeader: React.FC<FollowUser> = ({ setFollowUser }) => {
         following_id,
       });
       if (response.data.message == "follow_success") {
-        setFollowUser && setFollowUser(true);
         setFollow(true);
         incrementFollowersCount();
       } else if (response.data.message == "unfollow_success") {
-        setFollowUser && setFollowUser(false);
         setFollow(false);
         decrementFollowersCount();
       }

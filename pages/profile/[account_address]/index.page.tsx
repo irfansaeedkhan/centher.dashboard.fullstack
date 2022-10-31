@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
-import ctl from "@netlify/classnames-template-literals";
 import { toast } from "react-hot-toast";
 
 // App imports
@@ -11,22 +10,14 @@ import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import {
-  ProfileDetailCard,
-  DiscoverCard,
-  MessagesCard,
-  RecentActivitiesCard,
-  PostCardNew,
-  SinglePost,
-} from "@/components/feed.components";
+import { PostCardNew, SinglePost } from "@/components/feed.components";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { CompletedPost } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import { ProfilePageWrapper } from "./_components";
-import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
-import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -40,14 +31,8 @@ const Profile: NextPageWithLayout = () => {
   const [posts, setPosts] = useState<CompletedPost[]>([]);
   const [skip, setSkip] = useState(0);
   const [loader, setLoader] = useState(false);
-  const [followUser, setFollowUser] = useState<boolean>(false);
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
-
-  // FIXME: this is a quick fix to change the feed posts when navigating from one user profile to another
-  useEffect(() => {
-    setFollowUser(false);
-  }, [router]);
 
   useEffect(() => {
     if (lastPostInView) {
@@ -82,98 +67,58 @@ const Profile: NextPageWithLayout = () => {
     if (user && loggedInUser) {
       fetchUserFeedsData();
     }
-  }, [fetchUserFeedsData, user, followUser, loggedInUser]);
+  }, [fetchUserFeedsData, user, loggedInUser]);
 
   return (
-    <ProfilePageWrapper setFollowUser={setFollowUser}>
-      <div>
-        <div className={feedContainer}>
-          <div className={leftSidebar}>
-            <div className={stickySidebar}>
-              {userLoading === "loaded" && user ? (
-                <ProfileDetailCard
-                  user={user}
-                  isLoggedInUser={
-                    user.account_address === loggedInUser?.account_address
-                  }
-                />
-              ) : (
-                <ProfileDetailCardSkeleton />
-              )}
-              {/* <DiscoverCard /> */}
-            </div>
-          </div>
-
-          <div className={postsContainer}>
-            {loggedInUser?.account_address === router.query.account_address && (
-              <PostCardNew
-                onPostCreated={(post) => {
-                  setPosts((prev) => [post, ...prev]);
+    <>
+      {loggedInUser?.account_address === router.query.account_address && (
+        <PostCardNew
+          onPostCreated={(post) => {
+            setPosts((prev) => [post, ...prev]);
+          }}
+        />
+      )}
+      {posts.length > 0 ? (
+        posts.map((post) => {
+          if (post._id === posts[posts.length - 1]._id) {
+            return (
+              <SinglePost
+                ref={lastPostRef}
+                key={post._id}
+                post={post}
+                onDelete={(post_id) => {
+                  setPosts(posts.filter((p) => p._id !== post_id));
                 }}
               />
-            )}
-            {posts.length > 0 ? (
-              posts.map((post) => {
-                if (post._id === posts[posts.length - 1]._id) {
-                  return (
-                    <SinglePost
-                      ref={lastPostRef}
-                      key={post._id}
-                      post={post}
-                      onDelete={(post_id) => {
-                        setPosts(posts.filter((p) => p._id !== post_id));
-                      }}
-                    />
-                  );
-                }
-                return (
-                  <SinglePost
-                    key={post._id}
-                    post={post}
-                    onDelete={(post_id) => {
-                      setPosts(posts.filter((p) => p._id !== post_id));
-                    }}
-                  />
-                );
-              })
-            ) : loader ? (
-              <>
-                <SinglePostCardSkeleton />
-                <SinglePostTextCardSkeleton />
-                <SinglePostCardSkeleton />
-              </>
-            ) : null}
-          </div>
-
-          <div className={rightSidebar}>
-            <MessagesCard />
-            <RecentActivitiesCard />
-          </div>
-        </div>
-      </div>
-    </ProfilePageWrapper>
+            );
+          }
+          return (
+            <SinglePost
+              key={post._id}
+              post={post}
+              onDelete={(post_id) => {
+                setPosts(posts.filter((p) => p._id !== post_id));
+              }}
+            />
+          );
+        })
+      ) : loader ? (
+        <>
+          <SinglePostCardSkeleton />
+          <SinglePostTextCardSkeleton />
+          <SinglePostCardSkeleton />
+        </>
+      ) : null}
+    </>
   );
 };
 
 Profile.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="Profile">{page}</AllPagesWrapper>;
+  return (
+    <AllPagesWrapper pageTitle="Profile">
+      <ProfilePageWrapper>{page}</ProfilePageWrapper>
+    </AllPagesWrapper>
+  );
 };
 
 export default Profile;
-
-// styling
-const feedContainer = ctl(`
-flex  gap-5 max-w-[835px]
-`);
-const leftSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden lg:flex
-`);
-const rightSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
-`);
-const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 
-`);
-const stickySidebar = ctl(`
-lg:sticky lg:top-0 flex flex-col gap-4
-`);
