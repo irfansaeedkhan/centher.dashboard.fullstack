@@ -28,7 +28,6 @@ const Following: NextPageWithLayout = () => {
     fetchFollowing: state.fetchFollowing,
     resetFollowing: state.resetFollowing,
   }));
-
   const { ref: lastUserRef, entry: lastUserEntry } = useInView();
 
   useEffect(() => {
@@ -73,14 +72,14 @@ const Following: NextPageWithLayout = () => {
       )}
 
       {followingLoading === "loaded" && following.length === 0 && (
-        // TODO: Talha - Ask amjad for design when there is no following, also for posts on profile page
-        <div className="flex justify-center">
-          <p className="text-gray-500">No following!</p>
+        <div>
+          <div className="flex justify-center mt-[48px]">
+            <p className="text-white">Not following anyone yet!</p>
+          </div>
         </div>
       )}
 
       {followingLoading === "failed" && (
-        // TODO: Talha - Ask amjad for design when something went wrong
         <div className="flex justify-center">
           <p className="text-gray-500">Something went wrong!</p>
         </div>

@@ -75,14 +75,14 @@ const Followers: NextPageWithLayout = () => {
       )}
 
       {followersLoading === "loaded" && followers.length === 0 && (
-        // TODO: Talha - Ask amjad for design when there is no following, also for posts on profile page
-        <div className="flex justify-center">
-          <p className="text-gray-500">No followers!</p>
+        <div>
+          <div className="flex justify-center mt-[48px]">
+            <p className="text-white">No followers yet!</p>
+          </div>
         </div>
       )}
 
       {followersLoading === "failed" && (
-        // TODO: Talha - Ask amjad for design when something went wrong
         <div className="flex justify-center">
           <p className="text-gray-500">Something went wrong!</p>
         </div>
