@@ -1,32 +1,28 @@
 // React, Next, NPM Packages
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 import ctl from "@netlify/classnames-template-literals";
-import { toast } from "react-hot-toast";
 
 // App imports
+import { useRepliesStore } from "@/store/profile.replies.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import {
-  ProfileDetailCard,
-  DiscoverCard,
-  MessagesCard,
-  RecentActivitiesCard,
-  PostCardNew,
-  SinglePost,
-} from "@/components/feed.components";
-import { CompletedPost } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
-
-// Current page imports
-import { ProfilePageWrapper } from "../_components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import {
+  ProfileDetailCard,
+  MessagesCard,
+  RecentActivitiesCard,
+  SinglePost,
+} from "@/components/feed.components";
+
+// Current page imports
+import { ProfilePageWrapper } from "../_components";
 
 const Replies: NextPageWithLayout = () => {
   // Create User Profile View
@@ -37,51 +33,61 @@ const Replies: NextPageWithLayout = () => {
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [posts, setPosts] = useState<CompletedPost[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loader, setLoader] = useState(false);
+
   const [followUser, setFollowUser] = useState<boolean>(false);
 
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
   // FIXME: this is a quick fix to change the feed posts when navigating from one user profile to another
+
+  const {
+    posts,
+    resetPosts,
+    fetchPosts,
+    deletePost,
+    offset,
+    updateOffset,
+    loading,
+  } = useRepliesStore((state) => ({
+    posts: state.posts,
+    fetchPosts: state.fetchPosts,
+
+    deletePost: state.deletePost,
+
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+
+    resetPosts: state.resetPosts,
+
+    loading: state.loading,
+  }));
+
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [lastPostRef, lastPostEntry, updateOffset]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchPosts();
+    }
+  }, [offset, fetchPosts]);
+
+  useEffect(() => {
+    if (user?._id) {
+      resetPosts(user?._id, "loading");
+      fetchPosts();
+    }
+
+    return () => {
+      resetPosts("", "idle");
+    };
+  }, [user?._id, resetPosts, fetchPosts]);
+
   useEffect(() => {
     setFollowUser(false);
   }, [router]);
-
-  useEffect(() => {
-    if (lastPostInView) {
-      setSkip(posts.length);
-    }
-  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
-
-  const fetchUserFeedsData = useCallback(async () => {
-    setLoader(true);
-    try {
-      const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/user/replies/${user?._id}?offset=${skip}`
-      );
-      const _postsReplies = data.postsReplies;
-      setPosts((prev) => {
-        const filteredPosts = _postsReplies.filter((post: CompletedPost) => {
-          return prev.every((prevPost) => prevPost._id !== post._id);
-        });
-        return [...prev, ...filteredPosts];
-      });
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  }, [skip, user]);
-
-  useEffect(() => {
-    if (user && loggedInUser) {
-      fetchUserFeedsData();
-    }
-  }, [fetchUserFeedsData, user, followUser, loggedInUser]);
 
   return (
     <ProfilePageWrapper setFollowUser={setFollowUser}>
@@ -112,9 +118,7 @@ const Replies: NextPageWithLayout = () => {
                       ref={lastPostRef}
                       key={post._id}
                       post={post}
-                      onDelete={(post_id) => {
-                        setPosts(posts.filter((p) => p._id !== post_id));
-                      }}
+                      onDelete={deletePost}
                     />
                   );
                 }
@@ -122,13 +126,11 @@ const Replies: NextPageWithLayout = () => {
                   <SinglePost
                     key={post._id}
                     post={post}
-                    onDelete={(post_id) => {
-                      setPosts(posts.filter((p) => p._id !== post_id));
-                    }}
+                    onDelete={deletePost}
                   />
                 );
               })
-            ) : loader ? (
+            ) : loading === "loading" || loading === "idle" ? (
               <>
                 <SinglePostCardSkeleton />
                 <SinglePostTextCardSkeleton />
