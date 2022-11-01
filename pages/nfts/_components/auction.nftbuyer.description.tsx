@@ -43,7 +43,7 @@ export const AuctionNFTBuyerDescription = ({
       ? data?.auctionInfo.startPrice
       : data?.auctionInfo.highestBidPrice;
 
-  const [newTime, setNewTime] = useState<number>(0);
+  const [end, setEnd] = useState(true);
   const [days, setDays] = useState<number>(0);
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
@@ -76,6 +76,9 @@ export const AuctionNFTBuyerDescription = ({
           setHours(0);
           setMinutes(0);
           setSeconds(0);
+          setEnd(true);
+        } else {
+          setEnd(false);
         }
       });
     }
@@ -205,24 +208,30 @@ export const AuctionNFTBuyerDescription = ({
               }}} 
           className={footerBtnContainer}
         > */}
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-          {/* </Link> */}
-        </div>
+        {/* <div className={footerBtnContainer}> */}
+        <Button
+          title={"Ok"}
+          variant="v1"
+          className="py-4"
+          onClick={() => {
+            setModal(false);
+            setModalTitle("");
+            setModalContent(null);
+          }}
+        />
+        {/* </Link> */}
+        {/* </div> */}
       </div>
     );
     setModal(true);
   };
   const onSubmit = async (event: any) => {
+    if (Number(event.bidPrice) <= formatEther2Number(price)) {
+      toast.error(
+        `Bid price must be greater than ${formatEther2Number(price)}.`
+      );
+      return;
+    }
     setModal(false);
     ProceedFunc();
     if (library && data) {
@@ -299,7 +308,8 @@ export const AuctionNFTBuyerDescription = ({
       <div className="buttonContainer flex items-center">
         <Button
           title={"Place bid"}
-          variant="v1"
+          variant={end ? "v2" : "v1"}
+          disabled={end}
           className="py-4"
           onClick={() => {
             bidNFTModalFunc();

@@ -99,7 +99,7 @@ export const NFTRightSideComponent = ({
           <div className="linearCircle2"></div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
-            <h6 className={nameBoxZValue}>{formatAddress(data?.owner)}</h6>
+            <h6 className={nameBoxZValue}>{formatAddress(nftOwner)}</h6>
           </div>
         </div>
         <div className={nameBox}>

@@ -179,7 +179,7 @@ export const NonNFTBuyerDescription = ({
       <div className="buttonContainer flex items-center">
         <Button
           title={"Buy NFT"}
-          variant="v1"
+          variant={data?.saleState === "NON" ? "v2" : "v1"}
           className="py-4"
           disabled={data?.saleState === "NON"}
           onClick={buyNFTStep1Func}

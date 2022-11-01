@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
+import { ethers } from "ethers";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -174,7 +175,12 @@ const Collection: NextPageWithLayout = () => {
                 </div> */}
                 <div className="text-center">
                   <h4 className={detailsCardTitle}>Total Volum</h4>
-                  <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
+                  <h5 className={detailsCardValue}>
+                    $
+                    {info?.tradingVolumn
+                      ? ethers.utils.formatEther(info?.tradingVolumn)
+                      : 0}
+                  </h5>
                 </div>
               </div>
             </div>

@@ -30,14 +30,3 @@ export const formatIPFSUrl = (hash: string | undefined) => {
     else return "";
   }
 };
-
-export const formatIPFSUrl = (hash: string | undefined) => {
-  if(hash === undefined) 
-    return ""
-  else {
-    if(hash.length === 53)
-      return NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash.substring(7, hash.length)
-    else 
-      return ""
-  }
-}
