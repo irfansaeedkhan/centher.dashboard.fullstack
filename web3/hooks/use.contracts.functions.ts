@@ -171,26 +171,6 @@ export const useIsRegistered = (account: string | undefined | null) => {
   return isRegistered;
 };
 
-// export const getReferrers = (account: string | undefined | null) => {
-//   const [referrers, setReferrers] = useState<string[]>([]);
-//   const registerContract = getRegistrationContract();
-
-//   useEffect(() => {
-//     const fetchReferrers = async (account: string) => {
-//       const _referrers = await registerContract.getReferrerAddresses(
-//         account
-//       );
-//       console.log("sniper: referrers: ", _referrers)
-//       setReferrers(_referrers);
-//     };
-
-//     if (account) {
-//       fetchReferrers(account);
-//     }
-//   }, [account, registerContract]);
-//   return referrers;
-// };
-
 export const useGetApprovedForAll = (
   account: string | null | undefined,
   collection: string | undefined
@@ -200,7 +180,6 @@ export const useGetApprovedForAll = (
 
   useEffect(() => {
     const fetchReferrers = async (account: string, collection: string) => {
-      console.log("sniper: collection: ", collection);
       const nftContract = getStandardNFTContract(null, collection);
       const _approve = await nftContract.isApprovedForAll(
         account,
@@ -214,4 +193,24 @@ export const useGetApprovedForAll = (
     }
   }, [account, collection, marketplaceAddress]);
   return approve;
+};
+
+export const useGetNFTOwner = (
+  collection: string | undefined,
+  tokenId: number | undefined
+) => {
+  const [owner, setOwner] = useState("");
+
+  useEffect(() => {
+    const fetchOwner = async (tokenId: number, collection: string) => {
+      const nftContract = getStandardNFTContract(null, collection);
+      const _owner = await nftContract.ownerOf(tokenId);
+      setOwner(_owner);
+    };
+
+    if (tokenId && collection) {
+      fetchOwner(tokenId, collection);
+    }
+  }, [tokenId, collection]);
+  return owner;
 };

@@ -22,6 +22,7 @@ import { useWeb3React } from "@web3-react/core";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { formatAddress } from "@/utils/format.address";
+import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -36,11 +37,13 @@ export const NFTRightSideComponent = ({
   const { library, account } = useWeb3React();
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
+
+  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId);
   useEffect(() => {
     if (data) {
       if (
         account &&
-        account.toLocaleLowerCase() === data.owner.toLocaleLowerCase()
+        account.toLocaleLowerCase() === nftOwner.toLocaleLowerCase()
       ) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");

@@ -43,7 +43,7 @@ interface listingFormInterface {
   bidPrice: number;
 }
 interface auctionFormInterface {
-  AuctionEndTime: string;
+  AuctionEndTime: Date;
   StartingNFTPrice: number;
 }
 const ListingModalschema = Joi.object({
@@ -144,7 +144,7 @@ export const NonNFTDescription = ({
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Set Auction End Time</label>
           <input
-            type="date"
+            type="datetime-local"
             id="AuctionEndTime"
             autoComplete="off"
             {...auctionForm.register("AuctionEndTime")}
@@ -350,9 +350,7 @@ export const NonNFTDescription = ({
   };
 
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
-    const now = Date.now() / 1000;
-    const endDate = new Date(auctionDate).getTime() / 1000;
-    const endTime = Math.floor(endDate - now);
+    const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
 
     ProceedFunc();
     if (library && data) {
@@ -372,7 +370,7 @@ export const NonNFTDescription = ({
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
     if (library && data) {
-      if (isApproved) {
+      if (!isApproved) {
         const approveResult = await callApproveNFTToMarketplace(
           library,
           data.collection
@@ -401,6 +399,12 @@ export const NonNFTDescription = ({
       SuccessFunc(false);
     }
   };
+  useEffect(() => {
+    listingModal();
+  }, [!listingForm.formState.isValid]);
+  useEffect(() => {
+    auctionModal();
+  }, [!auctionForm.formState.isValid]);
 
   return (
     <div className={nftDescriptionContainer}>

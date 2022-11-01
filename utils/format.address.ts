@@ -19,7 +19,7 @@ export const formatString2Ether = (num: string | undefined) => {
 };
 
 export const formatBNB2USD = (bnb: number | undefined) => {
-  return bnb ? formatEther2Number(bnb) * 300 : 0;
+  return bnb ? Number((formatEther2Number(bnb) * 300).toFixed(10)) : 0;
 };
 
 export const formatIPFSUrl = (hash: string | undefined) => {
@@ -30,3 +30,14 @@ export const formatIPFSUrl = (hash: string | undefined) => {
     else return "";
   }
 };
+
+export const formatIPFSUrl = (hash: string | undefined) => {
+  if(hash === undefined) 
+    return ""
+  else {
+    if(hash.length === 53)
+      return NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash.substring(7, hash.length)
+    else 
+      return ""
+  }
+}

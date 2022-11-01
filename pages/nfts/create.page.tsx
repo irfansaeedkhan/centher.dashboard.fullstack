@@ -178,13 +178,9 @@ const CreateNFT: NextPageWithLayout = () => {
       assetReader.onloadend = async () => {
         try {
           let assetBuffer = Buffer.from(assetReader.result as ArrayBuffer);
-          console.log("sniper: assetBuffer: ", assetBuffer);
 
           const assetAdded = await (ipfs as IPFSHTTPClient).add(assetBuffer);
-          console.log("sniper: assetAdded: ", assetAdded);
           const assetHash = assetAdded.path;
-          // const assetIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + assetHash;
-          // console.log("sniper: asset: ", assetIPFSHash);
 
           const cd = nftData as INFTData;
           const metadata = {
@@ -198,10 +194,7 @@ const CreateNFT: NextPageWithLayout = () => {
           };
           const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
           const jsonHash = jsonFileAdded.path;
-          // const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-          // console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
-          // console.log("sniper: metadata: ", metadata);
           const result = await callCreateNFT(
             library,
             cd.collection,
@@ -218,7 +211,6 @@ const CreateNFT: NextPageWithLayout = () => {
           console.error(error);
         }
       };
-      console.log("sniper: asset: ", asset);
       assetReader.readAsArrayBuffer(asset as Blob);
     } catch (error) {
       console.error(error);
@@ -238,13 +230,6 @@ const CreateNFT: NextPageWithLayout = () => {
     }
     buyNFTStep1Func(values);
   };
-
-  // useEffect(() => {
-  //   console.log("sniper: nftdata: ", nftData as INFTData, library)
-  //   if(nftData as INFTData && library) {
-  //     buyNFTStep1Func()
-  //   }
-  // }, [nftData])
 
   return (
     <div className="w-full pb-16">
