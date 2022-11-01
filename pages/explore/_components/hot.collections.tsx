@@ -18,7 +18,7 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
     <div className={hotCollectionWrapper}>
       <div className={hotCollectionGap}>
         <div className={collectionHeaderAnimation}>Collections</div>
-        <Link href={AppRoutes.home} className={viewAllLink}>
+        <Link href={AppRoutes.all_collections} className={viewAllLink}>
           View all
         </Link>
       </div>

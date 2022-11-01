@@ -48,6 +48,16 @@ const schema = Joi.object({
   }),
 });
 
+interface AuctionFormFields {
+  NFTName: string;
+  Description: string;
+  NFTSymbol: string;
+  NFTAmount: number;
+  AuctionEndTime: string;
+  StartingNFTPrice: number;
+  Category: string;
+  Collection: string;
+}
 const AuctionForm = () => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
@@ -156,10 +166,11 @@ const AuctionForm = () => {
     setModal(true);
   };
 
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<AuctionFormFields>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   // function to add/remove dynamic property
   const handlePropertyChange = (e: any) => {
@@ -224,8 +235,7 @@ const AuctionForm = () => {
         />
         {formState.errors.NFTName && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* TODO: Mubashir bhai kindly fix this errors type */}
-            {/* {formState.errors.NFTName.message} */}
+            {formState.errors.NFTName.message}
           </p>
         )}
       </div>
@@ -244,7 +254,7 @@ const AuctionForm = () => {
         ></textarea>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Description.message} */}
+            {formState.errors.Description.message}
           </p>
         )}
       </div>
@@ -263,7 +273,7 @@ const AuctionForm = () => {
           />
           {formState.errors.NFTSymbol && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.NFTSymbol.message} */}
+              {formState.errors.NFTSymbol.message}
             </p>
           )}
         </div>
@@ -281,7 +291,7 @@ const AuctionForm = () => {
           />
           {formState.errors.NFTAmount && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.NFTAmount.message} */}
+              {formState.errors.NFTAmount.message}
             </p>
           )}
         </div>
@@ -289,7 +299,7 @@ const AuctionForm = () => {
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Set Auction End Time</label>
         <input
-          type="date"
+          type="datetime-local"
           id="AuctionEndTime"
           autoComplete="off"
           {...register("AuctionEndTime")}
@@ -300,7 +310,7 @@ const AuctionForm = () => {
         />
         {formState.errors.AuctionEndTime && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.AuctionEndTime.message} */}
+            {formState.errors.AuctionEndTime.message}
           </p>
         )}
       </div>
@@ -318,7 +328,7 @@ const AuctionForm = () => {
         />
         {formState.errors.StartingNFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.StartingNFTPrice.message} */}
+            {formState.errors.StartingNFTPrice.message}
           </p>
         )}
         <div className={serviceFee}>
@@ -344,7 +354,7 @@ const AuctionForm = () => {
         </select>
         {formState.errors.Category && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Category.message} */}
+            {formState.errors.Category.message}
           </p>
         )}
       </div>
@@ -365,7 +375,7 @@ const AuctionForm = () => {
         </select>
         {formState.errors.Collection && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Collection.message} */}
+            {formState.errors.Collection.message}
           </p>
         )}
       </div>
