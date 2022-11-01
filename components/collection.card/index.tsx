@@ -52,9 +52,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
       </div>
       <div className={contentWrapper}>
         <div className={collectionName}>{data.name}</div>
-        <a href="#" className={collectionOwner}>
-          {formatAddress(data.creator)}
-        </a>
+        <span className={collectionOwner}>{formatAddress(data.creator)}</span>
         <p className={collectionDescription}>{description}</p>
       </div>
     </Link>
@@ -62,7 +60,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
 };
 
 const collectionWrapper = ctl(
-  `w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12`
+  `w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`
 );
 
 const imagesWrapper = ctl(`relative flex justify-center`);
@@ -81,4 +79,6 @@ const collectionDescription = ctl(
   `font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`
 );
 
-const imageStyle = ctl(`rounded-t-lg w-[340px] h-[180px] object-cover`);
+const imageStyle = ctl(
+  `rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`
+);
