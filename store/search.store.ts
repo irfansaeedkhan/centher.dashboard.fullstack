@@ -41,7 +41,7 @@ export const useSearchStore = create<SearchStore>()(
 
           const q = get().searchQuery;
           const searchOffset = get().searchOffset;
-          const searchLimit = 100;
+          const searchLimit = 15;
 
           if (q.trim() === "") {
             set(() => ({

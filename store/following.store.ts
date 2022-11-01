@@ -35,7 +35,7 @@ export const useFollowingStore = create<FollowingStore>()(
 
           const accountAddress = get().accountAddress;
           const offset = get().offset;
-          const limit = 100;
+          const limit = 10;
 
           const url = `/api/users/${accountAddress}/following?offset=${offset}&limit=${limit}`;
 

@@ -1,21 +1,17 @@
 // React, Next, NPM Packages
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
-import ctl from "@netlify/classnames-template-literals";
-import { toast } from "react-hot-toast";
 
 // App imports
+import { useRepliesStore } from "@/store/profile.replies.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { SinglePost } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-import { CompletedPost } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import { ProfilePageWrapper } from "../_components";
@@ -25,84 +21,93 @@ const Replies: NextPageWithLayout = () => {
   useCreateUserProfileView();
 
   const router = useRouter();
-  const { user: loggedInUser } = useUser();
   const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [posts, setPosts] = useState<CompletedPost[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loader, setLoader] = useState(false);
-
   const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
 
-  useEffect(() => {
-    if (lastPostInView) {
-      setSkip(posts.length);
-    }
-  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
+  const {
+    posts,
+    resetPosts,
+    fetchPosts,
+    deletePost,
+    offset,
+    updateOffset,
+    loading,
+  } = useRepliesStore((state) => ({
+    posts: state.posts,
+    fetchPosts: state.fetchPosts,
 
-  const fetchUserFeedsData = useCallback(async () => {
-    setLoader(true);
-    try {
-      const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/user/replies/${user?._id}?offset=${skip}`
-      );
-      const _postsReplies = data.postsReplies;
-      setPosts((prev) => {
-        const filteredPosts =
-          _postsReplies?.filter((post: CompletedPost) => {
-            return prev.every((prevPost) => prevPost._id !== post._id);
-          }) ?? [];
-        return [...prev, ...filteredPosts];
-      });
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  }, [skip, user]);
+    deletePost: state.deletePost,
+
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+
+    resetPosts: state.resetPosts,
+
+    loading: state.loading,
+  }));
 
   useEffect(() => {
-    if (user && loggedInUser) {
-      fetchUserFeedsData();
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
     }
-  }, [fetchUserFeedsData, user, loggedInUser]);
+  }, [lastPostRef, lastPostEntry, updateOffset]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchPosts();
+    }
+  }, [offset, fetchPosts]);
+
+  useEffect(() => {
+    if (user?._id) {
+      resetPosts(user?._id, "loading");
+      fetchPosts();
+    }
+
+    return () => {
+      resetPosts("", "idle");
+    };
+  }, [user?._id, resetPosts, fetchPosts]);
 
   return (
     <>
-      {posts.length > 0 ? (
-        posts.map((post) => {
-          if (post._id === posts[posts.length - 1]._id) {
-            return (
-              <SinglePost
-                ref={lastPostRef}
-                key={post._id}
-                post={post}
-                onDelete={(post_id) => {
-                  setPosts(posts.filter((p) => p._id !== post_id));
-                }}
-              />
-            );
-          }
+      {posts.map((post) => {
+        if (post._id === posts[posts.length - 1]._id) {
           return (
             <SinglePost
+              ref={lastPostRef}
               key={post._id}
               post={post}
-              onDelete={(post_id) => {
-                setPosts(posts.filter((p) => p._id !== post_id));
-              }}
+              onDelete={deletePost}
             />
           );
-        })
-      ) : loader ? (
+        }
+        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
+      })}
+
+      {(loading === "loading" || loading === "idle") && (
         <>
           <SinglePostCardSkeleton />
           <SinglePostTextCardSkeleton />
           <SinglePostCardSkeleton />
         </>
-      ) : null}
+      )}
+
+      {loading === "loaded" && posts.length === 0 && (
+        // TODO: Talha - Ask amjad for design when there is no replies, also for posts on profile page
+        <div className="flex justify-center">
+          <p className="text-gray-500">No Replies!</p>
+        </div>
+      )}
+
+      {loading === "failed" && (
+        // TODO: Talha - Ask amjad for design when something went wrong
+        <div className="flex justify-center">
+          <p className="text-gray-500">Something went wrong!</p>
+        </div>
+      )}
     </>
   );
 };

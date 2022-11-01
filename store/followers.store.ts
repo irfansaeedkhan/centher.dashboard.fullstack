@@ -35,7 +35,7 @@ export const useFollowersStore = create<FollowersStore>()(
 
           const accountAddress = get().accountAddress;
           const offset = get().offset;
-          const limit = 100;
+          const limit = 10;
 
           const url = `/api/users/${accountAddress}/followers?offset=${offset}&limit=${limit}`;
 
