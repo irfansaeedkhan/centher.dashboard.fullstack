@@ -4,7 +4,7 @@ import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import axios from "axios";
 import { Collection } from "@/store/explore.store";
-import { formatAddress } from "@/utils/format.address";
+import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import Link from "next/link";
 
 export interface CollectionCardProps {
@@ -19,9 +19,11 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const metadata = await axios.get(ipfs);
-        setCoverImage(metadata.data.coverIPFSHash);
-        setProfileImage(metadata.data.profileIPFSHash);
+        console.log("sniper: formatIPFSUrl(ipfs): ", ipfs);
+        const metadata = await axios.get(formatIPFSUrl(ipfs));
+        console.log("sniper: metadata: ", metadata);
+        setCoverImage(formatIPFSUrl(metadata.data.coverIPFSHash));
+        setProfileImage(formatIPFSUrl(metadata.data.profileIPFSHash));
         setDescription(metadata.data.description);
       } catch (error) {}
     };

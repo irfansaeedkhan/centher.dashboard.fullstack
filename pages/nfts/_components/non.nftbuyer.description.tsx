@@ -11,6 +11,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import toast from "react-hot-toast";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -28,6 +29,10 @@ export const NonNFTBuyerDescription = ({
   const [ModalContent, setModalContent] = useState<any>();
 
   const buyNFTStep1Func = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -61,7 +66,7 @@ export const NonNFTBuyerDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>

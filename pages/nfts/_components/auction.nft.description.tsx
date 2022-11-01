@@ -17,6 +17,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
 import { formatAddress, formatBNB2USD } from "@/utils/format.address";
+import toast from "react-hot-toast";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -67,6 +68,8 @@ export const AuctionNftDescription = ({
           setMinutes(0);
           setSeconds(0);
           setEnd(true);
+        } else {
+          setEnd(false);
         }
       });
     }
@@ -77,6 +80,10 @@ export const AuctionNftDescription = ({
   }, [data]);
 
   const cancelAuctionFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Cancel Auction");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -111,6 +118,10 @@ export const AuctionNftDescription = ({
     setModal(true);
   };
   const endAuctionFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("End Auction");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -149,7 +160,7 @@ export const AuctionNftDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>

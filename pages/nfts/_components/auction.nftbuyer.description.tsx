@@ -14,6 +14,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
+import toast from "react-hot-toast";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -90,6 +91,10 @@ export const AuctionNFTBuyerDescription = ({
   });
 
   const bidNFTModalFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Place a bid");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -139,7 +144,7 @@ export const AuctionNFTBuyerDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper1}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>

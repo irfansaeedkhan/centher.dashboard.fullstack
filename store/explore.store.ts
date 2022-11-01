@@ -59,16 +59,9 @@ export const useExploreStore = create<ExploreStore>()(
           if (!loading) {
             if (result && !error) {
               _hotNFTs = result.nfts.map((item: any) => {
-                let _price = 0,
-                  _endTime = 0;
+                let _endTime = 0;
                 if (item.saleState === "Auction") {
-                  _price =
-                    Number(item.auctionInfo.highestBidPrice) === 0
-                      ? item.auctionInfo.startPrice
-                      : item.auctionInfo.highestBidPrice;
                   _endTime = item.auctionInfo.endTime;
-                } else {
-                  _price = item.listInfo.price;
                 }
                 return {
                   id: item.id,
@@ -78,7 +71,7 @@ export const useExploreStore = create<ExploreStore>()(
                   createTime: item.createTime,
                   ipfs: item.ipfs,
                   saleState: item.saleState,
-                  price: _price,
+                  price: item.price,
                   endTime: _endTime,
                 };
               });
@@ -154,16 +147,9 @@ export const useExploreStore = create<ExploreStore>()(
           if (!loading) {
             if (result && !error) {
               _allNFTs = result.nfts.map((item: any) => {
-                let _price = 0,
-                  _endTime = 0;
+                let _endTime = 0;
                 if (item.saleState === "Auction") {
-                  _price =
-                    Number(item.auctionInfo.highestBidPrice) === 0
-                      ? item.auctionInfo.startPrice
-                      : item.auctionInfo.highestBidPrice;
                   _endTime = item.auctionInfo.endTime;
-                } else {
-                  _price = item.listInfo.price;
                 }
                 return {
                   id: item.id,
