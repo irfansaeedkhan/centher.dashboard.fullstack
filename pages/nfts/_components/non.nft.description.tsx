@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
+import Joi from "joi";
+import { useForm } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import Button from "@/components/button";
@@ -35,6 +38,29 @@ interface NonNFTDescriptionProps {
   reload?: boolean;
   setReload?: any;
 }
+interface listingFormInterface {
+  bidPrice: number;
+}
+interface auctionFormInterface {
+  AuctionEndTime: string;
+  StartingNFTPrice: number;
+}
+const ListingModalschema = Joi.object({
+  bidPrice: Joi.number().required().label("bidPrice").messages({
+    "string.empty": `bid Price Required`,
+    "any.required": `Required Field`,
+  }),
+});
+const AuctionModalschema = Joi.object({
+  AuctionEndTime: Joi.string().required().label("AuctionEndTime").messages({
+    "string.empty": `Auction End Time Required`,
+    "any.required": `Required Field`,
+  }),
+  StartingNFTPrice: Joi.number().required().label("StartingNFTPrice").messages({
+    "string.empty": `Starting NFT Price Required`,
+    "any.required": `Required Field`,
+  }),
+});
 export const NonNFTDescription = ({
   data,
   reload,
@@ -45,10 +71,19 @@ export const NonNFTDescription = ({
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
+  const listingForm = useForm<listingFormInterface>({
+    mode: "onChange",
+    resolver: joiResolver(ListingModalschema),
+  });
+  const auctionForm = useForm<auctionFormInterface>({
+    mode: "onChange",
+    resolver: joiResolver(AuctionModalschema),
+  });
+
   const listingModal = () => {
     setModalTitle("Listing Item");
     setModalContent(
-      <form onSubmit={handleListNFT} className={modalBodyWrapper}>
+      <form className={modalBodyWrapper}>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Blockchain</label>
           <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
@@ -63,10 +98,11 @@ export const NonNFTDescription = ({
           >
             <input
               type="text"
-              id="bidPrice"
-              autoComplete="off"
               // value={listingPrice}
               // onChange={(e: any) => {setListingPrice(e.target.value)}}
+              id="bidPrice"
+              autoComplete="off"
+              {...listingForm.register("bidPrice")}
               placeholder="0.00"
               className={
                 "w-full h-full !border-0 !ring-0 bg-transparent text-white"
@@ -76,11 +112,17 @@ export const NonNFTDescription = ({
               =$0000
             </h6>
           </div>
+          {listingForm.formState.errors?.bidPrice && (
+            <p className={`text-red-500 ${errMessage}`}>
+              {listingForm.formState.errors.bidPrice.message}
+            </p>
+          )}
         </div>
         <Button
           title={"Next"}
-          variant="v1"
-          // disabled={listingPrice <= 0}
+          variant={listingForm.formState.isValid ? "v1" : "v2"}
+          disabled={!listingForm.formState.isValid}
+          onClick={listingForm.handleSubmit(handleListNFT)}
           className="py-4 mt-2"
         />
       </form>
@@ -89,16 +131,22 @@ export const NonNFTDescription = ({
   const auctionModal = () => {
     setModalTitle("Auction");
     setModalContent(
-      <form onSubmit={handleAuction} className={modalBodyWrapper}>
+      <form className={modalBodyWrapper}>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Set Auction End Time</label>
           <input
             type="date"
             id="AuctionEndTime"
             autoComplete="off"
+            {...auctionForm.register("AuctionEndTime")}
             placeholder="Enter NFT Price"
             className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
           />
+          {auctionForm.formState.errors.AuctionEndTime && (
+            <p className={`text-red-500 ${errMessage}`}>
+              {auctionForm.formState.errors.AuctionEndTime.message}
+            </p>
+          )}
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Starting price for NFT</label>
@@ -106,6 +154,7 @@ export const NonNFTDescription = ({
             type="text"
             id="StartingNFTPrice"
             autoComplete="off"
+            {...auctionForm.register("StartingNFTPrice")}
             placeholder="Enter NFT Price"
             className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
           />
@@ -116,24 +165,29 @@ export const NonNFTDescription = ({
             </div>
             <span className={serviceFeeNumber}>0.0370 BNB</span>
           </div>
+          {auctionForm.formState.errors.StartingNFTPrice && (
+            <p className={`text-red-500 ${errMessage}`}>
+              {auctionForm.formState.errors.StartingNFTPrice.message}
+            </p>
+          )}
         </div>
         <Button
           title={"Next"}
-          variant="v1"
-          // disabled={auctionPrice <= 0}
-          // onClick={handleAuction}
+          variant={auctionForm.formState.isValid ? "v1" : "v2"}
+          disabled={!auctionForm.formState.isValid}
+          onClick={auctionForm.handleSubmit(handleAuction)}
           className="py-4 mt-2"
         />
       </form>
     );
   };
-  const handleAuction = async (event: any) => {
+  const handleAuction = async (data: any) => {
     setModal(false);
-    saleWithAuction(event.target[1].value, event.target[0].value);
+    saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
   };
   const handleListNFT = async (data: any) => {
     setModal(false);
-    saleWithListing(data.target[0].value);
+    saleWithListing(data.bidPrice);
   };
   const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
     setModalTitle("Cancel listing");
@@ -202,6 +256,7 @@ export const NonNFTDescription = ({
     );
     setModal(true);
   };
+
   const ProceedFunc = () => {
     setModalTitle("Complete checkout");
     setModalContent(
