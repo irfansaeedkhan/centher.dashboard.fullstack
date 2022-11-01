@@ -11,6 +11,7 @@ import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
 } from "./_components";
+import { NotificationBell } from "@/assets/svgs";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
@@ -21,6 +22,7 @@ const Notifications: NextPageWithLayout = () => {
     fetchNotifications,
     fetchNewNotifications,
     offset,
+    loading,
     updateOffset,
   } = useNotificationsStore((state) => ({
     notifications: state.notifications,
@@ -28,6 +30,7 @@ const Notifications: NextPageWithLayout = () => {
     fetchNewNotifications: state.fetchNewNotifications,
     offset: state.offset,
     updateOffset: state.updateOffset,
+    loading: state.loading,
   }));
 
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
@@ -76,7 +79,27 @@ const Notifications: NextPageWithLayout = () => {
           );
         })}
       </div>
-      {notifications.length === 0 && <SingleNotificationSkeleton />}
+
+      {(loading === "loading" || loading === "idle") && (
+        <SingleNotificationSkeleton />
+      )}
+
+      {loading === "loaded" && notifications.length === 0 && (
+        <div>
+          <div className="flex justify-center mt-[60px]">
+            <NotificationBell />
+          </div>
+          <div className="flex justify-center mt-[35px]">
+            <p className="text-white">No notifications available</p>
+          </div>
+        </div>
+      )}
+
+      {loading === "failed" && (
+        <div className="flex justify-center">
+          <p className="text-gray-500">Something went wrong!</p>
+        </div>
+      )}
     </div>
   );
 };

@@ -185,9 +185,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             profileFileBuffer
           );
           console.log("sniper: profileAdded: ", profileAdded);
-          const hash = profileAdded.path;
-          const profileIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-          console.log("sniper: profileIPFSHash: ", profileIPFSHash);
+          const profileHash = profileAdded.path;
+          // const profileIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
+          // console.log("sniper: profileIPFSHash: ", profileIPFSHash);
 
           const coverReader = new window.FileReader();
           coverReader.onloadend = async () => {
@@ -199,9 +199,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 fileBuffer
               );
               console.log("sniper: coverfileAdded: ", coverfileAdded);
-              const hash = coverfileAdded.path;
-              const coverIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-              console.log("sniper: coverIPFSHash: ", coverIPFSHash);
+              const coverHash = coverfileAdded.path;
+              // const coverIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
+              // console.log("sniper: coverIPFSHash: ", coverIPFSHash);
 
               const cd = collectionData as ICollectionData;
               const metadata = {
@@ -214,20 +214,20 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 yoursite: cd.yoursite,
                 facebook: cd.facebook,
                 twitter: cd.twitter,
-                profileIPFSHash: profileIPFSHash,
-                coverIPFSHash: coverIPFSHash,
+                profileIPFSHash: "ipfs://" + profileHash,
+                coverIPFSHash: "ipfs://" + coverHash,
               };
               const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
               const jsonHash = jsonFileAdded.path;
-              const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-              console.log("sniper: jsonIPFShash: ", jsonIPFShash);
+              // const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
+              // console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
               console.log("sniper: metadata: ", metadata);
               const result = await callCreateCollection(
                 library,
                 cd.name,
                 cd.symbol,
-                jsonIPFShash,
+                "ipfs://" + jsonHash,
                 cd.totalsupply,
                 FEE.createCollectionFee
               );
@@ -258,6 +258,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       return;
     }
 
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     // setCollectionData(values)
     buyNFTStep1Func(values);
   };

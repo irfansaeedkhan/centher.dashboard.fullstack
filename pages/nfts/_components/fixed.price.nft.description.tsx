@@ -22,6 +22,7 @@ import {
   callEditItemForSale,
 } from "@/web3/utils/call.helpers";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import toast from "react-hot-toast";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -50,6 +51,10 @@ export const FixedPriceNFTDescription = ({
   });
 
   const cancelListingFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Cancel listing");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -84,6 +89,10 @@ export const FixedPriceNFTDescription = ({
     setModal(true);
   };
   const bidNFTModalFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Change Price");
     setModalContent(
       <div className={modalBodyWrapper}>

@@ -1,8 +1,10 @@
 import { IProperty } from "@/pages/nfts/_components/create.nft.form";
 import { nftQuery, saleQuery } from "@/subgraph/querys";
+import { formatIPFSUrl } from "@/utils/format.address";
 import useRefresh from "@/web3/hooks/use.refresh";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import axios from "axios";
+import { date } from "joi";
 import { useEffect, useState } from "react";
 
 export interface IListHistory {
@@ -87,7 +89,7 @@ export const useGetNftData = (
         },
         fetchPolicy: "cache-first",
       });
-
+      console.log("sniper: data: ", nftResult.nfts[0]);
       const _priceHistories = listResult.marketplaceSaleHistories.filter(
         (item: any) => {
           return (
@@ -98,10 +100,10 @@ export const useGetNftData = (
         }
       );
       if (nftResult.nfts && nftResult.nfts.length > 0) {
-        const metadata = await axios.get(nftResult.nfts[0].ipfs);
+        const metadata = await axios.get(formatIPFSUrl(nftResult.nfts[0].ipfs));
         const _nftData: INFTDetailData = {
           name: metadata.data.name,
-          image: metadata.data.image,
+          image: formatIPFSUrl(metadata.data.image),
           nftId: nftResult.nfts[0].tokenId,
           mintTx: nftResult.nfts[0].mintHash,
           collection: nftResult.nfts[0].collection,

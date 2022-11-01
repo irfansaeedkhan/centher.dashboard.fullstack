@@ -170,18 +170,31 @@ export const callCreateNFT = async (
   collection: string,
   tokenUri: string,
   supply: number,
+  isAuction: boolean,
   price: number,
+  period: number,
   fee: number
 ) => {
   console.log("sniper: library: ", library);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: fee: ", fee);
+    console.log(
+      "sniper: fee: ",
+      fee,
+      price,
+      collection,
+      tokenUri,
+      supply,
+      isAuction,
+      period
+    );
     const tx = await marketplaceContract.functions.createItems(
       collection,
       tokenUri,
       supply,
+      isAuction,
       ethers.utils.parseEther(price.toString()),
+      period,
       { value: ethers.utils.parseEther(fee.toFixed(10)) }
     );
     await tx.wait();

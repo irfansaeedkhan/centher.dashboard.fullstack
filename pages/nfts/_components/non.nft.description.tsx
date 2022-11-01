@@ -32,6 +32,7 @@ import {
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
+import toast from "react-hot-toast";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -81,6 +82,10 @@ export const NonNFTDescription = ({
   });
 
   const listingModal = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Listing Item");
     setModalContent(
       <form className={modalBodyWrapper}>
@@ -129,6 +134,10 @@ export const NonNFTDescription = ({
     );
   };
   const auctionModal = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Auction");
     setModalContent(
       <form className={modalBodyWrapper}>

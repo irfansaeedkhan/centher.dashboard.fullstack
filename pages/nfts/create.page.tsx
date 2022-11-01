@@ -183,31 +183,33 @@ const CreateNFT: NextPageWithLayout = () => {
           const assetAdded = await (ipfs as IPFSHTTPClient).add(assetBuffer);
           console.log("sniper: assetAdded: ", assetAdded);
           const assetHash = assetAdded.path;
-          const assetIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + assetHash;
-          console.log("sniper: asset: ", assetIPFSHash);
+          // const assetIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + assetHash;
+          // console.log("sniper: asset: ", assetIPFSHash);
 
           const cd = nftData as INFTData;
           const metadata = {
             name: cd.name,
             description: cd.description,
             supply: cd.supply,
-            image: assetIPFSHash,
+            image: "ipfs://" + assetHash,
             type: assetTab,
             collection: cd.collection,
             attributes: cd.properties,
           };
           const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
           const jsonHash = jsonFileAdded.path;
-          const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-          console.log("sniper: jsonIPFShash: ", jsonIPFShash);
+          // const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
+          // console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
           // console.log("sniper: metadata: ", metadata);
           const result = await callCreateNFT(
             library,
             cd.collection,
-            jsonIPFShash,
+            "ipfs://" + jsonHash,
             cd.supply,
+            cd.isAuction,
             cd.price,
+            cd.period,
             (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) *
               cd.supply
           );
@@ -230,6 +232,10 @@ const CreateNFT: NextPageWithLayout = () => {
       return;
     }
     // setNFTData(values)
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     buyNFTStep1Func(values);
   };
 
