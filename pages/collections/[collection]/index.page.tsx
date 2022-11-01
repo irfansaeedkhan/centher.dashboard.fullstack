@@ -139,7 +139,7 @@ const Collection: NextPageWithLayout = () => {
 
             <div className={profileImage}>
               <Image
-                src={formatIPFSUrl(formatIPFSUrl(metadata?.profileIPFSHash))}
+                src={formatIPFSUrl(metadata?.profileIPFSHash)}
                 alt={"profile image"}
                 width={112}
                 height={112}
