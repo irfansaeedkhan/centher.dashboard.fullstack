@@ -139,7 +139,7 @@ export const AuctionNFTBuyerDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper1}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>

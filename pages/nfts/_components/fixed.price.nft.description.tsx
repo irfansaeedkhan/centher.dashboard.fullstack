@@ -170,7 +170,7 @@ export const FixedPriceNFTDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>
