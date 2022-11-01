@@ -13,6 +13,7 @@ import {
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
   const {
@@ -62,28 +63,19 @@ const Feed: NextPageWithLayout = () => {
     <div
       className={`w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]`}
     >
-      <PostCardNew
-        onPostCreated={(post) => {
-          addNewPost(post);
-        }}
-      />
+      {loading === "loaded" && (
+        <PostCardNew
+          onPostCreated={(post) => {
+            addNewPost(post);
+          }}
+        />
+      )}
 
-      {!!posts.length &&
-        posts.map((post) => {
-          if (post._id === posts[posts.length - 1]._id) {
-            return (
-              <SinglePost
-                ref={lastPostRef}
-                key={post._id}
-                post={post}
-                onDelete={(post_id) => {
-                  deletePost(post_id);
-                }}
-              />
-            );
-          }
+      {posts.map((post) => {
+        if (post._id === posts[posts.length - 1]._id) {
           return (
             <SinglePost
+              ref={lastPostRef}
               key={post._id}
               post={post}
               onDelete={(post_id) => {
@@ -91,7 +83,17 @@ const Feed: NextPageWithLayout = () => {
               }}
             />
           );
-        })}
+        }
+        return (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              deletePost(post_id);
+            }}
+          />
+        );
+      })}
 
       {(loading === "loading" || loading === "idle") && (
         <>
@@ -99,6 +101,28 @@ const Feed: NextPageWithLayout = () => {
           <SinglePostTextCardSkeleton />
           <SinglePostCardSkeleton />
         </>
+      )}
+
+      {loading === "loaded" && posts.length === 0 && (
+        <div>
+          <div className="flex justify-center mt-[60px]">
+            <NoPost />
+          </div>
+          <div className="flex justify-center mt-[35px]">
+            <p className="text-white">No posts available</p>
+          </div>
+          <div className="flex justify-center mt-3">
+            <p className="text-[#888DAA]">
+              Create a new post or follow someone
+            </p>
+          </div>
+        </div>
+      )}
+
+      {loading === "failed" && (
+        <div className="flex justify-center">
+          <p className="text-gray-500">Something went wrong!</p>
+        </div>
       )}
     </div>
   );
