@@ -44,6 +44,13 @@ interface FixedPriceFormProps {
   createNFT: any;
   collections: Collection[];
 }
+interface FormFields {
+  NFTName: String;
+  Description: String;
+  NFTAmount: number;
+  NFTPrice: number;
+  Collection: String;
+}
 // TODO: Kindly fix any types
 const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
@@ -52,10 +59,11 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
 
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<FormFields>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
   // functions to add/remove dynamic properties
   const handlePropertyChange = (e: any) => {
     setPropertyDetails((prev: any) => ({
@@ -115,7 +123,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
         />
         {formState.errors.NFTName && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.NFTName.message} */}
+            {formState.errors.NFTName.message}
           </p>
         )}
       </div>
@@ -134,7 +142,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
         ></textarea>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Description.message} */}
+            {formState.errors.Description.message}
           </p>
         )}
       </div>
@@ -153,7 +161,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
           />
           {formState.errors.NFTAmount && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.NFTAmount.message} */}
+              {formState.errors.NFTAmount.message}
             </p>
           )}
         </div>
@@ -170,7 +178,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
         />
         {formState.errors.NFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.NFTPrice.message} */}
+            {formState.errors.NFTPrice.message}
           </p>
         )}
         <div className={serviceFee}>
@@ -205,7 +213,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
         </select>
         {formState.errors.Collection && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Collection.message} */}
+            {formState.errors.Collection.message}
           </p>
         )}
       </div>

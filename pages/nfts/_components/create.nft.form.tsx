@@ -56,9 +56,11 @@ export const CreateNFTForm = ({ createNFT }: CreateNFTFormProps) => {
           className={`${Tab} ${tab === "Auction" && activeTab}`}
         />
       </div>
-      {/* {tab === "Fixed" && <FixedPriceForm createNFT={createNFT} collections={collections}/>}
-      {tab === "Auction" && <AuctionForm />} */}
-      <FixedPriceForm createNFT={createNFT} collections={collections} />
+
+      {tab === "Auction" && <AuctionForm />}
+      {tab === "Fixed" && (
+        <FixedPriceForm createNFT={createNFT} collections={collections} />
+      )}
     </div>
   );
 };
