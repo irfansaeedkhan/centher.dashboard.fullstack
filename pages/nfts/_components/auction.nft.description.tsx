@@ -67,6 +67,8 @@ export const AuctionNftDescription = ({
           setMinutes(0);
           setSeconds(0);
           setEnd(true);
+        } else {
+          setEnd(false);
         }
       });
     }

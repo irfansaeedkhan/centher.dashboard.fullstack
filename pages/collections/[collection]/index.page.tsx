@@ -21,7 +21,7 @@ import { useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
-import { formatAddress } from "@/utils/format.address";
+import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,7 +55,7 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const _metadata = await axios.get(ipfs);
+        const _metadata = await axios.get(formatIPFSUrl(ipfs));
         console.log("sniper: metadata: ", metadata);
         setMetadata(_metadata.data);
         // setName(metadata.data.name)
@@ -109,7 +109,7 @@ const Collection: NextPageWithLayout = () => {
           <div
             className={coverImageContainer}
             style={{
-              backgroundImage: `url(${metadata?.coverIPFSHash})`,
+              backgroundImage: `url(${formatIPFSUrl(metadata?.coverIPFSHash)})`,
             }}
           >
             <div className={shareBtn}>
@@ -139,7 +139,7 @@ const Collection: NextPageWithLayout = () => {
 
             <div className={profileImage}>
               <Image
-                src={metadata?.profileIPFSHash}
+                src={formatIPFSUrl(metadata?.profileIPFSHash)}
                 alt={"profile image"}
                 width={112}
                 height={112}

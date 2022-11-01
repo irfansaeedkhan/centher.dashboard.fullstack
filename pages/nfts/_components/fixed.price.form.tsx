@@ -103,7 +103,9 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
       description: data.Description,
       supply: data.NFTAmount,
       collection: data.Collection,
+      isAuction: false,
       price: data.NFTPrice,
+      period: 0,
       properties: propertyList,
     };
 
@@ -181,13 +183,13 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
             {formState.errors.NFTPrice.message}
           </p>
         )}
-        <div className={serviceFee}>
+        {/* <div className={serviceFee}>
           <div className={serviceFeeTitle}>
             <span className={serviceFeeName}>Service fee</span>
             <QuestionIcon />
           </div>
           <span className={serviceFeeNumber}>0.0370 BNB</span>
-        </div>
+        </div> */}
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
