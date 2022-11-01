@@ -32,16 +32,6 @@ export const Explore: React.FC<ExploreProps> = ({ allNFTs }) => {
   );
 };
 
-const Data = {
-  nftImage: "/images/nft.png",
-  nftToken: "MARA Token",
-  nftName: "Barack Obama",
-  nftOwnerName: "Ricky Ammeandola",
-  nftOwnerDp: "/images/a1.png",
-  nftPriceNether: 65000,
-  nftPriceDollar: 650000,
-};
-
 const pageWrapper = ctl(`flex flex-col gap-8`);
 
 const nameButtonWrapper = ctl(

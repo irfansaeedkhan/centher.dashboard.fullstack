@@ -22,7 +22,6 @@ const GifNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
         <div>
           <Image
             className={imageStyling}
-            // src="/images/nftImage.png"
             src={asset ? URL.createObjectURL(asset) : ""}
             alt="nft"
             height={543}
