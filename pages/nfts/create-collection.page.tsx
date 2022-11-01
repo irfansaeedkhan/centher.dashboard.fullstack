@@ -258,6 +258,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       return;
     }
 
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     // setCollectionData(values)
     buyNFTStep1Func(values);
   };

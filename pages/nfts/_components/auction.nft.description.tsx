@@ -17,6 +17,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
 import { formatAddress, formatBNB2USD } from "@/utils/format.address";
+import toast from "react-hot-toast";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -79,6 +80,10 @@ export const AuctionNftDescription = ({
   }, [data]);
 
   const cancelAuctionFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Cancel Auction");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -113,6 +118,10 @@ export const AuctionNftDescription = ({
     setModal(true);
   };
   const endAuctionFunc = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("End Auction");
     setModalContent(
       <div className={modalBodyWrapper}>

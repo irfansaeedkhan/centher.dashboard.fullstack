@@ -232,6 +232,10 @@ const CreateNFT: NextPageWithLayout = () => {
       return;
     }
     // setNFTData(values)
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     buyNFTStep1Func(values);
   };
 

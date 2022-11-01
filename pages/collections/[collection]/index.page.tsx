@@ -139,7 +139,7 @@ const Collection: NextPageWithLayout = () => {
 
             <div className={profileImage}>
               <Image
-                src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                src={formatIPFSUrl(formatIPFSUrl(metadata?.profileIPFSHash))}
                 alt={"profile image"}
                 width={112}
                 height={112}
@@ -161,14 +161,14 @@ const Collection: NextPageWithLayout = () => {
                   <h4 className={detailsCardTitle}>Items</h4>
                   <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
                 </div>
-                <div className="text-center">
+                {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Owner</h4>
                   <h5 className={detailsCardValue}>2.1k</h5>
                 </div>
                 <div className="text-center">
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>$108.56</h5>
-                </div>
+                </div> */}
                 {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Market Price</h4>
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
