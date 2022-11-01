@@ -390,7 +390,7 @@ export function usePostUpload({
     signedurls: Array<Array<string>>
   ) => {
     try {
-      await axiosNodeApi.post("/api/socials/posts-media/complete", {
+      await axiosNodeApi.post("/api/socials/posts-media/complete/signedurl", {
         post_id: currentPostID,
         file_index: file_index,
       });
@@ -444,88 +444,30 @@ export function usePostUpload({
           //Storing data
           let dataRead = event?.target?.result;
 
-          // let header = {
-          //   headers: {
-          //     "Content-Type": "application/octet-stream",
-          //     "post-details": JSON.stringify({
-          //       chunk_no: chunk_index,
-          //       post_id: currentPostID,
-          //       file_index: uploading_file_index,
-          //     }),
-          //     "Content-Range":
-          //       "bytes " +
-          //       starting +
-          //       "-" +
-          //       ending +
-          //       "/" +
-          //       file_details.file_size,
-          //   },
-          // };
-          // let header = {
-          //   headers: {
-          //     "Access-Control-Allow-Credentials": "true",
-          //     "Access-Control-Allow-Origin": "*",
-          //     "Access-Control-Allow-Methods":
-          //       "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-          //     "Access-Control-Allow-Headers":
-          //       "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, ETag, Etag",
-          //     "Access-Control-Expose-Headers": "*",
-          //   },
-          // };
           const axios = await Axios.create();
           delete axios.defaults.headers.put["Content-Type"];
 
-          axios.interceptors.response.use(
-            function (response) {
-              console.log("Response interceptor : ", response);
-              // Any status code that lie within the range of 2xx cause this function to trigger
-              // Do something with response data
-              return response;
-            },
-            function (error) {
-              console.log("Error  : ", error);
-              // Any status codes that falls outside the range of 2xx cause this function to trigger
-              // Do something with response error
-              return Promise.reject(error);
-            }
-          );
-
-          //delete axiosNodeApi.defaults.headers.put['Content-Type']
           let resultupload = await axios.put(
             signed_url[uploading_file_index][chunk_index],
             dataRead
-            //header
           );
-          console.log("\nResult of upload : ", resultupload);
-          console.log("Etags : ", resultupload.headers.etag);
-          /*
-          if (file_details.chunks_range.length - 1 == chunk_index) {
-            //All chunks are uploaded now need to upload new file
-            CompleteMultipartUpload(
-              filesChunksDetails,
-              uploading_file_index,
-              signed_url
-            );
-          } else {
-            //Upload Next Chunk
-            UploadChunks(
-              filesChunksDetails,
-              uploading_file_index,
-              chunk_index + 1,
-              signed_url
-            );
-          }*/
-          /*
-          await axiosNodeApi
-            .post("/api/socials/posts-media/upload", dataRead, header)
-            .then(() => {
-              setFile(file_details.file_name);
-              setUploadingFileStatus(
-                (100 / file_details.chunks_range.length) * (chunk_index + 1)
-              );
-              //Checking all chunks are uploaded
+
+          setUploadingFileStatus(
+            (100 / file_details.chunks_range.length) * (chunk_index + 1)
+          );
+
+          axiosNodeApi
+            .post("/api/socials/posts-media/upload/signedurl", {
+              etag: resultupload.headers.etag,
+              post_id: currentPostID,
+              file_index: uploading_file_index,
+              chunk_no: chunk_index,
+              bytes_uploaded: dataRead.length,
+            })
+            .then((updateetag) => {
+              console.log("Updated etag ", updateetag?.data);
               if (file_details.chunks_range.length - 1 == chunk_index) {
-                //All chunks are uploaded now need to upload new file
+                // All chunks are uploaded now need to upload new file
                 CompleteMultipartUpload(
                   filesChunksDetails,
                   uploading_file_index,
@@ -540,7 +482,11 @@ export function usePostUpload({
                   signed_url
                 );
               }
-            });*/
+            })
+            .catch((error) => {
+              setLoadingState(false);
+              toast.error("Failed to create post");
+            });
         } catch (error) {
           console.log("Failed to upload data to : ", error);
           setLoadingState(false);
