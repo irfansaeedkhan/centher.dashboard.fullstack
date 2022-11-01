@@ -30,6 +30,7 @@ export const AppRoutes = {
   coming_soon: "/coming-soon",
   home: "/",
   explore: "/explore",
+  all_collections: "/collections/all",
   top_influencers: "/top-influencers",
 
   admin: {
