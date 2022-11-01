@@ -293,7 +293,7 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
             )}
             <Button
               title={"Save"}
-              variant="v2"
+              variant="v1"
               onClick={addNewPropertyFunc}
               className="py-4 mt-2"
             />
