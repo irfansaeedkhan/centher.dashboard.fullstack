@@ -10,6 +10,7 @@ import {
   formatAddress,
   formatBNB2USD,
   formatEther2Number,
+  formatIPFSUrl,
 } from "@/utils/format.address";
 import { BNBIcon, YellowTick } from "@/assets/svgs";
 
@@ -26,11 +27,11 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const metadata = await axios.get(ipfs);
+        const metadata = await axios.get(formatIPFSUrl(ipfs));
         setName(metadata.data.name);
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
-        setImageUrl(metadata.data.image);
+        setImageUrl(formatIPFSUrl(metadata.data.image));
       } catch (error) {}
     };
     if (data && data.ipfs) {
@@ -40,7 +41,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 
   return (
     <Link
-      href={`/nfts${collection}/${data.tokenId}`}
+      href={`/nfts/${collection}/${data.tokenId}`}
       className={nftCardWrapper}
     >
       <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">

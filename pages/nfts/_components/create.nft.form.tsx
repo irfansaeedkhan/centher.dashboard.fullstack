@@ -21,7 +21,9 @@ export interface INFTData {
   name: string;
   description: string;
   supply: number;
+  isAuction: boolean;
   price: number;
+  period: number;
   collection: string;
   properties: IProperty[];
 }
@@ -56,9 +58,12 @@ export const CreateNFTForm = ({ createNFT }: CreateNFTFormProps) => {
           className={`${Tab} ${tab === "Auction" && activeTab}`}
         />
       </div>
-      {/* {tab === "Fixed" && <FixedPriceForm createNFT={createNFT} collections={collections}/>}
-      {tab === "Auction" && <AuctionForm />} */}
-      <FixedPriceForm createNFT={createNFT} collections={collections} />
+      {tab === "Fixed" && (
+        <FixedPriceForm createNFT={createNFT} collections={collections} />
+      )}
+      {tab === "Auction" && (
+        <AuctionForm createNFT={createNFT} collections={collections} />
+      )}
     </div>
   );
 };

@@ -11,6 +11,8 @@ import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { Collection } from "@/store/explore.store";
+import { formatAddress } from "@/utils/format.address";
 
 // form validations
 const schema = Joi.object({
@@ -22,10 +24,10 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  NFTSymbol: Joi.string().required().max(50).label("NFT Symbol").messages({
-    "string.empty": `NFTSymbol Required`,
-    "any.required": `Required Field`,
-  }),
+  // NFTSymbol: Joi.string().required().max(50).label("NFT Symbol").messages({
+  //   "string.empty": `NFTSymbol Required`,
+  //   "any.required": `Required Field`,
+  // }),
   NFTAmount: Joi.number().required().label("NFT Amount").messages({
     "string.empty": `NFTAmount Required`,
     "any.required": `Required Field`,
@@ -38,128 +40,41 @@ const schema = Joi.object({
     "string.empty": `StartingNFTPrice Required`,
     "any.required": `Required Field`,
   }),
-  Category: Joi.string().required().max(150).label("Category").messages({
-    "string.empty": `Category Required`,
-    "any.required": `Required Field`,
-  }),
+  // Category: Joi.string().required().max(150).label("Category").messages({
+  //   "string.empty": `Category Required`,
+  //   "any.required": `Required Field`,
+  // }),
   Collection: Joi.string().required().max(150).label("Collection").messages({
     "string.empty": `Collection Required`,
     "any.required": `Required Field`,
   }),
 });
-
-const AuctionForm = () => {
+interface AuctionFormFields {
+  NFTName: string;
+  Description: string;
+  // NFTSymbol: string;
+  NFTAmount: number;
+  AuctionEndTime: string;
+  StartingNFTPrice: number;
+  // Category: string;
+  Collection: string;
+}
+interface AuctionFormProps {
+  createNFT: any;
+  collections: Collection[];
+}
+const AuctionForm = ({ createNFT, collections }: AuctionFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
 
-  // modal states
-  const [Modal, setModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
-  // creating modals
-  const buyNFTStep1Func = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper2}>
-        <Image
-          className={ImgStyling}
-          src={"/images/nftAsset.png"}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">Maradona sport</h2>
-        <h3 className="text-white text-14px font-normal">Gas fee 10%</h3>
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
-          <span>Price:</span>
-          <BNBIcon />
-          89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
-        </h6>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Checkout"}
-            variant="v1"
-            className="py-4"
-            onClick={buyNFTStep2Func}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const buyNFTStep2Func = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper2}>
-        <LoaderIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
-          Transaction in progress
-        </h3>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-              Your transaction is in progress, Please wait.
-            </p> */}
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const buyNFTSuccessFunc = () => {
-    setModalTitle("Complete checkout");
-    setModalContent(
-      <div className={modalBodyWrapper2}>
-        <Image
-          className={ImgStyling}
-          src={"/images/nftAsset.png"}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">Purchased</h2>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Congratulations! You have successfully bought{" "}
-          <span className="text-white">Maradona sport</span> NFT on Nether NFT
-          platform.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"View item"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<AuctionFormFields>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   // function to add/remove dynamic property
   const handlePropertyChange = (e: any) => {
@@ -196,19 +111,31 @@ const AuctionForm = () => {
   // handle submit
   const onSubmit = async (data: any) => {
     console.log(data);
+    // let finalizedData = {
+    //   NFTName: data.NFTName,
+    //   Description: data.Description,
+    //   NFTSymbol: data.NFTSymbol,
+    //   NFTAmount: data.NFTAmount,
+    //   AuctionEndTime: data.AuctionEndTime,
+    //   StartingNFTPrice: data.StartingNFTPrice,
+    //   Category: data.Category,
+    //   Collection: data.Collection,
+    //   PropertiesList: propertyList,
+    // };
+    // console.log(finalizedData);
+
     let finalizedData = {
-      NFTName: data.NFTName,
-      Description: data.Description,
-      NFTSymbol: data.NFTSymbol,
-      NFTAmount: data.NFTAmount,
-      AuctionEndTime: data.AuctionEndTime,
-      StartingNFTPrice: data.StartingNFTPrice,
-      Category: data.Category,
-      Collection: data.Collection,
-      PropertiesList: propertyList,
+      name: data.NFTName,
+      description: data.Description,
+      supply: data.NFTAmount,
+      collection: data.Collection,
+      isAuction: true,
+      price: data.StartingNFTPrice,
+      period: Math.floor((data.AuctionEndTime - Date.now()) / 1000),
+      properties: propertyList,
     };
-    console.log(finalizedData);
-    buyNFTStep1Func();
+
+    createNFT(finalizedData);
   };
   return (
     <div className={formContainer}>
@@ -224,8 +151,7 @@ const AuctionForm = () => {
         />
         {formState.errors.NFTName && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* TODO: Mubashir bhai kindly fix this errors type */}
-            {/* {formState.errors.NFTName.message} */}
+            {formState.errors.NFTName.message}
           </p>
         )}
       </div>
@@ -244,12 +170,12 @@ const AuctionForm = () => {
         ></textarea>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Description.message} */}
+            {formState.errors.Description.message}
           </p>
         )}
       </div>
       <div className="flex gap-3">
-        <div className={fieldWrapper}>
+        {/* <div className={fieldWrapper}>
           <label className={fieldTitle}>NFT Symbol</label>
           <input
             type="text"
@@ -263,10 +189,10 @@ const AuctionForm = () => {
           />
           {formState.errors.NFTSymbol && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.NFTSymbol.message} */}
+              {formState.errors.NFTSymbol.message}
             </p>
           )}
-        </div>
+        </div> */}
         <div className={fieldWrapper}>
           <label className={fieldTitle}>NFT Amount</label>
           <input
@@ -281,7 +207,7 @@ const AuctionForm = () => {
           />
           {formState.errors.NFTAmount && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.NFTAmount.message} */}
+              {formState.errors.NFTAmount.message}
             </p>
           )}
         </div>
@@ -289,7 +215,7 @@ const AuctionForm = () => {
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Set Auction End Time</label>
         <input
-          type="date"
+          type="datetime-local"
           id="AuctionEndTime"
           autoComplete="off"
           {...register("AuctionEndTime")}
@@ -300,7 +226,7 @@ const AuctionForm = () => {
         />
         {formState.errors.AuctionEndTime && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.AuctionEndTime.message} */}
+            {formState.errors.AuctionEndTime.message}
           </p>
         )}
       </div>
@@ -318,18 +244,18 @@ const AuctionForm = () => {
         />
         {formState.errors.StartingNFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.StartingNFTPrice.message} */}
+            {formState.errors.StartingNFTPrice.message}
           </p>
         )}
-        <div className={serviceFee}>
+        {/* <div className={serviceFee}>
           <div className={serviceFeeTitle}>
             <span className={serviceFeeName}>Service fee</span>
             <QuestionIcon />
           </div>
           <span className={serviceFeeNumber}>0.0370 BNB</span>
-        </div>
+        </div> */}
       </div>
-      <div className={fieldWrapper}>
+      {/* <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
           Category
         </label>
@@ -344,10 +270,10 @@ const AuctionForm = () => {
         </select>
         {formState.errors.Category && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Category.message} */}
+            {formState.errors.Category.message}
           </p>
         )}
-      </div>
+      </div> */}
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
           Collection
@@ -360,12 +286,19 @@ const AuctionForm = () => {
           }
         >
           <option value="">Select</option>
-          <option value="Collection1">Collection1</option>
-          <option value="Collection2">Collection2</option>
+          {collections.map((collection) => {
+            return (
+              <option value={collection.id} key={collection.id}>
+                {`${collection.name}  (${formatAddress(
+                  collection.collection
+                )})`}
+              </option>
+            );
+          })}
         </select>
         {formState.errors.Collection && (
           <p className={`text-red-500 ${errMessage}`}>
-            {/* {formState.errors.Collection.message} */}
+            {formState.errors.Collection.message}
           </p>
         )}
       </div>
@@ -445,21 +378,11 @@ const AuctionForm = () => {
             )}
             <Button
               title={"Save"}
-              variant="v2"
+              variant="v1"
               onClick={addNewPropertyFunc}
               className="py-4 mt-2"
             />
           </div>
-        </CustomModal>
-      )}
-      {Modal && (
-        <CustomModal
-          onClose={() => {
-            setModal(false);
-          }}
-          title={ModalTitle}
-        >
-          {ModalContent}
         </CustomModal>
       )}
     </div>
@@ -468,16 +391,6 @@ const AuctionForm = () => {
 
 export default AuctionForm;
 
-// styling
-const modalBodyWrapper2 = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
-`);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
 const formContainer = ctl(`
  flex flex-col gap-4
 `);

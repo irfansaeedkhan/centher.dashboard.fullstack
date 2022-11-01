@@ -21,7 +21,7 @@ import { useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
-import { formatAddress } from "@/utils/format.address";
+import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,7 +55,7 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const _metadata = await axios.get(ipfs);
+        const _metadata = await axios.get(formatIPFSUrl(ipfs));
         console.log("sniper: metadata: ", metadata);
         setMetadata(_metadata.data);
         // setName(metadata.data.name)
@@ -109,7 +109,7 @@ const Collection: NextPageWithLayout = () => {
           <div
             className={coverImageContainer}
             style={{
-              backgroundImage: `url(${metadata?.coverIPFSHash})`,
+              backgroundImage: `url(${formatIPFSUrl(metadata?.coverIPFSHash)})`,
             }}
           >
             <div className={shareBtn}>
@@ -139,7 +139,7 @@ const Collection: NextPageWithLayout = () => {
 
             <div className={profileImage}>
               <Image
-                src={metadata?.profileIPFSHash}
+                src={formatIPFSUrl(formatIPFSUrl(metadata?.profileIPFSHash))}
                 alt={"profile image"}
                 width={112}
                 height={112}
@@ -161,14 +161,14 @@ const Collection: NextPageWithLayout = () => {
                   <h4 className={detailsCardTitle}>Items</h4>
                   <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
                 </div>
-                <div className="text-center">
+                {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Owner</h4>
                   <h5 className={detailsCardValue}>2.1k</h5>
                 </div>
                 <div className="text-center">
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>$108.56</h5>
-                </div>
+                </div> */}
                 {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Market Price</h4>
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>

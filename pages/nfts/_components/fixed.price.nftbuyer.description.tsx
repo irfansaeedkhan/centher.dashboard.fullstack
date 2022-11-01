@@ -12,6 +12,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { FEE } from "@/web3/constants/common";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
+import toast from "react-hot-toast";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -29,6 +30,10 @@ export const FixedPriceNFTBuyerDescription = ({
   const [ModalContent, setModalContent] = useState<any>();
 
   const buyNFTStep1Func = () => {
+    if (!library) {
+      toast.error("Confirm your Wallet Connection.");
+      return;
+    }
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -74,7 +79,7 @@ export const FixedPriceNFTBuyerDescription = ({
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto" />
+        <LoaderIcon className="mx-auto animate-spin" />
         <h3 className="text-white text-18px font-semibold leading-6">
           Transaction in progress
         </h3>

@@ -47,7 +47,11 @@ export const registerWithSmartContract = async (
       };
     }
 
-    const gasPrice = await library.getGasPrice();
+    let gasPrice = await library.getGasPrice();
+
+    if (gasPrice.lt(ethers.utils.parseUnits("10", "gwei"))) {
+      gasPrice = ethers.utils.parseUnits("10", "gwei");
+    }
 
     let tx: TransactionResponse;
 
