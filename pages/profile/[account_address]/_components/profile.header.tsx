@@ -61,7 +61,6 @@ const ProfileHeader: React.FC = () => {
   const coverImageInputRef = useRef<HTMLInputElement>(null);
 
   const [_, copy] = useCopyToClipboard();
-  const [description, setDescription] = useState<string | undefined>("");
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
@@ -101,12 +100,6 @@ const ProfileHeader: React.FC = () => {
   useEffect(() => {
     setInitialCoverImage();
   }, [setInitialCoverImage]);
-
-  useEffect(() => {
-    if (user?.profile_bio) {
-      setDescription(user.profile_bio);
-    }
-  }, [user?.profile_bio]);
 
   // Handle cover image change
   const handleSelectCoverImage = (
@@ -427,7 +420,7 @@ const ProfileHeader: React.FC = () => {
               )}
             </div>
             <div className={textContent}>
-              <p className={profileDescription}>{description}</p>
+              <p className={profileDescription}>{user.profile_bio}</p>
             </div>
             <UserProfileTabs
               loggedInUser={loggedInUser.account_address}
@@ -488,5 +481,5 @@ mt-6
 `);
 
 const profileDescription = ctl(`
-text-16px font-normal leading-6 text-gray-shade-16
+text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap
 `);
