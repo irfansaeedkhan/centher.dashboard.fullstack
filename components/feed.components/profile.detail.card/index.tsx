@@ -66,14 +66,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             {profileCardDetails.followers_count ?? "--"}
           </h5>
         </div>
-        {isLoggedInUser && (
-          <div>
-            <h4 className={detailnumTitle}>Following</h4>
-            <h5 className={detailNumValue}>
-              {profileCardDetails.following_count ?? "--"}
-            </h5>
-          </div>
-        )}
+        <div>
+          <h4 className={detailnumTitle}>Following</h4>
+          <h5 className={detailNumValue}>
+            {profileCardDetails.following_count ?? "--"}
+          </h5>
+        </div>
       </div>
       {isLoggedInUser && (
         <>

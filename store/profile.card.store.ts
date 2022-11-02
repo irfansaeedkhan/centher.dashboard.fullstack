@@ -6,7 +6,7 @@ interface ProfileCard {
   account_address: string;
   posts_count: number;
   followers_count: number;
-  following_count: number | null;
+  following_count: number;
   posts_views_count: number | null;
   profile_views_count: number | null;
 }
@@ -25,7 +25,7 @@ export const initialProfileCard: ProfileCard = {
   account_address: "",
   followers_count: 0,
   posts_count: 0,
-  following_count: null,
+  following_count: 0,
   posts_views_count: null,
   profile_views_count: null,
 };

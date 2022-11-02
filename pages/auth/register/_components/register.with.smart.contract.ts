@@ -39,11 +39,14 @@ export const registerWithSmartContract = async (
       };
     }
 
-    // Check if the referral address is valid
-    isAccountAddressValid(
-      signupData.referred_by,
-      `Referral address is not valid!`
-    );
+    // Only check the validity of referral address if the user has enetered one
+    if (signupData.referred_by.trim() !== "") {
+      // Check if the referral address is valid
+      isAccountAddressValid(
+        signupData.referred_by,
+        `Referral address is not valid!`
+      );
+    }
 
     // Get balance of the user's account
     const bnbBalance = await library.getBalance(address);
@@ -127,15 +130,14 @@ export const getRegistrationFee = async (
   const signer = library.getSigner();
   const registrationContract = getRegistrationContract(signer);
 
-  // Check if referred_by address is valid
-  isAccountAddressValid(
-    signupData.referred_by,
-    `Referral address is not valid!`
-  );
-
   let registrationFee: BigNumber;
 
-  if (signupData.referred_by !== "") {
+  if (signupData.referred_by.trim() !== "") {
+    // Check if referred_by address is valid
+    isAccountAddressValid(
+      signupData.referred_by,
+      `Referral address is not valid!`
+    );
     registrationFee =
       (await registrationContract.registrationFeeWithReferrer()) as BigNumber;
   } else {
