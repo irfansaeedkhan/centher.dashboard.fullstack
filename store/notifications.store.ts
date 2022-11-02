@@ -4,6 +4,7 @@ import { devtools } from "zustand/middleware";
 
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
+import { LoadingState } from "@/models/common";
 
 export interface NotificationsStore {
   notifications: Notification[];
@@ -13,19 +14,26 @@ export interface NotificationsStore {
   updateOffset: () => void;
   limit: number;
   markAsRead: (id: string) => Promise<void>;
+  loading: LoadingState;
 }
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
     (set, get) => ({
-      notifications: [],
+      loading: "idle",
+
       limit: 10,
+
       offset: 0,
+
       updateOffset: () =>
         set((state) => ({ offset: state.notifications.length })),
 
+      notifications: [],
+
       fetchNotifications: async () => {
         try {
+          set({ loading: "loading" });
           const offset = get().offset;
           const limit = get().limit;
 
@@ -47,9 +55,11 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 ...filteredNotifications,
                 ...data.notifications,
               ] as Notification[],
+              loading: "loaded",
             };
           });
         } catch (error) {
+          set({ loading: "failed" });
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }
@@ -74,6 +84,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             return {
               notifications: [...data.notifications, ...filteredNotifications],
+              loading: "loaded",
             };
           });
         } catch (error) {

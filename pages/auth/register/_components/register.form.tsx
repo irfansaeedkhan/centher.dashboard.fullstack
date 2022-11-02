@@ -50,8 +50,9 @@ export const RegisterForm: React.FC = () => {
   useEffect(() => {
     setSignupState((prev) => ({
       ...prev,
-      account_address: account ?? "",
-      referred_by: router.query.referred_by?.toString() ?? "",
+      account_address: account ?? prev.account_address ?? "",
+      referred_by:
+        router.query.referred_by?.toString() ?? prev.referred_by ?? "",
     }));
   }, [account, router.query.referred_by]);
 
@@ -65,24 +66,23 @@ export const RegisterForm: React.FC = () => {
     }
 
     setFeeModal((prev) => ({ ...prev, status: "progress" }));
+    try {
+      const res = await registerWithSmartContract(
+        library,
+        signupState,
+        feeModal.fee
+      );
 
-    const res = await registerWithSmartContract(
-      library,
-      signupState,
-      feeModal.fee
-    );
+      toast.success(res.message_description);
+      setFeeModal((prev) => ({ ...prev, status: "end", isOpen: false }));
 
-    if (res.status === "error") {
+      // Redirect to login page
+      router.push(AppRoutes.auth.login);
+    } catch (err: any) {
+      process.env.NEXT_PUBLIC_APP_ENV === "development" && console.log(err);
       setFeeModal((prev) => ({ ...prev, status: "start" }));
-      toast.error(res.message_description || "Something went wrong");
-      return;
+      toast.error(err.message_description || "Something went wrong");
     }
-
-    toast.success(res.message_description);
-    setFeeModal((prev) => ({ ...prev, status: "end", isOpen: false }));
-
-    // Redirect to login page
-    router.push(AppRoutes.auth.login);
   };
 
   // Open fee modal and get registration fee from smart contract
@@ -122,17 +122,6 @@ export const RegisterForm: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            <div className="hidden">
-              <InputField
-                id="account_address"
-                label="Wallet Address"
-                placeholder="Enter your account address"
-                type="text"
-                readOnly
-                defaultValue={signupState.account_address}
-              />
-            </div>
           </>
         ) : (
           <button
@@ -160,8 +149,13 @@ export const RegisterForm: React.FC = () => {
           }
           placeholder="Enter referrer account address"
           type="text"
-          readOnly
-          defaultValue={signupState.referred_by}
+          value={signupState.referred_by}
+          onChange={(e) => {
+            setSignupState((prev) => ({
+              ...prev,
+              referred_by: e.target.value,
+            }));
+          }}
         />
 
         <div className="flex gap-2">

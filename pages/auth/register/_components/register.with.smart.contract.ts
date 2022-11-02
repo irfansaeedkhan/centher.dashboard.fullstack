@@ -10,10 +10,10 @@ export const registerWithSmartContract = async (
   signupData: SignupState,
   fee: string
 ): Promise<{
-  status: "success" | "error";
+  status: "success";
   message: string;
   message_description: string;
-  data: TransactionResponse | null;
+  data: TransactionResponse;
 }> => {
   try {
     // Get the signer and account address from the library
@@ -23,13 +23,27 @@ export const registerWithSmartContract = async (
 
     // Check if the connected account address is the same as the user's registered account address
     if (address.toLowerCase() !== signupData.account_address.toLowerCase()) {
-      return {
-        status: "error",
+      throw {
+        status: "app_error",
         message: "account_address_mismatch",
         message_description: `Please connect your wallet to the correct account!`,
-        data: null,
       };
     }
+
+    // Check connected account address is same as referred_by address
+    if (address.toLowerCase() === signupData.referred_by.toLowerCase()) {
+      throw {
+        status: "app_error",
+        message: "own_referral_address",
+        message_description: `You can not use your own address as referral address!`,
+      };
+    }
+
+    // Check if the referral address is valid
+    isAccountAddressValid(
+      signupData.referred_by,
+      `Referral address is not valid!`
+    );
 
     // Get balance of the user's account
     const bnbBalance = await library.getBalance(address);
@@ -39,11 +53,10 @@ export const registerWithSmartContract = async (
 
     // If the user's balance is less than the registration fee, return error
     if (bnbBalance.lt(registrationFee)) {
-      return {
-        status: "error",
+      throw {
+        status: "app_error",
         message: "insufficient_funds",
         message_description: `You don't have enough balance to pay the registration fee`,
-        data: null,
       };
     }
 
@@ -80,27 +93,29 @@ export const registerWithSmartContract = async (
     };
   } catch (error: any) {
     if (error.code === "ACTION_REJECTED") {
-      return {
-        status: "error",
+      throw {
+        status: "app_error",
         message: "user_denial",
         message_description: "Transaction rejected",
-        data: null,
       };
     }
     if (error.reason?.toLowerCase()?.includes("user_already_registered")) {
-      return {
-        status: "error",
+      throw {
+        status: "app_error",
         message: "user_already_registered",
         message_description: "You have already paid the registration fee",
-        data: null,
       };
     }
-    return {
-      status: "error",
+
+    if (error.status === "app_error") {
+      throw error;
+    }
+
+    throw {
+      status: "app_error",
       message: "trx_error",
       message_description:
         "Something went wrong while paying the registration fee",
-      data: null,
     };
   }
 };
@@ -113,17 +128,10 @@ export const getRegistrationFee = async (
   const registrationContract = getRegistrationContract(signer);
 
   // Check if referred_by address is valid
-  if (
-    signupData.referred_by !== "" &&
-    !ethers.utils.isAddress(signupData.referred_by)
-  ) {
-    throw {
-      status: "error",
-      message: "invalid_referred_by_address",
-      message_description: `Please enter a valid referral address!`,
-      data: null,
-    };
-  }
+  isAccountAddressValid(
+    signupData.referred_by,
+    `Referral address is not valid!`
+  );
 
   let registrationFee: BigNumber;
 
@@ -136,4 +144,21 @@ export const getRegistrationFee = async (
   }
 
   return ethers.utils.formatEther(registrationFee);
+};
+
+const isAccountAddressValid = (address: string, errorMessage?: string) => {
+  const error = {
+    status: "app_error",
+    message: "invalid_account_address",
+    message_description: errorMessage || "Account address is not valid!",
+  };
+
+  if (
+    !ethers.utils.isAddress(address) ||
+    address.toLowerCase() === "0x0000000000000000000000000000000000000000"
+  ) {
+    throw error;
+  }
+
+  return true;
 };

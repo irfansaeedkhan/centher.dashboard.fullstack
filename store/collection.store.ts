@@ -111,7 +111,6 @@ export const useCollectionStore = create<CollectionStore>()(
             });
             result = result1;
           } else {
-            console.log("sniper: saleState: ", saleState);
             const {
               data: result2,
               error,
@@ -131,15 +130,10 @@ export const useCollectionStore = create<CollectionStore>()(
           }
 
           if (result) {
-            console.log("sniper: nfts: ", result);
             _nfts = result.nfts.map((item: any) => {
-              let _price = 0,
-                _endTime = 0;
+              let _endTime = 0;
               if (item.saleState === "Auction") {
-                _price = item.auctionInfo.highestBidPrice;
                 _endTime = item.auctionInfo.endTime;
-              } else {
-                _price = item.listInfo.price;
               }
               return {
                 id: item.id,
@@ -149,7 +143,7 @@ export const useCollectionStore = create<CollectionStore>()(
                 createTime: item.createTime,
                 ipfs: item.ipfs,
                 saleState: item.saleState,
-                price: _price,
+                price: item.price,
                 endTime: _endTime,
               };
             });

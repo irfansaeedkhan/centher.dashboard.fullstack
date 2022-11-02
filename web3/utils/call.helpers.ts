@@ -118,7 +118,6 @@ export const callApproveNFTToMarketplace = async (
     const operator = getMarketplaceAddress();
     const tx = await nftContract.functions.setApprovalForAll(operator, true);
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -150,8 +149,6 @@ export const callCreateCollection = async (
       { value: ethers.utils.parseEther(fee.toString()) }
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
-    console.log("sniper: maxsupply: ", maxsupply);
     return {
       success: true,
       hash: tx.hash,
@@ -175,19 +172,8 @@ export const callCreateNFT = async (
   period: number,
   fee: number
 ) => {
-  console.log("sniper: library: ", library);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log(
-      "sniper: fee: ",
-      fee,
-      price,
-      collection,
-      tokenUri,
-      supply,
-      isAuction,
-      period
-    );
     const tx = await marketplaceContract.functions.createItems(
       collection,
       tokenUri,
@@ -198,7 +184,6 @@ export const callCreateNFT = async (
       { value: ethers.utils.parseEther(fee.toFixed(10)) }
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -217,7 +202,6 @@ export const callCancelItemForSale = async (
   collection: string,
   tokenId: number
 ) => {
-  console.log("sniper: library: ", library);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.cancelItemForSale(
@@ -246,18 +230,12 @@ export const callEditItemForSale = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log(
-      "sniper: data: ",
-      ethers.utils.parseEther(newPrice.toString()).toString()
-    );
-    console.log("sniper: collection: ", collection, tokenId);
     const tx = await marketplaceContract.functions.editItemForSale(
       collection,
       tokenId,
       ethers.utils.parseEther(newPrice.toString())
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -282,10 +260,9 @@ export const callListItemForSale = async (
     const tx = await marketplaceContract.functions.listItemForSale(
       collection,
       tokenId,
-      newPrice
+      ethers.utils.parseEther(newPrice.toString())
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -305,7 +282,6 @@ export const callBuyListedItem = async (
   tokenId: number,
   price: number
 ) => {
-  console.log("sniper: price: ", price);
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.buyForListedItem(
@@ -314,7 +290,6 @@ export const callBuyListedItem = async (
       { value: price }
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -337,7 +312,6 @@ export const callCreateAuction = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: auction: ", collection, tokenId, startPrice, period);
     const tx = await marketplaceContract.functions.createAuction(
       collection,
       tokenId,
@@ -345,7 +319,6 @@ export const callCreateAuction = async (
       period
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -367,14 +340,12 @@ export const callBidOnAuction = async (
 ) => {
   try {
     const marketplaceContract = getMarketplaceContract(library.getSigner());
-    console.log("sniper: call bid on auction: ", collection, tokenId, price);
     const tx = await marketplaceContract.functions.bidOnAuction(
       collection,
       tokenId,
       { value: ethers.utils.parseEther(price.toString()) }
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -400,7 +371,6 @@ export const callEndAuction = async (
       tokenId
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,
@@ -426,7 +396,6 @@ export const callCancelAuction = async (
       tokenId
     );
     await tx.wait();
-    console.log("sniper: tx: ", tx);
     return {
       success: true,
       hash: tx.hash,

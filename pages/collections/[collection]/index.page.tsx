@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
+import { ethers } from "ethers";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -56,7 +57,6 @@ const Collection: NextPageWithLayout = () => {
     const fetchMetadata = async (ipfs: string) => {
       try {
         const _metadata = await axios.get(formatIPFSUrl(ipfs));
-        console.log("sniper: metadata: ", metadata);
         setMetadata(_metadata.data);
         // setName(metadata.data.name)
         // setDescription(metadata.data.description)
@@ -139,7 +139,7 @@ const Collection: NextPageWithLayout = () => {
 
             <div className={profileImage}>
               <Image
-                src={formatIPFSUrl(formatIPFSUrl(metadata?.profileIPFSHash))}
+                src={formatIPFSUrl(metadata?.profileIPFSHash)}
                 alt={"profile image"}
                 width={112}
                 height={112}
@@ -175,7 +175,12 @@ const Collection: NextPageWithLayout = () => {
                 </div> */}
                 <div className="text-center">
                   <h4 className={detailsCardTitle}>Total Volum</h4>
-                  <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
+                  <h5 className={detailsCardValue}>
+                    $
+                    {info?.tradingVolumn
+                      ? ethers.utils.formatEther(info?.tradingVolumn)
+                      : 0}
+                  </h5>
                 </div>
               </div>
             </div>
