@@ -350,8 +350,8 @@ input:-webkit-autofill {
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     text-fill-color: transparent;
+    background-clip: text;
     width: fit-content;
   }
   input[type="checkbox"] {
@@ -518,63 +518,6 @@ input:-webkit-autofill {
 
 .filll {
   border: 2px solid linear-gradient(#a9cdff, #72f6d1, #a0ed8d, #fed365, #faa49e) !important;
-}
-
-/* copy button styling */
-.copyBtn svg path {
-  transition: all 0.2s linear;
-  -webkit-transition: all 0.2s linear;
-  -moz-transition: all 0.2s linear;
-  -ms-transition: all 0.2s linear;
-  -o-transition: all 0.2s linear;
-}
-.copyBtn svg:hover path {
-  stroke: #f0a503;
-}
-.copyBtn:before {
-  content: "";
-  display: none;
-  position: absolute;
-  z-index: 9998;
-  top: 35px;
-  left: 15px;
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid rgba(0, 0, 0, 0.72);
-}
-.copyBtn:after {
-  content: "Copy to Clipboard";
-  display: none;
-  position: absolute;
-  z-index: 9999;
-  top: -32px;
-  right: -24px;
-  width: 114px;
-  height: 33px;
-  color: #febf32;
-  font-size: 10px;
-  line-height: 33px;
-  text-align: center;
-  background: #17171a;
-  border-radius: 11px;
-  -webkit-border-radius: 11px;
-  -moz-border-radius: 11px;
-  -ms-border-radius: 11px;
-  -o-border-radius: 11px;
-}
-.copyBtn:hover:before,
-.copyBtn:hover:after {
-  display: block;
-}
-.copyBtn:active,
-.copyBtn:focus {
-  outline: none;
-}
-.copyBtn:active:after,
-.copyBtn:focus:after {
-  content: "Copied!";
 }
 
 .customloaderModal {

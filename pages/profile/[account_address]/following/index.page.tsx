@@ -73,8 +73,8 @@ const Following: NextPageWithLayout = () => {
 
       {followingLoading === "loaded" && following.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[48px]">
-            <p className="text-white">Not following anyone yet!</p>
+          <div className="flex justify-center font-semibold text-white mt-[48px]">
+            <p>Not following anyone yet!</p>
           </div>
         </div>
       )}

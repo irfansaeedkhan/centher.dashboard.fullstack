@@ -5,6 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
+import AudioPlayer from "./audio.player";
 
 const AudioNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
@@ -19,11 +20,9 @@ const AudioNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
     <div className={previewContainer}>
       {showSecPreview ? (
         <div>
-          <audio
-            className={audioStyling}
-            controls
-            src={asset ? URL.createObjectURL(asset) : ""}
-          ></audio>
+          {asset && (
+            <AudioPlayer src={URL.createObjectURL(asset)} srcObject={asset} />
+          )}
           <button
             className={imageDelBtn}
             onClick={() => {
@@ -58,7 +57,7 @@ export default AudioNFTUpload;
 
 // styling
 const previewContainer = ctl(`
-pb-[100%] bg-black-shade-9 rounded-2xl relative w-full border   border-gray-shade-3
+py-8 px-20 h-[533px] bg-black-shade-9 rounded-2xl relative w-full border flex justify-center items-center border-gray-shade-3
 `);
 const audioStyling = ctl(`
 w-[90%] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-2xl object-contain

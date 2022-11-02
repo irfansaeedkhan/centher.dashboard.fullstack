@@ -1,28 +1,51 @@
-// React, Next, NPM Packages
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
-import { Bars } from "react-loader-spinner";
 
-// app imports
 import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { User } from "@/models/user";
+import { AppRoutes } from "@/constants/app.routes";
 
-// same directory imports
+import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
 import { DiscoverCard } from "./discover.card";
-import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 
 export const LeftSidebarStickyContainer = () => {
-  const { user: loggedInUser, isLoading: isLoggedInUserLoading } = useUser();
+  const router = useRouter();
+  const { user: loggedInUser } = useUser();
+  const { user } = useGetUser(router.query.account_address?.toString());
+  const [profileCardUser, setProfileCardUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    if (loggedInUser && router.pathname === "/feed") {
+      setProfileCardUser(loggedInUser);
+    } else if (
+      user &&
+      router.pathname === AppRoutes.feed.single_post &&
+      user.account_address ===
+        router.query.account_address?.toString().toLowerCase()
+    ) {
+      setProfileCardUser(user);
+    } else {
+      setProfileCardUser(null);
+    }
+
+    return () => {
+      setProfileCardUser(null);
+    };
+  }, [router, user, loggedInUser]);
 
   return (
     <div className={leftSidebarStickyContainer}>
       <h1 className={title}>My Feed</h1>
       <div className={leftSidebar}>
-        {!isLoggedInUserLoading && loggedInUser ? (
-          <ProfileDetailCard user={loggedInUser} isLoggedInUser={true} />
+        {profileCardUser ? (
+          <ProfileDetailCard user={profileCardUser} />
         ) : (
           <ProfileDetailCardSkeleton />
         )}
+
         {/* <DiscoverCard /> */}
       </div>
     </div>

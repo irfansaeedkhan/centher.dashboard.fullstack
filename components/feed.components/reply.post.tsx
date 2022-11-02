@@ -10,7 +10,7 @@ import { toast } from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Bars, Rings } from "react-loader-spinner";
+import { Rings } from "react-loader-spinner";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 // App imports
@@ -233,32 +233,6 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       }
     };
 
-    const sharePost = async () => {
-      try {
-        const { data } = await axiosNodeApi.post(
-          "api/socials/analytics/shares",
-          {
-            post_id: post._id,
-          }
-        );
-
-        // Update share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: data.shares_count,
-        }));
-      } catch (error: any) {
-        // Reset share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: post.shares_count,
-        }));
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
     // toggle function to show/hide edit/delete popup
     const togglePopFunc = async () => {
       setTogglePop((prev) => !prev);
@@ -523,7 +497,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   className={footerdetailBtn}
                   onClick={toggleSharePopFunc}
                 >
-                  <ShareIcon /> {_post.shares_count}
+                  <ShareIcon />
                 </button>
 
                 <div
@@ -558,7 +532,6 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   </button>
                   <div className={SharetoggleListBtn}>
                     <WhatsappShareButton
-                      onClick={sharePost}
                       url={shareUrl}
                       className="flex items-center gap-3 w-full h-full !px-5"
                     >
@@ -573,7 +546,6 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   </div>
                   <div className={SharetoggleListBtn}>
                     <TwitterShareButton
-                      onClick={sharePost}
                       url={shareUrl}
                       className="flex items-center  gap-3 w-full h-full !px-5"
                     >
