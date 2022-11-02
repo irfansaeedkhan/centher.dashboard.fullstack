@@ -29,12 +29,14 @@ const ScriptTags = () => {
         <meta property="og:description" content="Nether-NFT Platform" />
         <meta property="og:url" content="https://app.nethernft.io/" />
         <meta property="og:site_name" content="Nether-NFT  Platform" />
+        {/* We need to remove /images/nether.nft.logo.svg it is really big */}
         <meta property="og:image" content="/images/nether.nft.logo.svg" />
         <meta property="og:image:width" content="420" />
         <meta property="og:image:height" content="420" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:description" content="Uroboro Platform" />
         <meta name="twitter:title" content="Nether-NFT Platform" />
+        {/* We need to remove /images/nether.nft.logo.svg it is really big */}
         <meta name="twitter:image" content="/images/nether.nft.logo.svg" />
         <meta name="google-site-verification" content="Will-Provide-later" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />

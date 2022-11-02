@@ -89,7 +89,6 @@ export const useGetNftData = (
         },
         fetchPolicy: "cache-first",
       });
-      console.log("sniper: data: ", nftResult.nfts[0]);
       const _priceHistories = listResult.marketplaceSaleHistories.filter(
         (item: any) => {
           return (

@@ -19,9 +19,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        console.log("sniper: formatIPFSUrl(ipfs): ", ipfs);
         const metadata = await axios.get(formatIPFSUrl(ipfs));
-        console.log("sniper: metadata: ", metadata);
         setCoverImage(formatIPFSUrl(metadata.data.coverIPFSHash));
         setProfileImage(formatIPFSUrl(metadata.data.profileIPFSHash));
         setDescription(metadata.data.description);

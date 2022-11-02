@@ -179,29 +179,21 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           let profileFileBuffer = Buffer.from(
             profileReader.result as ArrayBuffer
           );
-          console.log("sniper: profileFileBuffer: ", profileFileBuffer);
 
           const profileAdded = await (ipfs as IPFSHTTPClient).add(
             profileFileBuffer
           );
-          console.log("sniper: profileAdded: ", profileAdded);
           const profileHash = profileAdded.path;
-          // const profileIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-          // console.log("sniper: profileIPFSHash: ", profileIPFSHash);
 
           const coverReader = new window.FileReader();
           coverReader.onloadend = async () => {
             try {
               let fileBuffer = Buffer.from(coverReader.result as ArrayBuffer);
-              console.log("sniper: fileBuffer: ", fileBuffer);
 
               const coverfileAdded = await (ipfs as IPFSHTTPClient).add(
                 fileBuffer
               );
-              console.log("sniper: coverfileAdded: ", coverfileAdded);
               const coverHash = coverfileAdded.path;
-              // const coverIPFSHash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash;
-              // console.log("sniper: coverIPFSHash: ", coverIPFSHash);
 
               const cd = collectionData as ICollectionData;
               const metadata = {
@@ -219,10 +211,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               };
               const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
               const jsonHash = jsonFileAdded.path;
-              // const jsonIPFShash = NEXT_PUBLIC_IPFS_URL + "/ipfs/" + jsonHash;
-              // console.log("sniper: jsonIPFShash: ", jsonIPFShash);
 
-              console.log("sniper: metadata: ", metadata);
               const result = await callCreateCollection(
                 library,
                 cd.name,

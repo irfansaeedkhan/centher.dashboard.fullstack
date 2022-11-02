@@ -5,7 +5,7 @@ import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
-import { PlusIconBtn } from "@/assets/svgs";
+import { LogoText, PlusIconBtn } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 export interface AdminHeaderProps {
@@ -18,13 +18,20 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
     <div>
       <div className={headerWraper}>
         <div className={routerLink}>
-          <Link href={AppRoutes.home}>
+          <Link
+            href={AppRoutes.home}
+            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+          >
             <Image
-              src="/images/MainLogo.svg"
-              alt="logo"
+              src="/images/nether.nft.favicon.svg"
+              alt="Nether NFT Logo"
               width={166}
               height={38}
+              className="!w-[22px] !h-[38px]"
             />
+            <span className="md:flex sm:hidden">
+              <LogoText />
+            </span>
           </Link>
         </div>
         <div className={headerTitleWrapper}>

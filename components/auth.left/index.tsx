@@ -54,14 +54,6 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "mobile") {
     return (
       <section className={section_right_mobile_content_wrapper}>
-        {/* <div className={sectionLeftInner}>
-          <Image
-            src="/images/nether.nft.logo.svg"
-            alt="logo"
-            width={166}
-            height={40}
-          />
-        </div> */}
         <div className={section_right_mobile_text_wrapper}>
           <h1 className={titleMobile}>{props.title}</h1>
           <p className={contentMobile}>{props.content}</p>

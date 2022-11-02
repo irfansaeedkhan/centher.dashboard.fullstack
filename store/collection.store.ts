@@ -111,7 +111,6 @@ export const useCollectionStore = create<CollectionStore>()(
             });
             result = result1;
           } else {
-            console.log("sniper: saleState: ", saleState);
             const {
               data: result2,
               error,
@@ -131,7 +130,6 @@ export const useCollectionStore = create<CollectionStore>()(
           }
 
           if (result) {
-            console.log("sniper: nfts: ", result);
             _nfts = result.nfts.map((item: any) => {
               let _endTime = 0;
               if (item.saleState === "Auction") {

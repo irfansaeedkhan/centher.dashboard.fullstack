@@ -350,8 +350,8 @@ input:-webkit-autofill {
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
     text-fill-color: transparent;
+    background-clip: text;
     width: fit-content;
   }
   input[type="checkbox"] {

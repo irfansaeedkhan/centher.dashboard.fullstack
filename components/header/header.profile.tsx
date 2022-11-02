@@ -62,8 +62,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       </div>
       <div ref={ref} className={wrapper}>
         <Image
-          src={"/images/dummy-cover-img.jpg"}
-          alt="dummy-cover-img.jpg"
+          src={"/images/profile-header-cover.jpg"}
+          alt="cover"
           width={308}
           height={96}
           className={polygonImage}
