@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 // App imports
 import {

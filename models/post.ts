@@ -10,7 +10,6 @@ export interface BasePost {
   viewed_by_loggedin_user: boolean;
   liked_by_loggedin_user: boolean;
   replies_count: number;
-  shares_count: number;
   likes_count: number;
   createdAt: string;
 }
