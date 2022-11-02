@@ -1,7 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
-interface ProfileCard {
+export interface ProfileCard {
   _id: string;
   account_address: string;
   posts_count: number;
