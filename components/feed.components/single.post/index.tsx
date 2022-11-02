@@ -175,33 +175,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       }
     };
 
-    const sharePost = async () => {
-      try {
-        const { data } = await axiosNodeApi.post(
-          "api/socials/analytics/shares",
-          {
-            post_id: _post._id,
-          }
-        );
-
-        // Update share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: data.shares_count,
-        }));
-      } catch (error: any) {
-        // Reset share count
-        setPost((prev) => ({
-          ...prev,
-          shares_count: post.shares_count,
-        }));
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-
     const deletePost = async () => {
       try {
         await axiosNodeApi.delete(`/api/socials/posts/${_post._id}`);
@@ -527,12 +500,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   _post.liked_by_loggedin_user ? "text-brand-primary" : ""
                 }`}
               >
-                {_post.likes_count > 0 && _post.likes_count}
+                {_post.likes_count}
               </span>
             </button>
             <div ref={ref2} className={`relative`}>
               <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
-                <ShareIcon /> {_post.shares_count}
+                <ShareIcon />
               </button>
 
               <div
@@ -570,7 +543,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 </button>
                 <div className={SharetoggleListBtn2}>
                   <WhatsappShareButton
-                    onClick={sharePost}
                     url={shareUrl}
                     className="flex items-center gap-3 w-full h-full !px-5 !py-4"
                   >
@@ -585,7 +557,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 </div>
                 <div className={SharetoggleListBtn2}>
                   <TwitterShareButton
-                    onClick={sharePost}
                     url={shareUrl}
                     className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
                   >
