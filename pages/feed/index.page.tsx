@@ -112,7 +112,7 @@ const Feed: NextPageWithLayout = () => {
             <p className="text-white">No posts available</p>
           </div>
           <div className="flex justify-center mt-3">
-            <p className="text-[#888DAA]">
+            <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>
           </div>

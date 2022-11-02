@@ -89,11 +89,11 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   useEffect(() => {}, [displaySelectedFiles]);
 
-  const [fileList, setFileList] = useState<File[]>([]);
+  // const [fileList, setFileList] = useState<File[]>([]);
 
-  useEffect(() => {
-    console.log("fileList", fileList);
-  }, [fileList]);
+  // useEffect(() => {
+  //   console.log("fileList", fileList);
+  // }, [fileList]);
 
   return user ? (
     <div className={postCardContainer}>

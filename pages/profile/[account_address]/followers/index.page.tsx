@@ -76,8 +76,8 @@ const Followers: NextPageWithLayout = () => {
 
       {followersLoading === "loaded" && followers.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[48px]">
-            <p className="text-white">No followers yet!</p>
+          <div className="flex justify-center font-semibold text-white mt-[48px]">
+            <p>No followers yet!</p>
           </div>
         </div>
       )}

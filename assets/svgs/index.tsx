@@ -26,6 +26,8 @@ export { default as MenuClose } from "./menu.close.svg";
 export { default as Music3DIcon } from "./music.3d.icon.svg";
 export { default as NoPost } from "./no.post.svg";
 export { default as NotificationBell } from "./notification.bell.svg";
+export { default as SearchUserIcon } from "./search.user.svg";
+export { default as RepliesIcon } from "./replies.icon.svg";
 
 export const Logout = () => {
   return (
