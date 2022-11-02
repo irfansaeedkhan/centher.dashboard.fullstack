@@ -5,13 +5,15 @@ import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
 
-export interface FeedStore {
+export interface MyPostStore {
   posts: CompletedPost[];
   fetchPosts: () => Promise<void>;
+  userId: string;
 
   addNewPost: (post: CompletedPost) => void;
   deletePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
+  resetPosts: (userId: string, loading?: LoadingState) => void;
 
   offset: number;
   updateOffset: () => void;
@@ -19,10 +21,11 @@ export interface FeedStore {
   loading: LoadingState;
 }
 
-export const useFeedStore = create<FeedStore>()(
+export const useMyPostStore = create<MyPostStore>()(
   devtools(
     (set, get) => ({
       loading: "idle",
+      userId: "",
 
       offset: 0,
 
@@ -34,13 +37,12 @@ export const useFeedStore = create<FeedStore>()(
         try {
           set({ loading: "loading" });
 
+          const userId = get().userId;
           const offset = get().offset;
-          const limit = 10;
+          const limit = 15;
 
-          const url = `/api/socials/posts?offset=${offset}&limit=${limit}`;
-
+          const url = `/api/socials/posts/user/${userId}?offset=${offset}&limit=${limit}`;
           const { data } = await axiosNodeApi.get(url);
-
           set((state) => {
             const filteredPosts = state.posts.filter(
               (statePost) =>
@@ -88,7 +90,15 @@ export const useFeedStore = create<FeedStore>()(
           }),
         }));
       },
+      resetPosts: (userId, loading = "idle") => {
+        set({
+          userId,
+          loading,
+          posts: [],
+          offset: 0,
+        });
+      },
     }),
-    { name: "FeedStore" }
+    { name: "MyPostStore" }
   )
 );
