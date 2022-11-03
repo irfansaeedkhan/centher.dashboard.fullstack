@@ -29,18 +29,13 @@ Login.getLayout = (page) => {
       />
       <AuthRight>
         <div className="w-fit md:hidden sm:flex mb-8">
-          <Link
-            href={AppRoutes.home}
-            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
-          >
+          <Link href={AppRoutes.home}>
             <Image
-              src="/images/nether.nft.favicon.svg"
+              src="/images/nether.nft.logo.svg"
               alt="Nether NFT Logo"
-              width={166}
-              height={38}
-              className="!w-[22px] !h-[38px]"
+              width={154}
+              height={32}
             />
-            <LogoText />
           </Link>
         </div>
         <AboutMember

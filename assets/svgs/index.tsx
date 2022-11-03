@@ -28,6 +28,8 @@ export { default as NoPost } from "./no.post.svg";
 export { default as NotificationBell } from "./notification.bell.svg";
 export { default as PauseIcon } from "./pause.svg";
 export { default as PlayIcon } from "./play.svg";
+export { default as SearchUserIcon } from "./search.user.svg";
+export { default as RepliesIcon } from "./replies.icon.svg";
 
 export const Logout = () => {
   return (
