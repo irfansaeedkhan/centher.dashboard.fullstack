@@ -21,7 +21,11 @@ export const useConnectWallet = () => {
   }, [error]);
 
   const connectWallet = useCallback(async () => {
-    await activate(injectedConnector);
+    if (typeof window.ethereum !== "undefined") {
+      await activate(injectedConnector);
+    } else {
+      toast.error("Please install MetaMask!");
+    }
   }, [activate]);
 
   const disconnectWallet = useCallback(() => {
