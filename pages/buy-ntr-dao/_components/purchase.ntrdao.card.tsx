@@ -4,6 +4,7 @@ import { BigNumber } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
+import Image from "next/image";
 
 // App imports
 import {
@@ -26,7 +27,7 @@ import {
 } from "@/web3/constants/types";
 import { DAY } from "@/web3/constants/common";
 
-import { BUSDIcon, NTRDAOIcon, LeftArrowIcon, LockedIcon } from "@/assets/svgs";
+import { BUSDIcon, LeftArrowIcon, LockedIcon } from "@/assets/svgs";
 
 // Current directory imports
 import { NTRDAOTable } from "./ntrdao.table";
@@ -304,7 +305,14 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
             <div className={ConversioninputContainer}>
               <div className={inputBox}>
                 <div className={coinBox}>
-                  <NTRDAOIcon /> <h5 className={coinName}>NTRDAO </h5>
+                  <Image
+                    src={"/images/buyntr.png"}
+                    alt="buyntr"
+                    width={40}
+                    height={40}
+                    className="!w-10 !h-10"
+                  />
+                  <h5 className={coinName}>NTRDAO </h5>
                 </div>
                 <div className={balanceBox}>
                   <div>
