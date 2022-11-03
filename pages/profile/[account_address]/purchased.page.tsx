@@ -10,23 +10,23 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 // Current page imports
 import { ProfilePageWrapper } from "./_components";
 
-const NFTProfile: NextPageWithLayout = () => {
+const NFTProfilePurchased: NextPageWithLayout = () => {
   return (
     <div className={nftProfilePageContainer}>
       <div className={tabContentContainer}>
-        <h1 className={tabContent}>NFT&apos;s (coming soon)</h1>
+        <h1 className={tabContent}>Purchased (coming soon)</h1>
       </div>
     </div>
   );
 };
 
-NFTProfile.getLayout = (page) => (
+NFTProfilePurchased.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
     <ProfilePageWrapper>{page}</ProfilePageWrapper>
   </AllPagesWrapper>
 );
 
-export default NFTProfile;
+export default NFTProfilePurchased;
 
 // styling
 const nftProfilePageContainer = ctl(`

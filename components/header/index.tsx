@@ -37,15 +37,11 @@ const Header = () => {
         className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
       >
         <Image
-          src="/images/nether.nft.favicon.svg"
+          src="/images/nether.nft.logo.svg"
           alt="Nether NFT Logo"
-          width={166}
-          height={38}
-          className="!w-[22px] !h-[38px]"
+          width={154}
+          height={32}
         />
-        <span className="md:flex sm:hidden">
-          <LogoText />
-        </span>
       </Link>
 
       <div className={rightWraper}>

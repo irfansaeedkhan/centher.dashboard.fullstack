@@ -17,29 +17,28 @@ interface SignupProps {
 export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
-      <section className={section_left}>
-        <div className={sectionLeftInner}>
-          <Link
-            href={AppRoutes.home}
-            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
-          >
+      <section
+        className={`w-1/2 py-11 px-12 gap-10 md:flex flex-col sm:hidden bg-background-shade-1 `}
+      >
+        <div className={`w-fit`}>
+          <Link href={AppRoutes.home}>
             <Image
-              src="/images/nether.nft.favicon.svg"
+              src="/images/nether.nft.logo.svg"
               alt="Nether NFT Logo"
-              width={166}
-              height={38}
-              className="!w-[22px] !h-[38px]"
+              width={154}
+              height={32}
             />
-            <LogoText />
           </Link>
         </div>
-        <div className={section_left_content_wrapper}>
-          <div className={sectionLeftInner}>
+        <div
+          className={`flex gap-16 xl:px-32 lg:px-20 md:px-10 flex-col items-center`}
+        >
+          <div className={`w-fit`}>
             <Image
               src="/images/nether.nft.favicon.svg"
               alt="logo"
-              width={146}
-              height={250}
+              width={310}
+              height={310}
             />
           </div>
           <div className={section_left_text_wrapper}>
@@ -65,14 +64,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
 };
 
 const section_left = ctl(`
-  w-1/2
-  py-11 
-  px-12 
-  gap-10 
-  md:flex 
-  flex-col 
-  sm:hidden 
-  bg-background-shade-1 
+ 
 `);
 
 const section_right_mobile_text_wrapper = ctl(`
@@ -89,14 +81,8 @@ const section_right_mobile_content_wrapper = ctl(`
   md:hidden 
 `);
 
-const section_left_content_wrapper = ctl(`
-  flex 
-  gap-16 
-  xl:px-32 
-  lg:px-20 
-  md:px-10
-  flex-col 
-  items-center 
+const section_left_content_wrapper =
+  ctl(`flex gap-16 xl:px-32 lg:px-20 md:px-10 flex-col items-center 
 `);
 
 const section_left_text_wrapper = ctl(`
@@ -131,4 +117,4 @@ const contentMobile = ctl(`
   text-gray-shade-4 
 `);
 
-const sectionLeftInner = ctl(`w-fit`);
+const sectionLeftInner = ctl(``);

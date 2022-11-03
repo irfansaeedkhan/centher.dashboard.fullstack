@@ -125,7 +125,8 @@ export const NFTRightSideComponent = ({
       )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
-      {/* <NFTHistory data={data?.priceHistory}/> */}
+      {/* <NFTHistory data={data?.priceHistory} /> */}
+      <NFTHistory />
     </div>
   );
 };

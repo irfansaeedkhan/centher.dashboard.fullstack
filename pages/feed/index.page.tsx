@@ -63,7 +63,7 @@ const Feed: NextPageWithLayout = () => {
     <div
       className={`w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]`}
     >
-      {loading === "loaded" && (
+      {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
         <PostCardNew
           onPostCreated={(post) => {
             addNewPost(post);
