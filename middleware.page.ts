@@ -57,6 +57,9 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.replies,
   AppRoutes.profile.followers,
   AppRoutes.profile.following,
+  AppRoutes.profile.collections,
+  AppRoutes.profile.purchased,
+  AppRoutes.profile.nfts,
   AppRoutes.profile.settings,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
@@ -76,8 +79,6 @@ const _comingSoonPages: string[] = [
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
   AppRoutes.referral_program,
-
-  AppRoutes.profile.nfts,
 
   AppRoutes.admin.index,
   AppRoutes.admin.staking_packs,

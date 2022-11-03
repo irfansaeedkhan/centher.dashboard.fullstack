@@ -15,6 +15,8 @@ export const AppRoutes = {
 
     // Coming soon pages
     nfts: "/profile/[account_address]/nfts",
+    purchased: "/profile/[account_address]/purchased",
+    collections: "/profile/[account_address]/collections",
   },
 
   feed: {
