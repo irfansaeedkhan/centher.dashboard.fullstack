@@ -1,3 +1,6 @@
+import Image from "next/image";
+import NTRDAOIconImg from "./ntr.dao.icon.png";
+
 export interface IconProps {
   className?: string;
 }
@@ -30,6 +33,19 @@ export { default as PauseIcon } from "./pause.svg";
 export { default as PlayIcon } from "./play.svg";
 export { default as SearchUserIcon } from "./search.user.svg";
 export { default as RepliesIcon } from "./replies.icon.svg";
+
+export const NTRDAOIcon: React.FC<IconProps> = (props) => {
+  return (
+    <Image
+      className={props.className}
+      src={NTRDAOIconImg}
+      alt="NTR Dao Icon"
+      sizes="256px"
+      width={40}
+      height={40}
+    />
+  );
+};
 
 export const Logout = () => {
   return (
