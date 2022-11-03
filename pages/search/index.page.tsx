@@ -7,6 +7,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 import { UserWithFollow } from "./_components";
 import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
+import { SearchUserIcon } from "@/assets/svgs";
 
 const Search: NextPageWithLayout = () => {
   // For infinite scrolling
@@ -73,8 +74,13 @@ const Search: NextPageWithLayout = () => {
             })}
 
           {searchResults.length <= 0 && searchLoadingState === "loaded" && (
-            <div className="text-brand-primary font-semibold">
-              There is no result for this query!
+            <div>
+              <div className="flex justify-center mt-10">
+                <SearchUserIcon />
+              </div>
+              <div className="flex justify-center mt-8 text-white font-semibold text-xl">
+                <p>Sorry! No Result Found</p>
+              </div>
             </div>
           )}
 

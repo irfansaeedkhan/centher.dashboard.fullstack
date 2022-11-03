@@ -360,10 +360,13 @@ const ProfileHeader: React.FC = () => {
                       {sliceAccountAddress(user.account_address)}
                     </h6>
                     <button
-                      className="copyBtn"
                       onClick={() => {
-                        copy(user.account_address);
-                        toast.success("Account Address Copied!");
+                        copy(
+                          window.location.origin +
+                            "/auth/register?referred_by=" +
+                            user.account_address
+                        );
+                        toast.success("Referral link copied!");
                       }}
                     >
                       <CopySvg className="hover:stroke-brand-primary" />

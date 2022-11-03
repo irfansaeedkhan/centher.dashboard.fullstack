@@ -3,8 +3,6 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { useRouter } from "next/router";
 
-// Directory Import
-import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import {
   MessagesCard,
@@ -21,7 +19,6 @@ interface AllPagesWrapperProps {
 
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   const router = useRouter();
-  const { user: loggedInUser } = useUser();
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
@@ -33,16 +30,11 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
         <div>
           <div className={`flex gap-5`}>
             <div
-              className={`w-full max-w-[272px]  flex-col gap-3 hidden lg:flex`}
+              className={`w-full max-w-[272px] flex-col gap-3 hidden lg:flex`}
             >
               <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
                 {userLoading === "loaded" && user ? (
-                  <ProfileDetailCard
-                    user={user}
-                    isLoggedInUser={
-                      user.account_address === loggedInUser?.account_address
-                    }
-                  />
+                  <ProfileDetailCard user={user} />
                 ) : (
                   <ProfileDetailCardSkeleton />
                 )}

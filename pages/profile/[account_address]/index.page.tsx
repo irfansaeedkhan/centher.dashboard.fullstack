@@ -2,7 +2,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
-import { toast } from "react-hot-toast";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,13 +10,11 @@ import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { PostCardNew, SinglePost } from "@/components/feed.components";
-import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-import { CompletedPost } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
 
 // Current page imports
 import { ProfilePageWrapper } from "./_components";
+import { useMyPostStore } from "@/store/my.post.store";
+import { NoPost } from "@/assets/svgs";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -28,87 +25,111 @@ const Profile: NextPageWithLayout = () => {
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [posts, setPosts] = useState<CompletedPost[]>([]);
-  const [skip, setSkip] = useState(0);
-  const [loader, setLoader] = useState(false);
 
-  const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
+  const {
+    posts,
+    fetchPosts,
+    addNewPost,
+    deletePost,
+    offset,
+    updateOffset,
+    resetPosts,
+    loading,
+  } = useMyPostStore((state) => ({
+    posts: state.posts,
+    fetchPosts: state.fetchPosts,
 
-  useEffect(() => {
-    if (lastPostInView) {
-      setSkip(posts.length);
-    }
-  }, [posts, lastPostRef, lastPostInView, lastPostEntry]);
+    addNewPost: state.addNewPost,
+    deletePost: state.deletePost,
 
-  const fetchUserFeedsData = useCallback(async () => {
-    setLoader(true);
-    try {
-      const { data } = await axiosNodeApi.get(
-        `/api/socials/posts/user/${user?._id}?offset=${skip}`
-      );
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+    resetPosts: state.resetPosts,
+    loading: state.loading,
+  }));
 
-      const _posts = data.posts;
-      setPosts((prev) => {
-        const filteredPosts = _posts.filter((post: CompletedPost) => {
-          return prev.every((prevPost) => prevPost._id !== post._id);
-        });
-        return [...prev, ...filteredPosts];
-      });
-      setLoader(false);
-    } catch (error: any) {
-      setLoader(false);
-      toast.error(
-        error.response.data?.message_description || "Something went wrong"
-      );
-    }
-  }, [skip, user]);
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
-    if (user && loggedInUser) {
-      fetchUserFeedsData();
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
     }
-  }, [fetchUserFeedsData, user, loggedInUser]);
+  }, [lastPostRef, lastPostEntry, updateOffset]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchPosts();
+    }
+  }, [offset, fetchPosts]);
+
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, [fetchPosts]);
+
+  useEffect(() => {
+    if (user?._id) {
+      resetPosts(user?._id, "loading");
+      fetchPosts();
+    }
+
+    return () => {
+      resetPosts("", "idle");
+    };
+  }, [user?._id, resetPosts, fetchPosts]);
 
   return (
     <>
       {loggedInUser?.account_address === router.query.account_address && (
         <PostCardNew
           onPostCreated={(post) => {
-            setPosts((prev) => [post, ...prev]);
+            addNewPost(post);
           }}
         />
       )}
-      {posts.length > 0 ? (
-        posts.map((post) => {
-          if (post._id === posts[posts.length - 1]._id) {
-            return (
-              <SinglePost
-                ref={lastPostRef}
-                key={post._id}
-                post={post}
-                onDelete={(post_id) => {
-                  setPosts(posts.filter((p) => p._id !== post_id));
-                }}
-              />
-            );
-          }
+      {posts.map((post) => {
+        if (post._id === posts[posts.length - 1]._id) {
           return (
             <SinglePost
+              ref={lastPostRef}
               key={post._id}
               post={post}
               onDelete={(post_id) => {
-                setPosts(posts.filter((p) => p._id !== post_id));
+                deletePost(post_id);
               }}
             />
           );
-        })
-      ) : loader ? (
-        <>
-          <SinglePostCardSkeleton />
-          <SinglePostTextCardSkeleton />
-          <SinglePostCardSkeleton />
-        </>
-      ) : null}
+        }
+        return (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={(post_id) => {
+              deletePost(post_id);
+            }}
+          />
+        );
+      })}
+      {loading === "loaded" && posts.length === 0 && (
+        <div>
+          <div className="flex justify-center mt-[60px]">
+            <NoPost />
+          </div>
+          <div className="flex justify-center mt-[35px]">
+            <p className="text-white">No posts available</p>
+          </div>
+          <div className="flex justify-center mt-3">
+            <p className="text-gray-shade-7">
+              Create a new post or follow someone
+            </p>
+          </div>
+        </div>
+      )}
+
+      {loading === "failed" && (
+        <div className="flex justify-center">
+          <p className="text-gray-500">Something went wrong!</p>
+        </div>
+      )}
     </>
   );
 };

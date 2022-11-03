@@ -1,8 +1,9 @@
 // React, Next, NPM Packages
 import React from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
+import clsx from "clsx";
+import ctl from "@netlify/classnames-template-literals";
 
 // app imports
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
@@ -11,18 +12,19 @@ import { AppRoutes } from "@/constants/app.routes";
 
 interface ProfileDetailCardProps {
   user: User;
-  isLoggedInUser: boolean;
 }
 
 export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
-  isLoggedInUser,
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
 
   return (
     <div
-      className={`w-11/12 sm:w-[272px] lg:sticky lg:top-0 py-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`}
+      className={clsx(
+        `w-11/12 sm:w-[272px] lg:sticky lg:top-0 pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
+        !!profileCardDetails.profile_views_count && `pb-4`
+      )}
     >
       <Link
         href={{
@@ -73,22 +75,22 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           </h5>
         </div>
       </div>
-      {isLoggedInUser && (
-        <>
-          <div className={viewBox}>
-            <h5 className={viewBoxTitle}>Your Profile viewed by</h5>
-            <h6 className={viewBoxValue}>
-              {profileCardDetails.profile_views_count ?? "--"}
-            </h6>
-          </div>
-          <div className={viewBox}>
-            <h5 className={viewBoxTitle}>Your Posts viewed by</h5>
-            <h6 className={viewBoxValue}>
-              {" "}
-              {profileCardDetails.posts_views_count ?? "--"}
-            </h6>
-          </div>
-        </>
+      {!!profileCardDetails.profile_views_count && (
+        <div className={viewBox}>
+          <h5 className={viewBoxTitle}>Your Profile viewed by</h5>
+          <h6 className={viewBoxValue}>
+            {profileCardDetails.profile_views_count}
+          </h6>
+        </div>
+      )}
+      {!!profileCardDetails.posts_views_count && (
+        <div className={viewBox}>
+          <h5 className={viewBoxTitle}>Your Posts viewed by</h5>
+          <h6 className={viewBoxValue}>
+            {" "}
+            {profileCardDetails.posts_views_count ?? "--"}
+          </h6>
+        </div>
       )}
     </div>
   );
