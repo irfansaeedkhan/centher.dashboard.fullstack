@@ -32,6 +32,7 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current directory imports
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
+import NFTProfileTabs from "./nft.profile.tabs";
 
 type CoverImageWithFile = Partial<UserImage> & {
   blob: File | null;
@@ -81,7 +82,10 @@ const ProfileHeader: React.FC = () => {
         router.pathname === AppRoutes.profile.following ||
         router.pathname === AppRoutes.profile.followers ||
         router.pathname === AppRoutes.profile.replies,
-      isNFTProfilePage: router.pathname === AppRoutes.profile.nfts,
+      isNFTProfilePage:
+        router.pathname === AppRoutes.profile.nfts ||
+        router.pathname === AppRoutes.profile.purchased ||
+        router.pathname === AppRoutes.profile.collections,
     }),
     [router.pathname]
   );
@@ -272,7 +276,6 @@ const ProfileHeader: React.FC = () => {
             pathname: AppRoutes.profile.nfts,
             query: {
               account_address: user?.account_address,
-              tab: "owned",
             },
           }}
           className="w-full"
@@ -422,10 +425,15 @@ const ProfileHeader: React.FC = () => {
             <div className={textContent}>
               <p className={profileDescription}>{user.profile_bio}</p>
             </div>
-            <UserProfileTabs
-              loggedInUser={loggedInUser.account_address}
-              account_address={router.query.account_address}
-            />
+            {currentPageRoute.isProfilePage && (
+              <UserProfileTabs
+                loggedInUser={loggedInUser.account_address}
+                account_address={router.query.account_address}
+              />
+            )}
+            {currentPageRoute.isNFTProfilePage && (
+              <NFTProfileTabs account_address={router.query.account_address} />
+            )}
           </div>
         </div>
       ) : (
