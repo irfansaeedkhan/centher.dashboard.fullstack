@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import axios from "axios";
 import { Collection } from "@/store/explore.store";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
@@ -32,53 +31,35 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   return (
     <Link
       href={`/collections/${data.collection}`}
-      className={collectionWrapper}
+      className={`w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`}
     >
-      <div className={imagesWrapper}>
+      <div className={`relative flex justify-center`}>
         <Image
           src={coverImage}
           alt="collection Image"
           width={340}
           height={180}
-          className={imageStyle}
+          className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
         />
         <Image
           src={profileImage}
           alt="Logo Image"
           width={64}
           height={64}
-          className={logoImage}
+          className={`rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem]`}
         />
       </div>
-      <div className={contentWrapper}>
-        <div className={collectionName}>{data.name}</div>
-        <span className={collectionOwner}>{formatAddress(data.creator)}</span>
-        <p className={collectionDescription}>{description}</p>
+      <div className={`flex flex-col px-4 items-center`}>
+        <div className={`text-base text-white font-bold`}>{data.name}</div>
+        <span className={`text-sm text-white font-semibold mt-1`}>
+          {formatAddress(data.creator)}
+        </span>
+        <p
+          className={`font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`}
+        >
+          {description}
+        </p>
       </div>
     </Link>
   );
 };
-
-const collectionWrapper = ctl(
-  `w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`
-);
-
-const imagesWrapper = ctl(`relative flex justify-center`);
-
-const logoImage = ctl(
-  `rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem]`
-);
-
-const contentWrapper = ctl(`flex flex-col px-4 items-center`);
-
-const collectionName = ctl(`text-base text-white font-bold`);
-
-const collectionOwner = ctl(`text-sm text-white font-semibold mt-1`);
-
-const collectionDescription = ctl(
-  `font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`
-);
-
-const imageStyle = ctl(
-  `rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`
-);
