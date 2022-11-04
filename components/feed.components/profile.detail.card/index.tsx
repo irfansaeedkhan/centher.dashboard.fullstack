@@ -57,22 +57,28 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
       >
         <div>
-          <h4 className={detailnumTitle}>Post</h4>
-          <h5 className={detailNumValue}>
-            {profileCardDetails.posts_count ?? "--"}
-          </h5>
+          <Link href={`/profile/${user.account_address}`}>
+            <h4 className={detailnumTitle}>Posts</h4>
+            <h5 className={detailNumValue}>
+              {profileCardDetails.posts_count ?? "--"}
+            </h5>
+          </Link>
         </div>
         <div>
-          <h4 className={detailnumTitle}>Followers</h4>
-          <h5 className={detailNumValue}>
-            {profileCardDetails.followers_count ?? "--"}
-          </h5>
+          <Link href={`/profile/${user.account_address}/followers`}>
+            <h4 className={detailnumTitle}>Followers</h4>
+            <h5 className={detailNumValue}>
+              {profileCardDetails.followers_count ?? "--"}
+            </h5>
+          </Link>
         </div>
         <div>
-          <h4 className={detailnumTitle}>Following</h4>
-          <h5 className={detailNumValue}>
-            {profileCardDetails.following_count ?? "--"}
-          </h5>
+          <Link href={`/profile/${user.account_address}/following`}>
+            <h4 className={detailnumTitle}>Followings</h4>
+            <h5 className={detailNumValue}>
+              {profileCardDetails.following_count ?? "--"}
+            </h5>
+          </Link>
         </div>
       </div>
       {!!profileCardDetails.profile_views_count && (
