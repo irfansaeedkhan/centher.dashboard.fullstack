@@ -72,8 +72,6 @@ const Replies: NextPageWithLayout = () => {
     };
   }, [user?._id, resetPosts, fetchPosts]);
 
-  console.log("hey", posts);
-
   return (
     <>
       {posts.map((post) => {

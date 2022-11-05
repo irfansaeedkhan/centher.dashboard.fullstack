@@ -37,13 +37,13 @@ import { ReplyPost } from "../reply.post";
 import { usePostUpload } from "../post.logicv2";
 import { createPostView } from "../single.post/create.post.view";
 import { PostCarousel } from "../single.post/post.carousel";
-import PostUserDetails from "../single.post/post.user.details";
 import Post3DotsMenu from "../single.post/post.3.dots.menu";
 import { useCurrentPageRoute } from "../single.post/use.current.page.route";
 import moment from "moment";
 import ParentPost from "./parent.post";
 import DeleteModal from "./modal";
 import ReplyPostModal from "./reply.post.modal";
+import ReplyUserDetails from "./reply.user.details";
 
 interface FeedCardLevel1Props {
   post: CompletedPost;
@@ -384,7 +384,7 @@ export const SingleReply = React.forwardRef<
           !!totalReplyCount && <div className={connectLines}></div>}
 
         <div className={`top w-full z-10 flex justify-between gap-2 px-4 mt-5`}>
-          <PostUserDetails post={_post} />
+          <ReplyUserDetails post={_post} />
           <div className="flex-grow space-y-3 max-w-[calc(544px-32px-48px-24px-16px)]">
             <div>
               <Link
