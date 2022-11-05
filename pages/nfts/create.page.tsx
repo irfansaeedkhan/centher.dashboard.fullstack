@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Moralis  from 'moralis';
+import Moralis from "moralis";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
@@ -173,22 +173,27 @@ const CreateNFT: NextPageWithLayout = () => {
       //     authorization: auth,
       //   },
       // });
-      
+
       await Moralis.start({
-          apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-          // ...and any other configuration
+        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+        // ...and any other configuration
       });
-  
+
       const assetReader = new window.FileReader();
 
       assetReader.onloadend = async () => {
         try {
           const cd = nftData as INFTData;
-          let assetBuffer = (Buffer.from(assetReader.result as ArrayBuffer));
+          let assetBuffer = Buffer.from(assetReader.result as ArrayBuffer);
           const assetAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-            abi: [{path: `nether/${cd.name}`, content: assetBuffer.toString('base64')}]
+            abi: [
+              {
+                path: `nether/${cd.name}`,
+                content: assetBuffer.toString("base64"),
+              },
+            ],
           });
-          const assetHash = assetAdded.result[0].path.split('ipfs')[2];
+          const assetHash = assetAdded.result[0].path.split("ipfs")[2];
 
           // const assetAdded = await (ipfs as IPFSHTTPClient).add(assetBuffer);
           // const assetHash = assetAdded.path;
@@ -205,9 +210,16 @@ const CreateNFT: NextPageWithLayout = () => {
           // Buffer.from(JSON.stringify(metadata)).toString("base64")
           // const jsonHash = await uploadNFTsOnIPFS(Buffer.from(JSON.stringify(metadata)).toString("base64"))
           const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-            abi: [{path: `nether/${cd.name}.json`, content: Buffer.from(JSON.stringify(metadata)).toString("base64")}]
+            abi: [
+              {
+                path: `nether/${cd.name}.json`,
+                content: Buffer.from(JSON.stringify(metadata)).toString(
+                  "base64"
+                ),
+              },
+            ],
           });
-          const jsonHash = jsonFileAdded.result[0].path.split('ipfs')[2];
+          const jsonHash = jsonFileAdded.result[0].path.split("ipfs")[2];
           // const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
           // const jsonHash = jsonFileAdded.path;
 

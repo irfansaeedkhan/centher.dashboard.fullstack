@@ -69,8 +69,8 @@ export const categories = [
   "Gaming",
   "Collectibles",
   "E-sport",
-  "Utility"
-]
+  "Utility",
+];
 interface CreateNFTCollectionFormProps {
   createCollection: any;
 }
@@ -179,7 +179,11 @@ export const CreateNFTCollectionForm = ({
             }
           >
             {categories.map((item, key) => {
-              return <option value={item === "Select"? "" : item} key={key}>{item}</option>
+              return (
+                <option value={item === "Select" ? "" : item} key={key}>
+                  {item}
+                </option>
+              );
             })}
           </select>
           {formState.errors.Category && (
