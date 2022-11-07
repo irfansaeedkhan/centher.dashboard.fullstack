@@ -181,7 +181,9 @@ export const SingleReply = React.forwardRef<
       onDelete(_post._id);
 
       // Decrement the posts count in profile card details
-      decrementPostsCount();
+      if (!_post.parent_post) {
+        decrementPostsCount();
+      }
       onDelete(_post._id);
     } catch (error: any) {
       toast.error(
