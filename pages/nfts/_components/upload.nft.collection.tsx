@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
@@ -11,6 +11,7 @@ interface UploadNFTCollectionProps {
   setProfile: any;
   cover: Blob | undefined;
   setCover: any;
+  clearForm: boolean;
 }
 
 export const UploadNFTCollection = ({
@@ -18,6 +19,7 @@ export const UploadNFTCollection = ({
   setProfile,
   cover,
   setCover,
+  clearForm,
 }: UploadNFTCollectionProps) => {
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
@@ -34,6 +36,15 @@ export const UploadNFTCollection = ({
     setProfile(e.target.files[0]);
     setShowProfileImage(true);
   };
+
+  useEffect(() => {
+    if (clearForm) {
+      setShowProfileImage(false);
+      setProfile(undefined);
+      setShowCoverImage(false);
+      setCover(undefined);
+    }
+  }, [clearForm]);
   return (
     <div className={nftBoxContainer}>
       <div>

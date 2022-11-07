@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
@@ -73,11 +73,12 @@ export const categories = [
 ];
 interface CreateNFTCollectionFormProps {
   createCollection: any;
+  clearForm: boolean;
 }
 export interface ICollectionData {
   name: string;
   symbol: string;
-  totalsupply: number;
+  totalsupply: number | null;
   description: string;
   category: string;
   url: string;
@@ -87,11 +88,22 @@ export interface ICollectionData {
 }
 export const CreateNFTCollectionForm = ({
   createCollection,
+  clearForm,
 }: CreateNFTCollectionFormProps) => {
   const { handleSubmit, register, setError, formState, reset } =
     useForm<ICollectionData>({
       mode: "onChange",
       resolver: joiResolver(schema),
+      defaultValues: {
+        name: "",
+        symbol: "",
+        description: "",
+        category: "",
+        url: "",
+        yoursite: "",
+        facebook: "",
+        twitter: "",
+      },
     });
 
   const onSubmit = async (data: any) => {
@@ -107,6 +119,20 @@ export const CreateNFTCollectionForm = ({
     };
     createCollection(collectionData);
   };
+  useEffect(() => {
+    if (clearForm) {
+      reset({
+        name: "",
+        symbol: "",
+        description: "",
+        category: "",
+        url: "",
+        yoursite: "",
+        facebook: "",
+        twitter: "",
+      });
+    }
+  }, [clearForm]);
 
   return (
     <div className={CreateNFTCollectionFormContainer}>

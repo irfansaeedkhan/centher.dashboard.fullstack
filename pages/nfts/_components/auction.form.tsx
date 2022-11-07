@@ -53,9 +53,9 @@ interface AuctionFormFields {
   NFTName: string;
   Description: string;
   // NFTSymbol: string;
-  NFTAmount: number;
+  NFTAmount: number | null;
   AuctionEndTime: string;
-  StartingNFTPrice: number;
+  StartingNFTPrice: number | null;
   // Category: string;
   Collection: string;
 }
@@ -79,6 +79,16 @@ const AuctionForm = ({
     useForm<AuctionFormFields>({
       mode: "onChange",
       resolver: joiResolver(schema),
+      defaultValues: {
+        NFTName: "",
+        Description: "",
+        // NFTSymbol: "",
+        NFTAmount: null,
+        AuctionEndTime: "",
+        StartingNFTPrice: null,
+        // Category: "",
+        Collection: "",
+      },
     });
 
   // function to add/remove dynamic property
@@ -143,15 +153,19 @@ const AuctionForm = ({
     createNFT(finalizedData);
   };
 
+  useEffect(() => {}, [clearForm]);
+
   useEffect(() => {
-    reset({
-      NFTName: undefined,
-      Description: undefined,
-      NFTAmount: undefined,
-      AuctionEndTime: undefined,
-      StartingNFTPrice: undefined,
-      Collection: undefined,
-    });
+    if (clearForm) {
+      reset({
+        NFTName: "",
+        Description: "",
+        NFTAmount: null,
+        AuctionEndTime: "",
+        StartingNFTPrice: null,
+        Collection: "",
+      });
+    }
   }, [clearForm]);
   return (
     <div className={formContainer}>

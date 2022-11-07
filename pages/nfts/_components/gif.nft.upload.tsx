@@ -18,6 +18,7 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   };
   useEffect(() => {
     setShowSecPreivew(false);
+    setAsset(undefined);
   }, [clearForm]);
   return (
     <div className={previewContainer}>

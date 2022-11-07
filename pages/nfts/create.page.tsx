@@ -106,6 +106,7 @@ const CreateNFT: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
+    setClearForm(true);
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
@@ -148,7 +149,7 @@ const CreateNFT: NextPageWithLayout = () => {
               setModal(false);
               setModalTitle("");
               setModalContent(null);
-              setClearForm(true);
+              setClearForm(false);
             }}
           />
           {/* </Link> */}

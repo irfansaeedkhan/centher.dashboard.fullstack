@@ -48,8 +48,8 @@ interface FixedPriceFormProps {
 interface FormFields {
   NFTName: String;
   Description: String;
-  NFTAmount: number;
-  NFTPrice: number;
+  NFTAmount: number | null;
+  NFTPrice: number | null;
   Collection: String;
 }
 // TODO: Kindly fix any types
@@ -68,6 +68,13 @@ const FixedPriceForm = ({
     useForm<FormFields>({
       mode: "onChange",
       resolver: joiResolver(schema),
+      defaultValues: {
+        NFTName: "",
+        Description: "",
+        NFTAmount: null,
+        NFTPrice: null,
+        Collection: "",
+      },
     });
   // functions to add/remove dynamic properties
   const handlePropertyChange = (e: any) => {
@@ -113,18 +120,21 @@ const FixedPriceForm = ({
       period: 0,
       properties: propertyList,
     };
-
     createNFT(finalizedData);
   };
   useEffect(() => {
-    reset({
-      NFTName: undefined,
-      Description: undefined,
-      NFTAmount: undefined,
-      NFTPrice: undefined,
-      Collection: undefined,
-    });
+    if (clearForm) {
+      reset({
+        NFTName: "",
+        Description: "",
+        NFTAmount: null,
+        NFTPrice: null,
+        Collection: "",
+      });
+    }
   }, [clearForm]);
+
+  console.log("clearForm", clearForm);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
