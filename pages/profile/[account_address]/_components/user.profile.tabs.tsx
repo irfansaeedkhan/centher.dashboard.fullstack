@@ -26,7 +26,7 @@ const UserProfileTabs: React.FC<ProfileProps> = ({
           "py-[10px] px-4 cursor-pointer"
         )}
       >
-        My Post
+        Posts
       </Link>
 
       <Link
@@ -61,7 +61,7 @@ const UserProfileTabs: React.FC<ProfileProps> = ({
           "py-[10px] px-4 cursor-pointer"
         )}
       >
-        Following
+        Followings
       </Link>
     </div>
   );

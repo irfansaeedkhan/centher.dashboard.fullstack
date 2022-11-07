@@ -59,7 +59,18 @@ const schema = Joi.object({
       "any.required": `Required Field`,
     }),
 });
-
+export const categories = [
+  "Select",
+  "Premium",
+  "Arts",
+  "Music",
+  "Sport",
+  "Entertainment",
+  "Gaming",
+  "Collectibles",
+  "E-sport",
+  "Utility",
+];
 interface CreateNFTCollectionFormProps {
   createCollection: any;
 }
@@ -166,9 +177,13 @@ export const CreateNFTCollectionForm = ({
               !formState.errors.category ? inputField : inputFieldError
             }
           >
-            <option value="">Select</option>
-            <option value="category1">category1</option>
-            <option value="category2">category2</option>
+            {categories.map((item, key) => {
+              return (
+                <option value={item === "Select" ? "" : item} key={key}>
+                  {item}
+                </option>
+              );
+            })}
           </select>
           {formState.errors.category && (
             <p className={`text-red-500 ${errMessage}`}>

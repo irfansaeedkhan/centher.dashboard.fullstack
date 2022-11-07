@@ -2,10 +2,7 @@ import { User } from "./user";
 
 export interface BasePost {
   _id: string;
-  parent_post?: {
-    _id: string;
-    user: PostUser;
-  };
+  parent_post: ParentPost;
   user: PostUser;
   viewed_by_loggedin_user: boolean;
   liked_by_loggedin_user: boolean;
@@ -36,3 +33,9 @@ type PostUser = Pick<
   User,
   "_id" | "account_address" | "display_name" | "profile_image"
 >;
+
+export interface ParentPost {
+  _id: string;
+  createdAt?: string;
+  user: PostUser;
+}
