@@ -33,7 +33,9 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
 
 const hotCollectionWrapper = ctl(`flex flex-col gap-8`);
 
-const hotCollectionGap = ctl(`flex items-center justify-between gap-10`);
+const hotCollectionGap = ctl(
+  `flex [@media(max-width:767px)]:flex-col [@media(max-width:767px)]:gap-5 items-center justify-between gap-10`
+);
 
 const collectionHeaderAnimation = ctl(`animationTextHeading`);
 

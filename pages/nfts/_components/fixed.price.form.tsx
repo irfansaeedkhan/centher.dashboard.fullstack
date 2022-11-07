@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -43,6 +43,7 @@ const schema = Joi.object({
 interface FixedPriceFormProps {
   createNFT: any;
   collections: Collection[];
+  clearForm: boolean;
 }
 interface FormFields {
   NFTName: String;
@@ -52,7 +53,11 @@ interface FormFields {
   Collection: String;
 }
 // TODO: Kindly fix any types
-const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
+const FixedPriceForm = ({
+  createNFT,
+  collections,
+  clearForm,
+}: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -111,6 +116,15 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
 
     createNFT(finalizedData);
   };
+  useEffect(() => {
+    reset({
+      NFTName: undefined,
+      Description: undefined,
+      NFTAmount: undefined,
+      NFTPrice: undefined,
+      Collection: undefined,
+    });
+  }, [clearForm]);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>

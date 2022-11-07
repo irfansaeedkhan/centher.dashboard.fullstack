@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Joi from "joi";
+import Joi, { string } from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
@@ -62,8 +62,13 @@ interface AuctionFormFields {
 interface AuctionFormProps {
   createNFT: any;
   collections: Collection[];
+  clearForm: boolean;
 }
-const AuctionForm = ({ createNFT, collections }: AuctionFormProps) => {
+const AuctionForm = ({
+  createNFT,
+  collections,
+  clearForm,
+}: AuctionFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -137,6 +142,17 @@ const AuctionForm = ({ createNFT, collections }: AuctionFormProps) => {
 
     createNFT(finalizedData);
   };
+
+  useEffect(() => {
+    reset({
+      NFTName: undefined,
+      Description: undefined,
+      NFTAmount: undefined,
+      AuctionEndTime: undefined,
+      StartingNFTPrice: undefined,
+      Collection: undefined,
+    });
+  }, [clearForm]);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
