@@ -9,6 +9,7 @@ import "react-multi-carousel/lib/styles.css";
 import { CollectionCard } from "@/components/collection.card";
 import { AppRoutes } from "@/constants/app.routes";
 import { Collection } from "@/store/explore.store";
+import { NftsCollectionEmpty } from "@/assets/svgs";
 
 interface HotCollectionsProps {
   hotCollections: Collection[];
@@ -64,8 +65,13 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
             ;
           </div>
         ) : (
-          <div className={noCollectionContainer}>
-            <h1 className={noCollectionTxt}>No collections yet</h1>
+          <div>
+            <div className="flex justify-center items-center">
+              <NftsCollectionEmpty />
+            </div>
+            <div className={noCollectionContainer}>
+              <h1 className={noCollectionTxt}>No collections yet</h1>
+            </div>
           </div>
         )}
       </div>
