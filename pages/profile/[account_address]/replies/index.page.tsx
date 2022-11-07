@@ -9,7 +9,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { SinglePost } from "@/components/feed.components";
+import { SingleReply } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
@@ -77,7 +77,7 @@ const Replies: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <SinglePost
+            <SingleReply
               ref={lastPostRef}
               key={post._id}
               post={post}
@@ -85,7 +85,7 @@ const Replies: NextPageWithLayout = () => {
             />
           );
         }
-        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
+        return <SingleReply key={post._id} post={post} onDelete={deletePost} />;
       })}
 
       {(loading === "loading" || loading === "idle") && (

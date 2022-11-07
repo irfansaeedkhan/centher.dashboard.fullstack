@@ -11,7 +11,7 @@ interface NFTHistoryProps {
   data: IListHistory[] | undefined;
 }
 export const NFTHistory = () => {
-  const [duration, setDuration] = useState("");
+  const [duration, setDuration] = useState(7);
   // interface of data to be sent in chart
   interface historyData {
     labels: string[];
@@ -25,8 +25,13 @@ export const NFTHistory = () => {
       backgroundColor: string;
     }[];
   }
+
+  interface dummydata {
+    price: number;
+    txTime: number;
+  }
   // dummy data
-  const priceHistory = [
+  const priceHistory: dummydata[] = [
     {
       price: 0.01,
       txTime: 1667127672,
@@ -47,17 +52,20 @@ export const NFTHistory = () => {
   // global labels to set dynamic data
   let labels: string[] = [];
   let priceList: number[] = [];
-  let averagePrice: number | undefined;
+  let priceAverage: number | undefined;
+  let priceVolume: number | undefined;
   // getting dynamic labels data using moment js for last 7 days
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < duration; i++) {
     labels.push(moment().subtract(i, "days").format("DD MMM"));
   }
   // using momentjs to get current date and previous dates
   // const currentTime = moment().format("YYYY-MM-DD");
-  const lastSeventhDay = moment().subtract(7, "days").format("YYYY-MM-DD");
+  const lastSeventhDay = moment()
+    .subtract(duration, "days")
+    .format("YYYY-MM-DD");
 
   // getting prices array for last 7 days from dummy data
-  priceHistory.forEach((data) => {
+  priceHistory?.forEach((data) => {
     let propTime = moment(Number(Object.entries(data)[1][1]) * 1000).format(
       "YYYY-MM-DD"
     );
@@ -66,30 +74,12 @@ export const NFTHistory = () => {
     }
   });
   // getting average price from pricelist for last 7 days
-  averagePrice =
+  priceAverage =
     priceList.reduce((partialSum, a) => partialSum + a, 0) / priceList.length;
-  // const lastThirtyDayFunc = () => {
-  //   // getting dynamic labels data using moment js for last 7 days
-  //   for (let i = 0; i < 30; i++) {
-  //     labels.push(moment().subtract(i, "days").format("DD MMM"));
-  //   }
-  //   // using momentjs to get current date and previous dates
-  //   const lastThirtiethDay = moment().subtract(30, "days").format("YYYY-MM-DD");
+  // getting volume
+  priceVolume = priceList.reduce((partialSum, a) => partialSum + a, 0);
 
-  //   // getting prices array for last 7 days from dummy data
-  //   priceHistory.forEach((data) => {
-  //     let propTime = moment(Number(Object.entries(data)[1][1]) * 1000).format(
-  //       "YYYY-MM-DD"
-  //     );
-  //     if (propTime >= lastThirtiethDay) {
-  //       priceList.push(Number(Object.entries(data)[0][1]));
-  //     }
-  //   });
-  //   // getting average price from pricelist for last 7 days
-  //   averagePrice =
-  //     priceList.reduce((partialSum, a) => partialSum + a, 0) / priceList.length;
-  // };
-  console.log(labels);
+  // data to be sent in graph
   const data: historyData = {
     labels,
     datasets: [
@@ -104,41 +94,11 @@ export const NFTHistory = () => {
       },
     ],
   };
-  // interface historyData {
-  //   labels: string[];
-  //   datasets: {
-  //     type: "line";
-  //     label: string;
-  //     borderColor: string;
-  //     borderWidth: number;
-  //     fill: boolean;
-  //     data: number[];
-  //     backgroundColor: string;
-  //   }[];
-  // }
-  // interface chartDataParams {
-  //   dynamicLabels: string[];
-  //   priceList: number[];
-  //   averagePrice: number | undefined;
-  // }
-  // const [chartData, setChartData] = useState<chartDataParams>({
-  //   dynamicLabels: [],
-  //   priceList: [],
-  //   averagePrice: undefined,
-  // });
-  // const [duration, setDuration] = useState({
-  //   timeFrame: "Last7Days",
-  // });
   const changeDuration = async (e: any) => {
     setDuration((prev) => e.target.value);
-
-    // if (duration === "Last7Days") {
-    //   lastSevenDayFunc();
-    // } else if (duration === "Last7Days") {
-    //   lastThirtyDayFunc();
-    // }
   };
 
+  console.log("labels rendering test", labels);
   return (
     <div className={NFTHistoryContainer}>
       <div className="accordion" id="accordionExample">
@@ -165,15 +125,22 @@ export const NFTHistory = () => {
               <div className={graphContainer}>
                 <div className="top flex  justify-between bg-[#1C1F29] px-6 py-3">
                   <div className={graphDetailBox}>
-                    <h5 className="text-12px text-white">7 days avg. price</h5>
+                    <h5 className="text-12px text-white">
+                      {duration} days avg. price
+                    </h5>
                     <h5 className="text-14px text-yellow-theme">
                       {" "}
-                      ={averagePrice && averagePrice.toFixed(4)}
+                      ={priceAverage ? priceAverage.toFixed(4) : "NAN"}
                     </h5>
                   </div>
                   <div className={graphDetailBox}>
-                    <h5 className="text-12px text-white">7 days volume</h5>
-                    <h5 className="text-14px text-[#5F97FF]"> =0.0348</h5>
+                    <h5 className="text-12px text-white">
+                      {duration} days volume
+                    </h5>
+                    <h5 className="text-14px text-[#5F97FF]">
+                      {" "}
+                      ={priceVolume ? priceVolume.toFixed(4) : "NAN"}
+                    </h5>
                   </div>
                   <select
                     name="days"
@@ -182,14 +149,22 @@ export const NFTHistory = () => {
                     onChange={changeDuration}
                     value={duration}
                   >
-                    <option value="Last7Days">Last 7 days</option>
-                    <option value="Last30Days">Last 30 days</option>
+                    <option value={7}>Last 7 days</option>
+                    <option value={30}>Last 30 days</option>
                   </select>
                 </div>
               </div>
 
               <div className="p-6">
-                <LineChart data={data} />
+                {priceHistory.length > 0 ? (
+                  <LineChart data={data} />
+                ) : (
+                  <div className="w-full h-28 flex items-center justify-center">
+                    <h6 className="text-14px font-medium text-yellow-theme">
+                      No data found yet
+                    </h6>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { create as ipfsCreate, IPFSHTTPClient } from "ipfs-http-client";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import Moralis from "moralis";
 
 // App imports
 import { useWeb3React } from "@web3-react/core";
@@ -154,7 +155,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     setModal(true);
   };
 
-  const handleCreateCollection = (collectionData: any) => {
+  const handleCreateCollection = async (collectionData: any) => {
     buyNFTStep2Func();
     try {
       const auth =
@@ -163,13 +164,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           NEXT_PUBLIC_Project_ID + ":" + NEXT_PUBLIC_API_Secret
         ).toString("base64");
 
-      const ipfs: IPFSHTTPClient | undefined = ipfsCreate({
-        host: NEXT_PUBLIC_IPFS_HOST,
-        port: 5001,
-        protocol: "https",
-        headers: {
-          authorization: auth,
-        },
+      // const ipfs: IPFSHTTPClient | undefined = ipfsCreate({
+      //   host: NEXT_PUBLIC_IPFS_HOST,
+      //   port: 5001,
+      //   protocol: "https",
+      //   headers: {
+      //     authorization: auth,
+      //   },
+      // });
+
+      await Moralis.start({
+        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+        // ...and any other configuration
       });
 
       const profileReader = new window.FileReader();
@@ -180,22 +186,42 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             profileReader.result as ArrayBuffer
           );
 
-          const profileAdded = await (ipfs as IPFSHTTPClient).add(
-            profileFileBuffer
-          );
-          const profileHash = profileAdded.path;
+          // const profileAdded = await (ipfs as IPFSHTTPClient).add(
+          //   profileFileBuffer
+          // );
+          // const profileHash = profileAdded.path;
+
+          const cd = collectionData as ICollectionData;
+          const profileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
+            abi: [
+              {
+                path: `nether/${cd.name}`,
+                content: profileFileBuffer.toString("base64"),
+              },
+            ],
+          });
+          const profileHash = profileAdded.result[0].path.split("ipfs")[2];
 
           const coverReader = new window.FileReader();
           coverReader.onloadend = async () => {
             try {
               let fileBuffer = Buffer.from(coverReader.result as ArrayBuffer);
 
-              const coverfileAdded = await (ipfs as IPFSHTTPClient).add(
-                fileBuffer
-              );
-              const coverHash = coverfileAdded.path;
+              // const coverfileAdded = await (ipfs as IPFSHTTPClient).add(
+              //   fileBuffer
+              // );
+              // const coverHash = coverfileAdded.path;
 
-              const cd = collectionData as ICollectionData;
+              const coverfileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
+                abi: [
+                  {
+                    path: `nether/${cd.name}`,
+                    content: fileBuffer.toString("base64"),
+                  },
+                ],
+              });
+              const coverHash = coverfileAdded.result[0].path.split("ipfs")[2];
+
               const metadata = {
                 name: cd.name,
                 Symbol: cd.symbol,
@@ -206,17 +232,29 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 yoursite: cd.yoursite,
                 facebook: cd.facebook,
                 twitter: cd.twitter,
-                profileIPFSHash: "ipfs://" + profileHash,
-                coverIPFSHash: "ipfs://" + coverHash,
+                profileIPFSHash: "ipfs:/" + profileHash,
+                coverIPFSHash: "ipfs:/" + coverHash,
               };
-              const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
-              const jsonHash = jsonFileAdded.path;
+              // const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
+              // const jsonHash = jsonFileAdded.path;
+
+              const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
+                abi: [
+                  {
+                    path: `nether/${cd.name}.json`,
+                    content: Buffer.from(JSON.stringify(metadata)).toString(
+                      "base64"
+                    ),
+                  },
+                ],
+              });
+              const jsonHash = jsonFileAdded.result[0].path.split("ipfs")[2];
 
               const result = await callCreateCollection(
                 library,
                 cd.name,
                 cd.symbol,
-                "ipfs://" + jsonHash,
+                "ipfs:/" + jsonHash,
                 cd.totalsupply,
                 FEE.createCollectionFee
               );

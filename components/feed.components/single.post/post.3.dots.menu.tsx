@@ -59,7 +59,7 @@ const Post3DotsMenu: React.FC<Post3DotsMenuProps> = ({
   const timeAfter15Minutes = moment(post.createdAt).add(15, "minutes");
 
   return (
-    <div ref={menuRef} className={`relative`}>
+    <div ref={menuRef} className={`relative w-6 h-6`}>
       <button onClick={toggleMenu}>
         <DotsIcon />
       </button>

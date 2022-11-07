@@ -1,9 +1,10 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
-import { NTRDAOIcon, SpinIcon2, SuccessIcon, WarningIcon } from "@/assets/svgs";
+import { SpinIcon2, SuccessIcon, WarningIcon } from "@/assets/svgs";
 
 import Button from "../button";
+import Image from "next/image";
 
 interface CustomProgressModalProps {
   title: string;
@@ -47,8 +48,24 @@ export const CustomProgressModal: React.FC<CustomProgressModalProps> = ({
               {status === "success" && <SuccessIcon />}
               {status === "warning" && <WarningIcon />}
               {status === "failed" && <WarningIcon />}
-              {status === "ntrdao" && <NTRDAOIcon />}
-              {status === "claim" && <NTRDAOIcon />}
+              {status === "ntrdao" && (
+                <Image
+                  src={"/images/buyntr.png"}
+                  alt="buyntr"
+                  width={40}
+                  height={40}
+                  className="!w-10 !h-10"
+                />
+              )}
+              {status === "claim" && (
+                <Image
+                  src={"/images/buyntr.png"}
+                  alt="buyntr"
+                  width={40}
+                  height={40}
+                  className="!w-10 !h-10"
+                />
+              )}
             </div>
             <div className={Modalcontent}>
               <h5 className={modalTitle}>
