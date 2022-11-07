@@ -132,16 +132,18 @@ Feed.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Feed">
       <div
-        className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] mx-auto relative`}
+        className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] xl:max-w-[1130px] mx-auto relative`}
       >
         <div className={`flex flex-col lg:flex-row gap-5 lg:items-start`}>
           <LeftSidebarStickyContainer />
 
           {page}
 
-          <div className={`w-full max-w-[272px] flex-col gap-3 hidden xl:flex`}>
+          <div
+            className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden mt-[3.5rem] sticky top-[3.5rem]`}
+          >
             <MessagesCard />
-            <RecentActivitiesCard />
+            {/* <RecentActivitiesCard /> */}
           </div>
         </div>
       </div>
