@@ -15,18 +15,21 @@ import AudioNFTUpload from "./audio.nft.upload";
 export interface UploadNFTProps {
   asset: Blob | undefined;
   setAsset: any;
+  clearForm: boolean;
 }
 export interface UploadNFTProps1 {
   asset: Blob | undefined;
   setAsset: any;
   assetTab: string;
   setAssetTab: any;
+  clearForm: boolean;
 }
 export const UploadNFT = ({
   asset,
   setAsset,
   assetTab,
   setAssetTab,
+  clearForm,
 }: UploadNFTProps1) => {
   return (
     <div className={nftBoxContainer}>
@@ -69,14 +72,28 @@ export const UploadNFT = ({
         />
       </div>
       {assetTab === "Image" && (
-        <ImageNFTUpload asset={asset} setAsset={setAsset} />
+        <ImageNFTUpload
+          asset={asset}
+          setAsset={setAsset}
+          clearForm={clearForm}
+        />
       )}
-      {assetTab === "Gif" && <GifNFTUpload asset={asset} setAsset={setAsset} />}
+      {assetTab === "Gif" && (
+        <GifNFTUpload asset={asset} setAsset={setAsset} clearForm={clearForm} />
+      )}
       {assetTab === "Video" && (
-        <VideoNFTUpload asset={asset} setAsset={setAsset} />
+        <VideoNFTUpload
+          asset={asset}
+          setAsset={setAsset}
+          clearForm={clearForm}
+        />
       )}
       {assetTab === "Audio" && (
-        <AudioNFTUpload asset={asset} setAsset={setAsset} />
+        <AudioNFTUpload
+          asset={asset}
+          setAsset={setAsset}
+          clearForm={clearForm}
+        />
       )}
     </div>
   );

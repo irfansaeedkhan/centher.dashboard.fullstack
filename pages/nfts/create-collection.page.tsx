@@ -34,6 +34,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
+  const [clearForm, setClearForm] = useState(false);
 
   // const [collectionData, setCollectionData] = useState<ICollectionData>()
 
@@ -146,6 +147,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               setModal(false);
               setModalTitle("");
               setModalContent(null);
+              setClearForm(true);
             }}
           />
           {/* </Link> */}
@@ -308,8 +310,12 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           setProfile={setProfile}
           cover={cover}
           setCover={setCover}
+          clearForm={clearForm}
         />
-        <CreateNFTCollectionForm createCollection={createCollection} />
+        <CreateNFTCollectionForm
+          createCollection={createCollection}
+          clearForm={clearForm}
+        />
       </div>
 
       {Modal && (

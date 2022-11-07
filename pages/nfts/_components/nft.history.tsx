@@ -145,7 +145,7 @@ export const NFTHistory = () => {
                   <select
                     name="days"
                     id="days"
-                    className="bg-transparent text-white rounded-10px"
+                    className=" text-white bg-[#1C1F29] rounded-10px"
                     onChange={changeDuration}
                     value={duration}
                   >
