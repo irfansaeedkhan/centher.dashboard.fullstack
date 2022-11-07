@@ -152,16 +152,21 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             likes_count: prev.likes_count - 1,
             liked_by_loggedin_user: false,
           }));
+          await axiosNodeApi.post("api/socials/analytics/likes", {
+            post_id,
+            type: "unlike",
+          });
         } else {
           setPost((prev) => ({
             ...prev,
             likes_count: prev.likes_count + 1,
             liked_by_loggedin_user: true,
           }));
+          await axiosNodeApi.post("api/socials/analytics/likes", {
+            post_id,
+            type: "like",
+          });
         }
-        await axiosNodeApi.post("api/socials/analytics/likes", {
-          post_id,
-        });
       } catch (error: any) {
         setPost((prev) => ({
           ...prev,
