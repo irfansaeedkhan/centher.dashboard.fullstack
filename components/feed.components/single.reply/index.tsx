@@ -139,7 +139,7 @@ export const SingleReply = React.forwardRef<
     })();
   }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
 
-  const likePost = async (post_id: string) => {
+  const likePost = async (postId: string) => {
     try {
       // putting it before the api call to make it feel faster
       if (_post.liked_by_loggedin_user) {
@@ -148,16 +148,21 @@ export const SingleReply = React.forwardRef<
           likes_count: prev.likes_count - 1,
           liked_by_loggedin_user: false,
         }));
+        axiosNodeApi.post("api/socials/analytics/likes", {
+          postId,
+          actionType: "unlike",
+        });
       } else {
         setPost((prev) => ({
           ...prev,
           likes_count: prev.likes_count + 1,
           liked_by_loggedin_user: true,
         }));
+        axiosNodeApi.post("api/socials/analytics/likes", {
+          postId,
+          actionType: "like",
+        });
       }
-      await axiosNodeApi.post("api/socials/analytics/likes", {
-        post_id,
-      });
     } catch (error: any) {
       setPost((prev) => ({
         ...prev,
