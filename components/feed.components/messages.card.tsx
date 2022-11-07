@@ -43,7 +43,7 @@ export const MessagesCard = () => {
 
 // styling
 const MessagesCardContainer = ctl(`
-  w-full max-w-[272px] rounded-10px bg-background-shade-3 blur-md relative`);
+  w-full max-w-[272px] rounded-10px bg-background-shade-3 blur-sm relative`);
 const MCTitle = ctl(`
   text-14px font-semibold text-white pb-4
 `);
