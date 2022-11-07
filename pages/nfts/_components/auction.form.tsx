@@ -153,8 +153,6 @@ const AuctionForm = ({
     createNFT(finalizedData);
   };
 
-  useEffect(() => {}, [clearForm]);
-
   useEffect(() => {
     if (clearForm) {
       reset({

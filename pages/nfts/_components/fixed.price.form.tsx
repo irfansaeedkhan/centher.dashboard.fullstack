@@ -131,10 +131,9 @@ const FixedPriceForm = ({
         NFTPrice: null,
         Collection: "",
       });
+      setPropertyList([]);
     }
   }, [clearForm]);
-
-  console.log("clearForm", clearForm);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
