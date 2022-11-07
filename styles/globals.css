@@ -661,3 +661,17 @@ input:-webkit-autofill {
   border-radius: 16px;
   overflow: hidden;
 }
+
+.carousel-container {
+  transition: all 0.5s linear;
+  /* padding: 0px 0px 0px 17%; */
+}
+.carousel-container ul {
+  gap: 24px;
+  transition: all 0.5s linear !important;
+}
+@media only screen and (max-width: 659px) {
+  .carousel-container ul {
+    gap: 0;
+  }
+}

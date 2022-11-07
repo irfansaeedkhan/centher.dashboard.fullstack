@@ -150,19 +150,24 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
       toast.success("Copy Link Successfully!");
     };
 
-    const likePost = async (post_id: string) => {
+    const likePost = async (postId: string) => {
       try {
         // putting it before the api call to make it feel faster
         if (isLikedByLoggedInUser) {
           setIsLikedByLoggedInUser(false);
           setTotalPostLikes(totalPostLikes - 1);
+          axiosNodeApi.post("api/socials/analytics/likes", {
+            postId,
+            actionType: "unlike",
+          });
         } else {
           setTotalPostLikes((prev) => prev + 1);
           setIsLikedByLoggedInUser(true);
+          axiosNodeApi.post("api/socials/analytics/likes", {
+            postId,
+            actionType: "like",
+          });
         }
-        await axiosNodeApi.post("api/socials/analytics/likes", {
-          post_id,
-        });
       } catch (error: any) {
         setIsLikedByLoggedInUser(post.liked_by_loggedin_user);
         setTotalPostLikes(post.likes_count);

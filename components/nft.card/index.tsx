@@ -135,7 +135,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 export default NFTCard;
 
 const nftCardWrapper = ctl(
-  `w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
+  `[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
 );
 
 const nftImageWrapper = ctl(`w-full flex justify-center px-2 mt-10`);

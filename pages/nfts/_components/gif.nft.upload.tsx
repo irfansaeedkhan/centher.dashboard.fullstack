@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
@@ -7,7 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 
-const GifNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
+const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
 
   // upload image to preview
@@ -16,6 +16,10 @@ const GifNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
     setAsset(previewUrl);
     setShowSecPreivew(true);
   };
+  useEffect(() => {
+    setShowSecPreivew(false);
+    setAsset(undefined);
+  }, [clearForm]);
   return (
     <div className={previewContainer}>
       {showSecPreview ? (

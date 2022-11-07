@@ -136,7 +136,7 @@ export const callCreateCollection = async (
   name: string,
   symbol: string,
   uri: string,
-  maxsupply: number,
+  maxsupply: number | null,
   fee: number
 ) => {
   try {

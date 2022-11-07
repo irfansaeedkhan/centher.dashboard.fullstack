@@ -5,7 +5,9 @@ import { devtools } from "zustand/middleware";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
+import { Notification } from "@/assets/svgs";
 
+// TODO: Mubashir - Improve how the notifications are handled for different days
 export interface NotificationsStore {
   notifications: Notification[];
   fetchNotifications: () => Promise<void>;
@@ -14,6 +16,7 @@ export interface NotificationsStore {
   updateOffset: () => void;
   limit: number;
   markAsRead: (id: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
   loading: LoadingState;
 }
 
@@ -49,12 +52,13 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
+            const notifications = [
+              ...filteredNotifications,
+              ...data.notifications,
+            ];
 
             return {
-              notifications: [
-                ...filteredNotifications,
-                ...data.notifications,
-              ] as Notification[],
+              notifications,
               loading: "loaded",
             };
           });
@@ -68,6 +72,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
       fetchNewNotifications: async () => {
         try {
           const limit = get().limit;
+
           const { data } = await axiosNodeApi.get(
             `/api/notifications?limit=${limit}`
           );
@@ -81,9 +86,13 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
+            const notifications = [
+              ...data.notifications,
+              ...filteredNotifications,
+            ];
 
             return {
-              notifications: [...data.notifications, ...filteredNotifications],
+              notifications,
               loading: "loaded",
             };
           });
@@ -103,6 +112,15 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 : notification
             ),
           }));
+        } catch (error) {
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
+      markAllAsRead: async () => {
+        try {
+          await axiosNodeApi.patch(`/api/notifications`);
         } catch (error) {
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);

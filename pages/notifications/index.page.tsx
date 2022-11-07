@@ -6,12 +6,12 @@ import { useNotificationsStore } from "@/store/notifications.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
+import { NotificationBell } from "@/assets/svgs";
 
 import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
 } from "./_components";
-import { NotificationBell } from "@/assets/svgs";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
@@ -56,50 +56,64 @@ const Notifications: NextPageWithLayout = () => {
   }, []);
 
   return (
-    <div>
-      <div className={sectionName}>Notifications</div>
-      <div className="flex flex-col gap-2">
-        {notifications.map((notification) => {
-          if (
-            notification._id === notifications[notifications.length - 1]._id
-          ) {
-            return (
-              <SingleNotification
-                ref={lastNotiRef}
-                notification={notification}
-                key={notification._id}
-              />
-            );
-          }
-          return (
-            <SingleNotification
-              notification={notification}
-              key={notification._id}
-            />
-          );
-        })}
+    <div className="flex max-w-[1005px]">
+      <div className="space-y-6 flex-grow">
+        {/* Remaining */}
+        {notifications.length > 0 && (
+          <div>
+            <div className={sectionName}>Latest</div>
+            <div className="">
+              {notifications.map((notification, index) => {
+                if (
+                  notification._id ===
+                  notifications[notifications.length - 1]._id
+                ) {
+                  return (
+                    <SingleNotification
+                      ref={lastNotiRef}
+                      notification={notification}
+                      key={notification._id}
+                      length={notifications.length}
+                      index={index}
+                      days="befor_seven"
+                    />
+                  );
+                }
+                return (
+                  <SingleNotification
+                    notification={notification}
+                    key={notification._id}
+                    length={notifications.length}
+                    index={index}
+                    days="befor_seven"
+                  />
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {(loading === "loading" || loading === "idle") && (
+          <SingleNotificationSkeleton />
+        )}
+
+        {loading === "loaded" && notifications.length === 0 && (
+          <div>
+            <div className="flex justify-center mt-[60px]">
+              <NotificationBell />
+            </div>
+            <div className="flex justify-center mt-[35px]">
+              <p className="text-white">No notifications available</p>
+            </div>
+          </div>
+        )}
+
+        {loading === "failed" && (
+          <div className="flex justify-center">
+            <p className="text-gray-500">Something went wrong!</p>
+          </div>
+        )}
       </div>
-
-      {(loading === "loading" || loading === "idle") && (
-        <SingleNotificationSkeleton />
-      )}
-
-      {loading === "loaded" && notifications.length === 0 && (
-        <div>
-          <div className="flex justify-center mt-[60px]">
-            <NotificationBell />
-          </div>
-          <div className="flex justify-center mt-[35px]">
-            <p className="text-white">No notifications available</p>
-          </div>
-        </div>
-      )}
-
-      {loading === "failed" && (
-        <div className="flex justify-center">
-          <p className="text-gray-500">Something went wrong!</p>
-        </div>
-      )}
     </div>
   );
 };
@@ -110,6 +124,4 @@ Notifications.getLayout = (page) => {
 
 export default Notifications;
 
-const sectionName = ctl(
-  `animationTextHeading mb-8 lg:!text-[34px] sm:!text-2xl`
-);
+const sectionName = ctl(`text-white font-bold mb-5`);

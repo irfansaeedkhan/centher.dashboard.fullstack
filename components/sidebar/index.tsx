@@ -96,7 +96,7 @@ const sideBarWrapper = ctl(`
   min-w-[15.5rem] 
   py-5 
   gap-8
-  sm:hidden
+  hidden
   lg:flex
   flex-col
   font-monto

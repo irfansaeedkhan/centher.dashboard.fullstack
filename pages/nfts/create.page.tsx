@@ -29,6 +29,7 @@ import { UploadNFT, CreateNFTForm } from "./_components";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
+  const [clearForm, setClearForm] = useState(false);
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -105,6 +106,7 @@ const CreateNFT: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
+    setClearForm(true);
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
@@ -147,6 +149,7 @@ const CreateNFT: NextPageWithLayout = () => {
               setModal(false);
               setModalTitle("");
               setModalContent(null);
+              setClearForm(false);
             }}
           />
           {/* </Link> */}
@@ -268,8 +271,9 @@ const CreateNFT: NextPageWithLayout = () => {
           setAsset={setAsset}
           assetTab={assetTab}
           setAssetTab={setAssetTab}
+          clearForm={clearForm}
         />
-        <CreateNFTForm createNFT={createNFT} />
+        <CreateNFTForm createNFT={createNFT} clearForm={clearForm} />
       </div>
 
       {Modal && (

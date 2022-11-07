@@ -59,7 +59,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
 };
 
 const collectionWrapper = ctl(
-  `w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`
+  `w-full border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`
 );
 
 const imagesWrapper = ctl(`relative flex justify-center`);
@@ -79,5 +79,5 @@ const collectionDescription = ctl(
 );
 
 const imageStyle = ctl(
-  `rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`
+  `rounded-t-lg w-full [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`
 );
