@@ -35,6 +35,8 @@ export { default as SearchUserIcon } from "./search.user.svg";
 export { default as RepliesIcon } from "./replies.icon.svg";
 export { default as Flor } from "./flor.svg";
 export { default as PromotionText } from "./promotion.text.svg";
+export { default as HotNftEmptyIcon } from "./hot.nfts.empty.icon.svg";
+export { default as NftsCollectionEmpty } from "./nfts.collection.empty.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (

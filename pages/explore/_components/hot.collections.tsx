@@ -7,6 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CollectionCard } from "@/components/collection.card";
 import { AppRoutes } from "@/constants/app.routes";
 import { Collection } from "@/store/explore.store";
+import { NftsCollectionEmpty } from "@/assets/svgs";
 
 interface HotCollectionsProps {
   hotCollections: Collection[];
@@ -22,11 +23,23 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
           View all
         </Link>
       </div>
-      <div className={collectionCardStyle}>
-        {hotCollections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
-      </div>
+
+      {hotCollections.length !== 0 ? (
+        <div className={collectionCardStyle}>
+          {hotCollections.map((collection) => {
+            return <CollectionCard data={collection} key={collection.id} />;
+          })}
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center items-center">
+            <NftsCollectionEmpty />
+          </div>
+          <div className="flex justify-center items-center text-white font-semibold text-[16px]">
+            No Collection found yet
+          </div>
+        </>
+      )}
     </div>
   );
 };
