@@ -73,9 +73,12 @@ export const useNotificationsStore = create<NotificationsStore>()(
         try {
           const limit = get().limit;
 
+          // First fetch the notifications and then mark them as read
           const { data } = await axiosNodeApi.get(
             `/api/notifications?limit=${limit}`
           );
+
+          get().markAllAsRead();
 
           set((state) => {
             // Filter out notifications that are already in the store
