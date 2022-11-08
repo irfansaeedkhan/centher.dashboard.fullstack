@@ -47,7 +47,10 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <Link href={`/nfts/${data.collection}/${data.tokenId}`} className={nftCardWrapper}>
+    <Link
+      href={`/nfts/${data.collection}/${data.tokenId}`}
+      className={nftCardWrapper}
+    >
       <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
         {loading !== "loading" && loading !== "idle" ? (
           <div className={ownerDpWrapper}>
