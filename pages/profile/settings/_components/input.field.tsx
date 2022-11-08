@@ -39,7 +39,12 @@ export type FieldName =
   | "first_name"
   | "last_name"
   | "website_url"
-  | "twitter_username";
+  | "twitter_username"
+  | "facebook_username"
+  | "instagram_username"
+  | "tiktok_username"
+  | "twitch_username"
+  | "onlyfans_username";
 
 const fieldWrapper = ctl(`
   flex 

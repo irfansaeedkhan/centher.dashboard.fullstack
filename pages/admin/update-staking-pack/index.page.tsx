@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -9,10 +8,12 @@ import { AdminSidebar } from "@/components/sidebar/admin.sidebar";
 
 const UpdateStakingPack: NextPageWithLayout = () => {
   return (
-    <div className={contentWrapper}>
-      <div className={containerWrap}>
-        <h1 className={titleName}>Update New Coin Pack</h1>
-        <form className={formWrap}>
+    <div className={`bg-black-shade-3 min-h-screen flex-grow p-4 font-monto`}>
+      <div
+        className={`bg-background-shade-1 text-white max-w-[720px] mx-auto mt-11 rounded-[10px]`}
+      >
+        <h1 className={`text-[24px] pt-10 pl-10`}>Update New Coin Pack</h1>
+        <form className={`py-10 mx-auto max-w-[496px]`}>
           <label className={formLabel}>Name</label>
           <input
             type="text"
@@ -29,7 +30,7 @@ const UpdateStakingPack: NextPageWithLayout = () => {
               <input
                 type="text"
                 disabled
-                className={formDisableField}
+                className={`bg-white bg-opacity-5 w-full block rounded-[10px] placeholder:textGradient border-0 focus:ring-brand-primary focus:outline-none py-3 px-4 mt-2`}
                 placeholder="NTR"
               />
             </div>
@@ -60,8 +61,12 @@ const UpdateStakingPack: NextPageWithLayout = () => {
               </select>
             </div>
           </div>
-          <div className={formButtonWrap}>
-            <button className={formButton}>Update</button>
+          <div className={`mt-6`}>
+            <button
+              className={`bg-brand-primary w-full py-3 px-4 text-black rounded-[10px] text-12 font-bold`}
+            >
+              Update
+            </button>
           </div>
         </form>
       </div>
@@ -83,32 +88,7 @@ UpdateStakingPack.getLayout = (page) => {
 
 export default UpdateStakingPack;
 
-const contentWrapper = ctl(
-  `bg-black-shade-3 min-h-screen flex-grow p-4 font-monto`
-);
+const formLabel = `block`;
 
-const containerWrap = ctl(
-  `  bg-background-shade-1 text-white max-w-[720px] mx-auto mt-11 rounded-[10px]`
-);
-
-const titleName = ctl(`text-[24px] pt-10 pl-10`);
-
-const formWrap = ctl(`py-10 mx-auto max-w-[496px]`);
-
-const formLabel = ctl(`block`);
-
-const formField = ctl(
-  `bg-white bg-opacity-5 block w-full placeholder:text-gray-shade-17 border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2`
-);
-
-const formDivider = ctl(`flex gap-x-3 mt-3`);
-
-const formDisableField = ctl(
-  `bg-white bg-opacity-5 w-full block rounded-[10px] placeholder:textGradient border-0 focus:ring-brand-primary focus:outline-none py-3 px-4 mt-2`
-);
-
-const formButtonWrap = ctl(`mt-6`);
-
-const formButton = ctl(
-  `bg-brand-primary w-full py-3 px-4 text-black rounded-[10px] text-12 font-bold`
-);
+const formField = `bg-white bg-opacity-5 block w-full placeholder:text-gray-shade-17 border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2`;
+const formDivider = `flex gap-x-3 mt-3`;

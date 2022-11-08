@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-import ctl from "@netlify/classnames-template-literals";
 
 import { NFT } from "@/store/explore.store";
 // import useGetUser from "@/hooks/use.get.user";
@@ -49,11 +48,11 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   return (
     <Link
       href={`/nfts/${data.collection}/${data.tokenId}`}
-      className={nftCardWrapper}
+      className={`[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`}
     >
       <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
         {loading !== "loading" && loading !== "idle" ? (
-          <div className={ownerDpWrapper}>
+          <div className={`flex items-center gap-2`}>
             {user?.account_address ? (
               <Link href={`/profile/${user?.account_address}`}>
                 <Image
@@ -94,7 +93,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           <HotNftsHeaderSkeleton />
         )}
       </div>
-      <div className={nftImageWrapper}>
+      <div className={`w-full flex justify-center px-2 mt-10`}>
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -107,17 +106,21 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           <p className="h-[220px] text-grey pt-5">Invalid Image</p>
         )}
       </div>
-      <div className={nftDetailWrapper}>
-        <div className={nftName}>{name}</div>
+      <div className={`flex flex-col gap-1 px-2 py-3`}>
+        <div className={`font-semibold text-white`}>{name}</div>
       </div>
-      <div className={nftOwnerWrapper}>
+      <div
+        className={`bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`}
+      >
         {/* <div className={ownerDpWrapper}>
             <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
             <span className={nftOwnerName}>{props.nftOwnerName}</span>
             <YellowTick />
           </div> */}
-        <div className={nftPriceWrapper}>
-          <span className={nftPrice}>
+        <div className={`flex justify-between gap-2 items-center`}>
+          <span
+            className={`!text-sm !font-medium flex items-center gap-2 text-white`}
+          >
             <BNBIcon />
             <span>{formatEther2Number(data.price)} BNB</span>
           </span>
@@ -137,28 +140,4 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 
 export default NFTCard;
 
-const nftCardWrapper = ctl(
-  `[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
-);
-
-const nftImageWrapper = ctl(`w-full flex justify-center px-2 mt-10`);
-
-const textSimple = ctl(`text-gray-shade-7 text-xs font-medium`);
-
-const nftDetailWrapper = ctl(`flex flex-col gap-1 px-2 py-3`);
-
-const nftName = ctl(`font-semibold text-white`);
-
-const nftOwnerWrapper = ctl(
-  `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
-);
-
-const nftOwnerName = ctl(`text-white text-xs font-medium`);
-
-const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
-
-const nftPrice = ctl(
-  `!text-sm !font-medium flex items-center gap-2 text-white`
-);
-
-const ownerDpWrapper = ctl(`flex items-center gap-2`);
+const nftOwnerName = `text-white text-xs font-medium`;

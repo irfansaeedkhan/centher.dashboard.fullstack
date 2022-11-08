@@ -1,6 +1,4 @@
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
-
 import { SpinIcon2, SuccessIcon, WarningIcon } from "@/assets/svgs";
 
 import Button from "../button";
@@ -30,19 +28,94 @@ export const CustomProgressModal: React.FC<CustomProgressModalProps> = ({
   onClose,
 }) => {
   return (
-    <div className={CustomProgressModalContainer}>
+    <div
+      className={`
+  flex 
+  z-50 
+  fixed 
+  inset-0 
+  items-center 
+  outline-none 
+  justify-center 
+  backdrop-filter 
+  overflow-y-auto 
+  backdrop-blur-lg
+  overflow-x-hidden 
+  focus:outline-none 
+`}
+    >
       {/*content*/}
-      <div className={modalContent}>
+      <div
+        className={`
+  flex 
+  mx-3 
+  pb-5 
+  border 
+  flex-col 
+  relative 
+  lg:w-164 
+  md:w-140
+  xl:w-164 
+  sm:w-full 
+  rounded-lg
+  bg-black-shade-3
+  focus:outline-none 
+  border-gray-shade-3
+`}
+      >
         {/*header*/}
-        <div className={modalHeader}>
-          <span className={modalHeaderTitle}>{title}</span>
-          <button className={modalHeaderButton} onClick={onClose}>
+        <div
+          className={`
+  flex 
+  py-6
+  px-4
+  rounded-t 
+  items-center 
+  justify-center
+  relative
+`}
+        >
+          <span className={`text-white text-24px text-center font-semibold`}>
+            {title}
+          </span>
+          <button
+            className={`
+  px-1 
+  py-1 
+  ml-auto 
+  border-0 
+  text-3xl 
+  text-white 
+  opacity-100 
+  float-right 
+  outline-none 
+  leading-none 
+  font-semibold 
+  bg-transparent 
+  focus:outline-none
+  absolute
+  top-[50%] translate-y-[-50%] 
+  right-6
+  hover:scale-110
+  transition
+`}
+            onClick={onClose}
+          >
             ×
           </button>
         </div>
         {/* BodyWrapper */}
-        <div className={bodyWrapper}>
-          <div className={modalBodyWrapper}>
+        <div
+          className={`
+  maxHeight-[400px] 
+  overflow-y-scroll
+`}
+        >
+          <div
+            className={`
+  text-center flex flex-col gap-6 w-full border-t-2 border-gray-shade-3 pt-4
+`}
+          >
             <div className="flex items-center justify-center">
               {status === "progress" && <SpinIcon2 />}
               {status === "success" && <SuccessIcon />}
@@ -67,15 +140,27 @@ export const CustomProgressModal: React.FC<CustomProgressModalProps> = ({
                 />
               )}
             </div>
-            <div className={Modalcontent}>
-              <h5 className={modalTitle}>
+            <div
+              className={`
+px-6
+`}
+            >
+              <h5
+                className={`
+text-18px text-white font-semibold pb-2
+`}
+              >
                 {status === "progress"
                   ? "Transaction in progress"
                   : status === "failed"
                   ? "Transaction failed"
                   : subTitle}
               </h5>
-              <h6 className={modalMessage}>
+              <h6
+                className={`
+text-14px text-gray-shade-2 font-normal
+`}
+              >
                 {status === "progress"
                   ? "Your transaction in progress. Please wait..."
                   : status === "failed"
@@ -83,7 +168,11 @@ export const CustomProgressModal: React.FC<CustomProgressModalProps> = ({
                   : description}
               </h6>
             </div>
-            <div className={modalFooter}>
+            <div
+              className={`
+flex items-center justify-center gap-3  pt-6 px-6
+`}
+            >
               <Button
                 title={
                   status === "success" || status === "failed" ? "Ok" : "Cancel"
@@ -114,93 +203,3 @@ export const CustomProgressModal: React.FC<CustomProgressModalProps> = ({
     </div>
   );
 };
-
-const CustomProgressModalContainer = ctl(`
-  flex 
-  z-50 
-  fixed 
-  inset-0 
-  items-center 
-  outline-none 
-  justify-center 
-  backdrop-filter 
-  overflow-y-auto 
-  backdrop-blur-lg
-  overflow-x-hidden 
-  focus:outline-none 
-`);
-
-const modalContent = ctl(`
-  flex 
-  mx-3 
-  pb-5 
-  border 
-  flex-col 
-  relative 
-  lg:w-164 
-  md:w-140
-  xl:w-164 
-  sm:w-full 
-  rounded-lg
-  bg-black-shade-3
-  focus:outline-none 
-  border-gray-shade-3
-`);
-
-const modalHeader = ctl(`
-  flex 
-  py-6
-  px-4
-  rounded-t 
-  items-center 
-  justify-center
-  relative
-`);
-
-const modalHeaderTitle = ctl(`text-white text-24px text-center font-semibold`);
-
-const modalHeaderButton = ctl(`
-  px-1 
-  py-1 
-  ml-auto 
-  border-0 
-  text-3xl 
-  text-white 
-  opacity-100 
-  float-right 
-  outline-none 
-  leading-none 
-  font-semibold 
-  bg-transparent 
-  focus:outline-none
-  absolute
-  top-[50%] translate-y-[-50%] 
-  right-6
-  hover:scale-110
-  transition
-`);
-
-const bodyWrapper = ctl(`
-  maxHeight-[400px] 
-  overflow-y-scroll
-`);
-
-// modal styling
-const modalBodyWrapper = ctl(`
-  text-center flex flex-col gap-6 w-full border-t-2 border-gray-shade-3 pt-4
-`);
-const Modalcontent = ctl(`
-px-6
-`);
-const Icon = ctl(`
-mx-auto w-[64px]
-`);
-const modalTitle = ctl(`
-text-18px text-white font-semibold pb-2
-`);
-const modalMessage = ctl(`
-text-14px text-gray-shade-2 font-normal
-`);
-const modalFooter = ctl(`
-flex items-center justify-center gap-3  pt-6 px-6
-`);

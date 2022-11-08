@@ -24,6 +24,9 @@ const ExplorePage: NextPageWithLayout = () => {
     allNFTsOffset,
     updateOffset,
     limit,
+    loadingHotNFTs,
+    loadingCollections,
+    loadingAllNFTs,
   } = useExploreStore((state) => ({
     hotNFTs: state.hotNFTs,
     collections: state.collections,
@@ -34,8 +37,16 @@ const ExplorePage: NextPageWithLayout = () => {
     allNFTsOffset: state.allNFTsOffset,
     updateOffset: state.updateOffset,
     limit: state.limit,
+    loadingHotNFTs: state.loadingHotNFTs,
+    loadingCollections: state.loadingCollections,
+    loadingAllNFTs: state.loadingAllNFTs,
   }));
-
+  console.log(
+    "loading state: ",
+    loadingHotNFTs,
+    loadingCollections,
+    loadingAllNFTs
+  );
   const [lastNotiRef, lastNotiInView] = useInView();
 
   useEffect(() => {

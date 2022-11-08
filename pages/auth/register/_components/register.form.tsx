@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 
@@ -105,7 +104,16 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <>
-      <form className={wrapper} onSubmit={payFee}>
+      <form
+        className={`
+  flex 
+  gap-6
+  w-full 
+  h-auto 
+  flex-col 
+`}
+        onSubmit={payFee}
+      >
         {account ? (
           <>
             <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
@@ -125,7 +133,21 @@ export const RegisterForm: React.FC = () => {
           </>
         ) : (
           <button
-            className={connectButton}
+            className={`
+  mt-6 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  transition-all 
+  justify-center 
+  !bg-brand-primary 
+  text-gray-shade-5 
+  hover:!bg-brand-primary-dark
+`}
             type="button"
             onClick={connectWallet}
           >
@@ -177,7 +199,24 @@ export const RegisterForm: React.FC = () => {
             Register
           </button>
         ) : (
-          <button type="button" className={buttonDisabled} disabled>
+          <button
+            type="button"
+            className={`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg
+  items-center 
+  text-gray-shade-7
+  justify-center 
+  !bg-gray-shade-3
+  cursor-not-allowed
+  transition-all 
+`}
+            disabled
+          >
             Register
           </button>
         )}
@@ -190,8 +229,12 @@ export const RegisterForm: React.FC = () => {
               setFeeModal((prev) => ({ ...prev, isOpen: false }));
           }}
         >
-          <div className={feeWrapper}>
-            <div className={feeModalWrapper}>
+          <div
+            className={`
+lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
+`}
+          >
+            <div className={`flex justify-center`}>
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
@@ -200,8 +243,10 @@ export const RegisterForm: React.FC = () => {
                 feeModal.status === "end" && <Successfully />
               )}
             </div>
-            <div className={feeModalStatus}>
-              <h2 className={feeModalProgress}>
+            <div className={`flex flex-col gap-2 items-center`}>
+              <h2
+                className={`font-semibold lg:text-lg sm:text-xs text-center text-white`}
+              >
                 {feeModal.status === "start"
                   ? "Pay Registration Fee"
                   : feeModal.status === "progress"
@@ -209,14 +254,16 @@ export const RegisterForm: React.FC = () => {
                   : feeModal.status === "end" && "Successfully"}
               </h2>
               {feeModal.status === "start" ? (
-                <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+                <p
+                  className={`text-brand-primary text-center font-semibold tracking-wider text-base`}
+                >{`${feeModal.fee} BNB`}</p>
               ) : feeModal.status === "progress" ? (
-                <p className={modalInnerText}>
+                <p className={`text-sm text-center text-gray-shade-2`}>
                   Please do not close or refresh page.
                 </p>
               ) : (
                 feeModal.status === "end" && (
-                  <p className={registrationCompleted}>
+                  <p className={`text-sm text-center text-gray-shade-2`}>
                     Transaction done successfully. Registering user on platform
                   </p>
                 )
@@ -230,7 +277,23 @@ export const RegisterForm: React.FC = () => {
               ) : (
                 (feeModal.status === "progress" ||
                   feeModal.status === "end") && (
-                  <button className={button2} type="button" disabled>
+                  <button
+                    className={`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg
+  items-center 
+  text-[#7C81A2] 
+  justify-center 
+  !bg-black-shade-7
+  cursor-not-allowed
+`}
+                    type="button"
+                    disabled
+                  >
                     Ok
                   </button>
                 )
@@ -243,15 +306,7 @@ export const RegisterForm: React.FC = () => {
   );
 };
 
-const wrapper = ctl(`
-  flex 
-  gap-6
-  w-full 
-  h-auto 
-  flex-col 
-`);
-
-const button = ctl(`
+const button = `
   mt-2 
   py-3 
   flex 
@@ -264,69 +319,4 @@ const button = ctl(`
   !bg-brand-primary 
   hover:!bg-brand-primary-dark
   transition-all 
-`);
-
-const buttonDisabled = ctl(`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-gray-shade-7
-  justify-center 
-  !bg-gray-shade-3
-  cursor-not-allowed
-  transition-all 
-`);
-
-const connectButton = ctl(`
-  mt-6 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  transition-all 
-  justify-center 
-  !bg-brand-primary 
-  text-gray-shade-5 
-  hover:!bg-brand-primary-dark
-`);
-
-const button2 = ctl(`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-[#7C81A2] 
-  justify-center 
-  !bg-black-shade-7
-  cursor-not-allowed
-`);
-
-const feeWrapper = ctl(`
-lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
-`);
-
-const feeModalWrapper = ctl(`flex justify-center`);
-
-const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
-
-const feeModalProgress = ctl(
-  `font-semibold lg:text-lg sm:text-xs text-center text-white`
-);
-
-const textFee = ctl(
-  `text-brand-primary text-center font-semibold tracking-wider text-base`
-);
-
-const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);
-
-const registrationCompleted = ctl(`text-sm text-center text-gray-shade-2`);
+`;

@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useWindowSize } from "usehooks-ts";
-import ctl from "@netlify/classnames-template-literals";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
 // App imports
@@ -31,7 +30,20 @@ const Header = () => {
   }, [width]);
 
   return (
-    <div className={headerWraper}>
+    <div
+      className={`
+  flex
+  gap-10 
+  px-5
+  h-[60px]
+  relative
+  items-center
+  justify-between 
+  border-b-[1.5px] 
+  bg-black-shade-9 
+  border-gray-shade-border-color 
+`}
+    >
       <Link
         href={AppRoutes.home}
         className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
@@ -44,7 +56,13 @@ const Header = () => {
         />
       </Link>
 
-      <div className={rightWraper}>
+      <div
+        className={`
+  flex 
+  gap-6
+  items-center
+`}
+      >
         <Search />
         {/* <span className={border}></span> */}
         {!user && !isUserLoading && (
@@ -109,26 +127,7 @@ const Header = () => {
 
 export default Header;
 
-const headerWraper = ctl(`
-  flex
-  gap-10 
-  px-5
-  h-[60px]
-  relative
-  items-center
-  justify-between 
-  border-b-[1.5px] 
-  bg-black-shade-9 
-  border-gray-shade-border-color 
-`);
-
-const rightWraper = ctl(`
-  flex 
-  gap-6
-  items-center
-`);
-
-const connectButton = ctl(`
+const connectButton = `
   px-6 
   py-2
   flex
@@ -139,13 +138,4 @@ const connectButton = ctl(`
   bg-brand-primary 
   text-black-shade-2 
   hover:bg-brand-primary-dark 
-`);
-
-const border = ctl(`
-  my-3
-  md:block
-  sm:hidden
-  border-l-2 
-  rounded-xl 
-  border-gray-shade-12/30
-`);
+`;
