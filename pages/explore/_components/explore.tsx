@@ -6,6 +6,7 @@ import { useInView } from "react-intersection-observer";
 // App imports
 import NFTCard from "@/components/nft.card";
 import { NFT, useExploreStore } from "@/store/explore.store";
+import { HotNftEmptyIcon } from "@/assets/svgs";
 
 // Current directory imports
 
@@ -23,11 +24,23 @@ export const Explore: React.FC<ExploreProps> = ({ allNFTs }) => {
           <button className={categoryButtonWrapper}>Category</button>
         </div>
       </div>
-      <div className="nftCardContainer">
-        {allNFTs.map((nft) => (
-          <NFTCard data={nft} key={nft.id} />
-        ))}
-      </div>
+
+      {allNFTs.length !== 0 ? (
+        <div className="nftCardContainer">
+          {allNFTs.map((nft) => (
+            <NFTCard data={nft} key={nft.id} />
+          ))}
+        </div>
+      ) : (
+        <>
+          <div className="flex justify-center items-center text-white">
+            <HotNftEmptyIcon />
+          </div>
+          <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+            No NFTs found yet
+          </div>
+        </>
+      )}
     </div>
   );
 };

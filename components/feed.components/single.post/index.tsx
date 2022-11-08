@@ -142,7 +142,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       })();
     }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
 
-    const likePost = async (post_id: string) => {
+    const likePost = async (postId: string) => {
       try {
         // putting it before the api call to make it feel faster
         if (_post.liked_by_loggedin_user) {
@@ -151,16 +151,21 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             likes_count: prev.likes_count - 1,
             liked_by_loggedin_user: false,
           }));
+          axiosNodeApi.post("api/socials/analytics/likes", {
+            postId,
+            actionType: "unlike",
+          });
         } else {
           setPost((prev) => ({
             ...prev,
             likes_count: prev.likes_count + 1,
             liked_by_loggedin_user: true,
           }));
+          axiosNodeApi.post("api/socials/analytics/likes", {
+            postId,
+            actionType: "like",
+          });
         }
-        await axiosNodeApi.post("api/socials/analytics/likes", {
-          post_id,
-        });
       } catch (error: any) {
         setPost((prev) => ({
           ...prev,
@@ -184,7 +189,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         onDelete(_post._id);
 
         // Decrement the posts count in profile card details
-        decrementPostsCount();
+        if (!_post.parent_post) {
+          decrementPostsCount();
+        }
         onDelete(_post._id);
       } catch (error: any) {
         toast.error(

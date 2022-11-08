@@ -14,7 +14,6 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   const [coverImage, setCoverImage] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [description, setDescription] = useState("");
-
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {

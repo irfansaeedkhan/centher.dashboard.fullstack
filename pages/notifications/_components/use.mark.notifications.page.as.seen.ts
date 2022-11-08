@@ -11,5 +11,5 @@ export const useMarkNotificationsPageAsSeen = () => {
         has_seen_notifications_page: true,
       });
     }
-  }, [updateUser, user]);
+  }, [user, updateUser]);
 };

@@ -8,7 +8,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
-import { DiscoverCard } from "./discover.card";
+import PromotionCard from "./promotion.card";
 
 export const LeftSidebarStickyContainer = () => {
   const router = useRouter();
@@ -54,7 +54,10 @@ w-[272px]  flex-col gap-3 hidden lg:flex
 `}
       >
         {profileCardUser ? (
-          <ProfileDetailCard user={profileCardUser} />
+          <>
+            <ProfileDetailCard user={profileCardUser} />
+            <PromotionCard />
+          </>
         ) : (
           <ProfileDetailCardSkeleton />
         )}

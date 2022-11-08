@@ -9,15 +9,19 @@ import {
   Notification,
   useNotificationsStore,
 } from "@/store/notifications.store";
+import clsx from "clsx";
 
 interface SingleNotificationProps {
   notification: Notification;
+  length: number;
+  index: number;
+  days: string;
 }
 
 export const SingleNotification = React.forwardRef<
   HTMLDivElement,
   SingleNotificationProps
->(({ notification }, ref) => {
+>(({ notification, length, index, days }, ref) => {
   const markAsRead = useNotificationsStore((state) => state.markAsRead);
 
   const readNotification = async () => {
@@ -63,12 +67,14 @@ export const SingleNotification = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={
-        `w-full max-w-[1005px] h-[104px] p-6 flex justify-between rounded-xl ` +
-        (notification.status === "unread"
-          ? "bg-background-shade-2"
-          : "bg-background-shade-3")
-      }
+      className={clsx(
+        `w-full max-w-[1005px] h-[104px] p-6 flex justify-between`,
+        notification.status === "unread"
+          ? `bg-background-shade-2`
+          : `bg-background-shade-3`,
+        index === length - 1 ? `rounded-b-xl` : `border-b border-gray-shade-3`,
+        index === 0 && `rounded-t-xl`
+      )}
       onClick={readNotification}
     >
       <div className="flex items-center gap-2">
@@ -85,7 +91,9 @@ export const SingleNotification = React.forwardRef<
         {notificationLink}
       </div>
       <p className="text-sm text-gray-shade-2 ">
-        {moment(notification.createdAt).format("LT")}
+        {moment(notification.createdAt).format(
+          days === "seven" || days === "befor_seven" ? `ll` : `LT`
+        )}
       </p>
     </div>
   );

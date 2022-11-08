@@ -87,11 +87,14 @@ export const AuctionNFTBuyerDescription = ({
       clearInterval(updateTime);
     };
   }, [data]);
-
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  interface bidForm {
+    bidPrice: number;
+  }
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<bidForm>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   const bidNFTModalFunc = () => {
     if (!library) {
@@ -129,7 +132,7 @@ export const AuctionNFTBuyerDescription = ({
           </div>
           {formState.errors.bidPrice && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.bidPrice.message} */}
+              {formState.errors.bidPrice.message}
             </p>
           )}
         </div>

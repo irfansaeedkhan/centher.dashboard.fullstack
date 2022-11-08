@@ -175,8 +175,10 @@ export function usePostUpload({
       );
 
       onPostCreated && onPostCreated(newPostData.post as CompletedPost);
-      // Increment the post count
-      incrementPostsCount();
+      // Increment the post count just for main posts not for replies
+      if (!newPostData.post?.parent_post) {
+        incrementPostsCount();
+      }
     } catch {
       toast.error("Failed to get new post");
     }

@@ -45,10 +45,14 @@ export const FixedPriceNFTDescription = ({
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  interface bidForm {
+    bidPrice: number;
+  }
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<bidForm>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   const cancelListingFunc = () => {
     if (!library) {
@@ -124,7 +128,7 @@ export const FixedPriceNFTDescription = ({
           </div>
           {formState.errors.bidPrice && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.bidPrice.message} */}
+              {formState.errors.bidPrice.message}
             </p>
           )}
         </div>

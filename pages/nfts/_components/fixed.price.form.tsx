@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -43,16 +43,21 @@ const schema = Joi.object({
 interface FixedPriceFormProps {
   createNFT: any;
   collections: Collection[];
+  clearForm: boolean;
 }
 interface FormFields {
   NFTName: String;
   Description: String;
-  NFTAmount: number;
-  NFTPrice: number;
+  NFTAmount: number | null;
+  NFTPrice: number | null;
   Collection: String;
 }
 // TODO: Kindly fix any types
-const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
+const FixedPriceForm = ({
+  createNFT,
+  collections,
+  clearForm,
+}: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -63,6 +68,13 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
     useForm<FormFields>({
       mode: "onChange",
       resolver: joiResolver(schema),
+      defaultValues: {
+        NFTName: "",
+        Description: "",
+        NFTAmount: null,
+        NFTPrice: null,
+        Collection: "",
+      },
     });
   // functions to add/remove dynamic properties
   const handlePropertyChange = (e: any) => {
@@ -108,9 +120,20 @@ const FixedPriceForm = ({ createNFT, collections }: FixedPriceFormProps) => {
       period: 0,
       properties: propertyList,
     };
-
     createNFT(finalizedData);
   };
+  useEffect(() => {
+    if (clearForm) {
+      reset({
+        NFTName: "",
+        Description: "",
+        NFTAmount: null,
+        NFTPrice: null,
+        Collection: "",
+      });
+      setPropertyList([]);
+    }
+  }, [clearForm]);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
