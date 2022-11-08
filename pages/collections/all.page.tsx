@@ -25,18 +25,6 @@ const AllNFTCollection: NextPageWithLayout = () => {
         {collections.map((collection) => {
           return <CollectionCard data={collection} key={collection.id} />;
         })}
-        {collections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
-        {collections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
-        {collections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
-        {collections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
       </div>
     </div>
   );

@@ -38,7 +38,8 @@ export const NFTRightSideComponent = ({
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
-  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId);
+  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId, data?.owner);
+  
   useEffect(() => {
     if (data) {
       if (
@@ -54,7 +55,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data]);
+  }, [account, data, nftOwner]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {

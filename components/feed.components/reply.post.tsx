@@ -7,7 +7,6 @@ import { useOnClickOutside } from "usehooks-ts";
 import moment from "moment";
 import { useInView } from "react-intersection-observer";
 import { toast } from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Rings } from "react-loader-spinner";
@@ -308,15 +307,33 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     return (
       <div ref={currentPostRef}>
         <div
-          className={`${replyBoxContainer} ${
-            replies.length === 0 && " border-b-2 border-gray-shade-3"
-          } `}
+          className={`${`
+  flex flex-col gap-4
+`} ${replies.length === 0 && " border-b-2 border-gray-shade-3"} `}
           ref={ref}
         >
-          <div className={firstReplyBox}>
-            {replies.length > 0 && <div className={connectLines}></div>}
-            <div className={topCard}>
-              <div className={profileDetail}>
+          <div
+            className={`
+relative
+`}
+          >
+            {replies.length > 0 && (
+              <div
+                className={`
+  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%)]  bg-gray-shade-3  
+`}
+              ></div>
+            )}
+            <div
+              className={`
+top w-full z-20 flex items-center justify-between gap-2 mb-2 px-4
+`}
+            >
+              <div
+                className={`
+flex items-center gap-3 z-20
+`}
+              >
                 <Link
                   href={{
                     pathname: "/profile/[account_address]",
@@ -333,19 +350,29 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   />
                 </Link>
                 <div>
-                  <div className={replyToBox}>
+                  <div
+                    className={`
+flex items-center gap-2
+`}
+                  >
                     <Link
                       href={{
                         pathname: "/profile/[account_address]",
                         query: { account_address: post.user.account_address },
                       }}
-                      className={PFName}
+                      className={`
+text-14px font-semibold text-white
+`}
                     >
                       {post.user.display_name}
                     </Link>
 
                     {post.parent_post && (
-                      <div className={replyToContent}>
+                      <div
+                        className={`
+bg-[#3638438c] text-12px py-1 px-3 text-gray-shade-7  rounded-full
+`}
+                      >
                         Replying to{" "}
                         <Link
                           href={{
@@ -355,7 +382,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                                 post.parent_post.user.account_address,
                             },
                           }}
-                          className={repliedToPersonName}
+                          className={`
+text-brand-primary
+`}
                         >
                           {" "}
                           {post.parent_post.user.display_name}
@@ -363,7 +392,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                       </div>
                     )}
                   </div>
-                  <h6 className={PFTime}>{moment(post.createdAt).fromNow()}</h6>
+                  <h6
+                    className={`
+text-12px font-ligth text-gray-shade-7 pt-1
+`}
+                  >
+                    {moment(post.createdAt).fromNow()}
+                  </h6>
                 </div>
               </div>
 
@@ -427,7 +462,11 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               )}
             </div>
             <div className={"ml-16"}>
-              <div className={mediaContainer}>
+              <div
+                className={`
+pr-4
+`}
+              >
                 {_post.media && _post.media.length > 0 && (
                   <Carousel
                     showStatus={false}
@@ -462,12 +501,26 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                 )}
               </div>
               {_post.text_content && (
-                <div className={textContainer}>
-                  <p className={textContainerContent}>{_post.text_content}</p>
+                <div
+                  className={`
+pt-4 pb-3 
+`}
+                >
+                  <p
+                    className={`
+text-14px font-light text-[#E7E8EE] whitespace-pre-wrap break-all
+`}
+                  >
+                    {_post.text_content}
+                  </p>
                 </div>
               )}
             </div>
-            <div className={footerBtnContainer}>
+            <div
+              className={`
+  flex items-items justify-between ml-16 pb-3 pr-4  
+`}
+            >
               <Link
                 href={{
                   pathname: AppRoutes.feed.single_post,
@@ -514,7 +567,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     <LinkIcon className={SharetoggleListIcons} /> Copy link
                   </button>
                   <button
-                    className={shareBtnContainer}
+                    className={`
+w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
+`}
                     onClick={toggleSharePopFunc_2}
                   >
                     <div className={SharetoggleListBtn}>
@@ -592,8 +647,16 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
               }}
               title={"Edit Reply"}
             >
-              <div className={modalBodyWrapper}>
-                <div className={contactDetail}>
+              <div
+                className={`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`}
+              >
+                <div
+                  className={`
+  flex items-center  gap-3 px-6
+`}
+                >
                   <Image
                     src={user.profile_image.path}
                     width={44}
@@ -602,7 +665,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                     alt={user.display_name ?? "profile image"}
                     sizes={"256px"}
                   />
-                  <h5 className={cdName}>{user.display_name}</h5>
+                  <h5
+                    className={`
+  text-14px font-semibold text-white
+`}
+                  >
+                    {user.display_name}
+                  </h5>
                 </div>
 
                 <PostCarousel
@@ -620,10 +689,22 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
                   }}
                 />
 
-                <div className={`${modalFooter} justify-end`}>
-                  <div className={RightActionBtns}>
+                <div
+                  className={`${`
+flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`} justify-end`}
+                >
+                  <div
+                    className={`
+w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
+`}
+                  >
                     <AnimateTrashIcon />
-                    <div className={divider}></div>
+                    <div
+                      className={`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
+`}
+                    ></div>
                     {updateLoadingButton ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
                         <Rings
@@ -705,94 +786,29 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 ReplyPost.displayName = "ReplyPost";
 
 // styling
-const topCard = ctl(`
-top w-full z-20 flex items-center justify-between gap-2 mb-2 px-4
-`);
-const profileDetail = ctl(`
-flex items-center gap-3 z-20
-`);
-const PFName = ctl(`
-text-14px font-semibold text-white
-`);
-const PFTime = ctl(`
-text-12px font-ligth text-gray-shade-7 pt-1
-`);
-const connectLines = ctl(`
-  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%)]  bg-gray-shade-3  
-`);
-const mediaContainer = ctl(`
-pr-4
-`);
-const textContainer = ctl(`
-pt-4 pb-3 
-`);
-const textContainerContent = ctl(`
-text-14px font-light text-[#E7E8EE] whitespace-pre-wrap break-all
-`);
-const footerBtnContainer = ctl(`
-  flex items-items justify-between ml-16 pb-3 pr-4  
-`);
-const footerdetailBtn = ctl(`
+
+const footerdetailBtn = `
 flex items-center gap-2 lg:gap-3 text-14px font-medium  text-gray-shade-10
-`);
-const toggleContainer = ctl(`
+`;
+const toggleContainer = `
 relative
-`);
-const toggleList = ctl(`
+`;
+const toggleList = `
  absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm w-[170px]
-`);
-const toggleListBtn = ctl(`
+`;
+const toggleListBtn = `
 w-full text-14px font-semibold text-white  flex gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
-`);
-const toggleListIcons = ctl(`
+`;
+const toggleListIcons = `
 w-[18px] h-[18px]
-`);
-const replyBoxContainer = ctl(`
-  flex flex-col gap-4
-`);
-const firstReplyBox = ctl(`
-relative
-`);
-const replyToBox = ctl(`
-flex items-center gap-2
-`);
-const replyToContent = ctl(`
-bg-[#3638438c] text-12px py-1 px-3 text-gray-shade-7  rounded-full
-`);
-const repliedToPersonName = ctl(`
-text-brand-primary
-`);
-const SharetoggleList = ctl(`
+`;
+
+const SharetoggleList = `
  hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
-`);
-const SharetoggleListBtn = ctl(`
+`;
+const SharetoggleListBtn = `
 w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
-`);
-const SharetoggleListIcons = ctl(`
+`;
+const SharetoggleListIcons = `
 w-[20px] h-[20px]
-`);
-const shareBtnContainer = ctl(`
-w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
-`);
-
-// create post modal styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`);
-const contactDetail = ctl(`
-  flex items-center  gap-3 px-6
-`);
-const cdName = ctl(`
-  text-14px font-semibold text-white
-`);
-
-const modalFooter = ctl(`
-flex items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`);
-
-const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center gap-2  justify-end
-`);
-const divider = ctl(`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
+`;

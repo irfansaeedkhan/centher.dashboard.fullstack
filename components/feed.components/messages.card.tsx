@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
-import ctl from "@netlify/classnames-template-literals";
+
 import { SearchIcon } from "@/assets/svgs";
+import ctl from "@netlify/classnames-template-literals";
 
 // Current directory imports
 import { ContactCard } from "./contact.card";

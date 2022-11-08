@@ -10,6 +10,7 @@ import {
   nftsBySaleStateQuery,
   collectionQuery,
 } from "@/subgraph/querys";
+import { LoadingState } from "@/models/common";
 
 export interface CollectionStore {
   info: CollectionInfo | undefined;
@@ -26,6 +27,8 @@ export interface CollectionStore {
   offset: number;
   updateOffset: () => void;
   limit: number;
+  loadingCollectionInfo: LoadingState;
+  loadingNFTs: LoadingState;
 }
 
 enum OrderBy {
@@ -40,6 +43,8 @@ export const useCollectionStore = create<CollectionStore>()(
       nfts: [],
       offset: 0,
       limit: 20,
+      loadingCollectionInfo: "idle",
+      loadingNFTs: "idle",
       updateOffset: () =>
         set((state) => ({
           offset: state.nfts.length,
@@ -47,6 +52,7 @@ export const useCollectionStore = create<CollectionStore>()(
 
       fetchCollectionInfo: async (collection) => {
         try {
+          set({loadingCollectionInfo: "loading"})
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -72,9 +78,11 @@ export const useCollectionStore = create<CollectionStore>()(
           set((state) => {
             return {
               info: _collection,
+              loadingCollectionInfo: "loaded",
             };
           });
         } catch (error) {
+          set({loadingCollectionInfo: "failed"})
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
@@ -88,6 +96,7 @@ export const useCollectionStore = create<CollectionStore>()(
         reload
       ) => {
         try {
+          set({loadingNFTs: "loading"})
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -144,6 +153,7 @@ export const useCollectionStore = create<CollectionStore>()(
                 ipfs: item.ipfs,
                 saleState: item.saleState,
                 price: item.price,
+                owner: item.owner,
                 endTime: _endTime,
               };
             });
@@ -158,14 +168,17 @@ export const useCollectionStore = create<CollectionStore>()(
             if (reload) {
               return {
                 nfts: _nfts,
+                loadingNFTs: "loaded",
               };
             } else {
               return {
                 nfts: [..._nfts, ...filteredNFTs],
+                loadingNFTs: "loaded"
               };
             }
           });
         } catch (error) {
+          set({loadingNFTs: "failed"})
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
@@ -183,6 +196,7 @@ export interface NFT {
   ipfs: string;
   saleState: string;
   price: number;
+  owner: string;
   endTime: number;
 }
 

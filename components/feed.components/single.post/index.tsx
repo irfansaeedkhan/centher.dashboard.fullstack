@@ -9,7 +9,6 @@ import clsx from "clsx";
 import { toast } from "react-hot-toast";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { Rings } from "react-loader-spinner";
-import ctl from "@netlify/classnames-template-literals";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
@@ -391,7 +390,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         >
           {/* Connect Lines */}
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-            !!totalReplyCount && <div className={connectLines}></div>}
+            !!totalReplyCount && (
+              <div
+                className={`
+  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
+`}
+              ></div>
+            )}
 
           <div
             className={`top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4`}
@@ -414,12 +419,14 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           </div>
 
           <div
-            className={`${maincontentContainer} ${
+            className={`${`
+px-4
+`} ${
               (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
               " ml-16 "
             }`}
           >
-            <div className={mediaContainer}>
+            <div>
               {_post.media && (
                 <Carousel
                   showStatus={false}
@@ -437,7 +444,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         width={452}
                         height={312}
                         alt={String(index) + "post image"}
-                        className={postImageStyling}
+                        className={`
+  object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
+`}
                       />
                     ) : (
                       <video
@@ -446,7 +455,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         width={452}
                         height={312}
                         //alt="post media"
-                        className={postVideoStyling}
+                        className={`
+  object-left  !w-[99%] h-auto rounded-xl  !block !m-0   !object-contain 
+`}
                         controls
                       />
                     )
@@ -455,8 +466,18 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               )}
             </div>
             {_post.text_content && (
-              <div className={textContainer}>
-                <p className={textContainerContent}>{_post.text_content}</p>
+              <div
+                className={`
+pt-4 pb-2 
+`}
+              >
+                <p
+                  className={`
+text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all
+`}
+                >
+                  {_post.text_content}
+                </p>
               </div>
             )}
           </div>
@@ -479,13 +500,19 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   },
                 }}
               >
-                <button className={footerdetailBtn}>
+                <button
+                  className={`
+flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
+`}
+                >
                   <MessageIcon /> {totalReplyCount}
                 </button>
               </Link>
             ) : (
               <button
-                className={footerdetailBtn}
+                className={`
+flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
+`}
                 onClick={() => {
                   setShowModal(true);
                 }}
@@ -494,7 +521,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </button>
             )}
             <button
-              className={footerdetailBtn}
+              className={`
+flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
+`}
               onClick={() => likePost(_post._id)}
             >
               <LikeIcon
@@ -511,44 +540,76 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               </span>
             </button>
             <div ref={ref2} className={`relative`}>
-              <button className={footerdetailBtn} onClick={toggleSharePopFunc}>
+              <button
+                className={`
+flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
+`}
+                onClick={toggleSharePopFunc}
+              >
                 <ShareIcon />
               </button>
 
               <div
-                className={`${SharetoggleList} ${
-                  toggleSharePop && "!block z-40"
-                }`}
+                className={`${`
+ hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
+`} ${toggleSharePop && "!block z-40"}`}
               >
                 {/* <button className={SharetoggleListBtn}>
               <MessageIcon2 className={SharetoggleListIcons} /> Search in
               message
           </button> */}
-                <button onClick={copyShareUrl} className={SharetoggleListBtn}>
-                  <LinkIcon className={SharetoggleListIcons} /> Copy link
+                <button
+                  onClick={copyShareUrl}
+                  className={`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
+`}
+                >
+                  <LinkIcon
+                    className={`
+w-[20px] h-[20px]
+`}
+                  />{" "}
+                  Copy link
                 </button>
                 <button
-                  className={shareBtnContainer}
+                  className={`
+w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
+`}
                   onClick={toggleSharePopFunc_2}
                 >
-                  <div className={SharetoggleListBtn}>
-                    <WorldIcon className={SharetoggleListIcons} /> Share Via...
+                  <div
+                    className={`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
+`}
+                  >
+                    <WorldIcon
+                      className={`
+w-[20px] h-[20px]
+`}
+                    />{" "}
+                    Share Via...
                   </div>
                   <ArrowRightIcon />
                 </button>
               </div>
               <div
-                className={`${SharetoggleList} ${
-                  toggleSharePop_2 && "!block z-40"
-                }`}
+                className={`${`
+ hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
+`} ${toggleSharePop_2 && "!block z-40"}`}
               >
                 <button
-                  className={SharetoggleListBtn}
+                  className={`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
+`}
                   onClick={toggleSharePopFunc_2}
                 >
                   <ArrowLeftIcon /> Share Via
                 </button>
-                <div className={SharetoggleListBtn2}>
+                <div
+                  className={`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
+`}
+                >
                   <WhatsappShareButton
                     url={shareUrl}
                     className="flex items-center gap-3 w-full h-full !px-5 !py-4"
@@ -562,7 +623,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     WhatsApp
                   </WhatsappShareButton>
                 </div>
-                <div className={SharetoggleListBtn2}>
+                <div
+                  className={`
+w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
+`}
+                >
                   <TwitterShareButton
                     url={shareUrl}
                     className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
@@ -582,7 +647,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && (
-              <div className={showThreadBtnContainer}>
+              <div
+                className={`
+z-10 flex gap-3 pl-6 items-center 
+`}
+              >
                 <Image
                   src={_post.user.profile_image.path}
                   width={30}
@@ -599,14 +668,20 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       post_id: _post._id,
                     },
                   }}
-                  className={showThreadBtn}
+                  className={`
+text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium
+`}
                 >
                   Show Thread
                 </Link>
               </div>
             )}
           {/* // */}
-          <div className={repliesContainer}>
+          <div
+            className={`
+flex flex-col gap-4  
+  `}
+          >
             {!(
               currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
             ) && (
@@ -638,8 +713,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           {/* Reply Post Modal */}
           {showModal && user && (
             <CustomModal onClose={closePostModal} title={"Reply"}>
-              <div className={modalBodyWrapper}>
-                <div className={contactDetail}>
+              <div
+                className={`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`}
+              >
+                <div
+                  className={`
+  flex items-center  gap-3 px-6
+`}
+                >
                   <Image
                     src={user.profile_image.path}
                     width={44}
@@ -648,13 +731,20 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     className="rounded-full w-[44px] h-[44px] object-cover"
                     sizes="256px"
                   />
-                  <h5 className={cdName}>{user?.display_name}</h5>
-                </div>
-                <div className={maincontentContainer}>
-                  <div
-                    className={`${mediaContainer}
-                    `}
+                  <h5
+                    className={`
+  text-14px font-semibold text-white
+`}
                   >
+                    {user?.display_name}
+                  </h5>
+                </div>
+                <div
+                  className={`
+px-4
+`}
+                >
+                  <div>
                     <Carousel
                       showStatus={false}
                       showThumbs={false}
@@ -670,9 +760,15 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       {displaySelectedFiles}
                     </Carousel>
                   </div>
-                  <div className={inputTextContainer}>
+                  <div
+                    className={`
+pt-4 pb-2 w-full px-6
+`}
+                  >
                     <textarea
-                      className={ModaltextContainerContent}
+                      className={`
+text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
+`}
                       name=""
                       id="posttext"
                       cols={12}
@@ -684,9 +780,21 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     ></textarea>
                   </div>
                 </div>
-                <div className={modalFooter}>
-                  <div className={leftActionBtns}>
-                    <label className={`${uploadBtn} text-yellow-theme`}>
+                <div
+                  className={`
+flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`}
+                >
+                  <div
+                    className={`
+w-[100%] lg:w-[48%] flex items-center justify-between
+`}
+                  >
+                    <label
+                      className={`${`
+flex items-center gap-3 text-14px font-medium 
+`} text-yellow-theme`}
+                    >
                       <PhotoIcon />
                       Photo
                       <input
@@ -701,7 +809,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         }}
                       />
                     </label>
-                    <label className={`${uploadBtn} text-[#157AFB]`}>
+                    <label
+                      className={`${`
+flex items-center gap-3 text-14px font-medium 
+`} text-[#157AFB]`}
+                    >
                       <VideoIcon />
                       Video
                       <input
@@ -717,7 +829,9 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       />
                     </label>
                     <button
-                      className={`${uploadBtn} text-[#00BF96]`}
+                      className={`${`
+flex items-center gap-3 text-14px font-medium 
+`} text-[#00BF96]`}
                       onClick={() => {
                         setIsEmojiPickerVisible((prev) => !prev);
                       }}
@@ -743,11 +857,19 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       </div>
                     )}
                   </div>
-                  <div className={RightActionBtns}>
+                  <div
+                    className={`
+w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
+`}
+                  >
                     <span onClick={deleteText}>
                       <AnimateTrashIcon />
                     </span>
-                    <div className={divider}></div>
+                    <div
+                      className={`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
+`}
+                    ></div>
                     {loadingState ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
                         {/* <Rings
@@ -804,8 +926,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
               }}
               title={"Edit post"}
             >
-              <div className={modalBodyWrapper}>
-                <div className={contactDetail}>
+              <div
+                className={`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`}
+              >
+                <div
+                  className={`
+  flex items-center  gap-3 px-6
+`}
+                >
                   <Image
                     src={user.profile_image.path}
                     width={44}
@@ -814,7 +944,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     alt={user.display_name ?? "profile image"}
                     sizes="256px"
                   />
-                  <h5 className={cdName}>{user.display_name}</h5>
+                  <h5
+                    className={`
+  text-14px font-semibold text-white
+`}
+                  >
+                    {user.display_name}
+                  </h5>
                 </div>
 
                 <PostCarousel
@@ -832,10 +968,22 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   }}
                 />
 
-                <div className={`${modalFooter} justify-end`}>
-                  <div className={RightActionBtns}>
+                <div
+                  className={`${`
+flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`} justify-end`}
+                >
+                  <div
+                    className={`
+w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
+`}
+                  >
                     <AnimateTrashIcon />
-                    <div className={divider}></div>
+                    <div
+                      className={`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
+`}
+                    ></div>
 
                     {updateLoadingButton ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
@@ -918,89 +1066,3 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 );
 
 SinglePost.displayName = "SinglePost";
-
-// styling
-
-const connectLines = ctl(`
-  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
-`);
-const maincontentContainer = ctl(`
-px-4
-`);
-const mediaContainer = ctl(``);
-const textContainer = ctl(`
-pt-4 pb-2 
-`);
-const textContainerContent = ctl(`
-text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all
-`);
-const showThreadBtnContainer = ctl(`
-z-10 flex gap-3 pl-6 items-center 
-`);
-const showThreadBtn = ctl(`
-text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium
-`);
-
-const footerdetailBtn = ctl(`
-flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
-`);
-
-const SharetoggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
-`);
-const SharetoggleListBtn = ctl(`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
-`);
-const SharetoggleListBtn2 = ctl(`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
-`);
-const SharetoggleListIcons = ctl(`
-w-[20px] h-[20px]
-`);
-const shareBtnContainer = ctl(`
-w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
-`);
-
-// create post modal styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`);
-const contactDetail = ctl(`
-  flex items-center  gap-3 px-6
-`);
-const cdName = ctl(`
-  text-14px font-semibold text-white
-`);
-
-const inputTextContainer = ctl(`
-pt-4 pb-2 w-full px-6
-`);
-const ModaltextContainerContent = ctl(`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
-`);
-const modalFooter = ctl(`
-flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`);
-const leftActionBtns = ctl(`
-w-[100%] lg:w-[48%] flex items-center justify-between
-`);
-const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
-`);
-const divider = ctl(`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
-const uploadBtn = ctl(`
-flex items-center gap-3 text-14px font-medium 
-`);
-
-const postImageStyling = ctl(`
-  object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
-`);
-const postVideoStyling = ctl(`
-  object-left  !w-[99%] h-auto rounded-xl  !block !m-0   !object-contain 
-`);
-
-const repliesContainer = ctl(`
-flex flex-col gap-4  
-  `);

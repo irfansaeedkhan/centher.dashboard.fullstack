@@ -4,8 +4,18 @@ import ctl from "@netlify/classnames-template-literals";
 
 export const RecentActivitiesCard = () => {
   return (
-    <div className={RACardContainer}>
-      <h5 className={MCTitle}>Recent activities</h5>
+    <div
+      className={`
+  w-full max-w-[272px] rounded-10px bg-background-shade-3 p-4 pb-2
+`}
+    >
+      <h5
+        className={`
+  text-14px font-semibold text-white pb-6
+`}
+      >
+        Recent activities
+      </h5>
       <div className={RADetail}>
         <Image
           src={"/images/robertProfilepic.png"}
@@ -47,21 +57,16 @@ export const RecentActivitiesCard = () => {
 };
 
 // styling
-const RACardContainer = ctl(`
-  w-full max-w-[272px] rounded-10px bg-background-shade-3 p-4 pb-2
-`);
-const MCTitle = ctl(`
-  text-14px font-semibold text-white pb-6
-`);
-const RADetail = ctl(`
+
+const RADetail = `
   flex items-center justify-center gap-3 pb-4
-`);
-const RAName = ctl(`
+`;
+const RAName = `
   text-14px font-semibold text-white 
-`);
-const RATime = ctl(`
+`;
+const RATime = `
   text-14px font-light text-white 
-`);
-const cdTime = ctl(`
+`;
+const cdTime = `
   text-12px font-ligth text-gray-shade-7
-`);
+`;

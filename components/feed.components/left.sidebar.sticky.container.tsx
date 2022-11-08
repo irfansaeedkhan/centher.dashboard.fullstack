@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
 
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
@@ -37,9 +36,23 @@ export const LeftSidebarStickyContainer = () => {
   }, [router, user, loggedInUser]);
 
   return (
-    <div className={leftSidebarStickyContainer}>
-      <h1 className={title}>My Feed</h1>
-      <div className={leftSidebar}>
+    <div
+      className={`
+lg:sticky  lg:top-0
+`}
+    >
+      <h1
+        className={`
+textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
+`}
+      >
+        My Feed
+      </h1>
+      <div
+        className={`
+w-[272px]  flex-col gap-3 hidden lg:flex
+`}
+      >
         {profileCardUser ? (
           <>
             <ProfileDetailCard user={profileCardUser} />
@@ -54,17 +67,3 @@ export const LeftSidebarStickyContainer = () => {
     </div>
   );
 };
-
-const leftSidebarStickyContainer = ctl(`
-lg:sticky  lg:top-0
-`);
-
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
-
-const leftSidebar = ctl(`
-w-[272px]  flex-col gap-3 hidden lg:flex
-`);
-
-const componentLoader = ctl(`componentLoaderContainer min-h-[272px]`);

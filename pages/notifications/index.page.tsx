@@ -73,21 +73,6 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Earlier</div>
 
             {notificationToday.map((notification, index) => {
-              if (
-                notification._id ===
-                notificationToday[notificationToday.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationToday.length}
-                    index={index}
-                    days="today"
-                  />
-                );
-              }
               return (
                 <SingleNotification
                   length={notificationToday.length}
@@ -108,21 +93,6 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Yesterday</div>
 
             {notificationYesterday.map((notification, index) => {
-              if (
-                notification._id ===
-                notificationYesterday[notificationYesterday.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationYesterday.length}
-                    index={index}
-                    days="yesterday"
-                  />
-                );
-              }
               return (
                 <SingleNotification
                   length={notificationYesterday.length}
@@ -143,21 +113,6 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Last 7 Days</div>
 
             {notificationSevenday.map((notification, index) => {
-              if (
-                notification._id ===
-                notificationSevenday[notificationSevenday.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationSevenday.length}
-                    index={index}
-                    days="seven"
-                  />
-                );
-              }
               return (
                 <SingleNotification
                   length={notificationSevenday.length}

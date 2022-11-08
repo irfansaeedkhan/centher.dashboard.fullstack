@@ -1,4 +1,3 @@
-import ctl from "@netlify/classnames-template-literals";
 import Link from "next/link";
 import React from "react";
 
@@ -10,16 +9,8 @@ interface AboutMemberProps {
 
 export const AboutMember: React.FC<AboutMemberProps> = (props) => {
   return (
-    <div className={componentWrapper}>
-      <span className={textStyle}>{props.asked}</span>
-      <span className={linkWrappper}>
-        <Link href={props.link}>{props.title}</Link>
-      </span>
-    </div>
-  );
-};
-
-const componentWrapper = ctl(`
+    <div
+      className={`
   flex 
   gap-1
   text-sm 
@@ -27,11 +18,17 @@ const componentWrapper = ctl(`
   justify-end
   items-center
   mb-8 
-`);
-
-const linkWrappper = ctl(`
+`}
+    >
+      <span className={`text-white`}>{props.asked}</span>
+      <span
+        className={`
   cursor-pointer 
   text-brand-primary 
-`);
-
-const textStyle = ctl(`text-white`);
+`}
+      >
+        <Link href={props.link}>{props.title}</Link>
+      </span>
+    </div>
+  );
+};

@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-import ctl from "@netlify/classnames-template-literals";
 
 // app imports
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
@@ -36,7 +35,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       >
         <Image
           src={user.profile_image.path}
-          className={profilePic}
+          className={` w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover`}
           alt={user.display_name}
           width={60}
           height={60}
@@ -51,48 +50,104 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
-        <h3 className={profileName}>{user.display_name}</h3>
+        <h3
+          className={`
+  text-14px font-bold pt-3 pb-6 text-white cursor-pointer
+`}
+        >
+          {user.display_name}
+        </h3>
       </Link>
       <div
         className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
       >
         <div>
           <Link href={`/profile/${user.account_address}`}>
-            <h4 className={detailnumTitle}>Posts</h4>
-            <h5 className={detailNumValue}>
+            <h4
+              className={`
+  text-12px font-medium text-gray-shade-7 mb-2
+`}
+            >
+              Posts
+            </h4>
+            <h5
+              className={`
+  text-14px font-semibold text-white
+`}
+            >
               {profileCardDetails.posts_count ?? "--"}
             </h5>
           </Link>
         </div>
         <div>
           <Link href={`/profile/${user.account_address}/followers`}>
-            <h4 className={detailnumTitle}>Followers</h4>
-            <h5 className={detailNumValue}>
+            <h4
+              className={`
+  text-12px font-medium text-gray-shade-7 mb-2
+`}
+            >
+              Followers
+            </h4>
+            <h5
+              className={`
+  text-14px font-semibold text-white
+`}
+            >
               {profileCardDetails.followers_count ?? "--"}
             </h5>
           </Link>
         </div>
         <div>
           <Link href={`/profile/${user.account_address}/following`}>
-            <h4 className={detailnumTitle}>Followings</h4>
-            <h5 className={detailNumValue}>
+            <h4
+              className={`
+  text-12px font-medium text-gray-shade-7 mb-2
+`}
+            >
+              Followings
+            </h4>
+            <h5
+              className={`
+  text-14px font-semibold text-white
+`}
+            >
               {profileCardDetails.following_count ?? "--"}
             </h5>
           </Link>
         </div>
       </div>
       {!!profileCardDetails.profile_views_count && (
-        <div className={viewBox}>
-          <h5 className={viewBoxTitle}>Your Profile viewed by</h5>
-          <h6 className={viewBoxValue}>
+        <div className={`flex items-center justify-between px-4 py-2`}>
+          <h5
+            className={`
+  text-12px font-medium text-gray-shade-7
+`}
+          >
+            Your Profile viewed by
+          </h5>
+          <h6
+            className={`
+  text-12px font-semibold text-brand-primary
+`}
+          >
             {profileCardDetails.profile_views_count}
           </h6>
         </div>
       )}
       {!!profileCardDetails.posts_views_count && (
-        <div className={viewBox}>
-          <h5 className={viewBoxTitle}>Your Posts viewed by</h5>
-          <h6 className={viewBoxValue}>
+        <div className={`flex items-center justify-between px-4 py-2`}>
+          <h5
+            className={`
+  text-12px font-medium text-gray-shade-7
+`}
+          >
+            Your Posts viewed by
+          </h5>
+          <h6
+            className={`
+  text-12px font-semibold text-brand-primary
+`}
+          >
             {" "}
             {profileCardDetails.posts_views_count ?? "--"}
           </h6>
@@ -101,25 +156,3 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
     </div>
   );
 };
-
-// styling
-
-const profilePic = ctl(`
-  w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover
-`);
-const profileName = ctl(`
-  text-14px font-bold pt-3 pb-6 text-white cursor-pointer
-`);
-const detailnumTitle = ctl(`
-  text-12px font-medium text-gray-shade-7 mb-2
-`);
-const detailNumValue = ctl(`
-  text-14px font-semibold text-white
-`);
-const viewBox = `flex items-center justify-between px-4 py-2`;
-const viewBoxTitle = ctl(`
-  text-12px font-medium text-gray-shade-7
-`);
-const viewBoxValue = ctl(`
-  text-12px font-semibold text-brand-primary
-`);
