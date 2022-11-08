@@ -6,13 +6,10 @@ import { devtools } from "zustand/middleware";
 import { axiosNodeApi } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { Notification } from "@/assets/svgs";
-import moment from "moment";
 
+// TODO: Mubashir - Improve how the notifications are handled for different days
 export interface NotificationsStore {
   notifications: Notification[];
-  notificationToday: Notification[];
-  notificationYesterday: Notification[];
-  notificationSevenday: Notification[];
   fetchNotifications: () => Promise<void>;
   fetchNewNotifications: () => Promise<void>;
   offset: number;
@@ -22,10 +19,6 @@ export interface NotificationsStore {
   markAllAsRead: () => Promise<void>;
   loading: LoadingState;
 }
-
-const today = moment().format("YYYY-MM-DD");
-const yesterday = moment(today).subtract(1, "day").format("YYYY-MM-DD");
-const sevenday = moment(today).subtract(7, "day").format("YYYY-MM-DD");
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
@@ -40,9 +33,6 @@ export const useNotificationsStore = create<NotificationsStore>()(
         set((state) => ({ offset: state.notifications.length })),
 
       notifications: [],
-      notificationToday: [],
-      notificationYesterday: [],
-      notificationSevenday: [],
 
       fetchNotifications: async () => {
         try {
@@ -63,50 +53,12 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 )
             );
             const notifications = [
-              ...data.notifications,
               ...filteredNotifications,
+              ...data.notifications,
             ];
 
-            let filterToday = notifications.filter(
-              (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
-            );
-
-            filterToday = filterToday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filterYesterday = notifications.filter(
-              (props) =>
-                moment(props.createdAt).format("YYYY-MM-DD") === yesterday
-            );
-
-            filterYesterday = filterYesterday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filterSevenday = notifications.filter(
-              (props) =>
-                moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
-                moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
-            );
-
-            filterSevenday = filterSevenday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filteredMainNotifications = notifications.filter(
-              (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
-            );
-
-            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
             return {
-              notifications: filteredMainNotifications as Notification[],
-              notificationToday: filterToday as Notification[],
-              notificationYesterday: filterYesterday as Notification[],
-              notificationSevenday: filterSevenday as Notification[],
+              notifications,
               loading: "loaded",
             };
           });
@@ -120,6 +72,8 @@ export const useNotificationsStore = create<NotificationsStore>()(
       fetchNewNotifications: async () => {
         try {
           const limit = get().limit;
+
+          // First fetch the notifications and then mark them as read
           const { data } = await axiosNodeApi.get(
             `/api/notifications?limit=${limit}`
           );
@@ -140,46 +94,8 @@ export const useNotificationsStore = create<NotificationsStore>()(
               ...filteredNotifications,
             ];
 
-            let filterToday = notifications.filter(
-              (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
-            );
-
-            filterToday = filterToday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filterYesterday = notifications.filter(
-              (props) =>
-                moment(props.createdAt).format("YYYY-MM-DD") === yesterday
-            );
-
-            filterYesterday = filterYesterday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filterSevenday = notifications.filter(
-              (props) =>
-                moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
-                moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
-            );
-
-            filterSevenday = filterSevenday.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
-            let filteredMainNotifications = notifications.filter(
-              (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
-            );
-
-            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
-              a.status > b.status ? -1 : 1
-            );
-
             return {
-              notifications: filteredMainNotifications as Notification[],
-              notificationToday: filterToday as Notification[],
-              notificationYesterday: filterYesterday as Notification[],
-              notificationSevenday: filterSevenday as Notification[],
+              notifications,
               loading: "loaded",
             };
           });
