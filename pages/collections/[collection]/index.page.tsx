@@ -39,6 +39,8 @@ const Collection: NextPageWithLayout = () => {
     offset,
     updateOffset,
     limit,
+    loadingCollectionInfo,
+    loadingNFTs
   } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,
@@ -47,6 +49,8 @@ const Collection: NextPageWithLayout = () => {
     offset: state.offset,
     updateOffset: state.updateOffset,
     limit: state.limit,
+    loadingCollectionInfo: state.loadingCollectionInfo,
+    loadingNFTs: state.loadingNFTs,
   }));
 
   const [metadata, setMetadata] = useState<any>();
