@@ -19,6 +19,7 @@ export interface NotificationsStore {
   updateOffset: () => void;
   limit: number;
   markAsRead: (id: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
   loading: LoadingState;
 }
 
@@ -123,6 +124,8 @@ export const useNotificationsStore = create<NotificationsStore>()(
             `/api/notifications?limit=${limit}`
           );
 
+          get().markAllAsRead();
+
           set((state) => {
             // Filter out notifications that are already in the store
             const filteredNotifications = state.notifications.filter(
@@ -196,6 +199,15 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 : notification
             ),
           }));
+        } catch (error) {
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
+      markAllAsRead: async () => {
+        try {
+          await axiosNodeApi.patch(`/api/notifications`);
         } catch (error) {
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
