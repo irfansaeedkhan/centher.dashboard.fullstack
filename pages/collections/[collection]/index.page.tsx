@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
 import { useOnClickOutside } from "usehooks-ts";
@@ -23,6 +24,7 @@ import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import { ethers } from "ethers";
+import { AppRoutes } from "@/constants/app.routes";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -148,9 +150,17 @@ const Collection: NextPageWithLayout = () => {
             <div className={topDetais}>
               <div>
                 <h5 className={collectionName}>{metadata?.name}</h5>
-                <h6 className="text-gray-shade-18 text-14px font-semibold">
+                <Link 
+                  href={{
+                    pathname: AppRoutes.profile.nfts,
+                    query: {
+                      account_address: info?.creator,
+                    },
+                  }}
+                  className="text-gray-shade-18 text-14px font-semibold"
+                >
                   Created by @{formatAddress(info?.creator)}
-                </h6>
+                </Link>
               </div>
               <div className={detailsCard}>
                 <div className="text-center">
