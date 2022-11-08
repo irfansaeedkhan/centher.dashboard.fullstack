@@ -229,10 +229,6 @@ const Notifications: NextPageWithLayout = () => {
           </div>
         )}
       </div>
-      <button className="w-fit bg-brand-primary hover:bg-brand-primary-dark px-4 flex gap-2 h-10 items-center justify-center rounded-lg text-black-shade-2 font-semibold">
-        <BiCheckDouble className="text-xl" />
-        <span>Mark all as read</span>
-      </button>
     </div>
   );
 };
