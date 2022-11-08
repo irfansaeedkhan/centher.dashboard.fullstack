@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import { useState, useRef, useEffect, Dispatch, SetStateAction } from "react";
-import ctl from "@netlify/classnames-template-literals";
+
 //import Image from "next/image";
 import Image from "next/image";
 import { Carousel } from "react-responsive-carousel";
@@ -96,8 +96,16 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   // }, [fileList]);
 
   return user ? (
-    <div className={postCardContainer}>
-      <div className={topCard}>
+    <div
+      className={`
+  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative
+`}
+    >
+      <div
+        className={`
+top w-full flex items-center gap-2 mb-2 
+`}
+      >
         <Image
           src={user.profile_image.path}
           width={48}
@@ -107,7 +115,9 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           sizes={"256px"}
         />
         <button
-          className={postBtn}
+          className={`
+w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left
+`}
           onClick={() => {
             setShowModal(true);
           }}
@@ -115,7 +125,11 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
           Start a post
         </button>
       </div>
-      <div className={uploadBtnContainer}>
+      <div
+        className={`
+  flex items-items justify-between
+`}
+      >
         <label className={`${uploadBtn} text-yellow-theme`}>
           <PhotoIcon />
           Photo
@@ -161,8 +175,16 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
       {showModal && (
         <CustomModal onClose={closePostModal} title={"Create post"}>
-          <div className={modalBodyWrapper}>
-            <div className={contactDetail}>
+          <div
+            className={`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+`}
+          >
+            <div
+              className={`
+  flex items-center  gap-3 px-6
+`}
+            >
               <Image
                 src={user.profile_image.path}
                 width={44}
@@ -171,12 +193,24 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                 alt={user.display_name ?? "profile image"}
                 sizes={"256px"}
               />
-              <h5 className={cdName}>{user.display_name}</h5>
+              <h5
+                className={`
+  text-14px font-semibold text-white
+`}
+              >
+                {user.display_name}
+              </h5>
             </div>
-            <div className={maincontentContainer}>
+            <div
+              className={`
+px-6
+`}
+            >
               {displaySelectedFiles && (
                 <div
-                  className={`${mediaContainer} 
+                  className={`${`
+ w-full grid, gap-3,
+`} 
                     // ${displaySelectedFiles.length === 1 && "grid-cols-1"} 
                     // ${displaySelectedFiles.length === 2 && "grid-cols-2"} 
                     // ${displaySelectedFiles.length > 2 && "grid-cols-3"} 
@@ -198,9 +232,15 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                   </Carousel>
                 </div>
               )}
-              <div className={inputTextContainer}>
+              <div
+                className={`
+pt-4 pb-2 w-full
+`}
+              >
                 <textarea
-                  className={textContainerContent}
+                  className={`
+text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all
+`}
                   ref={refe}
                   name=""
                   id="posttext"
@@ -222,14 +262,22 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
               </p>
             )} */}
             {postError && (
-              <div className={postErrorMessage}>
+              <div className={`postErrorMessage`}>
                 <p className="px-6 text-14 text-[#ec5858] font-semibold">
                   {postError}
                 </p>
               </div>
             )}
-            <div className={modalFooter}>
-              <div className={leftActionBtns}>
+            <div
+              className={`
+flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
+`}
+            >
+              <div
+                className={`
+w-[100%] lg:w-[48%] flex items-center justify-between
+`}
+              >
                 <label className={`${uploadBtn} text-yellow-theme`}>
                   <PhotoIcon />
                   Photo
@@ -289,14 +337,22 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                   </div>
                 )}
               </div>
-              <div className={RightActionBtns}>
+              <div
+                className={`
+w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between justify-end gap-2
+`}
+              >
                 {/*
                 TODO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
                 */}
                 <span onClick={deleteText}>
                   <AnimateTrashIcon />
                 </span>
-                <div className={divider}></div>
+                <div
+                  className={`
+w-[2px] h-[10px] bg-[#333333]  rounded-xl
+`}
+                ></div>
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
                     {/* <Rings
@@ -343,56 +399,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 };
 
 // styling
-const postCardContainer = ctl(`
-  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative
-`);
-const topCard = ctl(`
-top w-full flex items-center gap-2 mb-2 
-`);
-const postBtn = ctl(`
-w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left
-`);
-const uploadBtnContainer = ctl(`
-  flex items-items justify-between
-`);
-const uploadBtn = ctl(`
+
+const uploadBtn = `
 flex items-center gap-3 text-14px font-medium  cursor-pointer
-`);
-
-// create post modal styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`);
-const contactDetail = ctl(`
-  flex items-center  gap-3 px-6
-`);
-const cdName = ctl(`
-  text-14px font-semibold text-white
-`);
-const maincontentContainer = ctl(`
-px-6
-`);
-const mediaContainer = ctl(`
- w-full grid, gap-3,
-`);
-
-const inputTextContainer = ctl(`
-pt-4 pb-2 w-full
-`);
-const textContainerContent = ctl(`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all
-`);
-const modalFooter = ctl(`
-flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`);
-const leftActionBtns = ctl(`
-w-[100%] lg:w-[48%] flex items-center justify-between
-`);
-const RightActionBtns = ctl(`
-w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between justify-end gap-2
-`);
-const divider = ctl(`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`);
-
-const postErrorMessage = ctl(`postErrorMessage`);
+`;

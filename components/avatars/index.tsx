@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import Image from "next/image";
 import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { ModalWrapper } from "@/components/modal";
@@ -21,17 +20,34 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
     useState<UserImage["path"]>(defaultAvatar);
 
   return (
-    <div className={mainWrapper}>
+    <div
+      className={`
+  flex 
+  gap-2 
+  items-center
+`}
+    >
       <Image
         src={`${NODE_API_URL}${profileImage}`}
-        className={profileImageClass}
+        className={`
+  object-cover
+  rounded-full 
+  bg-gray-shade-3 
+`}
         width={80}
         height={80}
         alt="Profile Image"
       />
 
       <button
-        className={profileImageButton}
+        className={`
+  px-3 
+  py-2 
+  font-bold 
+  rounded-lg 
+  text-black
+  bg-brand-primary 
+`}
         onClick={() => setAvatarModal(true)}
       >
         Profile Image
@@ -42,14 +58,30 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
         onClose={() => setAvatarModal(false)}
         title={"Avatars"}
       >
-        <div className={modalBodyWrapper}>
+        <div
+          className={`
+  flex 
+  gap-4 
+  w-full 
+  flex-wrap
+  items-center 
+  justify-center 
+`}
+        >
           {avatars.map((avatar) => {
             return (
               <Image
                 key={avatar.path}
                 src={`${NODE_API_URL}${avatar.path}`}
                 alt={avatar.name}
-                className={profileImageClass2}
+                className={`
+  ${`
+  object-cover
+  rounded-full 
+  bg-gray-shade-3 
+`}
+  cursor-pointer
+`}
                 width={80}
                 height={80}
                 onClick={() => {
@@ -67,37 +99,3 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
 };
 
 export default Avatars;
-
-const mainWrapper = ctl(`
-  flex 
-  gap-2 
-  items-center
-`);
-
-const profileImageButton = ctl(`
-  px-3 
-  py-2 
-  font-bold 
-  rounded-lg 
-  text-black
-  bg-brand-primary 
-`);
-
-const modalBodyWrapper = ctl(`
-  flex 
-  gap-4 
-  w-full 
-  flex-wrap
-  items-center 
-  justify-center 
-`);
-
-const profileImageClass = ctl(`
-  object-cover
-  rounded-full 
-  bg-gray-shade-3 
-`);
-const profileImageClass2 = ctl(`
-  ${profileImageClass}
-  cursor-pointer
-`);
