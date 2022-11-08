@@ -8,11 +8,13 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 interface NFTOffersProps {
   data: IBid[];
 }
 export const NFTOffers = ({ data }: NFTOffersProps) => {
+  const bnbPrice = useBNBPrice()
   return (
     <div className={NFTOffersContainer}>
       <div className="accordion" id="accordionExample">
@@ -66,7 +68,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                           <td className={`${td} !text-gray-shade-7`}>
                             {formatEther2Number(item.price)} BNB
                           </td>
-                          <td className={td}>${formatBNB2USD(item.price)}</td>
+                          <td className={td}>${formatBNB2USD(item.price, bnbPrice)}</td>
                           <td className={td}>{month.toFixed(2)} month</td>
                           <td className={`${td} !text-yellow-theme`}>
                             {formatAddress(item.bidder)}

@@ -15,6 +15,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -48,6 +49,8 @@ export const AuctionNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+  
+  const bnbPrice = useBNBPrice()
 
   useEffect(() => {
     if (data) {
@@ -260,7 +263,7 @@ export const AuctionNFTBuyerDescription = ({
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
           <h5 className={BnBNum}>{formatEther2Number(price)} BNB</h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(price)}</h6>
+          <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>

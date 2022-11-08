@@ -3,9 +3,11 @@ import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
+import Moralis from "moralis";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
+import { ChainInfoContextProvider } from "@/web3/context/chain.info.context";
 import { getLibrary } from "@/web3";
 import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
@@ -22,6 +24,11 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
   useCreateSocketIOConnection();
+  
+  Moralis.start({
+    apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+    // ...and any other configuration
+  });
 
   const getLayout = Component.getLayout || ((page) => page);
 
@@ -36,29 +43,31 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ScriptTags />
       <RefreshContextProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <Toaster
-            position="top-center"
-            reverseOrder={false}
-            toastOptions={{
-              // Define default options
-              className: "",
-              duration: 5000,
-              style: {
-                background: "#363636",
-                color: "#fff",
-              },
-
-              // Default options for specific types
-              success: {
-                duration: 3000,
-                theme: {
-                  primary: "green",
-                  secondary: "black",
+          <ChainInfoContextProvider>
+            <Toaster
+              position="top-center"
+              reverseOrder={false}
+              toastOptions={{
+                // Define default options
+                className: "",
+                duration: 5000,
+                style: {
+                  background: "#363636",
+                  color: "#fff",
                 },
-              },
-            }}
-          />
-          {getLayout(<Component {...pageProps} />)}
+
+                // Default options for specific types
+                success: {
+                  duration: 3000,
+                  theme: {
+                    primary: "green",
+                    secondary: "black",
+                  },
+                },
+              }}
+            />
+            {getLayout(<Component {...pageProps} />)}
+          </ChainInfoContextProvider>
         </Web3ReactProvider>
       </RefreshContextProvider>
     </>
