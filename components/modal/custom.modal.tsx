@@ -1,4 +1,3 @@
-import ctl from "@netlify/classnames-template-literals";
 import React from "react";
 
 interface CustomModalProps {
@@ -9,24 +8,8 @@ interface CustomModalProps {
 
 export const CustomModal: React.FC<CustomModalProps> = (props) => {
   return (
-    <div className={CustomModalContainer}>
-      {/*content*/}
-      <div className={modalContent}>
-        {/*header*/}
-        <div className={modalHeader}>
-          <span className={modalHeaderTitle}>{props.title}</span>
-          <button className={modalHeaderButton} onClick={props.onClose}>
-            ×
-          </button>
-        </div>
-        {/* BodyWrapper */}
-        <div className={bodyWrapper}>{props.children}</div>
-      </div>
-    </div>
-  );
-};
-
-const CustomModalContainer = ctl(`
+    <div
+      className={`
   flex 
   z-50 
   fixed 
@@ -39,9 +22,11 @@ const CustomModalContainer = ctl(`
   backdrop-blur-lg
   overflow-x-hidden 
   focus:outline-none 
-`);
-
-const modalContent = ctl(`
+`}
+    >
+      {/*content*/}
+      <div
+        className={`
   flex 
   mx-3 
   pb-5 
@@ -56,9 +41,11 @@ const modalContent = ctl(`
   bg-black-shade-3
   focus:outline-none 
   border-gray-shade-3
-`);
-
-const modalHeader = ctl(`
+`}
+      >
+        {/*header*/}
+        <div
+          className={`
   flex 
   py-6
   px-4
@@ -66,11 +53,13 @@ const modalHeader = ctl(`
   items-center 
   justify-center
   relative
-`);
-
-const modalHeaderTitle = ctl(`text-white text-24px text-center font-semibold`);
-
-const modalHeaderButton = ctl(`
+`}
+        >
+          <span className={`text-white text-24px text-center font-semibold`}>
+            {props.title}
+          </span>
+          <button
+            className={`
   px-1 
   py-1 
   ml-auto 
@@ -89,9 +78,22 @@ const modalHeaderButton = ctl(`
   right-6
   hover:scale-110
   transition
-`);
-
-const bodyWrapper = ctl(`
+`}
+            onClick={props.onClose}
+          >
+            ×
+          </button>
+        </div>
+        {/* BodyWrapper */}
+        <div
+          className={`
   maxHeight-[400px] 
   overflow-y-scroll
-`);
+`}
+        >
+          {props.children}
+        </div>
+      </div>
+    </div>
+  );
+};

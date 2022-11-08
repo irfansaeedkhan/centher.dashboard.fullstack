@@ -246,24 +246,48 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
   return (
     <div className="relative">
       <div
-        className={`${
-          round > roundState ? "block" : "hidden"
-        } ${lockedContainer}`}
+        className={`${round > roundState ? "block" : "hidden"} ${`
+absolute z-10 top-0 left-0 w-full h-full flex items-center justify-center
+`}`}
       >
-        <div className={lockedContent}>
+        <div
+          className={`
+flex flex-col justify-center items-center gap-10
+`}
+        >
           <LockedIcon className="w-[80px] h-[80px]" />
-          <h6 className={lockedContentMessage}>
+          <h6
+            className={`
+text-20px font-semibold text-white
+`}
+          >
             Need a messsage to show for users
           </h6>
         </div>
       </div>
       <div className={`${round > roundState && "blur-xl bg-black-shade-3/60"}`}>
-        <div className={transactionBox}>
-          <h1 className={transactionBoxTitle}>
+        <div
+          className={`
+bg-background-shade-3 p-8 lg:p-12 rounded-2xl
+`}
+        >
+          <h1
+            className={`
+text-24px text-white text-center font-semibold
+`}
+          >
             Please Enter NTRDAO amount to you’d like to purchase
           </h1>
-          <div className={divider}></div>
-          <div className={conversionBox}>
+          <div
+            className={`
+h-[2px] my-8 lg:my-12  bg-gray-shade-3
+`}
+          ></div>
+          <div
+            className={`
+ flex flex-col lg:flex-row items-center justify-between   gap-5
+`}
+          >
             <div className={ConversioninputContainer}>
               <div className={inputBox}>
                 <div className={coinBox}>
@@ -292,14 +316,23 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
                 />
                 <div className={maxBtnContainer}>
                   <div>
-                    <button className={maxBtn} onClick={handleMax}>
+                    <button
+                      className={`
+cursor-pointer text-14px text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0
+`}
+                      onClick={handleMax}
+                    >
                       Max
                     </button>
                   </div>
                 </div>
               </div>
             </div>
-            <div className={conversionBtn}>
+            <div
+              className={`
+cursor-pointer conversionBtn w-[70px] h-[70px] xl:w-[100px] xl:h-[100px]  bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full
+`}
+            >
               <LeftArrowIcon />
             </div>
             <div className={ConversioninputContainer}>
@@ -340,10 +373,24 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
             </div>
           </div>
           {roundState === round && (
-            <div className={conversionBoxFooter}>
-              <h6 className={conversionBoxFooterTitle}>
+            <div
+              className={`
+pt-8 lg:pt-12 w-full lg:max-w-[428px] mx-auto text-center
+`}
+            >
+              <h6
+                className={`
+text-14px font-semibold text-gray-shade-7 pb-4
+`}
+              >
                 Price:{" "}
-                <span className={conversionBoxFooterTitleBold}>500 BUSD</span>
+                <span
+                  className={`
+text-white
+`}
+                >
+                  500 BUSD
+                </span>
               </h6>
               <Button
                 title={isApproved ? "Buy now" : "Authorize"}
@@ -355,8 +402,16 @@ export const PurchaseNTRDAOCard: React.FC<PurchaseNTRDAOCardProps> = ({
             </div>
           )}
           {round < roundState && (
-            <div className={roundOverTextContainer}>
-              <p className={roundOverText}>
+            <div
+              className={`
+mt-8 lg:mt-12 text-center mx-auto  py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl
+`}
+            >
+              <p
+                className={`
+text-[#E6535A] text-16px font-semibold
+ `}
+              >
                 This round is over! Buy another availabe or wait for the next
                 round
               </p>
@@ -409,33 +464,33 @@ h-[2px] my-8 lg:my-12  bg-gray-shade-3
 const conversionBox = ctl(`
  flex flex-col lg:flex-row items-center justify-between   gap-5
 `);
-const ConversioninputContainer = ctl(`
+const ConversioninputContainer = `
 space-y-3  w-full lg:max-w-[354px]
-`);
-const inputBox = ctl(`
+`;
+const inputBox = `
 overflow-hidden relative w-full h-[64px] bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl px-3  py-4
-`);
-const input = ctl(`
+`;
+const input = `
 focus:outline-none  focus:ring-0 outline-0 bg-transparent border-0 items-center absolute top-0 left-0 p-4 w-[calc(100% - 105px)] h-full text-14px text-gray-shade-7 font-semibold
-`);
-const coinBox = ctl(`
+`;
+const coinBox = `
 flex items-center gap-3 absolute top-[50%] translate-y-[-50%] left-4
-`);
-const coinName = ctl(`
+`;
+const coinName = `
 text-14px text-white font-semibold
-`);
-const balanceBox = ctl(`
+`;
+const balanceBox = `
 bg-background-shade-3 pl-4 absolute top-[50%] translate-y-[-50%] right-0 w-full max-w-[95px] lg:max-w-[115px] h-full flex items-center
-`);
-const balanceText = ctl(`
+`;
+const balanceText = `
 text-14px text-gray-shade-7 font-semibold
-`);
-const balanceNumber = ctl(`
+`;
+const balanceNumber = `
 text-14px font-semibold text-white
-`);
-const maxBtnContainer = ctl(`
+`;
+const maxBtnContainer = `
 detail bg-background-shade-3 absolute top-[50%] translate-y-[-50%] right-0 w-full max-w-[95px] lg:max-w-[115px] h-full flex items-center justify-center
-`);
+`;
 const maxBtn = ctl(`
 cursor-pointer text-14px text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0
 `);

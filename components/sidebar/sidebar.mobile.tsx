@@ -2,7 +2,6 @@
 import React, { RefObject, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -72,18 +71,46 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
         sidebarOpen ? " left-0" : " -left-full"
       )}
     >
-      <div className={sideBarWrapper}>
+      <div
+        className={`
+  w-[15.5rem] 
+  min-w-[15.5rem] 
+  py-5 
+  gap-8
+  lg:hidden
+  sm:flex
+  flex-col
+  font-monto
+  justify-between  
+  overflow-y-scroll
+  h-[calc(100vh-60px)]
+  bg-background-shade-1 
+`}
+      >
         <div>
           {user && (
             <Link
               href={AppRoutes.nfts.create_nft}
-              className={connectButton}
+              className={`
+  px-6 
+  py-2
+  mx-5
+  w-fit
+  flex
+  text-sm 
+  rounded-lg 
+  items-center 
+  font-semibold 
+  bg-brand-primary 
+  text-black-shade-2 
+  hover:bg-brand-primary-dark 
+`}
               onClick={onClose}
             >
               Create NFT
             </Link>
           )}
-          <div className={sideBarWrapperStyling}>
+          <div className={`flex flex-col gap-6 px-5 mt-5`}>
             {SidebarSections.map((section) => {
               return (
                 <Section
@@ -108,14 +135,18 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
                   <SettingIcon
                     className={
                       router.pathname.replaceAll("-", " ").includes("settings")
-                        ? itemIconsActive
-                        : itemIcons
+                        ? `stroke-white`
+                        : `stroke-gray-shade-8`
                     }
                   />
                   <div
                     className={
                       router.pathname.replaceAll("-", " ").includes("settings")
-                        ? itemLabelActive
+                        ? `
+  text-sm
+  font-semibold 
+  text-white 
+`
                         : itemLabel
                     }
                   >
@@ -125,7 +156,15 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
               </div>
             </div>
             <div className={sectionWrapper}>
-              <span className={sectionLabel}>WILL YOU GET OUT?</span>
+              <span
+                className={`
+  font-bold
+  text-[11px] 
+  text-gray-shade-7 
+`}
+              >
+                WILL YOU GET OUT?
+              </span>
               <div className={sectionWrapper2}>
                 <div className={itemWrapper}>
                   <Logout />
@@ -144,75 +183,27 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   );
 };
 
-const sideBarWrapper = ctl(`
-  w-[15.5rem] 
-  min-w-[15.5rem] 
-  py-5 
-  gap-8
-  lg:hidden
-  sm:flex
-  flex-col
-  font-monto
-  justify-between  
-  overflow-y-scroll
-  h-[calc(100vh-60px)]
-  bg-background-shade-1 
-`);
-
-const sectionWrapper = ctl(`
+const sectionWrapper = `
   flex
   gap-6 
   flex-col
   px-5
-`);
+`;
 
-const sectionWrapper2 = ctl(`
+const sectionWrapper2 = `
   flex
   gap-6 
   flex-col
-`);
+`;
 
-const sectionLabel = ctl(`
-  font-bold
-  text-[11px] 
-  text-gray-shade-7 
-`);
-
-const itemWrapper = ctl(`
+const itemWrapper = `
   flex 
   gap-2 
   items-center
-`);
+`;
 
-const itemLabel = ctl(`
+const itemLabel = `
   text-sm
   font-semibold 
   text-gray-shade-8 
-`);
-
-const itemLabelActive = ctl(`
-  text-sm
-  font-semibold 
-  text-white 
-`);
-
-const itemIcons = ctl(`stroke-gray-shade-8`);
-
-const itemIconsActive = ctl(`stroke-white`);
-
-const sideBarWrapperStyling = ctl(`flex flex-col gap-6 px-5 mt-5`);
-
-const connectButton = ctl(`
-  px-6 
-  py-2
-  mx-5
-  w-fit
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-brand-primary 
-  text-black-shade-2 
-  hover:bg-brand-primary-dark 
-`);
+`;
