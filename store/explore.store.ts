@@ -72,6 +72,7 @@ export const useExploreStore = create<ExploreStore>()(
                   ipfs: item.ipfs,
                   saleState: item.saleState,
                   price: item.price,
+                  owner: item.owner,
                   endTime: _endTime,
                 };
               });
@@ -160,6 +161,7 @@ export const useExploreStore = create<ExploreStore>()(
                   ipfs: item.ipfs,
                   saleState: item.saleState,
                   price: item.price,
+                  owner: item.owner,
                   endTime: _endTime,
                 };
               });
@@ -195,6 +197,7 @@ export interface NFT {
   ipfs: string;
   saleState: string;
   price: number;
+  owner: string;
   endTime: number;
 }
 

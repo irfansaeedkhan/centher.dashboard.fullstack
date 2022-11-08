@@ -24,7 +24,7 @@ export interface NFTCardProps {
 
 const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const [name, setName] = useState("");
-  const nftOwner = useGetNFTOwner(data.collection, data.tokenId);
+  const nftOwner = useGetNFTOwner(data.collection, data.tokenId, data.owner);
   const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
     nftOwner.toLowerCase()
   );
@@ -47,7 +47,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className={nftCardWrapper}>
+    <Link href={`/nfts/${data.collection}/${data.tokenId}`} className={nftCardWrapper}>
       <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
         {loading !== "loading" && loading !== "idle" ? (
           <div className={ownerDpWrapper}>
@@ -128,7 +128,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 
         {/* <span className={textSimple}>${formatBNB2USD(data.price)}</span> */}
       </div>
-    </div>
+    </Link>
   );
 };
 

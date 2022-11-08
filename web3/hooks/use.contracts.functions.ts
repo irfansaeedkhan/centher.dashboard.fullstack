@@ -197,20 +197,25 @@ export const useGetApprovedForAll = (
 
 export const useGetNFTOwner = (
   collection: string | undefined,
-  tokenId: number | undefined
+  tokenId: number | undefined,
+  ownerOfListed: string | undefined
 ) => {
   const [owner, setOwner] = useState("");
 
   useEffect(() => {
-    const fetchOwner = async (tokenId: number, collection: string) => {
+    const fetchOwner = async (tokenId: number, collection: string, ownerOfListed: string) => {
       const nftContract = getStandardNFTContract(null, collection);
       const _owner = await nftContract.ownerOf(tokenId);
-      setOwner(_owner);
+      if(_owner.toLowerCase() === getMarketplaceAddress()) {
+        setOwner(ownerOfListed)
+      } else {
+        setOwner(_owner);
+      }
     };
 
-    if (tokenId && collection) {
-      fetchOwner(tokenId, collection);
+    if (tokenId && collection && ownerOfListed) {
+      fetchOwner(tokenId, collection, ownerOfListed);
     }
-  }, [tokenId, collection]);
+  }, [tokenId, collection, ownerOfListed]);
   return owner;
 };

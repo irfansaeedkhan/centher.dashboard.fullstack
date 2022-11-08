@@ -4,7 +4,7 @@ import { Address } from "../constants/types";
 
 export const getAddress = (address: Address): string => {
   const chainId = CHAIN;
-  return address[chainId];
+  return address[chainId].toLowerCase();
 };
 
 export const getNtrdaoAddress = () => {
