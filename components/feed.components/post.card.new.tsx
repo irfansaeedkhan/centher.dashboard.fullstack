@@ -48,6 +48,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
   const {
     showModal,
     setShowModal,
+    showEmojiModal,
+    setShowEmojiModal,
     //displaySelectedFiles,
     totalReplyCount,
     handleTextLength,
@@ -164,8 +166,7 @@ w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 b
         <label
           className={`${uploadBtn} text-[#00BF96]`}
           onClick={() => {
-            setShowModal(true);
-            setTogglePop(true);
+            setShowEmojiModal(true);
           }}
         >
           <EmojiIcon />
@@ -390,6 +391,36 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                   />
                 )}
               </div>
+            </div>
+          </div>
+        </CustomModal>
+      )}
+      {showEmojiModal && (
+        <CustomModal
+          onClose={() => {
+            setShowEmojiModal(false);
+          }}
+          title={"Select emoji"}
+        >
+          <div
+            className={`
+  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
+ relative h-[420px]`}
+          >
+            <div
+              ref={ref}
+              className={`emojiContainer absolute top-[16px] left-[50%] translate-x-[-50%]  ${
+                togglePop && "!block z-50"
+              }`}
+            >
+              <Picker
+                onEmojiClick={onEmojiClick}
+                height={400}
+                width={300}
+                autoFocusSearch={false}
+                emojiStyle={EmojiStyle.NATIVE}
+                theme={Theme.AUTO}
+              />
             </div>
           </div>
         </CustomModal>

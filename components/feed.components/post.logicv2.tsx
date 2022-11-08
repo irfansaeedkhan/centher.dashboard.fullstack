@@ -62,6 +62,7 @@ export function usePostUpload({
 
   // Show create pop modal
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [showEmojiModal, setShowEmojiModal] = useState(false);
 
   // Index
   //const [lastItem, setLastItem] = useState<number>();
@@ -155,6 +156,8 @@ export function usePostUpload({
     //Codes added for the new cursor
     // const newCursor = cursor + emojiObject?.emoji?.length;
     // setTimeout(() => refe.current.setSelectionRange(newCursor, newCursor), 10);
+    setShowEmojiModal(false);
+    setShowModal(true);
   };
 
   // TODO: fix any types please
@@ -651,6 +654,8 @@ export function usePostUpload({
   return {
     showModal,
     setShowModal,
+    showEmojiModal,
+    setShowEmojiModal,
     //displaySelectedFiles,
     totalReplyCount,
     handleTextLength,
