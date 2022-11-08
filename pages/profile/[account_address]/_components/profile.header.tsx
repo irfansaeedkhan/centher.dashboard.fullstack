@@ -10,6 +10,10 @@ import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 import { Rings } from "react-loader-spinner";
 import { CgSpinner } from "react-icons/cg";
+import { FaFacebook, FaTiktok, FaTwitch, FaTwitter } from "react-icons/fa";
+import { GrInstagram } from "react-icons/gr";
+import { SiOnlyfans } from "react-icons/si";
+import { HiLink } from "react-icons/hi";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -20,13 +24,7 @@ import Button from "@/components/button";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
-import {
-  CopySvg,
-  TwitterSvg,
-  WebsiteIcon,
-  CameraIcon,
-  EditIcon,
-} from "@/assets/svgs";
+import { CopySvg, CameraIcon, EditIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
@@ -372,23 +370,70 @@ const ProfileHeader: React.FC = () => {
                       <CopySvg className="hover:stroke-brand-primary" />
                     </button>
                   </div>
-
+                </div>
+                <div className="flex items-center gap-3 mt-2">
                   {user.twitter_username && (
                     <a
                       href={`https://twitter.com/${user.twitter_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <TwitterSvg className="hover:stroke-brand-primary" />
+                      <FaTwitter className="fill-white text-xl hover:fill-brand-primary" />
                     </a>
                   )}
                   {user.website_url && (
                     <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <WebsiteIcon className="hover:stroke-brand-primary" />
+                      <HiLink className="fill-white text-xl hover:fill-brand-primary" />
+                    </a>
+                  )}
+                  {user.facebook_username && (
+                    <a
+                      href={`https://facebook.com/${user.facebook_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FaFacebook className=" fill-white text-xl hover:fill-brand-primary" />
+                    </a>
+                  )}
+                  {user.instagram_username && (
+                    <a
+                      href={`https://instagram.com/${user.instagram_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <GrInstagram className="fill-white text-xl hover:fill-brand-primary" />
+                    </a>
+                  )}
+                  {user.twitch_username && (
+                    <a
+                      href={`https://twitch.tv/${user.twitch_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FaTwitch className="fill-white text-xl hover:fill-brand-primary" />
+                    </a>
+                  )}
+                  {user.tiktok_username && (
+                    <a
+                      href={`https://tiktok.com/${user.tiktok_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FaTiktok className="fill-white text-xl hover:fill-brand-primary" />
+                    </a>
+                  )}
+                  {user.onlyfans_username && (
+                    <a
+                      href={`https://onlyfans.com/${user.onlyfans_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <SiOnlyfans className="fill-white text-xl hover:fill-brand-primary" />
                     </a>
                   )}
                 </div>
               </div>
+
               {loggedInUser.account_address.toLowerCase() ===
               user.account_address.toLowerCase() ? (
                 <Link href={AppRoutes.profile.settings}>

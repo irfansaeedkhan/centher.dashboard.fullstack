@@ -30,6 +30,11 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         website_url: updatedUser.website_url,
         twitter_username: updatedUser.twitter_username,
         profile_bio: updatedUser.profile_bio,
+        facebook_username: updatedUser.facebook_username,
+        instagram_username: updatedUser.instagram_username,
+        tiktok_username: updatedUser.tiktok_username,
+        twitch_username: updatedUser.twitch_username,
+        onlyfans_username: updatedUser.onlyfans_username,
       });
 
       setUpdatedUser(data.user as LoggedInUser);
@@ -131,6 +136,71 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             setUpdatedUser({
               ...updatedUser,
               twitter_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="facebook_username"
+          label="Facebook Username"
+          placeholder="Enter your facebook username"
+          value={updatedUser.facebook_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              facebook_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="instagram_username"
+          label="Instagram Username"
+          placeholder="Enter your instagram username"
+          value={updatedUser.instagram_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              instagram_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="tiktok_username"
+          label="Tiktok Username"
+          placeholder="Enter your tiktok username"
+          value={updatedUser.tiktok_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              tiktok_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="twitch_username"
+          label="Twitch Username"
+          placeholder="Enter your twitch username"
+          value={updatedUser.twitch_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              twitch_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="onlyfans_username"
+          label="OnlyFans Username"
+          placeholder="Enter your onlyfans username"
+          value={updatedUser.onlyfans_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              onlyfans_username: e.target.value,
             });
           }}
         />
