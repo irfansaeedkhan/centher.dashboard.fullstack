@@ -54,7 +54,6 @@ const Collection: NextPageWithLayout = () => {
   }));
 
   const [metadata, setMetadata] = useState<any>();
-  const [lastNotiRef, lastNotiInView] = useInView();
   const [orderdir, setOrderDir] = useState("desc");
 
   useEffect(() => {
@@ -73,33 +72,26 @@ const Collection: NextPageWithLayout = () => {
     }
   }, [info]);
 
+
+  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
+
   useEffect(() => {
-    if (lastNotiInView) {
+    if (lastNotiEntry?.isIntersecting) {
       updateOffset();
     }
-  }, [lastNotiInView, updateOffset]);
+  }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
     if (collection) {
-      fetchCollectionInfo(collection as string);
       fetchNFTs(collection as string, filter, orderdir, offset, limit, false);
     }
-  }, [
-    fetchCollectionInfo,
-    collection,
-    fetchNFTs,
-    offset,
-    limit,
-    orderdir,
-    filter,
-  ]);
+  }, [collection, fetchNFTs, filter, limit, offset, orderdir]);
 
   useEffect(() => {
     if (collection) {
       fetchCollectionInfo(collection as string);
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, true);
     }
-  }, [filter]);
+  }, [collection, fetchCollectionInfo]);
 
   useOnClickOutside(menuRef, () => setIsMenuVisible(false));
   const toggleMenu = async () => {

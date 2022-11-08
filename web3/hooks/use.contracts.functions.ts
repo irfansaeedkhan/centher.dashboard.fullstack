@@ -17,6 +17,7 @@ import {
   getRegistrationContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
+import { ZeroAddress } from "../constants/common";
 
 export const useNtrdaoBalance = (account: string | undefined | null) => {
   const [balance, setBalance] = useState(0);
@@ -203,17 +204,13 @@ export const useGetNFTOwner = (
   const [owner, setOwner] = useState("");
 
   useEffect(() => {
-    const fetchOwner = async (
-      tokenId: number,
-      collection: string,
-      ownerOfListed: string
-    ) => {
-      const nftContract = getStandardNFTContract(null, collection);
-      const _owner = await nftContract.ownerOf(tokenId);
-      if (_owner.toLowerCase() === getMarketplaceAddress()) {
-        setOwner(ownerOfListed);
-      } else {
+    const fetchOwner = async (tokenId: number, collection: string, ownerOfListed: string) => {
+      if(ownerOfListed === ZeroAddress) {
+        const nftContract = getStandardNFTContract(null, collection);
+        const _owner = await nftContract.ownerOf(tokenId);
         setOwner(_owner);
+      } else {
+        setOwner(ownerOfListed);
       }
     };
 
