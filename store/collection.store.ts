@@ -52,7 +52,7 @@ export const useCollectionStore = create<CollectionStore>()(
 
       fetchCollectionInfo: async (collection) => {
         try {
-          set({loadingCollectionInfo: "loading"})
+          set({ loadingCollectionInfo: "loading" });
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -82,7 +82,7 @@ export const useCollectionStore = create<CollectionStore>()(
             };
           });
         } catch (error) {
-          set({loadingCollectionInfo: "failed"})
+          set({ loadingCollectionInfo: "failed" });
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
@@ -96,7 +96,7 @@ export const useCollectionStore = create<CollectionStore>()(
         reload
       ) => {
         try {
-          set({loadingNFTs: "loading"})
+          set({ loadingNFTs: "loading" });
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -173,12 +173,12 @@ export const useCollectionStore = create<CollectionStore>()(
             } else {
               return {
                 nfts: [..._nfts, ...filteredNFTs],
-                loadingNFTs: "loaded"
+                loadingNFTs: "loaded",
               };
             }
           });
         } catch (error) {
-          set({loadingNFTs: "failed"})
+          set({ loadingNFTs: "failed" });
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },

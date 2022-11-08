@@ -39,7 +39,7 @@ export const NFTRightSideComponent = ({
   const [togglePop, setTogglePop] = useState(false);
 
   const nftOwner = useGetNFTOwner(data?.collection, data?.nftId, data?.owner);
-  
+
   useEffect(() => {
     if (data) {
       if (

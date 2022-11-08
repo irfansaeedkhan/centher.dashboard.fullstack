@@ -40,7 +40,7 @@ const Collection: NextPageWithLayout = () => {
     updateOffset,
     limit,
     loadingCollectionInfo,
-    loadingNFTs
+    loadingNFTs,
   } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,

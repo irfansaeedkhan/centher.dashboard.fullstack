@@ -52,10 +52,7 @@ export const useExploreStore = create<ExploreStore>()(
             cache: new InMemoryCache(),
           });
           let _hotNFTs: NFT[] = [];
-          const {
-            data: result,
-            error,
-          } = await client.query({
+          const { data: result, error } = await client.query({
             query: gql(hotNFTsQuery),
             variables: {
               first: limit,
@@ -105,10 +102,7 @@ export const useExploreStore = create<ExploreStore>()(
           });
 
           let _collections: Collection[] = [];
-          const {
-            data: result,
-            error,
-          } = await client.query({
+          const { data: result, error } = await client.query({
             query: gql(collectionsQuery),
             variables: {
               first: limit,
@@ -141,10 +135,7 @@ export const useExploreStore = create<ExploreStore>()(
             cache: new InMemoryCache(),
           });
           let _allNFTs: NFT[] = [];
-          const {
-            data: result,
-            error,
-          } = await client.query({
+          const { data: result, error } = await client.query({
             query: gql(allNFTsQuery),
             variables: {
               first: limit,
