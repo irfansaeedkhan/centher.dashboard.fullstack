@@ -74,7 +74,6 @@ const Collection: NextPageWithLayout = () => {
     }
   }, [info]);
 
-
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
@@ -150,7 +149,7 @@ const Collection: NextPageWithLayout = () => {
             <div className={topDetais}>
               <div>
                 <h5 className={collectionName}>{metadata?.name}</h5>
-                <Link 
+                <Link
                   href={{
                     pathname: AppRoutes.profile.nfts,
                     query: {
