@@ -31,43 +31,17 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({
     if (roundInfo) getDeadlineTime(roundInfo);
   }, [round, roundInfo, roundState]);
   return (
-    <div
-      className={`
-bg-no-repeat bg-top bg-buydao-pattern rounded-2xl bg-background-shade-1 p-8 lg:p-14 bg-cover
-`}
-    >
-      <div
-        className={`
-content flex flex-col lg:flex-row items-center justify-between gap-8
-`}
-      >
+    <div className={presaleCardContainer}>
+      <div className={timerContentContainer}>
         <div>
-          <h1
-            className={`
-text-24px text-white font-semibold pb-2.5
-`}
-          >
+          <h1 className={timerTitle}>
             The time remaining to <br className="hidden lg:block" /> participate
             {`in Presale Round ${round + 1}`}
           </h1>
-          <div
-            className={`
-blurbackground rounded-xl bg-white/30 backdrop-blur-sm py-1 px-2.5 border border-solid border-white/20
-`}
-          >
-            <h2
-              className={`
-text-14px text-gray-shade-16
-`}
-            >
+          <div className={timerSubTitleContainer}>
+            <h2 className={timerSubTitle}>
               [1° Round ] Join in to this round to jet a{" "}
-              <span
-                className={`
-text-white font-semibold
-`}
-              >
-                60% Token Bonus
-              </span>
+              <span className={timerSubTitleBold}>60% Token Bonus</span>
             </h2>
           </div>
         </div>
