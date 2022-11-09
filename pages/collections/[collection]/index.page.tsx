@@ -22,7 +22,11 @@ import { useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
-import { formatAddress, formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatIPFSUrl,
+} from "@/utils/format.address";
 import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
 import useBNBPrice from "@/web3/hooks/use.chain.info";
@@ -34,7 +38,7 @@ const Collection: NextPageWithLayout = () => {
   const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  const bnbPrice = useBNBPrice()
+  const bnbPrice = useBNBPrice();
 
   const {
     info,
@@ -76,7 +80,6 @@ const Collection: NextPageWithLayout = () => {
       fetchMetadata(info.ipfs);
     }
   }, [info]);
-
 
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
@@ -153,7 +156,7 @@ const Collection: NextPageWithLayout = () => {
             <div className={topDetais}>
               <div>
                 <h5 className={collectionName}>{metadata?.name}</h5>
-                <Link 
+                <Link
                   href={{
                     pathname: AppRoutes.profile.nfts,
                     query: {

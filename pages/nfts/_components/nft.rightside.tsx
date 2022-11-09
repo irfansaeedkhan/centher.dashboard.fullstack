@@ -95,7 +95,7 @@ export const NFTRightSideComponent = ({
           <div className="linearCircle1"></div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
-            <Link 
+            <Link
               href={{
                 pathname: AppRoutes.profile.nfts,
                 query: {
@@ -112,7 +112,7 @@ export const NFTRightSideComponent = ({
           <div className="linearCircle2"></div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
-            <Link 
+            <Link
               href={{
                 pathname: AppRoutes.profile.nfts,
                 query: {
@@ -128,7 +128,7 @@ export const NFTRightSideComponent = ({
         <div className={nameBox}>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
-            <Link 
+            <Link
               href={{
                 pathname: AppRoutes.profile.nfts,
                 query: {
