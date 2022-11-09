@@ -19,7 +19,7 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   useEffect(() => {
     setShowSecPreivew(false);
     setAsset(undefined);
-  }, [clearForm]);
+  }, [clearForm, setAsset]);
   return (
     <div className={previewContainer}>
       {showSecPreview ? (

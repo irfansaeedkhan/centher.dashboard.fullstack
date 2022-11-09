@@ -133,7 +133,7 @@ const FixedPriceForm = ({
       });
       setPropertyList([]);
     }
-  }, [clearForm]);
+  }, [clearForm, reset]);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>

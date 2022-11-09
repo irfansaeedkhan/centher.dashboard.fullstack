@@ -20,6 +20,7 @@ import {
   VideoIcon,
   EmojiIcon,
   AnimateTrashIcon,
+  SpinIcon3,
 } from "@/assets/svgs";
 
 // Current directory imports
@@ -323,7 +324,7 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                       visible={true}
                       ariaLabel="rings-loading"
                     /> */}
-                    <div style={{ width: 30, height: 30 }}>
+                    {/* <div style={{ width: 30, height: 30 }}>
                       <CircularProgressbar
                         value={uploadingFileStatus ? uploadingFileStatus : 0}
                         text={`${
@@ -335,7 +336,8 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
                           pathColor: "#1C1F29",
                         })}
                       />
-                    </div>
+                    </div> */}
+                    <SpinIcon3 />
                   </button>
                 ) : (
                   <Button

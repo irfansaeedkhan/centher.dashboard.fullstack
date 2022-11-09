@@ -132,7 +132,7 @@ export const CreateNFTCollectionForm = ({
         twitter: "",
       });
     }
-  }, [clearForm]);
+  }, [clearForm, reset]);
 
   return (
     <div className={CreateNFTCollectionFormContainer}>
