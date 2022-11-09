@@ -32,15 +32,15 @@ export const formatIPFSUrl = (hash: string | undefined) => {
 };
 
 export const formatTxUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL
+  if (hash === undefined) return SCAN_URL;
   else {
-    return `${SCAN_URL}tx/${hash}`
+    return `${SCAN_URL}tx/${hash}`;
   }
-}
+};
 
 export const formatAddressUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL
+  if (hash === undefined) return SCAN_URL;
   else {
-    return `${SCAN_URL}address/${hash}`
+    return `${SCAN_URL}address/${hash}`;
   }
-}
+};

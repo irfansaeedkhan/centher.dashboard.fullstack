@@ -13,11 +13,12 @@ export const NEXT_PUBLIC_IPFS_HOST = "infura-ipfs.io";
 export const NEXT_PUBLIC_Project_ID = "2DD9ttRJA3QfrFRdqJ0cHdTPEwr";
 // IPFS API Secret
 export const NEXT_PUBLIC_API_Secret = "4bb79e429e37d85e6d6f8a2f91f65537";
-export const ZeroAddress = ethers.constants.AddressZero
+export const ZeroAddress = ethers.constants.AddressZero;
 
-export const SCAN_URL = process.env.NEXT_PUBLIC_APP_ENV === "production"
-                      ? "https://bscscan.com/address/"
-                      : "https://goerli.etherscan.io/"
+export const SCAN_URL =
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? "https://bscscan.com/address/"
+    : "https://goerli.etherscan.io/";
 
 export const DAY = 60 * 5;
 

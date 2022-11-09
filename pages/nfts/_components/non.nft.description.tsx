@@ -72,8 +72,8 @@ export const NonNFTDescription = ({
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
-  
-  const bnbPrice = useBNBPrice()
+
+  const bnbPrice = useBNBPrice();
 
   const listingForm = useForm<listingFormInterface>({
     mode: "onChange",
@@ -418,7 +418,10 @@ export const NonNFTDescription = ({
           <h5 className={BnBNum}>
             {formatEther2Number(data?.listInfo.price)} BNB
           </h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price, bnbPrice)}</h6>
+          <h6 className={greyTxt}>
+            {" "}
+            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+          </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>
