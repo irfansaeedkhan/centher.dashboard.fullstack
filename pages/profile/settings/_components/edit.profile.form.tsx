@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
@@ -11,16 +11,29 @@ import { axiosNodeApi } from "@/utils/axios";
 // Current directory imports
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
+import { LoadingState } from "@/models/common";
+import { SpinIcon3 } from "@/assets/svgs";
 
 interface EditProfileFormProps {
   user: LoggedInUser;
 }
 
+const ButtonsText = {
+  loading: "Continue...",
+  update_profile: "Update Profile",
+};
+
 export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
+  const [isLoading, setisLoading] = useState<LoadingState>("idle");
 
-  const updateProfile = async () => {
+  const updateProfile = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const button = e.currentTarget;
+    button.disabled = true;
+    setisLoading("loading");
     try {
       const { data } = await axiosNodeApi.patch("/api/users/me", {
         pseudonym: updatedUser.pseudonym,
@@ -42,7 +55,11 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
       await mutate("/api/users/me", data.user, false);
 
       toast.success("Profile updated successfully");
+      setisLoading("loaded");
+      button.disabled = false;
     } catch (error: any) {
+      button.disabled = false;
+      setisLoading("failed");
       toast.error(
         error.response?.data?.message_description ??
           error.message ??
@@ -226,8 +243,14 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           ></textarea>
         </div>
 
-        <button onClick={updateProfile} className={connectButton}>
-          Update profile
+        <button className={connectButton} onClick={updateProfile}>
+          {isLoading === "loading" ? (
+            <>
+              <SpinIcon3 />
+            </>
+          ) : (
+            ButtonsText.update_profile
+          )}
         </button>
       </div>
     </div>

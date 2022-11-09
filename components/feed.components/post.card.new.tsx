@@ -20,6 +20,7 @@ import {
   VideoIcon,
   EmojiIcon,
   AnimateTrashIcon,
+  SpinIcon3,
 } from "@/assets/svgs";
 
 // Current directory imports
@@ -366,7 +367,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                       visible={true}
                       ariaLabel="rings-loading"
                     /> */}
-                    <div style={{ width: 30, height: 30 }}>
+                    {/* <div style={{ width: 30, height: 30 }}>
                       <CircularProgressbar
                         value={uploadingFileStatus ? uploadingFileStatus : 0}
                         text={`${
@@ -378,7 +379,8 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                           pathColor: "#1C1F29",
                         })}
                       />
-                    </div>
+                    </div> */}
+                    <SpinIcon3 />
                   </button>
                 ) : (
                   <Button
