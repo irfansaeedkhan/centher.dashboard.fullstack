@@ -22,9 +22,10 @@ import { useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
-import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
+import { formatAddress, formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -32,6 +33,8 @@ const Collection: NextPageWithLayout = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
+
+  const bnbPrice = useBNBPrice()
 
   const {
     info,
@@ -184,7 +187,7 @@ const Collection: NextPageWithLayout = () => {
                   <h5 className={detailsCardValue}>
                     $
                     {info?.tradingVolumn
-                      ? ethers.utils.formatEther(info?.tradingVolumn)
+                      ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
                       : 0}
                   </h5>
                 </div>
