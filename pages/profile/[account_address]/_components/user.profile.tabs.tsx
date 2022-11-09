@@ -16,7 +16,7 @@ const UserProfileTabs: React.FC<ProfileProps> = ({
   const router = useRouter();
 
   return (
-    <div className="mt-6 flex gap-10">
+    <div className="mt-6 flex gap-10 w-full justify-center">
       <Link
         href={`/profile/${account_address}`}
         className={clsx(

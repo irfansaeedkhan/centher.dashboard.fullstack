@@ -99,15 +99,9 @@ export const PostCardNew: React.FC<PostCardNewProps> = ({ onPostCreated }) => {
 
   return user ? (
     <div
-      className={`
-  w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative
-`}
+      className={`w-full p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative`}
     >
-      <div
-        className={`
-top w-full flex items-center gap-2 mb-2 
-`}
-      >
+      <div className={`top w-full flex items-center gap-2 mb-2`}>
         <Image
           src={user.profile_image.path}
           width={48}
@@ -117,9 +111,7 @@ top w-full flex items-center gap-2 mb-2
           sizes={"256px"}
         />
         <button
-          className={`
-w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left
-`}
+          className={`w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left`}
           onClick={() => {
             setShowModal(true);
           }}
@@ -127,11 +119,7 @@ w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 b
           Start a post
         </button>
       </div>
-      <div
-        className={`
-  flex items-items justify-between
-`}
-      >
+      <div className={`flex items-items justify-between`}>
         <label className={`${uploadBtn} text-yellow-theme`}>
           <PhotoIcon />
           Photo
@@ -177,15 +165,9 @@ w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 b
       {showModal && (
         <CustomModal onClose={closePostModal} title={"Create post"}>
           <div
-            className={`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`}
+            className={`flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4`}
           >
-            <div
-              className={`
-  flex items-center  gap-3 px-6
-`}
-            >
+            <div className={`flex items-center  gap-3 px-6`}>
               <Image
                 src={user.profile_image.path}
                 width={44}
@@ -194,28 +176,17 @@ w-full text-14px bg-transparent rounded-10px overflow-hidden h-[48px] border-2 b
                 alt={user.display_name ?? "profile image"}
                 sizes={"256px"}
               />
-              <h5
-                className={`
-  text-14px font-semibold text-white
-`}
-              >
+              <h5 className={`text-14px font-semibold text-white`}>
                 {user.display_name}
               </h5>
             </div>
-            <div
-              className={`
-px-6
-`}
-            >
+            <div className={`px-6`}>
               {displaySelectedFiles && (
                 <div
-                  className={`${`
- w-full grid, gap-3,
-`} 
-                    // ${displaySelectedFiles.length === 1 && "grid-cols-1"} 
-                    // ${displaySelectedFiles.length === 2 && "grid-cols-2"} 
-                    // ${displaySelectedFiles.length > 2 && "grid-cols-3"} 
-                    `}
+                  className={`w-full grid, gap-3`}
+                  // ${displaySelectedFiles.length === 1 && "grid-cols-1"}
+                  // ${displaySelectedFiles.length === 2 && "grid-cols-2"}
+                  // ${displaySelectedFiles.length > 2 && "grid-cols-3"}
                 >
                   <Carousel
                     showStatus={false}
@@ -233,15 +204,9 @@ px-6
                   </Carousel>
                 </div>
               )}
-              <div
-                className={`
-pt-4 pb-2 w-full
-`}
-              >
+              <div className={`pt-4 pb-2 w-full`}>
                 <textarea
-                  className={`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all
-`}
+                  className={`text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 break-all`}
                   ref={refe}
                   name=""
                   id="posttext"
@@ -270,14 +235,10 @@ text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-sh
               </div>
             )}
             <div
-              className={`
-flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`}
+              className={`flex flex-row [@media(max-width:600px)]:!flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6`}
             >
               <div
-                className={`
-w-[100%] lg:w-[48%] flex items-center justify-between
-`}
+                className={`w-[100%] lg:w-[48%] flex items-center justify-between`}
               >
                 <label className={`${uploadBtn} text-yellow-theme`}>
                   <PhotoIcon />
@@ -339,9 +300,7 @@ w-[100%] lg:w-[48%] flex items-center justify-between
                 )}
               </div>
               <div
-                className={`
-w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between justify-end gap-2
-`}
+                className={`w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between justify-end gap-2`}
               >
                 {/*
                 TODO : Kindly rest animation after tweet is deleted. Need to call delete Text function 
@@ -350,9 +309,7 @@ w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between
                   <AnimateTrashIcon />
                 </span>
                 <div
-                  className={`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`}
+                  className={`w-[2px] h-[10px] bg-[#333333]  rounded-xl`}
                 ></div>
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
@@ -403,9 +360,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
           title={"Select emoji"}
         >
           <div
-            className={`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
- relative h-[420px]`}
+            className={`flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 relative h-[420px]`}
           >
             <div
               ref={ref}

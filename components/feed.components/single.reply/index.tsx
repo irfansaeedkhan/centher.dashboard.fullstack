@@ -380,9 +380,9 @@ export const SingleReply = React.forwardRef<
   };
 
   return (
-    <div ref={currentPostRef}>
+    <div ref={currentPostRef} className="flex flex-grow">
       <div
-        className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+        className={`sm:w-full lg:w-[544px] flex-grow relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
         ref={ref}
       >
         {_post.parent_post && <ParentPost parentPost={_post.parent_post} />}

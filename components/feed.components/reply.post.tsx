@@ -307,9 +307,9 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
     return (
       <div ref={currentPostRef}>
         <div
-          className={`${`
-  flex flex-col gap-4
-`} ${replies.length === 0 && " border-b-2 border-gray-shade-3"} `}
+          className={`${`flex flex-col gap-4`} ${
+            replies.length === 0 && " border-b-2 border-gray-shade-3"
+          } `}
           ref={ref}
         >
           <div

@@ -383,18 +383,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     };
 
     return (
-      <div ref={currentPostRef}>
+      <div ref={currentPostRef} className="flex flex-grow">
         <div
-          className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+          className={`sm:w-full flex-grow lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
           ref={ref}
         >
           {/* Connect Lines */}
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && (
               <div
-                className={`
-  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
-`}
+                className={`absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)] bg-gray-shade-3`}
               ></div>
             )}
 
