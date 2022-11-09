@@ -44,7 +44,7 @@ export const UploadNFTCollection = ({
       setShowCoverImage(false);
       setCover(undefined);
     }
-  }, [clearForm]);
+  }, [clearForm, setCover, setProfile]);
   return (
     <div className={nftBoxContainer}>
       <div>
