@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { HotNFTs, HotCollections, Explore } from "./_components";
 import { useExploreStore } from "@/store/explore.store";
 import Banner from "./_components/banner";
+import TopCreators from "./_components/top.creators";
 
 const MAX_HOT_NFTS = 10;
 const MAX_COLLECTIONS = 10;
@@ -41,12 +42,6 @@ const ExplorePage: NextPageWithLayout = () => {
     loadingCollections: state.loadingCollections,
     loadingAllNFTs: state.loadingAllNFTs,
   }));
-  console.log(
-    "loading state: ",
-    loadingHotNFTs,
-    loadingCollections,
-    loadingAllNFTs
-  );
   const [lastNotiRef, lastNotiInView] = useInView();
 
   useEffect(() => {
@@ -68,9 +63,13 @@ const ExplorePage: NextPageWithLayout = () => {
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Banner />
-        <HotNFTs hotNFTs={hotNFTs} />
-        <HotCollections hotCollections={collections} />
-        <Explore allNFTs={allNFTs} />
+        <TopCreators />
+        <HotNFTs loadingHotNFTs={loadingHotNFTs} hotNFTs={hotNFTs} />
+        <HotCollections
+          loadingCollections={loadingCollections}
+          hotCollections={collections}
+        />
+        <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} />
       </div>
     </div>
   );
