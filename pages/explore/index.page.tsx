@@ -68,9 +68,12 @@ const ExplorePage: NextPageWithLayout = () => {
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Banner />
-        <HotNFTs hotNFTs={hotNFTs} />
-        <HotCollections hotCollections={collections} />
-        <Explore allNFTs={allNFTs} />
+        <HotNFTs hotNFTs={hotNFTs} loadingHotNFTs={loadingHotNFTs} />
+        <HotCollections
+          hotCollections={collections}
+          loadingCollections={loadingCollections}
+        />
+        <Explore allNFTs={allNFTs} loadingAllNFTs={loadingAllNFTs} />
       </div>
     </div>
   );

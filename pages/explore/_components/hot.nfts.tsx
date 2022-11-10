@@ -5,24 +5,50 @@ import ctl from "@netlify/classnames-template-literals";
 import NFTCard from "@/components/nft.card";
 import { NFT } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
+import { LoadingState } from "@/models/common";
+
+import NftsSkeleton from "@/components/loading.skeletons/nfts";
 
 // Current directory imports
 interface HotNFTsProps {
   hotNFTs: NFT[];
+  loadingHotNFTs: LoadingState;
 }
 
-export const HotNFTs: React.FC<HotNFTsProps> = ({ hotNFTs }) => {
+export const HotNFTs: React.FC<HotNFTsProps> = ({
+  hotNFTs,
+  loadingHotNFTs,
+}) => {
   return (
     <div className={hotNftPageWrapper}>
       <div className={hotNftAnimation}>Hot NFTs</div>
 
-      {hotNFTs.length !== 0 ? (
+      {hotNFTs.length > 0 && (
         <div className={`${nftCardWrapper} nftCardContainer`}>
           {hotNFTs.map((nft) => (
             <NFTCard data={nft} key={nft.id} />
           ))}
         </div>
-      ) : (
+      )}
+      {(loadingHotNFTs === "loading" || loadingHotNFTs === "idle") && (
+        <div className="flex flex-wrap gap-10 items-center">
+          {/* we are showing 12 skeletons while reloading the page to users */}
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+        </div>
+      )}
+
+      {loadingHotNFTs !== "loaded" && (
         <>
           <div className="flex justify-center items-center text-white">
             <HotNftEmptyIcon />
