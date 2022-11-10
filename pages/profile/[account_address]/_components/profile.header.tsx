@@ -1,5 +1,11 @@
 // React, Next, NPM Packages
-import React, { useCallback, useEffect, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -33,7 +39,13 @@ import { AppRoutes } from "@/constants/app.routes";
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
 import NFTProfileTabs from "./nft.profile.tabs";
-import { FiCopy, FiInstagram, FiTwitch, FiTwitter } from "react-icons/fi";
+import {
+  FiCopy,
+  FiInstagram,
+  FiTwitch,
+  FiTwitter,
+  FiYoutube,
+} from "react-icons/fi";
 import clsx from "clsx";
 
 type CoverImageWithFile = Partial<UserImage> & {
@@ -67,6 +79,7 @@ const ProfileHeader: React.FC = () => {
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [verifyIcon, setVerifyIcon] = useState<string>("/images/v1.gif");
 
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
@@ -254,6 +267,16 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
+  useEffect(() => {}, []);
+  useLayoutEffect(() => {
+    //Do something and either return undefined or a cleanup function
+    return () => {
+      //Do some cleanup here
+      setTimeout(function () {
+        setVerifyIcon("/images/v2.gif");
+      }, 2500);
+    };
+  }, []);
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -342,16 +365,27 @@ const ProfileHeader: React.FC = () => {
             )}
 
             <div
-              className={`cursor-pointer absolute left-[45.5%] -bottom-12 h-[112px] !w-[111px]`}
+              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[111px]`}
             >
-              <Image
-                src={user.profile_image.path}
-                alt={user.display_name}
-                width={111}
-                height={112}
-                className="rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
-                // sizes={"512px"}
-              />
+              <div className="relative h-[112px] !w-[111px]">
+                <Image
+                  src={user.profile_image.path}
+                  alt={user.display_name}
+                  width={111}
+                  height={112}
+                  className="absolute rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
+                  // sizes={"512px"}
+                />
+                <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
+                  <Image
+                    src={verifyIcon}
+                    alt={"verified icon"}
+                    width={34}
+                    height={34}
+                    className=""
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -389,7 +423,8 @@ const ProfileHeader: React.FC = () => {
               user.onlyfans_username ||
               user.twitch_username ||
               user.twitter_username ||
-              user.website_url) && (
+              user.website_url ||
+              user.youtube_username) && (
               <div className="w-full justify-center flex mt-3">
                 <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
                   {user.tiktok_username && (
@@ -417,6 +452,15 @@ const ProfileHeader: React.FC = () => {
                       rel="noreferrer"
                     >
                       <FiTwitter className={socialLinks} />
+                    </a>
+                  )}
+                  {user.youtube_username && (
+                    <a
+                      href={`https://youtube.com/${user.youtube_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiYoutube className={socialLinks} />
                     </a>
                   )}
                   {user.website_url && (
