@@ -7,6 +7,7 @@ import moment from "moment";
 import { LineChart } from "@/components/charts";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
+import { BarChart } from "@/components/charts/bar.chart";
 
 interface NFTHistoryProps {
   prices: IListHistory[] | undefined;
@@ -17,46 +18,47 @@ interface PriceHistory {
 }
 // interface of data to be sent in chart
 interface historyData {
-    labels: string[];
-    datasets: {
-      type: "line";
-      label: string;
-      borderColor: string;
-      borderWidth: number;
-      fill: boolean;
-      data: number[];
-      backgroundColor: string;
-    }[];
-  }
+  labels: string[];
+  datasets: {
+    type: "line";
+    label: string;
+    borderColor: string;
+    borderWidth: number;
+    fill: boolean;
+    data: number[];
+    backgroundColor: string;
+  }[];
+}
 
-export const NFTHistory = ({prices}: NFTHistoryProps) => {
-
+export const NFTHistory = ({ prices }: NFTHistoryProps) => {
   const [duration, setDuration] = useState(7);
-  const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([])
+  const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
 
   // global labels to set dynamic data
-  const [labels, setLabels] = useState<string[]>([])
-  const [priceList, setPriceList] = useState<number[]>([])
-  const [priceAverage, setPriceAverage] = useState<number>()
-  const [priceVolume, setPriceVolume] = useState<number>()
-  
+  const [labels, setLabels] = useState<string[]>([]);
+  const [priceList, setPriceList] = useState<number[]>([]);
+  const [priceAverage, setPriceAverage] = useState<number>();
+  const [priceVolume, setPriceVolume] = useState<number>();
+
   useEffect(() => {
-    const getData = async (prices: any) => {      
-      const _prices = prices.sort((item1: any, item2: any) => item1.txTime - item2.txTime)
+    const getData = async (prices: any) => {
+      const _prices = prices.sort(
+        (item1: any, item2: any) => item1.txTime - item2.txTime
+      );
       const _priceHistory = await _prices.map((item: IListHistory) => {
         return {
           price: formatEther2Number(item.price),
-          txTime: item.txTime
-        }
-      })
-      setPriceHistory(_priceHistory)
-          
+          txTime: item.txTime,
+        };
+      });
+      setPriceHistory(_priceHistory);
+
       // getting dynamic labels data using moment js for last 7 days
-      let _labels = []
+      let _labels = [];
       for (let i = 0; i < duration; i++) {
         _labels.push(moment().subtract(i, "days").format("DD MMM"));
       }
-      setLabels(_labels)
+      setLabels(_labels);
       // using momentjs to get current date and previous dates
       // const currentTime = moment().format("YYYY-MM-DD");
       const lastSeventhDay = moment()
@@ -64,7 +66,7 @@ export const NFTHistory = ({prices}: NFTHistoryProps) => {
         .format("YYYY-MM-DD");
 
       // getting prices array for last 7 days from dummy data
-      let _priceList: number[] = []
+      let _priceList: number[] = [];
       await _priceHistory?.forEach((data: any) => {
         let propTime = moment(Number(Object.entries(data)[1][1]) * 1000).format(
           "YYYY-MM-DD"
@@ -73,20 +75,23 @@ export const NFTHistory = ({prices}: NFTHistoryProps) => {
           _priceList.push(Number(Object.entries(data)[0][1]));
         }
       });
-      setPriceList(_priceList)
+      setPriceList(_priceList);
       // getting average price from pricelist for last 7 days
-      const _priceAverage = _priceList.reduce((partialSum, a) => partialSum + a, 0) / _priceList.length;
+      const _priceAverage =
+        _priceList.reduce((partialSum, a) => partialSum + a, 0) /
+        _priceList.length;
       // getting volume
-      const _priceVolume = _priceList.reduce((partialSum, a) => partialSum + a, 0);
-      setPriceAverage(_priceAverage)
-      setPriceVolume(_priceVolume)
+      const _priceVolume = _priceList.reduce(
+        (partialSum, a) => partialSum + a,
+        0
+      );
+      setPriceAverage(_priceAverage);
+      setPriceVolume(_priceVolume);
+    };
+    if (prices) {
+      getData(prices);
     }
-    if(prices) {
-      getData(prices)
-    }
-  }, [duration, prices])
-
-
+  }, [duration, prices]);
 
   // data to be sent in graph
   const data: historyData = {
@@ -162,7 +167,7 @@ export const NFTHistory = ({prices}: NFTHistoryProps) => {
                   </select>
                 </div>
               </div>
-
+              {/* 
               <div className="p-6">
                 {priceHistory.length > 0 ? (
                   <LineChart data={data} />
@@ -173,6 +178,9 @@ export const NFTHistory = ({prices}: NFTHistoryProps) => {
                     </h6>
                   </div>
                 )}
+              </div> */}
+              <div className="p-6">
+                <BarChart />
               </div>
             </div>
           </div>
