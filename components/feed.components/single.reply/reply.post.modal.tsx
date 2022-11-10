@@ -13,6 +13,7 @@ import {
   AnimateTrashIcon,
   EmojiIcon,
   PhotoIcon,
+  SpinIcon3,
   VideoIcon,
 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -143,7 +144,7 @@ const ReplyPostModal: React.FC<ModalProps> = (props) => {
             <div className={`w-[2px] h-[10px] bg-[#333333]  rounded-xl`}></div>
             {props.loadingState ? (
               <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                <div style={{ width: 30, height: 30 }}>
+                {/* <div style={{ width: 30, height: 30 }}>
                   <CircularProgressbar
                     value={
                       props.uploadingFileStatus ? props.uploadingFileStatus : 0
@@ -157,7 +158,8 @@ const ReplyPostModal: React.FC<ModalProps> = (props) => {
                       pathColor: "#1C1F29",
                     })}
                   />
-                </div>
+                </div> */}
+                <SpinIcon3 />
               </button>
             ) : (
               <Button

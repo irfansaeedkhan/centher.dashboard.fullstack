@@ -36,6 +36,7 @@ import {
   ArrowRightIcon,
   WorldIcon,
   DeleteCrossIcon,
+  SpinIcon3,
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -383,18 +384,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     };
 
     return (
-      <div ref={currentPostRef}>
+      <div ref={currentPostRef} className="flex flex-grow">
         <div
-          className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+          className={`sm:w-full flex-grow lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
           ref={ref}
         >
           {/* Connect Lines */}
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && (
               <div
-                className={`
-  absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)]  bg-gray-shade-3  
-`}
+                className={`absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)] bg-gray-shade-3`}
               ></div>
             )}
 
@@ -882,7 +881,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                           visible={true}
                           ariaLabel="rings-loading"
                         /> */}
-                        <div style={{ width: 30, height: 30 }}>
+                        {/* <div style={{ width: 30, height: 30 }}>
                           <CircularProgressbar
                             value={
                               uploadingFileStatus ? uploadingFileStatus : 0
@@ -896,7 +895,8 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                               pathColor: "#1C1F29",
                             })}
                           />
-                        </div>
+                        </div> */}
+                        <SpinIcon3 />
                       </button>
                     ) : (
                       <Button
@@ -987,7 +987,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
 
                     {updateLoadingButton ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        <Rings
+                        {/* <Rings
                           height="30"
                           width="30"
                           color="#1C1F29"
@@ -996,7 +996,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                           wrapperClass=""
                           visible={true}
                           ariaLabel="rings-loading"
-                        />
+                        /> */}
                         {/* <div style={{ width: 30, height: 30 }}>
                           <CircularProgressbar
                             value={uploadingFileStatus ? uploadingFileStatus : 0}
@@ -1008,6 +1008,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                             })}
                           />
                         </div> */}
+                        <SpinIcon3 />
                       </button>
                     ) : (
                       <Button
