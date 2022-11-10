@@ -42,12 +42,6 @@ const ExplorePage: NextPageWithLayout = () => {
     loadingCollections: state.loadingCollections,
     loadingAllNFTs: state.loadingAllNFTs,
   }));
-  console.log(
-    "loading state: ",
-    loadingHotNFTs,
-    loadingCollections,
-    loadingAllNFTs
-  );
   const [lastNotiRef, lastNotiInView] = useInView();
 
   useEffect(() => {
@@ -70,9 +64,12 @@ const ExplorePage: NextPageWithLayout = () => {
       <div className="AppWrapper flex flex-col gap-10">
         <Banner />
         <TopCreators />
-        <HotNFTs hotNFTs={hotNFTs} />
-        <HotCollections hotCollections={collections} />
-        <Explore allNFTs={allNFTs} />
+        <HotNFTs loadingHotNFTs={loadingHotNFTs} hotNFTs={hotNFTs} />
+        <HotCollections
+          loadingCollections={loadingCollections}
+          hotCollections={collections}
+        />
+        <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} />
       </div>
     </div>
   );
