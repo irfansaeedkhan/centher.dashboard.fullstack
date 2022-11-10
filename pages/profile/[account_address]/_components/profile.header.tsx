@@ -1,5 +1,11 @@
 // React, Next, NPM Packages
-import React, { useCallback, useEffect, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -67,6 +73,7 @@ const ProfileHeader: React.FC = () => {
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [verifyIcon, setVerifyIcon] = useState<string>("/images/v1.gif");
 
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
@@ -254,6 +261,16 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
+  useEffect(() => {}, []);
+  useLayoutEffect(() => {
+    //Do something and either return undefined or a cleanup function
+    return () => {
+      //Do some cleanup here
+      setTimeout(function () {
+        setVerifyIcon("/images/v2.gif");
+      }, 2500);
+    };
+  }, []);
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -342,16 +359,27 @@ const ProfileHeader: React.FC = () => {
             )}
 
             <div
-              className={`cursor-pointer absolute left-[45.5%] -bottom-12 h-[112px] !w-[111px]`}
+              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[111px]`}
             >
-              <Image
-                src={user.profile_image.path}
-                alt={user.display_name}
-                width={111}
-                height={112}
-                className="rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
-                // sizes={"512px"}
-              />
+              <div className="relative h-[112px] !w-[111px]">
+                <Image
+                  src={user.profile_image.path}
+                  alt={user.display_name}
+                  width={111}
+                  height={112}
+                  className="absolute rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
+                  // sizes={"512px"}
+                />
+                <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
+                  <Image
+                    src={verifyIcon}
+                    alt={"verified icon"}
+                    width={34}
+                    height={34}
+                    className=""
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
