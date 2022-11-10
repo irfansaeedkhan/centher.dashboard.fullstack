@@ -33,7 +33,13 @@ import { AppRoutes } from "@/constants/app.routes";
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
 import NFTProfileTabs from "./nft.profile.tabs";
-import { FiCopy, FiInstagram, FiTwitch, FiTwitter } from "react-icons/fi";
+import {
+  FiCopy,
+  FiInstagram,
+  FiTwitch,
+  FiTwitter,
+  FiYoutube,
+} from "react-icons/fi";
 import clsx from "clsx";
 
 type CoverImageWithFile = Partial<UserImage> & {
@@ -389,7 +395,8 @@ const ProfileHeader: React.FC = () => {
               user.onlyfans_username ||
               user.twitch_username ||
               user.twitter_username ||
-              user.website_url) && (
+              user.website_url ||
+              user.youtube_username) && (
               <div className="w-full justify-center flex mt-3">
                 <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
                   {user.tiktok_username && (
@@ -417,6 +424,15 @@ const ProfileHeader: React.FC = () => {
                       rel="noreferrer"
                     >
                       <FiTwitter className={socialLinks} />
+                    </a>
+                  )}
+                  {user.youtube_username && (
+                    <a
+                      href={`https://youtube.com/${user.youtube_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiYoutube className={socialLinks} />
                     </a>
                   )}
                   {user.website_url && (
