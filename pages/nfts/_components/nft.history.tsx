@@ -7,6 +7,7 @@ import moment from "moment";
 import { LineChart } from "@/components/charts";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
+import { BarChart } from "@/components/charts/bar.chart";
 
 interface NFTHistoryProps {
   prices: IListHistory[] | undefined;
@@ -166,7 +167,7 @@ export const NFTHistory = ({ prices }: NFTHistoryProps) => {
                   </select>
                 </div>
               </div>
-
+              {/* 
               <div className="p-6">
                 {priceHistory.length > 0 ? (
                   <LineChart data={data} />
@@ -177,6 +178,9 @@ export const NFTHistory = ({ prices }: NFTHistoryProps) => {
                     </h6>
                   </div>
                 )}
+              </div> */}
+              <div className="p-6">
+                <BarChart />
               </div>
             </div>
           </div>
