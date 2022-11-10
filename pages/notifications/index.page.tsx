@@ -62,7 +62,6 @@ const Notifications: NextPageWithLayout = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  console.log(notificationSevenday);
   return (
     <div className="flex">
       <div className="space-y-6 flex-grow">
