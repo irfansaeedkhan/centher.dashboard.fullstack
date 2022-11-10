@@ -8,6 +8,11 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+html {
+  scroll-behaviour: smooth;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:active,
 input:-webkit-autofill:focus,
@@ -214,6 +219,17 @@ input:-webkit-autofill {
     border-radius: 18px !important;
   }
   .scrollSetLight::-webkit-scrollbar-thumb {
+    background-color: #febf32 !important;
+  }
+
+  .scrollSetLight2::-webkit-scrollbar {
+    display: flex !important;
+    background-color: transparent !important;
+    height: 2px !important;
+    border-radius: 12px !important;
+    z-index: 20;
+  }
+  .scrollSetLight2::-webkit-scrollbar-thumb {
     background-color: #febf32 !important;
   }
   .scrollSett::-webkit-scrollbar {

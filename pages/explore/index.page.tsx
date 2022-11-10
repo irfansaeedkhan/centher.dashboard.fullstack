@@ -8,6 +8,7 @@ import { useEffect } from "react";
 import { HotNFTs, HotCollections, Explore } from "./_components";
 import { useExploreStore } from "@/store/explore.store";
 import Banner from "./_components/banner";
+import TopCreators from "./_components/top.creators";
 
 const MAX_HOT_NFTS = 10;
 const MAX_COLLECTIONS = 10;
@@ -68,6 +69,7 @@ const ExplorePage: NextPageWithLayout = () => {
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Banner />
+        <TopCreators />
         <HotNFTs hotNFTs={hotNFTs} />
         <HotCollections hotCollections={collections} />
         <Explore allNFTs={allNFTs} />
