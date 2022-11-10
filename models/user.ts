@@ -12,6 +12,7 @@ export interface User {
   tiktok_username: string;
   twitch_username: string;
   onlyfans_username: string;
+  youtube_username: string;
 }
 
 export interface UserImage {
