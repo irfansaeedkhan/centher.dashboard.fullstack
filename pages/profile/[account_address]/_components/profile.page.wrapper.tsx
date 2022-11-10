@@ -33,10 +33,18 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             <div
               className={`w-full max-w-[272px] flex-col gap-3 hidden lg:flex`}
             >
-              <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
+              <div className={`flex flex-col`}>
                 {userLoading === "loaded" && user ? (
                   <>
                     <ProfileDetailCard user={user} />
+                  </>
+                ) : (
+                  <ProfileDetailCardSkeleton />
+                )}
+              </div>
+              <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
+                {userLoading === "loaded" && user ? (
+                  <>
                     <PromotionCard />
                   </>
                 ) : (

@@ -675,3 +675,26 @@ input:-webkit-autofill {
     gap: 0;
   }
 }
+
+.Animatecircle {
+  fill: none;
+  stroke: #febf32;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+  stroke-dasharray: 1260;
+  stroke-dashoffset: 1260;
+  animation: dash 3s linear alternate forwards;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1260;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.align-inherit {
+  align-items: inherit;
+}

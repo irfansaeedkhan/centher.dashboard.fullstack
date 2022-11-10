@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
+import { Circle } from "@/assets/svgs";
 
 interface ProfileDetailCardProps {
   user: User;
@@ -17,11 +18,25 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
-
+  const [verifyIcon, setVerifyIcon] = useState<string>("");
+  useLayoutEffect(() => {
+    setTimeout(function () {
+      setVerifyIcon("/images/v1.gif");
+    }, 3000);
+    setTimeout(function () {
+      setVerifyIcon("/images/v2.gif");
+    }, 4600);
+    setInterval(() => {
+      setVerifyIcon("/images/lastframe.png");
+    }, 10000);
+    setInterval(() => {
+      setVerifyIcon("/images/v2.gif");
+    }, 20000);
+  }, []);
   return (
     <div
       className={clsx(
-        `w-11/12 sm:w-[272px] lg:sticky lg:top-0 pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
+        `w-11/12 sm:w-[272px] pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
         !!profileCardDetails.profile_views_count && `pb-4`
       )}
     >
@@ -33,14 +48,28 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
-        <Image
-          src={user.profile_image.path}
-          className={` w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover`}
-          alt={user.display_name}
-          width={60}
-          height={60}
-          sizes={"256px"}
-        />
+        <div className="relative mx-auto h-[60px] !w-[60px]">
+          <Image
+            src={user.profile_image.path}
+            className={` w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover`}
+            alt={user.display_name}
+            width={60}
+            height={60}
+            sizes={"256px"}
+          />
+          <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover " />
+          <div className="verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0">
+            {verifyIcon.length > 1 && (
+              <Image
+                src={verifyIcon}
+                alt={"verified icon"}
+                width={24}
+                height={24}
+                className=""
+              />
+            )}
+          </div>
+        </div>
       </Link>
       <Link
         href={{

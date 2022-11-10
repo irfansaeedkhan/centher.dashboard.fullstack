@@ -134,7 +134,7 @@ Feed.getLayout = (page) => {
       <div
         className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] xl:max-w-[1130px] mx-auto relative`}
       >
-        <div className={`flex flex-col lg:flex-row gap-5 lg:items-start`}>
+        <div className={`flex flex-col lg:flex-row gap-5  align-inherit`}>
           <LeftSidebarStickyContainer />
 
           {page}

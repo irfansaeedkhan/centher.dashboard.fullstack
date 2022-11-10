@@ -32,7 +32,7 @@ import Button from "@/components/button";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
-import { CopySvg, CameraIcon, EditIcon } from "@/assets/svgs";
+import { CopySvg, CameraIcon, EditIcon, Circle } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
@@ -79,7 +79,8 @@ const ProfileHeader: React.FC = () => {
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [verifyIcon, setVerifyIcon] = useState<string>("/images/v1.gif");
+  const [verifyIcon, setVerifyIcon] = useState<string>("");
+  const [count, setCount] = useState(0);
 
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
@@ -267,15 +268,19 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
-  useEffect(() => {}, []);
   useLayoutEffect(() => {
-    //Do something and either return undefined or a cleanup function
-    return () => {
-      //Do some cleanup here
-      setTimeout(function () {
-        setVerifyIcon("/images/v2.gif");
-      }, 2500);
-    };
+    setTimeout(function () {
+      setVerifyIcon("/images/v1.gif");
+    }, 3000);
+    setTimeout(function () {
+      setVerifyIcon("/images/v2.gif");
+    }, 4600);
+    setInterval(() => {
+      setVerifyIcon("/images/lastframe.png");
+    }, 10000);
+    setInterval(() => {
+      setVerifyIcon("/images/v2.gif");
+    }, 20000);
   }, []);
   return (
     <div className={profilePageHeader}>
@@ -365,25 +370,28 @@ const ProfileHeader: React.FC = () => {
             )}
 
             <div
-              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[111px]`}
+              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
             >
-              <div className="relative h-[112px] !w-[111px]">
+              <div className="relative h-[112px] !w-[112px]">
                 <Image
                   src={user.profile_image.path}
                   alt={user.display_name}
                   width={111}
                   height={112}
-                  className="absolute rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
+                  className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0"
                   // sizes={"512px"}
                 />
+                <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                  <Image
-                    src={verifyIcon}
-                    alt={"verified icon"}
-                    width={34}
-                    height={34}
-                    className=""
-                  />
+                  {verifyIcon.length > 1 && (
+                    <Image
+                      src={verifyIcon}
+                      alt={"verified icon"}
+                      width={34}
+                      height={34}
+                      className=""
+                    />
+                  )}
                 </div>
               </div>
             </div>
