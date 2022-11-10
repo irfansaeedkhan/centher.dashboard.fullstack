@@ -24,7 +24,7 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
   useCreateSocketIOConnection();
-  
+
   Moralis.start({
     apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
     // ...and any other configuration

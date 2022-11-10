@@ -41,7 +41,7 @@ export const AuctionNftDescription = ({
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
 
-  const bnbPrice = useBNBPrice()
+  const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
