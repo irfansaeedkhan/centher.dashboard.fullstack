@@ -13,6 +13,7 @@ import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.de
 
 import ProfileHeader from "./profile.header";
 import PromotionCard from "@/components/feed.components/promotion.card";
+import PromotionCard2nd from "@/components/feed.components/promotion.card.2nd";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
                   <>
                     <ProfileDetailCard user={user} />
                     <PromotionCard />
+                    <PromotionCard2nd />
                   </>
                 ) : (
                   <ProfileDetailCardSkeleton />
