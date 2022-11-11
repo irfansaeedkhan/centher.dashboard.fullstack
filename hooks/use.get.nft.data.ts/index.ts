@@ -108,7 +108,7 @@ export const useGetNftData = (
           collection: nftResult.nfts[0].collection,
           attributes: metadata.data.attributes,
           creator: nftResult.nfts[0].creator,
-          owner: nftResult.nfts[0].creator,
+          owner: nftResult.nfts[0].owner,
           collectionName: metadata.data.collectionName,
           saleState: nftResult.nfts[0].saleState,
           description: metadata.data.description,

@@ -1,7 +1,11 @@
 // React, Next, NPM Packages
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
-import { formatAddress } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatAddressUrl,
+  formatTxUrl,
+} from "@/utils/format.address";
 interface NFTDetailsProps {
   nftId: number | undefined;
   mintTx: string | undefined;
@@ -38,11 +42,23 @@ export const NFTDetails = (props: NFTDetailsProps) => {
                 </div>
                 <div className={detailBox}>
                   <h5 className={title}>MINT TRANSACTION</h5>
-                  <h6 className={value}>{formatAddress(props.mintTx)}</h6>
+                  <a
+                    href={formatTxUrl(props.mintTx)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <h6 className={value}>{formatAddress(props.mintTx)}</h6>
+                  </a>
                 </div>
                 <div className={detailBox}>
                   <h5 className={title}>CONTRACT ADDRESS</h5>
-                  <h6 className={value}>{formatAddress(props.collection)}</h6>
+                  <a
+                    href={formatAddressUrl(props.collection)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <h6 className={value}>{formatAddress(props.collection)}</h6>
+                  </a>
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -23,6 +24,7 @@ import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { formatAddress } from "@/utils/format.address";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
+import { AppRoutes } from "@/constants/app.routes";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -38,7 +40,8 @@ export const NFTRightSideComponent = ({
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
-  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId);
+  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId, data?.owner);
+
   useEffect(() => {
     if (data) {
       if (
@@ -54,7 +57,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data]);
+  }, [account, data, nftOwner]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -92,20 +95,50 @@ export const NFTRightSideComponent = ({
           <div className="linearCircle1"></div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
-            <h6 className={nameBoxZValue}>{formatAddress(data?.creator)}</h6>
+            <Link
+              href={{
+                pathname: AppRoutes.profile.nfts,
+                query: {
+                  account_address: data?.creator,
+                },
+              }}
+              className={nameBoxZValue}
+            >
+              {formatAddress(data?.creator)}
+            </Link>
           </div>
         </div>
         <div className={nameBox}>
           <div className="linearCircle2"></div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
-            <h6 className={nameBoxZValue}>{formatAddress(nftOwner)}</h6>
+            <Link
+              href={{
+                pathname: AppRoutes.profile.nfts,
+                query: {
+                  account_address: nftOwner,
+                },
+              }}
+              className={nameBoxZValue}
+            >
+              {formatAddress(nftOwner)}
+            </Link>
           </div>
         </div>
         <div className={nameBox}>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
-            <h6 className={nameBoxZValue}>{formatAddress(data?.collection)}</h6>
+            <Link
+              href={{
+                pathname: AppRoutes.profile.nfts,
+                query: {
+                  account_address: data?.collection,
+                },
+              }}
+              className={nameBoxZValue}
+            >
+              {formatAddress(data?.collection)}
+            </Link>
           </div>
         </div>
       </div>
@@ -125,8 +158,7 @@ export const NFTRightSideComponent = ({
       )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
-      {/* <NFTHistory data={data?.priceHistory} /> */}
-      <NFTHistory />
+      <NFTHistory prices={data?.priceHistory} />
     </div>
   );
 };

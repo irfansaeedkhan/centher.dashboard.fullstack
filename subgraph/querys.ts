@@ -1,6 +1,6 @@
 export const hotNFTsQuery = `
   query($first: Int!, $skip: Int!) {
-    nfts(orderBy: tradingVolumn, first: $first, skip: $skip) {
+    nfts(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
       collection
       createTime
       creator
@@ -9,6 +9,7 @@ export const hotNFTsQuery = `
       saleState
       tokenId
       price
+      owner
       listInfo {
         price
         bidSize
@@ -51,6 +52,7 @@ export const allNFTsQuery = `
       saleState
       tokenId
       price
+      owner
       listInfo {
         price
         bidSize
@@ -78,6 +80,7 @@ export const nftQuery = `
       mintHash
       tokenId
       price
+      owner
       auctionInfo {
         bidSize
         endTime
@@ -143,6 +146,7 @@ export const nftsQuery = `
       saleState
       tokenId
       price
+      owner
       listInfo {
         price
         bidSize
@@ -169,6 +173,7 @@ export const nftsBySaleStateQuery = `
       saleState
       tokenId
       price
+      owner
       listInfo {
         price
         bidSize

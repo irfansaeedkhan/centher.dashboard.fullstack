@@ -129,7 +129,7 @@ flex flex-col lg:flex-row  gap-5 lg:items-start
 `);
 
 const rightSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden xl:flex
+w-full max-w-[272px]  flex-col gap-3 hidden f2xl:flex
 `);
 const postsContainer = ctl(`
 w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[1.3rem]

@@ -8,6 +8,11 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+html {
+  scroll-behaviour: smooth;
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:active,
 input:-webkit-autofill:focus,
@@ -33,16 +38,16 @@ input:-webkit-autofill {
     @apply w-full h-full flex items-center justify-center;
   }
   .text-34px {
-    @apply text-2xl  xl:text-4xl;
+    @apply text-2xl  f2xl:text-4xl;
   }
   .text-24px {
-    @apply text-xl xl:text-2xl;
+    @apply text-xl f2xl:text-2xl;
   }
   .text-20px {
-    @apply text-base xl:text-xl;
+    @apply text-base f2xl:text-xl;
   }
   .text-18px {
-    @apply text-base xl:text-lg;
+    @apply text-base f2xl:text-lg;
   }
   .text-16px {
     @apply text-base;
@@ -214,6 +219,17 @@ input:-webkit-autofill {
     border-radius: 18px !important;
   }
   .scrollSetLight::-webkit-scrollbar-thumb {
+    background-color: #febf32 !important;
+  }
+
+  .scrollSetLight2::-webkit-scrollbar {
+    display: flex !important;
+    background-color: transparent !important;
+    height: 2px !important;
+    border-radius: 12px !important;
+    z-index: 20;
+  }
+  .scrollSetLight2::-webkit-scrollbar-thumb {
     background-color: #febf32 !important;
   }
   .scrollSett::-webkit-scrollbar {
@@ -660,4 +676,18 @@ input:-webkit-autofill {
 .slider-wrapper .slide span:nth-child(1) {
   border-radius: 16px;
   overflow: hidden;
+}
+
+.carousel-container {
+  transition: all 0.5s linear;
+  /* padding: 0px 0px 0px 17%; */
+}
+.carousel-container ul {
+  gap: 24px;
+  transition: all 0.5s linear !important;
+}
+@media only screen and (max-width: 659px) {
+  .carousel-container ul {
+    gap: 0;
+  }
 }

@@ -17,6 +17,7 @@ import {
   getRegistrationContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
+import { ZeroAddress } from "../constants/common";
 
 export const useNtrdaoBalance = (account: string | undefined | null) => {
   const [balance, setBalance] = useState(0);
@@ -197,20 +198,29 @@ export const useGetApprovedForAll = (
 
 export const useGetNFTOwner = (
   collection: string | undefined,
-  tokenId: number | undefined
+  tokenId: number | undefined,
+  ownerOfListed: string | undefined
 ) => {
   const [owner, setOwner] = useState("");
 
   useEffect(() => {
-    const fetchOwner = async (tokenId: number, collection: string) => {
-      const nftContract = getStandardNFTContract(null, collection);
-      const _owner = await nftContract.ownerOf(tokenId);
-      setOwner(_owner);
+    const fetchOwner = async (
+      tokenId: number,
+      collection: string,
+      ownerOfListed: string
+    ) => {
+      if (ownerOfListed === ZeroAddress) {
+        const nftContract = getStandardNFTContract(null, collection);
+        const _owner = await nftContract.ownerOf(tokenId);
+        setOwner(_owner);
+      } else {
+        setOwner(ownerOfListed);
+      }
     };
 
-    if (tokenId && collection) {
-      fetchOwner(tokenId, collection);
+    if (tokenId && collection && ownerOfListed) {
+      fetchOwner(tokenId, collection, ownerOfListed);
     }
-  }, [tokenId, collection]);
+  }, [tokenId, collection, ownerOfListed]);
   return owner;
 };

@@ -24,7 +24,7 @@ const NFT: NextPageWithLayout = () => {
 
   return (
     <div className="w-full pb-16">
-      <button className={backBtn}>
+      <button className={backBtn} onClick={() => router.back()}>
         <ArrowLeftSimpleIcon />
       </button>
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">

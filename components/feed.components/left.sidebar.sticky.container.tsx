@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
 
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
@@ -10,6 +9,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
 import PromotionCard from "./promotion.card";
+import PromotionCard2nd from "./promotion.card.2nd";
 
 export const LeftSidebarStickyContainer = () => {
   const router = useRouter();
@@ -37,34 +37,16 @@ export const LeftSidebarStickyContainer = () => {
   }, [router, user, loggedInUser]);
 
   return (
-    <div className={leftSidebarStickyContainer}>
-      <h1 className={title}>My Feed</h1>
-      <div className={leftSidebar}>
-        {profileCardUser ? (
-          <>
-            <ProfileDetailCard user={profileCardUser} />
-            <PromotionCard />
-          </>
-        ) : (
-          <ProfileDetailCardSkeleton />
-        )}
-
-        {/* <DiscoverCard /> */}
-      </div>
+    <div className={`max-w-[272px] flex flex-col gap-3`}>
+      {profileCardUser ? (
+        <>
+          <ProfileDetailCard user={profileCardUser} />
+          <PromotionCard />
+          <PromotionCard2nd />
+        </>
+      ) : (
+        <ProfileDetailCardSkeleton />
+      )}
     </div>
   );
 };
-
-const leftSidebarStickyContainer = ctl(`
-lg:sticky  lg:top-0
-`);
-
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
-
-const leftSidebar = ctl(`
-w-[272px]  flex-col gap-3 hidden lg:flex
-`);
-
-const componentLoader = ctl(`componentLoaderContainer min-h-[272px]`);

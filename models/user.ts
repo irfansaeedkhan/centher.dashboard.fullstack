@@ -7,6 +7,12 @@ export interface User {
   website_url: string;
   profile_bio: string;
   twitter_username: string;
+  instagram_username: string;
+  facebook_username: string;
+  tiktok_username: string;
+  twitch_username: string;
+  onlyfans_username: string;
+  youtube_url: string;
 }
 
 export interface UserImage {

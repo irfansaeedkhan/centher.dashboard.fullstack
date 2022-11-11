@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
 import { useOnClickOutside } from "usehooks-ts";
@@ -21,8 +22,14 @@ import { useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
-import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatIPFSUrl,
+} from "@/utils/format.address";
 import { ethers } from "ethers";
+import { AppRoutes } from "@/constants/app.routes";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -30,6 +37,8 @@ const Collection: NextPageWithLayout = () => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
+
+  const bnbPrice = useBNBPrice();
 
   const {
     info,
@@ -39,6 +48,8 @@ const Collection: NextPageWithLayout = () => {
     offset,
     updateOffset,
     limit,
+    loadingCollectionInfo,
+    loadingNFTs,
   } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,
@@ -47,10 +58,11 @@ const Collection: NextPageWithLayout = () => {
     offset: state.offset,
     updateOffset: state.updateOffset,
     limit: state.limit,
+    loadingCollectionInfo: state.loadingCollectionInfo,
+    loadingNFTs: state.loadingNFTs,
   }));
 
   const [metadata, setMetadata] = useState<any>();
-  const [lastNotiRef, lastNotiInView] = useInView();
   const [orderdir, setOrderDir] = useState("desc");
 
   useEffect(() => {
@@ -69,33 +81,25 @@ const Collection: NextPageWithLayout = () => {
     }
   }, [info]);
 
+  const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
+
   useEffect(() => {
-    if (lastNotiInView) {
+    if (lastNotiEntry?.isIntersecting) {
       updateOffset();
     }
-  }, [lastNotiInView, updateOffset]);
+  }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
     if (collection) {
-      fetchCollectionInfo(collection as string);
       fetchNFTs(collection as string, filter, orderdir, offset, limit, false);
     }
-  }, [
-    fetchCollectionInfo,
-    collection,
-    fetchNFTs,
-    offset,
-    limit,
-    orderdir,
-    filter,
-  ]);
+  }, [collection, fetchNFTs, filter, limit, offset, orderdir]);
 
   useEffect(() => {
     if (collection) {
       fetchCollectionInfo(collection as string);
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, true);
     }
-  }, [filter]);
+  }, [collection, fetchCollectionInfo]);
 
   useOnClickOutside(menuRef, () => setIsMenuVisible(false));
   const toggleMenu = async () => {
@@ -152,9 +156,17 @@ const Collection: NextPageWithLayout = () => {
             <div className={topDetais}>
               <div>
                 <h5 className={collectionName}>{metadata?.name}</h5>
-                <h6 className="text-gray-shade-18 text-14px font-semibold">
+                <Link
+                  href={{
+                    pathname: AppRoutes.profile.nfts,
+                    query: {
+                      account_address: info?.creator,
+                    },
+                  }}
+                  className="text-gray-shade-18 text-14px font-semibold"
+                >
                   Created by @{formatAddress(info?.creator)}
-                </h6>
+                </Link>
               </div>
               <div className={detailsCard}>
                 <div className="text-center">
@@ -178,7 +190,7 @@ const Collection: NextPageWithLayout = () => {
                   <h5 className={detailsCardValue}>
                     $
                     {info?.tradingVolumn
-                      ? ethers.utils.formatEther(info?.tradingVolumn)
+                      ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
                       : 0}
                   </h5>
                 </div>

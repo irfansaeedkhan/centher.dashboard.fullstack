@@ -12,6 +12,8 @@ import {
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 
 import ProfileHeader from "./profile.header";
+import PromotionCard from "@/components/feed.components/promotion.card";
+import PromotionCard2nd from "@/components/feed.components/promotion.card.2nd";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -34,7 +36,11 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             >
               <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
                 {userLoading === "loaded" && user ? (
-                  <ProfileDetailCard user={user} />
+                  <>
+                    <ProfileDetailCard user={user} />
+                    <PromotionCard />
+                    <PromotionCard2nd />
+                  </>
                 ) : (
                   <ProfileDetailCardSkeleton />
                 )}
@@ -42,15 +48,15 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
               </div>
             </div>
 
-            <div className="sm:w-full lg:w-[544px] space-y-3">
+            <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
               {props.children}
             </div>
 
             <div
-              className={`w-full max-w-[272px] flex-col gap-3 hidden xl:flex`}
+              className={`min-w-[272px] flex-col gap-3 f2xl:!flex sm:!hidden sticky`}
             >
               <MessagesCard />
-              <RecentActivitiesCard />
+              {/* <RecentActivitiesCard /> */}
             </div>
           </div>
         </div>

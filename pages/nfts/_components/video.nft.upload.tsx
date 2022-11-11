@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 
@@ -7,7 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 
-const VideoNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
+const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
   const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
     false
@@ -25,6 +25,10 @@ const VideoNFTUpload = ({ asset, setAsset }: UploadNFTProps) => {
     setPreviewImage(previewUrl);
     setShowPreviewImage(true);
   };
+  useEffect(() => {
+    setShowSecPreivew(false);
+    setAsset(undefined);
+  }, [clearForm, setAsset]);
   return (
     <>
       <div className={previewContainer}>

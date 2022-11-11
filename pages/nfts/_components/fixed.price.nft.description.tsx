@@ -23,6 +23,7 @@ import {
 } from "@/web3/utils/call.helpers";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import toast from "react-hot-toast";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -45,10 +46,16 @@ export const FixedPriceNFTDescription = ({
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  const bnbPrice = useBNBPrice();
+
+  interface bidForm {
+    bidPrice: number;
+  }
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<bidForm>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   const cancelListingFunc = () => {
     if (!library) {
@@ -124,7 +131,7 @@ export const FixedPriceNFTDescription = ({
           </div>
           {formState.errors.bidPrice && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.bidPrice.message} */}
+              {formState.errors.bidPrice.message}
             </p>
           )}
         </div>
@@ -295,7 +302,10 @@ export const FixedPriceNFTDescription = ({
           <h5 className={BnBNum}>
             {formatEther2Number(data?.listInfo.price)} BNB
           </h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(data?.listInfo.price)}</h6>
+          <h6 className={greyTxt}>
+            {" "}
+            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+          </h6>
         </div>
       </div>
       <div className={greyBoxContainer}>

@@ -27,6 +27,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   WorldIcon,
+  SpinIcon3,
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -139,7 +140,7 @@ export const SingleReply = React.forwardRef<
     })();
   }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
 
-  const likePost = async (post_id: string) => {
+  const likePost = async (postId: string) => {
     try {
       // putting it before the api call to make it feel faster
       if (_post.liked_by_loggedin_user) {
@@ -148,16 +149,21 @@ export const SingleReply = React.forwardRef<
           likes_count: prev.likes_count - 1,
           liked_by_loggedin_user: false,
         }));
+        axiosNodeApi.post("api/socials/analytics/likes", {
+          postId,
+          actionType: "unlike",
+        });
       } else {
         setPost((prev) => ({
           ...prev,
           likes_count: prev.likes_count + 1,
           liked_by_loggedin_user: true,
         }));
+        axiosNodeApi.post("api/socials/analytics/likes", {
+          postId,
+          actionType: "like",
+        });
       }
-      await axiosNodeApi.post("api/socials/analytics/likes", {
-        post_id,
-      });
     } catch (error: any) {
       setPost((prev) => ({
         ...prev,
@@ -375,9 +381,9 @@ export const SingleReply = React.forwardRef<
   };
 
   return (
-    <div ref={currentPostRef}>
+    <div ref={currentPostRef} className="flex flex-grow">
       <div
-        className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+        className={`sm:w-full lg:w-[544px] flex-grow relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
         ref={ref}
       >
         {_post.parent_post && <ParentPost parentPost={_post.parent_post} />}
@@ -713,7 +719,7 @@ export const SingleReply = React.forwardRef<
 
                   {updateLoadingButton ? (
                     <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                      <Rings
+                      {/* <Rings
                         height="30"
                         width="30"
                         color="#1C1F29"
@@ -722,7 +728,8 @@ export const SingleReply = React.forwardRef<
                         wrapperClass=""
                         visible={true}
                         ariaLabel="rings-loading"
-                      />
+                      /> */}
+                      <SpinIcon3 />
                     </button>
                   ) : (
                     <Button

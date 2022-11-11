@@ -18,6 +18,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
 import { formatAddress, formatBNB2USD } from "@/utils/format.address";
 import toast from "react-hot-toast";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -39,6 +40,8 @@ export const AuctionNftDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+
+  const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
@@ -266,7 +269,7 @@ export const AuctionNftDescription = ({
           <h5 className={BnBNum}>{data?.auctionInfo.highestBidPrice} BNB</h5>
           <h6 className={greyTxt}>
             {" "}
-            =${formatBNB2USD(data?.auctionInfo.highestBidPrice)}
+            =${formatBNB2USD(data?.auctionInfo.highestBidPrice, bnbPrice)}
           </h6>
         </div>
       </div>

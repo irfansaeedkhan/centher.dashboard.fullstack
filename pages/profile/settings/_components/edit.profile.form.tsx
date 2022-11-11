@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
@@ -11,16 +11,29 @@ import { axiosNodeApi } from "@/utils/axios";
 // Current directory imports
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
+import { LoadingState } from "@/models/common";
+import { SpinIcon3 } from "@/assets/svgs";
 
 interface EditProfileFormProps {
   user: LoggedInUser;
 }
 
+const ButtonsText = {
+  loading: "Continue...",
+  update_profile: "Update Profile",
+};
+
 export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
+  const [isLoading, setisLoading] = useState<LoadingState>("idle");
 
-  const updateProfile = async () => {
+  const updateProfile = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    const button = e.currentTarget;
+    button.disabled = true;
+    setisLoading("loading");
     try {
       const { data } = await axiosNodeApi.patch("/api/users/me", {
         pseudonym: updatedUser.pseudonym,
@@ -30,6 +43,12 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         website_url: updatedUser.website_url,
         twitter_username: updatedUser.twitter_username,
         profile_bio: updatedUser.profile_bio,
+        facebook_username: updatedUser.facebook_username,
+        instagram_username: updatedUser.instagram_username,
+        tiktok_username: updatedUser.tiktok_username,
+        twitch_username: updatedUser.twitch_username,
+        onlyfans_username: updatedUser.onlyfans_username,
+        youtube_url: updatedUser.youtube_url,
       });
 
       setUpdatedUser(data.user as LoggedInUser);
@@ -37,7 +56,11 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
       await mutate("/api/users/me", data.user, false);
 
       toast.success("Profile updated successfully");
+      setisLoading("loaded");
+      button.disabled = false;
     } catch (error: any) {
+      button.disabled = false;
+      setisLoading("failed");
       toast.error(
         error.response?.data?.message_description ??
           error.message ??
@@ -135,6 +158,83 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
 
+        <InputField
+          id="facebook_username"
+          label="Facebook Username"
+          placeholder="Enter your facebook username"
+          value={updatedUser.facebook_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              facebook_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="instagram_username"
+          label="Instagram Username"
+          placeholder="Enter your instagram username"
+          value={updatedUser.instagram_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              instagram_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="tiktok_username"
+          label="Tiktok Username"
+          placeholder="Enter your tiktok username"
+          value={updatedUser.tiktok_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              tiktok_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="twitch_username"
+          label="Twitch Username"
+          placeholder="Enter your twitch username"
+          value={updatedUser.twitch_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              twitch_username: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
+          id="onlyfans_username"
+          label="OnlyFans Username"
+          placeholder="Enter your onlyfans username"
+          value={updatedUser.onlyfans_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              onlyfans_username: e.target.value,
+            });
+          }}
+        />
+        <InputField
+          id="youtube_url"
+          label="Youtube URL"
+          placeholder="Enter your youtube url"
+          value={updatedUser.youtube_url}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              youtube_url: e.target.value,
+            });
+          }}
+        />
+
         <div className="flex flex-col gap-2">
           <label htmlFor="textarea" className={fieldTitle}>
             Profile bio
@@ -156,8 +256,14 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           ></textarea>
         </div>
 
-        <button onClick={updateProfile} className={connectButton}>
-          Update profile
+        <button className={connectButton} onClick={updateProfile}>
+          {isLoading === "loading" ? (
+            <>
+              <SpinIcon3 />
+            </>
+          ) : (
+            ButtonsText.update_profile
+          )}
         </button>
       </div>
     </div>

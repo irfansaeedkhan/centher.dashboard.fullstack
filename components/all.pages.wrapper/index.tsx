@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect } from "react";
 import Head from "next/head";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { useCountsStore } from "@/store/counts.store";
@@ -21,36 +20,19 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   }, [fetchCounts]);
 
   return (
-    <div className={componentWrapper}>
+    <div className={`flex flex-col font-monto`}>
       <Head>
         <title>{props.pageTitle}</title>
       </Head>
       <Header />
-      <div className={parentWrapper}>
+      <div className={`flex`}>
         <Sidebar />
-        {/* 15.5rem is the width of sidebar */}
-        <div className={childrenWrapper}>{props.children}</div>
+        <div
+          className={`px-2 sm-1:px-4 md:px-6 py-4 lg:py-6 bg-black-shade-3 overflow-y-scroll h-[calc(100vh-60px)] flex-grow scrollSet`}
+        >
+          {props.children}
+        </div>
       </div>
     </div>
   );
 };
-
-const componentWrapper = ctl(`
-  flex 
-  flex-col
-  font-monto
-`);
-
-const childrenWrapper = ctl(`
-  md:px-8
-  py-8
-  sm:px-2
-  w-full 
-  bg-black-shade-3 
-  overflow-y-scroll
-  h-[calc(100vh-60px)] 
-  lg:w-[calc(100%-15.5rem)] 
-  scrollSet
-  `);
-
-const parentWrapper = ctl(`flex`);

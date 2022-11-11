@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
@@ -11,27 +11,27 @@ import Button from "@/components/button";
 import { GreyWorldIcon, GreyFBIcon, GreyTwitterIcon } from "@/assets/svgs";
 // form validations
 const schema = Joi.object({
-  CollectionName: Joi.string().required().max(150).label("NFT Name").messages({
+  name: Joi.string().required().max(150).label("NFT Name").messages({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
-  Symbol: Joi.string().required().max(150).label("NFT Name").messages({
+  symbol: Joi.string().required().max(150).label("NFT Name").messages({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
-  Description: Joi.string().required().max(550).label("Description").messages({
-    "string.empty": `Description Required`,
+  description: Joi.string().required().max(550).label("description").messages({
+    "string.empty": `description Required`,
     "any.required": `Required Field`,
   }),
-  Category: Joi.string().required().max(150).label("Category").messages({
-    "string.empty": `Category Required`,
+  category: Joi.string().required().max(150).label("category").messages({
+    "string.empty": `category Required`,
     "any.required": `Required Field`,
   }),
-  Url: Joi.string().allow("").optional().max(50).label("Url").messages({
-    "string.empty": `Url Required`,
+  url: Joi.string().allow("").optional().max(50).label("url").messages({
+    "string.empty": `url Required`,
     "any.required": `Required Field`,
   }),
-  OwnSite: Joi.string()
+  yoursite: Joi.string()
     .uri()
     .required()
     .max(50)
@@ -40,7 +40,7 @@ const schema = Joi.object({
       "string.empty": `Personal Site Required`,
       "any.required": `Required Field`,
     }),
-  FBLink: Joi.string()
+  facebook: Joi.string()
     .uri()
     .required()
     .max(50)
@@ -49,7 +49,7 @@ const schema = Joi.object({
       "string.empty": `FB Link Required`,
       "any.required": `Required Field`,
     }),
-  TwitterLink: Joi.string()
+  twitter: Joi.string()
     .uri()
     .required()
     .max(50)
@@ -73,11 +73,12 @@ export const categories = [
 ];
 interface CreateNFTCollectionFormProps {
   createCollection: any;
+  clearForm: boolean;
 }
 export interface ICollectionData {
   name: string;
   symbol: string;
-  totalsupply: number;
+  totalsupply: number | null;
   description: string;
   category: string;
   url: string;
@@ -87,25 +88,51 @@ export interface ICollectionData {
 }
 export const CreateNFTCollectionForm = ({
   createCollection,
+  clearForm,
 }: CreateNFTCollectionFormProps) => {
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<ICollectionData>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+      defaultValues: {
+        name: "",
+        symbol: "",
+        description: "",
+        category: "",
+        url: "",
+        yoursite: "",
+        facebook: "",
+        twitter: "",
+      },
+    });
 
   const onSubmit = async (data: any) => {
     const collectionData = {
-      name: data.CollectionName,
-      symbol: data.Symbol,
+      name: data.name,
+      symbol: data.symbol,
       totalsupply: ethers.constants.MaxUint256,
-      description: data.Description,
-      url: data.Url,
-      yoursite: data.OwnSite,
-      facebook: data.FBLink,
-      twitter: data.TwitterLink,
+      description: data.description,
+      url: data.url,
+      yoursite: data.yoursite,
+      facebook: data.facebook,
+      twitter: data.twitter,
     };
     createCollection(collectionData);
   };
+  useEffect(() => {
+    if (clearForm) {
+      reset({
+        name: "",
+        symbol: "",
+        description: "",
+        category: "",
+        url: "",
+        yoursite: "",
+        facebook: "",
+        twitter: "",
+      });
+    }
+  }, [clearForm, reset]);
 
   return (
     <div className={CreateNFTCollectionFormContainer}>
@@ -114,68 +141,66 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>Name your Collection</label>
           <input
             type="text"
-            id="CollectionName"
+            id="name"
             autoComplete="off"
-            {...register("CollectionName")}
+            {...register("name")}
             placeholder="eg. ‘big skull collection’ "
-            className={
-              !formState.errors.CollectionName ? inputField : inputFieldError
-            }
+            className={!formState.errors.name ? inputField : inputFieldError}
           />
-          {formState.errors.CollectionName && (
+          {formState.errors.name && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.CollectionName.message} */}
+              {formState.errors.name.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>Symbol</label>
+          <label className={fieldTitle}>symbol</label>
           <input
             type="text"
-            id="Symbol"
+            id="symbol"
             autoComplete="off"
-            {...register("Symbol")}
+            {...register("symbol")}
             placeholder="eg. ‘NTD’ "
-            className={!formState.errors.Symbol ? inputField : inputFieldError}
+            className={!formState.errors.symbol ? inputField : inputFieldError}
           />
-          {formState.errors.Symbol && (
+          {formState.errors.symbol && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.Symbol.message} */}
+              {formState.errors.symbol.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>Description</label>
+          <label className={fieldTitle}>description</label>
           <span className="text-12px leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
             its image.{" "}
           </span>
           <textarea
-            id="Description"
+            id="description"
             autoComplete="off"
-            {...register("Description")}
+            {...register("description")}
             placeholder="Wrirte some details about your NFTs collection"
             className={
-              !formState.errors.Description ? inputField : inputFieldError
+              !formState.errors.description ? inputField : inputFieldError
             }
             cols={20}
             rows={3}
           ></textarea>
-          {formState.errors.Description && (
+          {formState.errors.description && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.Description.message} */}
+              {formState.errors.description.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
           <label htmlFor="textarea" className={fieldTitle}>
-            Category
+            category
           </label>
           <select
-            id="Category"
-            {...register("Category")}
+            id="category"
+            {...register("category")}
             className={
-              !formState.errors.Category ? inputField : inputFieldError
+              !formState.errors.category ? inputField : inputFieldError
             }
           >
             {categories.map((item, key) => {
@@ -186,28 +211,27 @@ export const CreateNFTCollectionForm = ({
               );
             })}
           </select>
-          {formState.errors.Category && (
+          {formState.errors.category && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* TODO: kindly solve this error type issue */}
-              {/* {formState.errors.Category.message} */}
+              {formState.errors.category.message}
             </p>
           )}
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Url <span className="text-gray-shade-17"> (optional)</span>
+            url <span className="text-gray-shade-17"> (optional)</span>
           </label>
           <input
             type="text"
-            id="Url"
+            id="url"
             autoComplete="off"
-            {...register("Url")}
+            {...register("url")}
             placeholder="https://nethernft.io/collection/ skull- Price"
-            className={!formState.errors.Url ? inputField : inputFieldError}
+            className={!formState.errors.url ? inputField : inputFieldError}
           />
-          {formState.errors.Url && (
+          {formState.errors.url && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.Url.message} */}
+              {formState.errors.url.message}
             </p>
           )}
         </div>
@@ -219,18 +243,18 @@ export const CreateNFTCollectionForm = ({
                 <GreyWorldIcon className={linkIcon} />
                 <input
                   type="text"
-                  id="OwnSite"
+                  id="yoursite"
                   autoComplete="off"
-                  {...register("OwnSite")}
+                  {...register("yoursite")}
                   placeholder="https://yoursite.io"
                   className={
-                    !formState.errors.OwnSite ? linkField : linkFieldError
+                    !formState.errors.yoursite ? linkField : linkFieldError
                   }
                 />
               </div>
-              {formState.errors.OwnSite && (
+              {formState.errors.yoursite && (
                 <p className={`text-red-500 ${errMessage}`}>
-                  {/* {formState.errors.OwnSite.message} */}
+                  {formState.errors.yoursite.message}
                 </p>
               )}
             </div>
@@ -239,18 +263,18 @@ export const CreateNFTCollectionForm = ({
                 <GreyFBIcon className={linkIcon} />
                 <input
                   type="text"
-                  id="FBLink"
+                  id="facebook"
                   autoComplete="off"
-                  {...register("FBLink")}
+                  {...register("facebook")}
                   placeholder="https://facebook.com/your profile"
                   className={
-                    !formState.errors.FBLink ? linkField : linkFieldError
+                    !formState.errors.facebook ? linkField : linkFieldError
                   }
                 />
               </div>
-              {formState.errors.FBLink && (
+              {formState.errors.facebook && (
                 <p className={`text-red-500 ${errMessage}`}>
-                  {/* {formState.errors.FBLink.message} */}
+                  {formState.errors.facebook.message}
                 </p>
               )}
             </div>
@@ -259,18 +283,18 @@ export const CreateNFTCollectionForm = ({
                 <GreyTwitterIcon className={linkIcon} />
                 <input
                   type="text"
-                  id="TwitterLink"
+                  id="twitter"
                   autoComplete="off"
-                  {...register("TwitterLink")}
+                  {...register("twitter")}
                   placeholder="https://Twitter.com/your profile"
                   className={
-                    !formState.errors.TwitterLink ? linkField : linkFieldError
+                    !formState.errors.twitter ? linkField : linkFieldError
                   }
                 />
               </div>
-              {formState.errors.TwitterLink && (
+              {formState.errors.twitter && (
                 <p className={`text-red-500 ${errMessage}`}>
-                  {/* {formState.errors.TwitterLink.message} */}
+                  {formState.errors.twitter.message}
                 </p>
               )}
             </div>

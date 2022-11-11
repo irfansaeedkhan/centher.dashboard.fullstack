@@ -15,6 +15,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
+import useBNBPrice from "@/web3/hooks/use.chain.info";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -48,6 +49,8 @@ export const AuctionNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+
+  const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
@@ -87,11 +90,14 @@ export const AuctionNFTBuyerDescription = ({
       clearInterval(updateTime);
     };
   }, [data]);
-
-  const { handleSubmit, register, setError, formState, reset } = useForm({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-  });
+  interface bidForm {
+    bidPrice: number;
+  }
+  const { handleSubmit, register, setError, formState, reset } =
+    useForm<bidForm>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+    });
 
   const bidNFTModalFunc = () => {
     if (!library) {
@@ -129,7 +135,7 @@ export const AuctionNFTBuyerDescription = ({
           </div>
           {formState.errors.bidPrice && (
             <p className={`text-red-500 ${errMessage}`}>
-              {/* {formState.errors.bidPrice.message} */}
+              {formState.errors.bidPrice.message}
             </p>
           )}
         </div>
@@ -257,7 +263,7 @@ export const AuctionNFTBuyerDescription = ({
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
           <h5 className={BnBNum}>{formatEther2Number(price)} BNB</h5>
-          <h6 className={greyTxt}> =${formatBNB2USD(price)}</h6>
+          <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
         </div>
       </div>
       <div className={greyBoxContainer}>

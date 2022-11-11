@@ -5,17 +5,27 @@ import { devtools } from "zustand/middleware";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
+import { Notification } from "@/assets/svgs";
+import moment from "moment";
 
 export interface NotificationsStore {
   notifications: Notification[];
+  notificationToday: Notification[];
+  notificationYesterday: Notification[];
+  notificationSevenday: Notification[];
   fetchNotifications: () => Promise<void>;
   fetchNewNotifications: () => Promise<void>;
   offset: number;
   updateOffset: () => void;
   limit: number;
   markAsRead: (id: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
   loading: LoadingState;
 }
+
+const today = moment().format("YYYY-MM-DD");
+const yesterday = moment(today).subtract(1, "day").format("YYYY-MM-DD");
+const sevenday = moment(today).subtract(7, "day").format("YYYY-MM-DD");
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
@@ -30,6 +40,9 @@ export const useNotificationsStore = create<NotificationsStore>()(
         set((state) => ({ offset: state.notifications.length })),
 
       notifications: [],
+      notificationToday: [],
+      notificationYesterday: [],
+      notificationSevenday: [],
 
       fetchNotifications: async () => {
         try {
@@ -49,12 +62,51 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
+            const notifications = [
+              ...data.notifications,
+              ...filteredNotifications,
+            ];
+
+            let filterToday = notifications.filter(
+              (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
+            );
+
+            filterToday = filterToday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filterYesterday = notifications.filter(
+              (props) =>
+                moment(props.createdAt).format("YYYY-MM-DD") === yesterday
+            );
+
+            filterYesterday = filterYesterday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filterSevenday = notifications.filter(
+              (props) =>
+                moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
+                moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
+            );
+
+            filterSevenday = filterSevenday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filteredMainNotifications = notifications.filter(
+              (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
+            );
+
+            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
 
             return {
-              notifications: [
-                ...filteredNotifications,
-                ...data.notifications,
-              ] as Notification[],
+              notifications: filteredMainNotifications as Notification[],
+              notificationToday: filterToday as Notification[],
+              notificationYesterday: filterYesterday as Notification[],
+              notificationSevenday: filterSevenday as Notification[],
               loading: "loaded",
             };
           });
@@ -72,6 +124,8 @@ export const useNotificationsStore = create<NotificationsStore>()(
             `/api/notifications?limit=${limit}`
           );
 
+          get().markAllAsRead();
+
           set((state) => {
             // Filter out notifications that are already in the store
             const filteredNotifications = state.notifications.filter(
@@ -81,9 +135,51 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
+            const notifications = [
+              ...data.notifications,
+              ...filteredNotifications,
+            ];
+
+            let filterToday = notifications.filter(
+              (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
+            );
+
+            filterToday = filterToday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filterYesterday = notifications.filter(
+              (props) =>
+                moment(props.createdAt).format("YYYY-MM-DD") === yesterday
+            );
+
+            filterYesterday = filterYesterday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filterSevenday = notifications.filter(
+              (props) =>
+                moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
+                moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
+            );
+
+            filterSevenday = filterSevenday.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
+
+            let filteredMainNotifications = notifications.filter(
+              (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
+            );
+
+            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
+              a.status > b.status ? -1 : 1
+            );
 
             return {
-              notifications: [...data.notifications, ...filteredNotifications],
+              notifications: filteredMainNotifications as Notification[],
+              notificationToday: filterToday as Notification[],
+              notificationYesterday: filterYesterday as Notification[],
+              notificationSevenday: filterSevenday as Notification[],
               loading: "loaded",
             };
           });
@@ -103,6 +199,15 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 : notification
             ),
           }));
+        } catch (error) {
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
+      markAllAsRead: async () => {
+        try {
+          await axiosNodeApi.patch(`/api/notifications`);
         } catch (error) {
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);

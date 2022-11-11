@@ -12,6 +12,7 @@ import AuctionForm from "./auction.form";
 
 export interface CreateNFTFormProps {
   createNFT: any;
+  clearForm: boolean;
 }
 export interface IProperty {
   Type: string;
@@ -27,7 +28,7 @@ export interface INFTData {
   collection: string;
   properties: IProperty[];
 }
-export const CreateNFTForm = ({ createNFT }: CreateNFTFormProps) => {
+export const CreateNFTForm = ({ createNFT, clearForm }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
   const { collections, fetchCollections } = useExploreStore((state) => ({
     collections: state.collections,
@@ -59,10 +60,18 @@ export const CreateNFTForm = ({ createNFT }: CreateNFTFormProps) => {
         />
       </div>
       {tab === "Fixed" && (
-        <FixedPriceForm createNFT={createNFT} collections={collections} />
+        <FixedPriceForm
+          createNFT={createNFT}
+          collections={collections}
+          clearForm={clearForm}
+        />
       )}
       {tab === "Auction" && (
-        <AuctionForm createNFT={createNFT} collections={collections} />
+        <AuctionForm
+          createNFT={createNFT}
+          collections={collections}
+          clearForm={clearForm}
+        />
       )}
     </div>
   );
