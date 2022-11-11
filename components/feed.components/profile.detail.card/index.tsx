@@ -21,7 +21,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div
       className={clsx(
-        `w-11/12 sm:w-[272px] lg:sticky lg:top-0 pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
+        `w-11/12 sm:w-[272px] pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
         !!profileCardDetails.profile_views_count && `pb-4`
       )}
     >

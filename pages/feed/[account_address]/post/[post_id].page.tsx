@@ -1,19 +1,16 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   MessagesCard,
-  RecentActivitiesCard,
   SinglePost,
   LeftSidebarStickyContainer,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { Post } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
@@ -60,7 +57,7 @@ const SinglePostPage: NextPageWithLayout = () => {
   }, [router]);
 
   return (
-    <div className={postsContainer}>
+    <>
       {loadingState === "loaded" && (
         <div className={postsMainContainer}>
           <BackButton post={post} />
@@ -94,22 +91,31 @@ const SinglePostPage: NextPageWithLayout = () => {
           <NoPostMessage message="Something went wrong!" />
         </div>
       )}
-    </div>
+    </>
   );
 };
 
 SinglePostPage.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Feed">
-      <div className={dashboardContentContainer}>
-        <div className={feedContainer}>
-          <LeftSidebarStickyContainer />
+      <div className={`max-w-[848px] f2xl:max-w-[1136px] mx-auto relative`}>
+        <div
+          className={`flex flex-col lg:flex-row lg:items-start lg:gap-8 f2xl:gap-6`}
+        >
+          <div
+            className={`w-full max-w-[272px] lg:sticky lg:top-0 hidden lg:block`}
+          >
+            <LeftSidebarStickyContainer />
+          </div>
 
-          {page}
+          <div className={`w-full max-w-[544px] mx-auto space-y-3 flex-grow`}>
+            {page}
+          </div>
 
-          <div className={rightSidebar}>
+          <div
+            className={`w-full max-w-[272px] hidden f2xl:flex flex-col gap-3 sticky top-0`}
+          >
             <MessagesCard />
-            <RecentActivitiesCard />
           </div>
         </div>
       </div>
@@ -119,22 +125,4 @@ SinglePostPage.getLayout = (page) => {
 
 export default SinglePostPage;
 
-// styling
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full flex flex-start min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
-`);
-
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start
-`);
-
-const rightSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden f2xl:flex
-`);
-const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[1.3rem]
-`);
-
-const postsMainContainer = ctl(`
-flex flex-col gap-3
-`);
+const postsMainContainer = `flex flex-col gap-3`;
