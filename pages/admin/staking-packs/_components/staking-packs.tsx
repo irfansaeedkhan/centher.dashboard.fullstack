@@ -16,16 +16,8 @@ export const StakingPacks: NextPage = () => {
   >("CoinPack");
 
   return (
-    <div
-      className={`
-  stakingpack bg-black-shade-3 w-full min-h-screen p-4 lg:pt-8 lg:pl-7 font-monto
-`}
-    >
-      <div
-        className={`
-  flex [&>*]:w-max w-fit bg-black-shade-6 p-1.5 rounded-2xl mb-10
-`}
-      >
+    <div className={StakingContentContainer}>
+      <div className={btnContainer}>
         <Button
           title={"Coin Pack"}
           variant={tab === "CoinPack" ? "v1" : "v2"}
@@ -56,11 +48,7 @@ export const StakingPacks: NextPage = () => {
         />
       </div>
       {tab === "CoinPack" && (
-        <div
-          className={`
-  flex flex-wrap gap-5
-`}
-        >
+        <div className={stackCardContainer}>
           {StakingPackList.map((data) => (
             <StakingPackCard stakingPack={data} key={data.id} />
           ))}

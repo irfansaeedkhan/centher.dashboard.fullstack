@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
+
 // App imports
 import Button from "@/components/button";
 import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
@@ -66,21 +68,9 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
   };
 
   return (
-    <div
-      className={` 
-overflow-x-auto relative  shadow-md rounded-2xl mt-8 lg:mt-12
-`}
-    >
-      <table
-        className={` 
-overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-black-shade-4
-`}
-      >
-        <thead
-          className={` 
-text-14px text-gray-shade-7 uppercase bg-background-shade-3 
-`}
-        >
+    <div className={nftdaoTableContainer}>
+      <table className={table}>
+        <thead className={thead}>
           <tr>
             <th scope="col" className={th}>
               #
@@ -111,19 +101,8 @@ text-14px text-gray-shade-7 uppercase bg-background-shade-3
         <tbody>
           {purchasedInfo?.map((item: PurchasedInfo, index: number) => {
             return (
-              <tr
-                className={` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`}
-                key={index}
-              >
-                <td
-                  className={` 
-text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
-`}
-                >
-                  {index + 1}
-                </td>
+              <tr className={tbodyTR} key={index}>
+                <td className={tdh}>{index + 1}</td>
                 <td className={td}>{item.purchasedDate}</td>
                 <td className={td}>{`${item.contributedBusdAmount} BUSD`}</td>
                 <td className={td}>{`${item.ntrdaoAmount} NTRDAO`}</td>
@@ -167,13 +146,29 @@ text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
   );
 };
 
-const th = ` 
-py-4 lg:py-7 px-5 lg:px-3
-`;
+// stying
 
-const td = ` 
+const nftdaoTableContainer = ctl(` 
+overflow-x-auto relative  shadow-md rounded-2xl mt-8 lg:mt-12
+`);
+const table = ctl(` 
+overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-black-shade-4
+`);
+const thead = ctl(` 
+text-14px text-gray-shade-7 uppercase bg-background-shade-3 
+`);
+const th = ctl(` 
+py-4 lg:py-7 px-5 lg:px-3
+`);
+const tbodyTR = ctl(` 
+border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
+`);
+const td = ctl(` 
 text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
-`;
+`);
+const tdh = ctl(` 
+text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
+`);
 
 interface NTRDAOTableProps {
   purchasedInfo: PurchasedInfo[] | undefined;

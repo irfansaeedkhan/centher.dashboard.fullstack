@@ -48,6 +48,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         tiktok_username: updatedUser.tiktok_username,
         twitch_username: updatedUser.twitch_username,
         onlyfans_username: updatedUser.onlyfans_username,
+        youtube_url: updatedUser.youtube_url,
       });
 
       setUpdatedUser(data.user as LoggedInUser);
@@ -218,6 +219,18 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             setUpdatedUser({
               ...updatedUser,
               onlyfans_username: e.target.value,
+            });
+          }}
+        />
+        <InputField
+          id="youtube_url"
+          label="Youtube URL"
+          placeholder="Enter your youtube url"
+          value={updatedUser.youtube_url}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              youtube_url: e.target.value,
             });
           }}
         />

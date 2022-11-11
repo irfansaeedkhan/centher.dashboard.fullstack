@@ -11,21 +11,8 @@ import { FormFieldProps } from "./form.fields.data";
 export const InputField = React.forwardRef<HTMLInputElement, FormFieldProps>(
   ({ label, id, error, ...props }, ref) => {
     return (
-      <div
-        className={`
-  flex 
-  gap-2
-  flex-col 
-`}
-      >
-        <label
-          className={`
-  text-sm 
-  text-white
-`}
-        >
-          {label}
-        </label>
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>{label}</label>
         <input
           id={id}
           className={!error ? inputField : inputFieldError}
@@ -52,7 +39,7 @@ const fieldTitle = ctl(`
   text-white
 `);
 
-const inputField = `
+const inputField = ctl(`
   w-full 
   py-3 
   px-5 
@@ -62,9 +49,9 @@ const inputField = `
   border-0
   focus:!outline-none 
   focus:!ring-brand-primary
-`;
+`);
 
-const inputFieldError = `
+const inputFieldError = ctl(`
   ${inputField}
   focus:!ring-red-500
-`;
+`);

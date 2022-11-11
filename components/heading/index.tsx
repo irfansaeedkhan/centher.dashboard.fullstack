@@ -1,3 +1,4 @@
+import ctl from "@netlify/classnames-template-literals";
 import React from "react";
 
 interface HeadingProps {
@@ -29,16 +30,16 @@ export const Heading: React.FC<HeadingProps> = (props) => {
   return <h1 className={h1ClassName}>{props.children}</h1>;
 };
 
-const baseClassName = `
+const baseClassName = ctl(`
   text-brand-primary
   font-bold
   text-center
-`;
+`);
 
-const h1ClassName = `
+const h1ClassName = ctl(`
   ${baseClassName}
   text-4xl
-`;
+`);
 
 const h2ClassName = baseClassName;
 const h3ClassName = baseClassName;

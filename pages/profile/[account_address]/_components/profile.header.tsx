@@ -424,7 +424,7 @@ const ProfileHeader: React.FC = () => {
               user.twitch_username ||
               user.twitter_username ||
               user.website_url ||
-              user.youtube_username) && (
+              user.youtube_url) && (
               <div className="w-full justify-center flex mt-3">
                 <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
                   {user.tiktok_username && (
@@ -454,9 +454,9 @@ const ProfileHeader: React.FC = () => {
                       <FiTwitter className={socialLinks} />
                     </a>
                   )}
-                  {user.youtube_username && (
+                  {user.youtube_url && (
                     <a
-                      href={`https://youtube.com/${user.youtube_username}`}
+                      href={`${user.youtube_url}`}
                       target="_blank"
                       rel="noreferrer"
                     >
