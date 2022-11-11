@@ -38,16 +38,16 @@ input:-webkit-autofill {
     @apply w-full h-full flex items-center justify-center;
   }
   .text-34px {
-    @apply text-2xl  xl:text-4xl;
+    @apply text-2xl  f2xl:text-4xl;
   }
   .text-24px {
-    @apply text-xl xl:text-2xl;
+    @apply text-xl f2xl:text-2xl;
   }
   .text-20px {
-    @apply text-base xl:text-xl;
+    @apply text-base f2xl:text-xl;
   }
   .text-18px {
-    @apply text-base xl:text-lg;
+    @apply text-base f2xl:text-lg;
   }
   .text-16px {
     @apply text-base;

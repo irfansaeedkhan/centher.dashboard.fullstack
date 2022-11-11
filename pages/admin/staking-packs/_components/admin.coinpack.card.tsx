@@ -76,7 +76,7 @@ const StackCardTop = ctl(`
   flex justify-between items-center bg-background-shade-2 p-5
 `);
 const CardTitle = ctl(`
-  text-16  xl:text-20 font-bold text-white
+  text-16  f2xl:text-20 font-bold text-white
 `);
 const StackCardContent = ctl(`
   pt-10 pb-4 px-5
@@ -88,20 +88,20 @@ const StackCardContentItem = ctl(`
  w-max lg:w-1/3  lg:mb-10 
 `);
 const ContentItemTitle = ctl(`
-  text-12 xl:text-14 leading-[18px] text-gray-shade-7 pb-4 
+  text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4 
 `);
 const ContentItemTitleMax = ctl(`
-  text-12 xl:text-14 leading-[18px] text-gray-shade-7 pb-4 w-max 
+  text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4 w-max 
 `);
 const ContentItemData = ctl(`
-  text-16 xl:text-22 textGradient  font-semibold
+  text-16 f2xl:text-22 textGradient  font-semibold
 `);
 const ContentItemData2 = ctl(`
-  text-16 xl:text-22 text-white font-semibold
+  text-16 f2xl:text-22 text-white font-semibold
 `);
 const rateContainer = ctl(`
   flex flex-col items-baseline lg:flex-row lg:items-center space-x-1 
 `);
 const ContentItemRate = ctl(`
-  text-12 xl:text-14 text-gray-shade-7
+  text-12 f2xl:text-14 text-gray-shade-7
 `);

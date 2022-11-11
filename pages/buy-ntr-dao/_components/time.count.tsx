@@ -39,13 +39,13 @@ export const TimeCount: React.FC<TimeCountProps> = ({ deadline }) => {
   return (
     <div className="timer flex items-center gap-8">
       <div className="box flex flex-col gap-2 items-center ">
-        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
           <h1 className="text-black-shade-3 font-semibold text-34px">{days}</h1>
         </div>
         <p className="text-14px font-semibold text-gray-shade-7 ">Days</p>
       </div>
       <div className="box flex flex-col gap-2 items-center ">
-        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
           <h1 className="text-black-shade-3 font-semibold text-34px">
             {hours}
           </h1>
@@ -53,7 +53,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ deadline }) => {
         <p className="text-14px font-semibold text-gray-shade-7 ">Hours</p>
       </div>
       <div className="box flex flex-col gap-2 items-center ">
-        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
           <h1 className="text-black-shade-3 font-semibold text-34px">
             {minutes}
           </h1>
@@ -61,7 +61,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ deadline }) => {
         <p className="text-14px font-semibold text-gray-shade-7 ">Minutes</p>
       </div>
       <div className="box flex flex-col gap-2 items-center ">
-        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl xl:w-[80px] xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+        <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
           <h1 className="text-black-shade-3 font-semibold text-34px">
             {seconds}
           </h1>
