@@ -9,36 +9,17 @@ import React, {
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Link from "next/link";
 import axios from "axios";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 import { Rings } from "react-loader-spinner";
 import { CgSpinner } from "react-icons/cg";
-import { FaFacebook, FaTiktok, FaTwitch, FaTwitter } from "react-icons/fa";
 import { TbBrandTiktok } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
-import { GrInstagram } from "react-icons/gr";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
-
-// App imports
-import { useProfileCardStore } from "@/store/profile.card.store";
-import useUser from "@/hooks/use.user";
-import useGetUser from "@/hooks/use.get.user";
-import { UserImage } from "@/models/user";
-import Button from "@/components/button";
-import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
-import { axiosNodeApi } from "@/utils/axios";
-import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
-import { CopySvg, CameraIcon, EditIcon, Circle } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
-
-// Current directory imports
-import UserProfileTabs from "./user.profile.tabs";
-import { CoverUploadButton } from "./cover.upload.button";
-import NFTProfileTabs from "./nft.profile.tabs";
+import { AiOutlineCamera } from "react-icons/ai";
 import {
   FiCopy,
   FiInstagram,
@@ -46,13 +27,26 @@ import {
   FiTwitter,
   FiYoutube,
 } from "react-icons/fi";
-import clsx from "clsx";
-import { ProfileDetailCard } from "@/components/feed.components";
-import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
-import PromotionCard from "@/components/feed.components/promotion.card";
-import PromotionCard2nd from "@/components/feed.components/promotion.card.2nd";
 
-type CoverImageWithFile = Partial<UserImage> & {
+// App imports
+import { useProfileCardStore } from "@/store/profile.card.store";
+import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { CoverImage } from "@/models/user";
+import Button from "@/components/button";
+import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
+import { axiosNodeApi } from "@/utils/axios";
+import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
+import { AppRoutes } from "@/constants/app.routes";
+import { Circle } from "@/assets/svgs";
+
+// Current directory imports
+import UserProfileTabs from "./user.profile.tabs";
+import { CoverUploadButton } from "./cover.upload.button";
+import { useDragCoverImage } from "./use.drag.cover.image";
+import NFTProfileTabs from "./nft.profile.tabs";
+
+type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
 };
@@ -67,18 +61,17 @@ const ProfileHeader: React.FC = () => {
     });
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const {
-    user,
-    mutateUser,
-    loading: userLoading,
-  } = useGetUser(router.query.account_address?.toString()?.toLowerCase());
+  const { user, mutateUser } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
 
+  const { imagePosition, setImagePosition, handleMouseDown } =
+    useDragCoverImage();
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     ...user?.cover_image,
     blob: null,
     newImage: false,
   });
-
   const coverImageInputRef = useRef<HTMLInputElement>(null);
 
   const [_, copy] = useCopyToClipboard();
@@ -86,7 +79,6 @@ const ProfileHeader: React.FC = () => {
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const [count, setCount] = useState(0);
 
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
@@ -120,8 +112,10 @@ const ProfileHeader: React.FC = () => {
         blob: null,
         newImage: false,
       });
+
+      setImagePosition(user.cover_image.y);
     }
-  }, [user?.cover_image]);
+  }, [user?.cover_image, setImagePosition]);
 
   useEffect(() => {
     setInitialCoverImage();
@@ -200,6 +194,7 @@ const ProfileHeader: React.FC = () => {
         type: "cover_image",
         object_name: coverImageData.object_name!,
         path: coverImageData.path,
+        y: imagePosition,
       });
 
       setCoverImage((prev) => ({
@@ -212,6 +207,7 @@ const ProfileHeader: React.FC = () => {
         cover_image: {
           object_name: coverImageData.object_name!,
           path: coverImageData.path,
+          y: imagePosition,
         },
       });
 
@@ -239,7 +235,6 @@ const ProfileHeader: React.FC = () => {
         const { data } = await axiosNodeApi.get(
           `/api/socials/follows/${user?._id}`
         );
-        // setFollowUser && setFollowUser(data.follow);
         setFollow(data.follow);
         setShowFollowButton(true);
       } catch (error: any) {
@@ -290,14 +285,23 @@ const ProfileHeader: React.FC = () => {
   }, []);
 
   return (
-    <div className={profilePageHeader}>
+    <div className={`w-full`}>
       <div className="content">
         {user && loggedInUser ? (
-          <div className={coverCard}>
+          <div className={`bg-background-shade-3 rounded-2xl`}>
             <div
-              className={coverImageContainer}
+              onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
+              className={clsx(
+                `relative rounded-t-2xl bg-cover bg-no-repeat w-full h-[21vh]`,
+                {
+                  "cursor-move": coverImage.newImage,
+                }
+              )}
               style={{
                 backgroundImage: `url(${coverImage.path})`,
+                backgroundPosition: `center ${
+                  coverImage.newImage ? imagePosition : coverImage.y
+                }`,
               }}
             >
               {isCurrentUserLoggedInUser && (
@@ -315,15 +319,16 @@ const ProfileHeader: React.FC = () => {
                         onClick={() => {
                           coverImageInputRef.current?.click();
                         }}
+                        variant="edit-cover"
                       >
-                        <CameraIcon />
+                        <AiOutlineCamera className="w-4 h-4" />
                         Edit cover
                       </CoverUploadButton>
                     )}
                     {coverImage.newImage && (
                       <>
                         <CoverUploadButton
-                          variant="dark"
+                          variant="cancel"
                           onClick={setInitialCoverImage}
                         >
                           Cancel
@@ -331,11 +336,14 @@ const ProfileHeader: React.FC = () => {
                         <CoverUploadButton
                           onClick={handleUploadCoverImage}
                           className={`group`}
+                          variant="upload-cover"
                         >
                           <CgSpinner
                             className={`group-disabled:block hidden animate-spin w-4 h-4`}
                           />
-                          <CameraIcon className={`group-disabled:hidden`} />
+                          <AiOutlineCamera
+                            className={`group-disabled:hidden w-4 h-4`}
+                          />
                           Upload Cover
                         </CoverUploadButton>
                       </>
@@ -351,10 +359,10 @@ const ProfileHeader: React.FC = () => {
                   <Image
                     src={user.profile_image.path}
                     alt={user.display_name}
-                    width={111}
+                    width={112}
                     height={112}
-                    className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0"
-                    // sizes={"512px"}
+                    className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
+                    sizes={"256px"}
                   />
                   <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
                   <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
@@ -371,17 +379,21 @@ const ProfileHeader: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className={coverDetails}>
+            <div className={`mt-8 lg:mt-10 px-7 pt-7`}>
               <div className="w-full justify-center flex mt-3">
-                <div className={topDetais}>
-                  <h5 className={profileName}>{user.display_name}</h5>
-                  <div className={shareBtns}></div>
+                <div
+                  className={`flex flex-col lg:flex-row items-baseline justify-between`}
+                >
+                  <h5 className={`text-white text-20px font-semibold`}>
+                    {user.display_name}
+                  </h5>
+                  <div className={`flex items-center gap-3`}></div>
                 </div>
               </div>
 
               <div className="w-full justify-center flex mt-3">
                 <div className={`pt-1 flex items-center gap-2 relative`}>
-                  <h6 className={code}>
+                  <h6 className={`text-white text-14px font-semibold`}>
                     {sliceAccountAddress(user.account_address)}
                   </h6>
                   <button
@@ -508,7 +520,7 @@ const ProfileHeader: React.FC = () => {
                     <Button
                       title={follow ? "Unfollow" : "Follow"}
                       variant="v1"
-                      className={editProfileBtn}
+                      className={`mt-5 !px-4 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]`}
                       onClick={() => followUser(user._id)}
                     />
                   )}
@@ -548,42 +560,4 @@ const ProfileHeader: React.FC = () => {
 export default ProfileHeader;
 
 // styling
-const profilePageHeader = ctl(`
-w-full 
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
-const btnContainer = ctl(`
-  flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-6 space-x-2
-`);
-const coverCard = ctl(`
-bg-background-shade-3 rounded-xl
-`);
-const coverImageContainer = ctl(`
-coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[21vh] bg-[url('/images/coverImage.png')]
-`);
-
-const coverDetails = ctl(`
-mt-8 lg:mt-10 px-7 pt-7
-`);
-const topDetais = ctl(`
- flex flex-col lg:flex-row items-baseline justify-between
-`);
-const profileName = ctl(`
-text-white text-20px font-semibold
-`);
-const shareBtns = ctl(`
-flex items-center gap-3
-`);
-const copyContainer = ctl(`
-
-`);
-const code = ctl(`
-text-white text-14px font-semibold
-`);
-const editProfileBtn = ctl(`
-mt-5 !px-4 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]
-`);
-
-const socialLinks = ctl(`text-white text-xl hover:text-brand-primary`);
+const socialLinks = `text-white text-xl hover:text-brand-primary`;
