@@ -13,7 +13,7 @@ const TopCreators = () => {
   };
 
   return (
-    <div className={`flex flex-col gap-8`}>
+    <div className={`flex flex-col gap-8 max-w-[1300px]`}>
       <div
         className={`animationTextHeading lg:!text-34 md:!text-3xl sm:!text-2xl`}
       >
