@@ -11,6 +11,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ProfilePageWrapper } from "./_components";
 import NFTCard from "@/components/nft.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
+import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
 
 let dummyData = [
   {
@@ -99,7 +100,7 @@ const NFTProfile: NextPageWithLayout = () => {
 
 NFTProfile.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <ProfilePageWrapper>{page}</ProfilePageWrapper>
+    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
   </AllPagesWrapper>
 );
 

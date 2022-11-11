@@ -1,0 +1,72 @@
+// React, Next, NPM Packages
+import React from "react";
+import ctl from "@netlify/classnames-template-literals";
+import { useRouter } from "next/router";
+
+import useGetUser from "@/hooks/use.get.user";
+import {
+  MessagesCard,
+  ProfileDetailCard,
+  RecentActivitiesCard,
+} from "@/components/feed.components";
+import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+
+import ProfileHeader from "./profile.header";
+import PromotionCard from "@/components/feed.components/promotion.card";
+
+interface AllPagesWrapperProps {
+  children: React.ReactNode;
+}
+
+export const NFTProfilePageWrapper: React.FC<AllPagesWrapperProps> = (
+  props
+) => {
+  const router = useRouter();
+  const { user, loading: userLoading } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
+
+  return (
+    <div className={componentWrapper}>
+      <ProfileHeader />
+      <div>
+        <div>
+          <div className={`flex gap-5`}>
+            <div
+              className={`w-full max-w-[272px] flex-col gap-3 hidden lg:flex`}
+            >
+              <div className={`flex flex-col`}>
+                {userLoading === "loaded" && user ? (
+                  <>
+                    <ProfileDetailCard user={user} />
+                  </>
+                ) : (
+                  <ProfileDetailCardSkeleton />
+                )}
+              </div>
+              <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
+                {userLoading === "loaded" && user ? (
+                  <>
+                    <PromotionCard />
+                  </>
+                ) : (
+                  <ProfileDetailCardSkeleton />
+                )}
+                {/* <DiscoverCard /> */}
+              </div>
+            </div>
+
+            <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
+              {props.children}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// styling
+const componentWrapper = ctl(`
+  flex flex-col bg-black-shade-3 w-full max-w-[1236px] mx-auto gap-6
+`);
