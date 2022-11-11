@@ -1,5 +1,11 @@
 // React, Next, NPM Packages
-import React, { useCallback, useEffect, useRef, useMemo } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -11,6 +17,8 @@ import ctl from "@netlify/classnames-template-literals";
 import { Rings } from "react-loader-spinner";
 import { CgSpinner } from "react-icons/cg";
 import { FaFacebook, FaTiktok, FaTwitch, FaTwitter } from "react-icons/fa";
+import { TbBrandTiktok } from "react-icons/tb";
+import { RiFacebookCircleLine } from "react-icons/ri";
 import { GrInstagram } from "react-icons/gr";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
@@ -31,6 +39,14 @@ import { AppRoutes } from "@/constants/app.routes";
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
 import NFTProfileTabs from "./nft.profile.tabs";
+import {
+  FiCopy,
+  FiInstagram,
+  FiTwitch,
+  FiTwitter,
+  FiYoutube,
+} from "react-icons/fi";
+import clsx from "clsx";
 
 type CoverImageWithFile = Partial<UserImage> & {
   blob: File | null;
@@ -63,6 +79,7 @@ const ProfileHeader: React.FC = () => {
   const [follow, setFollow] = useState<boolean>(false);
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [verifyIcon, setVerifyIcon] = useState<string>("/images/v1.gif");
 
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
@@ -250,6 +267,16 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
+  useEffect(() => {}, []);
+  useLayoutEffect(() => {
+    //Do something and either return undefined or a cleanup function
+    return () => {
+      //Do some cleanup here
+      setTimeout(function () {
+        setVerifyIcon("/images/v2.gif");
+      }, 2500);
+    };
+  }, []);
   return (
     <div className={profilePageHeader}>
       <h1 className={title}>Profile</h1>
@@ -337,53 +364,76 @@ const ProfileHeader: React.FC = () => {
               </>
             )}
 
-            <div className={profileImage}>
-              <Image
-                src={user.profile_image.path}
-                alt={user.display_name}
-                width={111}
-                height={112}
-                className="rounded-full h-[112px] w-[111px] object-cover border-2 border-background-shade-3"
-                sizes={"512px"}
-              />
+            <div
+              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[111px]`}
+            >
+              <div className="relative h-[112px] !w-[111px]">
+                <Image
+                  src={user.profile_image.path}
+                  alt={user.display_name}
+                  width={111}
+                  height={112}
+                  className="absolute rounded-full !h-[112px] !w-[111px] object-cover border-2 border-background-shade-3 !m-0"
+                  // sizes={"512px"}
+                />
+                <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
+                  <Image
+                    src={verifyIcon}
+                    alt={"verified icon"}
+                    width={34}
+                    height={34}
+                    className=""
+                  />
+                </div>
+              </div>
             </div>
           </div>
+
           <div className={coverDetails}>
-            <div className={topDetais}>
-              <div>
+            <div className="w-full justify-center flex mt-3">
+              <div className={topDetais}>
                 <h5 className={profileName}>{user.display_name}</h5>
-                <div className={shareBtns}>
-                  <div className={copyContainer}>
-                    <h6 className={code}>
-                      {sliceAccountAddress(user.account_address)}
-                    </h6>
-                    <button
-                      onClick={() => {
-                        copy(
-                          window.location.origin +
-                            "/auth/register?referred_by=" +
-                            user.account_address
-                        );
-                        toast.success("Referral link copied!");
-                      }}
-                    >
-                      <CopySvg className="hover:stroke-brand-primary" />
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  {user.twitter_username && (
+                <div className={shareBtns}></div>
+              </div>
+            </div>
+
+            <div className="w-full justify-center flex mt-3">
+              <div className={`pt-1 flex items-center gap-2 relative`}>
+                <h6 className={code}>
+                  {sliceAccountAddress(user.account_address)}
+                </h6>
+                <button
+                  onClick={() => {
+                    copy(
+                      window.location.origin +
+                        "/auth/register?referred_by=" +
+                        user.account_address
+                    );
+                    toast.success("Referral link copied!");
+                  }}
+                >
+                  <FiCopy className="text-2xl hover:text-brand-primary text-gray-shade-7" />
+                </button>
+              </div>
+            </div>
+
+            {(user.tiktok_username ||
+              user.facebook_username ||
+              user.instagram_username ||
+              user.onlyfans_username ||
+              user.twitch_username ||
+              user.twitter_username ||
+              user.website_url ||
+              user.youtube_username) && (
+              <div className="w-full justify-center flex mt-3">
+                <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
+                  {user.tiktok_username && (
                     <a
-                      href={`https://twitter.com/${user.twitter_username}`}
+                      href={`https://tiktok.com/${user.tiktok_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <FaTwitter className="fill-white text-xl hover:fill-brand-primary" />
-                    </a>
-                  )}
-                  {user.website_url && (
-                    <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <HiLink className="fill-white text-xl hover:fill-brand-primary" />
+                      <TbBrandTiktok className={socialLinks} />
                     </a>
                   )}
                   {user.facebook_username && (
@@ -392,16 +442,40 @@ const ProfileHeader: React.FC = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <FaFacebook className=" fill-white text-xl hover:fill-brand-primary" />
+                      <RiFacebookCircleLine className={socialLinks} />
                     </a>
                   )}
+                  {user.twitter_username && (
+                    <a
+                      href={`https://twitter.com/${user.twitter_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiTwitter className={socialLinks} />
+                    </a>
+                  )}
+                  {user.youtube_username && (
+                    <a
+                      href={`https://youtube.com/${user.youtube_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiYoutube className={socialLinks} />
+                    </a>
+                  )}
+                  {user.website_url && (
+                    <a href={user.website_url} target="_blank" rel="noreferrer">
+                      <HiLink className={socialLinks} />
+                    </a>
+                  )}
+
                   {user.instagram_username && (
                     <a
                       href={`https://instagram.com/${user.instagram_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <GrInstagram className="fill-white text-xl hover:fill-brand-primary" />
+                      <FiInstagram className={socialLinks} />
                     </a>
                   )}
                   {user.twitch_username && (
@@ -410,43 +484,27 @@ const ProfileHeader: React.FC = () => {
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <FaTwitch className="fill-white text-xl hover:fill-brand-primary" />
+                      <FiTwitch className={socialLinks} />
                     </a>
                   )}
-                  {user.tiktok_username && (
-                    <a
-                      href={`https://tiktok.com/${user.tiktok_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FaTiktok className="fill-white text-xl hover:fill-brand-primary" />
-                    </a>
-                  )}
+
                   {user.onlyfans_username && (
                     <a
                       href={`https://onlyfans.com/${user.onlyfans_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
-                      <SiOnlyfans className="fill-white text-xl hover:fill-brand-primary" />
+                      <SiOnlyfans className={socialLinks} />
                     </a>
                   )}
                 </div>
               </div>
+            )}
 
-              {loggedInUser.account_address.toLowerCase() ===
-              user.account_address.toLowerCase() ? (
-                <Link href={AppRoutes.profile.settings}>
-                  <Button
-                    title={"Edit Profile"}
-                    variant="v1"
-                    className={editProfileBtn}
-                    Icon={<EditIcon className="w-[20px] [&>*]:stroke-black" />}
-                  />
-                </Link>
-              ) : (
-                showFollowButton &&
-                (loadingState ? (
+            {loggedInUser.account_address.toLowerCase() !==
+              user.account_address.toLowerCase() && (
+              <div className="w-full justify-center flex mt-4">
+                {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
                     {/* TODO: Waqar Fix Loader size issue*/}
                     <Rings
@@ -467,12 +525,20 @@ const ProfileHeader: React.FC = () => {
                     className={editProfileBtn}
                     onClick={() => followUser(user._id)}
                   />
-                ))
-              )}
-            </div>
-            <div className={textContent}>
-              <p className={profileDescription}>{user.profile_bio}</p>
-            </div>
+                )}
+              </div>
+            )}
+
+            {user.profile_bio && (
+              <div className={`mt-4 w-full justify-center flex`}>
+                <p
+                  className={`text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap text-center max-w-[776px]`}
+                >
+                  {user.profile_bio}
+                </p>
+              </div>
+            )}
+
             {currentPageRoute.isProfilePage && (
               <UserProfileTabs
                 loggedInUser={loggedInUser.account_address}
@@ -508,9 +574,6 @@ const coverImageContainer = ctl(`
 coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[31vh] bg-[url('/images/coverImage.png')]
 `);
 
-const profileImage = ctl(`
-cursor-pointer absolute left-6 -bottom-12
-`);
 const coverDetails = ctl(`
 mt-8 lg:mt-10 px-7 pt-7
 `);
@@ -524,7 +587,7 @@ const shareBtns = ctl(`
 flex items-center gap-3
 `);
 const copyContainer = ctl(`
-copyContainer pt-1 flex items-center gap-2 relative
+
 `);
 const code = ctl(`
 text-white text-14px font-semibold
@@ -532,10 +595,5 @@ text-white text-14px font-semibold
 const editProfileBtn = ctl(`
 mt-5 !px-4 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]
 `);
-const textContent = ctl(`
-mt-6
-`);
 
-const profileDescription = ctl(`
-text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap
-`);
+const socialLinks = ctl(`text-white text-xl hover:text-brand-primary`);

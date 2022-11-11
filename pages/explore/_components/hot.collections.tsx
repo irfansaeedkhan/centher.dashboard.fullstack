@@ -10,9 +10,12 @@ import { CollectionCard } from "@/components/collection.card";
 import { AppRoutes } from "@/constants/app.routes";
 import { Collection } from "@/store/explore.store";
 import { NftsCollectionEmpty } from "@/assets/svgs";
+import { LoadingState } from "@/models/common";
+import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 
 interface HotCollectionsProps {
   hotCollections: Collection[];
+  loadingCollections: LoadingState;
 }
 const responsive = {
   desktop: {
@@ -33,6 +36,7 @@ const responsive = {
 };
 export const HotCollections: React.FC<HotCollectionsProps> = ({
   hotCollections,
+  loadingCollections,
 }) => {
   return (
     <div className={hotCollectionWrapper}>
@@ -43,7 +47,7 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
         </Link>
       </div>
       <div className={collectionCardStyle}>
-        {hotCollections?.length > 0 ? (
+        {hotCollections?.length > 0 && (
           <div className={mediaContainer}>
             <Carousel
               swipeable={true}
@@ -64,7 +68,17 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
             </Carousel>
             ;
           </div>
-        ) : (
+        )}
+
+        {(loadingCollections === "loading" ||
+          loadingCollections === "idle") && (
+          <div className="flex flex-wrap gap-5 items-center">
+            <NftCollectionSkeleton />
+            <NftCollectionSkeleton />
+          </div>
+        )}
+
+        {loadingCollections !== "loaded" && (
           <div>
             <div className="flex justify-center items-center">
               <NftsCollectionEmpty />

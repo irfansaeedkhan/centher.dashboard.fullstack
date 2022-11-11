@@ -164,7 +164,7 @@ const AuctionForm = ({
         Collection: "",
       });
     }
-  }, [clearForm]);
+  }, [clearForm, reset]);
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>

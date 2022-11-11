@@ -27,6 +27,7 @@ import {
   ArrowLeftIcon,
   ArrowRightIcon,
   WorldIcon,
+  SpinIcon3,
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
@@ -380,9 +381,9 @@ export const SingleReply = React.forwardRef<
   };
 
   return (
-    <div ref={currentPostRef}>
+    <div ref={currentPostRef} className="flex flex-grow">
       <div
-        className={`sm:w-full lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+        className={`sm:w-full lg:w-[544px] flex-grow relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
         ref={ref}
       >
         {_post.parent_post && <ParentPost parentPost={_post.parent_post} />}
@@ -718,7 +719,7 @@ export const SingleReply = React.forwardRef<
 
                   {updateLoadingButton ? (
                     <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                      <Rings
+                      {/* <Rings
                         height="30"
                         width="30"
                         color="#1C1F29"
@@ -727,7 +728,8 @@ export const SingleReply = React.forwardRef<
                         wrapperClass=""
                         visible={true}
                         ariaLabel="rings-loading"
-                      />
+                      /> */}
+                      <SpinIcon3 />
                     </button>
                   ) : (
                     <Button

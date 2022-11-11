@@ -209,12 +209,12 @@ export const useGetNFTOwner = (
       collection: string,
       ownerOfListed: string
     ) => {
-      const nftContract = getStandardNFTContract(null, collection);
-      const _owner = await nftContract.ownerOf(tokenId);
-      if (_owner.toLowerCase() === getMarketplaceAddress()) {
-        setOwner(ownerOfListed);
-      } else {
+      if (ownerOfListed === ZeroAddress) {
+        const nftContract = getStandardNFTContract(null, collection);
+        const _owner = await nftContract.ownerOf(tokenId);
         setOwner(_owner);
+      } else {
+        setOwner(ownerOfListed);
       }
     };
 
