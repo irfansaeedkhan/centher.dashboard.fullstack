@@ -47,6 +47,10 @@ import {
   FiYoutube,
 } from "react-icons/fi";
 import clsx from "clsx";
+import { ProfileDetailCard } from "@/components/feed.components";
+import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+import PromotionCard from "@/components/feed.components/promotion.card";
+import PromotionCard2nd from "@/components/feed.components/promotion.card.2nd";
 
 type CoverImageWithFile = Partial<UserImage> & {
   blob: File | null;
@@ -63,9 +67,11 @@ const ProfileHeader: React.FC = () => {
     });
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { user, mutateUser } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
+  const {
+    user,
+    mutateUser,
+    loading: userLoading,
+  } = useGetUser(router.query.account_address?.toString()?.toLowerCase());
 
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     ...user?.cover_image,
@@ -282,285 +288,260 @@ const ProfileHeader: React.FC = () => {
       setVerifyIcon("/images/v2.gif");
     }, 20000);
   }, []);
+
   return (
     <div className={profilePageHeader}>
-      <h1 className={title}>Profile</h1>
-      <div className={btnContainer}>
-        <Link
-          href={{
-            pathname: AppRoutes.profile.account_address,
-            query: {
-              account_address: user?.account_address,
-            },
-          }}
-          className="w-full"
-        >
-          <Button
-            title={"Social Profile"}
-            variant={`${currentPageRoute.isProfilePage ? "v1" : "v2"}`}
-            className="px-8 py-3"
-          />
-        </Link>
-        <Link
-          href={{
-            pathname: AppRoutes.profile.nfts,
-            query: {
-              account_address: user?.account_address,
-            },
-          }}
-          className="w-full"
-        >
-          <Button
-            title={"NFT Profile"}
-            variant={`${currentPageRoute.isNFTProfilePage ? "v1" : "v2"}`}
-            className="px-8 py-3"
-          />
-        </Link>
-      </div>
-      {user && loggedInUser ? (
-        <div className={coverCard}>
-          <div
-            className={coverImageContainer}
-            style={{
-              backgroundImage: `url(${coverImage.path})`,
-            }}
-          >
-            {isCurrentUserLoggedInUser && (
-              <>
-                <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
-                  <input
-                    type="file"
-                    ref={coverImageInputRef}
-                    accept="image/jpeg,image/png,image/jpg"
-                    style={{ display: "none" }}
-                    onChange={handleSelectCoverImage}
-                  />
-                  {!coverImage.newImage && (
-                    <CoverUploadButton
-                      onClick={() => {
-                        coverImageInputRef.current?.click();
-                      }}
-                    >
-                      <CameraIcon />
-                      Edit cover
-                    </CoverUploadButton>
-                  )}
-                  {coverImage.newImage && (
-                    <>
-                      <CoverUploadButton
-                        variant="dark"
-                        onClick={setInitialCoverImage}
-                      >
-                        Cancel
-                      </CoverUploadButton>
-                      <CoverUploadButton
-                        onClick={handleUploadCoverImage}
-                        className={`group`}
-                      >
-                        <CgSpinner
-                          className={`group-disabled:block hidden animate-spin w-4 h-4`}
-                        />
-                        <CameraIcon className={`group-disabled:hidden`} />
-                        Upload Cover
-                      </CoverUploadButton>
-                    </>
-                  )}
-                </div>
-              </>
-            )}
-
+      <div className="content">
+        {user && loggedInUser ? (
+          <div className={coverCard}>
             <div
-              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+              className={coverImageContainer}
+              style={{
+                backgroundImage: `url(${coverImage.path})`,
+              }}
             >
-              <div className="relative h-[112px] !w-[112px]">
-                <Image
-                  src={user.profile_image.path}
-                  alt={user.display_name}
-                  width={111}
-                  height={112}
-                  className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0"
-                  // sizes={"512px"}
-                />
-                <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
-                <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                  {verifyIcon.length > 1 && (
-                    <Image
-                      src={verifyIcon}
-                      alt={"verified icon"}
-                      width={34}
-                      height={34}
-                      className=""
+              {isCurrentUserLoggedInUser && (
+                <>
+                  <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
+                    <input
+                      type="file"
+                      ref={coverImageInputRef}
+                      accept="image/jpeg,image/png,image/jpg"
+                      style={{ display: "none" }}
+                      onChange={handleSelectCoverImage}
                     />
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
+                    {!coverImage.newImage && (
+                      <CoverUploadButton
+                        onClick={() => {
+                          coverImageInputRef.current?.click();
+                        }}
+                      >
+                        <CameraIcon />
+                        Edit cover
+                      </CoverUploadButton>
+                    )}
+                    {coverImage.newImage && (
+                      <>
+                        <CoverUploadButton
+                          variant="dark"
+                          onClick={setInitialCoverImage}
+                        >
+                          Cancel
+                        </CoverUploadButton>
+                        <CoverUploadButton
+                          onClick={handleUploadCoverImage}
+                          className={`group`}
+                        >
+                          <CgSpinner
+                            className={`group-disabled:block hidden animate-spin w-4 h-4`}
+                          />
+                          <CameraIcon className={`group-disabled:hidden`} />
+                          Upload Cover
+                        </CoverUploadButton>
+                      </>
+                    )}
+                  </div>
+                </>
+              )}
 
-          <div className={coverDetails}>
-            <div className="w-full justify-center flex mt-3">
-              <div className={topDetais}>
-                <h5 className={profileName}>{user.display_name}</h5>
-                <div className={shareBtns}></div>
-              </div>
-            </div>
-
-            <div className="w-full justify-center flex mt-3">
-              <div className={`pt-1 flex items-center gap-2 relative`}>
-                <h6 className={code}>
-                  {sliceAccountAddress(user.account_address)}
-                </h6>
-                <button
-                  onClick={() => {
-                    copy(
-                      window.location.origin +
-                        "/auth/register?referred_by=" +
-                        user.account_address
-                    );
-                    toast.success("Referral link copied!");
-                  }}
-                >
-                  <FiCopy className="text-2xl hover:text-brand-primary text-gray-shade-7" />
-                </button>
-              </div>
-            </div>
-
-            {(user.tiktok_username ||
-              user.facebook_username ||
-              user.instagram_username ||
-              user.onlyfans_username ||
-              user.twitch_username ||
-              user.twitter_username ||
-              user.website_url ||
-              user.youtube_url) && (
-              <div className="w-full justify-center flex mt-3">
-                <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
-                  {user.tiktok_username && (
-                    <a
-                      href={`https://tiktok.com/${user.tiktok_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <TbBrandTiktok className={socialLinks} />
-                    </a>
-                  )}
-                  {user.facebook_username && (
-                    <a
-                      href={`https://facebook.com/${user.facebook_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <RiFacebookCircleLine className={socialLinks} />
-                    </a>
-                  )}
-                  {user.twitter_username && (
-                    <a
-                      href={`https://twitter.com/${user.twitter_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiTwitter className={socialLinks} />
-                    </a>
-                  )}
-                  {user.youtube_url && (
-                    <a
-                      href={`${user.youtube_url}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiYoutube className={socialLinks} />
-                    </a>
-                  )}
-                  {user.website_url && (
-                    <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <HiLink className={socialLinks} />
-                    </a>
-                  )}
-
-                  {user.instagram_username && (
-                    <a
-                      href={`https://instagram.com/${user.instagram_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiInstagram className={socialLinks} />
-                    </a>
-                  )}
-                  {user.twitch_username && (
-                    <a
-                      href={`https://twitch.tv/${user.twitch_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiTwitch className={socialLinks} />
-                    </a>
-                  )}
-
-                  {user.onlyfans_username && (
-                    <a
-                      href={`https://onlyfans.com/${user.onlyfans_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <SiOnlyfans className={socialLinks} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {loggedInUser.account_address.toLowerCase() !==
-              user.account_address.toLowerCase() && (
-              <div className="w-full justify-center flex mt-4">
-                {loadingState ? (
-                  <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                    {/* TODO: Waqar Fix Loader size issue*/}
-                    <Rings
-                      height="20"
-                      width="20"
-                      color="#1C1F29"
-                      radius="6"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                      ariaLabel="rings-loading"
-                    />
-                  </button>
-                ) : (
-                  <Button
-                    title={follow ? "Unfollow" : "Follow"}
-                    variant="v1"
-                    className={editProfileBtn}
-                    onClick={() => followUser(user._id)}
+              <div
+                className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+              >
+                <div className="relative h-[112px] !w-[112px]">
+                  <Image
+                    src={user.profile_image.path}
+                    alt={user.display_name}
+                    width={111}
+                    height={112}
+                    className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0"
+                    // sizes={"512px"}
                   />
-                )}
+                  <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
+                  <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
+                    {verifyIcon.length > 1 && (
+                      <Image
+                        src={verifyIcon}
+                        alt={"verified icon"}
+                        width={34}
+                        height={34}
+                        className=""
+                      />
+                    )}
+                  </div>
+                </div>
               </div>
-            )}
-
-            {user.profile_bio && (
-              <div className={`mt-4 w-full justify-center flex`}>
-                <p
-                  className={`text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap text-center max-w-[776px]`}
-                >
-                  {user.profile_bio}
-                </p>
+            </div>
+            <div className={coverDetails}>
+              <div className="w-full justify-center flex mt-3">
+                <div className={topDetais}>
+                  <h5 className={profileName}>{user.display_name}</h5>
+                  <div className={shareBtns}></div>
+                </div>
               </div>
-            )}
 
-            {currentPageRoute.isProfilePage && (
-              <UserProfileTabs
-                loggedInUser={loggedInUser.account_address}
-                account_address={router.query.account_address}
-              />
-            )}
-            {currentPageRoute.isNFTProfilePage && (
-              <NFTProfileTabs account_address={router.query.account_address} />
-            )}
+              <div className="w-full justify-center flex mt-3">
+                <div className={`pt-1 flex items-center gap-2 relative`}>
+                  <h6 className={code}>
+                    {sliceAccountAddress(user.account_address)}
+                  </h6>
+                  <button
+                    onClick={() => {
+                      copy(
+                        window.location.origin +
+                          "/auth/register?referred_by=" +
+                          user.account_address
+                      );
+                      toast.success("Referral link copied!");
+                    }}
+                  >
+                    <FiCopy className="text-2xl hover:text-brand-primary text-gray-shade-7" />
+                  </button>
+                </div>
+              </div>
+
+              {(user.tiktok_username ||
+                user.facebook_username ||
+                user.instagram_username ||
+                user.onlyfans_username ||
+                user.twitch_username ||
+                user.twitter_username ||
+                user.website_url ||
+                user.youtube_url) && (
+                <div className="w-full justify-center flex mt-3">
+                  <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
+                    {user.tiktok_username && (
+                      <a
+                        href={`https://tiktok.com/${user.tiktok_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <TbBrandTiktok className={socialLinks} />
+                      </a>
+                    )}
+                    {user.facebook_username && (
+                      <a
+                        href={`https://facebook.com/${user.facebook_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <RiFacebookCircleLine className={socialLinks} />
+                      </a>
+                    )}
+                    {user.twitter_username && (
+                      <a
+                        href={`https://twitter.com/${user.twitter_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiTwitter className={socialLinks} />
+                      </a>
+                    )}
+                    {user.youtube_url && (
+                      <a
+                        href={`${user.youtube_url}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiYoutube className={socialLinks} />
+                      </a>
+                    )}
+                    {user.website_url && (
+                      <a
+                        href={user.website_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <HiLink className={socialLinks} />
+                      </a>
+                    )}
+
+                    {user.instagram_username && (
+                      <a
+                        href={`https://instagram.com/${user.instagram_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiInstagram className={socialLinks} />
+                      </a>
+                    )}
+                    {user.twitch_username && (
+                      <a
+                        href={`https://twitch.tv/${user.twitch_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <FiTwitch className={socialLinks} />
+                      </a>
+                    )}
+
+                    {user.onlyfans_username && (
+                      <a
+                        href={`https://onlyfans.com/${user.onlyfans_username}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        <SiOnlyfans className={socialLinks} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {loggedInUser.account_address.toLowerCase() !==
+                user.account_address.toLowerCase() && (
+                <div className="w-full justify-center flex mt-4">
+                  {loadingState ? (
+                    <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
+                      {/* TODO: Waqar Fix Loader size issue*/}
+                      <Rings
+                        height="20"
+                        width="20"
+                        color="#1C1F29"
+                        radius="6"
+                        wrapperStyle={{}}
+                        wrapperClass=""
+                        visible={true}
+                        ariaLabel="rings-loading"
+                      />
+                    </button>
+                  ) : (
+                    <Button
+                      title={follow ? "Unfollow" : "Follow"}
+                      variant="v1"
+                      className={editProfileBtn}
+                      onClick={() => followUser(user._id)}
+                    />
+                  )}
+                </div>
+              )}
+
+              {user.profile_bio && (
+                <div className={`mt-4 w-full justify-center flex`}>
+                  <p
+                    className={`text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap text-center max-w-[776px]`}
+                  >
+                    {user.profile_bio}
+                  </p>
+                </div>
+              )}
+
+              {currentPageRoute.isProfilePage && (
+                <UserProfileTabs
+                  loggedInUser={loggedInUser.account_address}
+                  account_address={router.query.account_address}
+                />
+              )}
+              {currentPageRoute.isNFTProfilePage && (
+                <NFTProfileTabs
+                  account_address={router.query.account_address}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      ) : (
-        <UserProfileHeaderSkeleton />
-      )}
+        ) : (
+          <UserProfileHeaderSkeleton />
+        )}
+      </div>
     </div>
   );
 };
@@ -568,6 +549,7 @@ export default ProfileHeader;
 
 // styling
 const profilePageHeader = ctl(`
+w-full 
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
@@ -579,7 +561,7 @@ const coverCard = ctl(`
 bg-background-shade-3 rounded-xl
 `);
 const coverImageContainer = ctl(`
-coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[31vh] bg-[url('/images/coverImage.png')]
+coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[21vh] bg-[url('/images/coverImage.png')]
 `);
 
 const coverDetails = ctl(`

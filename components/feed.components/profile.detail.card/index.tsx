@@ -3,6 +3,7 @@ import React, { useLayoutEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
+import ctl from "@netlify/classnames-template-literals";
 
 // app imports
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
@@ -36,7 +37,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div
       className={clsx(
-        `w-11/12 sm:w-[272px] pt-4 rounded-10px text-center bg-background-shade-3 overflow-hidden`,
+        `w-11/12 sm:w-[272px] pt-12 rounded-10px text-center bg-background-shade-3 overflow-hidden relative`,
         !!profileCardDetails.profile_views_count && `pb-4`
       )}
     >
@@ -48,6 +49,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           },
         }}
       >
+        <div
+          className={coverImageContainer}
+          style={{
+            backgroundImage: `url(/images/profile-header-cover.jpg)`,
+          }}
+        ></div>
         <div className="relative mx-auto h-[60px] !w-[60px]">
           <Image
             src={user.profile_image.path}
@@ -185,3 +192,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
     </div>
   );
 };
+const coverImageContainer = ctl(`
+coverImageContainer absolute top-0 left-0  rounded-t-2xl bg-center bg-cover bg-no-repeat w-full h-[84px] bg-[url('/images/coverImage.png')]
+`);

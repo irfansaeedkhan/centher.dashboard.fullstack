@@ -4,16 +4,11 @@ import ctl from "@netlify/classnames-template-literals";
 import { useRouter } from "next/router";
 
 import useGetUser from "@/hooks/use.get.user";
-import {
-  MessagesCard,
-  ProfileDetailCard,
-  RecentActivitiesCard,
-} from "@/components/feed.components";
-import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+import { MessagesCard } from "@/components/feed.components";
 
 import ProfileHeader from "./profile.header";
-import PromotionCard from "@/components/feed.components/promotion.card";
-import PromotionCard2nd from "@/components/feed.components/promotion.card.2nd";
+import ProfileTabs from "./profile.tabs";
+import ProfileSideCard from "./profile.sidecard";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -27,44 +22,24 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
 
   return (
     <div className={componentWrapper}>
-      <ProfileHeader />
-      <div>
-        <div>
-          <div className={`flex gap-5`}>
-            <div
-              className={`w-full max-w-[272px] flex-col gap-3 hidden lg:flex`}
-            >
-              <div className={`flex flex-col`}>
-                {userLoading === "loaded" && user ? (
-                  <>
-                    <ProfileDetailCard user={user} />
-                  </>
-                ) : (
-                  <ProfileDetailCardSkeleton />
-                )}
+      <div className="w-full max-w-[1136px] mx-auto">
+        <ProfileTabs />
+        <div className="flex items-start gap-6">
+          <div className="sidecards">
+            <ProfileSideCard />
+          </div>
+          <div className="mainContent flex flex-col gap-6">
+            <ProfileHeader />
+            <div className={`flex gap-6`}>
+              <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
+                {props.children}
               </div>
-              <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
-                {userLoading === "loaded" && user ? (
-                  <>
-                    <PromotionCard />
-                    <PromotionCard2nd />
-                  </>
-                ) : (
-                  <ProfileDetailCardSkeleton />
-                )}
-                {/* <DiscoverCard /> */}
+              <div
+                className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden sticky`}
+              >
+                <MessagesCard />
+                {/* <RecentActivitiesCard /> */}
               </div>
-            </div>
-
-            <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
-              {props.children}
-            </div>
-
-            <div
-              className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden sticky`}
-            >
-              <MessagesCard />
-              {/* <RecentActivitiesCard /> */}
             </div>
           </div>
         </div>
