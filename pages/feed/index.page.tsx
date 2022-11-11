@@ -6,7 +6,6 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   MessagesCard,
-  RecentActivitiesCard,
   PostCardNew,
   SinglePost,
   LeftSidebarStickyContainer,
@@ -40,10 +39,6 @@ const Feed: NextPageWithLayout = () => {
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
       updateOffset();
     }
@@ -60,9 +55,7 @@ const Feed: NextPageWithLayout = () => {
   }, [fetchPosts]);
 
   return (
-    <div
-      className={`w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]`}
-    >
+    <>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
         <PostCardNew
           onPostCreated={(post) => {
@@ -75,24 +68,14 @@ const Feed: NextPageWithLayout = () => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
             <SinglePost
-              ref={lastPostRef}
               key={post._id}
+              ref={lastPostRef}
               post={post}
-              onDelete={(post_id) => {
-                deletePost(post_id);
-              }}
+              onDelete={deletePost}
             />
           );
         }
-        return (
-          <SinglePost
-            key={post._id}
-            post={post}
-            onDelete={(post_id) => {
-              deletePost(post_id);
-            }}
-          />
-        );
+        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
       })}
 
       {(loading === "loading" || loading === "idle") && (
@@ -102,7 +85,6 @@ const Feed: NextPageWithLayout = () => {
           <SinglePostCardSkeleton />
         </>
       )}
-
       {loading === "loaded" && posts.length === 0 && (
         <div>
           <div className="flex justify-center mt-[60px]">
@@ -120,30 +102,35 @@ const Feed: NextPageWithLayout = () => {
       )}
 
       {loading === "failed" && (
-        <div className="flex justify-center">
-          <p className="text-gray-500">Something went wrong!</p>
-        </div>
+        <p className="flex justify-center text-gray-shade-7 !mt-12">
+          Something went wrong!
+        </p>
       )}
-    </div>
+    </>
   );
 };
 
 Feed.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Feed">
-      <div
-        className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] xl:max-w-[1130px] mx-auto relative`}
-      >
-        <div className={`flex flex-col lg:flex-row gap-5  align-inherit`}>
-          <LeftSidebarStickyContainer />
+      <div className={`max-w-[848px] f2xl:max-w-[1136px] mx-auto relative`}>
+        <div
+          className={`flex flex-col lg:flex-row lg:items-start lg:gap-8 f2xl:gap-6`}
+        >
+          <div
+            className={`w-full max-w-[272px] lg:sticky lg:top-0 hidden lg:block`}
+          >
+            <LeftSidebarStickyContainer />
+          </div>
 
-          {page}
+          <div className={`w-full max-w-[544px] mx-auto space-y-3 flex-grow`}>
+            {page}
+          </div>
 
           <div
-            className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden mt-[3.5rem] sticky top-[3.5rem]`}
+            className={`w-full max-w-[272px] hidden f2xl:flex flex-col gap-3 sticky top-0`}
           >
             <MessagesCard />
-            {/* <RecentActivitiesCard /> */}
           </div>
         </div>
       </div>

@@ -440,7 +440,7 @@ const maxBtn = ctl(`
 cursor-pointer text-14px text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0
 `);
 const conversionBtn = ctl(`
-cursor-pointer conversionBtn w-[70px] h-[70px] xl:w-[100px] xl:h-[100px]  bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full
+cursor-pointer conversionBtn w-[70px] h-[70px] f2xl:w-[100px] f2xl:h-[100px]  bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full
 `);
 const conversionBoxFooter = ctl(`
 pt-8 lg:pt-12 w-full lg:max-w-[428px] mx-auto text-center

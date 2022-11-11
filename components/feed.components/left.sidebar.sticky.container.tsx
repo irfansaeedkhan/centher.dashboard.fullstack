@@ -37,28 +37,16 @@ export const LeftSidebarStickyContainer = () => {
   }, [router, user, loggedInUser]);
 
   return (
-    <div>
-      <h1
-        className={`textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`}
-      >
-        My Feed
-      </h1>
-      <div className={`w-[272px]  flex-col hidden lg:flex`}>
-        {profileCardUser ? (
-          <>
-            <ProfileDetailCard user={profileCardUser} />
-            <PromotionCard />
-            <PromotionCard2nd />
-          </>
-        ) : (
-          <ProfileDetailCardSkeleton />
-        )}
-
-        {/* <DiscoverCard /> */}
-      </div>
-      <div className="mt-3 lg:sticky  lg:top-0">
-        <PromotionCard />
-      </div>
+    <div className={`max-w-[272px] flex flex-col gap-3`}>
+      {profileCardUser ? (
+        <>
+          <ProfileDetailCard user={profileCardUser} />
+          <PromotionCard />
+          <PromotionCard2nd />
+        </>
+      ) : (
+        <ProfileDetailCardSkeleton />
+      )}
     </div>
   );
 };
