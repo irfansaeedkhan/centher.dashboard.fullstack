@@ -1,3 +1,4 @@
+import ctl from "@netlify/classnames-template-literals";
 import Head from "next/head";
 import React from "react";
 
@@ -12,16 +13,14 @@ export const PageWrapper: React.FC<PageWrapperProps> = (props) => {
       <Head>
         <title>{props.pageTitle}</title>
       </Head>
-      <div
-        className={`
+      <div className={componentWrapper}>{props.children}</div>
+    </>
+  );
+};
+
+const componentWrapper = ctl(`
   flex 
   w-full
   font-monto 
   min-h-screen 
-`}
-      >
-        {props.children}
-      </div>
-    </>
-  );
-};
+`);

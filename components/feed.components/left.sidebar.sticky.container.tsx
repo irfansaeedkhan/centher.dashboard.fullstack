@@ -9,6 +9,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
 import PromotionCard from "./promotion.card";
+import PromotionCard2nd from "./promotion.card.2nd";
 
 export const LeftSidebarStickyContainer = () => {
   const router = useRouter();
@@ -46,6 +47,8 @@ export const LeftSidebarStickyContainer = () => {
         {profileCardUser ? (
           <>
             <ProfileDetailCard user={profileCardUser} />
+            <PromotionCard />
+            <PromotionCard2nd />
           </>
         ) : (
           <ProfileDetailCardSkeleton />

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
 
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -96,29 +97,8 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           <button
             className={clsx(
               _result.is_followed_by_loggedin_user
-                ? `
-  px-6 
-  py-2
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-gray-shade-3 
-  text-gray-shade-7
-`
-                : `
-  px-6 
-  py-2
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-brand-primary 
-  text-black-shade-2 
-  hover:bg-brand-primary-dark 
-`
+                ? followingButton
+                : connectButton
             )}
             onClick={() => followUser(_result._id)}
           >
@@ -133,3 +113,27 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
 UserWithFollow.displayName = "UserWithFollow";
 
 export default UserWithFollow;
+
+const connectButton = ctl(`
+  px-6 
+  py-2
+  flex
+  text-sm 
+  rounded-lg 
+  items-center 
+  font-semibold 
+  bg-brand-primary 
+  text-black-shade-2 
+  hover:bg-brand-primary-dark 
+`);
+const followingButton = ctl(`
+  px-6 
+  py-2
+  flex
+  text-sm 
+  rounded-lg 
+  items-center 
+  font-semibold 
+  bg-gray-shade-3 
+  text-gray-shade-7
+`);

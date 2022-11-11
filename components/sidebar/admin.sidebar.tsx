@@ -1,4 +1,5 @@
 import React from "react";
+import ctl from "@netlify/classnames-template-literals";
 
 import useUser from "@/hooks/use.user";
 
@@ -9,8 +10,15 @@ export const AdminSidebar = () => {
   const { user } = useUser();
 
   return (
-    <div
-      className={`
+    <div className={sideBarWrapper}>
+      {AdminSidebarSections.map((section) => {
+        return <Section user={user} section={section} key={section.label} />;
+      })}
+    </div>
+  );
+};
+
+const sideBarWrapper = ctl(`
   w-72
   flex
   p-5
@@ -20,11 +28,4 @@ export const AdminSidebar = () => {
   font-monto
   overflow-y-scroll
   bg-background-shade-1
-`}
-    >
-      {AdminSidebarSections.map((section) => {
-        return <Section user={user} section={section} key={section.label} />;
-      })}
-    </div>
-  );
-};
+`);
