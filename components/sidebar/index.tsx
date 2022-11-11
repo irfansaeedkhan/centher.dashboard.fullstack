@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
+import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 
 // App imports
@@ -41,23 +42,8 @@ export const Sidebar = () => {
   };
 
   return (
-    <div
-      className={`
-  w-[15.5rem] 
-  min-w-[15.5rem] 
-  py-5 
-  gap-8
-  hidden
-  lg:flex
-  flex-col
-  font-monto
-  justify-between  
-  overflow-y-scroll
-  h-[calc(100vh-60px)]
-  bg-background-shade-1 
-`}
-    >
-      <div className={`flex flex-col gap-5`}>
+    <div className={sideBarWrapper}>
+      <div className={sideBarWrapperStyling}>
         {SidebarSections.map((section) => {
           return <Section user={user} section={section} key={section.label} />;
         })}
@@ -86,46 +72,12 @@ export const Sidebar = () => {
               </Link>
             </div>
           </div> */}
-          <div
-            className={`
-  flex
-  gap-[6px] 
-  flex-col
-  px-5
-`}
-          >
-            <span
-              className={`
-  font-bold
-  text-[11px] 
-  text-gray-shade-11 
-`}
-            >
-              WILL YOU GET OUT?
-            </span>
-            <div
-              className={`
-  flex
-  gap-6 
-  flex-col
-`}
-            >
-              <div
-                className={`
-  flex 
-  gap-2 
-  items-center
-`}
-              >
+          <div className={sectionWrapper3}>
+            <span className={sectionLabel}>WILL YOU GET OUT?</span>
+            <div className={sectionWrapper2}>
+              <div className={itemWrapper}>
                 <Logout />
-                <button
-                  className={`
-  text-sm
-  font-semibold 
-  text-gray-shade-7 
-`}
-                  onClick={handleLogout}
-                >
+                <button className={itemLabel} onClick={handleLogout}>
                   Logout
                 </button>
               </div>
@@ -138,3 +90,67 @@ export const Sidebar = () => {
     </div>
   );
 };
+
+const sideBarWrapper = ctl(`
+  w-[15.5rem] 
+  min-w-[15.5rem] 
+  py-5 
+  gap-8
+  hidden
+  lg:flex
+  flex-col
+  font-monto
+  justify-between  
+  overflow-y-scroll
+  h-[calc(100vh-60px)]
+  bg-background-shade-1 
+`);
+
+const sectionWrapper = ctl(`
+  flex
+  gap-6 
+  flex-col
+  px-5
+`);
+const sectionWrapper3 = ctl(`
+  flex
+  gap-[6px] 
+  flex-col
+  px-5
+`);
+
+const sectionWrapper2 = ctl(`
+  flex
+  gap-6 
+  flex-col
+`);
+
+const sectionLabel = ctl(`
+  font-bold
+  text-[11px] 
+  text-gray-shade-11 
+`);
+
+const itemWrapper = ctl(`
+  flex 
+  gap-2 
+  items-center
+`);
+
+const itemLabel = ctl(`
+  text-sm
+  font-semibold 
+  text-gray-shade-7 
+`);
+
+const itemLabelActive = ctl(`
+  text-sm
+  font-semibold 
+  text-white 
+`);
+
+const itemIcons = ctl(`stroke-gray-shade-8`);
+
+const itemIconsActive = ctl(`stroke-white`);
+
+const sideBarWrapperStyling = ctl(`flex flex-col gap-5`);

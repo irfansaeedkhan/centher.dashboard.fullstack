@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
+import ctl from "@netlify/classnames-template-literals";
 
 import { useCountsStore } from "@/store/counts.store";
 import { LoggedInUser } from "@/models/user";
@@ -18,32 +19,9 @@ export const Section: React.FC<SectionProps> = (props) => {
   const counts = useCountsStore((state) => state.counts);
 
   return (
-    <div
-      className={`
-  flex
-  gap-1 
-  flex-col
-`}
-    >
-      <span
-        className={`
-  font-bold
-  text-[11px] 
-  pl-6
-  pr-4
-  
-  text-gray-shade-11
-`}
-      >
-        {props.section.label}
-      </span>
-      <div
-        className={`
-  flex
-  gap-[2px] 
-  flex-col
-`}
-      >
+    <div className={sectionWrapper}>
+      <span className={sectionLabel}>{props.section.label}</span>
+      <div className={sectionWrapper2}>
         {props.section.items.map((item) => {
           let count: number = counts[item.countType ?? "none"];
 
@@ -61,20 +39,14 @@ export const Section: React.FC<SectionProps> = (props) => {
                 "flex justify-between pl-6 pr-4 py-[6px]"
               )}
             >
-              <div
-                className={`
-  flex 
-  gap-2 
-  items-center
-`}
-              >
+              <div className={itemWrapper}>
                 <item.icon
                   className={
                     router.pathname
                       .replaceAll("-", " ")
                       .includes(item.label.toLowerCase())
-                      ? `stroke-white stroke-[1.5]`
-                      : `stroke-gray-shade-7 stroke-[1.5]`
+                      ? itemIconsActive
+                      : itemIcons
                   }
                 />
                 <Link
@@ -84,16 +56,8 @@ export const Section: React.FC<SectionProps> = (props) => {
                     router.pathname
                       .replaceAll("-", " ")
                       .includes(item.label.toLowerCase())
-                      ? `
-  text-sm
-  font-semibold 
-  text-white 
-`
-                      : `
-  text-sm
-  font-semibold 
-  text-gray-shade-7 
-`
+                      ? itemLabelActive
+                      : itemLabel
                   }
                 >
                   {item.label}
@@ -111,3 +75,45 @@ export const Section: React.FC<SectionProps> = (props) => {
     </div>
   );
 };
+
+const sectionWrapper = ctl(`
+  flex
+  gap-1 
+  flex-col
+`);
+const sectionWrapper2 = ctl(`
+  flex
+  gap-[2px] 
+  flex-col
+`);
+
+const sectionLabel = ctl(`
+  font-bold
+  text-[11px] 
+  pl-6
+  pr-4
+  
+  text-gray-shade-11
+`);
+
+const itemWrapper = ctl(`
+  flex 
+  gap-2 
+  items-center
+`);
+
+const itemLabel = ctl(`
+  text-sm
+  font-semibold 
+  text-gray-shade-7 
+`);
+
+const itemLabelActive = ctl(`
+  text-sm
+  font-semibold 
+  text-white 
+`);
+
+const itemIcons = ctl(`stroke-gray-shade-7 stroke-[1.5]`);
+
+const itemIconsActive = ctl(`stroke-white stroke-[1.5]`);

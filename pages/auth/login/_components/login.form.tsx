@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
 import toast from "react-hot-toast";
+import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
 
 // App imports
@@ -73,15 +74,7 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div
-      className={`
-  flex 
-  gap-6
-  w-full 
-  h-auto 
-  flex-col 
-`}
-    >
+    <div className={wrapper}>
       {account ? (
         <>
           <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
@@ -99,23 +92,7 @@ export const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          <button
-            className={`
-  mt-2 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  text-gray-shade-5 
-  justify-center 
-  bg-brand-primary 
-  hover:bg-brand-primary-dark
-`}
-            onClick={handleMetamaskLogin}
-          >
+          <button className={button} onClick={handleMetamaskLogin}>
             {isLoading === "loading" ? (
               <>
                 <SpinIcon3 />
@@ -128,21 +105,7 @@ export const LoginForm: React.FC = () => {
         </>
       ) : (
         <button
-          className={`
-  mt-2 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  transition-all 
-  justify-center 
-  bg-brand-primary 
-  text-gray-shade-5 
-  hover:bg-brand-primary-dark
-`}
+          className={connectButton}
           onClick={async () => await connectWallet()}
         >
           <Image
@@ -172,3 +135,43 @@ export const LoginFormSchema = Joi.object()
   .messages({
     "string.empty": `{#label} is required`,
   });
+
+// Styles
+const wrapper = ctl(`
+  flex 
+  gap-6
+  w-full 
+  h-auto 
+  flex-col 
+`);
+
+const button = ctl(`
+  mt-2 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  text-gray-shade-5 
+  justify-center 
+  bg-brand-primary 
+  hover:bg-brand-primary-dark
+`);
+
+const connectButton = ctl(`
+  mt-2 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  transition-all 
+  justify-center 
+  bg-brand-primary 
+  text-gray-shade-5 
+  hover:bg-brand-primary-dark
+`);

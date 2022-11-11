@@ -1,3 +1,4 @@
+import ctl from "@netlify/classnames-template-literals";
 import React from "react";
 
 interface CustomModalProps {
@@ -8,8 +9,24 @@ interface CustomModalProps {
 
 export const CustomModal: React.FC<CustomModalProps> = (props) => {
   return (
-    <div
-      className={`
+    <div className={CustomModalContainer}>
+      {/*content*/}
+      <div className={modalContent}>
+        {/*header*/}
+        <div className={modalHeader}>
+          <span className={modalHeaderTitle}>{props.title}</span>
+          <button className={modalHeaderButton} onClick={props.onClose}>
+            ×
+          </button>
+        </div>
+        {/* BodyWrapper */}
+        <div className={bodyWrapper}>{props.children}</div>
+      </div>
+    </div>
+  );
+};
+
+const CustomModalContainer = ctl(`
   flex 
   z-50 
   fixed 
@@ -22,11 +39,9 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
   backdrop-blur-lg
   overflow-x-hidden 
   focus:outline-none 
-`}
-    >
-      {/*content*/}
-      <div
-        className={`
+`);
+
+const modalContent = ctl(`
   flex 
   mx-3 
   pb-5 
@@ -41,11 +56,9 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
   bg-black-shade-3
   focus:outline-none 
   border-gray-shade-3
-`}
-      >
-        {/*header*/}
-        <div
-          className={`
+`);
+
+const modalHeader = ctl(`
   flex 
   py-6
   px-4
@@ -53,13 +66,11 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
   items-center 
   justify-center
   relative
-`}
-        >
-          <span className={`text-white text-24px text-center font-semibold`}>
-            {props.title}
-          </span>
-          <button
-            className={`
+`);
+
+const modalHeaderTitle = ctl(`text-white text-24px text-center font-semibold`);
+
+const modalHeaderButton = ctl(`
   px-1 
   py-1 
   ml-auto 
@@ -78,22 +89,9 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
   right-6
   hover:scale-110
   transition
-`}
-            onClick={props.onClose}
-          >
-            ×
-          </button>
-        </div>
-        {/* BodyWrapper */}
-        <div
-          className={`
+`);
+
+const bodyWrapper = ctl(`
   maxHeight-[400px] 
   overflow-y-scroll
-`}
-        >
-          {props.children}
-        </div>
-      </div>
-    </div>
-  );
-};
+`);
