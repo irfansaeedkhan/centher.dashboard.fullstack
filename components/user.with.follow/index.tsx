@@ -102,7 +102,14 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
             )}
             onClick={() => followUser(_result._id)}
           >
-            {_result.is_followed_by_loggedin_user ? "Following" : "Follow"}
+            <span
+              className={clsx(
+                _result.is_followed_by_loggedin_user &&
+                  "animationTextHeading !text-sm"
+              )}
+            >
+              {_result.is_followed_by_loggedin_user ? "Following" : "Follow"}
+            </span>
           </button>
         )}
       </div>
@@ -130,10 +137,10 @@ const followingButton = ctl(`
   px-6 
   py-2
   flex
-  text-sm 
+  !text-sm 
   rounded-lg 
   items-center 
   font-semibold 
   bg-gray-shade-3 
-  text-gray-shade-7
+  
 `);
