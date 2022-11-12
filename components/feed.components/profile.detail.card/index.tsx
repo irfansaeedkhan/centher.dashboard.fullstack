@@ -20,24 +20,24 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   const [verifyIcon, setVerifyIcon] = useState<string>("");
 
   useEffect(() => {
-    const interval1 = setTimeout(function () {
+    const timeout1 = setTimeout(function () {
       setVerifyIcon("/images/v1.gif");
     }, 3000);
-    const interval2 = setTimeout(function () {
+    const timeout2 = setTimeout(function () {
       setVerifyIcon("/images/v2.gif");
     }, 4600);
-    const interval3 = setInterval(() => {
+    const interval1 = setInterval(() => {
       setVerifyIcon("/images/lastframe.png");
     }, 10000);
-    const interval4 = setInterval(() => {
+    const interval2 = setInterval(() => {
       setVerifyIcon("/images/v2.gif");
     }, 20000);
 
     return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
       clearInterval(interval1);
       clearInterval(interval2);
-      clearInterval(interval3);
-      clearInterval(interval4);
     };
   }, []);
 

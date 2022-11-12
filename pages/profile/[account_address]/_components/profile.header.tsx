@@ -121,6 +121,47 @@ const ProfileHeader: React.FC = () => {
     setInitialCoverImage();
   }, [setInitialCoverImage]);
 
+  useEffect(() => {
+    const timeout1 = setTimeout(function () {
+      setVerifyIcon("/images/v1.gif");
+    }, 3000);
+    const timeout2 = setTimeout(function () {
+      setVerifyIcon("/images/v2.gif");
+    }, 4600);
+    const interval1 = setInterval(() => {
+      setVerifyIcon("/images/lastframe.png");
+    }, 10000);
+    const interval2 = setInterval(() => {
+      setVerifyIcon("/images/v2.gif");
+    }, 20000);
+
+    return () => {
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      clearInterval(interval1);
+      clearInterval(interval2);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchFollow = async () => {
+      try {
+        const { data } = await axiosNodeApi.get(
+          `/api/socials/follows/${user?._id}`
+        );
+        setFollow(data.follow);
+        setShowFollowButton(true);
+      } catch (error: any) {
+        toast.error(
+          error.response.data?.message_description || "Something went wrong"
+        );
+      }
+    };
+    if (user?._id) {
+      fetchFollow();
+    }
+  }, [user]);
+
   // Handle cover image change
   const handleSelectCoverImage = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -229,25 +270,6 @@ const ProfileHeader: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchFollow = async () => {
-      try {
-        const { data } = await axiosNodeApi.get(
-          `/api/socials/follows/${user?._id}`
-        );
-        setFollow(data.follow);
-        setShowFollowButton(true);
-      } catch (error: any) {
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
-      }
-    };
-    if (user?._id) {
-      fetchFollow();
-    }
-  }, [user]);
-
   const followUser = async (following_id: string) => {
     try {
       setLoadingState(true);
@@ -268,21 +290,6 @@ const ProfileHeader: React.FC = () => {
       );
     }
   };
-
-  useLayoutEffect(() => {
-    setTimeout(function () {
-      setVerifyIcon("/images/v1.gif");
-    }, 3000);
-    setTimeout(function () {
-      setVerifyIcon("/images/v2.gif");
-    }, 4600);
-    setInterval(() => {
-      setVerifyIcon("/images/lastframe.png");
-    }, 10000);
-    setInterval(() => {
-      setVerifyIcon("/images/v2.gif");
-    }, 20000);
-  }, []);
 
   return (
     <div className={`w-full`}>
