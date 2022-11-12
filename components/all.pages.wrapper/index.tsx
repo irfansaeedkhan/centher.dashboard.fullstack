@@ -24,6 +24,7 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       <Head>
         <title>{props.pageTitle}</title>
       </Head>
+
       <Header />
 
       <div
