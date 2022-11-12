@@ -42,20 +42,7 @@ export const Sidebar = () => {
 
   return (
     <div
-      className={`
-  w-[15.5rem] 
-  min-w-[15.5rem] 
-  py-5 
-  gap-8
-  hidden
-  lg:flex
-  flex-col
-  font-monto
-  justify-between  
-  overflow-y-scroll
-  h-[calc(100vh-60px)]
-  bg-background-shade-1 
-`}
+      className={`w-[15.5rem] min-w-[15.5rem] py-5 gap-8 hidden fxl:flex flex-col font-monto justify-between overflow-y-scroll h-[calc(100vh-60px)] bg-background-shade-1`}
     >
       <div className={`flex flex-col gap-5`}>
         {SidebarSections.map((section) => {
@@ -64,66 +51,15 @@ export const Sidebar = () => {
       </div>
       {user && (
         <div className="flex flex-col gap-8">
-          {/* <div className={sectionWrapper}>
-            <div className={sectionWrapper2}>
-              <Link href={AppRoutes.profile.settings} className={itemWrapper}>
-                <SettingIcon
-                  className={
-                    router.pathname.replaceAll("-", " ").includes("settings")
-                      ? itemIconsActive
-                      : itemIcons
-                  }
-                />
-                <div
-                  className={
-                    router.pathname.replaceAll("-", " ").includes("settings")
-                      ? itemLabelActive
-                      : itemLabel
-                  }
-                >
-                  Settings
-                </div>
-              </Link>
-            </div>
-          </div> */}
-          <div
-            className={`
-  flex
-  gap-[6px] 
-  flex-col
-  px-5
-`}
-          >
-            <span
-              className={`
-  font-bold
-  text-[11px] 
-  text-gray-shade-11 
-`}
-            >
+          <div className={`flex gap-[6px] flex-col px-5`}>
+            <span className={`font-bold text-[11px] text-gray-shade-11`}>
               WILL YOU GET OUT?
             </span>
-            <div
-              className={`
-  flex
-  gap-6 
-  flex-col
-`}
-            >
-              <div
-                className={`
-  flex 
-  gap-2 
-  items-center
-`}
-              >
+            <div className={sectionWrapper2}>
+              <div className={`flex gap-2 items-center`}>
                 <Logout />
                 <button
-                  className={`
-  text-sm
-  font-semibold 
-  text-gray-shade-7 
-`}
+                  className={`text-sm font-semibold text-gray-shade-7`}
                   onClick={handleLogout}
                 >
                   Logout
@@ -138,3 +74,5 @@ export const Sidebar = () => {
     </div>
   );
 };
+
+const sectionWrapper2 = `flex gap-6 flex-col`;

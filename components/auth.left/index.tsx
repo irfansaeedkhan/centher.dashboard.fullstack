@@ -30,7 +30,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           </Link>
         </div>
         <div
-          className={`flex gap-16 xl:px-32 lg:px-20 md:px-10 flex-col items-center`}
+          className={`flex gap-16 f2xl:px-32 lg:px-20 md:px-10 flex-col items-center`}
         >
           <div className={`w-fit`}>
             <Image
@@ -40,32 +40,11 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
               height={310}
             />
           </div>
-          <div
-            className={`
-  flex 
-  gap-6 
-  flex-col 
-  items-center
-`}
-          >
-            <h1
-              className={`
-  text-2xl 
-  text-white
-  text-center
-  font-semibold 
-`}
-            >
+          <div className={`flex gap-6 flex-col items-center`}>
+            <h1 className={`text-2xl text-white text-center font-semibold`}>
               {props.title}
             </h1>
-            <p
-              className={`
-  text-sm 
-  text-center
-  font-medium 
-  text-gray-shade-4 
-`}
-            >
+            <p className={`text-sm text-center font-medium text-gray-shade-4`}>
               {props.content}
             </p>
           </div>
@@ -76,38 +55,10 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
 
   if (props.variant === "mobile") {
     return (
-      <section
-        className={`
-  mb-5 
-  gap-10 
-  sm:flex 
-  flex-col 
-  md:hidden 
-`}
-      >
-        <div
-          className={`
-  flex 
-  gap-4
-  flex-col 
-`}
-        >
-          <h1
-            className={`
-  text-2xl 
-  text-white
-  font-semibold 
-`}
-          >
-            {props.title}
-          </h1>
-          <p
-            className={`
-  text-sm 
-  font-medium 
-  text-gray-shade-4 
-`}
-          >
+      <section className={`mb-5 gap-10 sm:flex flex-col md:hidden`}>
+        <div className={`flex gap-4 flex-col`}>
+          <h1 className={`text-2xl text-white font-semibold`}>{props.title}</h1>
+          <p className={`text-sm font-medium text-gray-shade-4`}>
             {props.content}
           </p>
         </div>

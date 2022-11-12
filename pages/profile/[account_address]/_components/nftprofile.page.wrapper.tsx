@@ -14,7 +14,9 @@ interface AllPagesWrapperProps {
   children: React.ReactNode;
 }
 
-export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
+export const NFTProfilePageWrapper: React.FC<AllPagesWrapperProps> = (
+  props
+) => {
   const router = useRouter();
   const { user, loading: userLoading } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
@@ -33,12 +35,6 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             <div className={`flex gap-6`}>
               <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
                 {props.children}
-              </div>
-              <div
-                className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden sticky`}
-              >
-                <MessagesCard />
-                {/* <RecentActivitiesCard /> */}
               </div>
             </div>
           </div>

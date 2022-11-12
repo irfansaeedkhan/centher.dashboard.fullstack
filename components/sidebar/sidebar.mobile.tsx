@@ -2,6 +2,7 @@
 import React, { RefObject, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import clsx from "clsx";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -15,7 +16,6 @@ import { AppRoutes } from "@/constants/app.routes";
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
-import clsx from "clsx";
 
 interface SidebarMobileProps {
   sidebarOpen: boolean;
@@ -72,45 +72,19 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       )}
     >
       <div
-        className={`
-  w-[15.5rem] 
-  min-w-[15.5rem] 
-  py-5 
-  gap-8
-  lg:hidden
-  sm:flex
-  flex-col
-  font-monto
-  justify-between  
-  overflow-y-scroll
-  h-[calc(100vh-60px)]
-  bg-background-shade-1 
-`}
+        className={`w-[15.5rem] py-5 gap-8 fxl:hidden flex flex-col font-monto justify-between overflow-y-scroll h-[calc(100vh-60px)] bg-background-shade-1`}
       >
         <div>
           {user && (
             <Link
               href={AppRoutes.nfts.create_nft}
-              className={`
-  px-6 
-  py-2
-  mx-5
-  w-fit
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-brand-primary 
-  text-black-shade-2 
-  hover:bg-brand-primary-dark 
-`}
+              className={connectButton}
               onClick={onClose}
             >
               Create NFT
             </Link>
           )}
-          <div className={`flex flex-col gap-6 px-5 mt-5`}>
+          <div className={`flex flex-col gap-6 mt-5`}>
             {SidebarSections.map((section) => {
               return (
                 <Section
@@ -133,22 +107,19 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
                   onClick={onClose}
                 >
                   <SettingIcon
-                    className={
+                    className={clsx(
                       router.pathname.replaceAll("-", " ").includes("settings")
                         ? `stroke-white`
                         : `stroke-gray-shade-8`
-                    }
+                    )}
                   />
                   <div
-                    className={
+                    className={clsx(
+                      `text-sm font-semibold`,
                       router.pathname.replaceAll("-", " ").includes("settings")
-                        ? `
-  text-sm
-  font-semibold 
-  text-white 
-`
-                        : itemLabel
-                    }
+                        ? `text-white`
+                        : `text-gray-shade-8`
+                    )}
                   >
                     Settings
                   </div>
@@ -156,19 +127,16 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
               </div>
             </div>
             <div className={sectionWrapper}>
-              <span
-                className={`
-  font-bold
-  text-[11px] 
-  text-gray-shade-7 
-`}
-              >
+              <span className={`font-bold text-[11px] text-gray-shade-7`}>
                 WILL YOU GET OUT?
               </span>
               <div className={sectionWrapper2}>
                 <div className={itemWrapper}>
                   <Logout />
-                  <button className={itemLabel} onClick={handleLogout}>
+                  <button
+                    className={`text-sm font-semibold text-gray-shade-8`}
+                    onClick={handleLogout}
+                  >
                     Logout
                   </button>
                 </div>
@@ -183,27 +151,10 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   );
 };
 
-const sectionWrapper = `
-  flex
-  gap-6 
-  flex-col
-  px-5
-`;
+const sectionWrapper = `flex gap-6 flex-col px-5`;
 
-const sectionWrapper2 = `
-  flex
-  gap-6 
-  flex-col
-`;
+const sectionWrapper2 = `flex gap-6 flex-col`;
 
-const itemWrapper = `
-  flex 
-  gap-2 
-  items-center
-`;
+const itemWrapper = `flex gap-2 items-center`;
 
-const itemLabel = `
-  text-sm
-  font-semibold 
-  text-gray-shade-8 
-`;
+const connectButton = `px-6 py-2 mx-5 w-fit flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;

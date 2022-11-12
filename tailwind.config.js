@@ -7,8 +7,6 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 module.exports = {
   content: [
-    "./node_modules/flowbite-react/**/*.{js,jsx,ts,tsx}",
-    "./node_modules/tw-elements/dist/js/**/*.{js,jsx,ts,tsx}",
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./pages.components/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -16,12 +14,16 @@ module.exports = {
   theme: {
     screens: {
       // From Small to big
-      ...defaultTheme.screens,
+      fxs: "320px",
       sm: "320px",
+      fsm: "560px",
       md: "767px",
+      fmd: "768px",
       lg: "1024px",
-      xl: "1440px",
-      xxl: "1680px",
+      flg: "1024px",
+      fxl: "1280px",
+      f2xl: "1440px",
+      ...defaultTheme.screens,
     },
 
     extend: {
@@ -117,7 +119,5 @@ module.exports = {
     require("@tailwindcss/forms"),
     require("@tailwindcss/line-clamp"),
     require("@tailwindcss/aspect-ratio"),
-    require("tw-elements/dist/plugin"),
-    require("flowbite/plugin"),
   ],
 };

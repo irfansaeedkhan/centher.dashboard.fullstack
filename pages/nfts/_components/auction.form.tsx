@@ -247,7 +247,7 @@ const AuctionForm = ({
           id="AuctionEndTime"
           autoComplete="off"
           {...register("AuctionEndTime")}
-          placeholder="Enter NFT Price"
+          placeholder="Set Auction End Time"
           className={`${
             !formState.errors.AuctionEndTime ? inputField : inputFieldError
           } dateInput`}
@@ -260,16 +260,21 @@ const AuctionForm = ({
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Starting price for NFT</label>
-        <input
-          type="text"
-          id="StartingNFTPrice"
-          autoComplete="off"
-          {...register("StartingNFTPrice")}
-          placeholder="Enter NFT Price"
-          className={
-            !formState.errors.StartingNFTPrice ? inputField : inputFieldError
-          }
-        />
+        <div className="relative">
+          <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+            BNB
+          </span>
+          <input
+            type="text"
+            id="StartingNFTPrice"
+            autoComplete="off"
+            {...register("StartingNFTPrice")}
+            placeholder="Enter NFT Price"
+            className={
+              !formState.errors.StartingNFTPrice ? inputField : inputFieldError
+            }
+          />
+        </div>
         {formState.errors.StartingNFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.StartingNFTPrice.message}

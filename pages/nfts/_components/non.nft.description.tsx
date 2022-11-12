@@ -151,7 +151,7 @@ export const NonNFTDescription = ({
             id="AuctionEndTime"
             autoComplete="off"
             {...auctionForm.register("AuctionEndTime")}
-            placeholder="Enter NFT Price"
+            placeholder="Set Auction End Time"
             className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
           />
           {auctionForm.formState.errors.AuctionEndTime && (
@@ -162,14 +162,20 @@ export const NonNFTDescription = ({
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Starting price for NFT</label>
-          <input
-            type="text"
-            id="StartingNFTPrice"
-            autoComplete="off"
-            {...auctionForm.register("StartingNFTPrice")}
-            placeholder="Enter NFT Price"
-            className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
-          />
+          <div className="relative">
+            <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+              BNB
+            </span>
+            <input
+              type="text"
+              id="StartingNFTPrice"
+              autoComplete="off"
+              {...auctionForm.register("StartingNFTPrice")}
+              placeholder="Enter NFT Price"
+              className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
+            />
+          </div>
+
           <div className={serviceFee}>
             <div className={serviceFeeTitle}>
               <span className={serviceFeeName}>Service fee</span>

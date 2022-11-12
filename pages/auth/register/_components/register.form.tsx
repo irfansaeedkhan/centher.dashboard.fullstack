@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 
@@ -104,16 +105,7 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <>
-      <form
-        className={`
-  flex 
-  gap-6
-  w-full 
-  h-auto 
-  flex-col 
-`}
-        onSubmit={payFee}
-      >
+      <form className={wrapper} onSubmit={payFee}>
         {account ? (
           <>
             <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
@@ -133,21 +125,7 @@ export const RegisterForm: React.FC = () => {
           </>
         ) : (
           <button
-            className={`
-  mt-6 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  transition-all 
-  justify-center 
-  !bg-brand-primary 
-  text-gray-shade-5 
-  hover:!bg-brand-primary-dark
-`}
+            className={connectButton}
             type="button"
             onClick={connectWallet}
           >
@@ -199,24 +177,7 @@ export const RegisterForm: React.FC = () => {
             Register
           </button>
         ) : (
-          <button
-            type="button"
-            className={`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-gray-shade-7
-  justify-center 
-  !bg-gray-shade-3
-  cursor-not-allowed
-  transition-all 
-`}
-            disabled
-          >
+          <button type="button" className={buttonDisabled} disabled>
             Register
           </button>
         )}
@@ -229,12 +190,8 @@ export const RegisterForm: React.FC = () => {
               setFeeModal((prev) => ({ ...prev, isOpen: false }));
           }}
         >
-          <div
-            className={`
-lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
-`}
-          >
-            <div className={`flex justify-center`}>
+          <div className={feeWrapper}>
+            <div className={feeModalWrapper}>
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
@@ -243,10 +200,8 @@ lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
                 feeModal.status === "end" && <Successfully />
               )}
             </div>
-            <div className={`flex flex-col gap-2 items-center`}>
-              <h2
-                className={`font-semibold lg:text-lg sm:text-xs text-center text-white`}
-              >
+            <div className={feeModalStatus}>
+              <h2 className={feeModalProgress}>
                 {feeModal.status === "start"
                   ? "Pay Registration Fee"
                   : feeModal.status === "progress"
@@ -254,16 +209,14 @@ lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
                   : feeModal.status === "end" && "Successfully"}
               </h2>
               {feeModal.status === "start" ? (
-                <p
-                  className={`text-brand-primary text-center font-semibold tracking-wider text-base`}
-                >{`${feeModal.fee} BNB`}</p>
+                <p className={textFee}>{`${feeModal.fee} BNB`}</p>
               ) : feeModal.status === "progress" ? (
-                <p className={`text-sm text-center text-gray-shade-2`}>
+                <p className={modalInnerText}>
                   Please do not close or refresh page.
                 </p>
               ) : (
                 feeModal.status === "end" && (
-                  <p className={`text-sm text-center text-gray-shade-2`}>
+                  <p className={registrationCompleted}>
                     Transaction done successfully. Registering user on platform
                   </p>
                 )
@@ -277,23 +230,7 @@ lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
               ) : (
                 (feeModal.status === "progress" ||
                   feeModal.status === "end") && (
-                  <button
-                    className={`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-[#7C81A2] 
-  justify-center 
-  !bg-black-shade-7
-  cursor-not-allowed
-`}
-                    type="button"
-                    disabled
-                  >
+                  <button className={button2} type="button" disabled>
                     Ok
                   </button>
                 )
@@ -306,7 +243,15 @@ lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
   );
 };
 
-const button = `
+const wrapper = ctl(`
+  flex 
+  gap-6
+  w-full 
+  h-auto 
+  flex-col 
+`);
+
+const button = ctl(`
   mt-2 
   py-3 
   flex 
@@ -319,4 +264,69 @@ const button = `
   !bg-brand-primary 
   hover:!bg-brand-primary-dark
   transition-all 
-`;
+`);
+
+const buttonDisabled = ctl(`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg
+  items-center 
+  text-gray-shade-7
+  justify-center 
+  !bg-gray-shade-3
+  cursor-not-allowed
+  transition-all 
+`);
+
+const connectButton = ctl(`
+  mt-6 
+  py-3 
+  flex
+  gap-2
+  w-full 
+  font-bold 
+  rounded-lg 
+  items-center 
+  transition-all 
+  justify-center 
+  !bg-brand-primary 
+  text-gray-shade-5 
+  hover:!bg-brand-primary-dark
+`);
+
+const button2 = ctl(`
+  mt-2 
+  py-3 
+  flex 
+  w-full 
+  font-bold 
+  rounded-lg
+  items-center 
+  text-[#7C81A2] 
+  justify-center 
+  !bg-black-shade-7
+  cursor-not-allowed
+`);
+
+const feeWrapper = ctl(`
+lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
+`);
+
+const feeModalWrapper = ctl(`flex justify-center`);
+
+const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
+
+const feeModalProgress = ctl(
+  `font-semibold lg:text-lg sm:text-xs text-center text-white`
+);
+
+const textFee = ctl(
+  `text-brand-primary text-center font-semibold tracking-wider text-base`
+);
+
+const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);
+
+const registrationCompleted = ctl(`text-sm text-center text-gray-shade-2`);
