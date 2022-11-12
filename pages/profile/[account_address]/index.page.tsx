@@ -15,6 +15,8 @@ import { PostCardNew, SinglePost } from "@/components/feed.components";
 import { ProfilePageWrapper } from "./_components";
 import { useMyPostStore } from "@/store/my.post.store";
 import { NoPost } from "@/assets/svgs";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -109,6 +111,15 @@ const Profile: NextPageWithLayout = () => {
           />
         );
       })}
+
+      {(loading === "loading" || loading === "idle") && (
+        <>
+          <SinglePostCardSkeleton />
+          <SinglePostTextCardSkeleton />
+          <SinglePostCardSkeleton />
+        </>
+      )}
+
       {loading === "loaded" && posts.length === 0 && (
         <div>
           <div className="flex justify-center mt-[60px]">
