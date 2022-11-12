@@ -25,13 +25,15 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
         <title>{props.pageTitle}</title>
       </Head>
       <Header />
-      <div className={`flex`}>
+
+      <div
+        className={`px-2 fxl:ml-[15.5rem] sm-1:px-4 md:px-6 py-4 lg:py-6 overflow-y-auto`}
+      >
+        {props.children}
+      </div>
+
+      <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
         <Sidebar />
-        <div
-          className={`px-2 sm-1:px-4 md:px-6 py-4 lg:py-6 bg-black-shade-3 overflow-y-scroll h-[calc(100vh-60px)] flex-grow scrollSet`}
-        >
-          {props.children}
-        </div>
       </div>
     </div>
   );

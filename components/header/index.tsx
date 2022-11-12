@@ -29,7 +29,7 @@ const Header = () => {
 
   return (
     <div
-      className={`flex gap-10 px-5 h-[60px] relative items-center justify-between border-b-[1.5px] bg-black-shade-9 border-gray-shade-border-color`}
+      className={`flex gap-10 px-5 h-[60px] sticky top-0 z-[10000] items-center justify-between border-b-[1.5px] bg-black-shade-9 border-gray-shade-border-color`}
     >
       <Link
         href={AppRoutes.home}
