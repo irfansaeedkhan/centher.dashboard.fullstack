@@ -35,7 +35,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
                 {props.children}
               </div>
               <div
-                className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden sticky`}
+                className={`min-w-[272px] flex-col gap-3 xl:flex hidden sticky`}
               >
                 <MessagesCard />
                 {/* <RecentActivitiesCard /> */}

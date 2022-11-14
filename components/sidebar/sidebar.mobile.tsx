@@ -5,6 +5,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
+import { IoSearchSharp } from "react-icons/io5";
 
 // App imports
 import useUser from "@/hooks/use.user";
@@ -84,6 +85,17 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
               Create NFT
             </Link>
           )}
+
+          <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
+            <IoSearchSharp className="text-xl text-gray-shade-7" />
+            <Link
+              href={`/search`}
+              className={`text-sm font-semibold text-gray-shade-7`}
+            >
+              Search
+            </Link>
+          </div>
+
           <div className={`flex flex-col gap-6 mt-5`}>
             {SidebarSections.map((section) => {
               return (
@@ -100,41 +112,14 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
         {user && (
           <div className="flex flex-col gap-8">
             <div className={sectionWrapper}>
-              <div className={sectionWrapper2}>
-                <Link
-                  href={AppRoutes.profile.settings}
-                  className={itemWrapper}
-                  onClick={onClose}
-                >
-                  <SettingIcon
-                    className={clsx(
-                      router.pathname.replaceAll("-", " ").includes("settings")
-                        ? `stroke-white`
-                        : `stroke-gray-shade-8`
-                    )}
-                  />
-                  <div
-                    className={clsx(
-                      `text-sm font-semibold`,
-                      router.pathname.replaceAll("-", " ").includes("settings")
-                        ? `text-white`
-                        : `text-gray-shade-8`
-                    )}
-                  >
-                    Settings
-                  </div>
-                </Link>
-              </div>
-            </div>
-            <div className={sectionWrapper}>
-              <span className={`font-bold text-[11px] text-gray-shade-7`}>
+              <span className={`font-bold text-[11px] text-gray-shade-8`}>
                 WILL YOU GET OUT?
               </span>
               <div className={sectionWrapper2}>
                 <div className={itemWrapper}>
                   <Logout />
                   <button
-                    className={`text-sm font-semibold text-gray-shade-8`}
+                    className={`text-sm font-semibold text-gray-shade-7`}
                     onClick={handleLogout}
                   >
                     Logout
