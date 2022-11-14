@@ -22,7 +22,7 @@ const TopCreators = () => {
       <div
         className={`bg-[url(/images/bg-top-creators.png)] w-full h-[120px] bg-no-repeat bg-cover bg-center rounded-2xl border-2 border-gray-shade-3 flex items-center justify-between px-4`}
       >
-        <button onClick={() => scroll(-100)} className={scrollButton}>
+        <button onClick={() => scroll(-200)} className={scrollButton}>
           <BsArrowLeftShort />
         </button>
 
@@ -47,7 +47,7 @@ const TopCreators = () => {
           <CreatorCard />
           <CreatorCard />
         </div>
-        <button onClick={() => scroll(100)} className={scrollButton}>
+        <button onClick={() => scroll(200)} className={scrollButton}>
           <BsArrowRightShort />
         </button>
       </div>

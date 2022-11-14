@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
+import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,6 +12,10 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ProfilePageWrapper } from "./_components";
 import NFTCard from "@/components/nft.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
+import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
+import { useProfileNFTStore } from "@/store/profile.nft.store";
+import { useEffect, useState } from "react";
+import { NFT } from "@/store/explore.store";
 
 let dummyData = [
   {
@@ -75,13 +80,50 @@ let dummyData = [
   },
 ];
 const NFTProfile: NextPageWithLayout = () => {
+  const {account} = useWeb3React()
+  const {
+    ownedNFTs,
+    fetchOwnedNFTs,
+    loadingOwnedNFTs,
+    listedNFTs,
+    fetchListedNFTs,
+    loadingListedNFTs
+  } = useProfileNFTStore((state) => ({
+    ownedNFTs: state.ownedNfts,
+    fetchOwnedNFTs: state.fetchOwnedNFTs,
+    loadingOwnedNFTs: state.loadingOwnedNFTs,
+    listedNFTs: state.listedNfts,
+    fetchListedNFTs: state.fetchListedNFTs,
+    loadingListedNFTs: state.loadingListedNFTs
+  }))
+
+  useEffect(() => {
+    if(account) {
+      fetchOwnedNFTs(account)
+    }
+  }, [account, fetchOwnedNFTs])
+
+  useEffect(() => {
+    if(account) {
+      fetchListedNFTs(account, 0, 1000)
+    }
+  }, [account, fetchListedNFTs])
+
+  const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([])
+  useEffect(() => {
+    console.log("sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs", loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs)
+    if(loadingListedNFTs === 'loaded' && loadingOwnedNFTs === 'loaded') {
+      setDisplayNFTs([...listedNFTs, ...ownedNFTs])
+    }
+  }, [loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs])
+
   return (
     <div className={nftProfilePageContainer}>
-      {dummyData.length !== 0 ? (
+      {displayNFTs.length !== 0 ? (
         <div className="nftCardContainer">
-          {/* {dummyData.map((nft) => (
+          {displayNFTs.map((nft: any) => (
             <NFTCard data={nft} key={nft.id} />
-          ))} */}
+          ))}
         </div>
       ) : (
         <>
@@ -99,7 +141,7 @@ const NFTProfile: NextPageWithLayout = () => {
 
 NFTProfile.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <ProfilePageWrapper>{page}</ProfilePageWrapper>
+    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
   </AllPagesWrapper>
 );
 

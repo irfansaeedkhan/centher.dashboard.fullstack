@@ -1,25 +1,14 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
 
-// App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import {
-  MessagesCard,
-  RecentActivitiesCard,
-  SinglePost,
-  LeftSidebarStickyContainer,
-} from "@/components/feed.components";
+import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { Post } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 
-// Current page imports
 import { BackButton, NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
@@ -60,7 +49,7 @@ const SinglePostPage: NextPageWithLayout = () => {
   }, [router]);
 
   return (
-    <div className={postsContainer}>
+    <>
       {loadingState === "loaded" && (
         <div className={postsMainContainer}>
           <BackButton post={post} />
@@ -94,47 +83,18 @@ const SinglePostPage: NextPageWithLayout = () => {
           <NoPostMessage message="Something went wrong!" />
         </div>
       )}
-    </div>
+    </>
   );
 };
 
 SinglePostPage.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Feed">
-      <div className={dashboardContentContainer}>
-        <div className={feedContainer}>
-          <LeftSidebarStickyContainer />
-
-          {page}
-
-          <div className={rightSidebar}>
-            <MessagesCard />
-            <RecentActivitiesCard />
-          </div>
-        </div>
-      </div>
-    </AllPagesWrapper>
+    <FeedPagesWrapper>
+      <div className={`w-full mx-auto space-y-3`}>{page}</div>
+    </FeedPagesWrapper>
   );
 };
 
 export default SinglePostPage;
 
-// styling
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full flex flex-start min-h-screen font-monto max-w-[544px] lg:max-w-[835px] mx-auto
-`);
-
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start
-`);
-
-const rightSidebar = ctl(`
-w-full max-w-[272px]  flex-col gap-3 hidden f2xl:flex
-`);
-const postsContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[1.3rem]
-`);
-
-const postsMainContainer = ctl(`
-flex flex-col gap-3
-`);
+const postsMainContainer = `flex flex-col gap-3`;

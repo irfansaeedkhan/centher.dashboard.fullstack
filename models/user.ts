@@ -3,7 +3,7 @@ export interface User {
   account_address: string;
   display_name: string;
   profile_image: UserImage;
-  cover_image: UserImage;
+  cover_image: CoverImage;
   website_url: string;
   profile_bio: string;
   twitter_username: string;
@@ -18,6 +18,10 @@ export interface User {
 export interface UserImage {
   path: string;
   object_name: string;
+}
+
+export interface CoverImage extends UserImage {
+  y: string;
 }
 
 export interface LoggedInUser extends User {

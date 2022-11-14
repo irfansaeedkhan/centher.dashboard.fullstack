@@ -2176,3 +2176,23 @@ export const DeleteCrossIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
+export const Circle: React.FC<IconProps> = (props) => {
+  return (
+    <svg
+      className={props.className}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 402.06 402.06"
+    >
+      <g id="Layer_2" data-name="Layer 2">
+        <g id="Layer_1-2" data-name="Layer 1">
+          <circle
+            className="Animatecircle"
+            cx="201.03"
+            cy="201.03"
+            r="200.53"
+          />
+        </g>
+      </g>
+    </svg>
+  );
+};

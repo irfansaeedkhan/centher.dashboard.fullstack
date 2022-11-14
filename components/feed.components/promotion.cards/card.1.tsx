@@ -2,11 +2,11 @@ import { Flor, PromotionText } from "@/assets/svgs";
 import Image from "next/image";
 import React from "react";
 
-const PromotionCard = () => {
+export const PromotionCard1 = () => {
   return (
-    <div className="w-[272px] h-[348px] bg-[url(/images/No-counter.png)] bg-no-repeat bg-cover relative p-6 flex flex-col items-center">
+    <div className="w-[272px] h-[348px] rounded-10px overflow-hidden bg-[url(/images/No-counter.png)] bg-no-repeat bg-cover relative p-6 flex flex-col items-center">
       <div className="absolute bottom-0 z-50 left-0 ">
-        <Flor className="rounded-b-[10px]" />
+        <Flor />
       </div>
       <PromotionText />
       <div className="flex flex-col items-center justify-center mt-3 mb-[6px]">
@@ -27,5 +27,3 @@ const PromotionCard = () => {
     </div>
   );
 };
-
-export default PromotionCard;

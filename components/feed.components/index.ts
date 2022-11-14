@@ -5,4 +5,6 @@ export { RecentActivitiesCard } from "./recent.activities.card";
 export { SinglePost } from "./single.post";
 export { SingleReply } from "./single.reply";
 export { PostCardNew } from "./post.card.new";
-export { LeftSidebarStickyContainer } from "./left.sidebar.sticky.container";
+export { CardsContainerLeft } from "./cards.container.left";
+export { CardsContainerRight } from "./cards.container.right";
+export { FeedPagesWrapper } from "./feed.pages.wrapper";

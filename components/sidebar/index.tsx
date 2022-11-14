@@ -42,7 +42,7 @@ export const Sidebar = () => {
 
   return (
     <div
-      className={`w-[15.5rem] min-w-[15.5rem] py-5 gap-8 hidden fxl:flex flex-col font-monto justify-between overflow-y-scroll h-[calc(100vh-60px)] bg-background-shade-1`}
+      className={`w-full h-full py-5 flex flex-col gap-8 justify-between font-monto overflow-y-auto bg-background-shade-1`}
     >
       <div className={`flex flex-col gap-5`}>
         {SidebarSections.map((section) => {

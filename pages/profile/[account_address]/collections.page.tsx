@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
+import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,6 +12,9 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ProfilePageWrapper } from "./_components";
 import { CollectionCard } from "@/components/collection.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
+import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
+import { useProfileNFTStore } from "@/store/profile.nft.store";
+import { useEffect } from "react";
 
 let dummyData = [
   {
@@ -40,14 +44,31 @@ let dummyData = [
     txTime: "1667595912",
   },
 ];
-const NFTProfileCollections: NextPageWithLayout = () => {
+const NFTProfileCollections: NextPageWithLayout = () => {  
+  const {account} = useWeb3React()
+  const {
+    collections,
+    fetchCollections,
+    loading
+  } = useProfileNFTStore((state) => ({
+    collections: state.collections,
+    fetchCollections: state.fetchCollections,
+    loading: state.loadingCollections
+  }))
+
+  useEffect(() => {
+    if(account) {
+      fetchCollections(account)
+    }
+  }, [account, fetchCollections])
+
   return (
     <div className={nftProfilePageContainer}>
-      {dummyData.length !== 0 ? (
+      {collections && collections.length !== 0 ? (
         <div className="flex  gap-5 md:flex-wrap lg:flex-nowrap">
-          {/* {dummyData.map((collection) => {
+          {collections.map((collection) => {
             return <CollectionCard data={collection} key={collection.id} />;
-          })} */}
+          })}
         </div>
       ) : (
         <>
@@ -65,7 +86,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
 
 NFTProfileCollections.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <ProfilePageWrapper>{page}</ProfilePageWrapper>
+    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
   </AllPagesWrapper>
 );
 
