@@ -1,11 +1,5 @@
 // React, Next, NPM Packages
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useMemo,
-  useLayoutEffect,
-} from "react";
+import React, { useCallback, useEffect, useRef, useMemo } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -19,6 +13,14 @@ import { TbBrandTiktok } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
+import { MdOutlineCameraEnhance, MdClose } from "react-icons/md";
+import {
+  FiCopy,
+  FiInstagram,
+  FiTwitch,
+  FiTwitter,
+  FiYoutube,
+} from "react-icons/fi";
 
 // App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -30,21 +32,13 @@ import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profi
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle, SpinIcon3 } from "@/assets/svgs";
+import { Circle } from "@/assets/svgs";
 
 // Current directory imports
 import UserProfileTabs from "./user.profile.tabs";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import NFTProfileTabs from "./nft.profile.tabs";
-import { AiOutlineCamera } from "react-icons/ai";
-import {
-  FiCopy,
-  FiInstagram,
-  FiTwitch,
-  FiTwitter,
-  FiYoutube,
-} from "react-icons/fi";
 
 type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -300,7 +294,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
           <div
             onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
             className={clsx(
-              `relative rounded-t-2xl bg-cover bg-no-repeat w-full h-[21vh]`,
+              `relative rounded-t-2xl bg-no-repeat w-full h-[180px]`,
               {
                 "cursor-move": coverImage.newImage,
               }
@@ -314,7 +308,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
           >
             {isCurrentUserLoggedInUser && (
               <>
-                <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
+                <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-6 fsm:bottom-4">
                   <input
                     type="file"
                     ref={coverImageInputRef}
@@ -329,8 +323,10 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                       }}
                       variant="edit-cover"
                     >
-                      <AiOutlineCamera className="w-4 h-4" />
-                      Edit cover
+                      <MdOutlineCameraEnhance className="w-4 h-4" />
+                      <span className="hidden fmd:inline-block">
+                        Edit Cover
+                      </span>
                     </CoverUploadButton>
                   )}
                   {coverImage.newImage && (
@@ -339,7 +335,8 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                         variant="cancel"
                         onClick={setInitialCoverImage}
                       >
-                        Cancel
+                        <MdClose className="w-4 h-4" />
+                        <span className="hidden fmd:inline-block">Cancel</span>
                       </CoverUploadButton>
                       <CoverUploadButton
                         onClick={handleUploadCoverImage}
@@ -349,10 +346,12 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                         <CgSpinner
                           className={`group-disabled:block hidden animate-spin w-4 h-4`}
                         />
-                        <AiOutlineCamera
+                        <MdOutlineCameraEnhance
                           className={`group-disabled:hidden w-4 h-4`}
                         />
-                        Upload Cover
+                        <span className="hidden fmd:inline-block">
+                          Upload Cover
+                        </span>
                       </CoverUploadButton>
                     </>
                   )}
