@@ -18,19 +18,24 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-
+  /* 
+verification icon variants
+Rainbow1  Rainbow2 RainbowLastFrame
+gold1 gold2 goldLastFrame
+silver1 silver2 silverLastFrame
+*/
   useEffect(() => {
     const timeout1 = setTimeout(function () {
-      setVerifyIcon("/images/v1.gif");
+      setVerifyIcon("/images/Rainbow1.gif");
     }, 3000);
     const timeout2 = setTimeout(function () {
-      setVerifyIcon("/images/v2.gif");
+      setVerifyIcon("/images/Rainbow2.gif");
     }, 4600);
     const interval1 = setInterval(() => {
-      setVerifyIcon("/images/lastframe.png");
-    }, 10000);
+      setVerifyIcon("/images/RainbowLastFrame.png");
+    }, 9200);
     const interval2 = setInterval(() => {
-      setVerifyIcon("/images/v2.gif");
+      setVerifyIcon("/images/Rainbow2.gif");
     }, 20000);
 
     return () => {
