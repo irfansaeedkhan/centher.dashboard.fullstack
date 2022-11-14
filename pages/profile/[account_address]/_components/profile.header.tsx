@@ -30,7 +30,7 @@ import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profi
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle } from "@/assets/svgs";
+import { Circle, SpinIcon3 } from "@/assets/svgs";
 
 // Current directory imports
 import UserProfileTabs from "./user.profile.tabs";
