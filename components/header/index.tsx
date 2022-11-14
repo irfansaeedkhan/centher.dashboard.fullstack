@@ -10,8 +10,8 @@ import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
 
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
-import Search from "./search";
 import HeaderProfile from "./header.profile";
+import SearchBar from "./search";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -44,7 +44,7 @@ const Header = () => {
       </Link>
 
       <div className={`flex flex-grow gap-6 items-center justify-end`}>
-        <Search />
+        <SearchBar />
 
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>

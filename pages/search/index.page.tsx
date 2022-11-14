@@ -8,6 +8,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { UserWithFollow } from "./_components";
 import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import { SearchUserIcon } from "@/assets/svgs";
+import Searchbar from "./_components/search.bar";
 
 const Search: NextPageWithLayout = () => {
   // For infinite scrolling
@@ -51,8 +52,16 @@ const Search: NextPageWithLayout = () => {
   }, [searchQuery, resetSearchResults, fetchSearchResults]);
 
   return (
-    <div className="w-full flex justify-center">
-      <div className="md:w-[544px] sm:w-full">
+    <div className="w-full flex flex-col items-center justify-center">
+      <div className="block md:hidden mb-4 w-full">
+        <div
+          className={`animationTextHeading mb-2 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
+        >
+          Search:
+        </div>
+        <Searchbar />
+      </div>
+      <div className="md:w-[544px] fxs:w-full">
         <div
           className={`animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
         >

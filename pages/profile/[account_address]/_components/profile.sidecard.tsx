@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React from "react";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 // App imports
 import useGetUser from "@/hooks/use.get.user";
@@ -11,34 +12,28 @@ import {
 import { ProfileDetailCard } from "@/components/feed.components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 
-const ProfileSideCard: React.FC = () => {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+
+const ProfileSideCard: React.FC<Props> = ({ className, ...props }) => {
   const router = useRouter();
-  const { user, loading: userLoading } = useGetUser(
+  const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
 
   return (
-    <div className={`w-full max-w-[272px] flex-col gap-3 hidden lg:flex`}>
-      <div className={`flex flex-col`}>
-        {userLoading === "loaded" && user ? (
-          <>
-            <ProfileDetailCard user={user} />
-          </>
-        ) : (
-          <ProfileDetailCardSkeleton />
-        )}
-      </div>
-      <div className={`lg:sticky lg:top-0 flex flex-col gap-4`}>
-        {userLoading === "loaded" && user ? (
-          <>
-            <PromotionCard1 />
-            <PromotionCard2 />
-          </>
-        ) : (
-          <ProfileDetailCardSkeleton />
-        )}
-        {/* <DiscoverCard /> */}
-      </div>
+    <div
+      className={clsx(`hidden flg:block max-w-[272px] space-y-3`, className)}
+      {...props}
+    >
+      {user ? (
+        <>
+          <ProfileDetailCard user={user} />
+          <PromotionCard1 />
+          <PromotionCard2 className="sticky top-[84px]" />
+        </>
+      ) : (
+        <ProfileDetailCardSkeleton />
+      )}
     </div>
   );
 };
