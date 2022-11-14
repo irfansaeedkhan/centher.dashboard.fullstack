@@ -148,7 +148,9 @@ const Profile: NextPageWithLayout = () => {
 Profile.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Profile">
-      <ProfilePageWrapper>{page}</ProfilePageWrapper>
+      <ProfilePageWrapper>
+        <div className="space-y-3">{page}</div>
+      </ProfilePageWrapper>
     </AllPagesWrapper>
   );
 };

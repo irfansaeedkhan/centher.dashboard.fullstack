@@ -51,7 +51,9 @@ type CoverImageWithFile = Partial<CoverImage> & {
   newImage: boolean;
 };
 
-const ProfileHeader: React.FC = () => {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+
+const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => {
       return {
@@ -292,102 +294,102 @@ const ProfileHeader: React.FC = () => {
   };
 
   return (
-    <div className={`w-full`}>
-      <div className="content">
-        {user && loggedInUser ? (
-          <div className={`bg-background-shade-3 rounded-2xl`}>
-            <div
-              onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
-              className={clsx(
-                `relative rounded-t-2xl bg-cover bg-no-repeat w-full h-[21vh]`,
-                {
-                  "cursor-move": coverImage.newImage,
-                }
-              )}
-              style={{
-                backgroundImage: `url(${coverImage.path})`,
-                backgroundPosition: `center ${
-                  coverImage.newImage ? imagePosition : coverImage.y
-                }`,
-              }}
-            >
-              {isCurrentUserLoggedInUser && (
-                <>
-                  <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
-                    <input
-                      type="file"
-                      ref={coverImageInputRef}
-                      accept="image/jpeg,image/png,image/jpg"
-                      style={{ display: "none" }}
-                      onChange={handleSelectCoverImage}
-                    />
-                    {!coverImage.newImage && (
-                      <CoverUploadButton
-                        onClick={() => {
-                          coverImageInputRef.current?.click();
-                        }}
-                        variant="edit-cover"
-                      >
-                        <AiOutlineCamera className="w-4 h-4" />
-                        Edit cover
-                      </CoverUploadButton>
-                    )}
-                    {coverImage.newImage && (
-                      <>
-                        <CoverUploadButton
-                          variant="cancel"
-                          onClick={setInitialCoverImage}
-                        >
-                          Cancel
-                        </CoverUploadButton>
-                        <CoverUploadButton
-                          onClick={handleUploadCoverImage}
-                          className={`group`}
-                          variant="upload-cover"
-                        >
-                          <CgSpinner
-                            className={`group-disabled:block hidden animate-spin w-4 h-4`}
-                          />
-                          <AiOutlineCamera
-                            className={`group-disabled:hidden w-4 h-4`}
-                          />
-                          Upload Cover
-                        </CoverUploadButton>
-                      </>
-                    )}
-                  </div>
-                </>
-              )}
-
-              <div
-                className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
-              >
-                <div className="relative h-[112px] !w-[112px]">
-                  <Image
-                    src={user.profile_image.path}
-                    alt={user.display_name}
-                    width={112}
-                    height={112}
-                    className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
-                    sizes={"256px"}
+    <div className={clsx(className)} {...props}>
+      {user && loggedInUser ? (
+        <div className={`bg-background-shade-3 rounded-2xl`}>
+          <div
+            onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
+            className={clsx(
+              `relative rounded-t-2xl bg-cover bg-no-repeat w-full h-[21vh]`,
+              {
+                "cursor-move": coverImage.newImage,
+              }
+            )}
+            style={{
+              backgroundImage: `url(${coverImage.path})`,
+              backgroundPosition: `center ${
+                coverImage.newImage ? imagePosition : coverImage.y
+              }`,
+            }}
+          >
+            {isCurrentUserLoggedInUser && (
+              <>
+                <div className="flex gap-x-3 items-center absolute right-6 bottom-4">
+                  <input
+                    type="file"
+                    ref={coverImageInputRef}
+                    accept="image/jpeg,image/png,image/jpg"
+                    style={{ display: "none" }}
+                    onChange={handleSelectCoverImage}
                   />
-                  <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
-                  <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                    {verifyIcon.length > 1 && (
-                      <Image
-                        src={verifyIcon}
-                        alt={"verified icon"}
-                        width={34}
-                        height={34}
-                        className=""
-                      />
-                    )}
-                  </div>
+                  {!coverImage.newImage && (
+                    <CoverUploadButton
+                      onClick={() => {
+                        coverImageInputRef.current?.click();
+                      }}
+                      variant="edit-cover"
+                    >
+                      <AiOutlineCamera className="w-4 h-4" />
+                      Edit cover
+                    </CoverUploadButton>
+                  )}
+                  {coverImage.newImage && (
+                    <>
+                      <CoverUploadButton
+                        variant="cancel"
+                        onClick={setInitialCoverImage}
+                      >
+                        Cancel
+                      </CoverUploadButton>
+                      <CoverUploadButton
+                        onClick={handleUploadCoverImage}
+                        className={`group`}
+                        variant="upload-cover"
+                      >
+                        <CgSpinner
+                          className={`group-disabled:block hidden animate-spin w-4 h-4`}
+                        />
+                        <AiOutlineCamera
+                          className={`group-disabled:hidden w-4 h-4`}
+                        />
+                        Upload Cover
+                      </CoverUploadButton>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+
+            <div
+              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+            >
+              <div className="relative h-[112px] !w-[112px]">
+                <Image
+                  src={user.profile_image.path}
+                  alt={user.display_name}
+                  width={112}
+                  height={112}
+                  className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
+                  sizes={"256px"}
+                />
+                <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
+                <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
+                  {verifyIcon.length > 1 && (
+                    <Image
+                      src={verifyIcon}
+                      alt={"verified icon"}
+                      width={34}
+                      height={34}
+                      className=""
+                    />
+                  )}
                 </div>
               </div>
             </div>
-            <div className={`mt-8 lg:mt-10 px-7 pt-7`}>
-              <div className="w-full justify-center flex mt-3">
+          </div>
+          <div className={`mt-16 px-2 fsm:px-8 space-y-4 fmd:space-y-6`}>
+            <div className={`space-y-2`}>
+              <div className="w-full justify-center flex">
                 <div
                   className={`flex flex-col lg:flex-row items-baseline justify-between`}
                 >
@@ -398,8 +400,8 @@ const ProfileHeader: React.FC = () => {
                 </div>
               </div>
 
-              <div className="w-full justify-center flex mt-3">
-                <div className={`pt-1 flex items-center gap-2 relative`}>
+              <div className="w-full justify-center flex">
+                <div className={`flex items-center gap-2 relative`}>
                   <h6 className={`text-white text-14px font-semibold`}>
                     {sliceAccountAddress(user.account_address)}
                   </h6>
@@ -413,154 +415,143 @@ const ProfileHeader: React.FC = () => {
                       toast.success("Referral link copied!");
                     }}
                   >
-                    <FiCopy className="text-2xl hover:text-brand-primary text-gray-shade-7" />
+                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
                   </button>
                 </div>
               </div>
+            </div>
 
-              {(user.tiktok_username ||
-                user.facebook_username ||
-                user.instagram_username ||
-                user.onlyfans_username ||
-                user.twitch_username ||
-                user.twitter_username ||
-                user.website_url ||
-                user.youtube_url) && (
-                <div className="w-full justify-center flex mt-3">
-                  <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
-                    {user.tiktok_username && (
-                      <a
-                        href={`https://tiktok.com/${user.tiktok_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <TbBrandTiktok className={socialLinks} />
-                      </a>
-                    )}
-                    {user.facebook_username && (
-                      <a
-                        href={`https://facebook.com/${user.facebook_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <RiFacebookCircleLine className={socialLinks} />
-                      </a>
-                    )}
-                    {user.twitter_username && (
-                      <a
-                        href={`https://twitter.com/${user.twitter_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <FiTwitter className={socialLinks} />
-                      </a>
-                    )}
-                    {user.youtube_url && (
-                      <a
-                        href={`${user.youtube_url}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <FiYoutube className={socialLinks} />
-                      </a>
-                    )}
-                    {user.website_url && (
-                      <a
-                        href={user.website_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <HiLink className={socialLinks} />
-                      </a>
-                    )}
+            {(user.tiktok_username ||
+              user.facebook_username ||
+              user.instagram_username ||
+              user.onlyfans_username ||
+              user.twitch_username ||
+              user.twitter_username ||
+              user.website_url ||
+              user.youtube_url) && (
+              <div className="w-full justify-center flex">
+                <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
+                  {user.tiktok_username && (
+                    <a
+                      href={`https://tiktok.com/${user.tiktok_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <TbBrandTiktok className={socialLinks} />
+                    </a>
+                  )}
+                  {user.facebook_username && (
+                    <a
+                      href={`https://facebook.com/${user.facebook_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <RiFacebookCircleLine className={socialLinks} />
+                    </a>
+                  )}
+                  {user.twitter_username && (
+                    <a
+                      href={`https://twitter.com/${user.twitter_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiTwitter className={socialLinks} />
+                    </a>
+                  )}
+                  {user.youtube_url && (
+                    <a
+                      href={`${user.youtube_url}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiYoutube className={socialLinks} />
+                    </a>
+                  )}
+                  {user.website_url && (
+                    <a href={user.website_url} target="_blank" rel="noreferrer">
+                      <HiLink className={socialLinks} />
+                    </a>
+                  )}
 
-                    {user.instagram_username && (
-                      <a
-                        href={`https://instagram.com/${user.instagram_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <FiInstagram className={socialLinks} />
-                      </a>
-                    )}
-                    {user.twitch_username && (
-                      <a
-                        href={`https://twitch.tv/${user.twitch_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <FiTwitch className={socialLinks} />
-                      </a>
-                    )}
+                  {user.instagram_username && (
+                    <a
+                      href={`https://instagram.com/${user.instagram_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiInstagram className={socialLinks} />
+                    </a>
+                  )}
+                  {user.twitch_username && (
+                    <a
+                      href={`https://twitch.tv/${user.twitch_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FiTwitch className={socialLinks} />
+                    </a>
+                  )}
 
-                    {user.onlyfans_username && (
-                      <a
-                        href={`https://onlyfans.com/${user.onlyfans_username}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <SiOnlyfans className={socialLinks} />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {loggedInUser.account_address.toLowerCase() !==
-                user.account_address.toLowerCase() && (
-                <div className="w-full justify-center flex mt-4">
-                  {loadingState ? (
-                    <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                      {/* TODO: Waqar Fix Loader size issue*/}
-                      <Rings
-                        height="20"
-                        width="20"
-                        color="#1C1F29"
-                        radius="6"
-                        wrapperStyle={{}}
-                        wrapperClass=""
-                        visible={true}
-                        ariaLabel="rings-loading"
-                      />
-                    </button>
-                  ) : (
-                    <Button
-                      title={follow ? "Unfollow" : "Follow"}
-                      variant="v1"
-                      className={`mt-5 !px-4 lg:mt-0 flex items-center justify-center gap-3 w-full max-w-[157px]`}
-                      onClick={() => followUser(user._id)}
-                    />
+                  {user.onlyfans_username && (
+                    <a
+                      href={`https://onlyfans.com/${user.onlyfans_username}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <SiOnlyfans className={socialLinks} />
+                    </a>
                   )}
                 </div>
-              )}
+              </div>
+            )}
 
-              {user.profile_bio && (
-                <div className={`mt-4 w-full justify-center flex`}>
-                  <p
-                    className={`text-16px font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap text-center max-w-[776px]`}
-                  >
-                    {user.profile_bio}
-                  </p>
-                </div>
-              )}
+            {loggedInUser.account_address.toLowerCase() !==
+              user.account_address.toLowerCase() && (
+              <div className="w-full justify-center flex">
+                {loadingState ? (
+                  <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
+                    {/* TODO: Waqar Fix Loader size issue*/}
+                    <Rings
+                      height="20"
+                      width="20"
+                      color="#1C1F29"
+                      radius="6"
+                      wrapperStyle={{}}
+                      wrapperClass=""
+                      visible={true}
+                      ariaLabel="rings-loading"
+                    />
+                  </button>
+                ) : (
+                  <Button
+                    title={follow ? "Unfollow" : "Follow"}
+                    variant="v1"
+                    className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                    onClick={() => followUser(user._id)}
+                  />
+                )}
+              </div>
+            )}
 
-              {currentPageRoute.isProfilePage && (
-                <UserProfileTabs
-                  loggedInUser={loggedInUser.account_address}
-                  account_address={router.query.account_address}
-                />
-              )}
-              {currentPageRoute.isNFTProfilePage && (
-                <NFTProfileTabs
-                  account_address={router.query.account_address}
-                />
-              )}
-            </div>
+            {user.profile_bio && (
+              <p
+                className={`text-16px text-center font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+              >
+                {user.profile_bio}
+              </p>
+            )}
+
+            {currentPageRoute.isProfilePage && (
+              <UserProfileTabs account_address={router.query.account_address} />
+            )}
+            {currentPageRoute.isNFTProfilePage && (
+              <NFTProfileTabs account_address={router.query.account_address} />
+            )}
           </div>
-        ) : (
-          <UserProfileHeaderSkeleton />
-        )}
-      </div>
+        </div>
+      ) : (
+        <UserProfileHeaderSkeleton />
+      )}
     </div>
   );
 };
