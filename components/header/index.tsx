@@ -3,18 +3,15 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useWindowSize } from "usehooks-ts";
-import ctl from "@netlify/classnames-template-literals";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
-// App imports
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
+import { MenuClose } from "@/assets/svgs";
 
-// Current directory imports
-import Search from "./search";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
+import Search from "./search";
 import HeaderProfile from "./header.profile";
-import { LogoText, MenuClose } from "@/assets/svgs";
 
 const Header = () => {
   const { width } = useWindowSize();
@@ -25,13 +22,15 @@ const Header = () => {
   const sidebarOpenerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (width > 1024) {
+    if (width > 1280) {
       setSidebarOpen(false);
     }
   }, [width]);
 
   return (
-    <div className={headerWraper}>
+    <div
+      className={`flex gap-10 px-5 h-[60px] sticky top-0 z-[1000] items-center justify-between border-b-[1.5px] bg-black-shade-9 border-gray-shade-border-color`}
+    >
       <Link
         href={AppRoutes.home}
         className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
@@ -44,21 +43,22 @@ const Header = () => {
         />
       </Link>
 
-      <div className={rightWraper}>
+      <div className={`flex flex-grow gap-6 items-center justify-end`}>
         <Search />
-        {/* <span className={border}></span> */}
+
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>
             Connect
           </Link>
         )}
+
         {user && (
           <>
-            <span className="lg:block sm:hidden">
+            <div className="hidden fxl:block">
               <Link href={AppRoutes.nfts.create_nft} className={connectButton}>
                 Create NFT
               </Link>
-            </span>
+            </div>
             <div className="relative">
               <div
                 ref={modalOpenerRef}
@@ -85,7 +85,7 @@ const Header = () => {
             </div>
             <div
               ref={sidebarOpenerRef}
-              className={`lg:hidden sm:flex cursor-pointer `}
+              className={`flex fxl:hidden cursor-pointer`}
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               {sidebarOpen ? (
@@ -96,7 +96,6 @@ const Header = () => {
             </div>
           </>
         )}
-
         <SidebarMobile
           sidebarOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
@@ -109,43 +108,4 @@ const Header = () => {
 
 export default Header;
 
-const headerWraper = ctl(`
-  flex
-  gap-10 
-  px-5
-  h-[60px]
-  relative
-  items-center
-  justify-between 
-  border-b-[1.5px] 
-  bg-black-shade-9 
-  border-gray-shade-border-color 
-`);
-
-const rightWraper = ctl(`
-  flex 
-  gap-6
-  items-center
-`);
-
-const connectButton = ctl(`
-  px-6 
-  py-2
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-brand-primary 
-  text-black-shade-2 
-  hover:bg-brand-primary-dark 
-`);
-
-const border = ctl(`
-  my-3
-  md:block
-  sm:hidden
-  border-l-2 
-  rounded-xl 
-  border-gray-shade-12/30
-`);
+const connectButton = `w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;

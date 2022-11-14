@@ -3,13 +3,10 @@ import { useInView } from "react-intersection-observer";
 
 import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
-  MessagesCard,
-  RecentActivitiesCard,
   PostCardNew,
   SinglePost,
-  LeftSidebarStickyContainer,
+  FeedPagesWrapper,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
@@ -40,10 +37,6 @@ const Feed: NextPageWithLayout = () => {
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
       updateOffset();
     }
@@ -60,9 +53,7 @@ const Feed: NextPageWithLayout = () => {
   }, [fetchPosts]);
 
   return (
-    <div
-      className={`w-full max-w-[544px] flex flex-col gap-3 pb-24 lg:mt-[3.5rem]`}
-    >
+    <>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
         <PostCardNew
           onPostCreated={(post) => {
@@ -75,24 +66,14 @@ const Feed: NextPageWithLayout = () => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
             <SinglePost
-              ref={lastPostRef}
               key={post._id}
+              ref={lastPostRef}
               post={post}
-              onDelete={(post_id) => {
-                deletePost(post_id);
-              }}
+              onDelete={deletePost}
             />
           );
         }
-        return (
-          <SinglePost
-            key={post._id}
-            post={post}
-            onDelete={(post_id) => {
-              deletePost(post_id);
-            }}
-          />
-        );
+        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
       })}
 
       {(loading === "loading" || loading === "idle") && (
@@ -102,7 +83,6 @@ const Feed: NextPageWithLayout = () => {
           <SinglePostCardSkeleton />
         </>
       )}
-
       {loading === "loaded" && posts.length === 0 && (
         <div>
           <div className="flex justify-center mt-[60px]">
@@ -120,34 +100,19 @@ const Feed: NextPageWithLayout = () => {
       )}
 
       {loading === "failed" && (
-        <div className="flex justify-center">
-          <p className="text-gray-500">Something went wrong!</p>
-        </div>
+        <p className="flex justify-center text-gray-shade-7 !mt-12">
+          Something went wrong!
+        </p>
       )}
-    </div>
+    </>
   );
 };
 
 Feed.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Feed">
-      <div
-        className={`bg-black-shade-3 w-full h-full font-monto max-w-[544px] lg:max-w-[835px] xl:max-w-[1130px] mx-auto relative`}
-      >
-        <div className={`flex flex-col lg:flex-row gap-5 lg:items-start`}>
-          <LeftSidebarStickyContainer />
-
-          {page}
-
-          <div
-            className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden mt-[3.5rem] sticky top-[3.5rem]`}
-          >
-            <MessagesCard />
-            {/* <RecentActivitiesCard /> */}
-          </div>
-        </div>
-      </div>
-    </AllPagesWrapper>
+    <FeedPagesWrapper>
+      <div className={`w-full mx-auto space-y-3`}>{page}</div>
+    </FeedPagesWrapper>
   );
 };
 

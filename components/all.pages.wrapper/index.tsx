@@ -1,8 +1,6 @@
-// React, Next, NPM Packages
 import React, { useEffect } from "react";
 import Head from "next/head";
 
-// App imports
 import { useCountsStore } from "@/store/counts.store";
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
@@ -20,35 +18,19 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   }, [fetchCounts]);
 
   return (
-    <div
-      className={`
-  flex 
-  flex-col
-  font-monto
-`}
-    >
+    <div className="font-monto">
       <Head>
         <title>{props.pageTitle}</title>
       </Head>
+
       <Header />
-      <div className={`flex`}>
+
+      <div className={`px-2 fxl:ml-[15.5rem] fsm:px-4 fmd:px-6 py-4 flg:py-6`}>
+        {props.children}
+      </div>
+
+      <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
         <Sidebar />
-        {/* 15.5rem is the width of sidebar */}
-        <div
-          className={`
-  md:px-8
-  py-8
-  sm:px-2
-  w-full 
-  bg-black-shade-3 
-  overflow-y-scroll
-  h-[calc(100vh-60px)] 
-  lg:w-[calc(100%-15.5rem)] 
-  scrollSet
-  `}
-        >
-          {props.children}
-        </div>
       </div>
     </div>
   );

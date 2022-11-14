@@ -50,7 +50,7 @@ const modalContent = ctl(`
   relative 
   lg:w-164 
   md:w-140
-  xl:w-164 
+  f2xl:w-164 
   sm:w-full 
   rounded-lg
   bg-black-shade-3

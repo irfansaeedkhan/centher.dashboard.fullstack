@@ -16,6 +16,7 @@ import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.po
 // Current page imports
 import { ProfilePageWrapper } from "../_components";
 import { RepliesIcon } from "@/assets/svgs";
+import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
 
 const Replies: NextPageWithLayout = () => {
   // Create User Profile View
@@ -90,9 +91,8 @@ const Replies: NextPageWithLayout = () => {
 
       {(loading === "loading" || loading === "idle") && (
         <>
-          <SinglePostCardSkeleton />
-          <SinglePostTextCardSkeleton />
-          <SinglePostCardSkeleton />
+          <RepliesProfileSkeletons />
+          <RepliesProfileSkeletons />
         </>
       )}
 

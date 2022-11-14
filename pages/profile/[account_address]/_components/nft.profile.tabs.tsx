@@ -25,7 +25,7 @@ const NFTProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
         Owned
       </Link>
 
-      <Link
+      {/* <Link
         href={`/profile/${account_address}/purchased`}
         className={clsx(
           router.pathname === AppRoutes.profile.purchased
@@ -35,7 +35,7 @@ const NFTProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
         )}
       >
         Purchased
-      </Link>
+      </Link> */}
 
       <Link
         href={`/profile/${account_address}/collections`}

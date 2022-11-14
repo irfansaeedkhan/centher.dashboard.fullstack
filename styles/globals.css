@@ -4,13 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
 html {
-  scroll-behaviour: smooth;
+  scroll-behavior: smooth;
 }
 
 input:-webkit-autofill,
@@ -26,11 +21,11 @@ input:-webkit-autofill:hover {
 input:-webkit-autofill {
   -webkit-text-fill-color: #fff !important;
 }
-::-webkit-scrollbar {
-  display: none;
-}
 
 @layer components {
+  body {
+    @apply bg-black-shade-3;
+  }
   .carousel.carousel-slider {
     border-radius: 12px !important;
   }
@@ -38,16 +33,16 @@ input:-webkit-autofill {
     @apply w-full h-full flex items-center justify-center;
   }
   .text-34px {
-    @apply text-2xl  xl:text-4xl;
+    @apply text-2xl  f2xl:text-4xl;
   }
   .text-24px {
-    @apply text-xl xl:text-2xl;
+    @apply text-xl f2xl:text-2xl;
   }
   .text-20px {
-    @apply text-base xl:text-xl;
+    @apply text-base f2xl:text-xl;
   }
   .text-18px {
-    @apply text-base xl:text-lg;
+    @apply text-base f2xl:text-lg;
   }
   .text-16px {
     @apply text-base;
@@ -201,6 +196,11 @@ input:-webkit-autofill {
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
     z-index: 99;
+  }
+  .scrollSet,
+  .scrollSetLight,
+  .scrollSetLight2 {
+    scroll-behavior: smooth;
   }
   .scrollSet::-webkit-scrollbar {
     display: flex !important;
@@ -690,4 +690,27 @@ input:-webkit-autofill {
   .carousel-container ul {
     gap: 0;
   }
+}
+
+.Animatecircle {
+  fill: none;
+  stroke: #febf32;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+  stroke-dasharray: 1260;
+  stroke-dashoffset: 1260;
+  animation: dash 3s linear alternate forwards;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 1260;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.align-inherit {
+  align-items: inherit;
 }

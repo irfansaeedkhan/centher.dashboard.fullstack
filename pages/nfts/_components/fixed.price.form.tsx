@@ -193,14 +193,22 @@ const FixedPriceForm = ({
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>NFT Price</label>
-        <input
-          type="text"
-          id="NFTPrice"
-          autoComplete="off"
-          {...register("NFTPrice")}
-          placeholder="Enter NFT Price"
-          className={!formState.errors.NFTPrice ? inputField : inputFieldError}
-        />
+
+        <div className="relative">
+          <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+            BNB
+          </span>
+          <input
+            type="text"
+            id="NFTPrice"
+            autoComplete="off"
+            {...register("NFTPrice")}
+            placeholder="Enter NFT Price"
+            className={
+              !formState.errors.NFTPrice ? inputField : inputFieldError
+            }
+          />
+        </div>
         {formState.errors.NFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.NFTPrice.message}

@@ -8,9 +8,9 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
-import PromotionCard from "./promotion.card";
+import { PromotionCard1, PromotionCard2 } from "./promotion.cards";
 
-export const LeftSidebarStickyContainer = () => {
+export const CardsContainerLeft = () => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(router.query.account_address?.toString());
@@ -36,24 +36,16 @@ export const LeftSidebarStickyContainer = () => {
   }, [router, user, loggedInUser]);
 
   return (
-    <div className={`lg:sticky  lg:top-0`}>
-      <h1
-        className={`textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`}
-      >
-        My Feed
-      </h1>
-      <div className={`w-[272px]  flex-col gap-3 hidden lg:flex`}>
-        {profileCardUser ? (
-          <>
-            <ProfileDetailCard user={profileCardUser} />
-            <PromotionCard />
-          </>
-        ) : (
-          <ProfileDetailCardSkeleton />
-        )}
-
-        {/* <DiscoverCard /> */}
-      </div>
+    <div className={`hidden flg:block max-w-[272px] space-y-3`}>
+      {profileCardUser ? (
+        <>
+          <ProfileDetailCard user={profileCardUser} />
+          <PromotionCard1 />
+          <PromotionCard2 className="sticky top-[84px]" />
+        </>
+      ) : (
+        <ProfileDetailCardSkeleton />
+      )}
     </div>
   );
 };

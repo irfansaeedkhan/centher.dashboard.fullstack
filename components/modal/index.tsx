@@ -13,7 +13,7 @@ interface ModalWrapperProps {
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
   return props.isOpen ? (
     <div className={modalWrapper}>
-      <div className={clsx("xl:p-4 lg:p-4 md:p-4 sm:p-3 relative")}>
+      <div className={clsx("f2xl:p-4 lg:p-4 md:p-4 sm:p-3 relative")}>
         {/* content */}
         <div className={modalContent}>
           {/* header */}
@@ -62,14 +62,14 @@ const modalContent = ctl(`
   pb-5 
   border
   lg:p-4 
-  xl:p-4 
+  f2xl:p-4 
   md:p-4 
   sm:p-4  
   flex-col 
   relative 
   lg:w-164 
   md:w-140
-  xl:w-164 
+  f2xl:w-164 
   sm:w-[300px] 
   rounded-lg
   bg-black-shade-3

@@ -27,7 +27,7 @@ export const hotNFTsQuery = `
 
 export const collectionsQuery = `
   query($first: Int!, $skip: Int!) {
-    collections(orderBy: tradingVolumn, first: $first, skip: $skip) {
+    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
       collection
       creator
       id
@@ -187,4 +187,65 @@ export const nftsBySaleStateQuery = `
       }
     }
   }
+`;
+
+export const collectionsByAccount = `
+  query($creator: Bytes!) {
+    collections(
+      orderBy: tradingVolumn
+      orderDirection: desc
+      where: {creator: $creator}
+    ) {
+      collection
+      creator
+      id
+      ipfs
+      maxSupply
+      name
+      symbol
+      totalSupply
+      txTime
+    }
+}
+`;
+
+export const listedNFTsByAccount = `
+  query($first: Int!, $skip: Int!, $owner: Bytes!) {
+    nfts(
+      first: $first
+      skip: $skip
+      orderBy: tradingVolumn
+      orderDirection: desc
+      where: {owner: $owner}
+    ) {
+        collection
+        createTime
+        creator
+        id
+        ipfs
+        saleState
+        tokenId
+        price
+        owner
+        listInfo {
+          price
+          bidSize
+        }
+        auctionInfo {
+          endTime
+          highestBidPrice
+          highestBidAddress
+          bidSize
+          startPrice
+        }
+    }
+  }
+`;
+
+export const registeredCollections = `
+  query {
+    collections {
+      collection
+    }
+  } 
 `;
