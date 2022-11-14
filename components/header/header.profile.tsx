@@ -60,7 +60,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       <div className={polygonButton}>
         <Polygon />
       </div>
-      <div ref={ref} className={wrapper}>
+      <div
+        ref={ref}
+        className={`absolute w-77 rounded-lg -right-[62px] fxl:right-0 z-50 bg-black top-[3.5rem]`}
+      >
         <Image
           src={"/images/profile-header-cover.jpg"}
           alt="cover"
@@ -168,9 +171,7 @@ export default HeaderProfile;
 
 const polygonButton = ctl(`absolute top-12`);
 
-const wrapper = ctl(
-  `absolute w-77 rounded-lg right-0 z-50 bg-black top-[3.5rem]`
-);
+const wrapper = ctl(``);
 
 const polygonImage = ctl(`rounded-t-lg !h-[96px] object-cover`);
 
