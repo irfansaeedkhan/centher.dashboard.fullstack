@@ -30,7 +30,7 @@ export const NFTProfilePageWrapper: React.FC<AllPagesWrapperProps> = (
           <div className="sidecards">
             <ProfileSideCard />
           </div>
-          <div className="mainContent flex flex-col gap-6">
+          <div className="mainContent flex flex-col gap-6 w-full">
             <ProfileHeader />
             <div className={`flex gap-6`}>
               <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
