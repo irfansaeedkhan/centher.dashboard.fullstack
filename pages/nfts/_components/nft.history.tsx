@@ -30,7 +30,8 @@ interface historyData {
   }[];
 }
 
-export const NFTHistory = ({ prices }: NFTHistoryProps) => {
+// export const NFTHistory = ({ prices }: NFTHistoryProps) => {
+export const NFTHistory = ({ prices }: any) => {
   const [duration, setDuration] = useState(7);
   const [priceHistory, setPriceHistory] = useState<PriceHistory[]>([]);
 
@@ -61,20 +62,55 @@ export const NFTHistory = ({ prices }: NFTHistoryProps) => {
       setLabels(_labels);
       // using momentjs to get current date and previous dates
       // const currentTime = moment().format("YYYY-MM-DD");
-      const lastSeventhDay = moment()
-        .subtract(duration, "days")
-        .format("YYYY-MM-DD");
+      const nthDays = moment().subtract(duration, "days").format("YYYY-MM-DD");
+
+      // setting array of prices adjacent to their dates
+      const arrayWithDateProperty = prices.map((obj: any) => {
+        return {
+          ...obj,
+          price: formatEther2Number(obj.price),
+          txTime: moment(Number(obj.txTime * 1000)).format("YYYY-MM-DD"),
+        };
+      });
+      const modifedData: { [key: string]: number[] }[] = [];
+      arrayWithDateProperty.forEach((item: any, index: any) => {
+        if (index === 0) {
+          modifedData.push({
+            [item.txTime]: [item.price],
+          });
+        } else {
+          const prevSameTime = modifedData.find((i) => i[item.txTime]);
+          if (prevSameTime) {
+            prevSameTime[item.txTime].push(item.price);
+          } else {
+            modifedData.push({
+              [item.txTime]: [item.price],
+            });
+          }
+        }
+      });
+      console.log("modifedData:::", modifedData);
 
       // getting prices array for last 7 days from dummy data
       let _priceList: number[] = [];
+      let _priceListForGraph: any[] = [];
       await _priceHistory?.forEach((data: any) => {
         let propTime = moment(Number(Object.entries(data)[1][1]) * 1000).format(
           "YYYY-MM-DD"
         );
-        if (propTime >= lastSeventhDay) {
+        if (propTime >= nthDays) {
           _priceList.push(Number(Object.entries(data)[0][1]));
         }
       });
+      modifedData?.map((data) => {
+        let propTime = moment(Object.entries(data)[0][0]).format("YYYY-MM-DD");
+        if (propTime >= nthDays) {
+          _priceListForGraph.push(
+            Object.entries(data)[0][1].map((data) => Number(data))
+          );
+        }
+      });
+      console.log("_priceListForGraph:::", _priceListForGraph);
       setPriceList(_priceList);
       // getting average price from pricelist for last 7 days
       const _priceAverage =
@@ -92,6 +128,8 @@ export const NFTHistory = ({ prices }: NFTHistoryProps) => {
       getData(prices);
     }
   }, [duration, prices]);
+
+  console.log("priceList:::", priceList);
 
   // data to be sent in graph
   const data: historyData = {
@@ -111,7 +149,6 @@ export const NFTHistory = ({ prices }: NFTHistoryProps) => {
   const changeDuration = async (e: any) => {
     setDuration((prev) => e.target.value);
   };
-
   return (
     <div className={NFTHistoryContainer}>
       <div className="accordion" id="accordionExample">
