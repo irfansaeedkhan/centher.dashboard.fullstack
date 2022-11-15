@@ -35,10 +35,10 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Circle } from "@/assets/svgs";
 
 // Current directory imports
-import UserProfileTabs from "./user.profile.tabs";
+import { ProfileTabsSocial } from "./profile.tabs.social";
+import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
-import NFTProfileTabs from "./nft.profile.tabs";
 
 type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -541,10 +541,12 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
             )}
 
             {currentPageRoute.isProfilePage && (
-              <UserProfileTabs account_address={router.query.account_address} />
+              <ProfileTabsSocial
+                account_address={router.query.account_address}
+              />
             )}
             {currentPageRoute.isNFTProfilePage && (
-              <NFTProfileTabs account_address={router.query.account_address} />
+              <ProfileTabsNFT account_address={router.query.account_address} />
             )}
           </div>
         </div>

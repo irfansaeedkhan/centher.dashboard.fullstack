@@ -1,21 +1,14 @@
-// React, Next, NPM Packages
-import Link from "next/link";
-import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
+import { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-// App imports
-import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-// Current page imports
-import { ProfilePageWrapper } from "./_components";
-import NFTCard from "@/components/nft.card";
-import { HotNftEmptyIcon } from "@/assets/svgs";
-import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
-import { useProfileNFTStore } from "@/store/profile.nft.store";
-import { useEffect, useState } from "react";
 import { NFT } from "@/store/explore.store";
+import { useProfileNFTStore } from "@/store/profile.nft.store";
+import { NextPageWithLayout } from "@/pages/_app.page";
+import NFTCard from "@/components/nft.card";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { HotNftEmptyIcon } from "@/assets/svgs";
+
+import { ProfilePageWrapper } from "./_components";
 
 let dummyData = [
   {
@@ -110,6 +103,7 @@ const NFTProfile: NextPageWithLayout = () => {
   }, [account, fetchListedNFTs]);
 
   const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
+
   useEffect(() => {
     console.log(
       "sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs",
@@ -124,7 +118,7 @@ const NFTProfile: NextPageWithLayout = () => {
   }, [loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs]);
 
   return (
-    <div className={nftProfilePageContainer}>
+    <>
       {displayNFTs.length !== 0 ? (
         <div className="nftCardContainer">
           {displayNFTs.map((nft: any) => (
@@ -141,26 +135,16 @@ const NFTProfile: NextPageWithLayout = () => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
 NFTProfile.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
+    <ProfilePageWrapper currentTab="nft-profile">
+      <div>{page}</div>
+    </ProfilePageWrapper>
   </AllPagesWrapper>
 );
 
 export default NFTProfile;
-
-// styling
-const nftProfilePageContainer = ctl(`
-`);
-
-const tabContentContainer = ctl(`
-tabContent flex items-center justify-center w-full h-[250px]
-`);
-
-const tabContent = ctl(`
-textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl w-fit
-`);

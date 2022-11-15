@@ -3,12 +3,11 @@ import React, { useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-// App imports
 import useGetUser from "@/hooks/use.get.user";
 import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 
-const ProfileTabs: React.FC = () => {
+export const ProfileTabs: React.FC = () => {
   const router = useRouter();
   const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
@@ -66,4 +65,3 @@ const ProfileTabs: React.FC = () => {
     </div>
   );
 };
-export default ProfileTabs;

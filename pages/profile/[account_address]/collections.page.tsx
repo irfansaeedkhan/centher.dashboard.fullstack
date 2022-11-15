@@ -1,20 +1,13 @@
-// React, Next, NPM Packages
-import Link from "next/link";
-import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
+import { useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 
-// App imports
+import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
-// Current page imports
-import { ProfilePageWrapper } from "./_components";
 import { CollectionCard } from "@/components/collection.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
-import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
-import { useProfileNFTStore } from "@/store/profile.nft.store";
-import { useEffect } from "react";
+
+import { ProfilePageWrapper } from "./_components";
 
 let dummyData = [
   {
@@ -44,6 +37,7 @@ let dummyData = [
     txTime: "1667595912",
   },
 ];
+
 const NFTProfileCollections: NextPageWithLayout = () => {
   const { account } = useWeb3React();
   const { collections, fetchCollections, loading } = useProfileNFTStore(
@@ -61,7 +55,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
   }, [account, fetchCollections]);
 
   return (
-    <div className={nftProfilePageContainer}>
+    <>
       {collections && collections.length !== 0 ? (
         <div className="flex  gap-5 md:flex-wrap lg:flex-nowrap">
           {collections.map((collection) => {
@@ -78,26 +72,16 @@ const NFTProfileCollections: NextPageWithLayout = () => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
 NFTProfileCollections.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
+    <ProfilePageWrapper currentTab="nft-profile">
+      <div>{page}</div>
+    </ProfilePageWrapper>
   </AllPagesWrapper>
 );
 
 export default NFTProfileCollections;
-
-// styling
-const nftProfilePageContainer = ctl(`
-`);
-
-const tabContentContainer = ctl(`
-tabContent flex items-center justify-center w-full h-[250px]
-`);
-
-const tabContent = ctl(`
-textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl w-fit
-`);

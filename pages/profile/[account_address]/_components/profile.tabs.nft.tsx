@@ -1,18 +1,19 @@
-import { AppRoutes } from "@/constants/app.routes";
-import clsx from "clsx";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import clsx from "clsx";
+
+import { AppRoutes } from "@/constants/app.routes";
 
 interface ProfileProps {
   account_address: string | string[] | undefined;
 }
 
-const NFTProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
+export const ProfileTabsNFT: React.FC<ProfileProps> = ({ account_address }) => {
   const router = useRouter();
 
   return (
-    <div className="mt-6 flex gap-10 w-full justify-center">
+    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base">
       <Link
         href={`/profile/${account_address}/nfts`}
         className={clsx(
@@ -24,18 +25,6 @@ const NFTProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
       >
         Owned
       </Link>
-
-      {/* <Link
-        href={`/profile/${account_address}/purchased`}
-        className={clsx(
-          router.pathname === AppRoutes.profile.purchased
-            ? "border-b-2 text-white"
-            : "text-gray-shade-7",
-          "py-[10px] px-4 cursor-pointer"
-        )}
-      >
-        Purchased
-      </Link> */}
 
       <Link
         href={`/profile/${account_address}/collections`}
@@ -51,5 +40,3 @@ const NFTProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
     </div>
   );
 };
-
-export default NFTProfileTabs;
