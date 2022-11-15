@@ -1,9 +1,26 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import CreatorCard from "./creator.card";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import ctl from "@netlify/classnames-template-literals";
+import { useExploreStore } from "@/store/explore.store";
 
+const MAX_TOP_CREATORS = 10;
 const TopCreators = () => {
+  
+  const {
+    topCreators,
+    fetchTopCreators,
+    loadingTopCreators,
+  } = useExploreStore((state) => ({
+    topCreators: state.topCreators,
+    fetchTopCreators: state.fetchTopCreators,
+    loadingTopCreators: state.loadingTopCreators,
+  }));
+
+  useEffect(() => {
+    fetchTopCreators(0, MAX_TOP_CREATORS);
+  }, [fetchTopCreators]);
+
   const ref = useRef<HTMLInputElement>(null);
 
   const scroll = (scrollOffset: number) => {
@@ -30,22 +47,9 @@ const TopCreators = () => {
           ref={ref}
           className="flex w-[calc(100%-132px)] items-center gap-14 overflow-x-scroll scrollSetLight2 !overflow-y-hidden py-8"
         >
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
-          <CreatorCard />
+          {topCreators.length > 0 && topCreators.map((item: any, index: any) => {
+            return <CreatorCard publicKey={item} key={index}/>
+          })}
         </div>
         <button onClick={() => scroll(200)} className={scrollButton}>
           <BsArrowRightShort />

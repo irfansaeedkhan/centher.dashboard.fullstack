@@ -1,24 +1,33 @@
 // React, Next, NPM Packages
-import React from "react";
+import React, { useEffect } from "react";
 import ctl from "@netlify/classnames-template-literals";
 // App imports
 import NFTCard from "@/components/nft.card";
-import { NFT } from "@/store/explore.store";
+import { NFT, useExploreStore } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { LoadingState } from "@/models/common";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 
-// Current directory imports
-interface HotNFTsProps {
-  hotNFTs: NFT[];
-  loadingHotNFTs: LoadingState;
-}
+const MAX_HOT_NFTS = 10;
 
-export const HotNFTs: React.FC<HotNFTsProps> = ({
-  hotNFTs,
-  loadingHotNFTs,
-}) => {
+export const HotNFTs: React.FC = () => {
+
+
+  const {
+    hotNFTs,
+    fetchHotNFTs,
+    loadingHotNFTs,
+  } = useExploreStore((state) => ({
+    hotNFTs: state.hotNFTs,
+    fetchHotNFTs: state.fetchHotNFTs,
+    loadingHotNFTs: state.loadingHotNFTs,
+  }));
+  
+  useEffect(() => {
+    fetchHotNFTs(0, MAX_HOT_NFTS);
+  }, [fetchHotNFTs]);
+
   return (
     <div className={hotNftPageWrapper}>
       <div className={hotNftAnimation}>Hot NFTs</div>
