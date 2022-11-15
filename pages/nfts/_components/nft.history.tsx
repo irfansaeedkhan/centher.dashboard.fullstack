@@ -4,10 +4,10 @@ import ctl from "@netlify/classnames-template-literals";
 import moment from "moment";
 
 // App import
+import { CustomModal } from "@/components/modal/custom.modal";
 import { LineChart } from "@/components/charts";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
-import { BarChart } from "@/components/charts/bar.chart";
 
 interface NFTHistoryProps {
   prices: IListHistory[] | undefined;
@@ -38,9 +38,15 @@ export const NFTHistory = ({ prices }: any) => {
   // global labels to set dynamic data
   const [labels, setLabels] = useState<string[]>([]);
   const [priceList, setPriceList] = useState<number[]>([]);
+  const [priceAverageList, setPriceAverageList] = useState<number[]>([]);
   const [priceAverage, setPriceAverage] = useState<number>();
   const [priceVolume, setPriceVolume] = useState<number>();
+  const [showModal, setShowModal] = useState(false);
+  const [tableDataArray, setTableDataArray] = useState<any>();
 
+  const closePostModal = () => {
+    setShowModal(false);
+  };
   useEffect(() => {
     const getData = async (prices: any) => {
       const _prices = prices.sort(
@@ -55,16 +61,20 @@ export const NFTHistory = ({ prices }: any) => {
       setPriceHistory(_priceHistory);
 
       // getting dynamic labels data using moment js for last 7 days
+
       let _labels = [];
       for (let i = 0; i < duration; i++) {
         _labels.push(moment().subtract(i, "days").format("DD MMM"));
       }
       setLabels(_labels);
+
       // using momentjs to get current date and previous dates
       // const currentTime = moment().format("YYYY-MM-DD");
+
       const nthDays = moment().subtract(duration, "days").format("YYYY-MM-DD");
 
       // setting array of prices adjacent to their dates
+
       const arrayWithDateProperty = prices.map((obj: any) => {
         return {
           ...obj,
@@ -72,28 +82,29 @@ export const NFTHistory = ({ prices }: any) => {
           txTime: moment(Number(obj.txTime * 1000)).format("YYYY-MM-DD"),
         };
       });
-      const modifedData: { [key: string]: number[] }[] = [];
+      const PricesDateArray: { [key: string]: number[] }[] = [];
       arrayWithDateProperty.forEach((item: any, index: any) => {
         if (index === 0) {
-          modifedData.push({
+          PricesDateArray.push({
             [item.txTime]: [item.price],
           });
         } else {
-          const prevSameTime = modifedData.find((i) => i[item.txTime]);
+          const prevSameTime = PricesDateArray.find((i) => i[item.txTime]);
           if (prevSameTime) {
             prevSameTime[item.txTime].push(item.price);
           } else {
-            modifedData.push({
-              [item.txTime]: [item.price],
+            PricesDateArray.push({
+              [String(item.txTime)]: [item.price],
             });
           }
         }
       });
-      console.log("modifedData:::", modifedData);
+      setTableDataArray(PricesDateArray);
 
-      // getting prices array for last 7 days from dummy data
+      // getting prices array for nth days
       let _priceList: number[] = [];
       let _priceListForGraph: any[] = [];
+      let _priceListAverageForGraph: any[] = [];
       await _priceHistory?.forEach((data: any) => {
         let propTime = moment(Number(Object.entries(data)[1][1]) * 1000).format(
           "YYYY-MM-DD"
@@ -102,7 +113,7 @@ export const NFTHistory = ({ prices }: any) => {
           _priceList.push(Number(Object.entries(data)[0][1]));
         }
       });
-      modifedData?.map((data) => {
+      PricesDateArray?.map((data) => {
         let propTime = moment(Object.entries(data)[0][0]).format("YYYY-MM-DD");
         if (propTime >= nthDays) {
           _priceListForGraph.push(
@@ -110,9 +121,17 @@ export const NFTHistory = ({ prices }: any) => {
           );
         }
       });
-      console.log("_priceListForGraph:::", _priceListForGraph);
       setPriceList(_priceList);
-      // getting average price from pricelist for last 7 days
+      // getting average prices per day
+      _priceListForGraph?.map((priceArray) => {
+        const _priceArrAverage =
+          priceArray.reduce((partialSum: any, a: any) => partialSum + a, 0) /
+          priceArray.length;
+
+        _priceListAverageForGraph.push(_priceArrAverage.toFixed(4));
+      });
+      setPriceAverageList(_priceListAverageForGraph);
+      // getting average price
       const _priceAverage =
         _priceList.reduce((partialSum, a) => partialSum + a, 0) /
         _priceList.length;
@@ -129,8 +148,6 @@ export const NFTHistory = ({ prices }: any) => {
     }
   }, [duration, prices]);
 
-  console.log("priceList:::", priceList);
-
   // data to be sent in graph
   const data: historyData = {
     labels,
@@ -141,7 +158,7 @@ export const NFTHistory = ({ prices }: any) => {
         borderColor: "#5F97FF",
         borderWidth: 2,
         fill: false,
-        data: priceList,
+        data: priceAverageList,
         backgroundColor: "#fff",
       },
     ],
@@ -204,7 +221,7 @@ export const NFTHistory = ({ prices }: any) => {
                   </select>
                 </div>
               </div>
-              {/* 
+
               <div className="p-6">
                 {priceHistory.length > 0 ? (
                   <LineChart data={data} />
@@ -215,14 +232,54 @@ export const NFTHistory = ({ prices }: any) => {
                     </h6>
                   </div>
                 )}
-              </div> */}
-              <div className="p-6">
-                <BarChart />
+              </div>
+
+              <div className="w-full flex justify-end p-3">
+                <button
+                  onClick={() => {
+                    setShowModal(true);
+                  }}
+                  className="w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
+                >
+                  Details
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {showModal && (
+        <CustomModal onClose={closePostModal} title={"Price List"}>
+          <div className={TableContainer}>
+            <table className={table}>
+              <thead className={thead}>
+                <tr>
+                  <th scope="col" className={th}>
+                    Dates
+                  </th>
+                  <th scope="col" className={th}>
+                    Price list
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableDataArray?.map((item: any, index: any) => {
+                  return (
+                    <tr className={tbodyTR} key={index}>
+                      <td className={td}>{Object.keys(item)}</td>
+                      <td className={td}>
+                        {Object.values(item).map(
+                          (pricelist: any) => `${pricelist}  `
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </CustomModal>
+      )}
     </div>
   );
 };
@@ -241,4 +298,22 @@ overflow-x-auto
 `);
 const graphDetailBox = ctl(`
 flex flex-col gap-2
+`);
+const TableContainer = ctl(` 
+overflow-x-auto relative  shadow-md rounded-2xl
+`);
+const table = ctl(` 
+overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-black-shade-4
+`);
+const thead = ctl(` 
+text-14px text-gray-shade-7 uppercase bg-background-shade-3 
+`);
+const th = ctl(` 
+py-4 lg:py-7 px-5 lg:px-3
+`);
+const tbodyTR = ctl(` 
+border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
+`);
+const td = ctl(` 
+text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
 `);

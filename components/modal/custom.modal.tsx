@@ -92,6 +92,6 @@ const modalHeaderButton = ctl(`
 `);
 
 const bodyWrapper = ctl(`
-  maxHeight-[400px] 
-  overflow-y-scroll
+  max-h-[450px] 
+  overflow-y-auto
 `);
