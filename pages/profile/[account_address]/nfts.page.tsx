@@ -5,6 +5,8 @@ import { NFT } from "@/store/explore.store";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import NFTCard from "@/components/nft.card";
+import HotNftsSkeleton from "@/components/loading.skeletons/hot.nfts";
+import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
@@ -89,7 +91,6 @@ const NFTProfile: NextPageWithLayout = () => {
     fetchListedNFTs: state.fetchListedNFTs,
     loadingListedNFTs: state.loadingListedNFTs,
   }));
-
   useEffect(() => {
     if (account) {
       fetchOwnedNFTs(account);
@@ -119,13 +120,27 @@ const NFTProfile: NextPageWithLayout = () => {
 
   return (
     <>
-      {displayNFTs.length !== 0 ? (
+      {displayNFTs.length > 0 && (
         <div className="nftCardContainer">
           {displayNFTs.map((nft: any) => (
             <NFTCard data={nft} key={nft.id} />
           ))}
         </div>
-      ) : (
+      )}
+
+      {(loadingOwnedNFTs === "loading" ||
+        loadingListedNFTs === "loading" ||
+        loadingOwnedNFTs === "idle" ||
+        loadingListedNFTs === "idle") && (
+        <div className="flex flex-wrap gap-10 items-center">
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+          <NftsSkeleton />
+        </div>
+      )}
+
+      {/* {loadingOwnedNFTs !== "loaded" && (
         <>
           <div className="flex justify-center items-center text-white">
             <HotNftEmptyIcon />
@@ -134,7 +149,7 @@ const NFTProfile: NextPageWithLayout = () => {
             No NFTs found yet
           </div>
         </>
-      )}
+      )} */}
     </>
   );
 };
