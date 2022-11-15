@@ -692,9 +692,29 @@ input:-webkit-autofill {
   }
 }
 
-.Animatecircle {
+.AnimatecircleRainbow {
   fill: none;
-  /* stroke: #febf32; */
+  stroke: #1b1c22;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+  stroke-dasharray: 1260;
+  stroke-dashoffset: 1260;
+  animation: dash 3s linear alternate forwards;
+}
+
+.AnimatecircleGold {
+  fill: none;
+  stroke: #e2bd3a;
+  stroke-miterlimit: 10;
+  stroke-width: 3px;
+  stroke-dasharray: 1260;
+  stroke-dashoffset: 1260;
+  animation: dash 3s linear alternate forwards;
+}
+
+.AnimatecircleSilver {
+  fill: none;
+  stroke: #b1b1b1;
   stroke-miterlimit: 10;
   stroke-width: 3px;
   stroke-dasharray: 1260;

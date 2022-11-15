@@ -2182,11 +2182,8 @@ export const DeleteCrossIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
-export const Circle: React.FC<CircleIconProps> = ({
-  className,
-  circleColor,
-}) => {
-  console.log("Circle Color", circleColor);
+export const Circle: React.FC<CircleIconProps> = ({ className }) => {
+  console.log("Circle Color", className);
   return (
     <svg
       className={className}
@@ -2195,13 +2192,7 @@ export const Circle: React.FC<CircleIconProps> = ({
     >
       <g id="Layer_2" data-name="Layer 2">
         <g id="Layer_1-2" data-name="Layer 1">
-          <circle
-            className="Animatecircle"
-            style={{ stroke: circleColor }}
-            cx="201.03"
-            cy="201.03"
-            r="200.53"
-          />
+          <circle cx="201.03" cy="201.03" r="200.53" />
         </g>
       </g>
     </svg>

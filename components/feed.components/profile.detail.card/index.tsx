@@ -19,7 +19,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
+  const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 
   Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
 verification icon variants
@@ -31,7 +31,7 @@ silver1 silver2 silverLastFrame
 
   useEffect(() => {
     if (iconVerifyProps === "rainbow") {
-      console.log("Inside Rainbow if");
+      setStrokeColor("#1B1C22");
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/Rainbow1.gif");
       }, 3000);
@@ -52,7 +52,8 @@ silver1 silver2 silverLastFrame
         clearInterval(interval2);
       };
     } else if (iconVerifyProps === "silver") {
-      console.log("Inside silver if");
+      setStrokeColor("#B1B1B1");
+
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/silver1.gif");
       }, 3000);
@@ -73,8 +74,8 @@ silver1 silver2 silverLastFrame
         clearInterval(interval2);
       };
     } else if (iconVerifyProps == "gold") {
-      console.log("Inside gold if");
-      console.log("Inside Gold Index");
+      setStrokeColor("#E2BD3A");
+
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/gold1.gif");
       }, 3000);
@@ -94,7 +95,6 @@ silver1 silver2 silverLastFrame
         clearInterval(interval2);
       };
     } else if (iconVerifyProps === "no-icon") {
-      console.log("Inside no icon if");
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/silver1.gif");
       }, 3000);
@@ -117,7 +117,7 @@ silver1 silver2 silverLastFrame
     }
   }, [iconVerifyProps, user?.account_address]);
 
-  console.log("Verify Icon Props***", iconVerifyProps);
+  console.log("stroke color**", strokeColor);
   return (
     <div
       className={clsx(
@@ -150,16 +150,9 @@ silver1 silver2 silverLastFrame
           />
           {iconVerifyProps !== "no-icon" && (
             <Circle
-              className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`}
-              circleColor={
-                iconVerifyProps === "rainbow"
-                  ? "#1B1C22"
-                  : iconVerifyProps === "silver"
-                  ? "#B1B1B1"
-                  : iconVerifyProps === "gold"
-                  ? "#E2BD3A"
-                  : "none"
-              }
+              className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover [&>*>*>*]:stroke-[${
+                strokeColor && strokeColor
+              }]`}
             />
           )}
           <div

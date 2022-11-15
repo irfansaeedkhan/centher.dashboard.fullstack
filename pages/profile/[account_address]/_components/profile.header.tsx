@@ -39,7 +39,7 @@ import { ProfileTabsSocial } from "./profile.tabs.social";
 import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
-import NFTProfileTabs from "./nft.profile.tabs";
+// import NFTProfileTabs from "./nft.profile.tabs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 type CoverImageWithFile = Partial<CoverImage> & {
@@ -446,9 +446,11 @@ silver1 silver2 silverLastFrame
                   sizes={"256px"}
                 />
                 <Circle
-                  className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover [&>*>*>*]:stroke-[${
-                    strokeColor && strokeColor
-                  }]`}
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
+                    iconVerifyProps === "rainbow" &&
+                      "[&>*>*>*]: AnimatecircleRainbow"
+                  )}
                 />
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
                   {iconVerifyProps !== "no-icon" && (
