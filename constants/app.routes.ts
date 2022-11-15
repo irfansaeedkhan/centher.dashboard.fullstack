@@ -33,7 +33,6 @@ export const AppRoutes = {
   home: "/",
   explore: "/explore",
   all_collections: "/collections/all",
-  top_influencers: "/top-influencers",
 
   admin: {
     index: "/admin",
