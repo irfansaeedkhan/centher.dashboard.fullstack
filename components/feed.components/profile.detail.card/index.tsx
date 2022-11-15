@@ -18,7 +18,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
+  const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
   /* 
+  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
 verification icon variants
 Rainbow1  Rainbow2 RainbowLastFrame
 gold1 gold2 goldLastFrame
@@ -77,8 +79,11 @@ silver1 silver2 silverLastFrame
             sizes={"256px"}
           />
           <Circle
-            className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`}
+            className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover [&>*>*>*]:stroke-[${
+              strokeColor && strokeColor
+            }]`}
           />
+
           <div
             className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
           >
