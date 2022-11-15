@@ -153,7 +153,7 @@ export const useExploreStore = create<ExploreStore>()(
 
           if (result && !error) {
             _topCreators = result.users.map((item: any) => {
-              return item.publicKey
+              return item.publicKey;
             });
           }
 

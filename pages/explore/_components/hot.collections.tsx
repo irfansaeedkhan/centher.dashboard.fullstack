@@ -33,21 +33,16 @@ const responsive = {
 
 const MAX_COLLECTIONS = 10;
 export const HotCollections: React.FC = () => {
-  
-  const {
-    hotCollections,
-    fetchCollections,
-    loadingCollections,
-  } = useExploreStore((state) => ({
-    hotCollections: state.collections,
-    fetchCollections: state.fetchCollections,
-    loadingCollections: state.loadingCollections,
-  }));
+  const { hotCollections, fetchCollections, loadingCollections } =
+    useExploreStore((state) => ({
+      hotCollections: state.collections,
+      fetchCollections: state.fetchCollections,
+      loadingCollections: state.loadingCollections,
+    }));
 
   useEffect(() => {
     fetchCollections(0, MAX_COLLECTIONS);
   }, [fetchCollections]);
-
 
   return (
     <div className={hotCollectionWrapper}>
