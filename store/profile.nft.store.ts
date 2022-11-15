@@ -156,17 +156,17 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               (stateNFTs) =>
                 !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
-            if (reload) {
-              return {
-                listedNfts: _nfts,
-                loadingListedNFTs: "loaded",
-              };
-            } else {
-              return {
-                listedNfts: [..._nfts, ...filteredNFTs],
-                loadingListedNFTs: "loaded",
-              };
-            }
+            // if (reload) {
+            return {
+              listedNfts: _nfts,
+              loadingListedNFTs: "loaded",
+            };
+            // } else {
+            //   return {
+            //     listedNfts: [..._nfts, ...filteredNFTs],
+            //     loadingListedNFTs: "loaded",
+            //   };
+            // }
           });
         } catch (error) {
           set({ loadingListedNFTs: "failed" });

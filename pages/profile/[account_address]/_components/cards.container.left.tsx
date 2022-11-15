@@ -35,7 +35,9 @@ export const CardsContainerLeft: React.FC<Props> = ({
           <PromotionCard2 className="sticky top-[84px]" />
         </>
       ) : (
-        <ProfileDetailCardSkeleton />
+        <>
+          <ProfileDetailCardSkeleton />
+        </>
       )}
     </div>
   );

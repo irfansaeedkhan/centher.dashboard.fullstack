@@ -21,6 +21,14 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     const [_result, setResult] = useState<IUserWithFollow>(result);
     const { user: loggedInUser } = useUser();
     const [verifyIcon, setVerifyIcon] = useState<string>("");
+    const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
+    /* 
+  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
+verification icon variants
+Rainbow1  Rainbow2 RainbowLastFrame
+gold1 gold2 goldLastFrame
+silver1 silver2 silverLastFrame
+*/
     const followUser = async (following_id: string) => {
       try {
         setResult((prev) => ({
@@ -67,7 +75,11 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-12 !w-12 object-cover border-2 border-background-shade-3 !m-0"
                 sizes={"256px"}
               />
-              <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover " />
+              <Circle
+                className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover [&>*>*>*]:stroke-[${
+                  strokeColor && strokeColor
+                }]  `}
+              />
               <div className="verifiedIcon absolute bottom-[-12px] right-[-17px] !h-[34px] !w-[34px] !m-0">
                 {verifyIcon.length > 1 && (
                   <Image

@@ -1,10 +1,10 @@
 import React from "react";
 
-const NftCollectionSkeleton = () => {
+const NftProfileCollectionSkeleton = () => {
   return (
-    <div className="w-[340px] h-[400px] bg-black rounded-lg flex flex-col gap-12 ">
+    <div className="w-[340px] h-[360px] bg-black rounded-lg flex flex-col gap-12 ">
       <div className="relative flex justify-center">
-        <div className="rounded-t-lg bg-[#888DAA] w-[340px] h-[244px] animate-pulse"></div>
+        <div className="rounded-t-lg bg-[#888DAA] w-[340px] h-[180px] animate-pulse"></div>
         <div className="rounded-full absolute object-cover h-[64px] w-[64px] z-50 -bottom-[1.8rem] border-2 border-gray-700 bg-background-shade-3"></div>
       </div>
       <div className="flex flex-col gap-3 px-4 items-center">
@@ -16,4 +16,4 @@ const NftCollectionSkeleton = () => {
   );
 };
 
-export default NftCollectionSkeleton;
+export default NftProfileCollectionSkeleton;

@@ -68,7 +68,7 @@ export const SingleNotification = React.forwardRef<
     <div
       ref={ref}
       className={clsx(
-        `w-full max-w-[1005px] h-[104px] p-6 flex justify-between`,
+        `w-full max-w-[1005px] h-[76px] px-6 py-4 flex justify-between`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,
@@ -82,9 +82,9 @@ export const SingleNotification = React.forwardRef<
           <Image
             src={notification.by?.profile_image?.path}
             alt="dp"
-            width={56}
-            height={56}
-            className="rounded-full h-[56px] w-[56px] object-cover"
+            width={44}
+            height={44}
+            className="rounded-full h-[44px] w-[44px] object-cover"
           />
         </Link>
 

@@ -8,6 +8,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Circle } from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface ProfileDetailCardProps {
   user: User;
@@ -18,34 +19,105 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
+  const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 
+  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
 verification icon variants
 Rainbow1  Rainbow2 RainbowLastFrame
 gold1 gold2 goldLastFrame
 silver1 silver2 silverLastFrame
 */
+  const iconVerifyProps = useVerificationTick(user?.account_address);
+
   useEffect(() => {
-    const timeout1 = setTimeout(function () {
-      setVerifyIcon("/images/Rainbow1.gif");
-    }, 3000);
-    const timeout2 = setTimeout(function () {
-      setVerifyIcon("/images/Rainbow2.gif");
-    }, 4600);
-    const interval1 = setInterval(() => {
-      setVerifyIcon("/images/RainbowLastFrame.png");
-    }, 9200);
-    const interval2 = setInterval(() => {
-      setVerifyIcon("/images/Rainbow2.gif");
-    }, 20000);
+    if (iconVerifyProps === "rainbow") {
+      setStrokeColor("#1B1C22");
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/Rainbow1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/Rainbow2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/RainbowLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/Rainbow2.gif");
+      }, 20000);
 
-    return () => {
-      clearTimeout(timeout1);
-      clearTimeout(timeout2);
-      clearInterval(interval1);
-      clearInterval(interval2);
-    };
-  }, []);
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps === "silver") {
+      setStrokeColor("#B1B1B1");
 
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/silver1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/silver2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/silverLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/silver2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps == "gold") {
+      setStrokeColor("#E2BD3A");
+
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/gold1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/gold2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/goldLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/gold2.gif");
+      }, 20000);
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps === "no-icon") {
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/silver1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/silver2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/silverLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/silver2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    }
+  }, [iconVerifyProps, user?.account_address]);
+
+  console.log("stroke color**", strokeColor);
   return (
     <div
       className={clsx(
@@ -76,13 +148,22 @@ silver1 silver2 silverLastFrame
             height={60}
             sizes={"256px"}
           />
-          <Circle
-            className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`}
-          />
+          {iconVerifyProps !== "no-icon" && (
+            <Circle
+              className={clsx(
+                `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`,
+                iconVerifyProps === "rainbow" &&
+                  "[&>*>*>*]: AnimatecircleRainbow",
+                iconVerifyProps === "silver" &&
+                  "[&>*>*>*]: AnimatecircleSilver",
+                iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+              )}
+            />
+          )}
           <div
             className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
           >
-            {verifyIcon.length > 1 && (
+            {iconVerifyProps !== "no-icon" && (
               <Image
                 src={verifyIcon}
                 alt={"verified icon"}
