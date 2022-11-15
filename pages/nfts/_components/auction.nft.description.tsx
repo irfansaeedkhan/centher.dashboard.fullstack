@@ -16,7 +16,11 @@ import {
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
-import { formatAddress, formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatEther2Number,
+} from "@/utils/format.address";
 import toast from "react-hot-toast";
 import useBNBPrice from "@/web3/hooks/use.chain.info";
 
@@ -266,7 +270,9 @@ export const AuctionNftDescription = ({
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex gap-3  items-center">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>{formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB</h5>
+          <h5 className={BnBNum}>
+            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
+          </h5>
           <h6 className={greyTxt}>
             {" "}
             =${formatBNB2USD(data?.auctionInfo.highestBidPrice, bnbPrice)}

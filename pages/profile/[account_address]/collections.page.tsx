@@ -44,23 +44,21 @@ let dummyData = [
     txTime: "1667595912",
   },
 ];
-const NFTProfileCollections: NextPageWithLayout = () => {  
-  const {account} = useWeb3React()
-  const {
-    collections,
-    fetchCollections,
-    loading
-  } = useProfileNFTStore((state) => ({
-    collections: state.collections,
-    fetchCollections: state.fetchCollections,
-    loading: state.loadingCollections
-  }))
+const NFTProfileCollections: NextPageWithLayout = () => {
+  const { account } = useWeb3React();
+  const { collections, fetchCollections, loading } = useProfileNFTStore(
+    (state) => ({
+      collections: state.collections,
+      fetchCollections: state.fetchCollections,
+      loading: state.loadingCollections,
+    })
+  );
 
   useEffect(() => {
-    if(account) {
-      fetchCollections(account)
+    if (account) {
+      fetchCollections(account);
     }
-  }, [account, fetchCollections])
+  }, [account, fetchCollections]);
 
   return (
     <div className={nftProfilePageContainer}>

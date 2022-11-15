@@ -1,29 +1,26 @@
-import { AppRoutes } from "@/constants/app.routes";
-import clsx from "clsx";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import clsx from "clsx";
+
+import { AppRoutes } from "@/constants/app.routes";
 
 interface ProfileProps {
   account_address: string | string[] | undefined;
-  loggedInUser: string | string[] | undefined;
 }
 
-const UserProfileTabs: React.FC<ProfileProps> = ({
-  account_address,
-  loggedInUser,
-}) => {
+const UserProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
   const router = useRouter();
 
   return (
-    <div className="mt-6 flex gap-10 w-full justify-center">
+    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base">
       <Link
         href={`/profile/${account_address}`}
         className={clsx(
           router.pathname === AppRoutes.profile.account_address
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "py-[10px] px-4 cursor-pointer"
+          "py-2 px-4 cursor-pointer"
         )}
       >
         Posts
@@ -35,7 +32,7 @@ const UserProfileTabs: React.FC<ProfileProps> = ({
           router.pathname === AppRoutes.profile.replies
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "py-[10px] px-4 cursor-pointer"
+          "py-2 px-4 cursor-pointer"
         )}
       >
         Replies
@@ -47,18 +44,19 @@ const UserProfileTabs: React.FC<ProfileProps> = ({
           router.pathname === AppRoutes.profile.followers
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "py-[10px] px-4 cursor-pointer"
+          "py-2 px-4 cursor-pointer"
         )}
       >
         Followers
       </Link>
+
       <Link
         href={`/profile/${account_address}/following`}
         className={clsx(
           router.pathname === AppRoutes.profile.following
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "py-[10px] px-4 cursor-pointer"
+          "py-2 px-4 cursor-pointer"
         )}
       >
         Followings

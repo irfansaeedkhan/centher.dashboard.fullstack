@@ -67,22 +67,20 @@ let dummyData = [
   },
 ];
 const NFTProfilePurchased: NextPageWithLayout = () => {
-  const {account} = useWeb3React()
-  const {
-    listedNFTs,
-    fetchListedNFTs,
-    loading
-  } = useProfileNFTStore((state) => ({
-    listedNFTs: state.listedNfts,
-    fetchListedNFTs: state.fetchListedNFTs,
-    loading: state.loadingListedNFTs
-  }))
+  const { account } = useWeb3React();
+  const { listedNFTs, fetchListedNFTs, loading } = useProfileNFTStore(
+    (state) => ({
+      listedNFTs: state.listedNfts,
+      fetchListedNFTs: state.fetchListedNFTs,
+      loading: state.loadingListedNFTs,
+    })
+  );
 
   useEffect(() => {
-    if(account) {
-      fetchListedNFTs(account, 0, 1000)
+    if (account) {
+      fetchListedNFTs(account, 0, 1000);
     }
-  }, [account, fetchListedNFTs])
+  }, [account, fetchListedNFTs]);
 
   return (
     <div className={nftProfilePageContainer}>

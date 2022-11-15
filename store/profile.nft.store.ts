@@ -20,9 +20,7 @@ export interface ProfileNFTStore {
   ownedNfts: NFT[];
   listedNfts: NFT[];
   fetchCollections: (account: string) => Promise<void>;
-  fetchOwnedNFTs: (
-    account: string
-  ) => Promise<void>;
+  fetchOwnedNFTs: (account: string) => Promise<void>;
   fetchListedNFTs: (
     account: string,
     offset?: number,
@@ -57,9 +55,9 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         })),
 
       updateOwnedOffset: () =>
-      set((state) => ({
-        ownedOffset: state.ownedNfts.length,
-      })),
+        set((state) => ({
+          ownedOffset: state.ownedNfts.length,
+        })),
 
       fetchCollections: async (account) => {
         try {
@@ -80,7 +78,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             },
             fetchPolicy: "cache-first",
           });
-          
+
           if (result && !error) {
             _collections = result.collections.map((item: any) => {
               return {
@@ -92,11 +90,10 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 totalSupply: item.totalSupply,
                 creator: item.creator,
                 ipfs: item.ipfs,
-                txTime: item.txTime
-              }
+                txTime: item.txTime,
+              };
             });
           }
-            
 
           set((state) => {
             return {
@@ -110,12 +107,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchListedNFTs: async (
-        account,
-        offset,
-        limit,
-        reload
-      ) => {
+      fetchListedNFTs: async (account, offset, limit, reload) => {
         try {
           set({ loadingListedNFTs: "loading" });
           const client = new ApolloClient({
@@ -136,7 +128,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             },
             fetchPolicy: "cache-first",
           });
-            
 
           if (result) {
             _nfts = result.nfts.map((item: any) => {
@@ -182,10 +173,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
-      
-      fetchOwnedNFTs: async (
-        account
-      ) => {
+
+      fetchOwnedNFTs: async (account) => {
         try {
           set({ loadingOwnedNFTs: "loading" });
           let _nfts: NFT[] = [];
@@ -208,22 +197,22 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             variables: {},
             fetchPolicy: "cache-first",
           });
-          
-          if(result1) {
+
+          if (result1) {
             _collections = result1.collections.map((item: any) => {
-              return item.collection
-            })
+              return item.collection;
+            });
           }
-          console.log("sniper: _collections: ", _collections)
+          console.log("sniper: _collections: ", _collections);
 
           if (result) {
             const result2 = result.data.result.filter((item: any) => {
-              return _collections.includes(item.token_address)
-            })
+              return _collections.includes(item.token_address);
+            });
             _nfts = result2.map((item: any) => {
-              let ipfs = item.token_uri
-              if(item.token_uri.split("ipfs").length > 2)
-                ipfs = "ipfs:/" + item.token_uri.split("ipfs")[2]
+              let ipfs = item.token_uri;
+              if (item.token_uri.split("ipfs").length > 2)
+                ipfs = "ipfs:/" + item.token_uri.split("ipfs")[2];
               return {
                 id: item.token_hash,
                 collection: item.token_address,
@@ -238,7 +227,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               };
             });
           }
-          console.log("sniper: owned NFTs: ", _nfts)
+          console.log("sniper: owned NFTs: ", _nfts);
 
           set((state) => {
             // Filter out all nfts that are already in the store
@@ -246,19 +235,17 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               (stateNFTs) =>
                 !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
-            
+
             return {
               ownedNfts: _nfts,
               loadingOwnedNFTs: "loaded",
             };
-            
           });
         } catch (error) {
           set({ loadingOwnedNFTs: "failed" });
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
-
     }),
     { name: "ProfileNFTStore" }
   )

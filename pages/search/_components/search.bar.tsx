@@ -6,7 +6,7 @@ import { useSearchStore } from "@/store/search.store";
 import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 
-const SearchBar = () => {
+const Searchbar = () => {
   const router = useRouter();
 
   const { setSearchQuery } = useSearchStore((state) => ({
@@ -63,10 +63,7 @@ const SearchBar = () => {
   };
 
   return (
-    <form
-      className="relative w-full max-w-[528px] md:block hidden"
-      onSubmit={submitData}
-    >
+    <form className="relative w-full" onSubmit={submitData}>
       <div className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary">
         <input
           type="text"
@@ -107,4 +104,4 @@ const SearchBar = () => {
   );
 };
 
-export default SearchBar;
+export default Searchbar;

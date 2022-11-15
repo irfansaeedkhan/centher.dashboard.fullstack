@@ -1,9 +1,7 @@
 // React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
-import { useRouter } from "next/router";
+import clsx from "clsx";
 
-import useGetUser from "@/hooks/use.get.user";
 import { MessagesCard } from "@/components/feed.components";
 
 import ProfileHeader from "./profile.header";
@@ -15,40 +13,29 @@ interface AllPagesWrapperProps {
 }
 
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
-  const router = useRouter();
-  const { user, loading: userLoading } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
-
   return (
-    <div className={componentWrapper}>
+    <>
       <div className="w-full max-w-[1136px] mx-auto">
         <ProfileTabs />
-        <div className="flex items-start gap-6">
-          <div className="sidecards">
-            <ProfileSideCard />
+
+        <div
+          className={clsx(
+            `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)]`
+          )}
+        >
+          <ProfileHeader className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto" />
+
+          <ProfileSideCard className="flg:row-start-2 flg:col-start-2 flg:col-span-1 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3" />
+
+          <div className="row-start-2 col-span-full fsm:col-start-2 fsm:col-span-1 flg:col-start-3 f2xl:col-start-2">
+            {props.children}
           </div>
-          <div className="mainContent flex flex-col gap-6">
-            <ProfileHeader />
-            <div className={`flex gap-6`}>
-              <div className="sm:w-full lg:w-[544px] flex-grow space-y-3">
-                {props.children}
-              </div>
-              <div
-                className={`min-w-[272px] flex-col gap-3 xl:!flex sm:!hidden sticky`}
-              >
-                <MessagesCard />
-                {/* <RecentActivitiesCard /> */}
-              </div>
-            </div>
+
+          <div className={`hidden f2xl:block space-y-3 f2xl:col-start-3`}>
+            <MessagesCard className="sticky top-[84px]" />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
-
-// styling
-const componentWrapper = ctl(`
-  flex flex-col bg-black-shade-3 w-full max-w-[1236px] mx-auto gap-6
-`);

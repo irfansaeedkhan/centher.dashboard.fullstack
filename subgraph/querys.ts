@@ -207,8 +207,7 @@ export const collectionsByAccount = `
       txTime
     }
 }
-`
-
+`;
 
 export const listedNFTsByAccount = `
   query($first: Int!, $skip: Int!, $owner: Bytes!) {
@@ -241,7 +240,7 @@ export const listedNFTsByAccount = `
         }
     }
   }
-`
+`;
 
 export const registeredCollections = `
   query {
@@ -249,4 +248,4 @@ export const registeredCollections = `
       collection
     }
   } 
-`
+`;

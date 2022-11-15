@@ -24,16 +24,16 @@ export const formatBNB2USD = (bnb: number | undefined, bnbPrice: number) => {
 
 export const formatIPFSUrl = (hash: string | undefined) => {
   if (hash === undefined) return "";
-  else if(hash.substring(0, 7) === "ipfs://") {
+  else if (hash.substring(0, 7) === "ipfs://") {
     if (hash.length >= 53)
       return NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash.substring(7, hash.length);
     else return hash;
   } else {
-    const splitHash = hash.split("/Qm")
-    if(splitHash.length >= 2) {
-      return NEXT_PUBLIC_IPFS_URL + "/ipfs/Qm" + splitHash[1]
+    const splitHash = hash.split("/Qm");
+    if (splitHash.length >= 2) {
+      return NEXT_PUBLIC_IPFS_URL + "/ipfs/Qm" + splitHash[1];
     } else {
-      return hash
+      return hash;
     }
   }
 };

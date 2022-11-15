@@ -80,42 +80,48 @@ let dummyData = [
   },
 ];
 const NFTProfile: NextPageWithLayout = () => {
-  const {account} = useWeb3React()
+  const { account } = useWeb3React();
   const {
     ownedNFTs,
     fetchOwnedNFTs,
     loadingOwnedNFTs,
     listedNFTs,
     fetchListedNFTs,
-    loadingListedNFTs
+    loadingListedNFTs,
   } = useProfileNFTStore((state) => ({
     ownedNFTs: state.ownedNfts,
     fetchOwnedNFTs: state.fetchOwnedNFTs,
     loadingOwnedNFTs: state.loadingOwnedNFTs,
     listedNFTs: state.listedNfts,
     fetchListedNFTs: state.fetchListedNFTs,
-    loadingListedNFTs: state.loadingListedNFTs
-  }))
+    loadingListedNFTs: state.loadingListedNFTs,
+  }));
 
   useEffect(() => {
-    if(account) {
-      fetchOwnedNFTs(account)
+    if (account) {
+      fetchOwnedNFTs(account);
     }
-  }, [account, fetchOwnedNFTs])
+  }, [account, fetchOwnedNFTs]);
 
   useEffect(() => {
-    if(account) {
-      fetchListedNFTs(account, 0, 1000)
+    if (account) {
+      fetchListedNFTs(account, 0, 1000);
     }
-  }, [account, fetchListedNFTs])
+  }, [account, fetchListedNFTs]);
 
-  const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([])
+  const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
   useEffect(() => {
-    console.log("sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs", loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs)
-    if(loadingListedNFTs === 'loaded' && loadingOwnedNFTs === 'loaded') {
-      setDisplayNFTs([...listedNFTs, ...ownedNFTs])
+    console.log(
+      "sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs",
+      loadingOwnedNFTs,
+      loadingListedNFTs,
+      listedNFTs,
+      ownedNFTs
+    );
+    if (loadingListedNFTs === "loaded" && loadingOwnedNFTs === "loaded") {
+      setDisplayNFTs([...listedNFTs, ...ownedNFTs]);
     }
-  }, [loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs])
+  }, [loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs]);
 
   return (
     <div className={nftProfilePageContainer}>
