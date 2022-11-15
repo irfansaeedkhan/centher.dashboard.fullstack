@@ -5,11 +5,6 @@ export interface IconProps {
   className?: string;
 }
 
-export interface CircleIconProps {
-  className?: string;
-  circleColor?: string;
-}
-
 export { default as MetamaskIcon } from "./metamask.icon.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
 export { default as TwitterSvg } from "./twitter.svg";
@@ -2182,8 +2177,7 @@ export const DeleteCrossIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
-export const Circle: React.FC<CircleIconProps> = ({ className }) => {
-  console.log("Circle Color", className);
+export const Circle: React.FC<IconProps> = ({ className }) => {
   return (
     <svg
       className={className}

@@ -449,7 +449,10 @@ silver1 silver2 silverLastFrame
                   className={clsx(
                     `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
                     iconVerifyProps === "rainbow" &&
-                      "[&>*>*>*]: AnimatecircleRainbow"
+                      "[&>*>*>*]: AnimatecircleRainbow",
+                    iconVerifyProps === "silver" &&
+                      "[&>*>*>*]: AnimatecircleSilver",
+                    iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
                   )}
                 />
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">

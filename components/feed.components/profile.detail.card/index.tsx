@@ -150,9 +150,14 @@ silver1 silver2 silverLastFrame
           />
           {iconVerifyProps !== "no-icon" && (
             <Circle
-              className={`absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover [&>*>*>*]:stroke-[${
-                strokeColor && strokeColor
-              }]`}
+              className={clsx(
+                `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`,
+                iconVerifyProps === "rainbow" &&
+                  "[&>*>*>*]: AnimatecircleRainbow",
+                iconVerifyProps === "silver" &&
+                  "[&>*>*>*]: AnimatecircleSilver",
+                iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+              )}
             />
           )}
           <div
