@@ -31,3 +31,6 @@ export const getBusdAddress = () => {
 export const getMarketplaceAddress = () => {
   return getAddress(addresses.marketplace);
 };
+export const getNTRAddress = () => {
+  return getAddress(addresses.ntr);
+};

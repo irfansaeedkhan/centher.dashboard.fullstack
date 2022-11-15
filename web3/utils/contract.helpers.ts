@@ -1,3 +1,5 @@
+import { ethers } from "ethers";
+
 // Addresses
 import {
   getNtrdaoAddress,
@@ -7,6 +9,7 @@ import {
   getRegistrationAddress,
   getRouterAddress,
   getMarketplaceAddress,
+  getNTRAddress,
 } from "./address.helpers";
 
 // ABI
@@ -16,10 +19,11 @@ import marketplaceAbi from "../abis/marketplace.json";
 import registrationAbi from "../abis/registration.json";
 import multicallAbi from "../abis/multicall.json";
 import busdAbi from "../abis/erc20.json";
+import ntrAbi from "../abis/ntr.json";
 import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
 import { simpleRpcProvider } from "./providers";
-import { ethers } from "ethers";
+
 // const getContract = (abi: any, address: string, library: Web3Provider) => {
 //   // const signerOrProvider = signer ?? simpleRpcProvider
 //   return new Contract(address, abi, library?.getSigner())
@@ -75,4 +79,8 @@ export const getRouterContract = (signer: any) => {
 
 export const getBusdContract = (signer: any) => {
   return getContract(busdAbi, getBusdAddress(), signer);
+};
+
+export const getNTRContract = (signer?: SignerOrProvider) => {
+  return getContract(ntrAbi, getNTRAddress(), signer);
 };

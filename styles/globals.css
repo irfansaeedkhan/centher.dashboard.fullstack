@@ -694,7 +694,7 @@ input:-webkit-autofill {
 
 .Animatecircle {
   fill: none;
-  stroke: #febf32;
+  /* stroke: #febf32; */
   stroke-miterlimit: 10;
   stroke-width: 3px;
   stroke-dasharray: 1260;
