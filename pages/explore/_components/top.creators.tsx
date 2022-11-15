@@ -6,16 +6,13 @@ import { useExploreStore } from "@/store/explore.store";
 
 const MAX_TOP_CREATORS = 10;
 const TopCreators = () => {
-  
-  const {
-    topCreators,
-    fetchTopCreators,
-    loadingTopCreators,
-  } = useExploreStore((state) => ({
-    topCreators: state.topCreators,
-    fetchTopCreators: state.fetchTopCreators,
-    loadingTopCreators: state.loadingTopCreators,
-  }));
+  const { topCreators, fetchTopCreators, loadingTopCreators } = useExploreStore(
+    (state) => ({
+      topCreators: state.topCreators,
+      fetchTopCreators: state.fetchTopCreators,
+      loadingTopCreators: state.loadingTopCreators,
+    })
+  );
 
   useEffect(() => {
     fetchTopCreators(0, MAX_TOP_CREATORS);
@@ -47,9 +44,10 @@ const TopCreators = () => {
           ref={ref}
           className="flex w-[calc(100%-132px)] items-center gap-14 overflow-x-scroll scrollSetLight2 !overflow-y-hidden py-8"
         >
-          {topCreators.length > 0 && topCreators.map((item: any, index: any) => {
-            return <CreatorCard publicKey={item} key={index}/>
-          })}
+          {topCreators.length > 0 &&
+            topCreators.map((item: any, index: any) => {
+              return <CreatorCard publicKey={item} key={index} />;
+            })}
         </div>
         <button onClick={() => scroll(200)} className={scrollButton}>
           <BsArrowRightShort />

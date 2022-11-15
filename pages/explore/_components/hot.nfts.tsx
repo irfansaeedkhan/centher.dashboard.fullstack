@@ -12,18 +12,14 @@ import NftsSkeleton from "@/components/loading.skeletons/nfts";
 const MAX_HOT_NFTS = 10;
 
 export const HotNFTs: React.FC = () => {
+  const { hotNFTs, fetchHotNFTs, loadingHotNFTs } = useExploreStore(
+    (state) => ({
+      hotNFTs: state.hotNFTs,
+      fetchHotNFTs: state.fetchHotNFTs,
+      loadingHotNFTs: state.loadingHotNFTs,
+    })
+  );
 
-
-  const {
-    hotNFTs,
-    fetchHotNFTs,
-    loadingHotNFTs,
-  } = useExploreStore((state) => ({
-    hotNFTs: state.hotNFTs,
-    fetchHotNFTs: state.fetchHotNFTs,
-    loadingHotNFTs: state.loadingHotNFTs,
-  }));
-  
   useEffect(() => {
     fetchHotNFTs(0, MAX_HOT_NFTS);
   }, [fetchHotNFTs]);
@@ -57,7 +53,7 @@ export const HotNFTs: React.FC = () => {
         </div>
       )}
 
-      {loadingHotNFTs !== "loaded" && (
+      {loadingHotNFTs === "loaded" && hotNFTs.length === 0 && (
         <>
           <div className="flex justify-center items-center text-white">
             <HotNftEmptyIcon />

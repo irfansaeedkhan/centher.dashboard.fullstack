@@ -301,7 +301,7 @@ export const CreateNFTCollectionForm = ({
           </div>
         </div>
         <Button
-          title={"Create Collectiion"}
+          title={"Create Collection"}
           variant={formState.isValid ? "v1" : "v2"}
           disabled={!formState.isValid}
           onClick={handleSubmit(onSubmit)}

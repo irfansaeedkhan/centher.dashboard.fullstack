@@ -3,9 +3,9 @@ import Image from "next/image";
 import React from "react";
 
 interface CreatorCardProps {
-  publicKey: string
+  publicKey: string;
 }
-const CreatorCard = ({publicKey}: CreatorCardProps) => {
+const CreatorCard = ({ publicKey }: CreatorCardProps) => {
   // const {user, loading} = useGetUser(publicKey)
   return (
     <div className="flex gap-3 items-center min-w-[122px]">
@@ -17,7 +17,9 @@ const CreatorCard = ({publicKey}: CreatorCardProps) => {
         className="!w-12 !h-12 object-cover"
       />
       <div className={`flex flex-col gap-[2px]`}>
-        <p className="text-sm font-medium text-white">{formatAddress(publicKey)}</p>
+        <p className="text-sm font-medium text-white">
+          {formatAddress(publicKey)}
+        </p>
         {/* <p className="text-xs text-gray-shade-7">Tradesr</p> */}
       </div>
     </div>

@@ -7,7 +7,6 @@ import { HotNFTs, HotCollections, Explore } from "./_components";
 import Banner from "./_components/banner";
 import TopCreators from "./_components/top.creators";
 
-
 const ExplorePage: NextPageWithLayout = () => {
   return (
     <div className="flex flex-col gap-10">
