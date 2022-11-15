@@ -39,6 +39,7 @@ export { default as HotNftEmptyIcon } from "./hot.nfts.empty.icon.svg";
 export { default as NftsCollectionEmpty } from "./nfts.collection.empty.svg";
 export { default as Rocket } from "./rocket.svg";
 export { default as RocketShadow } from "./rocket.shadow.svg";
+export { default as CreateNFT } from "./create.nft.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (

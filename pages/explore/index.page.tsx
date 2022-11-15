@@ -69,7 +69,7 @@ const ExplorePage: NextPageWithLayout = () => {
           loadingCollections={loadingCollections}
           hotCollections={collections}
         />
-        <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} />
+        {/* <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} /> */}
       </div>
     </div>
   );

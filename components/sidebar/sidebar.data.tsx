@@ -7,7 +7,6 @@ import {
   Explore,
   Notification,
   ProfitsDashboard,
-  TopInfluencer,
   VotingChain,
   Multilevel,
   NetworkGenealogy,
@@ -49,11 +48,6 @@ export const sidebarData: SidebarData = {
         label: "Explore",
         url: AppRoutes.explore,
         icon: Explore,
-      },
-      {
-        label: "Top Influencers",
-        url: AppRoutes.top_influencers,
-        icon: TopInfluencer,
       },
       {
         label: "Create Collection",
