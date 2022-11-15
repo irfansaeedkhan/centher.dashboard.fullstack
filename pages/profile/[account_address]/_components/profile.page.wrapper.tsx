@@ -20,7 +20,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
 
         <div
           className={clsx(
-            `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)]`
+            `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] grid-rows-[auto_1fr]`
           )}
         >
           <ProfileHeader className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto" />
