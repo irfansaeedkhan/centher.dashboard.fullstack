@@ -1,7 +1,12 @@
+import { formatAddress } from "@/utils/format.address";
 import Image from "next/image";
 import React from "react";
 
-const CreatorCard = () => {
+interface CreatorCardProps {
+  publicKey: string
+}
+const CreatorCard = ({publicKey}: CreatorCardProps) => {
+  // const {user, loading} = useGetUser(publicKey)
   return (
     <div className="flex gap-3 items-center min-w-[122px]">
       <Image
@@ -12,8 +17,8 @@ const CreatorCard = () => {
         className="!w-12 !h-12 object-cover"
       />
       <div className={`flex flex-col gap-[2px]`}>
-        <p className="text-sm font-medium text-white">Wadson</p>
-        <p className="text-xs text-gray-shade-7">Tradesr</p>
+        <p className="text-sm font-medium text-white">{formatAddress(publicKey)}</p>
+        {/* <p className="text-xs text-gray-shade-7">Tradesr</p> */}
       </div>
     </div>
   );
