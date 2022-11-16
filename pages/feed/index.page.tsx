@@ -3,11 +3,8 @@ import { useInView } from "react-intersection-observer";
 
 import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import {
-  PostCardNew,
-  SinglePost,
-  FeedPagesWrapper,
-} from "@/components/feed.components";
+import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
+import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { NoPost } from "@/assets/svgs";
@@ -55,11 +52,7 @@ const Feed: NextPageWithLayout = () => {
   return (
     <>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
-        <PostCardNew
-          onPostCreated={(post) => {
-            addNewPost(post);
-          }}
-        />
+        <CreatePostCard />
       )}
 
       {posts.map((post) => {

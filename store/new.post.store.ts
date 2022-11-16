@@ -4,6 +4,11 @@ import toast from "react-hot-toast";
 
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
+import {
+  createFilesChunks,
+  getNewPostAndUpdateState,
+  uploadFiles,
+} from "@/utils/create.post";
 
 export interface NewPostStore {
   isModalOpen: boolean;
@@ -80,40 +85,30 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostCreateLoading: true });
 
-          // let filesChunksDetails: Array<FileChunksChunksCalculations> =
-          //   await post_file_details(userSelectedFiles);
+          const filesChunksData = createFilesChunks(selectedFiles);
 
-          // setUploadingFileStatus(0);
-          // setFile(filesChunksDetails[0]?.file_name);
-
-          let { data } = await axiosNodeApi.post(
+          const { data } = await axiosNodeApi.post(
             `/api/socials/posts/signedurl`,
             {
-              post_files_detail: [],
+              post_files_detail: filesChunksData,
               post_text: postText,
               // reply_post_id: reply_post_id,
             }
           );
 
-          // console.log("Post created data : ", data);
           // if (reply && data.message_description == "Post created successfully") {
           //   setTotalReplyCount((prev) => Number(prev) + 1);
           // }
 
-          // currentPostID = data.post_id;
+          // If no file media that means only text was available in post
+          if (filesChunksData.length === 0) {
+            await getNewPostAndUpdateState(data.post_id);
+            get().closeModal();
+            return;
+          }
 
-          // // If no file media that means only text was avaible in post
-          // if (filesChunksDetails.length == 0) {
-          //   //setUploadingFileStatus(100);
-          // await getNewPostAndUpdateState();
-          get().closeModal();
-          //   return;
-          // }
-
-          // // Starting uploading of task
-          // await UploadFiles(filesChunksDetails, 0, data.post_url).catch((error) => {
-          //   console.log("Error ", error);
-          // });
+          // Starting uploading the files
+          await uploadFiles(filesChunksData, 0, data.post_url, data.post_id);
         } catch (error: any) {
           customLog("Error in create post: ", ["development"]);
           customLog(error, ["development"]);
@@ -124,7 +119,7 @@ export const useNewPostStore = create<NewPostStore>()(
   )
 );
 
-interface FileWithID {
+export interface FileWithID {
   original: File;
   id: string;
 }
