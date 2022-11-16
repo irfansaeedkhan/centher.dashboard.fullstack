@@ -21,10 +21,6 @@ export const CreatePostModal: React.FC<Props> = () => {
     postTextMaxLength,
   } = useNewPostStore();
 
-  const handlePostTextChange = (e: any) => {
-    setPostText(e.target.value);
-  };
-
   if (!user) {
     return null;
   }
@@ -63,7 +59,7 @@ export const CreatePostModal: React.FC<Props> = () => {
               maxLength={postTextMaxLength}
               placeholder="Type here"
               value={postText}
-              onChange={handlePostTextChange}
+              onChange={(e) => setPostText(e.target.value)}
             ></textarea>
           </div>
         </div>

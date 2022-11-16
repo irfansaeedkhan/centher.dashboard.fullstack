@@ -54,7 +54,7 @@ export const PostTextCounter: React.FC<Props> = ({
           cx={center}
           cy={center}
           fill="none"
-          stroke-width={strokeWidth}
+          strokeWidth={strokeWidth}
           className={clsx(`stroke-gray-shade-3`)}
         />
         <circle
@@ -62,10 +62,10 @@ export const PostTextCounter: React.FC<Props> = ({
           cx={center}
           cy={center}
           fill="none"
-          stroke-width={strokeWidth}
+          strokeWidth={strokeWidth}
           strokeLinecap="round"
-          stroke-dasharray={dashArray}
-          stroke-dashoffset={dashOffset}
+          strokeDasharray={dashArray}
+          strokeDashoffset={dashOffset}
           className={clsx({
             "stroke-red-500": thresholdReached,
             "stroke-brand-primary": !thresholdReached,
