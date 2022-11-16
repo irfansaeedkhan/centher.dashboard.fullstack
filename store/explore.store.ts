@@ -185,6 +185,7 @@ export const useExploreStore = create<ExploreStore>()(
             },
             fetchPolicy: "cache-first",
           });
+          console.log("@@", result);
           if (result && !error) {
             _allNFTs = result.nfts.map((item: any) => {
               let _endTime = 0;
