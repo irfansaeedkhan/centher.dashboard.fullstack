@@ -9,11 +9,9 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useRouter } from "next/router";
 
 const NFTProfile: NextPageWithLayout = () => {
-  const { connectWallet } = useConnectWallet();
   const router = useRouter();
   const account = useMemo(() => {
     return router.query.account_address as string;

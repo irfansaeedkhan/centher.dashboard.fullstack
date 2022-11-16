@@ -13,7 +13,6 @@ const TopCreators = () => {
       loadingTopCreators: state.loadingTopCreators,
     })
   );
-
   useEffect(() => {
     fetchTopCreators(0, MAX_TOP_CREATORS);
   }, [fetchTopCreators]);
@@ -46,7 +45,13 @@ const TopCreators = () => {
         >
           {topCreators.length > 0 &&
             topCreators.map((item: any, index: any) => {
-              return <CreatorCard publicKey={item} key={index} />;
+              return (
+                <CreatorCard
+                  publicKey={item}
+                  key={index}
+                  loadingTopCreators={loadingTopCreators}
+                />
+              );
             })}
         </div>
         <button onClick={() => scroll(200)} className={scrollButton}>

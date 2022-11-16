@@ -5,7 +5,6 @@ import ctl from "@netlify/classnames-template-literals";
 import NFTCard from "@/components/nft.card";
 import { NFT, useExploreStore } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
-import { LoadingState } from "@/models/common";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import Link from "next/link";
