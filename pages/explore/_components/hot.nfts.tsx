@@ -5,9 +5,9 @@ import ctl from "@netlify/classnames-template-literals";
 import NFTCard from "@/components/nft.card";
 import { NFT, useExploreStore } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
-import { LoadingState } from "@/models/common";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
+import Link from "next/link";
 
 const MAX_HOT_NFTS = 10;
 
@@ -26,7 +26,15 @@ export const HotNFTs: React.FC = () => {
 
   return (
     <div className={hotNftPageWrapper}>
-      <div className={hotNftAnimation}>Hot NFTs</div>
+      <div className="flex justify-between items-center">
+        <div className={hotNftAnimation}>Hot NFTs</div>
+        <Link
+          href={"/explore/nfts"}
+          className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12"
+        >
+          View All
+        </Link>
+      </div>
 
       {hotNFTs.length > 0 && (
         <div className={`${nftCardWrapper} nftCardContainer`}>
