@@ -117,7 +117,6 @@ silver1 silver2 silverLastFrame
     }
   }, [iconVerifyProps, user?.account_address]);
 
-  console.log("stroke color**", strokeColor);
   return (
     <div
       className={clsx(
@@ -163,7 +162,7 @@ silver1 silver2 silverLastFrame
           <div
             className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
           >
-            {iconVerifyProps !== "no-icon" && (
+            {iconVerifyProps !== "no-icon" && verifyIcon && (
               <Image
                 src={verifyIcon}
                 alt={"verified icon"}
