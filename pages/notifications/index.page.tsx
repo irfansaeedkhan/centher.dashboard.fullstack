@@ -64,11 +64,11 @@ const Notifications: NextPageWithLayout = () => {
 
   return (
     <div className="flex">
-      <div className="space-y-6 flex-grow">
+      <div className="space-y-6 flex-grow flex items-center justify-center flex-col">
         {/* Today */}
 
         {notificationToday.length > 0 && (
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Earlier</div>
 
             {notificationToday.map((notification, index) => {
@@ -88,7 +88,7 @@ const Notifications: NextPageWithLayout = () => {
         {/* Yesterday */}
 
         {notificationYesterday.length > 0 && (
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Yesterday</div>
 
             {notificationYesterday.map((notification, index) => {
@@ -108,7 +108,7 @@ const Notifications: NextPageWithLayout = () => {
         {/* Seven days */}
 
         {notificationSevenday.length > 0 && (
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Last 7 Days</div>
 
             {notificationSevenday.map((notification, index) => {
@@ -128,9 +128,9 @@ const Notifications: NextPageWithLayout = () => {
         {/* Remaining */}
 
         {notifications.length > 0 && (
-          <div>
+          <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Older</div>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               {notifications.map((notification, index) => {
                 if (
                   notification._id ===

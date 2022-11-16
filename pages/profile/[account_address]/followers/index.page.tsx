@@ -4,8 +4,6 @@ import { useInView } from "react-intersection-observer";
 
 import { useFollowersStore } from "@/store/followers.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import useGetUser from "@/hooks/use.get.user";
-import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import UserWithFollow from "@/components/user.with.follow";
@@ -94,7 +92,9 @@ const Followers: NextPageWithLayout = () => {
 Followers.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Followers">
-      <ProfilePageWrapper>{page}</ProfilePageWrapper>
+      <ProfilePageWrapper currentTab="social-profile">
+        <div className="space-y-3">{page}</div>
+      </ProfilePageWrapper>
     </AllPagesWrapper>
   );
 };

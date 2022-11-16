@@ -10,7 +10,7 @@ import { IoSearchSharp } from "react-icons/io5";
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
-import { Logout, SettingIcon } from "@/assets/svgs";
+import { CreateNFT, Logout, SettingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
@@ -77,13 +77,16 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       >
         <div>
           {user && (
-            <Link
-              href={AppRoutes.nfts.create_nft}
-              className={connectButton}
-              onClick={onClose}
-            >
-              Create NFT
-            </Link>
+            <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
+              <CreateNFT />
+              <Link
+                href={AppRoutes.nfts.create_nft}
+                className={`text-sm font-semibold text-gray-shade-7`}
+                onClick={onClose}
+              >
+                Create NFT
+              </Link>
+            </div>
           )}
 
           <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
@@ -91,6 +94,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
             <Link
               href={`/search`}
               className={`text-sm font-semibold text-gray-shade-7`}
+              onClick={onClose}
             >
               Search
             </Link>

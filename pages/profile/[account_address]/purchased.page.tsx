@@ -1,20 +1,14 @@
-// React, Next, NPM Packages
-import Link from "next/link";
-import { useRouter } from "next/router";
-import ctl from "@netlify/classnames-template-literals";
+import { useEffect } from "react";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
-import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
-
-// Current page imports
-import { ProfilePageWrapper } from "./_components";
+import { NextPageWithLayout } from "@/pages/_app.page";
 import NFTCard from "@/components/nft.card";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
-import { NFTProfilePageWrapper } from "./_components/nftprofile.page.wrapper";
-import { useEffect } from "react";
+
+import { ProfilePageWrapper } from "./_components";
 
 let dummyData = [
   {
@@ -83,7 +77,7 @@ const NFTProfilePurchased: NextPageWithLayout = () => {
   }, [account, fetchListedNFTs]);
 
   return (
-    <div className={nftProfilePageContainer}>
+    <>
       {listedNFTs.length !== 0 ? (
         <div className="nftCardContainer">
           {listedNFTs.map((nft) => (
@@ -100,26 +94,14 @@ const NFTProfilePurchased: NextPageWithLayout = () => {
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
 NFTProfilePurchased.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Profile">
-    <NFTProfilePageWrapper>{page}</NFTProfilePageWrapper>
+    <ProfilePageWrapper currentTab="nft-profile">{page}</ProfilePageWrapper>
   </AllPagesWrapper>
 );
 
 export default NFTProfilePurchased;
-
-// styling
-const nftProfilePageContainer = ctl(`
-`);
-
-const tabContentContainer = ctl(`
-tabContent flex items-center justify-center w-full h-[250px]
-`);
-
-const tabContent = ctl(`
-textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl w-fit
-`);

@@ -249,3 +249,13 @@ export const registeredCollections = `
     }
   } 
 `;
+
+export const topCreators = `
+  query($skip: Int!, $first: Int!) {
+    users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first) {
+      createNFTCount
+      createCollectionCount
+      publicKey
+    }
+  }
+`;

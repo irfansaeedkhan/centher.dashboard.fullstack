@@ -39,6 +39,7 @@ export { default as HotNftEmptyIcon } from "./hot.nfts.empty.icon.svg";
 export { default as NftsCollectionEmpty } from "./nfts.collection.empty.svg";
 export { default as Rocket } from "./rocket.svg";
 export { default as RocketShadow } from "./rocket.shadow.svg";
+export { default as CreateNFT } from "./create.nft.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (
@@ -2176,21 +2177,16 @@ export const DeleteCrossIcon: React.FC<IconProps> = (props) => {
     </svg>
   );
 };
-export const Circle: React.FC<IconProps> = (props) => {
+export const Circle: React.FC<IconProps> = ({ className }) => {
   return (
     <svg
-      className={props.className}
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 402.06 402.06"
     >
       <g id="Layer_2" data-name="Layer 2">
         <g id="Layer_1-2" data-name="Layer 1">
-          <circle
-            className="Animatecircle"
-            cx="201.03"
-            cy="201.03"
-            r="200.53"
-          />
+          <circle cx="201.03" cy="201.03" r="200.53" />
         </g>
       </g>
     </svg>

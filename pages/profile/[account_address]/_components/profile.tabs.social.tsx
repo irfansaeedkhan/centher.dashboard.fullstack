@@ -9,7 +9,9 @@ interface ProfileProps {
   account_address: string | string[] | undefined;
 }
 
-const UserProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
+export const ProfileTabsSocial: React.FC<ProfileProps> = ({
+  account_address,
+}) => {
   const router = useRouter();
 
   return (
@@ -64,5 +66,3 @@ const UserProfileTabs: React.FC<ProfileProps> = ({ account_address }) => {
     </div>
   );
 };
-
-export default UserProfileTabs;

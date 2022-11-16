@@ -14,7 +14,10 @@ import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.de
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
-const ProfileSideCard: React.FC<Props> = ({ className, ...props }) => {
+export const CardsContainerLeft: React.FC<Props> = ({
+  className,
+  ...props
+}) => {
   const router = useRouter();
   const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
@@ -32,10 +35,10 @@ const ProfileSideCard: React.FC<Props> = ({ className, ...props }) => {
           <PromotionCard2 className="sticky top-[84px]" />
         </>
       ) : (
-        <ProfileDetailCardSkeleton />
+        <>
+          <ProfileDetailCardSkeleton />
+        </>
       )}
     </div>
   );
 };
-
-export default ProfileSideCard;

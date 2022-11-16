@@ -1,22 +1,19 @@
 // React, Next, NPM Packages
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 // App imports
 import { useRepliesStore } from "@/store/profile.replies.store";
-import { NextPageWithLayout } from "@/pages/_app.page";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
+import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { SingleReply } from "@/components/feed.components";
-import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-
-// Current page imports
-import { ProfilePageWrapper } from "../_components";
-import { RepliesIcon } from "@/assets/svgs";
 import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
+import { RepliesIcon } from "@/assets/svgs";
+
+import { ProfilePageWrapper } from "../_components";
 
 const Replies: NextPageWithLayout = () => {
   // Create User Profile View
@@ -123,7 +120,9 @@ const Replies: NextPageWithLayout = () => {
 Replies.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Profile">
-      <ProfilePageWrapper>{page}</ProfilePageWrapper>
+      <ProfilePageWrapper currentTab="social-profile">
+        <div className="space-y-3">{page}</div>
+      </ProfilePageWrapper>
     </AllPagesWrapper>
   );
 };

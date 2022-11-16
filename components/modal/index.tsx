@@ -28,14 +28,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
             </button>
           </div>
           {/* BodyWrapper */}
-          <div
-            className={clsx(
-              "maxHeight-[400px] overflow-y-scroll",
-              props.bodyWrapper
-            )}
-          >
-            {props.children}
-          </div>
+          <div className={clsx("", props.bodyWrapper)}>{props.children}</div>
         </div>
       </div>
     </div>

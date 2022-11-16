@@ -1,22 +1,19 @@
-// React, Next, NPM Packages
-import { useCallback, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
-// App imports
+import { useMyPostStore } from "@/store/my.post.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { PostCardNew, SinglePost } from "@/components/feed.components";
-
-// Current page imports
-import { ProfilePageWrapper } from "./_components";
-import { useMyPostStore } from "@/store/my.post.store";
-import { NoPost } from "@/assets/svgs";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { NoPost } from "@/assets/svgs";
+
+import { ProfilePageWrapper } from "./_components";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -63,10 +60,6 @@ const Profile: NextPageWithLayout = () => {
       fetchPosts();
     }
   }, [offset, fetchPosts]);
-
-  // useEffect(() => {
-  //   fetchPosts();
-  // }, [fetchPosts]);
 
   useEffect(() => {
     if (user?._id) {
@@ -148,7 +141,7 @@ const Profile: NextPageWithLayout = () => {
 Profile.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Profile">
-      <ProfilePageWrapper>
+      <ProfilePageWrapper currentTab="social-profile">
         <div className="space-y-3">{page}</div>
       </ProfilePageWrapper>
     </AllPagesWrapper>

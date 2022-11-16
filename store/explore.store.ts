@@ -10,21 +10,25 @@ import {
   allNFTsQuery,
   collectionsQuery,
   hotNFTsQuery,
+  topCreators,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 
 export interface ExploreStore {
   hotNFTs: NFT[];
   collections: Collection[];
+  topCreators: string[];
   allNFTs: NFT[];
   fetchHotNFTs: (offset?: number, limit?: number) => Promise<void>;
   fetchCollections: (offset?: number, limit?: number) => Promise<void>;
+  fetchTopCreators: (offset?: number, limit?: number) => Promise<void>;
   fetchAllNFTs: (offset?: number, limit?: number) => Promise<void>;
   allNFTsOffset: number;
   updateOffset: () => void;
   limit: number;
   loadingHotNFTs: LoadingState;
   loadingCollections: LoadingState;
+  loadingTopCreators: LoadingState;
   loadingAllNFTs: LoadingState;
 }
 
@@ -33,11 +37,13 @@ export const useExploreStore = create<ExploreStore>()(
     (set) => ({
       hotNFTs: [],
       collections: [],
+      topCreators: [],
       allNFTs: [],
       allNFTsOffset: 0,
       limit: 10,
       loadingHotNFTs: "idle",
       loadingCollections: "idle",
+      loadingTopCreators: "idle",
       loadingAllNFTs: "idle",
       updateOffset: () =>
         set((state) => ({
@@ -123,6 +129,42 @@ export const useExploreStore = create<ExploreStore>()(
           });
         } catch (error) {
           set({ loadingCollections: "failed" });
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      fetchTopCreators: async (offset, limit) => {
+        try {
+          set({ loadingTopCreators: "loading" });
+          const client = new ApolloClient({
+            uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
+            cache: new InMemoryCache(),
+          });
+
+          let _topCreators: string[] = [];
+          const { data: result, error } = await client.query({
+            query: gql(topCreators),
+            variables: {
+              first: limit,
+              skip: offset,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result && !error) {
+            _topCreators = result.users.map((item: any) => {
+              return item.publicKey;
+            });
+          }
+
+          set((state) => {
+            return {
+              topCreators: _topCreators,
+              loadingTopCreators: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingTopCreators: "failed" });
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },

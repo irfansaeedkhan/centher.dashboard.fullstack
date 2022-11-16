@@ -7,7 +7,10 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const MessagesCard: React.FC<Props> = ({ className, ...props }) => {
   return (
-    <div className={clsx(`max-w-[272px] relative`, className)} {...props}>
+    <div
+      className={clsx(`max-w-[272px] relative select-none`, className)}
+      {...props}
+    >
       <div className="absolute z-50 flex flex-col items-center h-full justify-center">
         <h2 className="animationTextHeading !text-base">Coming Soon</h2>
         <p className="text-xs text-white text-center font-medium">

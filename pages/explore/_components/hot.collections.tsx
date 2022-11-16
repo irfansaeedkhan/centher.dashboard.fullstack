@@ -8,15 +8,11 @@ import "react-multi-carousel/lib/styles.css";
 // App imports
 import { CollectionCard } from "@/components/collection.card";
 import { AppRoutes } from "@/constants/app.routes";
-import { Collection } from "@/store/explore.store";
+import { useExploreStore } from "@/store/explore.store";
 import { NftsCollectionEmpty } from "@/assets/svgs";
-import { LoadingState } from "@/models/common";
+
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 
-interface HotCollectionsProps {
-  hotCollections: Collection[];
-  loadingCollections: LoadingState;
-}
 const responsive = {
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
@@ -34,10 +30,20 @@ const responsive = {
     slidesToSlide: 1,
   },
 };
-export const HotCollections: React.FC<HotCollectionsProps> = ({
-  hotCollections,
-  loadingCollections,
-}) => {
+
+const MAX_COLLECTIONS = 10;
+export const HotCollections: React.FC = () => {
+  const { hotCollections, fetchCollections, loadingCollections } =
+    useExploreStore((state) => ({
+      hotCollections: state.collections,
+      fetchCollections: state.fetchCollections,
+      loadingCollections: state.loadingCollections,
+    }));
+
+  useEffect(() => {
+    fetchCollections(0, MAX_COLLECTIONS);
+  }, [fetchCollections]);
+
   return (
     <div className={hotCollectionWrapper}>
       <div className={hotCollectionGap}>
@@ -78,7 +84,7 @@ export const HotCollections: React.FC<HotCollectionsProps> = ({
           </div>
         )}
 
-        {loadingCollections !== "loaded" && (
+        {loadingCollections === "loaded" && hotCollections.length === 0 && (
           <div>
             <div className="flex justify-center items-center">
               <NftsCollectionEmpty />

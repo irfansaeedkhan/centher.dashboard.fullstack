@@ -35,10 +35,12 @@ import { AppRoutes } from "@/constants/app.routes";
 import { Circle } from "@/assets/svgs";
 
 // Current directory imports
-import UserProfileTabs from "./user.profile.tabs";
+import { ProfileTabsSocial } from "./profile.tabs.social";
+import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
-import NFTProfileTabs from "./nft.profile.tabs";
+// import NFTProfileTabs from "./nft.profile.tabs";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -75,7 +77,14 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-
+  const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
+  /* 
+Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
+verification icon variants
+Rainbow1  Rainbow2 RainbowLastFrame
+gold1 gold2 goldLastFrame
+silver1 silver2 silverLastFrame
+*/
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
       loggedInUser &&
@@ -117,27 +126,92 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
     setInitialCoverImage();
   }, [setInitialCoverImage]);
 
-  useEffect(() => {
-    const timeout1 = setTimeout(function () {
-      setVerifyIcon("/images/v1.gif");
-    }, 3000);
-    const timeout2 = setTimeout(function () {
-      setVerifyIcon("/images/v2.gif");
-    }, 4600);
-    const interval1 = setInterval(() => {
-      setVerifyIcon("/images/lastframe.png");
-    }, 10000);
-    const interval2 = setInterval(() => {
-      setVerifyIcon("/images/v2.gif");
-    }, 20000);
+  const iconVerifyProps = useVerificationTick(user?.account_address);
+  // console.log("icon in profile header", iconVerify);
 
-    return () => {
-      clearTimeout(timeout1);
-      clearTimeout(timeout2);
-      clearInterval(interval1);
-      clearInterval(interval2);
-    };
-  }, []);
+  useEffect(() => {
+    if (iconVerifyProps === "rainbow") {
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/Rainbow1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/Rainbow2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/RainbowLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/Rainbow2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps === "silver") {
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/silver1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/silver2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/silverLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/silver2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps == "gold") {
+      console.log("Inside Gold Index");
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/gold1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/gold2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/goldLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/gold2.gif");
+      }, 20000);
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else if (iconVerifyProps === "no-icon") {
+      const timeout1 = setTimeout(function () {
+        setVerifyIcon("/images/silver1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerifyIcon("/images/silver2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerifyIcon("/images/silverLastFrame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerifyIcon("/images/silver2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    }
+  }, [iconVerifyProps, user?.account_address]);
 
   useEffect(() => {
     const fetchFollow = async () => {
@@ -371,9 +445,18 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                   className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
                   sizes={"256px"}
                 />
-                <Circle className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover " />
+                <Circle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
+                    iconVerifyProps === "rainbow" &&
+                      "[&>*>*>*]: AnimatecircleRainbow",
+                    iconVerifyProps === "silver" &&
+                      "[&>*>*>*]: AnimatecircleSilver",
+                    iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+                  )}
+                />
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                  {verifyIcon.length > 1 && (
+                  {iconVerifyProps !== "no-icon" && (
                     <Image
                       src={verifyIcon}
                       alt={"verified icon"}
@@ -541,10 +624,12 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
             )}
 
             {currentPageRoute.isProfilePage && (
-              <UserProfileTabs account_address={router.query.account_address} />
+              <ProfileTabsSocial
+                account_address={router.query.account_address}
+              />
             )}
             {currentPageRoute.isNFTProfilePage && (
-              <NFTProfileTabs account_address={router.query.account_address} />
+              <ProfileTabsNFT account_address={router.query.account_address} />
             )}
           </div>
         </div>

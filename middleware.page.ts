@@ -71,7 +71,6 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _comingSoonPages: string[] = [
   AppRoutes.home,
   AppRoutes.explore,
-  AppRoutes.top_influencers,
   AppRoutes.chat,
   AppRoutes.staking_packs,
   AppRoutes.network_rewards,

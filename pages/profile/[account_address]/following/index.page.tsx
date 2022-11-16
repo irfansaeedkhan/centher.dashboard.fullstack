@@ -91,7 +91,9 @@ const Following: NextPageWithLayout = () => {
 Following.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Following">
-      <ProfilePageWrapper>{page}</ProfilePageWrapper>
+      <ProfilePageWrapper currentTab="social-profile">
+        <div className="space-y-3">{page}</div>
+      </ProfilePageWrapper>
     </AllPagesWrapper>
   );
 };
