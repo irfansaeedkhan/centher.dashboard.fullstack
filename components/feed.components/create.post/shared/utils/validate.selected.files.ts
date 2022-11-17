@@ -50,6 +50,9 @@ export const validateSelectedFiles = (
       };
       throw error;
     }
+
+    // Empty input value so that user can select same file again
+    event.target.value = "";
   } catch (error) {
     event.target.value = "";
     throw error;
