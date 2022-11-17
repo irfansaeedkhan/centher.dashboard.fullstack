@@ -206,7 +206,6 @@ input:-webkit-autofill {
     display: flex !important;
     background-color: #17171a !important;
     width: 6px !important;
-    border-radius: 8px !important;
   }
   .scrollSet::-webkit-scrollbar-thumb {
     background-color: #febd32c4 !important;
@@ -216,7 +215,6 @@ input:-webkit-autofill {
     display: flex !important;
     background-color: transparent !important;
     width: 2px !important;
-    border-radius: 18px !important;
   }
   .scrollSetLight::-webkit-scrollbar-thumb {
     background-color: #febf32 !important;
@@ -226,7 +224,6 @@ input:-webkit-autofill {
     display: flex !important;
     background-color: transparent !important;
     height: 2px !important;
-    border-radius: 12px !important;
     z-index: 20;
   }
   .scrollSetLight2::-webkit-scrollbar-thumb {
@@ -236,7 +233,6 @@ input:-webkit-autofill {
     display: flex !important;
     background-color: #17171a !important;
     width: 2px !important;
-    border-radius: 8px !important;
   }
   .scrollSett::-webkit-scrollbar-thumb {
     background-color: #febf32 !important;

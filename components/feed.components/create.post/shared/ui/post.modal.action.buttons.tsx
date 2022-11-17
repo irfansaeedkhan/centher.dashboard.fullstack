@@ -57,15 +57,27 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
 
   return (
     <div
-      className={clsx(`relative flex`, {
-        "justify-between": placement === "create-post-card",
-        "gap-x-9": placement === "in-modal",
-      })}
+      className={clsx(
+        `relative flex`,
+        {
+          "justify-between": placement === "create-post-card",
+        },
+        placement === "in-modal" &&
+          `justify-between fsm:justify-start fsm:gap-x-9`
+      )}
     >
       <label
-        className={clsx(`select-none`, buttonVariants({ color: "primary" }))}
+        className={clsx(
+          `select-none`,
+          buttonVariants({ color: "primary", placement })
+        )}
       >
-        <PhotoIcon />
+        <PhotoIcon
+          className={clsx(
+            placement === "in-modal" && iconClassesInModal,
+            placement === "create-post-card" && iconClassesCreatePostCard
+          )}
+        />
         Photo
         <input
           type="file"
@@ -78,8 +90,18 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
         />
       </label>
 
-      <label className={clsx(`select-none`, buttonVariants({ color: "blue" }))}>
-        <VideoIcon />
+      <label
+        className={clsx(
+          `select-none`,
+          buttonVariants({ color: "blue", placement })
+        )}
+      >
+        <VideoIcon
+          className={clsx(
+            placement === "in-modal" && iconClassesInModal,
+            placement === "create-post-card" && iconClassesCreatePostCard
+          )}
+        />
         Video
         <input
           type="file"
@@ -93,7 +115,10 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
       </label>
 
       <label
-        className={clsx(`select-none`, buttonVariants({ color: "green" }))}
+        className={clsx(
+          `select-none`,
+          buttonVariants({ color: "green", placement })
+        )}
         onClick={
           placement === "create-post-card"
             ? openModal
@@ -102,7 +127,12 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
               }
         }
       >
-        <EmojiIcon />
+        <EmojiIcon
+          className={clsx(
+            placement === "in-modal" && iconClassesInModal,
+            placement === "create-post-card" && iconClassesCreatePostCard
+          )}
+        />
         Emoji
       </label>
 
@@ -127,18 +157,22 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
   );
 };
 
-const buttonVariants = cva(
-  "flex items-center gap-3 text-14px font-medium cursor-pointer",
-  {
-    variants: {
-      color: {
-        primary: "text-brand-primary",
-        blue: "text-[#157AFB]",
-        green: "text-[#00BF96]",
-      },
+const iconClassesInModal = `w-4 h-4 fsm:w-6 fsm:h-6`;
+const iconClassesCreatePostCard = `w-6 h-6`;
+
+const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
+  variants: {
+    color: {
+      primary: "text-brand-primary",
+      blue: "text-[#157AFB]",
+      green: "text-[#00BF96]",
     },
-    defaultVariants: {
-      color: "primary",
+    placement: {
+      "create-post-card": "gap-3 text-14px",
+      "in-modal": "gap-2 fsm:gap-3 text-xs fsm:text-14px",
     },
-  }
-);
+  },
+  defaultVariants: {
+    color: "primary",
+  },
+});

@@ -47,7 +47,7 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
           <PostModalHeader title={title} onClickClose={onClickClose} />
 
           {/* Children Wrapper */}
-          <div className="overflow-auto">{children}</div>
+          <div className="overflow-auto scrollSet">{children}</div>
 
           <PostModalFooter />
         </div>

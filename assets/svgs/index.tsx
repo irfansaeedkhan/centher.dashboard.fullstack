@@ -836,8 +836,8 @@ export const PhotoIcon: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="24"
-      height="25"
-      viewBox="0 0 24 25"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -870,8 +870,8 @@ export const VideoIcon: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="24"
-      height="25"
-      viewBox="0 0 24 25"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -887,8 +887,8 @@ export const EmojiIcon: React.FC<IconProps> = (props) => {
     <svg
       className={props.className}
       width="24"
-      height="25"
-      viewBox="0 0 24 25"
+      height="24"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >

@@ -368,7 +368,7 @@ silver1 silver2 silverLastFrame
           <div
             onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
             className={clsx(
-              `relative rounded-t-2xl bg-no-repeat w-full h-[180px]`,
+              `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
               {
                 "cursor-move": coverImage.newImage,
               }
@@ -434,7 +434,7 @@ silver1 silver2 silverLastFrame
             )}
 
             <div
-              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+              className={`cursor-pointer absolute left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
             >
               <div className="relative h-[112px] !w-[112px]">
                 <Image

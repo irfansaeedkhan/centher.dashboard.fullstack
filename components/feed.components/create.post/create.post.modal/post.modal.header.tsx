@@ -11,7 +11,9 @@ const PostModalHeader: React.FC<Props> = ({ title, onClickClose }) => {
     <div
       className={`flex items-center p-3 border-b-2 border-gray-shade-3 border-opacity-40`}
     >
-      <h3 className={`flex-grow text-white text-xl text-center font-semibold`}>
+      <h3
+        className={`flex-grow text-white text-base fsm:text-xl text-center font-semibold`}
+      >
         {title}
       </h3>
 
