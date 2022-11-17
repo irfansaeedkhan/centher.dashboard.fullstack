@@ -45,11 +45,7 @@ export const HotNFTs: React.FC = () => {
       )}
       {(loadingHotNFTs === "loading" || loadingHotNFTs === "idle") && (
         <div className="flex flex-wrap gap-10 items-center">
-          {/* we are showing 12 skeletons while reloading the page to users */}
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
+          {/* we are showing 8 skeletons while reloading the page to users */}
           <NftsSkeleton />
           <NftsSkeleton />
           <NftsSkeleton />
