@@ -140,7 +140,6 @@ export const useExploreStore = create<ExploreStore>()(
             uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
             cache: new InMemoryCache(),
           });
-
           let _topCreators: string[] = [];
           const { data: result, error } = await client.query({
             query: gql(topCreators),
@@ -150,7 +149,6 @@ export const useExploreStore = create<ExploreStore>()(
             },
             fetchPolicy: "cache-first",
           });
-
           if (result && !error) {
             _topCreators = result.users.map((item: any) => {
               return item.publicKey;
@@ -185,6 +183,7 @@ export const useExploreStore = create<ExploreStore>()(
             },
             fetchPolicy: "cache-first",
           });
+          console.log("@@", result);
           if (result && !error) {
             _allNFTs = result.nfts.map((item: any) => {
               let _endTime = 0;

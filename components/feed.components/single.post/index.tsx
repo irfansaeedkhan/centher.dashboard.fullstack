@@ -8,10 +8,8 @@ import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
 import { toast } from "react-hot-toast";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import { Rings } from "react-loader-spinner";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 
@@ -20,8 +18,6 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { ModalWrapper } from "@/components/modal";
 import {
   MessageIcon,
@@ -386,7 +382,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     return (
       <div ref={currentPostRef} className="flex flex-grow">
         <div
-          className={`sm:w-full flex-grow lg:w-[544px] relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
+          className={`w-full max-w-[544px] flex-grow relative py-4 rounded-10px bg-background-shade-3 flex flex-col gap-4`}
           ref={ref}
         >
           {/* Connect Lines */}
@@ -418,12 +414,11 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           </div>
 
           <div
-            className={`${`
-px-4
-`} ${
+            className={clsx(
+              `px-4`,
               (currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-              " ml-16 "
-            }`}
+                "ml-16"
+            )}
           >
             <div>
               {_post.media && (
@@ -443,9 +438,7 @@ px-4
                         width={452}
                         height={312}
                         alt={String(index) + "post image"}
-                        className={`
-  object-left  !w-auto h-auto rounded-xl !max-w-[27rem] !max-h-[20rem] !block !m-0 !min-w-fit !object-contain 
-`}
+                        className={`object-left !w-auto h-auto rounded-xl !max-h-[20rem] !block !m-0 !object-contain`}
                       />
                     ) : (
                       <video
@@ -453,10 +446,7 @@ px-4
                         src={media.url}
                         width={452}
                         height={312}
-                        //alt="post media"
-                        className={`
-  object-left  !w-[99%] h-auto rounded-xl  !block !m-0   !object-contain 
-`}
+                        className={`object-left !w-[99%] h-auto rounded-xl !block !m-0 !object-contain`}
                         controls
                       />
                     )
@@ -465,15 +455,9 @@ px-4
               )}
             </div>
             {_post.text_content && (
-              <div
-                className={`
-pt-4 pb-2 
-`}
-              >
+              <div className={`pt-4 pb-2`}>
                 <p
-                  className={`
-text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all
-`}
+                  className={`text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all`}
                 >
                   {_post.text_content}
                 </p>
@@ -500,18 +484,14 @@ text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all
                 }}
               >
                 <button
-                  className={`
-flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
-`}
+                  className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
                 >
                   <MessageIcon /> {totalReplyCount}
                 </button>
               </Link>
             ) : (
               <button
-                className={`
-flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
-`}
+                className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
                 onClick={() => {
                   setShowModal(true);
                 }}
@@ -520,9 +500,7 @@ flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
               </button>
             )}
             <button
-              className={`
-flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
-`}
+              className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
               onClick={() => likePost(_post._id)}
             >
               <LikeIcon
@@ -540,74 +518,50 @@ flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
             </button>
             <div ref={ref2} className={`relative`}>
               <button
-                className={`
-flex items-center gap-2 lg:gap-3  text-14px font-medium  text-gray-shade-10
-`}
+                className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
                 onClick={toggleSharePopFunc}
               >
                 <ShareIcon />
               </button>
 
               <div
-                className={`${`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
-`} ${toggleSharePop && "!block z-40"}`}
+                className={clsx(
+                  `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]`,
+                  toggleSharePop && "!block z-40"
+                )}
               >
-                {/* <button className={SharetoggleListBtn}>
-              <MessageIcon2 className={SharetoggleListIcons} /> Search in
-              message
-          </button> */}
                 <button
                   onClick={copyShareUrl}
-                  className={`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
-`}
+                  className={`w-full text-14px font-semibold text-white flex items-center gap-3 transition hover:bg-[#1f1f1f] px-5 py-4`}
                 >
-                  <LinkIcon
-                    className={`
-w-[20px] h-[20px]
-`}
-                  />{" "}
-                  Copy link
+                  <LinkIcon className={`w-[20px] h-[20px]`} /> Copy link
                 </button>
                 <button
-                  className={`
-w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]
-`}
+                  className={`w-full flex items-center justify-between pr-4 transition hover:bg-[#1f1f1f]`}
                   onClick={toggleSharePopFunc_2}
                 >
                   <div
-                    className={`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
-`}
+                    className={`w-full text-14px font-semibold text-white flex items-center gap-3 transition hover:bg-[#1f1f1f] px-5 py-4`}
                   >
-                    <WorldIcon
-                      className={`
-w-[20px] h-[20px]
-`}
-                    />{" "}
-                    Share Via...
+                    <WorldIcon className={`w-[20px] h-[20px]`} /> Share Via...
                   </div>
                   <ArrowRightIcon />
                 </button>
               </div>
               <div
-                className={`${`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]
-`} ${toggleSharePop_2 && "!block z-40"}`}
+                className={clsx(
+                  `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[235px]`,
+                  toggleSharePop_2 && "!block z-40"
+                )}
               >
                 <button
-                  className={`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f] px-5 py-4
-`}
+                  className={`w-full text-14px font-semibold text-white flex items-center gap-3 transition hover:bg-[#1f1f1f] px-5 py-4`}
                   onClick={toggleSharePopFunc_2}
                 >
                   <ArrowLeftIcon /> Share Via
                 </button>
                 <div
-                  className={`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
-`}
+                  className={`w-full text-14px font-semibold text-white flex items-center gap-3 transition hover:bg-[#1f1f1f]`}
                 >
                   <WhatsappShareButton
                     url={shareUrl}
@@ -623,9 +577,7 @@ w-full text-14px font-semibold text-white  flex items-center gap-3  transition h
                   </WhatsappShareButton>
                 </div>
                 <div
-                  className={`
-w-full text-14px font-semibold text-white  flex items-center gap-3  transition hover:bg-[#1f1f1f]
-`}
+                  className={`w-full text-14px font-semibold text-white flex items-center gap-3 transition hover:bg-[#1f1f1f]`}
                 >
                   <TwitterShareButton
                     url={shareUrl}
@@ -646,11 +598,7 @@ w-full text-14px font-semibold text-white  flex items-center gap-3  transition h
 
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
             !!totalReplyCount && (
-              <div
-                className={`
-z-10 flex gap-3 pl-6 items-center 
-`}
-              >
+              <div className={`z-10 flex gap-3 pl-6 items-center `}>
                 <Image
                   src={_post.user.profile_image.path}
                   width={30}
@@ -667,20 +615,13 @@ z-10 flex gap-3 pl-6 items-center
                       post_id: _post._id,
                     },
                   }}
-                  className={`
-text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium
-`}
+                  className={`text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium`}
                 >
                   Show Thread
                 </Link>
               </div>
             )}
-          {/* // */}
-          <div
-            className={`
-flex flex-col gap-4  
-  `}
-          >
+          <div className={`flex flex-col gap-4`}>
             {!(
               currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
             ) && (
@@ -713,15 +654,9 @@ flex flex-col gap-4
           {showModal && user && (
             <CustomModal onClose={closePostModal} title={"Reply"}>
               <div
-                className={`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`}
+                className={`flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4`}
               >
-                <div
-                  className={`
-  flex items-center  gap-3 px-6
-`}
-                >
+                <div className={`flex items-center gap-3 px-6`}>
                   <Image
                     src={user.profile_image.path}
                     width={44}
@@ -730,19 +665,11 @@ flex flex-col gap-4
                     className="rounded-full w-[44px] h-[44px] object-cover"
                     sizes="256px"
                   />
-                  <h5
-                    className={`
-  text-14px font-semibold text-white
-`}
-                  >
+                  <h5 className={`text-14px font-semibold text-white`}>
                     {user?.display_name}
                   </h5>
                 </div>
-                <div
-                  className={`
-px-4
-`}
-                >
+                <div className={`px-4`}>
                   <div>
                     <Carousel
                       showStatus={false}
@@ -759,15 +686,9 @@ px-4
                       {displaySelectedFiles}
                     </Carousel>
                   </div>
-                  <div
-                    className={`
-pt-4 pb-2 w-full px-6
-`}
-                  >
+                  <div className={`pt-4 pb-2 w-full px-6`}>
                     <textarea
-                      className={`
-text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-shade-3 
-`}
+                      className={`text-14px rounded-10px w-full leading-6 text-white font-medium bg-background-shade-3`}
                       name=""
                       id="posttext"
                       cols={12}
@@ -780,19 +701,13 @@ text-14px rounded-10px w-full leading-6  text-white font-medium bg-background-sh
                   </div>
                 </div>
                 <div
-                  className={`
-flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`}
+                  className={`flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6`}
                 >
                   <div
-                    className={`
-w-[100%] lg:w-[48%] flex items-center justify-between
-`}
+                    className={`w-full lg:w-[48%] flex items-center justify-between`}
                   >
                     <label
-                      className={`${`
-flex items-center gap-3 text-14px font-medium 
-`} text-yellow-theme`}
+                      className={`flex items-center gap-3 text-14px font-medium text-yellow-theme`}
                     >
                       <PhotoIcon />
                       Photo
@@ -809,9 +724,7 @@ flex items-center gap-3 text-14px font-medium
                       />
                     </label>
                     <label
-                      className={`${`
-flex items-center gap-3 text-14px font-medium 
-`} text-[#157AFB]`}
+                      className={`flex items-center gap-3 text-14px font-medium text-[#157AFB]`}
                     >
                       <VideoIcon />
                       Video
@@ -828,9 +741,7 @@ flex items-center gap-3 text-14px font-medium
                       />
                     </label>
                     <button
-                      className={`${`
-flex items-center gap-3 text-14px font-medium 
-`} text-[#00BF96]`}
+                      className={`flex items-center gap-3 text-14px font-medium text-[#00BF96]`}
                       onClick={() => {
                         setIsEmojiPickerVisible((prev) => !prev);
                       }}
@@ -841,9 +752,10 @@ flex items-center gap-3 text-14px font-medium
                     {isEmojiPickerVisible && (
                       <div
                         ref={emojiPickerRef}
-                        className={`emojiContainer absolute right-[0] top-[287px] ${
+                        className={clsx(
+                          `emojiContainer absolute right-[0] top-[287px]`,
                           isEmojiPickerVisible && "!block z-40"
-                        }`}
+                        )}
                       >
                         <Picker
                           onEmojiClick={onEmojiClick}
@@ -857,45 +769,16 @@ flex items-center gap-3 text-14px font-medium
                     )}
                   </div>
                   <div
-                    className={`
-w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
-`}
+                    className={`w-full lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end`}
                   >
                     <span onClick={deleteText}>
                       <AnimateTrashIcon />
                     </span>
                     <div
-                      className={`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`}
+                      className={`w-[2px] h-[10px] bg-[#333333] rounded-xl`}
                     ></div>
                     {loadingState ? (
-                      <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        {/* <Rings
-                          height="30"
-                          width="30"
-                          color="#1C1F29"
-                          radius="6"
-                          wrapperStyle={{}}
-                          wrapperClass=""
-                          visible={true}
-                          ariaLabel="rings-loading"
-                        /> */}
-                        {/* <div style={{ width: 30, height: 30 }}>
-                          <CircularProgressbar
-                            value={
-                              uploadingFileStatus ? uploadingFileStatus : 0
-                            }
-                            text={`${
-                              uploadingFileStatus ? uploadingFileStatus : 0
-                            }%`}
-                            styles={buildStyles({
-                              textColor: "#ffffff",
-                              textSize: "20px",
-                              pathColor: "#1C1F29",
-                            })}
-                          />
-                        </div> */}
+                      <button className="bg-brand-primary text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
                         <SpinIcon3 />
                       </button>
                     ) : (
@@ -927,15 +810,9 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
               title={"Edit post"}
             >
               <div
-                className={`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4 
-`}
+                className={`flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4`}
               >
-                <div
-                  className={`
-  flex items-center  gap-3 px-6
-`}
-                >
+                <div className={`flex items-center gap-3 px-6`}>
                   <Image
                     src={user.profile_image.path}
                     width={44}
@@ -944,11 +821,7 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                     alt={user.display_name ?? "profile image"}
                     sizes="256px"
                   />
-                  <h5
-                    className={`
-  text-14px font-semibold text-white
-`}
-                  >
+                  <h5 className={`text-14px font-semibold text-white`}>
                     {user.display_name}
                   </h5>
                 </div>
@@ -969,45 +842,18 @@ w-[2px] h-[10px] bg-[#333333]  rounded-xl
                 />
 
                 <div
-                  className={`${`
-flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6
-`} justify-end`}
+                  className={`flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6`}
                 >
                   <div
-                    className={`
-w-[100%] lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end
-`}
+                    className={`w-full lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end`}
                   >
                     <AnimateTrashIcon />
                     <div
-                      className={`
-w-[2px] h-[10px] bg-[#333333]  rounded-xl
-`}
+                      className={`w-[2px] h-[10px] bg-[#333333] rounded-xl`}
                     ></div>
 
                     {updateLoadingButton ? (
                       <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        {/* <Rings
-                          height="30"
-                          width="30"
-                          color="#1C1F29"
-                          radius="6"
-                          wrapperStyle={{}}
-                          wrapperClass=""
-                          visible={true}
-                          ariaLabel="rings-loading"
-                        /> */}
-                        {/* <div style={{ width: 30, height: 30 }}>
-                          <CircularProgressbar
-                            value={uploadingFileStatus ? uploadingFileStatus : 0}
-                            text={`${uploadingFileStatus ? uploadingFileStatus : 0}%`}
-                            styles={buildStyles({
-                              textColor: "#ffffff",
-                              textSize: "20px",
-                              pathColor: "#1C1F29",
-                            })}
-                          />
-                        </div> */}
                         <SpinIcon3 />
                       </button>
                     ) : (

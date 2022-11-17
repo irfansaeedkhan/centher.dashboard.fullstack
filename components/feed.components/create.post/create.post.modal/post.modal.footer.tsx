@@ -11,32 +11,32 @@ const PostModalFooter: React.FC = () => {
     useNewPostStore();
 
   return (
-    <div className={`flex items-center px-6 py-3`}>
-      <div className="flex-grow">
-        <PostModalActionButtons placement={"in-modal"} />
+    <div
+      className={`grid grid-rows-[auto_auto] fsm:grid-rows-1 grid-cols-[1fr_auto] fsm:grid-cols-[1fr_auto_auto_auto] items-center px-3 fsm:px-6 py-3`}
+    >
+      <PostModalActionButtons placement={"in-modal"} />
+
+      <div className="w-7 h-7 ml-4 fsm:ml-0">
+        <PostTextCounter
+          currentLength={postText.length}
+          maxLength={postTextMaxLength}
+        />
       </div>
 
-      <div className={`flex items-center gap-2`}>
-        <div className="w-7 h-7">
-          <PostTextCounter
-            currentLength={postText.length}
-            maxLength={postTextMaxLength}
-          />
-        </div>
+      <div
+        className={`w-[1.5px] h-4 bg-gray-shade-3 rounded-xl hidden fsm:block mx-2`}
+      ></div>
 
-        <div className={`w-[1.5px] h-4 bg-gray-shade-3 rounded-xl`}></div>
-
-        <button
-          className={`block text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none`}
-          onClick={createPost}
-        >
-          {isPostCreateLoading ? (
-            <CgSpinner className="animate-spin w-5 h-5" />
-          ) : (
-            "Post"
-          )}
-        </button>
-      </div>
+      <button
+        className={`block text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none col-span-full fsm:col-span-1 mt-4 fsm:mt-0`}
+        onClick={createPost}
+      >
+        {isPostCreateLoading ? (
+          <CgSpinner className="animate-spin w-5 h-5" />
+        ) : (
+          "Post"
+        )}
+      </button>
     </div>
   );
 };

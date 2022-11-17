@@ -21,10 +21,6 @@ export const CreatePostModal: React.FC<Props> = () => {
     postTextMaxLength,
   } = useNewPostStore();
 
-  const handlePostTextChange = (e: any) => {
-    setPostText(e.target.value);
-  };
-
   if (!user) {
     return null;
   }
@@ -36,7 +32,7 @@ export const CreatePostModal: React.FC<Props> = () => {
       title={"Create Post"}
     >
       <div
-        className={`flex flex-col gap-4 w-full px-6 py-4 border-b-2 border-gray-shade-3 border-opacity-40`}
+        className={`flex flex-col gap-4 w-full px-3 fsm:px-6 py-4 border-b-2 border-gray-shade-3 border-opacity-40`}
       >
         <div className={`flex items-center gap-3`}>
           <Image
@@ -57,13 +53,13 @@ export const CreatePostModal: React.FC<Props> = () => {
 
           <div className={clsx(`w-full`, !!selectedFiles.length && "mt-4")}>
             <textarea
-              className={`block w-full text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-all border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
+              className={`block w-full text-xs fsm:text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-all border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
               cols={12}
               rows={4}
               maxLength={postTextMaxLength}
               placeholder="Type here"
               value={postText}
-              onChange={handlePostTextChange}
+              onChange={(e) => setPostText(e.target.value)}
             ></textarea>
           </div>
         </div>

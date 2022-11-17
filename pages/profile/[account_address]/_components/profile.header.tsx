@@ -368,7 +368,7 @@ silver1 silver2 silverLastFrame
           <div
             onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
             className={clsx(
-              `relative rounded-t-2xl bg-no-repeat w-full h-[180px]`,
+              `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
               {
                 "cursor-move": coverImage.newImage,
               }
@@ -434,7 +434,7 @@ silver1 silver2 silverLastFrame
             )}
 
             <div
-              className={`cursor-pointer absolute  left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+              className={`cursor-pointer absolute left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
             >
               <div className="relative h-[112px] !w-[112px]">
                 <Image
@@ -445,18 +445,21 @@ silver1 silver2 silverLastFrame
                   className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
                   sizes={"256px"}
                 />
-                <Circle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
-                    iconVerifyProps === "rainbow" &&
-                      "[&>*>*>*]: AnimatecircleRainbow",
-                    iconVerifyProps === "silver" &&
-                      "[&>*>*>*]: AnimatecircleSilver",
-                    iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
-                  )}
-                />
+                {iconVerifyProps !== "no-icon" && (
+                  <Circle
+                    className={clsx(
+                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
+                      iconVerifyProps === "rainbow" &&
+                        "[&>*>*>*]: AnimatecircleRainbow",
+                      iconVerifyProps === "silver" &&
+                        "[&>*>*>*]: AnimatecircleSilver",
+                      iconVerifyProps === "gold" &&
+                        "[&>*>*>*]: AnimatecircleGold"
+                    )}
+                  />
+                )}
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                  {iconVerifyProps !== "no-icon" && (
+                  {iconVerifyProps !== "no-icon" && verifyIcon && (
                     <Image
                       src={verifyIcon}
                       alt={"verified icon"}

@@ -78,7 +78,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 href={`/profile/${user?.account_address}`}
               >
                 <span className={nftOwnerName}>
-                  {formatAddress(user.account_address)}
+                  {user?.display_name ?? formatAddress(nftOwner)}
                 </span>
               </Link>
             ) : (

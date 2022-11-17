@@ -81,6 +81,7 @@ const Profile: NextPageWithLayout = () => {
           }}
         />
       )}
+
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
