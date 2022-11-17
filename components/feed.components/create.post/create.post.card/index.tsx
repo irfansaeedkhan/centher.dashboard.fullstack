@@ -30,7 +30,11 @@ export const CreatePostCard: React.FC<Props> = () => {
         />
         <button
           className={`w-full text-14px bg-transparent rounded-10px h-10 md:h-12 border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left outline-none focus:outline-none`}
-          onClick={openModal}
+          onClick={() =>
+            openModal({
+              modalType: "new-post",
+            })
+          }
         >
           Start a post
         </button>
@@ -38,7 +42,7 @@ export const CreatePostCard: React.FC<Props> = () => {
 
       <PostModalActionButtons placement="create-post-card" />
 
-      <CreatePostModal />
+      <CreatePostModal modalTitle="Create Post" />
     </div>
   );
 };

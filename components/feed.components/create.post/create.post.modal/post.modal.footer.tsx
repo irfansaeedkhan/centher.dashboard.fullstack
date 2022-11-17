@@ -24,7 +24,7 @@ const PostModalFooter: React.FC = () => {
       </div>
 
       <div
-        className={`w-[1.5px] h-4 bg-gray-shade-3 rounded-xl hidden fsm:block mx-2`}
+        className={`w-0.5 h-4 bg-gray-shade-3 rounded-xl hidden fsm:block mx-2`}
       ></div>
 
       <button

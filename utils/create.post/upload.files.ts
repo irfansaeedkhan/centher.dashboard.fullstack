@@ -1,5 +1,6 @@
 import axios from "axios";
 
+import { useSinglePostStore } from "@/store/single.post.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -153,10 +154,25 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
     `/api/socials/posts/${currentPostId}`
   );
 
-  useFeedStore.getState().addNewPost(newPostData.post);
+  const newPostStoreState = useNewPostStore.getState();
+  const feedStoreState = useFeedStore.getState();
 
-  // Increment the post count just for main posts not for replies
-  if (!newPostData.post?.parent_post) {
+  if (newPostStoreState.modalType === "new-post") {
+    feedStoreState.addNewPost(newPostData.post);
     useProfileCardStore.getState().incrementPostsCount();
+  } else if (
+    newPostStoreState.modalType === "reply" &&
+    newPostStoreState.parentPostId
+  ) {
+    feedStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
+
+    const singlePostStoreState = useSinglePostStore.getState();
+
+    singlePostStoreState.addNewReply(newPostData.post);
+
+    const prevRepliesCount = singlePostStoreState.post?.replies_count;
+    singlePostStoreState.updatePost({
+      replies_count: prevRepliesCount ? prevRepliesCount + 1 : 1,
+    });
   }
 };

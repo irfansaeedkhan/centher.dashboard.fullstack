@@ -1,58 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 
+import { useSinglePostStore } from "@/store/single.post.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import { Post } from "@/models/post";
-import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { BackButton, NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
-  const [post, setPost] = useState<Post>();
-  const [loadingState, setLoadingState] = useState<LoadingState>("idle");
   const router = useRouter();
+  const {
+    post,
+    fetchPost,
+    resetStore,
+    postLoading,
+    repliesOffset,
+    fetchReplies,
+  } = useSinglePostStore();
+
+  useEffect(() => {
+    if (repliesOffset > 0) {
+      fetchReplies();
+    }
+  }, [fetchReplies, repliesOffset]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    const fetchSinglePostData = async () => {
-      setLoadingState("loading");
-      try {
-        // Get Single Post By ID
-        const { data } = await axiosNodeApi.get(`/api/socials/posts/${postId}`);
-
-        setPost(data.post);
-        setLoadingState("loaded");
-      } catch (error: any) {
-        if (error.response?.status === 404) {
-          setLoadingState("loaded");
-          return;
-        }
-        setLoadingState("failed");
-      }
-    };
-
-    const accountAddress = router?.query?.account_address
-      ?.toString()
-      ?.toLowerCase();
-    const postId = router?.query?.post_id?.toString();
-
-    if (accountAddress && postId) {
-      fetchSinglePostData();
+    if (router.query.post_id) {
+      resetStore(router.query.post_id.toString().toLowerCase(), "loading");
+      fetchPost();
     }
-  }, [router]);
+
+    return () => {
+      resetStore("", "idle");
+    };
+  }, [router.query.post_id, resetStore, fetchPost]);
 
   return (
     <>
-      {loadingState === "loaded" && (
+      {postLoading === "loaded" && (
         <div className={postsMainContainer}>
-          <BackButton post={post} />
+          <BackButton />
 
           {post?.status === "complete" && (
             <SinglePost
@@ -71,15 +64,15 @@ const SinglePostPage: NextPageWithLayout = () => {
         </div>
       )}
 
-      {(loadingState === "loading" || loadingState === "idle") && (
+      {(postLoading === "loading" || postLoading === "idle") && (
         <div className="mt-9">
           <SinglePostCardSkeleton />
         </div>
       )}
 
-      {loadingState === "failed" && (
+      {postLoading === "failed" && (
         <div className={postsMainContainer}>
-          <BackButton post={post} />
+          <BackButton />
           <NoPostMessage message="Something went wrong!" />
         </div>
       )}
