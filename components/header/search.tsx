@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { useSearchStore } from "@/store/search.store";
 import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
+import { useOnClickOutside } from "usehooks-ts";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -17,6 +18,10 @@ const SearchBar = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [result, setResult] = useState([]);
 
+  const ref = useRef<HTMLDivElement>(null);
+  useOnClickOutside(ref, () => {
+    setOpenPopup(false);
+  });
   useEffect(() => {
     if (router.query.q) {
       setSearchQuery(router.query.q.toString());
@@ -67,7 +72,10 @@ const SearchBar = () => {
       className="relative w-full max-w-[528px] md:block hidden"
       onSubmit={submitData}
     >
-      <div className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary">
+      <div
+        ref={ref}
+        className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary"
+      >
         <input
           type="text"
           placeholder="Search"

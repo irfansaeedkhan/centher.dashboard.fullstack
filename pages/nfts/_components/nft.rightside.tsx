@@ -25,6 +25,7 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { formatAddress } from "@/utils/format.address";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { AppRoutes } from "@/constants/app.routes";
+import useGetUser from "@/hooks/use.get.user";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -37,16 +38,21 @@ export const NFTRightSideComponent = ({
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
+  const { user } = useGetUser(data?.creator);
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
-  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId, data?.owner);
-
+  const nftOwnerAddress = useGetNFTOwner(
+    data?.collection,
+    data?.nftId,
+    data?.owner
+  );
+  const { user: nftOwner } = useGetUser(nftOwnerAddress);
   useEffect(() => {
     if (data) {
       if (
         account &&
-        account.toLocaleLowerCase() === nftOwner.toLocaleLowerCase()
+        account.toLocaleLowerCase() === nftOwnerAddress.toLocaleLowerCase()
       ) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
@@ -57,7 +63,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data, nftOwner]);
+  }, [account, data, nftOwnerAddress]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -244,7 +250,7 @@ export const NFTRightSideComponent = ({
               }}
               className={nameBoxZValue}
             >
-              {formatAddress(data?.creator)}
+              {user?.display_name}
             </Link>
           </div>
         </div>
@@ -256,12 +262,12 @@ export const NFTRightSideComponent = ({
               href={{
                 pathname: AppRoutes.profile.nfts,
                 query: {
-                  account_address: nftOwner,
+                  account_address: nftOwnerAddress,
                 },
               }}
               className={nameBoxZValue}
             >
-              {formatAddress(nftOwner)}
+              {nftOwner?.display_name}
             </Link>
           </div>
         </div>
