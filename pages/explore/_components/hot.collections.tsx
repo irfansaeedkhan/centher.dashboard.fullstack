@@ -111,7 +111,7 @@ const viewAllLink = ctl(
   `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
 );
 
-const collectionCardStyle = ctl(`flex gap-10 flex-wrap"`);
+const collectionCardStyle = ctl(`flex gap-10 flex-wrap`);
 
 const mediaContainer = ctl(`
  w-full grid, gap-3,

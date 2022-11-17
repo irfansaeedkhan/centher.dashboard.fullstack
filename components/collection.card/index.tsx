@@ -5,12 +5,14 @@ import axios from "axios";
 import { Collection } from "@/store/explore.store";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import Link from "next/link";
+import useGetUser from "@/hooks/use.get.user";
 
 export interface CollectionCardProps {
   data: Collection;
 }
 
 export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
+  const { user } = useGetUser(data?.creator);
   const [coverImage, setCoverImage] = useState("");
   const [profileImage, setProfileImage] = useState("");
   const [description, setDescription] = useState("");
@@ -51,7 +53,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
       <div className={`flex flex-col px-4 items-center`}>
         <div className={`text-base text-white font-bold`}>{data.name}</div>
         <span className={`text-sm text-white font-semibold mt-1`}>
-          {formatAddress(data.creator)}
+          {user?.display_name}
         </span>
         <p
           className={`font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`}
