@@ -1,6 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
+import { customLog } from "@/utils/custom.log";
 import { axiosNodeApi } from "@/utils/axios";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
@@ -64,10 +65,19 @@ export const useSinglePostStore = create<SinglePostStore>()(
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
           });
-        } catch (error) {
-          set({ postLoading: "failed", repliesLoading: "failed" });
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
+        } catch (error: any) {
+          if (error.response?.status === 404) {
+            set({
+              post: null,
+              postLoading: "loaded",
+              replies: [],
+              repliesLoading: "loaded",
+            });
+          } else {
+            set({ postLoading: "failed", repliesLoading: "failed" });
+          }
+
+          customLog(error, ["development"]);
         }
       },
 
