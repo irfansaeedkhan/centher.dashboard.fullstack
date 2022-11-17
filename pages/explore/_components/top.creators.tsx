@@ -3,6 +3,8 @@ import CreatorCard from "./creator.card";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import ctl from "@netlify/classnames-template-literals";
 import { useExploreStore } from "@/store/explore.store";
+import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
+import clsx from "clsx";
 
 const MAX_TOP_CREATORS = 10;
 const TopCreators = () => {
@@ -41,18 +43,30 @@ const TopCreators = () => {
 
         <div
           ref={ref}
-          className="flex w-[calc(100%-132px)] items-center gap-14 overflow-x-scroll scrollSetLight2 !overflow-y-hidden py-8"
+          className={clsx(
+            "flex w-[calc(100%-132px)] items-center gap-14 !overflow-y-hidden py-8",
+            topCreators.length > 0 &&
+              loadingTopCreators === "loaded" &&
+              "overflow-x-scroll scrollSetLight2 "
+          )}
         >
-          {topCreators.length > 0 &&
+          {topCreators.length > 0 && loadingTopCreators === "loaded" ? (
             topCreators.map((item: any, index: any) => {
-              return (
-                <CreatorCard
-                  publicKey={item}
-                  key={index}
-                  loadingTopCreators={loadingTopCreators}
-                />
-              );
-            })}
+              return <CreatorCard publicKey={item} key={index} />;
+            })
+          ) : loadingTopCreators === "loading" ||
+            loadingTopCreators === "idle" ? (
+            <>
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+              <TopCreatorsSkeleton />
+            </>
+          ) : null}
         </div>
         <button onClick={() => scroll(200)} className={scrollButton}>
           <BsArrowRightShort />

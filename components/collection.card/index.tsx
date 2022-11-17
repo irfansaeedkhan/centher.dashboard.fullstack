@@ -35,20 +35,24 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
       className={`w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`}
     >
       <div className={`relative flex justify-center`}>
-        <Image
-          src={coverImage}
-          alt="collection Image"
-          width={340}
-          height={180}
-          className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
-        />
-        <Image
-          src={profileImage}
-          alt="Logo Image"
-          width={64}
-          height={64}
-          className={`rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem]`}
-        />
+        {coverImage && (
+          <Image
+            src={coverImage}
+            alt="collection Image"
+            width={340}
+            height={180}
+            className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
+          />
+        )}
+        {profileImage && (
+          <Image
+            src={profileImage}
+            alt="Logo Image"
+            width={64}
+            height={64}
+            className={`rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem]`}
+          />
+        )}
       </div>
       <div className={`flex flex-col px-4 items-center`}>
         <div className={`text-base text-white font-bold`}>{data.name}</div>
