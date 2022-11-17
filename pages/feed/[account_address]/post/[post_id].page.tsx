@@ -5,6 +5,7 @@ import { useSinglePostStore } from "@/store/single.post.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import { CreatePostModal } from "@/components/feed.components/create.post/create.post.modal";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { BackButton, NoPostMessage } from "./_components";
@@ -76,6 +77,8 @@ const SinglePostPage: NextPageWithLayout = () => {
           <NoPostMessage message="Something went wrong!" />
         </div>
       )}
+
+      <CreatePostModal modalTitle="Reply" />
     </>
   );
 };

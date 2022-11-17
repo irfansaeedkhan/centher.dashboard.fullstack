@@ -8,9 +8,10 @@ import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { PostCardNew, SinglePost } from "@/components/feed.components";
+import { SinglePost } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import { NoPost } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
@@ -28,7 +29,6 @@ const Profile: NextPageWithLayout = () => {
   const {
     posts,
     fetchPosts,
-    addNewPost,
     deletePost,
     offset,
     updateOffset,
@@ -75,11 +75,7 @@ const Profile: NextPageWithLayout = () => {
   return (
     <>
       {loggedInUser?.account_address === router.query.account_address && (
-        <PostCardNew
-          onPostCreated={(post) => {
-            addNewPost(post);
-          }}
-        />
+        <CreatePostCard />
       )}
 
       {posts.map((post) => {

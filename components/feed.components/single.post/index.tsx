@@ -542,8 +542,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             )}
           </div>
 
-          <CreatePostModal modalTitle="Reply" />
-
           {/* edit modal */}
           {editPostData.isEditModalVisible && user && (
             <CustomModal

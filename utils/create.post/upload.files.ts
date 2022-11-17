@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { useSinglePostStore } from "@/store/single.post.store";
+import { useMyPostStore } from "@/store/my.post.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -156,9 +157,11 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
 
   const newPostStoreState = useNewPostStore.getState();
   const feedStoreState = useFeedStore.getState();
+  const myPostStoreState = useMyPostStore.getState();
 
   if (newPostStoreState.modalType === "new-post") {
     feedStoreState.addNewPost(newPostData.post);
+    myPostStoreState.addNewPost(newPostData.post);
     useProfileCardStore.getState().incrementPostsCount();
   } else if (
     newPostStoreState.modalType === "reply" &&

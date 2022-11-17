@@ -10,26 +10,19 @@ import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.po
 import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
-  const {
-    posts,
-    fetchPosts,
-    addNewPost,
-    deletePost,
-    offset,
-    updateOffset,
-    loading,
-  } = useFeedStore((state) => ({
-    posts: state.posts,
-    fetchPosts: state.fetchPosts,
+  const { posts, fetchPosts, deletePost, offset, updateOffset, loading } =
+    useFeedStore((state) => ({
+      posts: state.posts,
+      fetchPosts: state.fetchPosts,
 
-    addNewPost: state.addNewPost,
-    deletePost: state.deletePost,
+      addNewPost: state.addNewPost,
+      deletePost: state.deletePost,
 
-    offset: state.offset,
-    updateOffset: state.updateOffset,
+      offset: state.offset,
+      updateOffset: state.updateOffset,
 
-    loading: state.loading,
-  }));
+      loading: state.loading,
+    }));
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
