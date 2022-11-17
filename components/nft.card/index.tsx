@@ -10,7 +10,6 @@ import { NFT } from "@/store/explore.store";
 import useGetNftOwnerDb from "@/hooks/use.get.nft.owner.db";
 import {
   formatAddress,
-  formatBNB2USD,
   formatEther2Number,
   formatIPFSUrl,
 } from "@/utils/format.address";
@@ -47,17 +46,14 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <Link
-      href={`/nfts/${data.collection}/${data.tokenId}`}
-      className={nftCardWrapper}
-    >
+    <div className={nftCardWrapper}>
       <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
         {loading !== "loading" && loading !== "idle" ? (
           <div className={ownerDpWrapper}>
             {user?.account_address ? (
               <Link href={`/profile/${user?.account_address}`}>
                 <Image
-                  className="cursor-pointer"
+                  className="cursor-pointer !w-7 !h-7 rounded-full object-cover"
                   src={user?.profile_image.path ?? imgSrc}
                   alt="profile"
                   height={28}
@@ -94,7 +90,10 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           <HotNftsHeaderSkeleton />
         )}
       </div>
-      <div className={nftImageWrapper}>
+      <Link
+        href={`/nfts/${data.collection}/${data.tokenId}`}
+        className={nftImageWrapper}
+      >
         {imageUrl ? (
           <Image
             src={imageUrl}
@@ -106,10 +105,13 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
         ) : (
           <p className="h-[220px] text-grey pt-5">Invalid Image</p>
         )}
-      </div>
-      <div className={nftDetailWrapper}>
+      </Link>
+      <Link
+        href={`/nfts/${data.collection}/${data.tokenId}`}
+        className={nftDetailWrapper}
+      >
         <div className={nftName}>{name}</div>
-      </div>
+      </Link>
       <div className={nftOwnerWrapper}>
         {/* <div className={ownerDpWrapper}>
             <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
@@ -131,7 +133,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 
         {/* <span className={textSimple}>${formatBNB2USD(data.price)}</span> */}
       </div>
-    </Link>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React from "react";
 
-const TopCreators = () => {
+const TopCreatorsSkeleton = () => {
   return (
     <div className="flex items-center">
       <div className="ml-2 rounded-full w-[40px] h-[40px] bg-gray-shade-3 animate-pulse"></div>
@@ -10,4 +10,4 @@ const TopCreators = () => {
   );
 };
 
-export default TopCreators;
+export default TopCreatorsSkeleton;
