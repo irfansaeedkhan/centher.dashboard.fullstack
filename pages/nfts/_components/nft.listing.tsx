@@ -3,9 +3,11 @@ import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatAddress } from "@/utils/format.address";
+import useGetUser from "@/hooks/use.get.user";
 interface NFTListingProps {
   data: IListHistory[] | undefined;
 }
+
 export const NFTListing = ({ data }: NFTListingProps) => {
   return (
     <div className={NFTlistingsContainer}>

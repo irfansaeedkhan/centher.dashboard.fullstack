@@ -12,6 +12,7 @@ import {
   FacebookCircleIcon,
   CopyIcon,
   TwitterSvg,
+  NftsCollectionEmpty,
 } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -30,6 +31,9 @@ import {
 import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
 import useBNBPrice from "@/web3/hooks/use.chain.info";
+import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
+import NftsSkeleton from "@/components/loading.skeletons/nfts";
+import useGetUser from "@/hooks/use.get.user";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -61,7 +65,7 @@ const Collection: NextPageWithLayout = () => {
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
   }));
-
+  const { user } = useGetUser(info?.creator);
   const [metadata, setMetadata] = useState<any>();
   const [orderdir, setOrderDir] = useState("desc");
 
@@ -109,71 +113,77 @@ const Collection: NextPageWithLayout = () => {
   return (
     <div className={dashboardContentContainer}>
       <div className={MainContentContainer}>
-        <div className={coverCard}>
-          <div
-            className={coverImageContainer}
-            style={{
-              backgroundImage: `url(${formatIPFSUrl(metadata?.coverIPFSHash)})`,
-            }}
-          >
-            <div className={shareBtn}>
-              <div ref={menuRef} className={`relative`}>
-                <button className={threeDotsBtn} onClick={toggleMenu}>
-                  <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
-                </button>
-                <div
-                  className={clsx(
-                    `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
-                    isMenuVisible ? "block z-40" : "hidden"
-                  )}
-                >
-                  <button className={menuButton}>
-                    <FacebookCircleIcon className={icon} /> Share on facebook
+        {loadingCollectionInfo === "loading" ||
+        loadingCollectionInfo === "idle" ? (
+          <NftCollectionProfileSkeleton />
+        ) : (
+          <div className={coverCard}>
+            <div
+              className={coverImageContainer}
+              style={{
+                backgroundImage: `url(${formatIPFSUrl(
+                  metadata?.coverIPFSHash
+                )})`,
+              }}
+            >
+              <div className={shareBtn}>
+                <div ref={menuRef} className={`relative`}>
+                  <button className={threeDotsBtn} onClick={toggleMenu}>
+                    <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
                   </button>
-                  <button className={menuButton}>
-                    <TwitterSvg className={icon} /> Share on twitter
-                  </button>
+                  <div
+                    className={clsx(
+                      `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
+                      isMenuVisible ? "block z-40" : "hidden"
+                    )}
+                  >
+                    <button className={menuButton}>
+                      <FacebookCircleIcon className={icon} /> Share on facebook
+                    </button>
+                    <button className={menuButton}>
+                      <TwitterSvg className={icon} /> Share on twitter
+                    </button>
 
-                  <button className={menuButton}>
-                    <CopyIcon className={icon} /> Copy link
-                  </button>
+                    <button className={menuButton}>
+                      <CopyIcon className={icon} /> Copy link
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className={profileImage}>
-              <Image
-                src={formatIPFSUrl(metadata?.profileIPFSHash)}
-                alt={"profile image"}
-                width={112}
-                height={112}
-                className={collectionProfileImage}
-                sizes={"512px"}
-              />
-            </div>
-          </div>
-          <div className={coverDetails}>
-            <div className={topDetais}>
-              <div>
-                <h5 className={collectionName}>{metadata?.name}</h5>
-                <Link
-                  href={{
-                    pathname: AppRoutes.profile.nfts,
-                    query: {
-                      account_address: info?.creator,
-                    },
-                  }}
-                  className="text-gray-shade-18 text-14px font-semibold"
-                >
-                  Created by @{formatAddress(info?.creator)}
-                </Link>
+              <div className={profileImage}>
+                <Image
+                  src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                  alt={"profile image"}
+                  width={112}
+                  height={112}
+                  className={collectionProfileImage}
+                  sizes={"512px"}
+                />
               </div>
-              <div className={detailsCard}>
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Items</h4>
-                  <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
+            </div>
+            <div className={coverDetails}>
+              <div className={topDetais}>
+                <div>
+                  <h5 className={collectionName}>{metadata?.name}</h5>
+                  <Link
+                    href={{
+                      pathname: AppRoutes.profile.nfts,
+                      query: {
+                        account_address: info?.creator,
+                      },
+                    }}
+                    className="text-gray-shade-18 text-14px font-semibold"
+                  >
+                    Created by {user?.display_name}
+                  </Link>
                 </div>
-                {/* <div className="text-center">
+                <div className={detailsCard}>
+                  <div className="text-center">
+                    <h4 className={detailsCardTitle}>Items</h4>
+                    <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
+                  </div>
+                  {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Owner</h4>
                   <h5 className={detailsCardValue}>2.1k</h5>
                 </div>
@@ -181,26 +191,27 @@ const Collection: NextPageWithLayout = () => {
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>$108.56</h5>
                 </div> */}
-                {/* <div className="text-center">
+                  {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Market Price</h4>
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
                 </div> */}
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Total Volum</h4>
-                  <h5 className={detailsCardValue}>
-                    $
-                    {info?.tradingVolumn
-                      ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
-                      : 0}
-                  </h5>
+                  <div className="text-center">
+                    <h4 className={detailsCardTitle}>Total Volum</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {info?.tradingVolumn
+                        ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
+                        : 0}
+                    </h5>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={textContent}>
-              <p className={profileDescription}>{metadata?.description}</p>
+              <div className={textContent}>
+                <p className={profileDescription}>{metadata?.description}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {/* nft tabs */}
         <div className="mt-6">
           <div className={tabsContainer}>
@@ -241,11 +252,31 @@ const Collection: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="tabsContent mt-10">
-            <div className={`${nftCardWrapper} nftCardContainer`}>
-              {nfts.map((data) => {
-                return <NFTCard data={data} key={data.id} />;
-              })}
-            </div>
+            {nfts.length > 0 && (
+              <div className={`${nftCardWrapper} nftCardContainer`}>
+                {nfts.map((data) => {
+                  return <NFTCard data={data} key={data.id} />;
+                })}
+              </div>
+            )}
+
+            {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
+              <div className="flex flex-wrap gap-10 items-center">
+                {/* we are showing 8 skeletons while reloading the page to users */}
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+              </div>
+            )}
+
+            {loadingNFTs === "loaded" && nfts.length === 0 && (
+              <NftsCollectionEmpty />
+            )}
           </div>
         </div>
       </div>
