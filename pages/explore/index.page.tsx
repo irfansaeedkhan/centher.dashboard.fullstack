@@ -15,7 +15,6 @@ const ExplorePage: NextPageWithLayout = () => {
         <TopCreators />
         <HotNFTs />
         <HotCollections />
-        {/* <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} /> */}
       </div>
     </div>
   );

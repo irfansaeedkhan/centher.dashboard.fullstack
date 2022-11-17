@@ -26,7 +26,7 @@ export const HotNFTs: React.FC = () => {
 
   return (
     <div className={hotNftPageWrapper}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center max-w-[1300px]">
         <div className={hotNftAnimation}>Hot NFTs</div>
         <Link
           href={"/explore/nfts"}
