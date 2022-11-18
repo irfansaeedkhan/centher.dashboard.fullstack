@@ -5,7 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import ctl from "@netlify/classnames-template-literals";
 
-import { NFT } from "@/store/explore.store";
+import { NFT } from "@/models/nft";
 // import useGetUser from "@/hooks/use.get.user";
 import useGetNftOwnerDb from "@/hooks/use.get.nft.owner.db";
 import {

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 // App imports
-import { useRepliesStore } from "@/store/profile.replies.store";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -33,7 +33,7 @@ const Replies: NextPageWithLayout = () => {
     offset,
     updateOffset,
     loading,
-  } = useRepliesStore((state) => ({
+  } = useMyRepliesStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
 

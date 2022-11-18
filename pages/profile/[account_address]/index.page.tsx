@@ -88,6 +88,7 @@ const Profile: NextPageWithLayout = () => {
               onDelete={(post_id) => {
                 deletePost(post_id);
               }}
+              placement="profile-tab-posts"
             />
           );
         }
@@ -98,6 +99,7 @@ const Profile: NextPageWithLayout = () => {
             onDelete={(post_id) => {
               deletePost(post_id);
             }}
+            placement="profile-tab-posts"
           />
         );
       })}

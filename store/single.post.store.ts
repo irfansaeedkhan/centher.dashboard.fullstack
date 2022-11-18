@@ -1,6 +1,7 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
+import { customLog } from "@/utils/custom.log";
 import { axiosNodeApi } from "@/utils/axios";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
@@ -22,9 +23,14 @@ export interface SinglePostStore {
 
   deleteReply: (replyId: string) => Promise<void>;
 
+  addNewReply: (reply: CompletedPost) => void;
+
   updatePost: (post: Partial<Post>) => void;
 
-  addNewReply: (reply: CompletedPost) => void;
+  updatePostLikesCount: (
+    actionType: "increment" | "decrement",
+    postId?: string
+  ) => void;
 
   resetStore: (postId: string, loading?: LoadingState) => void;
 }
@@ -64,10 +70,19 @@ export const useSinglePostStore = create<SinglePostStore>()(
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
           });
-        } catch (error) {
-          set({ postLoading: "failed", repliesLoading: "failed" });
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
+        } catch (error: any) {
+          if (error.response?.status === 404) {
+            set({
+              post: null,
+              postLoading: "loaded",
+              replies: [],
+              repliesLoading: "loaded",
+            });
+          } else {
+            set({ postLoading: "failed", repliesLoading: "failed" });
+          }
+
+          customLog(error, ["development"]);
         }
       },
 
@@ -123,14 +138,39 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }
       },
 
-      updatePost: (post) => {
-        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
-      },
-
       addNewReply: (reply) => {
         set((state) => ({
           replies: [reply, ...state.replies],
         }));
+      },
+
+      updatePost: (post) => {
+        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
+      },
+
+      updatePostLikesCount: (actionType, postId) => {
+        if (!postId) return;
+
+        set((state) => {
+          if (
+            !state.post ||
+            postId.toLowerCase() !== state.post._id.toLowerCase()
+          ) {
+            return state;
+          }
+
+          return {
+            ...state,
+            post: {
+              ...state.post,
+              likes_count:
+                actionType === "increment"
+                  ? state.post.likes_count + 1
+                  : state.post.likes_count - 1,
+              liked_by_loggedin_user: actionType === "increment",
+            },
+          };
+        });
       },
 
       resetStore: (postId, loading = "idle") => {
