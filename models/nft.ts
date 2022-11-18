@@ -1,4 +1,3 @@
-
 export interface NFT {
   id: string;
   collection: string;

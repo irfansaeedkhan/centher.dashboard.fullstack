@@ -18,10 +18,7 @@ interface ExploreProps {
   loading: LoadingState;
 }
 
-export const Explore: React.FC<ExploreProps> = ({
-  allNFTs,
-  loading,
-}) => {
+export const Explore: React.FC<ExploreProps> = ({ allNFTs, loading }) => {
   const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const [sortByOpen, setSortByOpen] = useState(false);
 

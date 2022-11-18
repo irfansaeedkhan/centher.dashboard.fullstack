@@ -18,15 +18,17 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
     <div className={leftSideContainer}>
       <div className={ImgContainer}>
-        {ImgStyling && <div>
-          <Image
-            className={ImgStyling}
-            src={props.image ? props.image : ""}
-            alt="image"
-            height={270}
-            width={270}
-          />
-        </div>}
+        {ImgStyling && (
+          <div>
+            <Image
+              className={ImgStyling}
+              src={props.image ? props.image : ""}
+              alt="image"
+              height={270}
+              width={270}
+            />
+          </div>
+        )}
       </div>
       <NFTDetails
         nftId={props.nftId}

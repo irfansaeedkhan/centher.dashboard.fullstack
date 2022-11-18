@@ -6,15 +6,17 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  collectionsQuery,
-} from "@/subgraph/querys";
+import { collectionsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection } from "@/models/nft";
 
 export interface AllCollectionsStore {
   collections: Collection[];
-  fetchCollections: (offset?: number, limit?: number, category? :string) => Promise<void>;
+  fetchCollections: (
+    offset?: number,
+    limit?: number,
+    category?: string
+  ) => Promise<void>;
   category: string;
   offset: number;
   updateOffset: () => void;
@@ -46,7 +48,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
       fetchCollections: async (offset, limit, category) => {
         try {
           set({ loading: "loading" });
-          
+
           const client = new ApolloClient({
             uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
             cache: new InMemoryCache(),
@@ -78,7 +80,6 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
-
     }),
     { name: "ExploreStore" }
   )

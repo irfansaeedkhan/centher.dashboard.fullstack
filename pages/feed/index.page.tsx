@@ -10,13 +10,13 @@ import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.po
 import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
-  const { posts, fetchPosts, deletePost, offset, updateOffset, loading } =
+  const { posts, fetchPosts, removePost, offset, updateOffset, loading } =
     useFeedStore((state) => ({
       posts: state.posts,
       fetchPosts: state.fetchPosts,
 
       addNewPost: state.addNewPost,
-      deletePost: state.deletePost,
+      removePost: state.removePost,
 
       offset: state.offset,
       updateOffset: state.updateOffset,
@@ -55,11 +55,19 @@ const Feed: NextPageWithLayout = () => {
               key={post._id}
               ref={lastPostRef}
               post={post}
-              onDelete={deletePost}
+              onDelete={removePost}
+              placement="feed"
             />
           );
         }
-        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
+        return (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={removePost}
+            placement="feed"
+          />
+        );
       })}
 
       {(loading === "loading" || loading === "idle") && (

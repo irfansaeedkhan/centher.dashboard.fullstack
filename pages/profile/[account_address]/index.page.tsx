@@ -29,7 +29,7 @@ const Profile: NextPageWithLayout = () => {
   const {
     posts,
     fetchPosts,
-    deletePost,
+    removePost,
     offset,
     updateOffset,
     resetPosts,
@@ -39,7 +39,7 @@ const Profile: NextPageWithLayout = () => {
     fetchPosts: state.fetchPosts,
 
     addNewPost: state.addNewPost,
-    deletePost: state.deletePost,
+    removePost: state.removePost,
 
     offset: state.offset,
     updateOffset: state.updateOffset,
@@ -86,8 +86,9 @@ const Profile: NextPageWithLayout = () => {
               key={post._id}
               post={post}
               onDelete={(post_id) => {
-                deletePost(post_id);
+                removePost(post_id);
               }}
+              placement="profile-tab-posts"
             />
           );
         }
@@ -96,8 +97,9 @@ const Profile: NextPageWithLayout = () => {
             key={post._id}
             post={post}
             onDelete={(post_id) => {
-              deletePost(post_id);
+              removePost(post_id);
             }}
+            placement="profile-tab-posts"
           />
         );
       })}
