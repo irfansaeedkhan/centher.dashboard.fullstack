@@ -470,7 +470,9 @@ export const SingleReply = React.forwardRef<
                   : ""
               )}
             >
-              {currentPageRoute.isFeedPage || currentPageRoute.isProfilePage ? (
+              {currentPageRoute.isFeedPage ||
+              currentPageRoute.isProfilePage ||
+              currentPageRoute.isProfileRepliesPage ? (
                 <Link
                   href={{
                     pathname: AppRoutes.feed.single_post,
@@ -606,7 +608,11 @@ export const SingleReply = React.forwardRef<
                 </div>
               )}
 
-            {!(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
+            {!(
+              currentPageRoute.isFeedPage ||
+              currentPageRoute.isProfilePage ||
+              currentPageRoute.isProfileRepliesPage
+            ) &&
               replies?.length > 0 && (
                 <div className={repliesContainer}>
                   {replies?.length > 0 &&

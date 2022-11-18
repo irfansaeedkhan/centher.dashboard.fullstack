@@ -11,6 +11,7 @@ export const useCurrentPageRoute = () => {
       isSinglePostPage: router.pathname === AppRoutes.feed.single_post,
       isFeedPage: router.pathname === AppRoutes.feed.index,
       isProfilePage: router.pathname === AppRoutes.profile.account_address,
+      isProfileRepliesPage: router.pathname === AppRoutes.profile.replies,
     };
   }, [router.pathname]);
 
