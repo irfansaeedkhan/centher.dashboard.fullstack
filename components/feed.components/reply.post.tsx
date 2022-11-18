@@ -548,7 +548,7 @@ text-14px font-light text-[#E7E8EE] whitespace-pre-wrap break-all
                     isLikedByLoggedInUser ? "text-brand-primary" : ""
                   }`}
                 >
-                  {totalPostLikes > 0 && totalPostLikes}
+                  {totalPostLikes}
                 </span>
               </button>
               <div ref={ref2} className={toggleContainer}>
