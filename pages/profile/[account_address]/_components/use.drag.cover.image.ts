@@ -27,7 +27,8 @@ export const useDragCoverImage = (params: Params = {}) => {
       return {
         ...prev,
         lastY: e.clientY,
-        y: `${newY <= 0 ? newY : 0}px`,
+        // newY > 0 ? 0: newY >= -500 ? -500 : newY
+        y: `${newY > 0 ? 0 : newY <= -500 ? -500 : newY}px`,
       };
     });
   }, []);
