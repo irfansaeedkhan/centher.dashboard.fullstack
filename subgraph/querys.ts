@@ -41,6 +41,22 @@ export const collectionsQuery = `
   }
 `;
 
+export const collectionsByCategoryQuery = `
+  query($first: Int!, $skip: Int!, $category: String!) {
+    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
+      collection
+      creator
+      id
+      ipfs
+      maxSupply
+      name
+      symbol
+      totalSupply
+      txTime
+    }
+  }
+`;
+
 export const allNFTsQuery = `
   query($first: Int!, $skip: Int!) {
     nfts(first: $first, skip: $skip) {

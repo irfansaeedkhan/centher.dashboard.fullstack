@@ -1,20 +1,21 @@
+
+import { useEffect } from "react";
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { useExploreStore } from "@/store/explore.store";
 
 // Current directory imports
+import { useAllNFTsStore } from "@/store/all.nfts.store";
 import { Explore } from "./_components";
-import { useEffect } from "react";
 
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
-  const { allNFTs, fetchAllNFTs, loadingAllNFTs } = useExploreStore(
+  const { allNFTs, fetchAllNFTs, loading } = useAllNFTsStore(
     (state) => ({
       allNFTs: state.allNFTs,
       fetchAllNFTs: state.fetchAllNFTs,
-      loadingAllNFTs: state.loadingAllNFTs,
+      loading: state.loading,
     })
   );
 
@@ -25,7 +26,7 @@ const AllNftsPage: NextPageWithLayout = () => {
   return (
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
-        <Explore loadingAllNFTs={loadingAllNFTs} allNFTs={allNFTs} />
+        <Explore loading={loading} allNFTs={allNFTs} />
       </div>
     </div>
   );

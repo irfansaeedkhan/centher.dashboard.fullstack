@@ -1,15 +1,13 @@
 // React, Next, NPM Packages
 import React, { useEffect } from "react";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 // App imports
 import NFTCard from "@/components/nft.card";
-import { NFT, useExploreStore } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
-import Link from "next/link";
-
-const MAX_HOT_NFTS = 10;
+import { useExploreStore } from "@/store/explore.store";
 
 export const HotNFTs: React.FC = () => {
   const { hotNFTs, fetchHotNFTs, loadingHotNFTs } = useExploreStore(
@@ -21,7 +19,7 @@ export const HotNFTs: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchHotNFTs(0, MAX_HOT_NFTS);
+    fetchHotNFTs();
   }, [fetchHotNFTs]);
 
   return (

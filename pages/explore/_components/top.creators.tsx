@@ -6,7 +6,6 @@ import { useExploreStore } from "@/store/explore.store";
 import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
 import clsx from "clsx";
 
-const MAX_TOP_CREATORS = 10;
 const TopCreators = () => {
   const { topCreators, fetchTopCreators, loadingTopCreators } = useExploreStore(
     (state) => ({
@@ -16,7 +15,7 @@ const TopCreators = () => {
     })
   );
   useEffect(() => {
-    fetchTopCreators(0, MAX_TOP_CREATORS);
+    fetchTopCreators();
   }, [fetchTopCreators]);
 
   const ref = useRef<HTMLInputElement>(null);

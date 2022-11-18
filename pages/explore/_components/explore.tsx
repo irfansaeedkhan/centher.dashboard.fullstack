@@ -1,32 +1,28 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
-import { useInView } from "react-intersection-observer";
 
 // App imports
 import NFTCard from "@/components/nft.card";
-import { NFT } from "@/store/explore.store";
+import { NFT } from "@/models/nft";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { LoadingState } from "@/models/common";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
-import CategoryDropdown from "./category.dropdown";
 import SortByDropdown from "./sortby.dropdown";
 
 // Current directory imports
 
 interface ExploreProps {
   allNFTs: NFT[];
-  loadingAllNFTs: LoadingState;
+  loading: LoadingState;
 }
 
 export const Explore: React.FC<ExploreProps> = ({
   allNFTs,
-  loadingAllNFTs,
+  loading,
 }) => {
-  const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
-  const [categoryOpen, setCategoryOpen] = useState(false);
   const [sortByOpen, setSortByOpen] = useState(false);
 
   return (
@@ -36,30 +32,9 @@ export const Explore: React.FC<ExploreProps> = ({
         <div className={sectionNameStyle}>
           <div className="relative">
             <button
-              ref={categoryDropdownOpenerRef}
-              className={allButtonWrapper}
-              onClick={() => setCategoryOpen((prev) => !prev)}
-            >
-              <span className="text-gray-shade-7 text-sm font-semibold">
-                Category
-              </span>{" "}
-              {categoryOpen ? (
-                <HiChevronUp className="text-2xl" />
-              ) : (
-                <HiChevronDown className="text-2xl" />
-              )}
-            </button>
-            <CategoryDropdown
-              isOpen={categoryOpen}
-              onClose={() => setCategoryOpen(false)}
-              openerRef={categoryDropdownOpenerRef}
-            />
-          </div>
-          <div className="relative">
-            <button
               ref={sortByDropdownOpenerRef}
               className={allButtonWrapper}
-              onClick={() => setSortByOpen((prev) => !prev)}
+              onClick={() => setSortByOpen((prev: any) => !prev)}
             >
               <span className="text-gray-shade-7 text-sm font-semibold">
                 Sort by
@@ -73,7 +48,7 @@ export const Explore: React.FC<ExploreProps> = ({
             <SortByDropdown
               isOpen={sortByOpen}
               onClose={() => setSortByOpen(false)}
-              openerRef={categoryDropdownOpenerRef}
+              openerRef={sortByDropdownOpenerRef}
             />
           </div>
         </div>
@@ -87,7 +62,7 @@ export const Explore: React.FC<ExploreProps> = ({
         </div>
       )}
 
-      {(loadingAllNFTs === "loading" || loadingAllNFTs === "idle") && (
+      {(loading === "loading" || loading === "idle") && (
         <div className="flex flex-wrap gap-10 items-center">
           {/* we are showing 12 skeletons while reloading the page to users */}
           <NftsSkeleton />
@@ -105,7 +80,7 @@ export const Explore: React.FC<ExploreProps> = ({
         </div>
       )}
 
-      {loadingAllNFTs !== "loaded" && (
+      {loading !== "loaded" && (
         <>
           <div className="flex justify-center items-center text-white">
             <HotNftEmptyIcon />

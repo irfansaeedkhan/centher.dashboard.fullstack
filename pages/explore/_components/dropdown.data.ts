@@ -1,14 +1,3 @@
-export const categories = [
-  "premium",
-  "arts",
-  "music",
-  "sport",
-  "entertainment",
-  "gaming",
-  "collectibles",
-  "e-sport",
-  "utility",
-];
 
 export const sortBy = [
   "recently created",

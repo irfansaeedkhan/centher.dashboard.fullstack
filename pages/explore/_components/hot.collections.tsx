@@ -31,7 +31,6 @@ const responsive = {
   },
 };
 
-const MAX_COLLECTIONS = 10;
 export const HotCollections: React.FC = () => {
   const { hotCollections, fetchCollections, loadingCollections } =
     useExploreStore((state) => ({
@@ -41,7 +40,7 @@ export const HotCollections: React.FC = () => {
     }));
 
   useEffect(() => {
-    fetchCollections(0, MAX_COLLECTIONS);
+    fetchCollections();
   }, [fetchCollections]);
 
   return (
