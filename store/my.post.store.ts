@@ -11,7 +11,7 @@ export interface MyPostStore {
   userId: string;
 
   addNewPost: (post: CompletedPost) => void;
-  deletePost: (postId: string) => void;
+  removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
@@ -74,7 +74,7 @@ export const useMyPostStore = create<MyPostStore>()(
         }));
       },
 
-      deletePost: (postId) => {
+      removePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
         }));

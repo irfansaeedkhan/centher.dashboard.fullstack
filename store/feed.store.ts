@@ -10,7 +10,7 @@ export interface FeedStore {
   fetchPosts: () => Promise<void>;
 
   addNewPost: (post: CompletedPost) => void;
-  deletePost: (postId: string) => void;
+  removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
   decrementPostRepliesCount: (postId: string | undefined) => void;
 
@@ -73,7 +73,7 @@ export const useFeedStore = create<FeedStore>()(
         }));
       },
 
-      deletePost: (postId) => {
+      removePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
         }));

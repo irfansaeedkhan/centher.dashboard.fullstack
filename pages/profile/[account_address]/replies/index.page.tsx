@@ -29,7 +29,7 @@ const Replies: NextPageWithLayout = () => {
     posts,
     resetPosts,
     fetchPosts,
-    deletePost,
+    removePost,
     offset,
     updateOffset,
     loading,
@@ -37,7 +37,7 @@ const Replies: NextPageWithLayout = () => {
     posts: state.posts,
     fetchPosts: state.fetchPosts,
 
-    deletePost: state.deletePost,
+    removePost: state.removePost,
 
     offset: state.offset,
     updateOffset: state.updateOffset,
@@ -79,11 +79,11 @@ const Replies: NextPageWithLayout = () => {
               ref={lastPostRef}
               key={post._id}
               post={post}
-              onDelete={deletePost}
+              onDelete={removePost}
             />
           );
         }
-        return <SingleReply key={post._id} post={post} onDelete={deletePost} />;
+        return <SingleReply key={post._id} post={post} onDelete={removePost} />;
       })}
 
       {(loading === "loading" || loading === "idle") && (

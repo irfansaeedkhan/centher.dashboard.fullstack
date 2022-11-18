@@ -13,7 +13,7 @@ export interface RepliesStore {
   fetchPosts: () => Promise<void>;
   resetPosts: (userId: string, loading?: LoadingState) => void;
 
-  deletePost: (postId: string) => void;
+  removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
@@ -69,7 +69,7 @@ export const useMyRepliesStore = create<RepliesStore>()(
         }
       },
 
-      deletePost: (postId) => {
+      removePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
         }));
