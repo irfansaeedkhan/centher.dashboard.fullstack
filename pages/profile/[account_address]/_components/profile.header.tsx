@@ -32,7 +32,7 @@ import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profi
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle } from "@/assets/svgs";
+import { Circle, SpinIcon3 } from "@/assets/svgs";
 
 // Current directory imports
 import { ProfileTabsSocial } from "./profile.tabs.social";
@@ -596,7 +596,7 @@ silver1 silver2 silverLastFrame
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
                     {/* TODO: Waqar Fix Loader size issue*/}
-                    <Rings
+                    {/* <Rings
                       height="20"
                       width="20"
                       color="#1C1F29"
@@ -605,7 +605,8 @@ silver1 silver2 silverLastFrame
                       wrapperClass=""
                       visible={true}
                       ariaLabel="rings-loading"
-                    />
+                    /> */}
+                    <SpinIcon3 />
                   </button>
                 ) : (
                   <Button
