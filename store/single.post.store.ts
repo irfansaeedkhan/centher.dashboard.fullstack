@@ -21,7 +21,7 @@ export interface SinglePostStore {
   fetchPost: () => Promise<void>;
   fetchReplies: () => Promise<void>;
 
-  deleteReply: (replyId: string) => Promise<void>;
+  removeReply: (replyId: string) => Promise<void>;
 
   addNewReply: (reply: CompletedPost) => void;
 
@@ -117,10 +117,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }
       },
 
-      deleteReply: async (replyId) => {
+      removeReply: async (replyId) => {
         try {
-          await axiosNodeApi.delete(`/api/socials/posts/${replyId}`);
-
           // Update replies count in post
           const { decrementPostRepliesCount } = useFeedStore.getState();
           decrementPostRepliesCount(get().post?._id);
@@ -132,9 +130,8 @@ export const useSinglePostStore = create<SinglePostStore>()(
             } as Post,
             replies: state.replies.filter((reply) => reply._id !== replyId),
           }));
-        } catch (error) {
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
+        } catch (error: any) {
+          customLog(error, ["development"]);
         }
       },
 

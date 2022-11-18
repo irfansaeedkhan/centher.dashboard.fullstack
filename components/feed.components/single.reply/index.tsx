@@ -637,7 +637,6 @@ export const SingleReply = React.forwardRef<
             <Post3DotsMenu
               post={_post}
               onClickDelete={() => setDeleteModal(true)}
-              onArchive={(postId) => onDelete(postId)}
               onClickEdit={() =>
                 setEditPostData((prev) => ({
                   ...prev,

@@ -36,6 +36,7 @@ import {
 import { CompletedPost, PostMedia } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 
 import { usePostUpload } from "./../feed.components/post.logic";
 import { createPostView } from "./single.post/create.post.view";
@@ -192,7 +193,13 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
         });
     };
 
-    const archivePost = async (post_id: string) => {
+    const archivePost = async (
+      e: React.MouseEvent<HTMLButtonElement>,
+      post_id: string
+    ) => {
+      const button = e.currentTarget;
+      button.disabled = true;
+
       try {
         await axiosNodeApi.patch(`/api/socials/posts/${post_id}/archive`);
 
@@ -200,10 +207,7 @@ export const ReplyPost = React.forwardRef<HTMLDivElement, ReplyPostProps>(
 
         onDelete(post_id);
       } catch (error: any) {
-        console.dir("Error inside Archive", error);
-        toast.error(
-          error.response?.data?.message_description || "Something went wrong"
-        );
+        customLog(error, ["development"]);
       }
     };
 
@@ -416,8 +420,8 @@ text-12px font-ligth text-gray-shade-7 pt-1
                     >
                       <button
                         className={toggleListBtn}
-                        onClick={() => {
-                          archivePost(post._id);
+                        onClick={(e) => {
+                          archivePost(e, post._id);
                         }}
                       >
                         <ArchiveIcon className={toggleListIcons} /> Archive
@@ -442,8 +446,8 @@ text-12px font-ligth text-gray-shade-7 pt-1
                       </button>
                       <button
                         className={toggleListBtn}
-                        onClick={() => {
-                          archivePost(post._id);
+                        onClick={(e) => {
+                          archivePost(e, post._id);
                         }}
                       >
                         <ArchiveIcon className={toggleListIcons} /> Archive

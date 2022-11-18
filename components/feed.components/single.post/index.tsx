@@ -75,7 +75,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
     const {
       replies,
       updateRepliesOffset,
-      deleteReply,
+      removeReply,
       updatePost,
       updatePostLikesCount: updatePostLikesCountSinglePost,
     } = useSinglePostStore();
@@ -210,10 +210,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
       Array<JSX.Element>
     );
 
-    const handleDeleteReply = (post_id: string) => {
-      deleteReply(post_id);
-    };
-
     const editPost = async () => {
       setUpdateLoadingButton(true);
       try {
@@ -300,7 +296,6 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
               <Post3DotsMenu
                 post={post}
                 onClickDelete={() => setDeleteModal(true)}
-                onArchive={(postId) => onDelete(postId)}
                 onClickEdit={() =>
                   setEditPostData((prev) => ({
                     ...prev,
@@ -537,7 +532,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
                           ref={lastReplyRef}
                           key={reply._id}
                           post={reply}
-                          onDelete={handleDeleteReply}
+                          onDelete={removeReply}
                         />
                       );
                     }
@@ -545,7 +540,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
                       <ReplyPost
                         key={reply._id}
                         post={reply}
-                        onDelete={handleDeleteReply}
+                        onDelete={removeReply}
                       />
                     );
                   })}
