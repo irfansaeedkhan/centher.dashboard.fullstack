@@ -23,9 +23,14 @@ export interface SinglePostStore {
 
   deleteReply: (replyId: string) => Promise<void>;
 
+  addNewReply: (reply: CompletedPost) => void;
+
   updatePost: (post: Partial<Post>) => void;
 
-  addNewReply: (reply: CompletedPost) => void;
+  updatePostLikesCount: (
+    actionType: "increment" | "decrement",
+    postId?: string
+  ) => void;
 
   resetStore: (postId: string, loading?: LoadingState) => void;
 }
@@ -133,14 +138,39 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }
       },
 
-      updatePost: (post) => {
-        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
-      },
-
       addNewReply: (reply) => {
         set((state) => ({
           replies: [reply, ...state.replies],
         }));
+      },
+
+      updatePost: (post) => {
+        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
+      },
+
+      updatePostLikesCount: (actionType, postId) => {
+        if (!postId) return;
+
+        set((state) => {
+          if (
+            !state.post ||
+            postId.toLowerCase() !== state.post._id.toLowerCase()
+          ) {
+            return state;
+          }
+
+          return {
+            ...state,
+            post: {
+              ...state.post,
+              likes_count:
+                actionType === "increment"
+                  ? state.post.likes_count + 1
+                  : state.post.likes_count - 1,
+              liked_by_loggedin_user: actionType === "increment",
+            },
+          };
+        });
       },
 
       resetStore: (postId, loading = "idle") => {

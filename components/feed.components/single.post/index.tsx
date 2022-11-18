@@ -10,6 +10,7 @@ import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
+import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
 import { useSinglePostStore } from "@/store/single.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
@@ -31,18 +32,24 @@ import {
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { ReplyPost } from "../reply.post";
-import { CreatePostModal } from "../create.post/create.post.modal";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
 import PostUserDetails from "./post.user.details";
 import Post3DotsMenu from "./post.3.dots.menu";
 import { useCurrentPageRoute } from "./use.current.page.route";
-import { customLog } from "@/utils/custom.log";
+import { useMyPostStore } from "@/store/my.post.store";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 
-interface FeedCardLevel1Props {
+interface Props {
+  placement:
+    | "feed"
+    | "single-post-page"
+    | "profile-tab-posts"
+    | "profile-tab-replies";
   post: CompletedPost;
   onDelete: (id: string) => void;
 }
@@ -61,18 +68,27 @@ const initialEditPostData: IEditPostData = {
   deletedMedia: [],
 };
 
-export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
+export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
   ({ post, onDelete }, ref) => {
-    const { updatePost } = useSinglePostStore();
     const { user } = useUser();
     const { openModal } = useNewPostStore();
-    const { replies, updateRepliesOffset, deleteReply } = useSinglePostStore();
-
-    const currentPageRoute = useCurrentPageRoute();
-
+    const {
+      replies,
+      updateRepliesOffset,
+      deleteReply,
+      updatePost,
+      updatePostLikesCount: updatePostLikesCountSinglePost,
+    } = useSinglePostStore();
+    const { updatePostLikesCount: updatePostLikesCountFeed } = useFeedStore();
+    const { updatePostLikesCount: updatePostLikesCountMyPost } =
+      useMyPostStore();
+    const { updatePostLikesCount: updatePostLikesCountMyReplies } =
+      useMyRepliesStore();
     const decrementPostsCount = useProfileCardStore(
       (state) => state.decrementPostsCount
     );
+
+    const currentPageRoute = useCurrentPageRoute();
 
     const [deleteModal, setDeleteModal] = useState(false);
 
@@ -124,33 +140,28 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       try {
         // putting it before the api call to make it feel faster
         if (post.liked_by_loggedin_user) {
-          updatePost({
-            likes_count: post.likes_count - 1,
-            liked_by_loggedin_user: false,
-          });
+          updatePostLikesCountFeed("decrement", postId);
+          updatePostLikesCountMyPost("decrement", postId);
+          updatePostLikesCountMyReplies("decrement", postId);
+          updatePostLikesCountSinglePost("decrement", postId);
+
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
             actionType: "unlike",
           });
         } else {
-          updatePost({
-            likes_count: post.likes_count + 1,
-            liked_by_loggedin_user: true,
-          });
+          updatePostLikesCountFeed("increment", postId);
+          updatePostLikesCountMyPost("increment", postId);
+          updatePostLikesCountMyReplies("increment", postId);
+          updatePostLikesCountSinglePost("increment", postId);
+
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
             actionType: "like",
           });
         }
       } catch (error: any) {
-        updatePost({
-          likes_count: post.likes_count,
-          liked_by_loggedin_user: post.liked_by_loggedin_user,
-        });
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
+        customLog(error, ["development"]);
       }
     };
 

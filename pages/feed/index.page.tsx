@@ -56,10 +56,18 @@ const Feed: NextPageWithLayout = () => {
               ref={lastPostRef}
               post={post}
               onDelete={deletePost}
+              placement="feed"
             />
           );
         }
-        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
+        return (
+          <SinglePost
+            key={post._id}
+            post={post}
+            onDelete={deletePost}
+            placement="feed"
+          />
+        );
       })}
 
       {(loading === "loading" || loading === "idle") && (

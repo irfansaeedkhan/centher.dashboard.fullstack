@@ -14,6 +14,11 @@ export interface FeedStore {
   incrementPostRepliesCount: (postId?: string) => void;
   decrementPostRepliesCount: (postId: string | undefined) => void;
 
+  updatePostLikesCount: (
+    actionType: "increment" | "decrement",
+    postId?: string
+  ) => void;
+
   offset: number;
   updateOffset: () => void;
 
@@ -99,6 +104,26 @@ export const useFeedStore = create<FeedStore>()(
               return {
                 ...post,
                 replies_count: post.replies_count - 1,
+              };
+            }
+            return post;
+          }),
+        }));
+      },
+
+      updatePostLikesCount: (actionType, postId) => {
+        if (!postId) return;
+
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                likes_count:
+                  actionType === "increment"
+                    ? post.likes_count + 1
+                    : post.likes_count - 1,
+                liked_by_loggedin_user: actionType === "increment",
               };
             }
             return post;

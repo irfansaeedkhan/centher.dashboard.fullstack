@@ -54,6 +54,7 @@ const SinglePostPage: NextPageWithLayout = () => {
               onDelete={() => {
                 router.replace(AppRoutes.feed.index);
               }}
+              placement="single-post-page"
             />
           )}
 
