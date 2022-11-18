@@ -22,11 +22,11 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 
   Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-verification icon variants
-Rainbow1  Rainbow2 RainbowLastFrame
-gold1 gold2 goldLastFrame
-silver1 silver2 silverLastFrame
-*/
+  verification icon variants
+  Rainbow1  Rainbow2 RainbowLastFrame
+  gold1 gold2 goldLastFrame
+  silver1 silver2 silverLastFrame
+  */
   const iconVerifyProps = useVerificationTick(user?.account_address);
 
   useEffect(() => {
@@ -121,7 +121,7 @@ silver1 silver2 silverLastFrame
     <div
       className={clsx(
         `w-11/12 sm:w-[272px] pt-12 rounded-10px overflow-hidden text-center bg-background-shade-3 relative`,
-        !!profileCardDetails.profile_views_count && `pb-4`
+        !!profileCardDetails.posts_views_count && `pb-4`
       )}
     >
       <Link
