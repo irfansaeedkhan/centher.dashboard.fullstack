@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { categories } from "@/models/nft";
@@ -10,7 +9,12 @@ interface Props {
   openerRef: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
-const CategoryDropdown: React.FC<Props> = ({ isOpen, onClose, onChange, openerRef }) => {
+const CategoryDropdown: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  onChange,
+  openerRef,
+}) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
   useOnClickOutside(ref, (e) => {

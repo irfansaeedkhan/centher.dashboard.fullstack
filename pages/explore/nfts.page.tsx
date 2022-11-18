@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,13 +10,11 @@ import { Explore } from "./_components";
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
-  const { allNFTs, fetchAllNFTs, loading } = useAllNFTsStore(
-    (state) => ({
-      allNFTs: state.allNFTs,
-      fetchAllNFTs: state.fetchAllNFTs,
-      loading: state.loading,
-    })
-  );
+  const { allNFTs, fetchAllNFTs, loading } = useAllNFTsStore((state) => ({
+    allNFTs: state.allNFTs,
+    fetchAllNFTs: state.fetchAllNFTs,
+    loading: state.loading,
+  }));
 
   useEffect(() => {
     fetchAllNFTs(0, MAX_HOT_NFTS);
