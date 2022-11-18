@@ -2,10 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
-import { Collection } from "@/store/explore.store";
 import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import Link from "next/link";
 import useGetUser from "@/hooks/use.get.user";
+import { Collection } from "@/models/nft";
 
 export interface CollectionCardProps {
   data: Collection;

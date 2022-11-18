@@ -36,7 +36,7 @@ export const CreateNFTForm = ({ createNFT, clearForm }: CreateNFTFormProps) => {
   }));
 
   useEffect(() => {
-    fetchCollections(0, 1000);
+    fetchCollections();
   }, [fetchCollections]);
 
   return (

@@ -11,7 +11,7 @@ import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
-import { Collection } from "@/store/explore.store";
+import { Collection } from "@/models/nft";
 import { formatAddress } from "@/utils/format.address";
 
 // form validations
