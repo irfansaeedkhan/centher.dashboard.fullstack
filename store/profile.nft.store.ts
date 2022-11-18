@@ -13,7 +13,7 @@ import {
   listedNFTsByAccount,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Collection, NFT } from "./explore.store";
+import { Collection, NFT } from "@/models/nft";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;

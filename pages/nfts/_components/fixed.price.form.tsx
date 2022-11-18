@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 
 // App imports
-import { Collection } from "@/store/explore.store";
+import { Collection } from "@/models/nft";
 import Button from "@/components/button";
 import { QuestionIcon } from "@/assets/svgs";
 import { axiosNodeApi } from "@/utils/axios";

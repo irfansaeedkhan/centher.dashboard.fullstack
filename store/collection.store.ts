@@ -11,6 +11,7 @@ import {
   collectionQuery,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
+import { CollectionInfo, NFT } from "@/models/nft";
 
 export interface CollectionStore {
   info: CollectionInfo | undefined;
@@ -186,29 +187,3 @@ export const useCollectionStore = create<CollectionStore>()(
     { name: "ExploreStore" }
   )
 );
-
-export interface NFT {
-  id: string;
-  collection: string;
-  tokenId: number;
-  creator: string;
-  createTime: number;
-  ipfs: string;
-  saleState: string;
-  price: number;
-  owner: string;
-  endTime: number;
-}
-
-export interface CollectionInfo {
-  txTime: number;
-  tradingVolumn: number;
-  totalSupply: number;
-  symbol: string;
-  name: string;
-  maxSupply: number;
-  ipfs: string;
-  creator: string;
-  createHash: string;
-  collection: string;
-}
