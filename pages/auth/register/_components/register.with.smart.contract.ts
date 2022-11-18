@@ -48,38 +48,33 @@ export const registerWithSmartContract = async (
       );
     }
 
-    // Get balance of the user's account
-    const bnbBalance = await library.getBalance(address);
-
-    // Convert registration fee to BigNumber
-    const registrationFee = ethers.utils.parseEther(fee);
-
-    // If the user's balance is less than the registration fee, return error
-    if (bnbBalance.lt(registrationFee)) {
-      throw {
-        status: "app_error",
-        message: "insufficient_funds",
-        message_description: `You don't have enough balance to pay the registration fee`,
-      };
-    }
-
-    let gasPrice = await library.getGasPrice();
-
-    if (gasPrice.lt(ethers.utils.parseUnits("10", "gwei"))) {
-      gasPrice = ethers.utils.parseUnits("10", "gwei");
-    }
-
     let tx: TransactionResponse;
 
     if (signupData.referred_by !== "") {
       tx = await registrationContract.registerWithReferrer(
-        signupData.referred_by,
-        {
-          value: ethers.utils.hexlify(registrationFee),
-          gasPrice: ethers.utils.hexlify(gasPrice),
-        }
+        signupData.referred_by
       );
     } else {
+      // Get balance of the user's account
+      const bnbBalance = await library.getBalance(address);
+
+      // Convert registration fee to BigNumber
+      const registrationFee = ethers.utils.parseEther(fee);
+
+      // If the user's balance is less than the registration fee, return error
+      if (bnbBalance.lt(registrationFee)) {
+        throw {
+          status: "app_error",
+          message: "insufficient_funds",
+          message_description: `You don't have enough balance to pay the registration fee`,
+        };
+      }
+
+      let gasPrice = await library.getGasPrice();
+
+      if (gasPrice.lt(ethers.utils.parseUnits("10", "gwei"))) {
+        gasPrice = ethers.utils.parseUnits("10", "gwei");
+      }
       tx = await registrationContract.registerWithoutReferrer({
         value: ethers.utils.hexlify(registrationFee),
         gasPrice: ethers.utils.hexlify(gasPrice),
@@ -90,8 +85,8 @@ export const registerWithSmartContract = async (
 
     return {
       status: "success",
-      message: "registration_fee_paid",
-      message_description: "You are successfully registered",
+      message: "registration_successful",
+      message_description: "You have successfully registered",
       data: tx,
     };
   } catch (error: any) {
@@ -106,7 +101,7 @@ export const registerWithSmartContract = async (
       throw {
         status: "app_error",
         message: "user_already_registered",
-        message_description: "You have already paid the registration fee",
+        message_description: "You are already registered",
       };
     }
 
@@ -118,7 +113,7 @@ export const registerWithSmartContract = async (
       status: "app_error",
       message: "trx_error",
       message_description:
-        "Something went wrong while paying the registration fee",
+        "Something went wrong while registering. Please try again later",
     };
   }
 };
