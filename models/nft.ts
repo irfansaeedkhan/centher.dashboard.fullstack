@@ -38,16 +38,16 @@ export interface CollectionInfo {
 }
 
 export const categories = [
-  "all",
-  "premium",
-  "arts",
-  "music",
-  "sport",
-  "entertainment",
-  "gaming",
-  "collectibles",
-  "e-sport",
-  "utility",
+  "All",
+  "Premium",
+  "Arts",
+  "Music",
+  "Sport",
+  "Entertainment",
+  "Gaming",
+  "Collectibles",
+  "E-sport",
+  "Utility",
 ];
 
 export type Category =   "all" |

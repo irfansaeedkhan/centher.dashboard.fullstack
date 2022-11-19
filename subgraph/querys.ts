@@ -43,7 +43,8 @@ export const collectionsQuery = `
 
 export const collectionsByCategoryQuery = `
   query($first: Int!, $skip: Int!, $category: String!) {
-    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
+    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip, 
+      where: {category: $category}) {
       collection
       creator
       id
