@@ -33,7 +33,6 @@ export const useGetMyCollections = (account: string | null | undefined) => {
         },
         fetchPolicy: "cache-first",
       });
-      console.log("sniper: result: ", result);
 
       if (result.collections && result.collections.length > 0) {
         const _collections = result.collections.map((item: any) => {

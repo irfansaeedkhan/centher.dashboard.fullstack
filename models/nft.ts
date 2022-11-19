@@ -63,15 +63,21 @@ export type Category =
 
 export const sortBy = [
   "recently created",
-  "earliar created",
-  "ending soon",
   "volume high to low",
   "volume low to high",
+  "price high to low",
+  "price low to high",
 ];
 
 export type SortBy =
   | "recently created"
-  | "earliar created"
-  | "ending soon"
   | "volume high to low"
-  | "volume low to high";
+  | "volume low to high"
+  | "price high to low"
+  | "price low to high";
+
+export type OrderDirection = "desc" | "asc";
+
+export const orderBy = ["createTime", "tradingVolumn", "price"];
+
+export type OrderBy = "price" | "tradingVolumn" | "createTime";

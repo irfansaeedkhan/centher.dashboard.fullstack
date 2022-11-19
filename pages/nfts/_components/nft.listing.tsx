@@ -60,7 +60,11 @@ export const NFTListing = ({ data }: NFTListingProps) => {
                           <h5 className={title}>
                             {prefix} by{" "}
                             <span className="font-semibold">
-                              {formatAddress(item.seller)}
+                              {item.type === "BuyItem" ||
+                              item.type === "AcceptBid" ||
+                              item.type === "EndAuction"
+                                ? formatAddress(item.buyer)
+                                : formatAddress(item.seller)}
                             </span>
                           </h5>
                           <h6 className={date}>

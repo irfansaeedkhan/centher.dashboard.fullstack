@@ -77,7 +77,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
               variables: {
                 first: limit,
                 skip: offset,
-                category: category,
+                category: category?.toLowerCase(),
               },
               fetchPolicy: "cache-first",
             });

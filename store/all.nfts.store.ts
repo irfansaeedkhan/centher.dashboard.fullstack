@@ -6,24 +6,32 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { allNFTsQuery } from "@/subgraph/querys";
+import { allNFTsByFilterQuery, allNFTsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Category, Collection, NFT, SortBy } from "@/models/nft";
+import {
+  Category,
+  Collection,
+  NFT,
+  OrderBy,
+  OrderDirection,
+} from "@/models/nft";
 
 export interface AllNFTsStore {
   allNFTs: NFT[];
   category: Category;
-  sortBy: SortBy;
+  sortBy: OrderBy;
+  sortDir: OrderDirection;
   fetchAllNFTs: (
     category: Category,
-    sortBy: SortBy,
+    sortBy: OrderBy,
+    sortDir: OrderDirection,
     offset?: number,
     limit?: number
   ) => Promise<void>;
   offset: number;
   updateOffset: () => void;
   updateCategory: (value: Category) => void;
-  updateSortBy: (value: SortBy) => void;
+  updateSortBy: (value: OrderBy, dir: OrderDirection) => void;
   limit: number;
   loading: LoadingState;
 }
@@ -33,7 +41,8 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
     (set) => ({
       allNFTs: [],
       category: "all",
-      sortBy: "recently created",
+      sortBy: "tradingVolumn",
+      sortDir: "desc",
       offset: 0,
       limit: 10,
       loading: "idle",
@@ -49,14 +58,15 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           allNFTs: [],
         })),
 
-      updateSortBy: (value) =>
+      updateSortBy: (value, dir) =>
         set((state) => ({
           sortBy: value,
+          sortDir: dir,
           offset: 0,
           allNFTs: [],
         })),
 
-      fetchAllNFTs: async (category, sortBy, offset, limit) => {
+      fetchAllNFTs: async (category, sortBy, sortDir, offset, limit) => {
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
@@ -64,15 +74,37 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             cache: new InMemoryCache(),
           });
           let _allNFTs: NFT[] = [];
-          const { data: result, error } = await client.query({
-            query: gql(allNFTsQuery),
-            variables: {
-              first: limit,
-              skip: offset,
-            },
-            fetchPolicy: "cache-first",
-          });
-          console.log("@@", result);
+          let result;
+          let error;
+          if (category.toLowerCase() === "all") {
+            const { data: result1, error: error1 } = await client.query({
+              query: gql(allNFTsQuery),
+              variables: {
+                first: limit,
+                skip: offset,
+                orderBy: sortBy,
+                orderDirection: sortDir,
+              },
+              fetchPolicy: "cache-first",
+            });
+            result = result1;
+            error = error1;
+          } else {
+            const { data: result2, error: error2 } = await client.query({
+              query: gql(allNFTsByFilterQuery),
+              variables: {
+                first: limit,
+                skip: offset,
+                category: category.toLowerCase(),
+                orderBy: sortBy,
+                orderDirection: sortDir,
+              },
+              fetchPolicy: "cache-first",
+            });
+            result = result2;
+            error = error2;
+          }
+
           if (result && !error) {
             _allNFTs = result.nfts.map((item: any) => {
               let _endTime = 0;
