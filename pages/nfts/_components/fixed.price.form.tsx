@@ -189,7 +189,7 @@ const FixedPriceForm = ({
           {...register("Category")}
           className={!formState.errors.Category ? inputField : inputFieldError}
         >
-          {categories.map((item, key) => {
+          {categories.slice(1, categories.length).map((item, key) => {
             return (
               <option value={item === "Select" ? "" : item} key={key}>
                 {item}
