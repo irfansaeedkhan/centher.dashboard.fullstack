@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import Joi, { string } from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -8,11 +7,11 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { QuestionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
-import { Collection } from "@/models/nft";
 import { formatAddress } from "@/utils/format.address";
+import { IMyCollection } from "@/hooks/use.get.my.collections";
+import { categories } from "@/models/nft";
 
 // form validations
 const schema = Joi.object({
@@ -28,7 +27,7 @@ const schema = Joi.object({
   //   "string.empty": `NFTSymbol Required`,
   //   "any.required": `Required Field`,
   // }),
-  NFTAmount: Joi.number().required().label("NFT Amount").messages({
+  NFTAmount: Joi.number().integer().greater(0).required().label("NFT Amount").messages({
     "string.empty": `NFTAmount Required`,
     "any.required": `Required Field`,
   }),
@@ -40,10 +39,10 @@ const schema = Joi.object({
     "string.empty": `StartingNFTPrice Required`,
     "any.required": `Required Field`,
   }),
-  // Category: Joi.string().required().max(150).label("Category").messages({
-  //   "string.empty": `Category Required`,
-  //   "any.required": `Required Field`,
-  // }),
+  Category: Joi.string().required().max(150).label("Category").messages({
+    "string.empty": `Category Required`,
+    "any.required": `Required Field`,
+  }),
   Collection: Joi.string().required().max(150).label("Collection").messages({
     "string.empty": `Collection Required`,
     "any.required": `Required Field`,
@@ -56,12 +55,12 @@ interface AuctionFormFields {
   NFTAmount: number | null;
   AuctionEndTime: string;
   StartingNFTPrice: number | null;
-  // Category: string;
+  Category: string;
   Collection: string;
 }
 interface AuctionFormProps {
   createNFT: any;
-  collections: Collection[];
+  collections: IMyCollection[];
   clearForm: boolean;
 }
 const AuctionForm = ({
@@ -86,7 +85,7 @@ const AuctionForm = ({
         NFTAmount: null,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        // Category: "",
+        Category: "",
         Collection: "",
       },
     });
@@ -144,6 +143,7 @@ const AuctionForm = ({
       description: data.Description,
       supply: data.NFTAmount,
       collection: data.Collection,
+      category: data.Category,
       isAuction: true,
       price: data.StartingNFTPrice,
       period: Math.floor((data.AuctionEndTime - Date.now()) / 1000),
@@ -288,25 +288,31 @@ const AuctionForm = ({
           <span className={serviceFeeNumber}>0.0370 BNB</span>
         </div> */}
       </div>
-      {/* <div className={fieldWrapper}>
+      <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
           Category
         </label>
         <select
           id="Category"
           {...register("Category")}
-          className={!formState.errors.Category ? inputField : inputFieldError}
+          className={
+            !formState.errors.Category ? inputField : inputFieldError
+          }
         >
-          <option value="">Select</option>
-          <option value="Category1">Category1</option>
-          <option value="Category2">Category2</option>
+          {categories.map((item, key) => {
+            return (
+              <option value={item === "Select" ? "" : item} key={key}>
+                {item}
+              </option>
+            );
+          })}
         </select>
         {formState.errors.Category && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.Category.message}
           </p>
         )}
-      </div> */}
+      </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
           Collection
@@ -321,7 +327,7 @@ const AuctionForm = ({
           <option value="">Select</option>
           {collections.map((collection) => {
             return (
-              <option value={collection.id} key={collection.id}>
+              <option value={collection.collection} key={collection.id}>
                 {`${collection.name}  (${formatAddress(
                   collection.collection
                 )})`}

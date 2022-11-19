@@ -26,6 +26,7 @@ import {
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
+import {useBNBPrice} from "@/hooks/use.get.bnb.price";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -36,6 +37,8 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
+
+  const bnbPrice = useBNBPrice()
 
   // const [nftData, setNFTData] = useState<INFTData>()
 
@@ -55,12 +58,12 @@ const CreateNFT: NextPageWithLayout = () => {
         />
         <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
         <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
-        <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3>
+        {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
         <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />
           {nftData?.price} BNB{" "}
-          <span className="text-gray-shade-2 "> =${nftData?.price * 300}</span>
+          <span className="text-gray-shade-2 "> =${Number((nftData?.price * bnbPrice).toFixed(5))}</span>
         </h6>
         <div className={footerBtnContainer}>
           <Button
@@ -229,6 +232,7 @@ const CreateNFT: NextPageWithLayout = () => {
           const result = await callCreateNFT(
             library,
             cd.collection,
+            cd.category,
             "ipfs:/" + jsonHash,
             cd.supply,
             cd.isAuction,

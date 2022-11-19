@@ -7,7 +7,6 @@ import Moralis from "moralis";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
-import { ChainInfoContextProvider } from "@/web3/context/chain.info.context";
 import { getLibrary } from "@/web3";
 import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
@@ -43,31 +42,29 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <ScriptTags />
       <RefreshContextProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <ChainInfoContextProvider>
-            <Toaster
-              position="top-center"
-              reverseOrder={false}
-              toastOptions={{
-                // Define default options
-                className: "",
-                duration: 5000,
-                style: {
-                  background: "#363636",
-                  color: "#fff",
-                },
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              // Define default options
+              className: "",
+              duration: 5000,
+              style: {
+                background: "#363636",
+                color: "#fff",
+              },
 
-                // Default options for specific types
-                success: {
-                  duration: 3000,
-                  theme: {
-                    primary: "green",
-                    secondary: "black",
-                  },
+              // Default options for specific types
+              success: {
+                duration: 3000,
+                theme: {
+                  primary: "green",
+                  secondary: "black",
                 },
-              }}
-            />
-            {getLayout(<Component {...pageProps} />)}
-          </ChainInfoContextProvider>
+              },
+            }}
+          />
+          {getLayout(<Component {...pageProps} />)}
         </Web3ReactProvider>
       </RefreshContextProvider>
     </>

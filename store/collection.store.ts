@@ -13,6 +13,8 @@ import {
 import { LoadingState } from "@/models/common";
 import { CollectionInfo, NFT } from "@/models/nft";
 
+export type Filter = "All" | "List" | "Auction";
+
 export interface CollectionStore {
   info: CollectionInfo | undefined;
   fetchCollectionInfo: (collection: string) => Promise<void>;
@@ -23,10 +25,11 @@ export interface CollectionStore {
     orderDir: string,
     offset?: number,
     limit?: number,
-    reload?: boolean
   ) => Promise<void>;
   offset: number;
   updateOffset: () => void;
+  filter: Filter;
+  updateFilter: (filter: Filter) => void;
   limit: number;
   loadingCollectionInfo: LoadingState;
   loadingNFTs: LoadingState;
@@ -43,12 +46,20 @@ export const useCollectionStore = create<CollectionStore>()(
       info: undefined,
       nfts: [],
       offset: 0,
+      filter: "All",
       limit: 20,
       loadingCollectionInfo: "idle",
       loadingNFTs: "idle",
       updateOffset: () =>
         set((state) => ({
           offset: state.nfts.length,
+        })),
+
+      updateFilter: (filter) =>
+        set((state) => ({
+          filter: filter,
+          offset: 0,
+          nfts: [],
         })),
 
       fetchCollectionInfo: async (collection) => {
@@ -94,7 +105,6 @@ export const useCollectionStore = create<CollectionStore>()(
         orderDir,
         offset,
         limit,
-        reload
       ) => {
         try {
           set({ loadingNFTs: "loading" });
@@ -166,17 +176,10 @@ export const useCollectionStore = create<CollectionStore>()(
               (stateNFTs) =>
                 !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
-            if (reload) {
-              return {
-                nfts: _nfts,
-                loadingNFTs: "loaded",
-              };
-            } else {
-              return {
-                nfts: [..._nfts, ...filteredNFTs],
-                loadingNFTs: "loaded",
-              };
-            }
+            return {
+              nfts: [..._nfts, ...filteredNFTs],
+              loadingNFTs: "loaded",
+            };
           });
         } catch (error) {
           set({ loadingNFTs: "failed" });

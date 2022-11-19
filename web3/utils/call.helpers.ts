@@ -135,6 +135,7 @@ export const callCreateCollection = async (
   library: Web3Provider,
   name: string,
   symbol: string,
+  category: string,
   uri: string,
   maxsupply: number | null,
   fee: number
@@ -144,6 +145,7 @@ export const callCreateCollection = async (
     const tx = await marketplaceContract.functions.createCollection(
       name,
       symbol,
+      category,
       uri,
       maxsupply,
       { value: ethers.utils.parseEther(fee.toString()) }
@@ -165,6 +167,7 @@ export const callCreateCollection = async (
 export const callCreateNFT = async (
   library: Web3Provider,
   collection: string,
+  category: string,
   tokenUri: string,
   supply: number,
   isAuction: boolean,
@@ -176,6 +179,7 @@ export const callCreateNFT = async (
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.createItems(
       collection,
+      category,
       tokenUri,
       supply,
       isAuction,

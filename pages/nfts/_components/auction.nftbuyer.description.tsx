@@ -15,7 +15,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import {useBNBPrice} from "@/hooks/use.get.bnb.price";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({

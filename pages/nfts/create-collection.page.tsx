@@ -256,6 +256,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 library,
                 cd.name,
                 cd.symbol,
+                cd.category,
                 "ipfs:/" + jsonHash,
                 cd.totalsupply,
                 FEE.createCollectionFee

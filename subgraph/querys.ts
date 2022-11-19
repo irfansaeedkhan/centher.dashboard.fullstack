@@ -266,6 +266,16 @@ export const registeredCollections = `
   } 
 `;
 
+export const myCollections = `
+  query MyQuery($creator: Bytes!) {
+    collections(where: {creator: $creator}) {
+      id
+      name
+      collection
+    }
+  }
+`;
+
 export const topCreators = `
   query($skip: Int!, $first: Int!) {
     users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first) {

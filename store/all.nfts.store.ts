@@ -6,15 +6,23 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { allNFTsQuery } from "@/subgraph/querys";
+import {
+  allNFTsQuery,
+} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Collection, NFT } from "@/models/nft";
+import { Category, Collection, NFT, SortBy } from "@/models/nft";
+
+
 
 export interface AllNFTsStore {
   allNFTs: NFT[];
-  fetchAllNFTs: (offset?: number, limit?: number) => Promise<void>;
+  category: Category;
+  sortBy: SortBy;
+  fetchAllNFTs: (category: Category, sortBy: SortBy, offset?: number, limit?: number) => Promise<void>;
   offset: number;
   updateOffset: () => void;
+  updateCategory: (value: Category) => void;
+  updateSortBy: (value: SortBy) => void;
   limit: number;
   loading: LoadingState;
 }
@@ -23,6 +31,8 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
   devtools(
     (set) => ({
       allNFTs: [],
+      category: "all",
+      sortBy: "recently created",
       offset: 0,
       limit: 10,
       loading: "idle",
@@ -31,7 +41,21 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           offset: state.allNFTs.length,
         })),
 
-      fetchAllNFTs: async (offset, limit) => {
+      updateCategory: (value) =>
+        set((state) => ({
+          category: value,
+          offset: 0,
+          allNFTs: [],
+        })),
+
+      updateSortBy: (value) =>
+        set((state) => ({
+          sortBy: value,
+          offset: 0,
+          allNFTs: [],
+        })),
+
+      fetchAllNFTs: async (category, sortBy, offset, limit) => {
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
