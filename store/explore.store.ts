@@ -7,7 +7,6 @@ import axios from "axios";
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import {
-  allNFTsQuery,
   collectionsQuery,
   hotNFTsQuery,
   topCreators,

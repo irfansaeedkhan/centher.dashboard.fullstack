@@ -76,9 +76,7 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        console.log("sniper: formatIPFSUrl(ipfs): ", formatIPFSUrl(ipfs));
         const _metadata = await axios.get(formatIPFSUrl(ipfs));
-        console.log("sniper: _metadata: ", _metadata);
         setMetadata(_metadata.data);
         // setName(metadata.data.name)
         // setDescription(metadata.data.description)

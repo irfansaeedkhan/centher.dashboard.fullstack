@@ -203,7 +203,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               return item.collection;
             });
           }
-          console.log("sniper: _collections: ", _collections);
 
           if (result) {
             const result2 = result.data.result.filter((item: any) => {
@@ -227,7 +226,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               };
             });
           }
-          console.log("sniper: owned NFTs: ", _nfts);
 
           set((state) => {
             // Filter out all nfts that are already in the store

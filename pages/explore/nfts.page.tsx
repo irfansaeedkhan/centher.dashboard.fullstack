@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -6,61 +7,63 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 // Current directory imports
 import { useAllNFTsStore } from "@/store/all.nfts.store";
 import { Explore } from "./_components";
-import { Category, SortBy } from "@/models/nft";
+import { Category, OrderBy, orderBy, OrderDirection, sortBy, SortBy } from "@/models/nft";
 
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
   const [categoryInView, setCategory] = useState<Category>("all");
   const [sortByInView, setSortBy] = useState<SortBy>("recently created");
-
-  const {
-    allNFTs,
-    category,
-    sortBy,
-    offset,
-    limit,
-    fetchAllNFTs,
-    updateCategory,
-    updateSortBy,
-    updateOffset,
-    loading,
-  } = useAllNFTsStore((state) => ({
-    allNFTs: state.allNFTs,
-    category: state.category,
-    sortBy: state.sortBy,
-    offset: state.offset,
-    limit: state.limit,
-    fetchAllNFTs: state.fetchAllNFTs,
-    updateCategory: state.updateCategory,
-    updateSortBy: state.updateSortBy,
-    updateOffset: state.updateOffset,
-    loading: state.loading,
-  }));
+  
+  const { allNFTs, category, sortByInStore, sortDir, offset, limit, fetchAllNFTs, updateCategory, updateSortBy, updateOffset, loading } = useAllNFTsStore(
+    (state) => ({
+      allNFTs: state.allNFTs,
+      category: state.category,
+      sortByInStore: state.sortBy,
+      sortDir: state.sortDir,
+      offset: state.offset,
+      limit: state.limit,
+      fetchAllNFTs: state.fetchAllNFTs,
+      updateCategory: state.updateCategory,
+      updateSortBy: state.updateSortBy,
+      updateOffset: state.updateOffset,
+      loading: state.loading,
+    })
+  );
 
   useEffect(() => {
-    fetchAllNFTs(category, sortBy, offset, limit);
-  }, [fetchAllNFTs, limit, offset, category, sortBy]);
+    fetchAllNFTs(category, sortByInStore, sortDir, offset, limit);
+  }, [fetchAllNFTs, limit, offset, category, sortByInStore, sortDir]);
 
   useEffect(() => {
-    updateCategory(categoryInView);
-  }, [categoryInView, updateCategory]);
+    updateCategory(categoryInView)
+  }, [categoryInView, updateCategory])
 
   useEffect(() => {
-    updateSortBy(sortByInView);
-  }, [sortByInView, updateSortBy]);
+    let _sortBy: OrderBy = "createTime"
+    let _sortDir: OrderDirection = "desc"
+    if(sortByInView.toLowerCase() === sortBy[0]) {
+      _sortBy = "createTime"
+    } else if(sortByInView.toLowerCase() === sortBy[1]) {
+      _sortBy = "tradingVolumn"
+      _sortDir = "desc"
+    } else if(sortByInView.toLowerCase() === sortBy[2]) {
+      _sortBy = "tradingVolumn"
+      _sortDir = "asc"
+    } else if(sortByInView.toLowerCase() === sortBy[3]) {
+      _sortBy = "price"
+      _sortDir = "desc"
+    } else if(sortByInView.toLowerCase() === sortBy[4]) {
+      _sortBy = "price"
+      _sortDir = "asc"
+    }
+    updateSortBy(_sortBy, _sortDir)
+  }, [sortBy, sortByInView, updateSortBy])
 
   return (
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
-        <Explore
-          loading={loading}
-          allNFTs={allNFTs}
-          category={categoryInView}
-          sortBy={sortByInView}
-          setCategory={setCategory}
-          setSortBy={setSortBy}
-        />
+        <Explore loading={loading} allNFTs={allNFTs} category={category} sortBy={sortByInView} setCategory={setCategory} setSortBy={setSortBy}/>
       </div>
     </div>
   );

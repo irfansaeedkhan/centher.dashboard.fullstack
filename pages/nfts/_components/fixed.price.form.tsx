@@ -117,7 +117,6 @@ const FixedPriceForm = ({
 
   // handle submit data
   const onSubmit = async (data: any) => {
-    console.log("sniper: page: ", data);
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
