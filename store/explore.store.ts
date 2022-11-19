@@ -41,7 +41,7 @@ export const useExploreStore = create<ExploreStore>()(
       loadingHotNFTs: "idle",
       loadingCollections: "idle",
       loadingTopCreators: "idle",
-      
+
       fetchHotNFTs: async () => {
         try {
           set({ loadingHotNFTs: "loading" });
@@ -158,7 +158,6 @@ export const useExploreStore = create<ExploreStore>()(
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
-
     }),
     { name: "ExploreStore" }
   )

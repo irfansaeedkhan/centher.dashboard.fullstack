@@ -33,8 +33,8 @@ export interface INFTData {
 }
 export const CreateNFTForm = ({ createNFT, clearForm }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
-  const {account} = useWeb3React()
-  const collections = useGetMyCollections(account)
+  const { account } = useWeb3React();
+  const collections = useGetMyCollections(account);
 
   return (
     <div className={CreateNFTFormContainer}>

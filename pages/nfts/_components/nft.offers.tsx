@@ -9,7 +9,7 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
-import {useBNBPrice} from "@/hooks/use.get.bnb.price";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface NFTOffersProps {

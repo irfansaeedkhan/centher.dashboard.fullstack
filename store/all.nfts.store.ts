@@ -6,19 +6,20 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  allNFTsQuery,
-} from "@/subgraph/querys";
+import { allNFTsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Category, Collection, NFT, SortBy } from "@/models/nft";
-
-
 
 export interface AllNFTsStore {
   allNFTs: NFT[];
   category: Category;
   sortBy: SortBy;
-  fetchAllNFTs: (category: Category, sortBy: SortBy, offset?: number, limit?: number) => Promise<void>;
+  fetchAllNFTs: (
+    category: Category,
+    sortBy: SortBy,
+    offset?: number,
+    limit?: number
+  ) => Promise<void>;
   offset: number;
   updateOffset: () => void;
   updateCategory: (value: Category) => void;
