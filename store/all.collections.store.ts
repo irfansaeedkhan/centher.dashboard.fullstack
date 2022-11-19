@@ -6,7 +6,10 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { collectionsByCategoryQuery, collectionsQuery } from "@/subgraph/querys";
+import {
+  collectionsByCategoryQuery,
+  collectionsQuery,
+} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection } from "@/models/nft";
 
@@ -55,7 +58,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           });
 
           let _collections: Collection[] = [];
-          if(category === "All") {
+          if (category === "All") {
             const { data: result, error } = await client.query({
               query: gql(collectionsQuery),
               variables: {
@@ -64,7 +67,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
               },
               fetchPolicy: "cache-first",
             });
-  
+
             if (result && !error) {
               _collections = result.collections;
             }
@@ -78,7 +81,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
               },
               fetchPolicy: "cache-first",
             });
-  
+
             if (result && !error) {
               _collections = result.collections;
             }

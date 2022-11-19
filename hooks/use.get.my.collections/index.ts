@@ -8,18 +8,16 @@ import { useEffect, useState } from "react";
 const NetherNativeCollection = {
   id: "1",
   name: "Nether Native NFT",
-  collection: "0xc38ca0fe4910dc2bf5ecb2470a899321c62883e6"
-}
+  collection: "0xc38ca0fe4910dc2bf5ecb2470a899321c62883e6",
+};
 
 export interface IMyCollection {
-  id: string,
-  name: string,
-  collection: string,
+  id: string;
+  name: string;
+  collection: string;
 }
 
-export const useGetMyCollections = (
-  account: string | null | undefined,
-) => {
+export const useGetMyCollections = (account: string | null | undefined) => {
   const [collections, setCollections] = useState<IMyCollection[]>([]);
 
   useEffect(() => {
@@ -35,16 +33,16 @@ export const useGetMyCollections = (
         },
         fetchPolicy: "cache-first",
       });
-      console.log("sniper: result: ", result)
-      
+      console.log("sniper: result: ", result);
+
       if (result.collections && result.collections.length > 0) {
         const _collections = result.collections.map((item: any) => {
           return {
             id: item.id,
             name: item.name,
-            collection: item.collection
-          }
-        })
+            collection: item.collection,
+          };
+        });
         setCollections([NetherNativeCollection, ..._collections]);
       }
     };

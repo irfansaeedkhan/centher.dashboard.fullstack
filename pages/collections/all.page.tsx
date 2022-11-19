@@ -14,8 +14,16 @@ import CategoryDropdown from "../explore/_components/category.dropdown";
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [category, setCategory] = useState("")
-  const { collections, categoryInStore, offset, limit, updateCategory, fetchCollections, loading } = useAllCollectionsStore((state) => ({
+  const [category, setCategory] = useState("");
+  const {
+    collections,
+    categoryInStore,
+    offset,
+    limit,
+    updateCategory,
+    fetchCollections,
+    loading,
+  } = useAllCollectionsStore((state) => ({
     collections: state.collections,
     offset: state.offset,
     limit: state.limit,
@@ -31,14 +39,14 @@ const AllNFTCollection: NextPageWithLayout = () => {
 
   useEffect(() => {
     updateCategory(category);
-  }, [updateCategory, category])
-  
+  }, [updateCategory, category]);
+
   return (
     <div className={collectionPageMain}>
       <div className={nameButtonWrapper}>
         <h1 className={title}>Collections</h1>
-        <div className={sectionNameStyle}>     
-          <div className="relative">      
+        <div className={sectionNameStyle}>
+          <div className="relative">
             <button
               ref={categoryDropdownOpenerRef}
               className={allButtonWrapper}
