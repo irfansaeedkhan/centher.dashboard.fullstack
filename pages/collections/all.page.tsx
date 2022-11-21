@@ -14,7 +14,7 @@ import CategoryDropdown from "../explore/_components/category.dropdown";
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("all");
   const {
     collections,
     categoryInStore,
