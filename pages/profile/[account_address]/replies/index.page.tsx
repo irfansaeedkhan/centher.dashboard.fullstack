@@ -103,7 +103,7 @@ const Replies: NextPageWithLayout = () => {
           </div>
 
           <div className="flex justify-center text-gray-shade-7 font-normal text-xs mt-2">
-            <p>No replies yet. All replies will apper here</p>
+            <p>No replies yet. All replies will appear here</p>
           </div>
         </div>
       )}

@@ -61,48 +61,50 @@ const Search: NextPageWithLayout = () => {
         </div>
         <Searchbar />
       </div>
-      <div className="md:w-[544px] fxs:w-full">
-        <div
-          className={`animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
-        >
-          Search Result:
-        </div>
-        <div className="flex flex-col gap-3">
-          {searchResults.length > 0 &&
-            searchResults.map((result, i) => {
-              if (i === searchResults.length - 1) {
-                return (
-                  <UserWithFollow
-                    key={result._id}
-                    result={result}
-                    ref={lastResultRef}
-                  />
-                );
-              }
-              return <UserWithFollow key={result._id} result={result} />;
-            })}
+      {searchQuery.trim() !== "" && (
+        <div className="md:w-[544px] fxs:w-full">
+          <div
+            className={`animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
+          >
+            Search Result:
+          </div>
+          <div className="flex flex-col gap-3">
+            {searchResults.length > 0 &&
+              searchResults.map((result, i) => {
+                if (i === searchResults.length - 1) {
+                  return (
+                    <UserWithFollow
+                      key={result._id}
+                      result={result}
+                      ref={lastResultRef}
+                    />
+                  );
+                }
+                return <UserWithFollow key={result._id} result={result} />;
+              })}
 
-          {searchResults.length <= 0 && searchLoadingState === "loaded" && (
-            <div>
-              <div className="flex justify-center mt-10">
-                <SearchUserIcon />
+            {(searchLoadingState === "loading" ||
+              searchLoadingState === "idle") && <SearchUserSkeleton />}
+
+            {searchLoadingState === "loaded" && searchResults.length === 0 && (
+              <div>
+                <div className="flex justify-center mt-10">
+                  <SearchUserIcon />
+                </div>
+                <div className="flex justify-center mt-8 text-white font-semibold text-xl">
+                  <p>Sorry! No Result Found</p>
+                </div>
               </div>
-              <div className="flex justify-center mt-8 text-white font-semibold text-xl">
-                <p>Sorry! No Result Found</p>
+            )}
+
+            {searchLoadingState === "failed" && (
+              <div className="text-brand-primary font-semibold">
+                Something went wrong!
               </div>
-            </div>
-          )}
-
-          {(searchLoadingState === "loading" ||
-            searchLoadingState === "idle") && <SearchUserSkeleton />}
-
-          {searchLoadingState === "failed" && (
-            <div className="text-brand-primary font-semibold">
-              Something went wrong!
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

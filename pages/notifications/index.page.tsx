@@ -160,9 +160,11 @@ const Notifications: NextPageWithLayout = () => {
             </div>
           </div>
         )}
+
         {(loading === "loading" || loading === "idle") && (
           <SingleNotificationSkeleton />
         )}
+
         {loading === "loaded" &&
           notifications.length === 0 &&
           notificationToday.length === 0 &&
