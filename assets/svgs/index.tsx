@@ -44,6 +44,7 @@ export { default as Archived } from "./archived.svg";
 export { default as MoreIcon } from "./more.icon.svg";
 export { default as Restore } from "./restore.svg";
 export { default as Trash } from "./trash.svg";
+export { default as FollowerIcon } from "./follower.icon.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (

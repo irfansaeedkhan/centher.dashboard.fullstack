@@ -138,14 +138,6 @@ const CreateNFT: NextPageWithLayout = () => {
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.nfts.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
         <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
@@ -158,7 +150,21 @@ const CreateNFT: NextPageWithLayout = () => {
               setClearForm(false);
             }}
           />
-          {/* </Link> */}
+          
+          {txStatus && (
+            <Button
+              title={"View on Profile"}
+              variant="v1"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(true);
+                router.push(`/profile/${account}/nfts`)
+              }}
+            />
+          )}
         </div>
       </div>
     );
@@ -183,10 +189,10 @@ const CreateNFT: NextPageWithLayout = () => {
       //   },
       // });
 
-      await Moralis.start({
-        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-        // ...and any other configuration
-      });
+      // await Moralis.start({
+      //   apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+      //   // ...and any other configuration
+      // });
 
       const assetReader = new window.FileReader();
 

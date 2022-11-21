@@ -18,7 +18,7 @@ export interface IMyCollection {
 }
 
 export const useGetMyCollections = (account: string | null | undefined) => {
-  const [collections, setCollections] = useState<IMyCollection[]>([]);
+  const [collections, setCollections] = useState<IMyCollection[]>([NetherNativeCollection]);
 
   useEffect(() => {
     const fetchMyCollections = async (account: string) => {
