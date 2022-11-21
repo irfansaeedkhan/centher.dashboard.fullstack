@@ -150,7 +150,7 @@ const CreateNFT: NextPageWithLayout = () => {
               setClearForm(false);
             }}
           />
-          
+
           {txStatus && (
             <Button
               title={"View on Profile"}
@@ -161,7 +161,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
-                router.push(`/profile/${account}/nfts`)
+                router.push(`/profile/${account}/nfts`);
               }}
             />
           )}

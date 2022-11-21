@@ -33,7 +33,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
 
-  const router = useRouter()
+  const router = useRouter();
 
   // const [collectionData, setCollectionData] = useState<ICollectionData>()
 
@@ -149,7 +149,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               setClearForm(true);
             }}
           />
-          
+
           {txStatus && (
             <Button
               title={"View on Profile"}
@@ -160,7 +160,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
-                router.push(`/profile/${account}/collections`)
+                router.push(`/profile/${account}/collections`);
               }}
             />
           )}
