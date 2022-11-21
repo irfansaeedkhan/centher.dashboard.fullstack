@@ -180,7 +180,9 @@ export const NonNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
+        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+          {data?.description}
+        </p>
       </div>
       <div className="buttonContainer flex items-center">
         <Button

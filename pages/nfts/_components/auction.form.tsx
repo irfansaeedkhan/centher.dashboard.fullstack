@@ -446,26 +446,14 @@ const fieldTitle = ctl(`
   text-14px  font-normal text-white
 `);
 const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-3  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
 `);
 const inputFieldError = ctl(`
   ${inputField}
    focus:!ring-red-500
 `);
-const serviceFee = ctl(`
-flex justify-between items-center pt-1
-`);
-const serviceFeeTitle = ctl(`
-flex items-center gap-3
-`);
-const serviceFeeName = ctl(`
-text-[#838B8F] text-12px font-normal
-`);
-const serviceFeeNumber = ctl(`
- text-white text-12px font-normal
-`);
 const addPropertyBtn = ctl(`
-flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
+flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
 `);
 const modalBodyWrapper = ctl(`
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5

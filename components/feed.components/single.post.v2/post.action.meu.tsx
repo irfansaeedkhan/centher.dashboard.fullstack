@@ -8,12 +8,14 @@ import { HiOutlineArchive } from "react-icons/hi";
 import { DeleteModal } from "./delete.modal";
 
 interface Props {
+  isBefore15Minutes: boolean;
   onClickEdit: () => Promise<void>;
   onClickDelete: () => Promise<void>;
   onClickArchive: () => Promise<void>;
 }
 
 export const PostActionMenu: React.FC<Props> = ({
+  isBefore15Minutes,
   onClickArchive,
   onClickDelete,
   onClickEdit,
@@ -35,10 +37,12 @@ export const PostActionMenu: React.FC<Props> = ({
 
         {isOpen && (
           <div className="absolute right-0 z-[500] top-full w-[170px] bg-black-shade-12 rounded-10px overflow-hidden">
-            <MenuButton onClick={onClickEdit}>
-              <FiEdit className="w-[18px] h-[18px]" />
-              <span>Edit</span>
-            </MenuButton>
+            {isBefore15Minutes && (
+              <MenuButton onClick={onClickEdit}>
+                <FiEdit className="w-[18px] h-[18px]" />
+                <span>Edit</span>
+              </MenuButton>
+            )}
 
             <MenuButton onClick={onClickArchive}>
               <HiOutlineArchive className="w-[18px] h-[18px]" />

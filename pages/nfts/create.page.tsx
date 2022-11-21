@@ -50,13 +50,6 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <Image
-          className={ImgStyling}
-          src={URL.createObjectURL(asset as Blob)}
-          alt="image"
-          height={64}
-          width={64}
-        />
         <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
         <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
         {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
@@ -117,13 +110,6 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <Image
-          className={ImgStyling}
-          src={URL.createObjectURL(asset as Blob)}
-          alt="image"
-          height={64}
-          width={64}
-        />
         <h2 className="text-18px text-white font-semibold">
           {txStatus ? "Success!" : "Failed!"}
         </h2>

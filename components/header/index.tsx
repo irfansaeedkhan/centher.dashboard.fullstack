@@ -40,6 +40,14 @@ const Header = () => {
           alt="Nether NFT Logo"
           width={154}
           height={32}
+          className="md:block hidden"
+        />
+        <Image
+          src="/images/nether.nft.favicon.svg"
+          alt="Nether NFT Logo"
+          width={32}
+          height={32}
+          className="md:hidden block"
         />
       </Link>
 
