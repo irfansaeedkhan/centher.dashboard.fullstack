@@ -1,14 +1,22 @@
-import React from "react";
+import React, { HTMLAttributes, useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { FiMessageCircle, FiThumbsUp, FiShare } from "react-icons/fi";
 
 import { CompletedPost } from "@/models/post";
+
+import { ShareMenu } from "./share.menu";
 
 interface Props {
   post: CompletedPost;
 }
 
 export const PostFooter: React.FC<Props> = ({ post }) => {
+  const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
+
+  const shareMenuContainerRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(shareMenuContainerRef, () => setIsShareMenuOpen(false));
+
   return (
     <footer
       className={clsx(
@@ -16,14 +24,13 @@ export const PostFooter: React.FC<Props> = ({ post }) => {
         post.text_content ? "mt-3" : "mt-4"
       )}
     >
-      <div className="flex items-center gap-x-2 text-gray-shade-10 font-medium text-base">
+      <AnalyticsCount className="text-gray-shade-10">
         <FiMessageCircle className="w-5 h-5" />
         <span>{post.replies_count}</span>
-      </div>
+      </AnalyticsCount>
 
-      <div
+      <AnalyticsCount
         className={clsx(
-          "flex items-center gap-x-2 font-medium text-base",
           post.liked_by_loggedin_user
             ? "text-brand-primary"
             : "text-gray-shade-10"
@@ -31,11 +38,39 @@ export const PostFooter: React.FC<Props> = ({ post }) => {
       >
         <FiThumbsUp className="w-5 h-5" />
         <span className="mt-1">{post.likes_count}</span>
-      </div>
+      </AnalyticsCount>
 
-      <div className="flex items-center text-gray-shade-10 font-medium text-base">
-        <FiShare className="w-5 h-5" />
-      </div>
+      <AnalyticsCount
+        ref={shareMenuContainerRef}
+        className="relative text-gray-shade-10"
+      >
+        <FiShare
+          className="w-5 h-5"
+          onClick={() => setIsShareMenuOpen((prev) => !prev)}
+        />
+
+        {isShareMenuOpen && <ShareMenu post={post} />}
+      </AnalyticsCount>
     </footer>
   );
 };
+
+interface AnalyticsCountProps extends HTMLAttributes<HTMLDivElement> {}
+
+const AnalyticsCount = React.forwardRef<HTMLDivElement, AnalyticsCountProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx(
+          "flex items-center gap-x-2 font-medium text-base cursor-pointer",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+AnalyticsCount.displayName = "AnalyticsCount";
