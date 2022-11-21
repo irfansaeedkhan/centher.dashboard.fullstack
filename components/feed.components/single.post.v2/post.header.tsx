@@ -4,7 +4,7 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
@@ -12,7 +12,7 @@ import { PostActionMenu } from "./post.action.meu";
 dayjs.extend(relativeTime);
 
 interface Props {
-  post: Post;
+  post: CompletedPost;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
   onClickDelete: () => Promise<void>;
   onClickEdit: () => Promise<void>;

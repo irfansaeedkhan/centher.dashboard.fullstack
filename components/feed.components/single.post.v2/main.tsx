@@ -1,12 +1,13 @@
 import React from "react";
 import clsx from "clsx";
 
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 
 import { PostHeader } from "./post.header";
+import { PostMedia } from "./post.media";
 
 interface Props {
-  post: Post;
+  post: CompletedPost;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
   onClickEdit?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
@@ -31,6 +32,8 @@ export const SinglePostV2: React.FC<Props> = ({
         onClickDelete={onClickDelete}
         onClickEdit={onClickEdit}
       />
+
+      {post.media && !!post.media.length && <PostMedia post={post} />}
     </div>
   );
 };
