@@ -60,6 +60,9 @@ module.exports = {
         "buydao-pattern": "url('/images/buyntrdaoBackground.png')",
       },
       colors: {
+        app: {
+          "post-text": "#e7e8ee",
+        },
         brand: {
           primary: "#FEBF32",
           "primary-dark": "#DA9C24",

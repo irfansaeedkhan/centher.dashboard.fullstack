@@ -6,6 +6,7 @@ import { CompletedPost } from "@/models/post";
 
 import { PostHeader } from "./post.header";
 import { PostMedia } from "./post.media";
+import { PostTextContent } from "./post.text.content";
 
 interface Props {
   post: CompletedPost;
@@ -38,6 +39,8 @@ export const SinglePostV2: React.FC<Props> = ({
       />
 
       {post.media && !!post.media.length && <PostMedia post={post} />}
+
+      {post.text_content && <PostTextContent post={post} />}
     </div>
   );
 };
