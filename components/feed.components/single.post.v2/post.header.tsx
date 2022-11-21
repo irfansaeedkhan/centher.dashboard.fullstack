@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dayjs from "dayjs";
@@ -29,6 +29,17 @@ export const PostHeader: React.FC<Props> = ({
   onClickDelete,
   onClickArchive,
 }) => {
+  const isPostOwner = useMemo(() => {
+    return (
+      loggedInUser?.account_address.toLowerCase() ===
+      post.user.account_address.toLowerCase()
+    );
+  }, [loggedInUser?.account_address, post.user.account_address]);
+
+  const isBefore15Minutes = useMemo(() => {
+    return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
+  }, [post.createdAt]);
+
   // Considering postType === "main"
   return (
     <div className="flex items-center justify-between">
@@ -71,11 +82,11 @@ export const PostHeader: React.FC<Props> = ({
       </div>
 
       {/* Right Side */}
-      {loggedInUser?.account_address.toLowerCase() ===
-        post.user.account_address.toLowerCase() && (
+      {isPostOwner && (
         <div className="right-side">
           {/* 3 dots menu */}
           <PostActionMenu
+            isBefore15Minutes={isBefore15Minutes}
             onClickEdit={onClickEdit}
             onClickArchive={onClickArchive}
             onClickDelete={onClickDelete}
