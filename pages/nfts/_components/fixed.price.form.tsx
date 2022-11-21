@@ -27,10 +27,15 @@ const schema = Joi.object({
     "string.empty": `category Required`,
     "any.required": `Required Field`,
   }),
-  NFTAmount: Joi.number().integer().greater(0).required().label("NFT Amount").messages({
-    "string.empty": `NFTAmount Required`,
-    "any.required": `Required Field`,
-  }),
+  NFTAmount: Joi.number()
+    .integer()
+    .greater(0)
+    .required()
+    .label("NFT Amount")
+    .messages({
+      "string.empty": `NFTAmount Required`,
+      "any.required": `Required Field`,
+    }),
   NFTPrice: Joi.number().required().label("NFT Price").messages({
     "string.empty": `NFTPrice Required`,
     "any.required": `Required Field`,
@@ -112,7 +117,7 @@ const FixedPriceForm = ({
 
   // handle submit data
   const onSubmit = async (data: any) => {
-    console.log("sniper: page: ", data)
+    console.log("sniper: page: ", data);
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
@@ -183,11 +188,9 @@ const FixedPriceForm = ({
         <select
           id="Category"
           {...register("Category")}
-          className={
-            !formState.errors.Category ? inputField : inputFieldError
-          }
+          className={!formState.errors.Category ? inputField : inputFieldError}
         >
-          {categories.map((item, key) => {
+          {categories.slice(1, categories.length).map((item, key) => {
             return (
               <option value={item === "Select" ? "" : item} key={key}>
                 {item}

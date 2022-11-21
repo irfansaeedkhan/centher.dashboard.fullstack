@@ -59,8 +59,41 @@ export const collectionsByCategoryQuery = `
 `;
 
 export const allNFTsQuery = `
-  query($first: Int!, $skip: Int!) {
-    nfts(first: $first, skip: $skip) {
+  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
+    nfts(first: $first, 
+        skip: $skip, 
+        orderBy: $orderBy,
+        orderDirection: $orderDirection ) {
+      collection
+      createTime
+      creator
+      id
+      ipfs
+      saleState
+      tokenId
+      price
+      owner
+      listInfo {
+        price
+        bidSize
+      }
+      auctionInfo {
+        endTime
+        highestBidPrice
+        highestBidAddress
+        bidSize
+        startPrice
+      }
+    }
+  }
+`;
+
+export const allNFTsByFilterQuery = `
+  query($first: Int!, $skip: Int!, $category: String!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
+    nfts(first: $first, skip: $skip, 
+      orderBy: $orderBy,
+      orderDirection: $orderDirection,
+      where: {category: $category}) {
       collection
       createTime
       creator

@@ -195,7 +195,7 @@ export const CreateNFTCollectionForm = ({
               !formState.errors.category ? inputField : inputFieldError
             }
           >
-            {categories.map((item, key) => {
+            {categories.slice(1, categories.length).map((item, key) => {
               return (
                 <option value={item === "Select" ? "" : item} key={key}>
                   {item}

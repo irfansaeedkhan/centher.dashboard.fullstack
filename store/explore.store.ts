@@ -6,12 +6,7 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  allNFTsQuery,
-  collectionsQuery,
-  hotNFTsQuery,
-  topCreators,
-} from "@/subgraph/querys";
+import { collectionsQuery, hotNFTsQuery, topCreators } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
 
@@ -41,7 +36,7 @@ export const useExploreStore = create<ExploreStore>()(
       loadingHotNFTs: "idle",
       loadingCollections: "idle",
       loadingTopCreators: "idle",
-      
+
       fetchHotNFTs: async () => {
         try {
           set({ loadingHotNFTs: "loading" });
@@ -158,7 +153,6 @@ export const useExploreStore = create<ExploreStore>()(
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },
-
     }),
     { name: "ExploreStore" }
   )

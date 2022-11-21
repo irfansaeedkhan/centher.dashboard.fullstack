@@ -1,4 +1,3 @@
-
 export interface NFT {
   id: string;
   collection: string;
@@ -50,28 +49,35 @@ export const categories = [
   "Utility",
 ];
 
-export type Category =   "all" |
-  "premium" |
-  "arts" |
-  "music" |
-  "sport" |
-  "entertainment" |
-  "gaming" |
-  "collectibles" |
-  "e-sport" |
-  "utility";
+export type Category =
+  | "all"
+  | "premium"
+  | "arts"
+  | "music"
+  | "sport"
+  | "entertainment"
+  | "gaming"
+  | "collectibles"
+  | "e-sport"
+  | "utility";
 
 export const sortBy = [
   "recently created",
-  "earliar created",
-  "ending soon",
   "volume high to low",
   "volume low to high",
+  "price high to low",
+  "price low to high",
 ];
 
-export type SortBy = 
-  "recently created" |
-  "earliar created" |
-  "ending soon" |
-  "volume high to low" |
-  "volume low to high";
+export type SortBy =
+  | "recently created"
+  | "volume high to low"
+  | "volume low to high"
+  | "price high to low"
+  | "price low to high";
+
+export type OrderDirection = "desc" | "asc";
+
+export const orderBy = ["createTime", "tradingVolumn", "price"];
+
+export type OrderBy = "price" | "tradingVolumn" | "createTime";

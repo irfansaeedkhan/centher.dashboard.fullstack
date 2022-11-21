@@ -7,6 +7,12 @@ import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+// import {
+//   SinglePostV2,
+//   archivePost,
+//   deletePost,
+// } from "@/components/feed.components";
+// import { customLog } from "@/utils/custom.log";
 import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
@@ -42,6 +48,18 @@ const Feed: NextPageWithLayout = () => {
     fetchPosts();
   }, [fetchPosts]);
 
+  // const handleAction = async (
+  //   postId: string,
+  //   actionFunction: (postId: string) => Promise<void>
+  // ) => {
+  //   try {
+  //     await actionFunction(postId);
+  //     removePost(postId);
+  //   } catch (error: any) {
+  //     customLog(error, ["development"]);
+  //   }
+  // };
+
   return (
     <>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
@@ -68,6 +86,15 @@ const Feed: NextPageWithLayout = () => {
             placement="feed"
           />
         );
+        // return (
+        //   <SinglePostV2
+        //     key={post._id}
+        //     post={post}
+        //     postType={"main"}
+        //     onClickArchive={() => handleAction(post._id, archivePost)}
+        //     onClickDelete={() => handleAction(post._id, deletePost)}
+        //   />
+        // );
       })}
 
       {(loading === "loading" || loading === "idle") && (

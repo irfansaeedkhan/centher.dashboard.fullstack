@@ -24,7 +24,7 @@ export interface CollectionStore {
     saleState: string,
     orderDir: string,
     offset?: number,
-    limit?: number,
+    limit?: number
   ) => Promise<void>;
   offset: number;
   updateOffset: () => void;
@@ -99,13 +99,7 @@ export const useCollectionStore = create<CollectionStore>()(
         }
       },
 
-      fetchNFTs: async (
-        collection,
-        saleState,
-        orderDir,
-        offset,
-        limit,
-      ) => {
+      fetchNFTs: async (collection, saleState, orderDir, offset, limit) => {
         try {
           set({ loadingNFTs: "loading" });
           const client = new ApolloClient({

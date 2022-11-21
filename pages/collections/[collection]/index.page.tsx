@@ -30,7 +30,7 @@ import {
 } from "@/utils/format.address";
 import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
-import {useBNBPrice} from "@/hooks/use.get.bnb.price";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import useGetUser from "@/hooks/use.get.user";
@@ -76,9 +76,7 @@ const Collection: NextPageWithLayout = () => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        console.log("sniper: formatIPFSUrl(ipfs): ", formatIPFSUrl(ipfs))
         const _metadata = await axios.get(formatIPFSUrl(ipfs));
-        console.log("sniper: _metadata: ", _metadata)
         setMetadata(_metadata.data);
         // setName(metadata.data.name)
         // setDescription(metadata.data.description)
@@ -100,8 +98,8 @@ const Collection: NextPageWithLayout = () => {
   }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
-    updateFilter(filterInView)
-  }, [filterInView, updateFilter])
+    updateFilter(filterInView);
+  }, [filterInView, updateFilter]);
 
   useEffect(() => {
     if (collection) {
@@ -161,16 +159,18 @@ const Collection: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              {metadata && metadata.profileIPFSHash && <div className={profileImage}>
-                <Image
-                  src={formatIPFSUrl(metadata?.profileIPFSHash)}
-                  alt={"profile image"}
-                  width={112}
-                  height={112}
-                  className={collectionProfileImage}
-                  sizes={"512px"}
-                />
-              </div>}
+              {metadata && metadata.profileIPFSHash && (
+                <div className={profileImage}>
+                  <Image
+                    src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                    alt={"profile image"}
+                    width={112}
+                    height={112}
+                    className={collectionProfileImage}
+                    sizes={"512px"}
+                  />
+                </div>
+              )}
             </div>
             <div className={coverDetails}>
               <div className={topDetais}>

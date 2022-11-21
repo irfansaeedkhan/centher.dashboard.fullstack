@@ -5,7 +5,7 @@ import useRefresh from "@/web3/hooks/use.refresh";
 
 export const useBNBPrice = () => {
   const [bnbPrice, setBNBPrice] = useState(0);
-  const {slowRefresh} = useRefresh()
+  const { slowRefresh } = useRefresh();
 
   useEffect(() => {
     const fetchBNBPrice = async () => {
@@ -22,5 +22,5 @@ export const useBNBPrice = () => {
     fetchBNBPrice();
   }, [slowRefresh]);
 
-  return bnbPrice
+  return bnbPrice;
 };

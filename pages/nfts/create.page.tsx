@@ -26,7 +26,7 @@ import {
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import {useBNBPrice} from "@/hooks/use.get.bnb.price";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -38,7 +38,7 @@ const CreateNFT: NextPageWithLayout = () => {
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
-  const bnbPrice = useBNBPrice()
+  const bnbPrice = useBNBPrice();
 
   // const [nftData, setNFTData] = useState<INFTData>()
 
@@ -63,7 +63,10 @@ const CreateNFT: NextPageWithLayout = () => {
           <span>Price:</span>
           <BNBIcon />
           {nftData?.price} BNB{" "}
-          <span className="text-gray-shade-2 "> =${Number((nftData?.price * bnbPrice).toFixed(5))}</span>
+          <span className="text-gray-shade-2 ">
+            {" "}
+            =${Number((nftData?.price * bnbPrice).toFixed(5))}
+          </span>
         </h6>
         <div className={footerBtnContainer}>
           <Button
