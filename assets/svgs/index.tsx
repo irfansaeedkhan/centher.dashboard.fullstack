@@ -2213,3 +2213,132 @@ export const Circle: React.FC<IconProps> = ({ className }) => {
     </svg>
   );
 };
+export const DefaultCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="#1B1C22"
+        strokeWidth="3"
+        className="Animatecircle"
+      />
+    </svg>
+  );
+};
+export const RainbowCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9184_100150)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9184_100150"
+          x1="19.5"
+          y1="-4"
+          x2="87.8076"
+          y2="113.403"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FE070B" />
+          <stop offset="0.440127" stopColor="#06FDFD" />
+          <stop offset="1" stopColor="#E2BD3A" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+export const SilverCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9186_100152)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9186_100152"
+          x1="13"
+          y1="-7"
+          x2="81.5"
+          y2="120"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#AAAAAA" />
+          <stop offset="1" stopColor="#CBCFD8" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+export const GoldCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9186_100156)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9186_100156"
+          x1="57"
+          y1="0.999999"
+          x2="94"
+          y2="113"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#E6B333" />
+          <stop offset="1" stopColor="#DFB77B" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};

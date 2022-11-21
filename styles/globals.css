@@ -718,15 +718,20 @@ input:-webkit-autofill {
   animation: dash 3s linear alternate forwards;
 }
 
-@keyframes dash {
-  from {
-    stroke-dashoffset: 1260;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 .align-inherit {
   align-items: inherit;
+}
+.Animatecircle {
+  stroke-dasharray: 1260;
+  stroke-dashoffset: 0;
+  animation: dash 5s linear alternate forwards;
+}
+
+@keyframes dash {
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: 1260;
+  }
 }
