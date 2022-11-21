@@ -5,7 +5,13 @@ import clsx from "clsx";
 
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle } from "@/assets/svgs";
+import {
+  Circle,
+  DefaultCircle,
+  GoldCircle,
+  RainbowCircle,
+  SilverCircle,
+} from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
@@ -149,16 +155,34 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             sizes={"256px"}
           />
           {iconVerifyProps !== "no-icon" && (
-            <Circle
-              className={clsx(
-                `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`,
-                iconVerifyProps === "rainbow" &&
-                  "[&>*>*>*]: AnimatecircleRainbow",
-                iconVerifyProps === "silver" &&
-                  "[&>*>*>*]: AnimatecircleSilver",
-                iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+            <>
+              {iconVerifyProps === "rainbow" && (
+                <RainbowCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
               )}
-            />
+              {iconVerifyProps === "silver" && (
+                <SilverCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
+              )}
+              {iconVerifyProps === "gold" && (
+                <GoldCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
+              )}
+              <DefaultCircle
+                className={clsx(
+                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                )}
+              />
+            </>
           )}
           <div
             className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
