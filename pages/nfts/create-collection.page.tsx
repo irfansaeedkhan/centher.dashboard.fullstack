@@ -25,6 +25,8 @@ import { LoaderIcon, BNBIcon } from "@/assets/svgs";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
   const [loadingState, setLoadingState] = useState(false);
@@ -122,7 +124,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{collectionData?.name}</span> NFT on
-            Nether NFT platform.
+            Nether NFT platform, Click Ok to view your Collection.
           </p>
         )}
         {!txStatus && (
@@ -139,17 +141,26 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           className={footerBtnContainer}
         > */}
         <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-              setClearForm(true);
+          <Link
+            href={{
+              pathname: AppRoutes.profile.collections,
+              query: {
+                account_address: account,
+              },
             }}
-          />
+          >
+            <Button
+              title={"Ok"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(true);
+              }}
+            />
+          </Link>
           {/* </Link> */}
         </div>
       </div>
@@ -350,7 +361,7 @@ const modalBodyWrapper = ctl(`
 flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 `);
 const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
+w-full mt-3
 `);
 const ImgStyling = ctl(`
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto

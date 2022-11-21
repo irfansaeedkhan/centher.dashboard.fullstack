@@ -26,6 +26,7 @@ import { formatAddress } from "@/utils/format.address";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
+import Image from "next/image";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -39,6 +40,7 @@ export const NFTRightSideComponent = ({
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
   const { user } = useGetUser(data?.creator);
+  // const { user: creatorProfile } = useGetUser(router.query.account_address?.toString());
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
@@ -99,7 +101,19 @@ export const NFTRightSideComponent = ({
 
       <div className={desNameContainer}>
         <div className={nameBox}>
-          <div className="linearCircle1"></div>
+          <div className="">
+            {user ? (
+              <Image
+                src={user?.profile_image.path}
+                width={48}
+                height={48}
+                alt="profile"
+                className="!w-12 !h-12 object-cover rounded-full"
+              />
+            ) : (
+              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
+            )}
+          </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
             <Link
@@ -116,7 +130,19 @@ export const NFTRightSideComponent = ({
           </div>
         </div>
         <div className={nameBox}>
-          <div className="linearCircle2"></div>
+          <div className="">
+            {nftOwner ? (
+              <Image
+                src={nftOwner?.profile_image.path}
+                width={48}
+                height={48}
+                alt="profile"
+                className="!w-12 !h-12 object-cover rounded-full"
+              />
+            ) : (
+              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
+            )}
+          </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
             <Link
@@ -198,7 +224,7 @@ const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2
 `);
 const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
+text-14px font-semibold text-white hover:text-brand-primary-dark
 `);
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap

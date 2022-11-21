@@ -27,6 +27,8 @@ import {
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -43,7 +45,6 @@ const CreateNFT: NextPageWithLayout = () => {
   // const [nftData, setNFTData] = useState<INFTData>()
 
   const { account, library } = useWeb3React();
-
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
     setModalTitle("Complete checkout");
@@ -130,7 +131,7 @@ const CreateNFT: NextPageWithLayout = () => {
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{nftData?.name}</span> NFT on Nether
-            NFT platform.
+            NFT platform, Click OK to view your NFT.
           </p>
         )}
         {!txStatus && (
@@ -147,17 +148,25 @@ const CreateNFT: NextPageWithLayout = () => {
           className={footerBtnContainer}
         > */}
         <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-              setClearForm(false);
+          <Link
+            href={{
+              pathname: AppRoutes.profile.nfts,
+              query: {
+                account_address: account,
+              },
             }}
-          />
+          >
+            <Button
+              title={"Ok"}
+              variant="v4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(false);
+              }}
+            />
+          </Link>
           {/* </Link> */}
         </div>
       </div>
@@ -314,7 +323,7 @@ const modalBodyWrapper2 = ctl(`
 flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 `);
 const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
+mt-3 w-full
 `);
 const ImgStyling = ctl(`
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
