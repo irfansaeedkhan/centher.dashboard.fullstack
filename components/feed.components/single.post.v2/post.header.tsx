@@ -42,7 +42,7 @@ export const PostHeader: React.FC<Props> = ({
 
   // Considering postType === "main"
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex justify-between">
       {/* Left Side */}
       <div className="left-side flex gap-x-3">
         {/* Image with link to user profile */}
