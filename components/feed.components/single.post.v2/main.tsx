@@ -1,6 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 
+import useUser from "@/hooks/use.user";
 import { CompletedPost } from "@/models/post";
 
 import { PostHeader } from "./post.header";
@@ -21,6 +22,8 @@ export const SinglePostV2: React.FC<Props> = ({
   onClickDelete = async () => {},
   onClickEdit = async () => {},
 }) => {
+  const { user: loggedInUser } = useUser();
+
   return (
     <div
       className={clsx(`w-full max-w-[544px] bg-elevation-1 rounded-10px p-4`)}
@@ -28,6 +31,7 @@ export const SinglePostV2: React.FC<Props> = ({
       <PostHeader
         post={post}
         postType={postType}
+        loggedInUser={loggedInUser}
         onClickArchive={onClickArchive}
         onClickDelete={onClickDelete}
         onClickEdit={onClickEdit}

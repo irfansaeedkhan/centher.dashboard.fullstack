@@ -54,8 +54,8 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
                   alt={media.alt ?? media.url}
                   width={544}
                   height={326}
-                  sizes="(max-width: 544px) 100vw, 544px"
-                  className={`flex-[0_0_100%] max-h-[326px] lg:max-h-[510px] object-cover rounded-10px mx-2`}
+                  sizes="544px"
+                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] object-cover rounded-10px mx-2`}
                 />
               );
             } else if (media.type === "video") {
@@ -64,7 +64,7 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
                 <video
                   key={media.url}
                   src={media.url}
-                  className={`flex-[0_0_100%] max-h-[326px] lg:max-h-[510px] rounded-xl`}
+                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover`}
                   controls
                   controlsList="nodownload"
                 />
@@ -76,19 +76,19 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
       {/* navigation prev*/}
       {post.media!.length > 1 && selectedIndex > 0 && (
         <button
-          className="absolute left-0 top-1/2 p-1 transform -translate-y-1/2 translate-x-2 bg-black/50 rounded-full"
+          className="absolute left-0 top-1/2 p-1 transform -translate-y-1/2 translate-x-1 fsm:translate-x-2 bg-black/50 rounded-full"
           onClick={scrollPrev}
         >
-          <MdNavigateBefore className="w-5 h-5 fill-white" />
+          <MdNavigateBefore className="w-4 h-4 fsm:w-5 fsm:h-5 fill-white" />
         </button>
       )}
       {/* navigation next*/}
       {post.media!.length > 1 && selectedIndex < post.media!.length - 1 && (
         <button
-          className="absolute right-0 top-1/2 p-1 transform -translate-y-1/2 -translate-x-2 bg-black/50 rounded-full"
+          className="absolute right-0 top-1/2 p-1 transform -translate-y-1/2 -translate-x-1 fsm:-translate-x-2 bg-black/50 rounded-full"
           onClick={scrollNext}
         >
-          <MdNavigateNext className="w-5 h-5 fill-white" />
+          <MdNavigateNext className="w-4 h-4 fsm:w-5 fsm:h-5 fill-white" />
         </button>
       )}
     </div>
