@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -6,24 +6,87 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 // Current directory imports
 import { useAllNFTsStore } from "@/store/all.nfts.store";
 import { Explore } from "./_components";
+import {
+  Category,
+  OrderBy,
+  orderBy,
+  OrderDirection,
+  sortBy,
+  SortBy,
+} from "@/models/nft";
 
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
-  const { allNFTs, fetchAllNFTs, loading } = useAllNFTsStore((state) => ({
+  const [categoryInView, setCategory] = useState<Category>("all");
+  const [sortByInView, setSortBy] = useState<SortBy>("recently created");
+
+  const {
+    allNFTs,
+    category,
+    sortByInStore,
+    sortDir,
+    offset,
+    limit,
+    fetchAllNFTs,
+    updateCategory,
+    updateSortBy,
+    updateOffset,
+    loading,
+  } = useAllNFTsStore((state) => ({
     allNFTs: state.allNFTs,
+    category: state.category,
+    sortByInStore: state.sortBy,
+    sortDir: state.sortDir,
+    offset: state.offset,
+    limit: state.limit,
     fetchAllNFTs: state.fetchAllNFTs,
+    updateCategory: state.updateCategory,
+    updateSortBy: state.updateSortBy,
+    updateOffset: state.updateOffset,
     loading: state.loading,
   }));
 
   useEffect(() => {
-    fetchAllNFTs(0, MAX_HOT_NFTS);
-  }, [fetchAllNFTs]);
+    fetchAllNFTs(category, sortByInStore, sortDir, offset, limit);
+  }, [fetchAllNFTs, limit, offset, category, sortByInStore, sortDir]);
+
+  useEffect(() => {
+    updateCategory(categoryInView);
+  }, [categoryInView, updateCategory]);
+
+  useEffect(() => {
+    let _sortBy: OrderBy = "createTime";
+    let _sortDir: OrderDirection = "desc";
+    if (sortByInView.toLowerCase() === sortBy[0]) {
+      _sortBy = "createTime";
+    } else if (sortByInView.toLowerCase() === sortBy[1]) {
+      _sortBy = "tradingVolumn";
+      _sortDir = "desc";
+    } else if (sortByInView.toLowerCase() === sortBy[2]) {
+      _sortBy = "tradingVolumn";
+      _sortDir = "asc";
+    } else if (sortByInView.toLowerCase() === sortBy[3]) {
+      _sortBy = "price";
+      _sortDir = "desc";
+    } else if (sortByInView.toLowerCase() === sortBy[4]) {
+      _sortBy = "price";
+      _sortDir = "asc";
+    }
+    updateSortBy(_sortBy, _sortDir);
+  }, [sortBy, sortByInView, updateSortBy]);
 
   return (
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
-        <Explore loading={loading} allNFTs={allNFTs} />
+        <Explore
+          loading={loading}
+          allNFTs={allNFTs}
+          category={category}
+          sortBy={sortByInView}
+          setCategory={setCategory}
+          setSortBy={setSortBy}
+        />
       </div>
     </div>
   );

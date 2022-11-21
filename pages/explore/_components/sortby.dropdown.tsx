@@ -1,14 +1,20 @@
+import { SortBy, sortBy } from "@/models/nft";
 import React from "react";
 import { useOnClickOutside } from "usehooks-ts";
-import { sortBy } from "./dropdown.data";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  onChange: (value: string) => void;
   openerRef: React.MutableRefObject<HTMLButtonElement | null>;
 }
 
-const SortByDropdown: React.FC<Props> = ({ isOpen, onClose, openerRef }) => {
+const SortByDropdown: React.FC<Props> = ({
+  isOpen,
+  onClose,
+  onChange,
+  openerRef,
+}) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
   useOnClickOutside(ref, (e) => {
@@ -26,11 +32,14 @@ const SortByDropdown: React.FC<Props> = ({ isOpen, onClose, openerRef }) => {
       className="absolute top-14 bg-black-shade-12 w-full rounded-lg z-50 "
     >
       <div className="flex flex-col items-start">
-        {sortBy.map((item) => (
+        {sortBy.map((item: any) => (
           <button
             className="px-4 py-3 text-white text-sm font-medium"
             key={item}
-            onClick={onClose}
+            onClick={() => {
+              onChange(item);
+              onClose();
+            }}
           >
             {item}
           </button>

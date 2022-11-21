@@ -19,7 +19,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NFTCard from "@/components/nft.card";
 import { useInView } from "react-intersection-observer";
-import { useCollectionStore } from "@/store/collection.store";
+import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
@@ -30,7 +30,7 @@ import {
 } from "@/utils/format.address";
 import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import useGetUser from "@/hooks/use.get.user";
@@ -39,7 +39,7 @@ const Collection: NextPageWithLayout = () => {
   const router = useRouter();
   const collection = router.query.collection;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
+  const [filterInView, setFilter] = useState<Filter>("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   const bnbPrice = useBNBPrice();
@@ -51,6 +51,8 @@ const Collection: NextPageWithLayout = () => {
     fetchNFTs,
     offset,
     updateOffset,
+    filter,
+    updateFilter,
     limit,
     loadingCollectionInfo,
     loadingNFTs,
@@ -61,6 +63,8 @@ const Collection: NextPageWithLayout = () => {
     fetchNFTs: state.fetchNFTs,
     offset: state.offset,
     updateOffset: state.updateOffset,
+    filter: state.filter,
+    updateFilter: state.updateFilter,
     limit: state.limit,
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
@@ -94,8 +98,12 @@ const Collection: NextPageWithLayout = () => {
   }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
+    updateFilter(filterInView);
+  }, [filterInView, updateFilter]);
+
+  useEffect(() => {
     if (collection) {
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, false);
+      fetchNFTs(collection as string, filter, orderdir, offset, limit);
     }
   }, [collection, fetchNFTs, filter, limit, offset, orderdir]);
 
@@ -151,16 +159,18 @@ const Collection: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <div className={profileImage}>
-                <Image
-                  src={formatIPFSUrl(metadata?.profileIPFSHash)}
-                  alt={"profile image"}
-                  width={112}
-                  height={112}
-                  className={collectionProfileImage}
-                  sizes={"512px"}
-                />
-              </div>
+              {metadata && metadata.profileIPFSHash && (
+                <div className={profileImage}>
+                  <Image
+                    src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                    alt={"profile image"}
+                    width={112}
+                    height={112}
+                    className={collectionProfileImage}
+                    sizes={"512px"}
+                  />
+                </div>
+              )}
             </div>
             <div className={coverDetails}>
               <div className={topDetais}>

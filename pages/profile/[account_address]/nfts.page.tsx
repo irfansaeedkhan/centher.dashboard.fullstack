@@ -46,13 +46,6 @@ const NFTProfile: NextPageWithLayout = () => {
   const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
 
   useEffect(() => {
-    console.log(
-      "sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs",
-      loadingOwnedNFTs,
-      loadingListedNFTs,
-      listedNFTs,
-      ownedNFTs
-    );
     if (loadingListedNFTs === "loaded" && loadingOwnedNFTs === "loaded") {
       setDisplayNFTs([...listedNFTs, ...ownedNFTs]);
     }

@@ -9,6 +9,8 @@ import Joi from "joi";
 // App imports
 import Button from "@/components/button";
 import { GreyWorldIcon, GreyFBIcon, GreyTwitterIcon } from "@/assets/svgs";
+import { categories } from "@/models/nft";
+
 // form validations
 const schema = Joi.object({
   name: Joi.string().required().max(150).label("NFT Name").messages({
@@ -59,18 +61,7 @@ const schema = Joi.object({
       "any.required": `Required Field`,
     }),
 });
-export const categories = [
-  "Select",
-  "Premium",
-  "Arts",
-  "Music",
-  "Sport",
-  "Entertainment",
-  "Gaming",
-  "Collectibles",
-  "E-sport",
-  "Utility",
-];
+
 interface CreateNFTCollectionFormProps {
   createCollection: any;
   clearForm: boolean;
@@ -112,6 +103,7 @@ export const CreateNFTCollectionForm = ({
       symbol: data.symbol,
       totalsupply: ethers.constants.MaxUint256,
       description: data.description,
+      category: data.category,
       url: data.url,
       yoursite: data.yoursite,
       facebook: data.facebook,
@@ -203,7 +195,7 @@ export const CreateNFTCollectionForm = ({
               !formState.errors.category ? inputField : inputFieldError
             }
           >
-            {categories.map((item, key) => {
+            {categories.slice(1, categories.length).map((item, key) => {
               return (
                 <option value={item === "Select" ? "" : item} key={key}>
                   {item}

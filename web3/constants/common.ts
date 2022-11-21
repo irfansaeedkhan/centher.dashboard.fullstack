@@ -24,7 +24,7 @@ export const DAY = 60 * 5;
 
 export const FEE = {
   createItemFeeForMarketplace: 0.0001,
-  createItemFeeForCreator: 0.0001,
+  createItemFeeForCreator: 0.0,
   createCollectionFee: 0.0001,
   buyItemFeeForMarketplace: 1.5,
   buyItemFeeForCreator: 1.5,

@@ -33,7 +33,7 @@ import {
 import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import toast from "react-hot-toast";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;

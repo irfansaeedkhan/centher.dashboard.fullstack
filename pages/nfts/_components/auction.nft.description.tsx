@@ -22,7 +22,7 @@ import {
   formatEther2Number,
 } from "@/utils/format.address";
 import toast from "react-hot-toast";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;

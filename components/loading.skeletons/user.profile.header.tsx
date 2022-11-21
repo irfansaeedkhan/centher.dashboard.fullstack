@@ -4,9 +4,9 @@ import React from "react";
 
 const UserProfileHeaderSkeleton = () => {
   return (
-    <div>
+    <div className="bg-[#131314]">
       {/* cover card */}
-      <div className="bg-[#2A2D3C]  rounded-md">
+      <div className="rounded-md">
         <div className="relative rounded-md bg-center bg-cover bg-no-repeat w-full h-[25vh] bg-[#3C3F4A] animate-pulse">
           {/* profile image , user display name , icons , edit profile */}
           <div className="cursor-pointer absolute left-[50%] translate-x-[-50%] -bottom-12">
@@ -25,7 +25,7 @@ const UserProfileHeaderSkeleton = () => {
         </div>
 
         <div className="flex justify-center items-center">
-          <div className="h-[35px] w-[250px] bg-[#3C3F4A] rounded-md animate-pulse"></div>
+          <div className="h-[35px] w-[250px] bg-[#3C3F4A] mb-2 rounded-md animate-pulse"></div>
         </div>
       </div>
 

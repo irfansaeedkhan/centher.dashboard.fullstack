@@ -40,6 +40,10 @@ export { default as NftsCollectionEmpty } from "./nfts.collection.empty.svg";
 export { default as Rocket } from "./rocket.svg";
 export { default as RocketShadow } from "./rocket.shadow.svg";
 export { default as CreateNFT } from "./create.nft.svg";
+export { default as Archived } from "./archived.svg";
+export { default as MoreIcon } from "./more.icon.svg";
+export { default as Restore } from "./restore.svg";
+export { default as Trash } from "./trash.svg";
 export { default as FollowerIcon } from "./follower.icon.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
@@ -789,25 +793,41 @@ export const NotificationIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M15.002 36.6665H25.002"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M16.4111 11.1477V8.51807C16.4111 5.03258 13.5856 2.20703 10.1001 2.20703V2.20703C6.61461 2.20703 3.78906 5.03258 3.78906 8.51807V11.1477"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
       />
       <path
-        d="M9.13928 17.0001C9.1371 15.4194 9.44059 13.8539 10.0323 12.3937C10.6239 10.9336 11.4921 9.60761 12.5868 8.49221C13.6814 7.37682 14.9809 6.49405 16.4104 5.89473C17.84 5.29541 19.3712 4.99139 20.9161 5.00019C27.3664 5.05019 32.53 10.5335 32.53 17.1501V18.3334C32.53 24.3001 33.7516 27.7667 34.8267 29.6667C34.9409 29.869 35.0011 30.0985 35.0013 30.3322C35.0015 30.5658 34.9417 30.7954 34.8279 30.998C34.714 31.2005 34.5502 31.3689 34.3527 31.4863C34.1553 31.6036 33.9311 31.6658 33.7028 31.6667H7.96648C7.73813 31.6658 7.514 31.6036 7.31654 31.4863C7.11908 31.3689 6.95523 31.2005 6.8414 30.998C6.72758 30.7954 6.66777 30.5658 6.66797 30.3322C6.66817 30.0985 6.72838 29.869 6.84256 29.6667C7.91762 27.7667 9.13928 24.3001 9.13928 18.3334V17.0001Z"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M11.1484 15.3558H16.7105C17.1784 15.3558 17.6154 15.1219 17.8749 14.7326V14.7326C18.245 14.1776 18.1708 13.4397 17.7197 12.9483C17.1232 12.2986 16.4076 11.4552 16.4076 11.1484"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M3.78556 11.1484C3.78556 11.4552 3.06999 12.2986 2.47352 12.9483C2.0224 13.4397 1.94824 14.1776 2.31828 14.7326V14.7326C2.57782 15.1219 3.01478 15.3558 3.48268 15.3558H9.04476H11.1484"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M6.94141 17.9844H13.2524"
+        stroke="#888DAA"
+        stroke-width="1.52793"
+        stroke-linecap="round"
+      />
+      <path
+        d="M6.94141 17.9844H13.2524"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
       />
     </svg>
   );

@@ -43,7 +43,8 @@ export const collectionsQuery = `
 
 export const collectionsByCategoryQuery = `
   query($first: Int!, $skip: Int!, $category: String!) {
-    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
+    collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip, 
+      where: {category: $category}) {
       collection
       creator
       id
@@ -58,8 +59,41 @@ export const collectionsByCategoryQuery = `
 `;
 
 export const allNFTsQuery = `
-  query($first: Int!, $skip: Int!) {
-    nfts(first: $first, skip: $skip) {
+  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
+    nfts(first: $first, 
+        skip: $skip, 
+        orderBy: $orderBy,
+        orderDirection: $orderDirection ) {
+      collection
+      createTime
+      creator
+      id
+      ipfs
+      saleState
+      tokenId
+      price
+      owner
+      listInfo {
+        price
+        bidSize
+      }
+      auctionInfo {
+        endTime
+        highestBidPrice
+        highestBidAddress
+        bidSize
+        startPrice
+      }
+    }
+  }
+`;
+
+export const allNFTsByFilterQuery = `
+  query($first: Int!, $skip: Int!, $category: String!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
+    nfts(first: $first, skip: $skip, 
+      orderBy: $orderBy,
+      orderDirection: $orderDirection,
+      where: {category: $category}) {
       collection
       createTime
       creator
@@ -264,6 +298,16 @@ export const registeredCollections = `
       collection
     }
   } 
+`;
+
+export const myCollections = `
+  query MyQuery($creator: Bytes!) {
+    collections(where: {creator: $creator}) {
+      id
+      name
+      collection
+    }
+  }
 `;
 
 export const topCreators = `
