@@ -183,10 +183,10 @@ const CreateNFT: NextPageWithLayout = () => {
       //   },
       // });
 
-      await Moralis.start({
-        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-        // ...and any other configuration
-      });
+      // await Moralis.start({
+      //   apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+      //   // ...and any other configuration
+      // });
 
       const assetReader = new window.FileReader();
 
