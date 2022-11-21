@@ -4,16 +4,18 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { Post } from "@/models/post";
+import { CompletedPost } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
+import { LoggedInUser } from "@/models/user";
 
 dayjs.extend(relativeTime);
 
 interface Props {
-  post: Post;
+  post: CompletedPost;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  loggedInUser: LoggedInUser | undefined;
   onClickDelete: () => Promise<void>;
   onClickEdit: () => Promise<void>;
   onClickArchive: () => Promise<void>;
@@ -22,6 +24,7 @@ interface Props {
 export const PostHeader: React.FC<Props> = ({
   post,
   postType,
+  loggedInUser,
   onClickEdit,
   onClickDelete,
   onClickArchive,
@@ -43,7 +46,8 @@ export const PostHeader: React.FC<Props> = ({
             alt={post.user.display_name}
             width={48}
             height={48}
-            className="rounded-full"
+            sizes="48px"
+            className="rounded-full object-cover w-12 h-12"
           />
         </Link>
 
@@ -67,14 +71,17 @@ export const PostHeader: React.FC<Props> = ({
       </div>
 
       {/* Right Side */}
-      <div className="right-side">
-        {/* 3 dots menu */}
-        <PostActionMenu
-          onClickEdit={onClickEdit}
-          onClickArchive={onClickArchive}
-          onClickDelete={onClickDelete}
-        />
-      </div>
+      {loggedInUser?.account_address.toLowerCase() ===
+        post.user.account_address.toLowerCase() && (
+        <div className="right-side">
+          {/* 3 dots menu */}
+          <PostActionMenu
+            onClickEdit={onClickEdit}
+            onClickArchive={onClickArchive}
+            onClickDelete={onClickDelete}
+          />
+        </div>
+      )}
     </div>
   );
 };

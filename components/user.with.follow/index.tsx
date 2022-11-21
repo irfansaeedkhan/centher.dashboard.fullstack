@@ -10,7 +10,13 @@ import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 
 import type { IUserWithFollow } from "./types";
-import { Circle } from "@/assets/svgs";
+import {
+  Circle,
+  DefaultCircle,
+  GoldCircle,
+  RainbowCircle,
+  SilverCircle,
+} from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface SingleSearchUserProps {
@@ -154,16 +160,34 @@ silver1 silver2 silverLastFrame
                 sizes={"256px"}
               />
               {iconVerifyProps !== "no-icon" && (
-                <Circle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`,
-                    iconVerifyProps === "rainbow" &&
-                      "[&>*>*>*]: AnimatecircleRainbow",
-                    iconVerifyProps === "silver" &&
-                      "[&>*>*>*]: AnimatecircleSilver",
-                    iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+                <>
+                  {iconVerifyProps === "rainbow" && (
+                    <RainbowCircle
+                      className={clsx(
+                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
+                      )}
+                    />
                   )}
-                />
+                  {iconVerifyProps === "silver" && (
+                    <SilverCircle
+                      className={clsx(
+                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
+                      )}
+                    />
+                  )}
+                  {iconVerifyProps === "gold" && (
+                    <GoldCircle
+                      className={clsx(
+                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
+                      )}
+                    />
+                  )}
+                  <DefaultCircle
+                    className={clsx(
+                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
+                    )}
+                  />
+                </>
               )}
               <div className="verifiedIcon absolute bottom-[-12px] right-[-17px] !h-[34px] !w-[34px] !m-0">
                 {iconVerifyProps !== "no-icon" && verifyIcon && (

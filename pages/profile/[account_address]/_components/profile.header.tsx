@@ -32,7 +32,14 @@ import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profi
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle, SpinIcon3 } from "@/assets/svgs";
+import {
+  Circle,
+  DefaultCircle,
+  GoldCircle,
+  RainbowCircle,
+  SilverCircle,
+  SpinIcon3,
+} from "@/assets/svgs";
 
 // Current directory imports
 import { ProfileTabsSocial } from "./profile.tabs.social";
@@ -446,18 +453,36 @@ silver1 silver2 silverLastFrame
                   sizes={"256px"}
                 />
                 {iconVerifyProps !== "no-icon" && (
-                  <Circle
-                    className={clsx(
-                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`,
-                      iconVerifyProps === "rainbow" &&
-                        "[&>*>*>*]: AnimatecircleRainbow",
-                      iconVerifyProps === "silver" &&
-                        "[&>*>*>*]: AnimatecircleSilver",
-                      iconVerifyProps === "gold" &&
-                        "[&>*>*>*]: AnimatecircleGold"
+                  <>
+                    {iconVerifyProps === "rainbow" && (
+                      <RainbowCircle
+                        className={clsx(
+                          `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
+                        )}
+                      />
                     )}
-                  />
+                    {iconVerifyProps === "silver" && (
+                      <SilverCircle
+                        className={clsx(
+                          `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
+                        )}
+                      />
+                    )}
+                    {iconVerifyProps === "gold" && (
+                      <GoldCircle
+                        className={clsx(
+                          `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
+                        )}
+                      />
+                    )}
+                    <DefaultCircle
+                      className={clsx(
+                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
+                      )}
+                    />
+                  </>
                 )}
+
                 <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
                   {iconVerifyProps !== "no-icon" && verifyIcon && (
                     <Image
@@ -621,7 +646,7 @@ silver1 silver2 silverLastFrame
 
             {user.profile_bio && (
               <p
-                className={`text-16px text-center font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+                className={`text-16px text-center break-all font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
               >
                 {user.profile_bio}
               </p>

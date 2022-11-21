@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
-import { create as ipfsCreate, IPFSHTTPClient } from "ipfs-http-client";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Moralis from "moralis";
@@ -13,20 +12,18 @@ import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { formatBNB2USD } from "@/utils/format.address";
 import {
   FEE,
   NEXT_PUBLIC_API_Secret,
-  NEXT_PUBLIC_IPFS_HOST,
-  NEXT_PUBLIC_IPFS_URL,
   NEXT_PUBLIC_Project_ID,
 } from "@/web3/constants/common";
-import { LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { LoaderIcon } from "@/assets/svgs";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
+import { useRouter } from "next/router";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
   const [loadingState, setLoadingState] = useState(false);
@@ -37,6 +34,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
+
+  const router = useRouter();
 
   // const [collectionData, setCollectionData] = useState<ICollectionData>()
 
@@ -150,7 +149,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             }}
           >
             <Button
-              title={"Ok"}
+              title={"Go Back"}
               variant="v4"
               className="py-4"
               onClick={() => {
@@ -161,7 +160,21 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               }}
             />
           </Link>
-          {/* </Link> */}
+
+          {txStatus && (
+            <Button
+              title={"View on Profile"}
+              variant="v1"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(true);
+                router.push(`/profile/${account}/collections`);
+              }}
+            />
+          )}
         </div>
       </div>
     );
@@ -186,10 +199,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       //   },
       // });
 
-      await Moralis.start({
-        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-        // ...and any other configuration
-      });
+      // await Moralis.start({
+      //   apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+      //   // ...and any other configuration
+      // });
 
       const profileReader = new window.FileReader();
 
