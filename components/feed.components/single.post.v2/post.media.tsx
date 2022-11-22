@@ -64,7 +64,7 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
                 <video
                   key={media.url}
                   src={media.url}
-                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover`}
+                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover mx-2`}
                   controls
                   controlsList="nodownload"
                 />

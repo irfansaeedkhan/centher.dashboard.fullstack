@@ -37,12 +37,12 @@ export const PostActionMenu: React.FC<Props> = ({
 
         {isOpen && (
           <div className="absolute right-0 z-[500] top-full w-[170px] bg-black-shade-12 rounded-10px overflow-hidden">
-            {isBefore15Minutes && (
+            {/* {isBefore15Minutes && (
               <MenuButton onClick={onClickEdit}>
                 <FiEdit className="w-[18px] h-[18px]" />
                 <span>Edit</span>
               </MenuButton>
-            )}
+            )} */}
 
             <MenuButton onClick={onClickArchive}>
               <HiOutlineArchive className="w-[18px] h-[18px]" />
