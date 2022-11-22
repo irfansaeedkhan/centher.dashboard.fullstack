@@ -135,7 +135,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
 
             return {
               allNFTs: [..._allNFTs, ...filteredAllNFTs],
-              loadingAllNFTs: "loaded",
+              loading: "loaded",
             };
           });
         } catch (error) {

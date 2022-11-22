@@ -21,6 +21,8 @@ import { LoaderIcon } from "@/assets/svgs";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 import { useRouter } from "next/router";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
@@ -104,6 +106,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
+    setClearForm(false);
     setModalTitle("Complete checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
@@ -121,7 +124,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{collectionData?.name}</span> NFT on
-            Nether NFT platform.
+            Nether NFT platform, Click Ok to view your Collection.
           </p>
         )}
         {!txStatus && (
@@ -129,17 +132,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.nfts.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
         <div className={footerBtnContainer}>
           <Button
-            title={"Go Back"}
+            title={txStatus ? "Go Back" : "Try Again"}
             variant="v4"
             className="py-4"
             onClick={() => {
@@ -173,38 +168,12 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const handleCreateCollection = async (collectionData: any) => {
     buyNFTStep2Func();
     try {
-      const auth =
-        "Basic " +
-        Buffer.from(
-          NEXT_PUBLIC_Project_ID + ":" + NEXT_PUBLIC_API_Secret
-        ).toString("base64");
-
-      // const ipfs: IPFSHTTPClient | undefined = ipfsCreate({
-      //   host: NEXT_PUBLIC_IPFS_HOST,
-      //   port: 5001,
-      //   protocol: "https",
-      //   headers: {
-      //     authorization: auth,
-      //   },
-      // });
-
-      // await Moralis.start({
-      //   apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-      //   // ...and any other configuration
-      // });
-
       const profileReader = new window.FileReader();
-
       profileReader.onloadend = async () => {
         try {
           let profileFileBuffer = Buffer.from(
             profileReader.result as ArrayBuffer
           );
-
-          // const profileAdded = await (ipfs as IPFSHTTPClient).add(
-          //   profileFileBuffer
-          // );
-          // const profileHash = profileAdded.path;
 
           const cd = collectionData as ICollectionData;
           const profileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
@@ -221,12 +190,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           coverReader.onloadend = async () => {
             try {
               let fileBuffer = Buffer.from(coverReader.result as ArrayBuffer);
-
-              // const coverfileAdded = await (ipfs as IPFSHTTPClient).add(
-              //   fileBuffer
-              // );
-              // const coverHash = coverfileAdded.path;
-
               const coverfileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
                 abi: [
                   {
@@ -250,9 +213,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 profileIPFSHash: "ipfs:/" + profileHash,
                 coverIPFSHash: "ipfs:/" + coverHash,
               };
-              // const jsonFileAdded = await ipfs.add(JSON.stringify(metadata));
-              // const jsonHash = jsonFileAdded.path;
-
+              
               const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
                 abi: [
                   {
@@ -277,17 +238,22 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               buyNFTSuccessFunc(result.success, collectionData);
             } catch (error) {
               console.error(error);
+              toast.error("Something went wrong while create a collection. Please try again.");
+              buyNFTSuccessFunc(false, collectionData);
             }
           };
           coverReader.readAsArrayBuffer(cover as Blob);
         } catch (error) {
           console.error(error);
+          toast.error("Something went wrong while create a collection. Please try again.");
+          buyNFTSuccessFunc(false, collectionData);
         }
       };
       profileReader.readAsArrayBuffer(profile as Blob);
     } catch (error) {
       console.error(error);
-      toast.error("Failed to create a collection.");
+      toast.error("Something went wrong while create a collection. Please try again.");
+      buyNFTSuccessFunc(false, collectionData);
     }
   };
 
@@ -363,7 +329,7 @@ const modalBodyWrapper = ctl(`
 flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 `);
 const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
+w-full mt-3 flex
 `);
 const ImgStyling = ctl(`
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto

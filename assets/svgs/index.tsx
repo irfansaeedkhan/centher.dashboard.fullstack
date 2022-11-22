@@ -45,6 +45,8 @@ export { default as MoreIcon } from "./more.icon.svg";
 export { default as Restore } from "./restore.svg";
 export { default as Trash } from "./trash.svg";
 export { default as FollowerIcon } from "./follower.icon.svg";
+export { default as LinkIcon } from "./link.svg";
+export { default as WorldIcon } from "./world.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (
@@ -1212,81 +1214,6 @@ export const SuccessIcon: React.FC<IconProps> = (props) => {
   );
 };
 
-export const LinkIcon: React.FC<IconProps> = (props) => {
-  return (
-    <svg
-      className={props.className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M15.9641 6.03599C16.6271 5.37295 17.5264 5.00046 18.4641 5.00046C19.4018 5.00046 20.3011 5.37295 20.9641 6.03599C21.6271 6.69903 21.9996 7.59831 21.9996 8.53599C21.9996 9.47367 21.6271 10.373 20.9641 11.036L15.0851 16.915C14.4221 17.578 13.5228 17.9505 12.5851 17.9505C11.6474 17.9505 10.7481 17.578 10.0851 16.915C9.42205 16.252 9.04956 15.3527 9.04956 14.415C9.04956 13.4773 9.42205 12.578 10.0851 11.915L10.9641 11.036"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.03602 18.964C7.70772 19.2923 7.31796 19.5527 6.88901 19.7304C6.46006 19.9081 6.00031 19.9995 5.53602 19.9995C5.07173 19.9995 4.61198 19.9081 4.18303 19.7304C3.75408 19.5527 3.36433 19.2923 3.03602 18.964C2.37298 18.301 2.00049 17.4017 2.00049 16.464C2.00049 15.5263 2.37298 14.627 3.03602 13.964L8.91502 8.085C9.57806 7.42196 10.4773 7.04947 11.415 7.04947C12.3527 7.04947 13.252 7.42196 13.915 8.085C14.5781 8.74804 14.9506 9.64732 14.9506 10.585C14.9506 11.5227 14.5781 12.422 13.915 13.085L13 14"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
-export const WorldIcon: React.FC<IconProps> = (props) => {
-  return (
-    <svg
-      className={props.className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.0001 3H9.0001C7.0501 8.84 7.0501 15.16 9.0001 21H8.0001"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15 3C16.95 8.84 16.95 15.16 15 21"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 16V15C8.84 16.95 15.16 16.95 21 15V16"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 9.00001C8.84 7.05001 15.16 7.05001 21 9.00001"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
 export const ArrowRightIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
