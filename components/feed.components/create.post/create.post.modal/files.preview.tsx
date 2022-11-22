@@ -20,8 +20,7 @@ export const FilesPreview = () => {
     <div
       className={clsx(`grid gap-2`, {
         "grid-cols-2": filesWithObjectURL.length === 2,
-        "grid-cols-3": filesWithObjectURL.length >= 3,
-        "grid-row-2": filesWithObjectURL.length > 3,
+        "grid-cols-2 fsm:grid-cols-3": filesWithObjectURL.length >= 3,
       })}
     >
       {filesWithObjectURL.map((file) => {

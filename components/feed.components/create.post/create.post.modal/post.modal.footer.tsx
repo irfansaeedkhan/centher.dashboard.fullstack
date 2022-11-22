@@ -28,11 +28,11 @@ const PostModalFooter: React.FC = () => {
       ></div>
 
       <button
-        className={`block text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none col-span-full fsm:col-span-1 mt-4 fsm:mt-0`}
+        className={`block text-center text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none col-span-full fsm:col-span-1 mt-4 fsm:mt-0`}
         onClick={createPost}
       >
         {isPostCreateLoading ? (
-          <CgSpinner className="animate-spin w-5 h-5" />
+          <CgSpinner className="animate-spin w-5 h-5 inline-block" />
         ) : (
           "Post"
         )}
