@@ -478,7 +478,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
                 >
                   <TwitterShareButton
                     url={shareUrl}
-                    className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
+                    className="flex items-center gap-3 w-full h-full !px-5 !py-4"
                   >
                     <Image
                       src="/images/twitter2.png"

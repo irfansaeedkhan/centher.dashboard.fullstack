@@ -19,6 +19,8 @@ import {
   LinkIcon,
   TwitterSvg,
 } from "@/assets/svgs";
+import { SiWhatsapp } from "react-icons/si";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useWeb3React } from "@web3-react/core";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
@@ -27,6 +29,8 @@ import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
 import Image from "next/image";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -39,10 +43,26 @@ export const NFTRightSideComponent = ({
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
+  const router = useRouter();
+  console.log("approutes", AppRoutes);
+  console.log("router", router);
   const { user } = useGetUser(data?.creator);
   // const { user: creatorProfile } = useGetUser(router.query.account_address?.toString());
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
+
+  const shareUrl = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}${router.asPath}`;
+    }
+    return "";
+  }, [router.asPath]);
+
+  // Copy nft share url to clipboard
+  const copyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
 
   const nftOwnerAddress = useGetNFTOwner(
     data?.collection,
@@ -85,16 +105,21 @@ export const NFTRightSideComponent = ({
             <ShareBigIcon />
           </button>
           <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-            <button className={toggleListBtn}>
-              <FacebookCircleIcon className={toggleListIcons} /> Share on
-              facebook
-            </button>
-            <button className={toggleListBtn}>
-              <TwitterSvg className={toggleListIcons} /> Share on twitter
-            </button>
-            <button className={toggleListBtn}>
+            <button onClick={copyShareUrl} className={toggleListBtn}>
               <LinkIcon className={toggleListIcons} /> Copy link
             </button>
+
+            <WhatsappShareButton url={shareUrl} className="w-full">
+              <button className={toggleListBtn}>
+                <SiWhatsapp className={toggleListIcons} /> Share on whatsapp
+              </button>
+            </WhatsappShareButton>
+
+            <TwitterShareButton url={shareUrl} className="w-full">
+              <button className={toggleListBtn}>
+                <TwitterSvg className={toggleListIcons} /> Share on twitter
+              </button>
+            </TwitterShareButton>
           </div>
         </div>
       </div>
@@ -116,17 +141,21 @@ export const NFTRightSideComponent = ({
           </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: data?.creator,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {user?.display_name}
-            </Link>
+            {user ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: data?.creator,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {user?.display_name}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
         <div className={nameBox}>
@@ -145,33 +174,41 @@ export const NFTRightSideComponent = ({
           </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: nftOwnerAddress,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {nftOwner?.display_name}
-            </Link>
+            {nftOwner ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: nftOwnerAddress,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {nftOwner?.display_name}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
         <div className={nameBox}>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: data?.collection,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {formatAddress(data?.collection)}
-            </Link>
+            {data?.collection ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: data?.collection,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {formatAddress(data?.collection)}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
       </div>

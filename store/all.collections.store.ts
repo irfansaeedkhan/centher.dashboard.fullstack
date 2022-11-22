@@ -4,14 +4,13 @@ import { devtools } from "zustand/middleware";
 import axios from "axios";
 
 // App imports
-import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import {
   collectionsByCategoryQuery,
   collectionsQuery,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Collection } from "@/models/nft";
+import { Category, Collection } from "@/models/nft";
 
 export interface AllCollectionsStore {
   collections: Collection[];
@@ -20,10 +19,10 @@ export interface AllCollectionsStore {
     limit?: number,
     category?: string
   ) => Promise<void>;
-  category: string;
+  category: Category;
   offset: number;
   updateOffset: () => void;
-  updateCategory: (category: string) => void;
+  updateCategory: (category: Category) => void;
   limit: number;
   loading: LoadingState;
 }
@@ -58,7 +57,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           });
 
           let _collections: Collection[] = [];
-          if (category === "All") {
+          if (category?.toLowerCase() === "all") {
             const { data: result, error } = await client.query({
               query: gql(collectionsQuery),
               variables: {

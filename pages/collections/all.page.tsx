@@ -8,13 +8,15 @@ import { useEffect, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CollectionCard } from "@/components/collection.card";
+import { Category } from "@/models/nft";
+
 import { useAllCollectionsStore } from "@/store/all.collections.store";
 import CategoryDropdown from "../explore/_components/category.dropdown";
 
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const [categoryOpen, setCategoryOpen] = useState(false);
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState<Category>("all");
   const {
     collections,
     categoryInStore,
@@ -64,7 +66,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
             <CategoryDropdown
               isOpen={categoryOpen}
               onClose={() => setCategoryOpen(false)}
-              onChange={(value) => setCategory(value)}
+              onChange={(value: any) => setCategory(value)}
               openerRef={categoryDropdownOpenerRef}
             />
           </div>
