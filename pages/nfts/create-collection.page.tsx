@@ -213,7 +213,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 profileIPFSHash: "ipfs:/" + profileHash,
                 coverIPFSHash: "ipfs:/" + coverHash,
               };
-              
+
               const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
                 abi: [
                   {
@@ -238,21 +238,27 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               buyNFTSuccessFunc(result.success, collectionData);
             } catch (error) {
               console.error(error);
-              toast.error("Something went wrong while create a collection. Please try again.");
+              toast.error(
+                "Something went wrong while create a collection. Please try again."
+              );
               buyNFTSuccessFunc(false, collectionData);
             }
           };
           coverReader.readAsArrayBuffer(cover as Blob);
         } catch (error) {
           console.error(error);
-          toast.error("Something went wrong while create a collection. Please try again.");
+          toast.error(
+            "Something went wrong while create a collection. Please try again."
+          );
           buyNFTSuccessFunc(false, collectionData);
         }
       };
       profileReader.readAsArrayBuffer(profile as Blob);
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong while create a collection. Please try again.");
+      toast.error(
+        "Something went wrong while create a collection. Please try again."
+      );
       buyNFTSuccessFunc(false, collectionData);
     }
   };
