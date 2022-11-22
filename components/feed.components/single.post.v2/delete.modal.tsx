@@ -58,9 +58,11 @@ export const DeleteModal: React.FC<Props> = ({ isOpen, onClose, onDelete }) => {
               </ActionButton>
               <ActionButton
                 onClick={async (e) => {
-                  const button = e.target as HTMLButtonElement;
+                  const button = e.currentTarget as HTMLButtonElement;
                   button.disabled = true;
                   await onDelete();
+                  // Set overflow to auto here to reset the body overflow on post delete
+                  document.body.style.overflow = "auto";
                   button.disabled = false;
                   onClose();
                 }}

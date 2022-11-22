@@ -74,7 +74,7 @@ const AllNftsPage: NextPageWithLayout = () => {
       _sortDir = "asc";
     }
     updateSortBy(_sortBy, _sortDir);
-  }, [sortBy, sortByInView, updateSortBy]);
+  }, [sortByInView, updateSortBy]);
 
   return (
     <div className="flex flex-col gap-10">

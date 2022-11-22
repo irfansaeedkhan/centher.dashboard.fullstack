@@ -9,9 +9,15 @@ import { ShareMenu } from "./share.menu";
 
 interface Props {
   post: CompletedPost;
+  onClickLike: () => Promise<void>;
+  onClickReply: () => void;
 }
 
-export const PostFooter: React.FC<Props> = ({ post }) => {
+export const PostFooter: React.FC<Props> = ({
+  post,
+  onClickLike,
+  onClickReply,
+}) => {
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
 
   const shareMenuContainerRef = useRef<HTMLDivElement>(null);
@@ -24,12 +30,13 @@ export const PostFooter: React.FC<Props> = ({ post }) => {
         post.text_content ? "mt-3" : "mt-4"
       )}
     >
-      <AnalyticsCount className="text-gray-shade-10">
+      <AnalyticsCount className="text-gray-shade-10" onClick={onClickReply}>
         <FiMessageCircle className="w-5 h-5" />
         <span>{post.replies_count}</span>
       </AnalyticsCount>
 
       <AnalyticsCount
+        onClick={onClickLike}
         className={clsx(
           post.liked_by_loggedin_user
             ? "text-brand-primary"

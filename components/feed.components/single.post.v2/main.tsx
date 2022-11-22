@@ -12,6 +12,8 @@ import { PostFooter } from "./post.footer";
 interface Props {
   post: CompletedPost;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  onClickReply?: () => void;
+  onClickLike?: () => Promise<void>;
   onClickEdit?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
   onClickDelete?: () => Promise<void>;
@@ -20,6 +22,8 @@ interface Props {
 export const SinglePostV2: React.FC<Props> = ({
   post,
   postType,
+  onClickReply = () => {},
+  onClickLike = async () => {},
   onClickArchive = async () => {},
   onClickDelete = async () => {},
   onClickEdit = async () => {},
@@ -43,7 +47,11 @@ export const SinglePostV2: React.FC<Props> = ({
 
       {post.text_content && <PostTextContent post={post} />}
 
-      <PostFooter post={post} />
+      <PostFooter
+        post={post}
+        onClickLike={onClickLike}
+        onClickReply={onClickReply}
+      />
     </div>
   );
 };

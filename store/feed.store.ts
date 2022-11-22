@@ -1,9 +1,11 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
+import { likePost } from "@/components/feed.components";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 
 export interface FeedStore {
   posts: CompletedPost[];
@@ -14,6 +16,7 @@ export interface FeedStore {
   incrementPostRepliesCount: (postId?: string) => void;
   decrementPostRepliesCount: (postId: string | undefined) => void;
 
+  likePostAPI: (postId: string, actionType: "like" | "unlike") => Promise<void>;
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
     postId?: string
@@ -109,6 +112,23 @@ export const useFeedStore = create<FeedStore>()(
             return post;
           }),
         }));
+      },
+
+      likePostAPI: async (postId, actionType) => {
+        try {
+          get().updatePostLikesCount(
+            actionType === "like" ? "increment" : "decrement",
+            postId
+          );
+
+          await likePost(postId, actionType);
+        } catch (error: any) {
+          get().updatePostLikesCount(
+            actionType === "like" ? "decrement" : "increment",
+            postId
+          );
+          customLog(error, ["development"]);
+        }
       },
 
       updatePostLikesCount: (actionType, postId) => {
