@@ -143,7 +143,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
           updatePostLikesCountFeed("decrement", postId);
           updatePostLikesCountMyPost("decrement", postId);
           updatePostLikesCountMyReplies("decrement", postId);
-          updatePostLikesCountSinglePost("decrement", postId);
+          updatePostLikesCountSinglePost("decrement", "main", postId);
 
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
@@ -153,7 +153,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
           updatePostLikesCountFeed("increment", postId);
           updatePostLikesCountMyPost("increment", postId);
           updatePostLikesCountMyReplies("increment", postId);
-          updatePostLikesCountSinglePost("increment", postId);
+          updatePostLikesCountSinglePost("increment", "main", postId);
 
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
