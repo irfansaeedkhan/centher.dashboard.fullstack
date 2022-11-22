@@ -125,33 +125,33 @@ const CreateNFT: NextPageWithLayout = () => {
             Transaction Failed.
           </p>
         )}
-        <div className={footerBtnContainer}>          
+        <div className={footerBtnContainer}>
           <Button
-              title={txStatus ? "Go Back" : "Try Again"}
-              variant="v4"
+            title={txStatus ? "Go Back" : "Try Again"}
+            variant="v4"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+              setClearForm(true);
+            }}
+          />
+
+          {txStatus && (
+            <Button
+              title={"View on Profile"}
+              variant="v1"
               className="py-4"
               onClick={() => {
                 setModal(false);
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
+                router.push(`/profile/${account}/collections`);
               }}
             />
-
-            {txStatus && (
-              <Button
-                title={"View on Profile"}
-                variant="v1"
-                className="py-4"
-                onClick={() => {
-                  setModal(false);
-                  setModalTitle("");
-                  setModalContent(null);
-                  setClearForm(true);
-                  router.push(`/profile/${account}/collections`);
-                }}
-              />
-            )}
+          )}
         </div>
       </div>
     );
@@ -185,7 +185,7 @@ const CreateNFT: NextPageWithLayout = () => {
             collection: cd.collection,
             attributes: cd.properties,
           };
-          
+
           const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
             abi: [
               {
@@ -211,7 +211,9 @@ const CreateNFT: NextPageWithLayout = () => {
           );
           buyNFTSuccessFunc(result.success, nftData);
         } catch (error) {
-          toast.error("Something went wrong while create a nft. Please try again.");
+          toast.error(
+            "Something went wrong while create a nft. Please try again."
+          );
           buyNFTSuccessFunc(false, nftData);
           console.error(error);
         }
