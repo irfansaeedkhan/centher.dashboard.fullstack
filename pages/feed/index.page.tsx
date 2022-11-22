@@ -86,6 +86,7 @@ const Feed: NextPageWithLayout = () => {
               key={post._id}
               post={post}
               postType={"main"}
+              placement="feed-page"
               shouldShowThread={post.replies_count > 0}
               onClickLike={async () => {
                 await likePostAPI(
@@ -113,6 +114,7 @@ const Feed: NextPageWithLayout = () => {
             key={post._id}
             post={post}
             postType={"main"}
+            placement="feed-page"
             shouldShowThread={post.replies_count > 0}
             onClickLike={async () => {
               await likePostAPI(

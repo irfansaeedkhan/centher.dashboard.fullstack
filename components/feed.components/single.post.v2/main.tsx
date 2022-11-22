@@ -11,10 +11,20 @@ import { PostFooter } from "./post.footer";
 import { ShowThread } from "./show.thread";
 import { PostUserImage } from "./post.user.image";
 
+export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
+export type Placement =
+  | "feed-page"
+  | "single-post-page"
+  | "profile-posts-page"
+  | "profile-replies-page"
+  | "profile-archived-page";
+
 interface Props {
   post: CompletedPost;
-  postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  postType: PostType;
+  placement: Placement;
   shouldShowThread?: boolean;
+  className?: string;
   onClickReply?: () => void;
   onClickLike?: () => Promise<void>;
   onClickEdit?: () => Promise<void>;
@@ -25,7 +35,9 @@ interface Props {
 export const SinglePostV2: React.FC<Props> = ({
   post,
   postType,
+  placement,
   shouldShowThread = false,
+  className,
   onClickReply = () => {},
   onClickLike = async () => {},
   onClickArchive = async () => {},
@@ -36,7 +48,17 @@ export const SinglePostV2: React.FC<Props> = ({
 
   return (
     <div
-      className={clsx(`w-full max-w-[544px] bg-elevation-1 rounded-10px p-4`)}
+      className={clsx(
+        `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px`,
+        placement === "single-post-page" &&
+          postType === "main" &&
+          post.replies_count > 0 &&
+          "rounded-b-none",
+        placement === "single-post-page" &&
+          postType === "reply" &&
+          "rounded-t-none rounded-b-none last:rounded-b-10px border-t border-t-gray-shade-3",
+        className
+      )}
     >
       <div className="flex gap-x-3">
         {/* Left */}
@@ -59,7 +81,13 @@ export const SinglePostV2: React.FC<Props> = ({
 
           {post.media && !!post.media.length && <PostMedia post={post} />}
 
-          {post.text_content && <PostTextContent post={post} />}
+          {post.text_content && (
+            <PostTextContent
+              post={post}
+              postType={postType}
+              placement={placement}
+            />
+          )}
 
           <PostFooter
             post={post}
