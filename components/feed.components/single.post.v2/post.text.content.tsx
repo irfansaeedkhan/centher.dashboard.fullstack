@@ -11,8 +11,7 @@ export const PostTextContent: React.FC<Props> = ({ post }) => {
   return (
     <div
       className={clsx(
-        `ml-[60px] whitespace-pre-wrap break-all text-app-post-text text-sm`,
-        !post.media || !post.media.length ? "mt-1" : "mt-4"
+        `whitespace-pre-wrap break-all text-app-post-text text-sm mt-4`
       )}
     >
       {post.text_content}

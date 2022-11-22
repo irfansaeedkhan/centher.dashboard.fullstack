@@ -39,7 +39,7 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
   }, [emblaApi, onSelect]);
 
   return (
-    <div className="relative ml-[60px] mt-1">
+    <div className="relative mt-4">
       {/* root node */}
       <div className="rounded-10px overflow-hidden" ref={emblaRef}>
         {/* container node */}

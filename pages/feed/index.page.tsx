@@ -1,34 +1,47 @@
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
+import { FeedPagesWrapper } from "@/components/feed.components";
+import {
+  SinglePostV2,
+  archivePost,
+  deletePost,
+} from "@/components/feed.components";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-// import {
-//   SinglePostV2,
-//   archivePost,
-//   deletePost,
-// } from "@/components/feed.components";
-// import { customLog } from "@/utils/custom.log";
+import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
-  const { posts, fetchPosts, removePost, offset, updateOffset, loading } =
-    useFeedStore((state) => ({
-      posts: state.posts,
-      fetchPosts: state.fetchPosts,
+  const router = useRouter();
 
-      addNewPost: state.addNewPost,
-      removePost: state.removePost,
+  const {
+    posts,
+    fetchPosts,
+    removePost,
+    offset,
+    updateOffset,
+    likePostAPI,
+    loading,
+  } = useFeedStore((state) => ({
+    posts: state.posts,
+    fetchPosts: state.fetchPosts,
 
-      offset: state.offset,
-      updateOffset: state.updateOffset,
+    addNewPost: state.addNewPost,
+    removePost: state.removePost,
 
-      loading: state.loading,
-    }));
+    offset: state.offset,
+    updateOffset: state.updateOffset,
+
+    likePostAPI: state.likePostAPI,
+
+    loading: state.loading,
+  }));
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
@@ -48,17 +61,17 @@ const Feed: NextPageWithLayout = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  // const handleAction = async (
-  //   postId: string,
-  //   actionFunction: (postId: string) => Promise<void>
-  // ) => {
-  //   try {
-  //     await actionFunction(postId);
-  //     removePost(postId);
-  //   } catch (error: any) {
-  //     customLog(error, ["development"]);
-  //   }
-  // };
+  const handleAction = async (
+    postId: string,
+    actionFunction: (postId: string) => Promise<void>
+  ) => {
+    try {
+      await actionFunction(postId);
+      removePost(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
 
   return (
     <>
@@ -69,32 +82,57 @@ const Feed: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <SinglePost
+            <SinglePostV2
               key={post._id}
-              ref={lastPostRef}
               post={post}
-              onDelete={removePost}
-              placement="feed"
+              postType={"main"}
+              shouldShowThread={post.replies_count > 0}
+              onClickLike={async () => {
+                await likePostAPI(
+                  post._id,
+                  post.liked_by_loggedin_user ? "unlike" : "like"
+                );
+              }}
+              onClickReply={() => {
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    account_address: post.user.account_address,
+                    post_id: post._id,
+                  },
+                });
+              }}
+              onClickArchive={() => handleAction(post._id, archivePost)}
+              onClickDelete={() => handleAction(post._id, deletePost)}
             />
           );
         }
+
         return (
-          <SinglePost
+          <SinglePostV2
             key={post._id}
             post={post}
-            onDelete={removePost}
-            placement="feed"
+            postType={"main"}
+            shouldShowThread={post.replies_count > 0}
+            onClickLike={async () => {
+              await likePostAPI(
+                post._id,
+                post.liked_by_loggedin_user ? "unlike" : "like"
+              );
+            }}
+            onClickReply={() => {
+              router.push({
+                pathname: AppRoutes.feed.single_post,
+                query: {
+                  account_address: post.user.account_address,
+                  post_id: post._id,
+                },
+              });
+            }}
+            onClickArchive={() => handleAction(post._id, archivePost)}
+            onClickDelete={() => handleAction(post._id, deletePost)}
           />
         );
-        // return (
-        //   <SinglePostV2
-        //     key={post._id}
-        //     post={post}
-        //     postType={"main"}
-        //     onClickArchive={() => handleAction(post._id, archivePost)}
-        //     onClickDelete={() => handleAction(post._id, deletePost)}
-        //   />
-        // );
       })}
 
       {(loading === "loading" || loading === "idle") && (

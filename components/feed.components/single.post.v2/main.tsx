@@ -8,10 +8,13 @@ import { PostHeader } from "./post.header";
 import { PostMedia } from "./post.media";
 import { PostTextContent } from "./post.text.content";
 import { PostFooter } from "./post.footer";
+import { ShowThread } from "./show.thread";
+import { PostUserImage } from "./post.user.image";
 
 interface Props {
   post: CompletedPost;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  shouldShowThread?: boolean;
   onClickReply?: () => void;
   onClickLike?: () => Promise<void>;
   onClickEdit?: () => Promise<void>;
@@ -22,6 +25,7 @@ interface Props {
 export const SinglePostV2: React.FC<Props> = ({
   post,
   postType,
+  shouldShowThread = false,
   onClickReply = () => {},
   onClickLike = async () => {},
   onClickArchive = async () => {},
@@ -34,24 +38,38 @@ export const SinglePostV2: React.FC<Props> = ({
     <div
       className={clsx(`w-full max-w-[544px] bg-elevation-1 rounded-10px p-4`)}
     >
-      <PostHeader
-        post={post}
-        postType={postType}
-        loggedInUser={loggedInUser}
-        onClickArchive={onClickArchive}
-        onClickDelete={onClickDelete}
-        onClickEdit={onClickEdit}
-      />
+      <div className="flex gap-x-3">
+        {/* Left */}
+        <PostUserImage post={post} shouldShowThread={shouldShowThread} />
 
-      {post.media && !!post.media.length && <PostMedia post={post} />}
+        {/* Right */}
+        <div
+          className={clsx(`flex-grow`, {
+            "mb-2": shouldShowThread,
+          })}
+        >
+          <PostHeader
+            post={post}
+            postType={postType}
+            loggedInUser={loggedInUser}
+            onClickArchive={onClickArchive}
+            onClickDelete={onClickDelete}
+            onClickEdit={onClickEdit}
+          />
 
-      {post.text_content && <PostTextContent post={post} />}
+          {post.media && !!post.media.length && <PostMedia post={post} />}
 
-      <PostFooter
-        post={post}
-        onClickLike={onClickLike}
-        onClickReply={onClickReply}
-      />
+          {post.text_content && <PostTextContent post={post} />}
+
+          <PostFooter
+            post={post}
+            onClickLike={onClickLike}
+            onClickReply={onClickReply}
+          />
+        </div>
+      </div>
+
+      {shouldShowThread && <ShowThread post={post} />}
     </div>
   );
 };

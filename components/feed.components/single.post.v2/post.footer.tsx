@@ -26,7 +26,7 @@ export const PostFooter: React.FC<Props> = ({
   return (
     <footer
       className={clsx(
-        "ml-[60px] flex justify-between",
+        "flex justify-between",
         post.text_content ? "mt-3" : "mt-4"
       )}
     >

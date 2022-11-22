@@ -44,41 +44,22 @@ export const PostHeader: React.FC<Props> = ({
   return (
     <div className="flex justify-between">
       {/* Left Side */}
-      <div className="left-side flex gap-x-3">
-        {/* Image with link to user profile */}
+      <div className="left-side">
+        {/* Display Name */}
         <Link
           href={{
             pathname: AppRoutes.profile.account_address,
             query: { account_address: post.user.account_address },
           }}
+          className="text-white font-semibold text-sm block"
         >
-          <Image
-            src={post.user.profile_image.path}
-            alt={post.user.display_name}
-            width={48}
-            height={48}
-            sizes="48px"
-            className="rounded-full object-cover w-12 h-12"
-          />
+          {post.user.display_name}
         </Link>
 
-        <div>
-          {/* Display Name */}
-          <Link
-            href={{
-              pathname: AppRoutes.profile.account_address,
-              query: { account_address: post.user.account_address },
-            }}
-            className="text-white font-semibold text-sm block"
-          >
-            {post.user.display_name}
-          </Link>
-
-          {/* Time */}
-          <p className="text-gray-shade-7 text-xs font-medium">
-            {dayjs(post.createdAt).fromNow()}
-          </p>
-        </div>
+        {/* Time */}
+        <p className="text-gray-shade-7 text-xs font-medium">
+          {dayjs(post.createdAt).fromNow()}
+        </p>
       </div>
 
       {/* Right Side */}
