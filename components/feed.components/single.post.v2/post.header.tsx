@@ -9,6 +9,7 @@ import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
+import clsx from "clsx";
 
 interface Props {
   post: CompletedPost;
@@ -50,7 +51,7 @@ export const PostHeader: React.FC<Props> = ({
       {/* Left Side */}
       <div className="left-side">
         {/* Display Name */}
-        <div className="flex items-center">
+        <div className={clsx(postType === "reply" && `flex items-center`)}>
           <Link
             href={{
               pathname: AppRoutes.profile.account_address,
@@ -62,7 +63,12 @@ export const PostHeader: React.FC<Props> = ({
           </Link>
 
           {/* Time */}
-          <p className="ml-3 text-gray-shade-7 text-xs font-medium">
+          <p
+            className={clsx(
+              `text-gray-shade-7 text-xs font-medium`,
+              postType === "reply" && "ml-3"
+            )}
+          >
             {createdTime}
           </p>
         </div>
