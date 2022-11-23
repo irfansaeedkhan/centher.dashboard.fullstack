@@ -31,7 +31,7 @@ export interface NewPostStore {
   postText: string;
   setPostText: (text: string) => void;
 
-  createPost: () => void;
+  createPost: () => Promise<void>;
 }
 
 export const useNewPostStore = create<NewPostStore>()(
@@ -80,7 +80,7 @@ export const useNewPostStore = create<NewPostStore>()(
       postText: "",
       setPostText: (text: string) => set({ postText: text }),
 
-      createPost: async (): Promise<any> => {
+      createPost: async () => {
         try {
           const { postText, selectedFiles, parentPostId } = get();
 
