@@ -32,7 +32,7 @@ const PostModalFooter: React.FC = () => {
         onClick={createPost}
       >
         {isPostCreateLoading ? (
-          <CgSpinner className="animate-spin w-5 h-5 inline-block" />
+          <CgSpinner className="animate-spin w-4 h-4 inline-block" />
         ) : (
           "Post"
         )}
