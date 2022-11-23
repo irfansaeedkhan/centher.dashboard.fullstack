@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
 
+import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
 import { useSinglePostStore } from "@/store/single.post.store";
@@ -84,6 +85,10 @@ const SinglePostPage: NextPageWithLayout = () => {
         removeReply(postId);
       } else {
         feedStore.removePost(postId);
+
+        // Decrement post count on profile card
+        useProfileCardStore.getState().decrementPostsCount();
+
         router.replace(AppRoutes.feed.index);
       }
     } catch (error: any) {

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import { useFeedStore } from "@/store/feed.store";
+import { useProfileCardStore } from "@/store/profile.card.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { FeedPagesWrapper } from "@/components/feed.components";
 import {
@@ -68,6 +69,8 @@ const Feed: NextPageWithLayout = () => {
     try {
       await actionFunction(postId);
       removePost(postId);
+      // Decrement post count on profile card
+      useProfileCardStore.getState().decrementPostsCount();
     } catch (error: any) {
       customLog(error, ["development"]);
     }
