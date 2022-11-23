@@ -7,7 +7,6 @@ import axios from "axios";
 import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-import { Rings } from "react-loader-spinner";
 import { CgSpinner } from "react-icons/cg";
 import { TbBrandTiktok } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
@@ -33,7 +32,6 @@ import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 import {
-  Circle,
   DefaultCircle,
   GoldCircle,
   RainbowCircle,
@@ -70,8 +68,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
     router.query.account_address?.toString()?.toLowerCase()
   );
 
-  const { imagePosition, setImagePosition, handleMouseDown } =
-    useDragCoverImage();
+  const { imagePosition } = useDragCoverImage();
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     ...user?.cover_image,
     blob: null,
@@ -81,17 +78,8 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
 
   const [_, copy] = useCopyToClipboard();
   const [follow, setFollow] = useState<boolean>(false);
-  const [showFollowButton, setShowFollowButton] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
-  /* 
-Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-verification icon variants
-Rainbow1  Rainbow2 RainbowLastFrame
-gold1 gold2 goldLastFrame
-silver1 silver2 silverLastFrame
-*/
   const isCurrentUserLoggedInUser = useMemo(() => {
     return (
       loggedInUser &&
@@ -124,10 +112,8 @@ silver1 silver2 silverLastFrame
         blob: null,
         newImage: false,
       });
-
-      setImagePosition(user.cover_image.y);
     }
-  }, [user?.cover_image, setImagePosition]);
+  }, [user?.cover_image]);
 
   useEffect(() => {
     setInitialCoverImage();
@@ -227,7 +213,6 @@ silver1 silver2 silverLastFrame
           `/api/socials/follows/${user?._id}`
         );
         setFollow(data.follow);
-        setShowFollowButton(true);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -373,7 +358,7 @@ silver1 silver2 silverLastFrame
       {user && loggedInUser ? (
         <div className={`bg-background-shade-3 rounded-2xl`}>
           <div
-            onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
+            // onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
             className={clsx(
               `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
               {
@@ -382,9 +367,7 @@ silver1 silver2 silverLastFrame
             )}
             style={{
               backgroundImage: `url(${coverImage.path})`,
-              backgroundPosition: `center ${
-                coverImage.newImage ? imagePosition : coverImage.y
-              }`,
+              backgroundPosition: `center center`,
             }}
           >
             {isCurrentUserLoggedInUser && (
@@ -631,17 +614,6 @@ silver1 silver2 silverLastFrame
               <div className="w-full justify-center flex">
                 {loadingState ? (
                   <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                    {/* TODO: Waqar Fix Loader size issue*/}
-                    {/* <Rings
-                      height="20"
-                      width="20"
-                      color="#1C1F29"
-                      radius="6"
-                      wrapperStyle={{}}
-                      wrapperClass=""
-                      visible={true}
-                      ariaLabel="rings-loading"
-                    /> */}
                     <SpinIcon3 />
                   </button>
                 ) : (

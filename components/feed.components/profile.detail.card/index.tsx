@@ -35,8 +35,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   */
   const iconVerifyProps = useVerificationTick(user?.account_address);
 
-  console.log("ProfileCard", profileCardDetails);
-
   useEffect(() => {
     if (iconVerifyProps === "rainbow") {
       setStrokeColor("#1B1C22");

@@ -12,7 +12,6 @@ export const useDragCoverImage = (params: Params = {}) => {
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     setImagePosition((prev) => {
-      // console.log(e);
       let diff = e.clientY - prev.lastY;
 
       let prevY: number;
@@ -23,12 +22,11 @@ export const useDragCoverImage = (params: Params = {}) => {
         prevY = 0;
       }
       const newY = prevY + diff;
-      console.log(e.view);
       return {
         ...prev,
         lastY: e.clientY,
         // newY > 0 ? 0: newY >= -500 ? -500 : newY
-        y: `${newY > 0 ? 0 : newY <= -500 ? -500 : newY}px`,
+        y: `${newY > 0 ? 0 : newY <= -300 ? -300 : newY}px`,
       };
     });
   }, []);
