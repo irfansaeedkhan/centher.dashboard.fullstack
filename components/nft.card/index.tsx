@@ -103,7 +103,7 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             className="!w-[293px] !h-[222px] object-cover rounded-md"
           />
         ) : (
-          <p className="h-[220px] text-grey pt-5">Invalid Image</p>
+          <div className="!w-[293px] !h-[222px] rounded-md bg-[#3C3F4A] mt-10 animate-pulse"></div>
         )}
       </Link>
       <Link

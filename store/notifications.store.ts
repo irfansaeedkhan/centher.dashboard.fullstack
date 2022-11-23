@@ -10,6 +10,7 @@ import moment from "moment";
 
 export interface NotificationsStore {
   notifications: Notification[];
+  allNotification: Notification[];
   notificationToday: Notification[];
   notificationYesterday: Notification[];
   notificationSevenday: Notification[];
@@ -36,10 +37,12 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       offset: 0,
 
-      updateOffset: () =>
-        set((state) => ({ offset: state.notifications.length })),
+      updateOffset: () => {
+        set((state) => ({ offset: state.allNotification.length }));
+      },
 
       notifications: [],
+      allNotification: [],
       notificationToday: [],
       notificationYesterday: [],
       notificationSevenday: [],
@@ -63,9 +66,16 @@ export const useNotificationsStore = create<NotificationsStore>()(
                 )
             );
             const notifications = [
-              ...data.notifications,
+              ...get().allNotification,
               ...filteredNotifications,
+              ...data.notifications,
             ];
+
+            set(() => ({
+              allNotification: notifications,
+            }));
+
+            console.log("2nd", notifications);
 
             let filterToday = notifications.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
@@ -103,6 +113,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
             );
 
             return {
+              allNotification: notifications as Notification[],
               notifications: filteredMainNotifications as Notification[],
               notificationToday: filterToday as Notification[],
               notificationYesterday: filterYesterday as Notification[],
@@ -140,6 +151,12 @@ export const useNotificationsStore = create<NotificationsStore>()(
               ...filteredNotifications,
             ];
 
+            set(() => ({
+              allNotification: notifications,
+            }));
+
+            console.log("notifications first", notifications);
+
             let filterToday = notifications.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
             );
@@ -176,6 +193,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
             );
 
             return {
+              allNotification: notifications as Notification[],
               notifications: filteredMainNotifications as Notification[],
               notificationToday: filterToday as Notification[],
               notificationYesterday: filterYesterday as Notification[],
