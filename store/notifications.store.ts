@@ -9,8 +9,8 @@ import { Notification } from "@/assets/svgs";
 import moment from "moment";
 
 export interface NotificationsStore {
+  notificationsBeforeSevendays: Notification[];
   notifications: Notification[];
-  allNotification: Notification[];
   notificationToday: Notification[];
   notificationYesterday: Notification[];
   notificationSevenday: Notification[];
@@ -38,11 +38,11 @@ export const useNotificationsStore = create<NotificationsStore>()(
       offset: 0,
 
       updateOffset: () => {
-        set((state) => ({ offset: state.allNotification.length }));
+        set((state) => ({ offset: state.notifications.length }));
       },
 
+      notificationsBeforeSevendays: [],
       notifications: [],
-      allNotification: [],
       notificationToday: [],
       notificationYesterday: [],
       notificationSevenday: [],
@@ -65,19 +65,12 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
-            const notifications = [
-              ...get().allNotification,
+            const notificationsArray = [
               ...filteredNotifications,
               ...data.notifications,
             ];
 
-            set(() => ({
-              allNotification: notifications,
-            }));
-
-            console.log("2nd", notifications);
-
-            let filterToday = notifications.filter(
+            let filterToday = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
             );
 
@@ -85,7 +78,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filterYesterday = notifications.filter(
+            let filterYesterday = notificationsArray.filter(
               (props) =>
                 moment(props.createdAt).format("YYYY-MM-DD") === yesterday
             );
@@ -94,7 +87,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filterSevenday = notifications.filter(
+            let filterSevenday = notificationsArray.filter(
               (props) =>
                 moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
                 moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
@@ -104,7 +97,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filteredMainNotifications = notifications.filter(
+            let filteredMainNotifications = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
             );
 
@@ -113,8 +106,9 @@ export const useNotificationsStore = create<NotificationsStore>()(
             );
 
             return {
-              allNotification: notifications as Notification[],
-              notifications: filteredMainNotifications as Notification[],
+              notifications: notificationsArray as Notification[],
+              notificationsBeforeSevendays:
+                filteredMainNotifications as Notification[],
               notificationToday: filterToday as Notification[],
               notificationYesterday: filterYesterday as Notification[],
               notificationSevenday: filterSevenday as Notification[],
@@ -146,18 +140,16 @@ export const useNotificationsStore = create<NotificationsStore>()(
                     stateNotification._id === notification._id
                 )
             );
-            const notifications = [
+            const notificationsArray = [
               ...data.notifications,
               ...filteredNotifications,
             ];
 
             set(() => ({
-              allNotification: notifications,
+              notifications: notificationsArray,
             }));
 
-            console.log("notifications first", notifications);
-
-            let filterToday = notifications.filter(
+            let filterToday = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") === today
             );
 
@@ -165,7 +157,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filterYesterday = notifications.filter(
+            let filterYesterday = notificationsArray.filter(
               (props) =>
                 moment(props.createdAt).format("YYYY-MM-DD") === yesterday
             );
@@ -174,7 +166,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filterSevenday = notifications.filter(
+            let filterSevenday = notificationsArray.filter(
               (props) =>
                 moment(props.createdAt).format("YYYY-MM-DD") < yesterday &&
                 moment(props.createdAt).format("YYYY-MM-DD") >= sevenday
@@ -184,7 +176,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
               a.status > b.status ? -1 : 1
             );
 
-            let filteredMainNotifications = notifications.filter(
+            let filteredMainNotifications = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
             );
 
@@ -193,8 +185,9 @@ export const useNotificationsStore = create<NotificationsStore>()(
             );
 
             return {
-              allNotification: notifications as Notification[],
-              notifications: filteredMainNotifications as Notification[],
+              notifications: notificationsArray as Notification[],
+              notificationsBeforeSevendays:
+                filteredMainNotifications as Notification[],
               notificationToday: filterToday as Notification[],
               notificationYesterday: filterYesterday as Notification[],
               notificationSevenday: filterSevenday as Notification[],
