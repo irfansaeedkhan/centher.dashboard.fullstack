@@ -3,6 +3,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { BsThreeDots } from "react-icons/bs";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { CgSpinner } from "react-icons/cg";
 import { HiOutlineArchive } from "react-icons/hi";
 
 import { DeleteModal } from "./delete.modal";
@@ -44,9 +45,20 @@ export const PostActionMenu: React.FC<Props> = ({
               </MenuButton>
             )} */}
 
-            <MenuButton onClick={onClickArchive}>
+            <MenuButton
+              onClick={async (e) => {
+                const button = e.currentTarget;
+                if (button.disabled) return;
+
+                button.disabled = true;
+                await onClickArchive();
+                button.disabled = false;
+              }}
+              className="group"
+            >
               <HiOutlineArchive className="w-[18px] h-[18px]" />
-              <span>Archive</span>
+              <span className="text-left  flex-grow">Archive</span>
+              <CgSpinner className="w-4 h-4 animate-spin hidden group-disabled:block" />
             </MenuButton>
 
             <MenuButton onClick={() => setIsDeleteModalOpen(true)}>
