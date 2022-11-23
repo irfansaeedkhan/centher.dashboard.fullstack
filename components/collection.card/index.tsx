@@ -50,7 +50,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
             alt="Logo Image"
             width={64}
             height={64}
-            className={`rounded-full absolute object-cover !h-16 z-50 -bottom-[1.8rem] z-0`}
+            className={`rounded-full absolute object-cover !h-16 -bottom-[1.8rem] z-0`}
           />
         )}
       </div>

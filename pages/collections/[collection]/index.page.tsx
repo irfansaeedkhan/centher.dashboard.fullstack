@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
@@ -13,11 +13,13 @@ import {
   CopyIcon,
   TwitterSvg,
   NftsCollectionEmpty,
+  HotNftEmptyIcon,
 } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NFTCard from "@/components/nft.card";
+import { TwitterShareButton, FacebookShareButton } from "react-share";
 import { useInView } from "react-intersection-observer";
 import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
@@ -28,12 +30,12 @@ import {
   formatBNB2USD,
   formatIPFSUrl,
 } from "@/utils/format.address";
-import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import useGetUser from "@/hooks/use.get.user";
+import toast from "react-hot-toast";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -43,6 +45,18 @@ const Collection: NextPageWithLayout = () => {
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   const bnbPrice = useBNBPrice();
+  const shareUrl = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}${router.asPath}`;
+    }
+    return "";
+  }, [router.asPath]);
+
+  // Copy nft share url to clipboard
+  const copyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
 
   const {
     info,
@@ -145,16 +159,22 @@ const Collection: NextPageWithLayout = () => {
                       isMenuVisible ? "block z-40" : "hidden"
                     )}
                   >
-                    <button className={menuButton}>
-                      <FacebookCircleIcon className={icon} /> Share on facebook
-                    </button>
-                    <button className={menuButton}>
-                      <TwitterSvg className={icon} /> Share on twitter
-                    </button>
-
-                    <button className={menuButton}>
+                    <button onClick={copyShareUrl} className={menuButton}>
                       <CopyIcon className={icon} /> Copy link
                     </button>
+
+                    <FacebookShareButton url={shareUrl} className="w-full">
+                      <button className={menuButton}>
+                        <FacebookCircleIcon className={icon} /> Share on
+                        facebook
+                      </button>
+                    </FacebookShareButton>
+
+                    <TwitterShareButton url={shareUrl} className="w-full">
+                      <button className={menuButton}>
+                        <TwitterSvg className={icon} /> Share on twitter
+                      </button>
+                    </TwitterShareButton>
                   </div>
                 </div>
               </div>
@@ -285,7 +305,14 @@ const Collection: NextPageWithLayout = () => {
             )}
 
             {loadingNFTs === "loaded" && nfts.length === 0 && (
-              <NftsCollectionEmpty />
+              <div>
+                <div className="flex justify-center mt-[48px]">
+                  <HotNftEmptyIcon />
+                </div>
+                <div className="flex justify-center text-white font-semibold text-xs mt-6">
+                  <p>No Nfts found yet!</p>
+                </div>
+              </div>
             )}
           </div>
         </div>

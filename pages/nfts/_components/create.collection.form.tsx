@@ -5,6 +5,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
+import { FiTwitter } from "react-icons/fi";
 
 // App imports
 import Button from "@/components/button";
@@ -34,6 +35,8 @@ const schema = Joi.object({
     "any.required": `Required Field`,
   }),
   yoursite: Joi.string()
+    .optional()
+    .allow("")
     .uri()
     .required()
     .max(50)
@@ -43,7 +46,9 @@ const schema = Joi.object({
       "any.required": `Required Field`,
     }),
   facebook: Joi.string()
+    .optional()
     .uri()
+    .allow("")
     .required()
     .max(50)
     .label("Facebook link")
@@ -52,7 +57,9 @@ const schema = Joi.object({
       "any.required": `Required Field`,
     }),
   twitter: Joi.string()
+    .optional()
     .uri()
+    .allow("")
     .required()
     .max(50)
     .label("Twitter Link")
@@ -81,8 +88,8 @@ export const CreateNFTCollectionForm = ({
   createCollection,
   clearForm,
 }: CreateNFTCollectionFormProps) => {
-  const { handleSubmit, register, setError, formState, reset } =
-    useForm<ICollectionData>({
+  const { handleSubmit, register, formState, reset } = useForm<ICollectionData>(
+    {
       mode: "onChange",
       resolver: joiResolver(schema),
       defaultValues: {
@@ -95,7 +102,8 @@ export const CreateNFTCollectionForm = ({
         facebook: "",
         twitter: "",
       },
-    });
+    }
+  );
 
   const onSubmit = async (data: any) => {
     const collectionData = {
@@ -228,7 +236,9 @@ export const CreateNFTCollectionForm = ({
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>Add links</label>
+          <label className={fieldTitle}>
+            Add links <span className="text-gray-shade-17"> (optional)</span>
+          </label>
           <div className={linkListContainer}>
             <div>
               <div className={linkInputContainer}>
@@ -305,7 +315,7 @@ export const CreateNFTCollectionForm = ({
 };
 // styling
 const CreateNFTCollectionFormContainer = ctl(`
- bg-black-shade-9 rounded-2xl relative w-full border   border-gray-shade-3 py-8 px-6 flex flex-col gap-6
+ bg-black-shade-9 rounded-2xl relative w-full border border-gray-shade-3 py-8 px-6 flex flex-col gap-6
 `);
 const formContainer = ctl(`
  flex flex-col gap-5
@@ -320,21 +330,21 @@ const fieldTitle = ctl(`
   text-14px  font-normal text-white
 `);
 const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3   text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
 const inputFieldError = ctl(`
   ${inputField}
    focus:!ring-red-500
 `);
 const linkField = ctl(`
-absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3   text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
+absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
 const linkFieldError = ctl(`
   ${linkField}
    focus:!ring-red-500
 `);
 const linkInputContainer = ctl(`
-inputItem h-[48px]  w-full !bg-black-shade-3   text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme relative
+inputItem h-[48px]  w-full !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme relative
 `);
 const linkIcon = ctl(`
 z-30 absolute top-[50%] left-[20px] translate-y-[-50%]

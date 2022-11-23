@@ -44,8 +44,6 @@ export const NFTRightSideComponent = ({
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
   const router = useRouter();
-  console.log("approutes", AppRoutes);
-  console.log("router", router);
   const { user } = useGetUser(data?.creator);
   // const { user: creatorProfile } = useGetUser(router.query.account_address?.toString());
   const [nftState, setNftState] = useState("auctionNFTBuyer");
