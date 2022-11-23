@@ -107,7 +107,6 @@ export const useNewPostStore = create<NewPostStore>()(
             }
           );
 
-          console.log("filesChunksData", filesChunksData);
           // If no file media that means only text was available in post
           if (filesChunksData.length === 0) {
             await getNewPostAndUpdateState(data.post_id);

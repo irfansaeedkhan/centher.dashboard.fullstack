@@ -43,10 +43,12 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
     try {
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
-      // Open modal
-      openModal({
-        modalType: "new-post",
-      });
+      // Open modal only if placement is create-post-card
+      if (placement === "create-post-card") {
+        openModal({
+          modalType: "new-post",
+        });
+      }
     } catch (err: any) {
       customLog(err.message, ["development", "staging"]);
       if (err.code.startsWith("app_")) {
