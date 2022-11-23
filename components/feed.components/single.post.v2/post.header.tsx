@@ -5,10 +5,10 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 
 import { CompletedPost } from "@/models/post";
+import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
-import { LoggedInUser } from "@/models/user";
 
 interface Props {
   post: CompletedPost;
@@ -40,9 +40,9 @@ export const PostHeader: React.FC<Props> = ({
 
   const createdTime = useMemo(() => {
     // Show relative time under 7 days
-    return dayjs().diff(dayjs(post.createdAt), "day") < 7
-      ? dayjs(post.createdAt).fromNow()
-      : dayjs(post.createdAt).format("D MMM");
+    return dayjs().diff(dayjs(new Date(post.createdAt)), "day") < 7
+      ? dayjs(new Date(post.createdAt)).fromNow()
+      : dayjs(new Date(post.createdAt)).format("D MMM");
   }, [post.createdAt]);
 
   return (
@@ -126,6 +126,7 @@ dayjs.updateLocale("en", {
   relativeTime: {
     past: "%s",
     s: "%ds",
+    ss: "%ds",
     m: "%dm",
     mm: "%dm",
     h: "%dh",
