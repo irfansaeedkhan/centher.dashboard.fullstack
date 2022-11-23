@@ -12,6 +12,8 @@ import { Category } from "@/models/nft";
 
 import { useAllCollectionsStore } from "@/store/all.collections.store";
 import CategoryDropdown from "../explore/_components/category.dropdown";
+import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
+import { NftsCollectionEmpty } from "@/assets/svgs";
 
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
@@ -72,11 +74,38 @@ const AllNFTCollection: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
-      <div className={collectionCardStyle}>
-        {collections.map((collection) => {
-          return <CollectionCard data={collection} key={collection.id} />;
-        })}
-      </div>
+      {collections.length > 0 && (
+        <div className={collectionCardStyle}>
+          {collections.map((collection) => {
+            return <CollectionCard data={collection} key={collection.id} />;
+          })}
+        </div>
+      )}
+
+      {(loading === "loading" || loading === "idle") && (
+        <div className="flex flex-wrap gap-10 items-center">
+          {/* we are showing 8 skeletons while reloading the page to users */}
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+          <NftCollectionSkeleton />
+        </div>
+      )}
+
+      {loading === "loaded" && collections.length === 0 && (
+        <div>
+          <div className="flex justify-center mt-[48px]">
+            <NftsCollectionEmpty />
+          </div>
+          <div className="flex justify-center text-white font-semibold text-xs mt-6">
+            <p>No collection found yet!</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

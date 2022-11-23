@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
+import clsx from "clsx";
 
 import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
@@ -92,10 +93,10 @@ const SinglePostPage: NextPageWithLayout = () => {
 
   return (
     <>
-      {postLoading === "loaded" && (
-        <div>
-          <BackButton className="mb-3" />
+      <BackButton className="mb-3" />
 
+      {postLoading === "loaded" && (
+        <>
           {post?.status === "complete" && (
             <SinglePostV2
               key={post._id}
@@ -117,6 +118,13 @@ const SinglePostPage: NextPageWithLayout = () => {
               }}
               onClickArchive={() => handleAction(post._id, "main", archivePost)}
               onClickDelete={() => handleAction(post._id, "main", deletePost)}
+            />
+          )}
+
+          {post?.status === "deleted" && (
+            <NoPostMessage
+              message="The main post was deleted by author."
+              className={clsx(post.replies_count > 0 && "rounded-b-none")}
             />
           )}
 
@@ -186,25 +194,16 @@ const SinglePostPage: NextPageWithLayout = () => {
             );
           })}
 
-          {post?.status === "deleted" && (
-            <NoPostMessage message="The post was deleted by author." />
-          )}
-
           {!post && <NoPostMessage message="The post does not exist." />}
-        </div>
+        </>
       )}
 
       {(postLoading === "loading" || postLoading === "idle") && (
-        <div className="mt-9">
-          <SinglePostCardSkeleton />
-        </div>
+        <SinglePostCardSkeleton />
       )}
 
       {postLoading === "failed" && (
-        <div className={`space-y-3`}>
-          <BackButton />
-          <NoPostMessage message="Something went wrong!" />
-        </div>
+        <NoPostMessage message="Something went wrong!" />
       )}
 
       <CreatePostModal modalTitle="Reply" />

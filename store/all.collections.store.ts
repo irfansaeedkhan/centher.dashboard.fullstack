@@ -89,7 +89,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           set((state) => {
             return {
               collections: _collections,
-              loadingCollections: "loaded",
+              loading: "loaded",
             };
           });
         } catch (error) {

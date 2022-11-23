@@ -29,10 +29,13 @@ const PostModalFooter: React.FC = () => {
 
       <button
         className={`block text-center text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none col-span-full fsm:col-span-1 mt-4 fsm:mt-0`}
-        onClick={createPost}
+        onClick={() => {
+          if (isPostCreateLoading) return; // using this to prevent multiple clicks because button disabled method is not working
+          createPost();
+        }}
       >
         {isPostCreateLoading ? (
-          <CgSpinner className="animate-spin w-5 h-5 inline-block" />
+          <CgSpinner className="animate-spin w-4 h-4 inline-block" />
         ) : (
           "Post"
         )}

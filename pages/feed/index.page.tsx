@@ -82,30 +82,31 @@ const Feed: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <SinglePostV2
-              key={post._id}
-              post={post}
-              postType={"main"}
-              placement="feed-page"
-              shouldShowThread={post.replies_count > 0}
-              onClickLike={async () => {
-                await likePostAPI(
-                  post._id,
-                  post.liked_by_loggedin_user ? "unlike" : "like"
-                );
-              }}
-              onClickReply={() => {
-                router.push({
-                  pathname: AppRoutes.feed.single_post,
-                  query: {
-                    account_address: post.user.account_address,
-                    post_id: post._id,
-                  },
-                });
-              }}
-              onClickArchive={() => handleAction(post._id, archivePost)}
-              onClickDelete={() => handleAction(post._id, deletePost)}
-            />
+            <div key={post._id} ref={lastPostRef}>
+              <SinglePostV2
+                post={post}
+                postType={"main"}
+                placement="feed-page"
+                shouldShowThread={post.replies_count > 0}
+                onClickLike={async () => {
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                }}
+                onClickReply={() => {
+                  router.push({
+                    pathname: AppRoutes.feed.single_post,
+                    query: {
+                      account_address: post.user.account_address,
+                      post_id: post._id,
+                    },
+                  });
+                }}
+                onClickArchive={() => handleAction(post._id, archivePost)}
+                onClickDelete={() => handleAction(post._id, deletePost)}
+              />
+            </div>
           );
         }
 

@@ -1,8 +1,23 @@
+import clsx from "clsx";
 import React from "react";
 
-export const NoPostMessage: React.FC<{ message: string }> = ({ message }) => {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  message: string;
+}
+
+export const NoPostMessage: React.FC<Props> = ({
+  message,
+  className,
+  ...props
+}) => {
   return (
-    <div className="sm:w-full lg:w-[544px] py-4 rounded-10px bg-background-shade-3 text-gray-400 text-center">
+    <div
+      className={clsx(
+        `fsm:w-full flg:w-[544px] py-4 rounded-10px bg-background-shade-3 text-white text-center font-medium`,
+        className
+      )}
+      {...props}
+    >
       {message}
     </div>
   );
