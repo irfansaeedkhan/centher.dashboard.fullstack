@@ -2,15 +2,18 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CompletedPost } from "@/models/post";
+import { PostUser } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
-  post: CompletedPost;
-  shouldShowThread: boolean;
+  postUser: PostUser;
+  shouldShowConnectLines: boolean;
 }
 
-export const PostUserImage: React.FC<Props> = ({ post, shouldShowThread }) => {
+export const PostUserImage: React.FC<Props> = ({
+  postUser,
+  shouldShowConnectLines,
+}) => {
   return (
     <div className="flex flex-col items-center">
       {/* Image with link to user profile */}
@@ -18,12 +21,12 @@ export const PostUserImage: React.FC<Props> = ({ post, shouldShowThread }) => {
         className="w-12 h-12"
         href={{
           pathname: AppRoutes.profile.account_address,
-          query: { account_address: post.user.account_address },
+          query: { account_address: postUser.account_address },
         }}
       >
         <Image
-          src={post.user.profile_image.path}
-          alt={post.user.display_name}
+          src={postUser.profile_image.path}
+          alt={postUser.display_name}
           width={48}
           height={48}
           sizes="48px"
@@ -32,7 +35,7 @@ export const PostUserImage: React.FC<Props> = ({ post, shouldShowThread }) => {
       </Link>
 
       {/* Vertical Line */}
-      {shouldShowThread && (
+      {shouldShowConnectLines && (
         <div className="flex-grow border-l-2 border-gray-shade-3" />
       )}
     </div>
