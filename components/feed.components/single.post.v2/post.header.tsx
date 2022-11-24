@@ -57,7 +57,7 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: post.user.account_address },
             }}
-            className="text-white font-semibold text-sm text-ellipsis line-clamp-1"
+            className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
           >
             {post.user.display_name}
           </Link>
@@ -82,12 +82,14 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="mt-0.5 inline-block text-white font-medium text-xs text-ellipsis line-clamp-1"
+              className="mt-0.5 inline-block text-white font-medium text-xs text-ellipsis line-clamp-1 group"
             >
               <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
                 Replying to
               </span>
-              {post.parent_post?.user.display_name}
+              <span className="group-hover:text-brand-primary">
+                {post.parent_post?.user.display_name}
+              </span>
             </Link>
           </>
         )}
