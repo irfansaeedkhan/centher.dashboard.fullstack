@@ -49,7 +49,7 @@ export const PostHeader: React.FC<Props> = ({
   return (
     <div className="flex justify-between">
       {/* Left Side */}
-      <div className="left-side">
+      <div className="left-side mr-2">
         {/* Display Name */}
         <div className={clsx(postType === "reply" && `flex items-center`)}>
           <Link
@@ -57,7 +57,7 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: post.user.account_address },
             }}
-            className="text-white font-semibold text-sm"
+            className="text-white font-semibold text-sm text-ellipsis line-clamp-1"
           >
             {post.user.display_name}
           </Link>
@@ -75,9 +75,6 @@ export const PostHeader: React.FC<Props> = ({
 
         {postType === "reply" && (
           <>
-            <span className="inline-block text-gray-shade-7 font-medium text-xs">
-              Replying to
-            </span>
             <Link
               href={{
                 pathname: AppRoutes.profile.account_address,
@@ -85,8 +82,11 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="inline-block ml-1 text-white font-medium text-xs"
+              className="mt-0.5 inline-block text-white font-medium text-xs text-ellipsis line-clamp-1"
             >
+              <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
+                Replying to
+              </span>
               {post.parent_post?.user.display_name}
             </Link>
           </>

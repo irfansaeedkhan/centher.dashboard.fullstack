@@ -70,28 +70,21 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           height={96}
           className={`rounded-t-lg !h-[96px] object-cover`}
         />
-        <div className={`flex flex-col gap-3 text-white`}>
-          <div className={`flex gap-2 items-center px-6 py-4`}>
-            <button>
-              <div>
-                {user && (
-                  <div>
-                    <Image
-                      src={user.profile_image.path}
-                      alt="userProfile"
-                      width={40}
-                      height={40}
-                      className={`rounded-full object-cover h-[40px] w-[40px]`}
-                      sizes={"256px"}
-                    />
-                  </div>
-                )}
-              </div>
-            </button>
-            <div className={`flex flex-col gap-1`}>
-              <div
-                className={`whitespace-nowrap overflow-hidden text-ellipsis text-sm text-white`}
-              >
+        <div className={`space-y-3 text-white`}>
+          <div className={`flex gap-2 items-start px-6 py-4`}>
+            {user && (
+              <Image
+                src={user.profile_image.path}
+                alt={user.display_name}
+                width={40}
+                height={40}
+                className={`rounded-full object-cover h-[40px] w-[40px]`}
+                sizes={"256px"}
+              />
+            )}
+
+            <div className={`space-y-1`}>
+              <div className={`text-ellipsis text-sm text-white line-clamp-1`}>
                 {user?.display_name}
               </div>
               <div className={`flex gap-2 items-center`}>
@@ -123,6 +116,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               </div>
             </div>
           </div>
+
           <div className={`w-full flex justify-end items-end px-6 py-4`}>
             {active ? (
               <button

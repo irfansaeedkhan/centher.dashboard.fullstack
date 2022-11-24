@@ -126,25 +126,23 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div
       className={clsx(
-        `w-11/12 sm:w-[272px] pt-12 rounded-10px overflow-hidden text-center bg-background-shade-3 relative`,
+        `w-11/12 fsm:w-[272px] pt-12 rounded-10px overflow-hidden text-center bg-background-shade-3 relative`,
         !!profileCardDetails.posts_views_count && `pb-4`
       )}
     >
-      <Link
-        href={{
-          pathname: AppRoutes.profile.account_address,
-          query: {
-            account_address: user.account_address,
-          },
-        }}
-      >
-        <div
-          className={`absolute top-0 left-0 bg-center bg-cover bg-no-repeat w-full h-[84px] bg-[url('/images/coverImage.png')]`}
-          style={{
-            backgroundImage: `url(/images/profile-header-cover.jpg)`,
+      <div
+        className={`absolute top-0 left-0 bg-center bg-cover bg-no-repeat w-full h-[84px] bg-[url('/images/profile-header-cover.jpg')]`}
+      ></div>
+
+      <div className={`relative mx-auto h-[60px] !w-[60px]`}>
+        <Link
+          href={{
+            pathname: AppRoutes.profile.account_address,
+            query: {
+              account_address: user.account_address,
+            },
           }}
-        ></div>
-        <div className={`relative mx-auto h-[60px] !w-[60px]`}>
+        >
           <Image
             src={user.profile_image.path}
             className={`w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover`}
@@ -195,22 +193,23 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               />
             )}
           </div>
-        </div>
-      </Link>
-      <Link
-        href={{
-          pathname: AppRoutes.profile.account_address,
-          query: {
-            account_address: user.account_address,
-          },
-        }}
-      >
-        <h3
-          className={`text-14px font-bold pt-3 pb-6 text-white cursor-pointer`}
+        </Link>
+      </div>
+
+      <h3 className={`px-1 py-3`}>
+        <Link
+          href={{
+            pathname: AppRoutes.profile.account_address,
+            query: {
+              account_address: user.account_address,
+            },
+          }}
+          className={`line-clamp-1 text-ellipsis text-white text-sm font-bold`}
         >
           {user.display_name}
-        </h3>
-      </Link>
+        </Link>
+      </h3>
+
       <div
         className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
       >
