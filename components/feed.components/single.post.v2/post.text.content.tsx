@@ -19,7 +19,7 @@ export const PostTextContent: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `whitespace-pre-wrap break-words text-app-post-text text-sm mt-4`,
+        `whitespace-pre-wrap break-all text-app-post-text text-sm mt-4`,
         placement === "single-post-page" && postType === "main" && "font-bold"
       )}
     >
