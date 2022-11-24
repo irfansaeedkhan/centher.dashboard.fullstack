@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -9,7 +10,6 @@ import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
-import clsx from "clsx";
 
 interface Props {
   post: CompletedPost;
