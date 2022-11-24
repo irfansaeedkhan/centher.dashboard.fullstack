@@ -1,8 +1,7 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
@@ -10,10 +9,10 @@ import { toast } from "react-hot-toast";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import "react-circular-progressbar/dist/styles.css";
-import Picker, { EmojiStyle, Theme } from "emoji-picker-react";
 
 import { useFeedStore } from "@/store/feed.store";
+import { useNewPostStore } from "@/store/new.post.store";
+import { useSinglePostStore } from "@/store/single.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import Button from "@/components/button";
@@ -23,9 +22,6 @@ import {
   MessageIcon,
   LikeIcon,
   ShareIcon,
-  PhotoIcon,
-  VideoIcon,
-  EmojiIcon,
   AnimateTrashIcon,
   LinkIcon,
   ArrowLeftIcon,
@@ -36,18 +32,24 @@ import {
 } from "@/assets/svgs";
 import { CompletedPost, PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 
-// import from same directory
 import { ReplyPost } from "../reply.post";
-import { usePostUpload } from "../post.logicv2";
 import { createPostView } from "./create.post.view";
 import { PostCarousel } from "./post.carousel";
 import PostUserDetails from "./post.user.details";
 import Post3DotsMenu from "./post.3.dots.menu";
 import { useCurrentPageRoute } from "./use.current.page.route";
+import { useMyPostStore } from "@/store/my.post.store";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 
-interface FeedCardLevel1Props {
+interface Props {
+  placement:
+    | "feed"
+    | "single-post-page"
+    | "profile-tab-posts"
+    | "profile-tab-replies";
   post: CompletedPost;
   onDelete: (id: string) => void;
 }
@@ -66,24 +68,34 @@ const initialEditPostData: IEditPostData = {
   deletedMedia: [],
 };
 
-export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
+export const SinglePost = React.forwardRef<HTMLDivElement, Props>(
   ({ post, onDelete }, ref) => {
-    const [_post, setPost] = useState<CompletedPost>(post);
-    const router = useRouter();
     const { user } = useUser();
+    const { openModal } = useNewPostStore();
+    const {
+      replies,
+      updateRepliesOffset,
+      removeReply,
+      updatePost,
+      updatePostLikesCount: updatePostLikesCountSinglePost,
+    } = useSinglePostStore();
+    const { updatePostLikesCount: updatePostLikesCountFeed } = useFeedStore();
+    const { updatePostLikesCount: updatePostLikesCountMyPost } =
+      useMyPostStore();
+    const { updatePostLikesCount: updatePostLikesCountMyReplies } =
+      useMyRepliesStore();
     const decrementPostsCount = useProfileCardStore(
       (state) => state.decrementPostsCount
     );
-    const incrementPostRepliesCount = useFeedStore(
-      (state) => state.incrementPostRepliesCount
-    );
-    const [deleteModal, setDeleteModal] = useState(false);
-    const [shareUrl, setShareUrl] = useState("");
 
-    const [replies, setReplies] = useState<CompletedPost[]>([]);
-    const [skip, setSkip] = useState(0);
-    const [loader, setLoader] = useState(false);
-    const [lastPostRef, lastPostInView] = useInView();
+    const currentPageRoute = useCurrentPageRoute();
+
+    const [deleteModal, setDeleteModal] = useState(false);
+
+    const shareUrl = useMemo(() => {
+      return `${window.location.origin}${AppRoutes.feed.index}/${post.user.account_address}/post/${post._id}`;
+    }, [post._id, post.user.account_address]);
+
     const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
       threshold: 0.8,
     });
@@ -91,30 +103,17 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     const [editPostData, setEditPostData] =
       useState<IEditPostData>(initialEditPostData);
 
-    // For Emoji Picker
-    const [isEmojiPickerVisible, setIsEmojiPickerVisible] = useState(false);
-    const emojiPickerRef = useRef<HTMLDivElement>(null);
-    useOnClickOutside(emojiPickerRef, () => setIsEmojiPickerVisible(false));
-
     const [toggleSharePop, setToggleSharePop] = useState(false);
     const [toggleSharePop_2, setToggleSharePop_2] = useState(false);
-    const [updateLoadingButton, setUpdateLoadingButton] = useState<
-      true | false
-    >(false);
+    const [updateLoadingButton, setUpdateLoadingButton] = useState(false);
 
-    const currentPageRoute = useCurrentPageRoute();
+    const { ref: lastReplyRef, entry: lastReplyEntry } = useInView();
 
-    // Update post from props
     useEffect(() => {
-      setPost(post);
-    }, [post]);
-
-    // Set updated post share url
-    useEffect(() => {
-      setShareUrl(
-        `${window.location.origin}${AppRoutes.feed.index}/${_post.user.account_address}/post/${_post._id}`
-      );
-    }, [router, _post.user.account_address, _post._id]);
+      if (lastReplyEntry?.isIntersecting) {
+        updateRepliesOffset();
+      }
+    }, [updateRepliesOffset, lastReplyEntry]);
 
     // Create Post View
     useEffect(() => {
@@ -122,74 +121,63 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         if (
           currentPostEntry &&
           currentPostEntry.intersectionRatio > 0.8 &&
-          !_post.viewed_by_loggedin_user
+          !post.viewed_by_loggedin_user
         ) {
           try {
-            await createPostView(_post._id);
+            await createPostView(post._id);
 
-            setPost((prev) => ({
-              ...prev,
+            updatePost({
               viewed_by_loggedin_user: true,
-            }));
-          } catch (error) {
-            process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-              console.dir(error);
+            });
+          } catch (error: any) {
+            customLog(error, ["development"]);
           }
         }
       })();
-    }, [_post._id, _post.viewed_by_loggedin_user, currentPostEntry]);
+    }, [post._id, post.viewed_by_loggedin_user, currentPostEntry, updatePost]);
 
     const likePost = async (postId: string) => {
       try {
         // putting it before the api call to make it feel faster
-        if (_post.liked_by_loggedin_user) {
-          setPost((prev) => ({
-            ...prev,
-            likes_count: prev.likes_count - 1,
-            liked_by_loggedin_user: false,
-          }));
+        if (post.liked_by_loggedin_user) {
+          updatePostLikesCountFeed("decrement", postId);
+          updatePostLikesCountMyPost("decrement", postId);
+          updatePostLikesCountMyReplies("decrement", postId);
+          updatePostLikesCountSinglePost("decrement", "main", postId);
+
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
             actionType: "unlike",
           });
         } else {
-          setPost((prev) => ({
-            ...prev,
-            likes_count: prev.likes_count + 1,
-            liked_by_loggedin_user: true,
-          }));
+          updatePostLikesCountFeed("increment", postId);
+          updatePostLikesCountMyPost("increment", postId);
+          updatePostLikesCountMyReplies("increment", postId);
+          updatePostLikesCountSinglePost("increment", "main", postId);
+
           axiosNodeApi.post("api/socials/analytics/likes", {
             postId,
             actionType: "like",
           });
         }
       } catch (error: any) {
-        setPost((prev) => ({
-          ...prev,
-          likes_count: post.likes_count,
-          liked_by_loggedin_user: post.liked_by_loggedin_user,
-        }));
-
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
+        customLog(error, ["development"]);
       }
     };
 
     const deletePost = async () => {
       try {
-        await axiosNodeApi.delete(`/api/socials/posts/${_post._id}`);
+        await axiosNodeApi.delete(`/api/socials/posts/${post._id}`);
 
         toast.success("Post Deleted Successfully");
 
         // Remove the post from posts state
-        onDelete(_post._id);
+        onDelete(post._id);
 
         // Decrement the posts count in profile card details
-        if (!_post.parent_post) {
+        if (!post.parent_post) {
           decrementPostsCount();
         }
-        onDelete(_post._id);
       } catch (error: any) {
         toast.error(
           error.response.data?.message_description || "Something went wrong"
@@ -206,54 +194,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
     useEffect(() => {
       setEditPostData((prev) => ({
         ...prev,
-        editedPostText: _post.text_content ?? "",
-        media: _post.media ?? [],
+        editedPostText: post.text_content ?? "",
+        media: post.media ?? [],
       }));
-    }, [_post.text_content, _post.media]);
-
-    useEffect(() => {
-      if (lastPostInView) {
-        setSkip(replies.length);
-      }
-    }, [replies, lastPostInView]);
-
-    // Fetch post replies
-    useEffect(() => {
-      const fetchRepliesPostData = async () => {
-        setLoader(true);
-        try {
-          const { data } = await axiosNodeApi.get(
-            `/api/socials/posts/${_post._id}/replies?offset=${skip}`
-          );
-
-          const _replies = data.posts;
-
-          setReplies((prev) => {
-            const filteredReplies = _replies.filter((reply: CompletedPost) => {
-              return prev.every((prevReply) => prevReply._id !== reply._id);
-            });
-
-            return [...prev, ...filteredReplies];
-          });
-          setLoader(false);
-        } catch (error: any) {
-          setLoader(false);
-          toast.error(
-            error.response.data?.message_description || "Something went wrong"
-          );
-        }
-      };
-
-      // Temporary fix for replies
-      if (currentPageRoute.isSinglePostPage) {
-        fetchRepliesPostData();
-      }
-    }, [
-      _post.user.account_address,
-      _post._id,
-      skip,
-      currentPageRoute.isSinglePostPage,
-    ]);
+    }, [post.text_content, post.media]);
 
     const ref2 = useRef<HTMLDivElement>(null);
     useOnClickOutside(ref2, () => {
@@ -261,65 +205,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
       setToggleSharePop_2(false);
     });
 
-    // Files selected by user
-    const [userSelectedFiles, setUserSelectedFilesList] = useState<File[]>([]);
-
-    // User_Selected_Files
-    const [detailsOfUserSelected, setdetailsOfUserSelected] = useState<
-      string[]
-    >([]);
-
     // Images that will be displayed after it is selected
     const [displaySelectedFiles, setdisplaySelectedFiles] = useState(
       Array<JSX.Element>
     );
 
-    const [lastItem, setLastItem] = useState<number>(0);
-    const {
-      showModal,
-      setShowModal,
-      //displaySelectedFiles,
-      totalReplyCount,
-      handleTextLength,
-      createPost,
-      closePostModal,
-      handleSelectFile,
-      loadingState,
-      postError,
-      file,
-      refe,
-      onEmojiClick,
-      uploadingFileStatus,
-      tweetText,
-      deleteText,
-    } = usePostUpload({
-      reply: true,
-      reply_address: _post.user.account_address,
-      reply_post_id: _post._id,
-      replyCount: _post.replies_count,
-      onPostCreated: (newPost) => {
-        setReplies((prev) => [newPost, ...prev]);
-        incrementPostRepliesCount(newPost.parent_post?._id);
-      },
-      userSelectedFiles,
-      setUserSelectedFilesList,
-      detailsOfUserSelected,
-      setdetailsOfUserSelected,
-      displaySelectedFiles,
-      setdisplaySelectedFiles,
-      lastItem,
-      setLastItem,
-    });
-
-    const handleDeleteReply = (post_id: string) => {
-      setReplies(replies.filter((rep) => rep._id !== post_id));
-    };
-
     const editPost = async () => {
       setUpdateLoadingButton(true);
       try {
         if (
-          editPostData.deletedMedia.length == _post.media?.length &&
+          editPostData.deletedMedia.length == post.media?.length &&
           !editPostData.editedPostText
         ) {
           setUpdateLoadingButton(false);
@@ -334,17 +229,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
 
         // Get Updated Post
         const { data } = await axiosNodeApi.get(
-          `/api/socials/posts/${_post._id}`
+          `/api/socials/posts/${post._id}`
         );
-        setPost(data.post);
+        updatePost(data.post);
         setUpdateLoadingButton(false);
-        toast.success("Post Edited Successfully");
         setEditPostData((prev) => ({
           ...prev,
           isEditModalVisible: false,
         }));
       } catch (error: any) {
-        setPost(post);
+        updatePost(post);
         setUpdateLoadingButton(false);
         toast.error(
           error?.response?.data?.message_description || "Something went wrong"
@@ -387,7 +281,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
         >
           {/* Connect Lines */}
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-            !!totalReplyCount && (
+            !!post.replies_count && (
               <div
                 className={`absolute top-[35px] left-[38px] z-0 w-[2px] h-[calc(100%-80px)] bg-gray-shade-3`}
               ></div>
@@ -396,13 +290,12 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           <div
             className={`top w-full z-10 flex items-center justify-between gap-2 mb-2 px-4`}
           >
-            <PostUserDetails post={_post} />
+            <PostUserDetails post={post} />
 
-            {_post.user._id === user?._id && (
+            {post.user._id === user?._id && (
               <Post3DotsMenu
-                post={_post}
+                post={post}
                 onClickDelete={() => setDeleteModal(true)}
-                onArchive={(postId) => onDelete(postId)}
                 onClickEdit={() =>
                   setEditPostData((prev) => ({
                     ...prev,
@@ -421,16 +314,16 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
             )}
           >
             <div>
-              {_post.media && (
+              {post.media && (
                 <Carousel
                   showStatus={false}
                   showThumbs={false}
                   showIndicators={false}
                   showArrows={
-                    _post.media && _post.media.length === 1 ? false : true
+                    post.media && post.media.length === 1 ? false : true
                   }
                 >
-                  {_post.media.map((media, index) =>
+                  {post.media.map((media, index) =>
                     media.type == "image" ? (
                       <Image
                         key={index}
@@ -448,18 +341,19 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                         height={312}
                         className={`object-left !w-[99%] h-auto rounded-xl !block !m-0 !object-contain`}
                         controls
+                        controlsList="nodownload"
                       />
                     )
                   )}
                 </Carousel>
               )}
             </div>
-            {_post.text_content && (
+            {post.text_content && (
               <div className={`pt-4 pb-2`}>
                 <p
                   className={`text-16px font-semibold text-[#E7E8EE] whitespace-pre-wrap break-all`}
                 >
-                  {_post.text_content}
+                  {post.text_content}
                 </p>
               </div>
             )}
@@ -478,42 +372,45 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 href={{
                   pathname: AppRoutes.feed.single_post,
                   query: {
-                    account_address: _post.user.account_address,
-                    post_id: _post._id,
+                    account_address: post.user.account_address,
+                    post_id: post._id,
                   },
                 }}
               >
                 <button
                   className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
                 >
-                  <MessageIcon /> {totalReplyCount}
+                  <MessageIcon /> {post.replies_count}
                 </button>
               </Link>
             ) : (
               <button
                 className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
                 onClick={() => {
-                  setShowModal(true);
+                  openModal({
+                    modalType: "reply",
+                    parentPostId: post._id,
+                  });
                 }}
               >
-                <MessageIcon /> {totalReplyCount}
+                <MessageIcon /> {post.replies_count}
               </button>
             )}
             <button
               className={`flex items-center gap-2 lg:gap-3 text-14px font-medium text-gray-shade-10`}
-              onClick={() => likePost(_post._id)}
+              onClick={() => likePost(post._id)}
             >
               <LikeIcon
                 className={
-                  _post.liked_by_loggedin_user ? "stroke-brand-primary" : ""
+                  post.liked_by_loggedin_user ? "stroke-brand-primary" : ""
                 }
               />{" "}
               <span
                 className={`${
-                  _post.liked_by_loggedin_user ? "text-brand-primary" : ""
+                  post.liked_by_loggedin_user ? "text-brand-primary" : ""
                 }`}
               >
-                {_post.likes_count}
+                {post.likes_count}
               </span>
             </button>
             <div ref={ref2} className={`relative`}>
@@ -581,7 +478,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 >
                   <TwitterShareButton
                     url={shareUrl}
-                    className="flex items-center  gap-3 w-full h-full !px-5 !py-4"
+                    className="flex items-center gap-3 w-full h-full !px-5 !py-4"
                   >
                     <Image
                       src="/images/twitter2.png"
@@ -597,22 +494,22 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
           </div>
 
           {(currentPageRoute.isFeedPage || currentPageRoute.isProfilePage) &&
-            !!totalReplyCount && (
+            !!post.replies_count && (
               <div className={`z-10 flex gap-3 pl-6 items-center `}>
                 <Image
-                  src={_post.user.profile_image.path}
+                  src={post.user.profile_image.path}
                   width={30}
                   height={30}
                   className="rounded-full w-[30px] h-[30px] object-cover"
-                  alt={_post.user.display_name}
+                  alt={post.user.display_name}
                   sizes="256px"
                 />
                 <Link
                   href={{
                     pathname: AppRoutes.feed.single_post,
                     query: {
-                      account_address: _post.user.account_address,
-                      post_id: _post._id,
+                      account_address: post.user.account_address,
+                      post_id: post._id,
                     },
                   }}
                   className={`text-brand-primary text-[11px] px-3 py-2 bg-brand-primary/10 rounded-full hover:bg-brand-primary hover:text-black-shade-2 transition font-medium`}
@@ -621,6 +518,7 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                 </Link>
               </div>
             )}
+
           <div className={`flex flex-col gap-4`}>
             {!(
               currentPageRoute.isFeedPage || currentPageRoute.isProfilePage
@@ -631,10 +529,10 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                     if (reply._id === replies[replies.length - 1]._id) {
                       return (
                         <ReplyPost
-                          ref={lastPostRef}
+                          ref={lastReplyRef}
                           key={reply._id}
                           post={reply}
-                          onDelete={handleDeleteReply}
+                          onDelete={removeReply}
                         />
                       );
                     }
@@ -642,158 +540,13 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                       <ReplyPost
                         key={reply._id}
                         post={reply}
-                        onDelete={handleDeleteReply}
+                        onDelete={removeReply}
                       />
                     );
                   })}
               </>
             )}
           </div>
-
-          {/* Reply Post Modal */}
-          {showModal && user && (
-            <CustomModal onClose={closePostModal} title={"Reply"}>
-              <div
-                className={`flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 pt-4`}
-              >
-                <div className={`flex items-center gap-3 px-6`}>
-                  <Image
-                    src={user.profile_image.path}
-                    width={44}
-                    height={44}
-                    alt={user?.display_name ?? "profile image"}
-                    className="rounded-full w-[44px] h-[44px] object-cover"
-                    sizes="256px"
-                  />
-                  <h5 className={`text-14px font-semibold text-white`}>
-                    {user?.display_name}
-                  </h5>
-                </div>
-                <div className={`px-4`}>
-                  <div>
-                    <Carousel
-                      showStatus={false}
-                      showThumbs={false}
-                      showIndicators={false}
-                      showArrows={
-                        displaySelectedFiles.length === 1 ? false : true
-                      }
-                      selectedItem={lastItem}
-                      onChange={(i) => {
-                        setLastItem(i);
-                      }}
-                    >
-                      {displaySelectedFiles}
-                    </Carousel>
-                  </div>
-                  <div className={`pt-4 pb-2 w-full px-6`}>
-                    <textarea
-                      className={`text-14px rounded-10px w-full leading-6 text-white font-medium bg-background-shade-3`}
-                      name=""
-                      id="posttext"
-                      cols={12}
-                      rows={4}
-                      placeholder="Type Here"
-                      maxLength={200}
-                      value={tweetText}
-                      onChange={handleTextLength}
-                    ></textarea>
-                  </div>
-                </div>
-                <div
-                  className={`flex lg:flex-row [@media(max-width:600px)]:flex-col gap-3 items-center justify-between border-t-2 border-gray-shade-3 pt-6 px-6`}
-                >
-                  <div
-                    className={`w-full lg:w-[48%] flex items-center justify-between`}
-                  >
-                    <label
-                      className={`flex items-center gap-3 text-14px font-medium text-yellow-theme`}
-                    >
-                      <PhotoIcon />
-                      Photo
-                      <input
-                        type="file"
-                        id="files-photo"
-                        name="photos-file"
-                        accept=".gif,.jpg,.jpeg,.jfif,.pjpeg,.pjp,.png"
-                        style={{ display: "none" }}
-                        multiple
-                        onChange={(e) => {
-                          handleSelectFile(e, "images");
-                        }}
-                      />
-                    </label>
-                    <label
-                      className={`flex items-center gap-3 text-14px font-medium text-[#157AFB]`}
-                    >
-                      <VideoIcon />
-                      Video
-                      <input
-                        type="file"
-                        id="files-videos"
-                        name="videos-file"
-                        accept=".webm,.mp4,.mpg,.avi,.m4v"
-                        style={{ display: "none" }}
-                        multiple
-                        onChange={(e) => {
-                          handleSelectFile(e, "videos");
-                        }}
-                      />
-                    </label>
-                    <button
-                      className={`flex items-center gap-3 text-14px font-medium text-[#00BF96]`}
-                      onClick={() => {
-                        setIsEmojiPickerVisible((prev) => !prev);
-                      }}
-                    >
-                      <EmojiIcon />
-                      Emoji
-                    </button>
-                    {isEmojiPickerVisible && (
-                      <div
-                        ref={emojiPickerRef}
-                        className={clsx(
-                          `emojiContainer absolute right-[0] top-[287px]`,
-                          isEmojiPickerVisible && "!block z-40"
-                        )}
-                      >
-                        <Picker
-                          onEmojiClick={onEmojiClick}
-                          height={400}
-                          width={300}
-                          autoFocusSearch={false}
-                          emojiStyle={EmojiStyle.NATIVE}
-                          theme={Theme.AUTO}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div
-                    className={`w-full lg:w-[40%] flex items-center [@media(max-width:600px)]:!justify-between gap-2 justify-end`}
-                  >
-                    <span onClick={deleteText}>
-                      <AnimateTrashIcon />
-                    </span>
-                    <div
-                      className={`w-[2px] h-[10px] bg-[#333333] rounded-xl`}
-                    ></div>
-                    {loadingState ? (
-                      <button className="bg-brand-primary text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-[136px] h-[36px]">
-                        <SpinIcon3 />
-                      </button>
-                    ) : (
-                      <Button
-                        title={"Post"}
-                        variant="v1"
-                        className="max-w-[140px]"
-                        onClick={createPost}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </CustomModal>
-          )}
 
           {/* edit modal */}
           {editPostData.isEditModalVisible && user && (
@@ -803,8 +556,8 @@ export const SinglePost = React.forwardRef<HTMLDivElement, FeedCardLevel1Props>(
                   ...prev,
                   isEditModalVisible: false,
                   deletedMedia: [],
-                  media: _post.media ?? [],
-                  editedPostText: _post.text_content ?? "",
+                  media: post.media ?? [],
+                  editedPostText: post.text_content ?? "",
                 }));
               }}
               title={"Edit post"}

@@ -10,18 +10,13 @@ interface BarProps {
 const Bar: React.FC<BarProps> = (props) => {
   const { duration, curTime, onTimeUpdate } = props;
 
-  const curPercentage = (curTime / duration) * 100;
+  const curPercentage: number = (curTime / duration) * 100;
 
   function calcClickedTime(e: React.MouseEvent) {
     const clickPositionInPage = e.pageX;
-    const bar = document.querySelector(".bar__progress") as HTMLElement | null;
-    let barStart = 0;
-    let barWidth = 0;
-    if (bar) {
-      barStart = bar.getBoundingClientRect().left + window.scrollX;
-      barWidth = bar.offsetWidth;
-    }
-
+    const bar = document.querySelector(".bar__progress") as HTMLElement;
+    const barStart = bar.getBoundingClientRect().left + window.scrollX;
+    const barWidth = bar.offsetWidth;
     const clickPositionInBar = clickPositionInPage - barStart;
     const timePerPixel = duration / barWidth;
     return timePerPixel * clickPositionInBar;
@@ -30,8 +25,8 @@ const Bar: React.FC<BarProps> = (props) => {
   function handleTimeDrag(e: React.MouseEvent) {
     onTimeUpdate(calcClickedTime(e));
 
-    const updateTimeOnMove = (eMove: any) => {
-      onTimeUpdate(calcClickedTime(eMove));
+    const updateTimeOnMove = () => {
+      onTimeUpdate(calcClickedTime(e));
     };
 
     document.addEventListener("mousemove", updateTimeOnMove);
@@ -44,17 +39,17 @@ const Bar: React.FC<BarProps> = (props) => {
   return (
     <div className="w-full flex items-center select-none">
       <div
-        className="h-14 flex-1 rounded-xl flex items-center cursor-pointer"
+        className="h-14 flex-1 rounded-xl flex items-center cursor-pointer bar__progress"
         style={{
           background: `linear-gradient(to right, #2a2d3c ${curPercentage}%, #1F212B 0)`,
         }}
-        onMouseDown={(e) => handleTimeDrag(e)}
+        onMouseDown={handleTimeDrag}
       >
         <span
-          className={clsx(
-            `relative w-[2px] bg-white h-[54px]`,
-            `left-[${curPercentage - 2}%]`
-          )}
+          className={clsx(`relative w-[2px] bg-white h-[54px]`)}
+          style={{
+            left: `${curPercentage}%`,
+          }}
         />
       </div>
     </div>

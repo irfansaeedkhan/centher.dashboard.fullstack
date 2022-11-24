@@ -20,6 +20,7 @@ const Notifications: NextPageWithLayout = () => {
 
   const {
     notifications,
+    notificationsBeforeSevendays,
     notificationToday,
     notificationYesterday,
     notificationSevenday,
@@ -30,6 +31,7 @@ const Notifications: NextPageWithLayout = () => {
     updateOffset,
   } = useNotificationsStore((state) => ({
     notifications: state.notifications,
+    notificationsBeforeSevendays: state.notificationsBeforeSevendays,
     notificationToday: state.notificationToday,
     notificationYesterday: state.notificationYesterday,
     notificationSevenday: state.notificationSevenday,
@@ -44,6 +46,7 @@ const Notifications: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (lastNotiEntry?.isIntersecting) {
+      console.log("intersecting");
       updateOffset();
     }
   }, [lastNotiEntry, updateOffset]);
@@ -72,6 +75,20 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Earlier</div>
 
             {notificationToday.map((notification, index) => {
+              if (
+                notification._id === notifications[notifications.length - 1]._id
+              ) {
+                return (
+                  <SingleNotification
+                    ref={lastNotiRef}
+                    length={notificationToday.length}
+                    notification={notification}
+                    key={notification._id}
+                    index={index}
+                    days="today"
+                  />
+                );
+              }
               return (
                 <SingleNotification
                   length={notificationToday.length}
@@ -92,6 +109,20 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Yesterday</div>
 
             {notificationYesterday.map((notification, index) => {
+              if (
+                notification._id === notifications[notifications.length - 1]._id
+              ) {
+                return (
+                  <SingleNotification
+                    ref={lastNotiRef}
+                    notification={notification}
+                    key={notification._id}
+                    length={notificationYesterday.length}
+                    index={index}
+                    days="yesterday"
+                  />
+                );
+              }
               return (
                 <SingleNotification
                   length={notificationYesterday.length}
@@ -112,6 +143,20 @@ const Notifications: NextPageWithLayout = () => {
             <div className={sectionName}>Last 7 Days</div>
 
             {notificationSevenday.map((notification, index) => {
+              if (
+                notification._id === notifications[notifications.length - 1]._id
+              ) {
+                return (
+                  <SingleNotification
+                    ref={lastNotiRef}
+                    notification={notification}
+                    key={notification._id}
+                    length={notificationSevenday.length}
+                    index={index}
+                    days="sevenday"
+                  />
+                );
+              }
               return (
                 <SingleNotification
                   length={notificationSevenday.length}
@@ -127,11 +172,11 @@ const Notifications: NextPageWithLayout = () => {
 
         {/* Remaining */}
 
-        {notifications.length > 0 && (
+        {notificationsBeforeSevendays.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Older</div>
             <div className="flex flex-col">
-              {notifications.map((notification, index) => {
+              {notificationsBeforeSevendays.map((notification, index) => {
                 if (
                   notification._id ===
                   notifications[notifications.length - 1]._id
@@ -141,7 +186,7 @@ const Notifications: NextPageWithLayout = () => {
                       ref={lastNotiRef}
                       notification={notification}
                       key={notification._id}
-                      length={notifications.length}
+                      length={notificationsBeforeSevendays.length}
                       index={index}
                       days="befor_seven"
                     />
@@ -151,7 +196,7 @@ const Notifications: NextPageWithLayout = () => {
                   <SingleNotification
                     notification={notification}
                     key={notification._id}
-                    length={notifications.length}
+                    length={notificationsBeforeSevendays.length}
                     index={index}
                     days="befor_seven"
                   />
@@ -160,14 +205,17 @@ const Notifications: NextPageWithLayout = () => {
             </div>
           </div>
         )}
+
         {(loading === "loading" || loading === "idle") && (
           <SingleNotificationSkeleton />
         )}
+
         {loading === "loaded" &&
           notifications.length === 0 &&
           notificationToday.length === 0 &&
           notificationSevenday.length === 0 &&
-          notificationYesterday.length === 0 && (
+          notificationYesterday.length === 0 &&
+          notificationsBeforeSevendays.length === 0 && (
             <div>
               <div className="flex justify-center mt-[60px]">
                 <NotificationBell />

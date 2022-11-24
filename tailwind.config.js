@@ -60,6 +60,9 @@ module.exports = {
         "buydao-pattern": "url('/images/buyntrdaoBackground.png')",
       },
       colors: {
+        app: {
+          "post-text": "#e7e8ee",
+        },
         brand: {
           primary: "#FEBF32",
           "primary-dark": "#DA9C24",
@@ -81,7 +84,7 @@ module.exports = {
           7: "#888DAA",
           8: "#4C516B",
           9: "#1E1F28",
-          10: "#666C8F",
+          10: "#666c8f",
           11: "#44485F",
           12: "#3B3F54",
           13: "#C4C4C4",
@@ -110,6 +113,12 @@ module.exports = {
           10: "#1C1C21",
           11: "#18181C",
           12: "#0D0D0D",
+        },
+        elevation: {
+          1: "#1B1C22",
+        },
+        popup: {
+          0: "#0B0B0B",
         },
       },
     },

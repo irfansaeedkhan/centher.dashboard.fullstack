@@ -23,7 +23,7 @@ import {
 } from "@/web3/utils/call.helpers";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import toast from "react-hot-toast";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -310,7 +310,9 @@ export const FixedPriceNFTDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
+        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+          {data?.description}
+        </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
         <Button

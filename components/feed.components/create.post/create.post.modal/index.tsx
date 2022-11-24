@@ -8,9 +8,11 @@ import useUser from "@/hooks/use.user";
 import { PostModalContainer } from "./post.modal.container";
 import { FilesPreview } from "./files.preview";
 
-interface Props {}
+interface Props {
+  modalTitle: string;
+}
 
-export const CreatePostModal: React.FC<Props> = () => {
+export const CreatePostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const {
     selectedFiles,
@@ -29,7 +31,7 @@ export const CreatePostModal: React.FC<Props> = () => {
     <PostModalContainer
       isOpen={isModalOpen}
       onClickClose={closeModal}
-      title={"Create Post"}
+      title={modalTitle}
     >
       <div
         className={`flex flex-col gap-4 w-full px-3 fsm:px-6 py-4 border-b-2 border-gray-shade-3 border-opacity-40`}

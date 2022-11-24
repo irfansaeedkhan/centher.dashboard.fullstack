@@ -43,8 +43,12 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
     try {
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
-      // Open modal
-      openModal();
+      // Open modal only if placement is create-post-card
+      if (placement === "create-post-card") {
+        openModal({
+          modalType: "new-post",
+        });
+      }
     } catch (err: any) {
       customLog(err.message, ["development", "staging"]);
       if (err.code.startsWith("app_")) {
@@ -121,7 +125,10 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
         )}
         onClick={
           placement === "create-post-card"
-            ? openModal
+            ? () =>
+                openModal({
+                  modalType: "new-post",
+                })
             : () => {
                 setShowEmojiPicker((prev) => !prev);
               }

@@ -11,8 +11,12 @@ import {
 } from "@/utils/create.post";
 
 export interface NewPostStore {
+  modalType: ModalType;
+  postId: string | null;
+  parentPostId: string | null;
+
   isModalOpen: boolean;
-  openModal: () => void;
+  openModal: (options: OpenModalOptions) => void;
   closeModal: () => void;
 
   isPostCreateLoading: boolean;
@@ -27,22 +31,29 @@ export interface NewPostStore {
   postText: string;
   setPostText: (text: string) => void;
 
-  createPost: () => void;
+  createPost: () => Promise<void>;
 }
 
 export const useNewPostStore = create<NewPostStore>()(
   devtools(
     (set, get) => ({
+      modalType: null,
+      postId: null,
+      parentPostId: null,
+
       isModalOpen: false,
-      openModal: () => {
+      openModal: (options) => {
         // Hide scroll bar
         document.body.style.overflow = "hidden";
-        set({ isModalOpen: true });
+        set({ isModalOpen: true, ...options });
       },
       closeModal: () => {
         // Show scroll bar
         document.body.style.overflow = "auto";
         set({
+          modalType: null,
+          parentPostId: null,
+          postId: null,
           isModalOpen: false,
           selectedFiles: [],
           isPostCreateLoading: false,
@@ -69,9 +80,9 @@ export const useNewPostStore = create<NewPostStore>()(
       postText: "",
       setPostText: (text: string) => set({ postText: text }),
 
-      createPost: async (): Promise<any> => {
+      createPost: async () => {
         try {
-          const { postText, selectedFiles } = get();
+          const { postText, selectedFiles, parentPostId } = get();
 
           if (postText.trim() === "" && selectedFiles.length < 1) {
             toast.error("Please add some text or a photo/video");
@@ -92,13 +103,9 @@ export const useNewPostStore = create<NewPostStore>()(
             {
               post_files_detail: filesChunksData,
               post_text: postText,
-              // reply_post_id: reply_post_id,
+              reply_post_id: parentPostId,
             }
           );
-
-          // if (reply && data.message_description == "Post created successfully") {
-          //   setTotalReplyCount((prev) => Number(prev) + 1);
-          // }
 
           // If no file media that means only text was available in post
           if (filesChunksData.length === 0) {
@@ -123,3 +130,26 @@ export interface FileWithID {
   original: File;
   id: string;
 }
+
+type ModalType = null | "new-post" | "reply" | "edit";
+
+interface OpenModalOptionsBase {}
+
+interface OpenModalOptionsCreate extends OpenModalOptionsBase {
+  modalType: "new-post";
+}
+
+interface OpenModalOptionsReply extends OpenModalOptionsBase {
+  modalType: "reply";
+  parentPostId: string;
+}
+
+interface OpenModalOptionsEdit extends OpenModalOptionsBase {
+  modalType: "edit";
+  postId: string;
+}
+
+type OpenModalOptions =
+  | OpenModalOptionsCreate
+  | OpenModalOptionsReply
+  | OpenModalOptionsEdit;

@@ -40,6 +40,14 @@ export { default as NftsCollectionEmpty } from "./nfts.collection.empty.svg";
 export { default as Rocket } from "./rocket.svg";
 export { default as RocketShadow } from "./rocket.shadow.svg";
 export { default as CreateNFT } from "./create.nft.svg";
+export { default as Archived } from "./archived.svg";
+export { default as MoreIcon } from "./more.icon.svg";
+export { default as Restore } from "./restore.svg";
+export { default as Trash } from "./trash.svg";
+export { default as FollowerIcon } from "./follower.icon.svg";
+export { default as LinkIcon } from "./link.svg";
+export { default as WorldIcon } from "./world.svg";
+export { default as shareIcon } from "./shareIcon.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (
@@ -788,25 +796,41 @@ export const NotificationIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
       className={props.className}
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M15.002 36.6665H25.002"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M16.4111 11.1477V8.51807C16.4111 5.03258 13.5856 2.20703 10.1001 2.20703V2.20703C6.61461 2.20703 3.78906 5.03258 3.78906 8.51807V11.1477"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
       />
       <path
-        d="M9.13928 17.0001C9.1371 15.4194 9.44059 13.8539 10.0323 12.3937C10.6239 10.9336 11.4921 9.60761 12.5868 8.49221C13.6814 7.37682 14.9809 6.49405 16.4104 5.89473C17.84 5.29541 19.3712 4.99139 20.9161 5.00019C27.3664 5.05019 32.53 10.5335 32.53 17.1501V18.3334C32.53 24.3001 33.7516 27.7667 34.8267 29.6667C34.9409 29.869 35.0011 30.0985 35.0013 30.3322C35.0015 30.5658 34.9417 30.7954 34.8279 30.998C34.714 31.2005 34.5502 31.3689 34.3527 31.4863C34.1553 31.6036 33.9311 31.6658 33.7028 31.6667H7.96648C7.73813 31.6658 7.514 31.6036 7.31654 31.4863C7.11908 31.3689 6.95523 31.2005 6.8414 30.998C6.72758 30.7954 6.66777 30.5658 6.66797 30.3322C6.66817 30.0985 6.72838 29.869 6.84256 29.6667C7.91762 27.7667 9.13928 24.3001 9.13928 18.3334V17.0001Z"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        d="M11.1484 15.3558H16.7105C17.1784 15.3558 17.6154 15.1219 17.8749 14.7326V14.7326C18.245 14.1776 18.1708 13.4397 17.7197 12.9483C17.1232 12.2986 16.4076 11.4552 16.4076 11.1484"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M3.78556 11.1484C3.78556 11.4552 3.06999 12.2986 2.47352 12.9483C2.0224 13.4397 1.94824 14.1776 2.31828 14.7326V14.7326C2.57782 15.1219 3.01478 15.3558 3.48268 15.3558H9.04476H11.1484"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
+      />
+      <path
+        d="M6.94141 17.9844H13.2524"
+        stroke="#888DAA"
+        stroke-width="1.52793"
+        stroke-linecap="round"
+      />
+      <path
+        d="M6.94141 17.9844H13.2524"
+        stroke="#888DAA"
+        stroke-width="1.6"
+        stroke-linecap="round"
       />
     </svg>
   );
@@ -1191,81 +1215,6 @@ export const SuccessIcon: React.FC<IconProps> = (props) => {
   );
 };
 
-export const LinkIcon: React.FC<IconProps> = (props) => {
-  return (
-    <svg
-      className={props.className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M15.9641 6.03599C16.6271 5.37295 17.5264 5.00046 18.4641 5.00046C19.4018 5.00046 20.3011 5.37295 20.9641 6.03599C21.6271 6.69903 21.9996 7.59831 21.9996 8.53599C21.9996 9.47367 21.6271 10.373 20.9641 11.036L15.0851 16.915C14.4221 17.578 13.5228 17.9505 12.5851 17.9505C11.6474 17.9505 10.7481 17.578 10.0851 16.915C9.42205 16.252 9.04956 15.3527 9.04956 14.415C9.04956 13.4773 9.42205 12.578 10.0851 11.915L10.9641 11.036"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.03602 18.964C7.70772 19.2923 7.31796 19.5527 6.88901 19.7304C6.46006 19.9081 6.00031 19.9995 5.53602 19.9995C5.07173 19.9995 4.61198 19.9081 4.18303 19.7304C3.75408 19.5527 3.36433 19.2923 3.03602 18.964C2.37298 18.301 2.00049 17.4017 2.00049 16.464C2.00049 15.5263 2.37298 14.627 3.03602 13.964L8.91502 8.085C9.57806 7.42196 10.4773 7.04947 11.415 7.04947C12.3527 7.04947 13.252 7.42196 13.915 8.085C14.5781 8.74804 14.9506 9.64732 14.9506 10.585C14.9506 11.5227 14.5781 12.422 13.915 13.085L13 14"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
-export const WorldIcon: React.FC<IconProps> = (props) => {
-  return (
-    <svg
-      className={props.className}
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M8.0001 3H9.0001C7.0501 8.84 7.0501 15.16 9.0001 21H8.0001"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M15 3C16.95 8.84 16.95 15.16 15 21"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 16V15C8.84 16.95 15.16 16.95 21 15V16"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 9.00001C8.84 7.05001 15.16 7.05001 21 9.00001"
-        stroke="white"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-};
 export const ArrowRightIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
@@ -2189,6 +2138,135 @@ export const Circle: React.FC<IconProps> = ({ className }) => {
           <circle cx="201.03" cy="201.03" r="200.53" />
         </g>
       </g>
+    </svg>
+  );
+};
+export const DefaultCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="#1B1C22"
+        strokeWidth="3"
+        className="Animatecircle"
+      />
+    </svg>
+  );
+};
+export const RainbowCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9184_100150)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9184_100150"
+          x1="19.5"
+          y1="-4"
+          x2="87.8076"
+          y2="113.403"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#FE070B" />
+          <stop offset="0.440127" stopColor="#06FDFD" />
+          <stop offset="1" stopColor="#E2BD3A" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+export const SilverCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9186_100152)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9186_100152"
+          x1="13"
+          y1="-7"
+          x2="81.5"
+          y2="120"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#AAAAAA" />
+          <stop offset="1" stopColor="#CBCFD8" />
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+};
+export const GoldCircle: React.FC<IconProps> = ({ className }) => {
+  return (
+    <svg
+      className={className}
+      width="114"
+      height="114"
+      viewBox="0 0 114 114"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect
+        x="1"
+        y="1"
+        width="112"
+        height="112"
+        rx="56"
+        stroke="url(#paint0_linear_9186_100156)"
+        strokeWidth="2"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_9186_100156"
+          x1="57"
+          y1="0.999999"
+          x2="94"
+          y2="113"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#E6B333" />
+          <stop offset="1" stopColor="#DFB77B" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 };

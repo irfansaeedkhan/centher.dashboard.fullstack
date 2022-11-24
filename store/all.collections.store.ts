@@ -1,0 +1,103 @@
+// React, Next, NPM Packages
+import create from "zustand";
+import { devtools } from "zustand/middleware";
+import axios from "axios";
+
+// App imports
+import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+import {
+  collectionsByCategoryQuery,
+  collectionsQuery,
+} from "@/subgraph/querys";
+import { LoadingState } from "@/models/common";
+import { Category, Collection } from "@/models/nft";
+
+export interface AllCollectionsStore {
+  collections: Collection[];
+  fetchCollections: (
+    offset?: number,
+    limit?: number,
+    category?: string
+  ) => Promise<void>;
+  category: Category;
+  offset: number;
+  updateOffset: () => void;
+  updateCategory: (category: Category) => void;
+  limit: number;
+  loading: LoadingState;
+}
+
+export const useAllCollectionsStore = create<AllCollectionsStore>()(
+  devtools(
+    (set) => ({
+      collections: [],
+      category: "all",
+      offset: 0,
+      limit: 10,
+      loading: "idle",
+      updateOffset: () =>
+        set((state) => ({
+          offset: state.collections.length,
+        })),
+
+      updateCategory: async (category) =>
+        set((state) => ({
+          category: category,
+          offset: 0,
+          collections: [],
+        })),
+
+      fetchCollections: async (offset, limit, category) => {
+        try {
+          set({ loading: "loading" });
+
+          const client = new ApolloClient({
+            uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
+            cache: new InMemoryCache(),
+          });
+
+          let _collections: Collection[] = [];
+          if (category?.toLowerCase() === "all") {
+            const { data: result, error } = await client.query({
+              query: gql(collectionsQuery),
+              variables: {
+                first: limit,
+                skip: offset,
+              },
+              fetchPolicy: "cache-first",
+            });
+
+            if (result && !error) {
+              _collections = result.collections;
+            }
+          } else {
+            const { data: result, error } = await client.query({
+              query: gql(collectionsByCategoryQuery),
+              variables: {
+                first: limit,
+                skip: offset,
+                category: category?.toLowerCase(),
+              },
+              fetchPolicy: "cache-first",
+            });
+
+            if (result && !error) {
+              _collections = result.collections;
+            }
+          }
+
+          set((state) => {
+            return {
+              collections: _collections,
+              loading: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loading: "failed" });
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+    }),
+    { name: "ExploreStore" }
+  )
+);

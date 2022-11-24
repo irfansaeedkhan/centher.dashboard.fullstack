@@ -3,10 +3,14 @@ import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import moment from "moment";
 import clsx from "clsx";
-import toast from "react-hot-toast";
 
+import { useFeedStore } from "@/store/feed.store";
+import { useSinglePostStore } from "@/store/single.post.store";
+import { useMyPostStore } from "@/store/my.post.store";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 import { CompletedPost } from "@/models/post";
 import { ArchiveIcon, DotsIcon, EditIcon, TrashIcon } from "@/assets/svgs";
+import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { useCurrentPageRoute } from "./use.current.page.route";
@@ -15,19 +19,21 @@ import { archivePost } from "./post.helpers";
 interface Post3DotsMenuProps {
   post: CompletedPost;
   onClickDelete?: () => void;
-  onArchive?: (postId: string) => void;
   onClickEdit?: () => void;
 }
 
 const Post3DotsMenu: React.FC<Post3DotsMenuProps> = ({
   post,
   onClickDelete = () => {},
-  onArchive = () => {},
   onClickEdit = () => {},
 }) => {
   const router = useRouter();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const currentPageRoute = useCurrentPageRoute();
+  const { removePost: removePostFeed } = useFeedStore();
+  const { removeReply: removeReplySinglePost } = useSinglePostStore();
+  const { removePost: removePostMyPost } = useMyPostStore();
+  const { removePost: removePostMyReplies } = useMyRepliesStore();
 
   const menuRef = React.useRef<HTMLDivElement>(null);
   useOnClickOutside(menuRef, () => setIsMenuVisible(false));
@@ -37,20 +43,27 @@ const Post3DotsMenu: React.FC<Post3DotsMenuProps> = ({
     setIsMenuVisible((prev) => !prev);
   };
 
-  const handleArchivePost = async (postId: string) => {
+  const handleArchivePost = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    postId: string
+  ) => {
+    const button = e.target as HTMLButtonElement;
+    button.disabled = true;
     try {
       await archivePost(postId);
+
+      removePostFeed(postId);
+      removePostMyPost(postId);
+      removePostMyReplies(postId);
+      removeReplySinglePost(postId);
 
       if (currentPageRoute.isSinglePostPage) {
         router.replace(AppRoutes.feed.index);
         return;
       }
-
-      onArchive(postId);
     } catch (error: any) {
-      toast.error(
-        error.response?.data?.message_description || "Something went wrong"
-      );
+      button.disabled = false;
+      customLog(error, ["development"]);
     }
   };
 
@@ -73,8 +86,8 @@ const Post3DotsMenu: React.FC<Post3DotsMenuProps> = ({
         {timeNow >= timeAfter15Minutes ? (
           <button
             className={menuButton}
-            onClick={() => {
-              handleArchivePost(post._id);
+            onClick={(e) => {
+              handleArchivePost(e, post._id);
             }}
           >
             <ArchiveIcon className={icon} /> Archive
@@ -86,8 +99,8 @@ const Post3DotsMenu: React.FC<Post3DotsMenuProps> = ({
             </button>
             <button
               className={menuButton}
-              onClick={() => {
-                handleArchivePost(post._id);
+              onClick={(e) => {
+                handleArchivePost(e, post._id);
               }}
             >
               <ArchiveIcon className={icon} /> Archive

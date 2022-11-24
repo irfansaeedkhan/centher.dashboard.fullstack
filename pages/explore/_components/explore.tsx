@@ -5,24 +5,32 @@ import { useInView } from "react-intersection-observer";
 
 // App imports
 import NFTCard from "@/components/nft.card";
-import { NFT } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { LoadingState } from "@/models/common";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import CategoryDropdown from "./category.dropdown";
 import SortByDropdown from "./sortby.dropdown";
+import { Category, NFT, SortBy } from "@/models/nft";
 
 // Current directory imports
 
 interface ExploreProps {
   allNFTs: NFT[];
-  loadingAllNFTs: LoadingState;
+  loading: LoadingState;
+  category: Category;
+  sortBy: SortBy;
+  setCategory: (value: Category) => void;
+  setSortBy: (value: SortBy) => void;
 }
 
 export const Explore: React.FC<ExploreProps> = ({
   allNFTs,
-  loadingAllNFTs,
+  loading,
+  category,
+  sortBy,
+  setCategory,
+  setSortBy,
 }) => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
@@ -41,7 +49,7 @@ export const Explore: React.FC<ExploreProps> = ({
               onClick={() => setCategoryOpen((prev) => !prev)}
             >
               <span className="text-gray-shade-7 text-sm font-semibold">
-                Category
+                {category}
               </span>{" "}
               {categoryOpen ? (
                 <HiChevronUp className="text-2xl" />
@@ -52,6 +60,7 @@ export const Explore: React.FC<ExploreProps> = ({
             <CategoryDropdown
               isOpen={categoryOpen}
               onClose={() => setCategoryOpen(false)}
+              onChange={(value: any) => setCategory(value)}
               openerRef={categoryDropdownOpenerRef}
             />
           </div>
@@ -62,7 +71,7 @@ export const Explore: React.FC<ExploreProps> = ({
               onClick={() => setSortByOpen((prev) => !prev)}
             >
               <span className="text-gray-shade-7 text-sm font-semibold">
-                Sort by
+                {sortBy}
               </span>{" "}
               {sortByOpen ? (
                 <HiChevronUp className="text-2xl" />
@@ -73,6 +82,7 @@ export const Explore: React.FC<ExploreProps> = ({
             <SortByDropdown
               isOpen={sortByOpen}
               onClose={() => setSortByOpen(false)}
+              onChange={(value: any) => setSortBy(value)}
               openerRef={categoryDropdownOpenerRef}
             />
           </div>
@@ -87,13 +97,9 @@ export const Explore: React.FC<ExploreProps> = ({
         </div>
       )}
 
-      {(loadingAllNFTs === "loading" || loadingAllNFTs === "idle") && (
+      {(loading === "loading" || loading === "idle") && (
         <div className="flex flex-wrap gap-10 items-center">
-          {/* we are showing 12 skeletons while reloading the page to users */}
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
+          {/* we are showing 8 skeletons while reloading the page to users */}
           <NftsSkeleton />
           <NftsSkeleton />
           <NftsSkeleton />
@@ -105,7 +111,7 @@ export const Explore: React.FC<ExploreProps> = ({
         </div>
       )}
 
-      {loadingAllNFTs !== "loaded" && (
+      {loading === "loaded" && allNFTs.length === 0 && (
         <>
           <div className="flex justify-center items-center text-white">
             <HotNftEmptyIcon />

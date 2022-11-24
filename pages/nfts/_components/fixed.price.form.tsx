@@ -4,18 +4,14 @@ import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
-import { toast } from "react-hot-toast";
-import Image from "next/image";
 
 // App imports
-import { Collection } from "@/store/explore.store";
 import Button from "@/components/button";
-import { QuestionIcon } from "@/assets/svgs";
-import { axiosNodeApi } from "@/utils/axios";
-import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { AddIcon, CrossFullIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { CreateNFTFormProps } from "./create.nft.form";
 import { formatAddress } from "@/utils/format.address";
+import { IMyCollection } from "@/hooks/use.get.my.collections";
+import { categories } from "@/models/nft";
 
 // form validations
 const schema = Joi.object({
@@ -27,10 +23,19 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  NFTAmount: Joi.number().required().label("NFT Amount").messages({
-    "string.empty": `NFTAmount Required`,
+  Category: Joi.string().required().max(150).label("category").messages({
+    "string.empty": `category Required`,
     "any.required": `Required Field`,
   }),
+  NFTAmount: Joi.number()
+    .integer()
+    .greater(0)
+    .required()
+    .label("NFT Amount")
+    .messages({
+      "string.empty": `NFTAmount Required`,
+      "any.required": `Required Field`,
+    }),
   NFTPrice: Joi.number().required().label("NFT Price").messages({
     "string.empty": `NFTPrice Required`,
     "any.required": `Required Field`,
@@ -42,11 +47,12 @@ const schema = Joi.object({
 });
 interface FixedPriceFormProps {
   createNFT: any;
-  collections: Collection[];
+  collections: IMyCollection[];
   clearForm: boolean;
 }
 interface FormFields {
   NFTName: String;
+  Category: String;
   Description: String;
   NFTAmount: number | null;
   NFTPrice: number | null;
@@ -71,6 +77,7 @@ const FixedPriceForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
+        Category: "",
         NFTAmount: null,
         NFTPrice: null,
         Collection: "",
@@ -113,6 +120,7 @@ const FixedPriceForm = ({
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
+      category: data.Category,
       supply: data.NFTAmount,
       collection: data.Collection,
       isAuction: false,
@@ -126,6 +134,7 @@ const FixedPriceForm = ({
     if (clearForm) {
       reset({
         NFTName: "",
+        Category: "",
         Description: "",
         NFTAmount: null,
         NFTPrice: null,
@@ -168,6 +177,29 @@ const FixedPriceForm = ({
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.Description.message}
+          </p>
+        )}
+      </div>
+      <div className={fieldWrapper}>
+        <label htmlFor="textarea" className={fieldTitle}>
+          Category
+        </label>
+        <select
+          id="Category"
+          {...register("Category")}
+          className={!formState.errors.Category ? inputField : inputFieldError}
+        >
+          {categories.slice(1, categories.length).map((item, key) => {
+            return (
+              <option value={item === "Select" ? "" : item} key={key}>
+                {item}
+              </option>
+            );
+          })}
+        </select>
+        {formState.errors.Category && (
+          <p className={`text-red-500 ${errMessage}`}>
+            {formState.errors.Category.message}
           </p>
         )}
       </div>
@@ -236,7 +268,7 @@ const FixedPriceForm = ({
           <option value="">Select</option>
           {collections.map((collection) => {
             return (
-              <option value={collection.id} key={collection.id}>
+              <option value={collection.collection} key={collection.id}>
                 {`${collection.name}  (${formatAddress(
                   collection.collection
                 )})`}
@@ -353,10 +385,10 @@ const fieldTitle = ctl(`
   text-14px  font-normal text-white
 `);
 const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3   text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
 const inputFieldModal = ctl(`
-  w-full py-3 px-5  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-2  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
 const inputFieldError = ctl(`
   ${inputField}

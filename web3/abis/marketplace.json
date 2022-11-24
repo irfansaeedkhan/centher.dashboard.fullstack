@@ -331,6 +331,12 @@
       },
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "_category",
+        "type": "string"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "_maxSupply",
         "type": "uint256"
@@ -359,6 +365,12 @@
         "internalType": "address",
         "name": "_collection",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_category",
+        "type": "string"
       },
       {
         "indexed": true,
@@ -731,6 +743,7 @@
     "inputs": [
       { "internalType": "string", "name": "name", "type": "string" },
       { "internalType": "string", "name": "symbol", "type": "string" },
+      { "internalType": "string", "name": "category", "type": "string" },
       { "internalType": "string", "name": "uri", "type": "string" },
       { "internalType": "uint256", "name": "maxSupply", "type": "uint256" }
     ],
@@ -763,6 +776,7 @@
   {
     "inputs": [
       { "internalType": "address", "name": "collection", "type": "address" },
+      { "internalType": "string", "name": "category", "type": "string" },
       { "internalType": "string", "name": "tokenURI", "type": "string" },
       { "internalType": "uint32", "name": "supply", "type": "uint32" },
       { "internalType": "bool", "name": "isAuction", "type": "bool" },

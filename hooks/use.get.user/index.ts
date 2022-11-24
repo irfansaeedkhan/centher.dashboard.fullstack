@@ -18,7 +18,6 @@ const useGetUser = (account_address?: string) => {
           const { data } = await axiosNodeApi.get(
             `/api/users/${account_address}`
           );
-          console.log("data", data);
           setUser(data.user as User);
           setLoading("loaded");
         } catch (error) {

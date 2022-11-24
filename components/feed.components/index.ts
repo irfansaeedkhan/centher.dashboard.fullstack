@@ -8,3 +8,4 @@ export { PostCardNew } from "./post.card.new";
 export { CardsContainerLeft } from "./cards.container.left";
 export { CardsContainerRight } from "./cards.container.right";
 export { FeedPagesWrapper } from "./feed.pages.wrapper";
+export * from "./single.post.v2";

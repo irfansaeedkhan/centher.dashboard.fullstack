@@ -9,6 +9,7 @@ import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import UserWithFollow from "@/components/user.with.follow";
 
 import { ProfilePageWrapper } from "../_components";
+import { FollowerIcon } from "@/assets/svgs";
 
 const Followers: NextPageWithLayout = () => {
   const router = useRouter();
@@ -74,7 +75,10 @@ const Followers: NextPageWithLayout = () => {
 
       {followersLoading === "loaded" && followers.length === 0 && (
         <div>
-          <div className="flex justify-center font-semibold text-white mt-[48px]">
+          <div className="flex justify-center mt-[48px]">
+            <FollowerIcon />
+          </div>
+          <div className="flex justify-center text-white font-semibold text-xs mt-6">
             <p>No followers yet!</p>
           </div>
         </div>

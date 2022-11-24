@@ -1,15 +1,13 @@
 // React, Next, NPM Packages
 import React, { useEffect } from "react";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 // App imports
 import NFTCard from "@/components/nft.card";
-import { NFT, useExploreStore } from "@/store/explore.store";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
-import Link from "next/link";
-
-const MAX_HOT_NFTS = 10;
+import { useExploreStore } from "@/store/explore.store";
 
 export const HotNFTs: React.FC = () => {
   const { hotNFTs, fetchHotNFTs, loadingHotNFTs } = useExploreStore(
@@ -21,12 +19,12 @@ export const HotNFTs: React.FC = () => {
   );
 
   useEffect(() => {
-    fetchHotNFTs(0, MAX_HOT_NFTS);
+    fetchHotNFTs();
   }, [fetchHotNFTs]);
 
   return (
     <div className={hotNftPageWrapper}>
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center max-w-[1300px]">
         <div className={hotNftAnimation}>Hot NFTs</div>
         <Link
           href={"/explore/nfts"}
@@ -44,12 +42,8 @@ export const HotNFTs: React.FC = () => {
         </div>
       )}
       {(loadingHotNFTs === "loading" || loadingHotNFTs === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
-          {/* we are showing 12 skeletons while reloading the page to users */}
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
+        <div className="flex flex-wrap gap-5 items-center">
+          {/* we are showing 8 skeletons while reloading the page to users */}
           <NftsSkeleton />
           <NftsSkeleton />
           <NftsSkeleton />

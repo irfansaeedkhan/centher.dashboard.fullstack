@@ -1,17 +1,26 @@
 import create from "zustand";
 import { devtools } from "zustand/middleware";
 
+import { likePost } from "@/components/feed.components";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 
 export interface FeedStore {
   posts: CompletedPost[];
   fetchPosts: () => Promise<void>;
 
   addNewPost: (post: CompletedPost) => void;
-  deletePost: (postId: string) => void;
+  removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
+  decrementPostRepliesCount: (postId: string | undefined) => void;
+
+  likePostAPI: (postId: string, actionType: "like" | "unlike") => Promise<void>;
+  updatePostLikesCount: (
+    actionType: "increment" | "decrement",
+    postId?: string
+  ) => void;
 
   offset: number;
   updateOffset: () => void;
@@ -67,7 +76,7 @@ export const useFeedStore = create<FeedStore>()(
         }));
       },
 
-      deletePost: (postId) => {
+      removePost: (postId) => {
         set((state) => ({
           posts: state.posts.filter((post) => post._id !== postId),
         }));
@@ -82,6 +91,59 @@ export const useFeedStore = create<FeedStore>()(
               return {
                 ...post,
                 replies_count: post.replies_count + 1,
+              };
+            }
+            return post;
+          }),
+        }));
+      },
+
+      decrementPostRepliesCount: (postId) => {
+        if (!postId) return;
+
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                replies_count: post.replies_count - 1,
+              };
+            }
+            return post;
+          }),
+        }));
+      },
+
+      likePostAPI: async (postId, actionType) => {
+        try {
+          get().updatePostLikesCount(
+            actionType === "like" ? "increment" : "decrement",
+            postId
+          );
+
+          await likePost(postId, actionType);
+        } catch (error: any) {
+          get().updatePostLikesCount(
+            actionType === "like" ? "decrement" : "increment",
+            postId
+          );
+          customLog(error, ["development"]);
+        }
+      },
+
+      updatePostLikesCount: (actionType, postId) => {
+        if (!postId) return;
+
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                likes_count:
+                  actionType === "increment"
+                    ? post.likes_count + 1
+                    : post.likes_count - 1,
+                liked_by_loggedin_user: actionType === "increment",
               };
             }
             return post;

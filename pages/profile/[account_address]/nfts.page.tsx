@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { NFT } from "@/store/explore.store";
+import { NFT } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import NFTCard from "@/components/nft.card";
@@ -46,13 +46,6 @@ const NFTProfile: NextPageWithLayout = () => {
   const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
 
   useEffect(() => {
-    console.log(
-      "sniper: loadingOwnedNFTs, loadingListedNFTs, listedNFTs, ownedNFTs",
-      loadingOwnedNFTs,
-      loadingListedNFTs,
-      listedNFTs,
-      ownedNFTs
-    );
     if (loadingListedNFTs === "loaded" && loadingOwnedNFTs === "loaded") {
       setDisplayNFTs([...listedNFTs, ...ownedNFTs]);
     }

@@ -5,7 +5,13 @@ import clsx from "clsx";
 
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
-import { Circle } from "@/assets/svgs";
+import {
+  Circle,
+  DefaultCircle,
+  GoldCircle,
+  RainbowCircle,
+  SilverCircle,
+} from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
@@ -22,11 +28,11 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 
   Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-verification icon variants
-Rainbow1  Rainbow2 RainbowLastFrame
-gold1 gold2 goldLastFrame
-silver1 silver2 silverLastFrame
-*/
+  verification icon variants
+  Rainbow1  Rainbow2 RainbowLastFrame
+  gold1 gold2 goldLastFrame
+  silver1 silver2 silverLastFrame
+  */
   const iconVerifyProps = useVerificationTick(user?.account_address);
 
   useEffect(() => {
@@ -121,7 +127,7 @@ silver1 silver2 silverLastFrame
     <div
       className={clsx(
         `w-11/12 sm:w-[272px] pt-12 rounded-10px overflow-hidden text-center bg-background-shade-3 relative`,
-        !!profileCardDetails.profile_views_count && `pb-4`
+        !!profileCardDetails.posts_views_count && `pb-4`
       )}
     >
       <Link
@@ -148,16 +154,34 @@ silver1 silver2 silverLastFrame
             sizes={"256px"}
           />
           {iconVerifyProps !== "no-icon" && (
-            <Circle
-              className={clsx(
-                `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`,
-                iconVerifyProps === "rainbow" &&
-                  "[&>*>*>*]: AnimatecircleRainbow",
-                iconVerifyProps === "silver" &&
-                  "[&>*>*>*]: AnimatecircleSilver",
-                iconVerifyProps === "gold" && "[&>*>*>*]: AnimatecircleGold"
+            <>
+              {iconVerifyProps === "rainbow" && (
+                <RainbowCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
               )}
-            />
+              {iconVerifyProps === "silver" && (
+                <SilverCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
+              )}
+              {iconVerifyProps === "gold" && (
+                <GoldCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                  )}
+                />
+              )}
+              <DefaultCircle
+                className={clsx(
+                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                )}
+              />
+            </>
           )}
           <div
             className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
@@ -215,7 +239,9 @@ silver1 silver2 silverLastFrame
           </Link>
         </div>
       </div>
-      {!!profileCardDetails.profile_views_count && (
+
+      {(profileCardDetails.profile_views_count === 0 ||
+        profileCardDetails.profile_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
           <h5 className={clsx(label)}>Your Profile viewed by</h5>
           <h6 className={clsx(countBrand)}>
@@ -223,12 +249,14 @@ silver1 silver2 silverLastFrame
           </h6>
         </div>
       )}
-      {!!profileCardDetails.posts_views_count && (
+
+      {(profileCardDetails.posts_views_count === 0 ||
+        profileCardDetails.posts_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
           <h5 className={clsx(label)}>Your Posts viewed by</h5>
           <h6 className={clsx(countBrand)}>
             {" "}
-            {profileCardDetails.posts_views_count ?? "--"}
+            {profileCardDetails.posts_views_count}
           </h6>
         </div>
       )}

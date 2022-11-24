@@ -1,32 +1,45 @@
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import { useFeedStore } from "@/store/feed.store";
+import { useProfileCardStore } from "@/store/profile.card.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { SinglePost, FeedPagesWrapper } from "@/components/feed.components";
+import { FeedPagesWrapper } from "@/components/feed.components";
+import {
+  SinglePostV2,
+  archivePost,
+  deletePost,
+} from "@/components/feed.components";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
+import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
+  const router = useRouter();
+
   const {
     posts,
     fetchPosts,
-    addNewPost,
-    deletePost,
+    removePost,
     offset,
     updateOffset,
+    likePostAPI,
     loading,
   } = useFeedStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
 
     addNewPost: state.addNewPost,
-    deletePost: state.deletePost,
+    removePost: state.removePost,
 
     offset: state.offset,
     updateOffset: state.updateOffset,
+
+    likePostAPI: state.likePostAPI,
 
     loading: state.loading,
   }));
@@ -49,6 +62,20 @@ const Feed: NextPageWithLayout = () => {
     fetchPosts();
   }, [fetchPosts]);
 
+  const handleAction = async (
+    postId: string,
+    actionFunction: (postId: string) => Promise<void>
+  ) => {
+    try {
+      await actionFunction(postId);
+      removePost(postId);
+      // Decrement post count on profile card
+      useProfileCardStore.getState().decrementPostsCount();
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       {((loading === "loaded" && posts.length === 0) || posts.length > 0) && (
@@ -58,15 +85,60 @@ const Feed: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <SinglePost
-              key={post._id}
-              ref={lastPostRef}
-              post={post}
-              onDelete={deletePost}
-            />
+            <div key={post._id} ref={lastPostRef}>
+              <SinglePostV2
+                post={post}
+                postType={"main"}
+                placement="feed-page"
+                shouldShowThread={post.replies_count > 0}
+                onClickLike={async () => {
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                }}
+                onClickReply={() => {
+                  router.push({
+                    pathname: AppRoutes.feed.single_post,
+                    query: {
+                      account_address: post.user.account_address,
+                      post_id: post._id,
+                    },
+                  });
+                }}
+                onClickArchive={() => handleAction(post._id, archivePost)}
+                onClickDelete={() => handleAction(post._id, deletePost)}
+              />
+            </div>
           );
         }
-        return <SinglePost key={post._id} post={post} onDelete={deletePost} />;
+
+        return (
+          <SinglePostV2
+            key={post._id}
+            post={post}
+            postType={"main"}
+            placement="feed-page"
+            shouldShowThread={post.replies_count > 0}
+            onClickLike={async () => {
+              await likePostAPI(
+                post._id,
+                post.liked_by_loggedin_user ? "unlike" : "like"
+              );
+            }}
+            onClickReply={() => {
+              router.push({
+                pathname: AppRoutes.feed.single_post,
+                query: {
+                  account_address: post.user.account_address,
+                  post_id: post._id,
+                },
+              });
+            }}
+            onClickArchive={() => handleAction(post._id, archivePost)}
+            onClickDelete={() => handleAction(post._id, deletePost)}
+          />
+        );
       })}
 
       {(loading === "loading" || loading === "idle") && (

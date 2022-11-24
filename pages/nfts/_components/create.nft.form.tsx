@@ -4,11 +4,13 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { useExploreStore } from "@/store/explore.store";
+import { useAllCollectionsStore } from "@/store/all.collections.store";
 
 // same directory Imports
 import FixedPriceForm from "./fixed.price.form";
 import AuctionForm from "./auction.form";
+import { useGetMyCollections } from "@/hooks/use.get.my.collections";
+import { useWeb3React } from "@web3-react/core";
 
 export interface CreateNFTFormProps {
   createNFT: any;
@@ -21,6 +23,7 @@ export interface IProperty {
 export interface INFTData {
   name: string;
   description: string;
+  category: string;
   supply: number;
   isAuction: boolean;
   price: number;
@@ -30,14 +33,8 @@ export interface INFTData {
 }
 export const CreateNFTForm = ({ createNFT, clearForm }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
-  const { collections, fetchCollections } = useExploreStore((state) => ({
-    collections: state.collections,
-    fetchCollections: state.fetchCollections,
-  }));
-
-  useEffect(() => {
-    fetchCollections(0, 1000);
-  }, [fetchCollections]);
+  const { account } = useWeb3React();
+  const collections = useGetMyCollections(account);
 
   return (
     <div className={CreateNFTFormContainer}>

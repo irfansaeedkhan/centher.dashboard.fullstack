@@ -19,12 +19,18 @@ import {
   LinkIcon,
   TwitterSvg,
 } from "@/assets/svgs";
+import { SiWhatsapp } from "react-icons/si";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useWeb3React } from "@web3-react/core";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { formatAddress } from "@/utils/format.address";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { AppRoutes } from "@/constants/app.routes";
+import useGetUser from "@/hooks/use.get.user";
+import Image from "next/image";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -37,16 +43,36 @@ export const NFTRightSideComponent = ({
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
+  const router = useRouter();
+  const { user } = useGetUser(data?.creator);
+  // const { user: creatorProfile } = useGetUser(router.query.account_address?.toString());
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
-  const nftOwner = useGetNFTOwner(data?.collection, data?.nftId, data?.owner);
+  const shareUrl = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}${router.asPath}`;
+    }
+    return "";
+  }, [router.asPath]);
 
+  // Copy nft share url to clipboard
+  const copyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
+
+  const nftOwnerAddress = useGetNFTOwner(
+    data?.collection,
+    data?.nftId,
+    data?.owner
+  );
+  const { user: nftOwner } = useGetUser(nftOwnerAddress);
   useEffect(() => {
     if (data) {
       if (
         account &&
-        account.toLocaleLowerCase() === nftOwner.toLocaleLowerCase()
+        account.toLocaleLowerCase() === nftOwnerAddress.toLocaleLowerCase()
       ) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
@@ -57,7 +83,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data, nftOwner]);
+  }, [account, data, nftOwnerAddress]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -68,145 +94,6 @@ export const NFTRightSideComponent = ({
     setTogglePop((prev) => !prev);
   };
 
-  let dummyData = [
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668417655",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "100000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668417655",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "100000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668417655",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "100000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668417655",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "100000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668387940",
-      seller: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-      price: "3000000000000000",
-      buyer: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668416740",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "50000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668301540",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "150000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668337540",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "155000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668251140",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "85000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668164740",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "15000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668175540",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "105000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668702055",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "125000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668042340",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "135000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1668089140",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "70000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1669245655",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "45000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1667743540",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "65000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-    {
-      __typename: "MarketplaceSaleHistory",
-      type: "BuyItem",
-      txTime: "1667657140",
-      seller: "0x891d324f205d919ebdf5b88124db9f491c3bc6b1",
-      price: "98000000000000000",
-      buyer: "0xcbe3a6b073d1460cc642fc686769a2eb6af32fa7",
-    },
-  ];
-
   return (
     <div className={rightSideContainer}>
       <div className={titleContainer}>
@@ -216,69 +103,110 @@ export const NFTRightSideComponent = ({
             <ShareBigIcon />
           </button>
           <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
-            <button className={toggleListBtn}>
-              <FacebookCircleIcon className={toggleListIcons} /> Share on
-              facebook
-            </button>
-            <button className={toggleListBtn}>
-              <TwitterSvg className={toggleListIcons} /> Share on twitter
-            </button>
-            <button className={toggleListBtn}>
+            <button onClick={copyShareUrl} className={toggleListBtn}>
               <LinkIcon className={toggleListIcons} /> Copy link
             </button>
+
+            <WhatsappShareButton url={shareUrl} className="w-full">
+              <button className={toggleListBtn}>
+                <SiWhatsapp className={toggleListIcons} /> Share on whatsapp
+              </button>
+            </WhatsappShareButton>
+
+            <TwitterShareButton url={shareUrl} className="w-full">
+              <button className={toggleListBtn}>
+                <TwitterSvg className={toggleListIcons} /> Share on twitter
+              </button>
+            </TwitterShareButton>
           </div>
         </div>
       </div>
 
       <div className={desNameContainer}>
         <div className={nameBox}>
-          <div className="linearCircle1"></div>
+          <div className="">
+            {user ? (
+              <Image
+                src={user?.profile_image.path}
+                width={48}
+                height={48}
+                alt="profile"
+                className="!w-12 !h-12 object-cover rounded-full"
+              />
+            ) : (
+              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
+            )}
+          </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: data?.creator,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {formatAddress(data?.creator)}
-            </Link>
+            {user ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: data?.creator,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {user?.display_name}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
         <div className={nameBox}>
-          <div className="linearCircle2"></div>
+          <div className="">
+            {nftOwner ? (
+              <Image
+                src={nftOwner?.profile_image.path}
+                width={48}
+                height={48}
+                alt="profile"
+                className="!w-12 !h-12 object-cover rounded-full"
+              />
+            ) : (
+              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
+            )}
+          </div>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: nftOwner,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {formatAddress(nftOwner)}
-            </Link>
+            {nftOwner ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: nftOwnerAddress,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {nftOwner?.display_name}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
         <div className={nameBox}>
           <div className="flex flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
-            <Link
-              href={{
-                pathname: AppRoutes.profile.nfts,
-                query: {
-                  account_address: data?.collection,
-                },
-              }}
-              className={nameBoxZValue}
-            >
-              {formatAddress(data?.collection)}
-            </Link>
+            {data?.collection ? (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.nfts,
+                  query: {
+                    account_address: data?.collection,
+                  },
+                }}
+                className={nameBoxZValue}
+              >
+                {formatAddress(data?.collection)}
+              </Link>
+            ) : (
+              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+            )}
           </div>
         </div>
       </div>
@@ -298,8 +226,7 @@ export const NFTRightSideComponent = ({
       )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
-      {/* <NFTHistory prices={data?.priceHistory} /> */}
-      <NFTHistory prices={dummyData} />
+      <NFTHistory prices={data?.priceHistory} />
     </div>
   );
 };
@@ -332,7 +259,7 @@ const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2
 `);
 const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
+text-14px font-semibold text-white hover:text-brand-primary-dark
 `);
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap

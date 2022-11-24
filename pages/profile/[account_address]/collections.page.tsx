@@ -1,14 +1,14 @@
 import { useEffect, useMemo } from "react";
+import { useRouter } from "next/router";
 
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CollectionCard } from "@/components/collection.card";
+import NftProfileCollectionSkeleton from "@/components/loading.skeletons/nft.profile.collection";
 import { NftsCollectionEmpty } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
-import { useRouter } from "next/router";
-import NftProfileCollectionSkeleton from "@/components/loading.skeletons/nft.profile.collection";
 
 const NFTProfileCollections: NextPageWithLayout = () => {
   const router = useRouter();

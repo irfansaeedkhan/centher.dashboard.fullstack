@@ -11,6 +11,9 @@ import {
   collectionQuery,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
+import { CollectionInfo, NFT } from "@/models/nft";
+
+export type Filter = "All" | "List" | "Auction";
 
 export interface CollectionStore {
   info: CollectionInfo | undefined;
@@ -21,11 +24,12 @@ export interface CollectionStore {
     saleState: string,
     orderDir: string,
     offset?: number,
-    limit?: number,
-    reload?: boolean
+    limit?: number
   ) => Promise<void>;
   offset: number;
   updateOffset: () => void;
+  filter: Filter;
+  updateFilter: (filter: Filter) => void;
   limit: number;
   loadingCollectionInfo: LoadingState;
   loadingNFTs: LoadingState;
@@ -42,12 +46,20 @@ export const useCollectionStore = create<CollectionStore>()(
       info: undefined,
       nfts: [],
       offset: 0,
+      filter: "All",
       limit: 20,
       loadingCollectionInfo: "idle",
       loadingNFTs: "idle",
       updateOffset: () =>
         set((state) => ({
           offset: state.nfts.length,
+        })),
+
+      updateFilter: (filter) =>
+        set((state) => ({
+          filter: filter,
+          offset: 0,
+          nfts: [],
         })),
 
       fetchCollectionInfo: async (collection) => {
@@ -87,14 +99,7 @@ export const useCollectionStore = create<CollectionStore>()(
         }
       },
 
-      fetchNFTs: async (
-        collection,
-        saleState,
-        orderDir,
-        offset,
-        limit,
-        reload
-      ) => {
+      fetchNFTs: async (collection, saleState, orderDir, offset, limit) => {
         try {
           set({ loadingNFTs: "loading" });
           const client = new ApolloClient({
@@ -165,17 +170,10 @@ export const useCollectionStore = create<CollectionStore>()(
               (stateNFTs) =>
                 !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
-            if (reload) {
-              return {
-                nfts: _nfts,
-                loadingNFTs: "loaded",
-              };
-            } else {
-              return {
-                nfts: [..._nfts, ...filteredNFTs],
-                loadingNFTs: "loaded",
-              };
-            }
+            return {
+              nfts: [..._nfts, ...filteredNFTs],
+              loadingNFTs: "loaded",
+            };
           });
         } catch (error) {
           set({ loadingNFTs: "failed" });
@@ -186,29 +184,3 @@ export const useCollectionStore = create<CollectionStore>()(
     { name: "ExploreStore" }
   )
 );
-
-export interface NFT {
-  id: string;
-  collection: string;
-  tokenId: number;
-  creator: string;
-  createTime: number;
-  ipfs: string;
-  saleState: string;
-  price: number;
-  owner: string;
-  endTime: number;
-}
-
-export interface CollectionInfo {
-  txTime: number;
-  tradingVolumn: number;
-  totalSupply: number;
-  symbol: string;
-  name: string;
-  maxSupply: number;
-  ipfs: string;
-  creator: string;
-  createHash: string;
-  collection: string;
-}

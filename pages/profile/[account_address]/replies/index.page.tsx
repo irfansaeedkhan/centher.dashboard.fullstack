@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 // App imports
-import { useRepliesStore } from "@/store/profile.replies.store";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -29,15 +29,15 @@ const Replies: NextPageWithLayout = () => {
     posts,
     resetPosts,
     fetchPosts,
-    deletePost,
+    removePost,
     offset,
     updateOffset,
     loading,
-  } = useRepliesStore((state) => ({
+  } = useMyRepliesStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
 
-    deletePost: state.deletePost,
+    removePost: state.removePost,
 
     offset: state.offset,
     updateOffset: state.updateOffset,
@@ -79,11 +79,11 @@ const Replies: NextPageWithLayout = () => {
               ref={lastPostRef}
               key={post._id}
               post={post}
-              onDelete={deletePost}
+              onDelete={removePost}
             />
           );
         }
-        return <SingleReply key={post._id} post={post} onDelete={deletePost} />;
+        return <SingleReply key={post._id} post={post} onDelete={removePost} />;
       })}
 
       {(loading === "loading" || loading === "idle") && (
@@ -103,7 +103,7 @@ const Replies: NextPageWithLayout = () => {
           </div>
 
           <div className="flex justify-center text-gray-shade-7 font-normal text-xs mt-2">
-            <p>No replies yet. All replies will apper here</p>
+            <p>No replies yet. All replies will appear here</p>
           </div>
         </div>
       )}

@@ -12,7 +12,7 @@ import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import toast from "react-hot-toast";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -180,7 +180,9 @@ export const NonNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
+        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+          {data?.description}
+        </p>
       </div>
       <div className="buttonContainer flex items-center">
         <Button

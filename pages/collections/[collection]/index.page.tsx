@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
@@ -12,13 +12,16 @@ import {
   FacebookCircleIcon,
   CopyIcon,
   TwitterSvg,
+  NftsCollectionEmpty,
+  HotNftEmptyIcon,
 } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NFTCard from "@/components/nft.card";
+import { TwitterShareButton, FacebookShareButton } from "react-share";
 import { useInView } from "react-intersection-observer";
-import { useCollectionStore } from "@/store/collection.store";
+import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
@@ -27,18 +30,33 @@ import {
   formatBNB2USD,
   formatIPFSUrl,
 } from "@/utils/format.address";
-import { ethers } from "ethers";
 import { AppRoutes } from "@/constants/app.routes";
-import useBNBPrice from "@/web3/hooks/use.chain.info";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
+import NftsSkeleton from "@/components/loading.skeletons/nfts";
+import useGetUser from "@/hooks/use.get.user";
+import toast from "react-hot-toast";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
   const collection = router.query.collection;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
-  const [filter, setFilter] = useState<"All" | "List" | "Auction">("All");
+  const [filterInView, setFilter] = useState<Filter>("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   const bnbPrice = useBNBPrice();
+  const shareUrl = useMemo(() => {
+    if (typeof window !== "undefined") {
+      return `${window.location.origin}${router.asPath}`;
+    }
+    return "";
+  }, [router.asPath]);
+
+  // Copy nft share url to clipboard
+  const copyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Copy Link Successfully!");
+  };
 
   const {
     info,
@@ -47,6 +65,8 @@ const Collection: NextPageWithLayout = () => {
     fetchNFTs,
     offset,
     updateOffset,
+    filter,
+    updateFilter,
     limit,
     loadingCollectionInfo,
     loadingNFTs,
@@ -57,11 +77,13 @@ const Collection: NextPageWithLayout = () => {
     fetchNFTs: state.fetchNFTs,
     offset: state.offset,
     updateOffset: state.updateOffset,
+    filter: state.filter,
+    updateFilter: state.updateFilter,
     limit: state.limit,
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
   }));
-
+  const { user } = useGetUser(info?.creator);
   const [metadata, setMetadata] = useState<any>();
   const [orderdir, setOrderDir] = useState("desc");
 
@@ -90,8 +112,12 @@ const Collection: NextPageWithLayout = () => {
   }, [lastNotiEntry, updateOffset]);
 
   useEffect(() => {
+    updateFilter(filterInView);
+  }, [filterInView, updateFilter]);
+
+  useEffect(() => {
     if (collection) {
-      fetchNFTs(collection as string, filter, orderdir, offset, limit, false);
+      fetchNFTs(collection as string, filter, orderdir, offset, limit);
     }
   }, [collection, fetchNFTs, filter, limit, offset, orderdir]);
 
@@ -109,71 +135,85 @@ const Collection: NextPageWithLayout = () => {
   return (
     <div className={dashboardContentContainer}>
       <div className={MainContentContainer}>
-        <div className={coverCard}>
-          <div
-            className={coverImageContainer}
-            style={{
-              backgroundImage: `url(${formatIPFSUrl(metadata?.coverIPFSHash)})`,
-            }}
-          >
-            <div className={shareBtn}>
-              <div ref={menuRef} className={`relative`}>
-                <button className={threeDotsBtn} onClick={toggleMenu}>
-                  <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
-                </button>
-                <div
-                  className={clsx(
-                    `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
-                    isMenuVisible ? "block z-40" : "hidden"
-                  )}
-                >
-                  <button className={menuButton}>
-                    <FacebookCircleIcon className={icon} /> Share on facebook
+        {loadingCollectionInfo === "loading" ||
+        loadingCollectionInfo === "idle" ? (
+          <NftCollectionProfileSkeleton />
+        ) : (
+          <div className={coverCard}>
+            <div
+              className={coverImageContainer}
+              style={{
+                backgroundImage: `url(${formatIPFSUrl(
+                  metadata?.coverIPFSHash
+                )})`,
+              }}
+            >
+              <div className={shareBtn}>
+                <div ref={menuRef} className={`relative`}>
+                  <button className={threeDotsBtn} onClick={toggleMenu}>
+                    <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
                   </button>
-                  <button className={menuButton}>
-                    <TwitterSvg className={icon} /> Share on twitter
-                  </button>
+                  <div
+                    className={clsx(
+                      `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
+                      isMenuVisible ? "block z-40" : "hidden"
+                    )}
+                  >
+                    <button onClick={copyShareUrl} className={menuButton}>
+                      <CopyIcon className={icon} /> Copy link
+                    </button>
 
-                  <button className={menuButton}>
-                    <CopyIcon className={icon} /> Copy link
-                  </button>
+                    <FacebookShareButton url={shareUrl} className="w-full">
+                      <button className={menuButton}>
+                        <FacebookCircleIcon className={icon} /> Share on
+                        facebook
+                      </button>
+                    </FacebookShareButton>
+
+                    <TwitterShareButton url={shareUrl} className="w-full">
+                      <button className={menuButton}>
+                        <TwitterSvg className={icon} /> Share on twitter
+                      </button>
+                    </TwitterShareButton>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className={profileImage}>
-              <Image
-                src={formatIPFSUrl(metadata?.profileIPFSHash)}
-                alt={"profile image"}
-                width={112}
-                height={112}
-                className={collectionProfileImage}
-                sizes={"512px"}
-              />
-            </div>
-          </div>
-          <div className={coverDetails}>
-            <div className={topDetais}>
-              <div>
-                <h5 className={collectionName}>{metadata?.name}</h5>
-                <Link
-                  href={{
-                    pathname: AppRoutes.profile.nfts,
-                    query: {
-                      account_address: info?.creator,
-                    },
-                  }}
-                  className="text-gray-shade-18 text-14px font-semibold"
-                >
-                  Created by @{formatAddress(info?.creator)}
-                </Link>
-              </div>
-              <div className={detailsCard}>
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Items</h4>
-                  <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
+              {metadata && metadata.profileIPFSHash && (
+                <div className={profileImage}>
+                  <Image
+                    src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                    alt={"profile image"}
+                    width={112}
+                    height={112}
+                    className={collectionProfileImage}
+                    sizes={"512px"}
+                  />
                 </div>
-                {/* <div className="text-center">
+              )}
+            </div>
+            <div className={coverDetails}>
+              <div className={topDetais}>
+                <div>
+                  <h5 className={collectionName}>{metadata?.name}</h5>
+                  <Link
+                    href={{
+                      pathname: AppRoutes.profile.nfts,
+                      query: {
+                        account_address: info?.creator,
+                      },
+                    }}
+                    className="text-gray-shade-18 text-14px font-semibold"
+                  >
+                    Created by {user?.display_name}
+                  </Link>
+                </div>
+                <div className={detailsCard}>
+                  <div className="text-center">
+                    <h4 className={detailsCardTitle}>Items</h4>
+                    <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
+                  </div>
+                  {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Owner</h4>
                   <h5 className={detailsCardValue}>2.1k</h5>
                 </div>
@@ -181,26 +221,27 @@ const Collection: NextPageWithLayout = () => {
                   <h4 className={detailsCardTitle}>Floor Price</h4>
                   <h5 className={detailsCardValue}>$108.56</h5>
                 </div> */}
-                {/* <div className="text-center">
+                  {/* <div className="text-center">
                   <h4 className={detailsCardTitle}>Market Price</h4>
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
                 </div> */}
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Total Volum</h4>
-                  <h5 className={detailsCardValue}>
-                    $
-                    {info?.tradingVolumn
-                      ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
-                      : 0}
-                  </h5>
+                  <div className="text-center">
+                    <h4 className={detailsCardTitle}>Total Volum</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {info?.tradingVolumn
+                        ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
+                        : 0}
+                    </h5>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className={textContent}>
-              <p className={profileDescription}>{metadata?.description}</p>
+              <div className={textContent}>
+                <p className={profileDescription}>{metadata?.description}</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {/* nft tabs */}
         <div className="mt-6">
           <div className={tabsContainer}>
@@ -241,11 +282,38 @@ const Collection: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="tabsContent mt-10">
-            <div className={`${nftCardWrapper} nftCardContainer`}>
-              {nfts.map((data) => {
-                return <NFTCard data={data} key={data.id} />;
-              })}
-            </div>
+            {nfts.length > 0 && (
+              <div className={`${nftCardWrapper} nftCardContainer`}>
+                {nfts.map((data) => {
+                  return <NFTCard data={data} key={data.id} />;
+                })}
+              </div>
+            )}
+
+            {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
+              <div className="flex flex-wrap gap-10 items-center">
+                {/* we are showing 8 skeletons while reloading the page to users */}
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+                <NftsSkeleton />
+              </div>
+            )}
+
+            {loadingNFTs === "loaded" && nfts.length === 0 && (
+              <div>
+                <div className="flex justify-center mt-[48px]">
+                  <HotNftEmptyIcon />
+                </div>
+                <div className="flex justify-center text-white font-semibold text-xs mt-6">
+                  <p>No Nfts found yet!</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
