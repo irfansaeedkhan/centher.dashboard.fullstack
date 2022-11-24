@@ -60,11 +60,37 @@ export const SinglePostV2: React.FC<Props> = ({
         className
       )}
     >
-      <div className="flex gap-x-3">
-        {/* Left */}
-        <PostUserImage post={post} shouldShowThread={shouldShowThread} />
+      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+        {postType === "reply-w-parent-header" && (
+          <>
+            <PostUserImage
+              postUser={post.parent_post?.user}
+              shouldShowConnectLines={true}
+            />
+            <div
+              className={clsx(
+                `flex-grow pb-5 mb-5 border-b-2 border-b-gray-shade-3`
+              )}
+            >
+              <PostHeader
+                post={post}
+                postUser={post.parent_post?.user}
+                postType={postType}
+                rightSide="view-post"
+                loggedInUser={undefined}
+                onClickArchive={undefined}
+                onClickDelete={undefined}
+                onClickEdit={undefined}
+              />
+            </div>
+          </>
+        )}
 
-        {/* Right */}
+        <PostUserImage
+          postUser={post.user}
+          shouldShowConnectLines={shouldShowThread}
+        />
+
         <div
           className={clsx(`flex-grow`, {
             "mb-2": shouldShowThread,
@@ -72,7 +98,9 @@ export const SinglePostV2: React.FC<Props> = ({
         >
           <PostHeader
             post={post}
+            postUser={post.user}
             postType={postType}
+            rightSide="action-menu"
             loggedInUser={loggedInUser}
             onClickArchive={onClickArchive}
             onClickDelete={onClickDelete}
