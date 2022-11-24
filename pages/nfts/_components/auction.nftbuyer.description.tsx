@@ -253,9 +253,9 @@ export const AuctionNFTBuyerDescription = ({
     }
   };
 
-  useEffect(() => {
-    bidNFTModalFunc();
-  }, [!formState.isValid]);
+  // useEffect(() => {
+  //   bidNFTModalFunc();
+  // }, [!formState.isValid]);
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
