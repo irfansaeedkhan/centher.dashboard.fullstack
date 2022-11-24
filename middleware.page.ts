@@ -64,13 +64,15 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
   AppRoutes.notifications,
+  AppRoutes.explore,
+  AppRoutes.nfts.create_nft,
+  AppRoutes.nfts.create_collection,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
 const _comingSoonPages: string[] = [
   AppRoutes.home,
-  AppRoutes.explore,
   AppRoutes.chat,
   AppRoutes.staking_packs,
   AppRoutes.network_rewards,
@@ -83,8 +85,5 @@ const _comingSoonPages: string[] = [
   AppRoutes.admin.staking_packs,
   AppRoutes.admin.create_staking_pack,
   AppRoutes.admin.update_staking_pack,
-
-  AppRoutes.nfts.create_nft,
-  AppRoutes.nfts.create_collection,
 ];
 const comingSoonPages = changePaths(_comingSoonPages);
