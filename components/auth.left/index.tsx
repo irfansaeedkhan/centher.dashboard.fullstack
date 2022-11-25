@@ -17,7 +17,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
       <section
-        className={`w-1/2 py-11 px-12 gap-10 md:flex flex-col sm:hidden bg-background-shade-1 `}
+        className={`w-1/2 py-11 px-12 gap-10 md:flex flex-col hidden bg-background-shade-1 `}
       >
         <div className={`w-fit`}>
           <Link href={AppRoutes.home}>
@@ -55,7 +55,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
 
   if (props.variant === "mobile") {
     return (
-      <section className={`mb-5 gap-10 sm:flex flex-col md:hidden`}>
+      <section className={`mb-5 gap-10 flex flex-col md:hidden`}>
         <div className={`flex gap-4 flex-col`}>
           <h1 className={`text-2xl text-white font-semibold`}>{props.title}</h1>
           <p className={`text-sm font-medium text-gray-shade-4`}>
