@@ -24,21 +24,19 @@ export interface AllNFTsStore {
   fetchAllNFTs: (
     category: Category,
     sortBy: OrderBy,
-    sortDir: OrderDirection,
-    offset?: number,
-    limit?: number
+    sortDir: OrderDirection
   ) => Promise<void>;
-  offset: number;
   updateOffset: () => void;
   updateCategory: (value: Category) => void;
   updateSortBy: (value: OrderBy, dir: OrderDirection) => void;
   limit: number;
+  offset: number;
   loading: LoadingState;
 }
 
 export const useAllNFTsStore = create<AllNFTsStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       allNFTs: [],
       category: "all",
       sortBy: "tradingVolumn",
@@ -66,7 +64,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           allNFTs: [],
         })),
 
-      fetchAllNFTs: async (category, sortBy, sortDir, offset, limit) => {
+      fetchAllNFTs: async (category, sortBy, sortDir) => {
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
@@ -80,8 +78,8 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             const { data: result1, error: error1 } = await client.query({
               query: gql(allNFTsQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
@@ -93,8 +91,8 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             const { data: result2, error: error2 } = await client.query({
               query: gql(allNFTsByFilterQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
                 category: category.toLowerCase(),
                 orderBy: sortBy,
                 orderDirection: sortDir,

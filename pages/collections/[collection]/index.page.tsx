@@ -5,6 +5,8 @@ import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
 import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
+import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
+import { TbWorld } from "react-icons/tb";
 
 // App imports
 import {
@@ -18,7 +20,7 @@ import {
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
-import NFTCard from "@/components/nft.card";
+
 import { TwitterShareButton, FacebookShareButton } from "react-share";
 import { useInView } from "react-intersection-observer";
 import { Filter, useCollectionStore } from "@/store/collection.store";
@@ -36,6 +38,7 @@ import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.col
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import useGetUser from "@/hooks/use.get.user";
 import toast from "react-hot-toast";
+import { NFTCard } from "@/components/nft.card";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -102,7 +105,7 @@ const Collection: NextPageWithLayout = () => {
       fetchMetadata(info.ipfs);
     }
   }, [info]);
-
+  console.log(metadata);
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {
@@ -150,31 +153,71 @@ const Collection: NextPageWithLayout = () => {
             >
               <div className={shareBtn}>
                 <div ref={menuRef} className={`relative`}>
-                  <button className={threeDotsBtn} onClick={toggleMenu}>
-                    <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
-                  </button>
-                  <div
-                    className={clsx(
-                      `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
-                      isMenuVisible ? "block z-40" : "hidden"
+                  <div className="flex justify-center items-center gap-5">
+                    {(metadata?.facebook ||
+                      metadata?.twitter ||
+                      metadata?.yoursite) && (
+                      <div className="w-[100px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px">
+                        <div className="flex justify-center items-center gap-3">
+                          {metadata.facebook && (
+                            <a
+                              href={metadata.facebook}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <TiSocialFacebook className="text-white text-lg hover:text-brand-primary" />
+                            </a>
+                          )}
+
+                          {metadata.twitter && (
+                            <a
+                              href={metadata.twitter}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <TiSocialTwitter className="text-white text-lg hover:text-brand-primar" />
+                            </a>
+                          )}
+
+                          {metadata.yoursite && (
+                            <a
+                              href={metadata.yoursite}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              <TbWorld className="text-white text-lg hover:text-brand-primar" />
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     )}
-                  >
-                    <button onClick={copyShareUrl} className={menuButton}>
-                      <CopyIcon className={icon} /> Copy link
+
+                    <button className={threeDotsBtn} onClick={toggleMenu}>
+                      <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
                     </button>
-
-                    <FacebookShareButton url={shareUrl} className="w-full">
-                      <button className={menuButton}>
-                        <FacebookCircleIcon className={icon} /> Share on
-                        facebook
+                    <div
+                      className={clsx(
+                        `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
+                        isMenuVisible ? "block z-40" : "hidden"
+                      )}
+                    >
+                      <button onClick={copyShareUrl} className={menuButton}>
+                        <CopyIcon className={icon} /> Copy link
                       </button>
-                    </FacebookShareButton>
 
-                    <TwitterShareButton url={shareUrl} className="w-full">
-                      <button className={menuButton}>
-                        <TwitterSvg className={icon} /> Share on twitter
-                      </button>
-                    </TwitterShareButton>
+                      <FacebookShareButton url={shareUrl} className="w-full">
+                        <button className={menuButton}>
+                          <FacebookCircleIcon className={icon} /> Share on
+                          facebook
+                        </button>
+                      </FacebookShareButton>
+
+                      <TwitterShareButton url={shareUrl} className="w-full">
+                        <button className={menuButton}>
+                          <TwitterSvg className={icon} /> Share on twitter
+                        </button>
+                      </TwitterShareButton>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -370,6 +413,7 @@ const menuButton = ctl(
 const icon = ctl(`w-[24px] h-[24px] [&>*]:stroke-white`);
 const threeDotsBtn = ctl(`
 w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px `);
+
 const inputField = ctl(`
   w-full 
   py-3 
