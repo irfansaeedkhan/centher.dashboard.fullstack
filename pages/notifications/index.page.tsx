@@ -69,7 +69,6 @@ const Notifications: NextPageWithLayout = () => {
     <div className="flex">
       <div className="space-y-6 flex-grow flex items-center justify-center flex-col">
         {/* Today */}
-
         {notificationToday.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Earlier</div>
@@ -101,9 +100,7 @@ const Notifications: NextPageWithLayout = () => {
             })}
           </div>
         )}
-
         {/* Yesterday */}
-
         {notificationYesterday.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Yesterday</div>
@@ -135,9 +132,7 @@ const Notifications: NextPageWithLayout = () => {
             })}
           </div>
         )}
-
         {/* Seven days */}
-
         {notificationSevenday.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Last 7 Days</div>
@@ -153,7 +148,7 @@ const Notifications: NextPageWithLayout = () => {
                     key={notification._id}
                     length={notificationSevenday.length}
                     index={index}
-                    days="sevenday"
+                    days="seven"
                   />
                 );
               }
@@ -169,9 +164,8 @@ const Notifications: NextPageWithLayout = () => {
             })}
           </div>
         )}
-
+        seven
         {/* Remaining */}
-
         {notificationsBeforeSevendays.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <div className={sectionName}>Older</div>
@@ -205,11 +199,9 @@ const Notifications: NextPageWithLayout = () => {
             </div>
           </div>
         )}
-
         {(loading === "loading" || loading === "idle") && (
           <SingleNotificationSkeleton />
         )}
-
         {loading === "loaded" &&
           notifications.length === 0 &&
           notificationToday.length === 0 &&
