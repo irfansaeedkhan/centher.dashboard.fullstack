@@ -51,7 +51,7 @@ export const SinglePostV2: React.FC<Props> = ({
       className={clsx(
         `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px`,
         placement === "single-post-page" &&
-          postType === "main" &&
+          (postType === "main" || postType === "reply-w-parent-header") &&
           post.replies_count > 0 &&
           "rounded-b-none",
         placement === "single-post-page" &&
@@ -76,7 +76,6 @@ export const SinglePostV2: React.FC<Props> = ({
                 post={post}
                 postUser={post.parent_post?.user}
                 postType={postType}
-                rightSide="view-post"
                 loggedInUser={undefined}
                 onClickArchive={undefined}
                 onClickDelete={undefined}
@@ -99,8 +98,7 @@ export const SinglePostV2: React.FC<Props> = ({
           <PostHeader
             post={post}
             postUser={post.user}
-            postType={postType}
-            rightSide="action-menu"
+            postType={postType === "reply-w-parent-header" ? "main" : postType}
             loggedInUser={loggedInUser}
             onClickArchive={onClickArchive}
             onClickDelete={onClickDelete}

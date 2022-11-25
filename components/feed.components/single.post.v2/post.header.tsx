@@ -10,12 +10,12 @@ import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
+import { PostType } from "./main";
 
 interface Props {
   post: CompletedPost;
   postUser: PostUser;
-  postType: "main" | "reply" | "reply-w-parent-header" | "archived";
-  rightSide: "action-menu" | "view-post";
+  postType: PostType;
   loggedInUser: LoggedInUser | undefined;
   onClickDelete: (() => Promise<void>) | undefined;
   onClickEdit: (() => Promise<void>) | undefined;
@@ -26,7 +26,6 @@ export const PostHeader: React.FC<Props> = ({
   post,
   postUser,
   postType,
-  rightSide,
   loggedInUser,
   onClickEdit,
   onClickDelete,
@@ -45,10 +44,15 @@ export const PostHeader: React.FC<Props> = ({
 
   const createdTime = useMemo(() => {
     // Show relative time under 7 days
-    return dayjs().diff(dayjs(new Date(post.createdAt)), "day") < 7
-      ? dayjs(new Date(post.createdAt)).fromNow()
-      : dayjs(new Date(post.createdAt)).format("D MMM");
-  }, [post.createdAt]);
+    const createdAt =
+      postType === "reply-w-parent-header"
+        ? post.parent_post!.createdAt
+        : post.createdAt;
+
+    return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
+      ? dayjs(new Date(createdAt)).fromNow()
+      : dayjs(new Date(createdAt)).format("D MMM");
+  }, [post.createdAt, post.parent_post, postType]);
 
   return (
     <div className="flex justify-between">
@@ -100,7 +104,7 @@ export const PostHeader: React.FC<Props> = ({
       </div>
 
       {/* Right Side */}
-      {isPostOwner && rightSide === "action-menu" && (
+      {isPostOwner && postType !== "reply-w-parent-header" && (
         <div className="right-side">
           {/* 3 dots menu */}
           <PostActionMenu
@@ -113,7 +117,7 @@ export const PostHeader: React.FC<Props> = ({
       )}
 
       {/* Right Side */}
-      {rightSide === "view-post" && (
+      {postType === "reply-w-parent-header" && (
         <Link
           href={{
             pathname: AppRoutes.feed.single_post,
