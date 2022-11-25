@@ -289,9 +289,9 @@ export const FixedPriceNFTDescription = ({
     }
   };
 
-  useEffect(() => {
-    bidNFTModalFunc();
-  }, [!formState.isValid]);
+  // useEffect(() => {
+  //   bidNFTModalFunc();
+  // }, [!formState.isValid]);
 
   return (
     <div className={nftDescriptionContainer}>

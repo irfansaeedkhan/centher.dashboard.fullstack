@@ -45,7 +45,9 @@ export const CreatePostModal: React.FC<Props> = ({ modalTitle }) => {
             alt={user.display_name ?? "profile image"}
             sizes={"256px"}
           />
-          <h5 className={`text-14px font-semibold text-white`}>
+          <h5
+            className={`text-14px font-semibold text-white text-ellipsis line-clamp-1`}
+          >
             {user.display_name}
           </h5>
         </div>

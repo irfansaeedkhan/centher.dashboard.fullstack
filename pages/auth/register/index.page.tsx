@@ -60,5 +60,5 @@ export default Register;
 const signupLeftData = {
   title: "Register to Nether NFT",
   content:
-    "Register your account with nether NFT to sell and buy NFTs on some easy steps.",
+    "Register your account with Nether NFT to sell and buy NFTs on some easy steps.",
 };

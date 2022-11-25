@@ -13,6 +13,8 @@ import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
 import { LoadingState } from "@/models/common";
 import { SpinIcon3 } from "@/assets/svgs";
+import { PostTextCounter } from "@/components/feed.components/create.post/create.post.modal/post.text.counter";
+import clsx from "clsx";
 
 interface EditProfileFormProps {
   user: LoggedInUser;
@@ -235,7 +237,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 relative">
           <label htmlFor="textarea" className={fieldTitle}>
             Profile bio
           </label>
@@ -252,8 +254,15 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             id=""
             cols={30}
             rows={5}
-            className={inputField}
+            maxLength={160}
+            className={clsx(inputField)}
           ></textarea>
+          <div className="w-7 h-7 ml-4 fsm:ml-0 absolute bottom-2 right-2 z-[100]">
+            <PostTextCounter
+              currentLength={updatedUser.profile_bio.length}
+              maxLength={160}
+            />
+          </div>
         </div>
 
         <button className={connectButton} onClick={updateProfile}>

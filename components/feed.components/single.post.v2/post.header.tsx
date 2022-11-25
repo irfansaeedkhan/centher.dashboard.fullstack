@@ -1,28 +1,32 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 
-import { CompletedPost } from "@/models/post";
+import { CompletedPost, PostUser } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
-import clsx from "clsx";
 
 interface Props {
   post: CompletedPost;
+  postUser: PostUser;
   postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  rightSide: "action-menu" | "view-post";
   loggedInUser: LoggedInUser | undefined;
-  onClickDelete: () => Promise<void>;
-  onClickEdit: () => Promise<void>;
-  onClickArchive: () => Promise<void>;
+  onClickDelete: (() => Promise<void>) | undefined;
+  onClickEdit: (() => Promise<void>) | undefined;
+  onClickArchive: (() => Promise<void>) | undefined;
 }
 
 export const PostHeader: React.FC<Props> = ({
   post,
+  postUser,
   postType,
+  rightSide,
   loggedInUser,
   onClickEdit,
   onClickDelete,
@@ -31,9 +35,9 @@ export const PostHeader: React.FC<Props> = ({
   const isPostOwner = useMemo(() => {
     return (
       loggedInUser?.account_address.toLowerCase() ===
-      post.user.account_address.toLowerCase()
+      postUser.account_address.toLowerCase()
     );
-  }, [loggedInUser?.account_address, post.user.account_address]);
+  }, [loggedInUser?.account_address, postUser.account_address]);
 
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
@@ -49,17 +53,17 @@ export const PostHeader: React.FC<Props> = ({
   return (
     <div className="flex justify-between">
       {/* Left Side */}
-      <div className="left-side">
+      <div className="left-side mr-2">
         {/* Display Name */}
         <div className={clsx(postType === "reply" && `flex items-center`)}>
           <Link
             href={{
               pathname: AppRoutes.profile.account_address,
-              query: { account_address: post.user.account_address },
+              query: { account_address: postUser.account_address },
             }}
-            className="text-white font-semibold text-sm"
+            className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
           >
-            {post.user.display_name}
+            {postUser.display_name}
           </Link>
 
           {/* Time */}
@@ -75,9 +79,6 @@ export const PostHeader: React.FC<Props> = ({
 
         {postType === "reply" && (
           <>
-            <span className="inline-block text-gray-shade-7 font-medium text-xs">
-              Replying to
-            </span>
             <Link
               href={{
                 pathname: AppRoutes.profile.account_address,
@@ -85,25 +86,46 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="inline-block ml-1 text-white font-medium text-xs"
+              className="mt-0.5 inline-block max-w-max text-white font-medium text-xs text-ellipsis line-clamp-1 group"
             >
-              {post.parent_post?.user.display_name}
+              <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
+                Replying to
+              </span>
+              <span className="group-hover:text-brand-primary">
+                {post.parent_post?.user.display_name}
+              </span>
             </Link>
           </>
         )}
       </div>
 
       {/* Right Side */}
-      {isPostOwner && (
+      {isPostOwner && rightSide === "action-menu" && (
         <div className="right-side">
           {/* 3 dots menu */}
           <PostActionMenu
             isBefore15Minutes={isBefore15Minutes}
-            onClickEdit={onClickEdit}
-            onClickArchive={onClickArchive}
-            onClickDelete={onClickDelete}
+            onClickEdit={onClickEdit ?? (async () => {})}
+            onClickArchive={onClickArchive ?? (async () => {})}
+            onClickDelete={onClickDelete ?? (async () => {})}
           />
         </div>
+      )}
+
+      {/* Right Side */}
+      {rightSide === "view-post" && (
+        <Link
+          href={{
+            pathname: AppRoutes.feed.single_post,
+            query: {
+              account_address: post.parent_post?.user.account_address,
+              post_id: post.parent_post?._id,
+            },
+          }}
+          className="min-w-max py-2 px-4 text-xs text-white bg-black-shade-7 rounded-xl"
+        >
+          View Post
+        </Link>
       )}
     </div>
   );

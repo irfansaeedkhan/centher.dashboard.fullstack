@@ -486,7 +486,9 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                 <div
                   className={`flex flex-col lg:flex-row items-baseline justify-between`}
                 >
-                  <h5 className={`text-white text-20px font-semibold`}>
+                  <h5
+                    className={`text-center text-white text-20px font-semibold text-ellipsis line-clamp-1`}
+                  >
                     {user.display_name}
                   </h5>
                   <div className={`flex items-center gap-3`}></div>

@@ -60,5 +60,5 @@ export default Login;
 const signupLeftData = {
   title: "Connect wallet",
   content:
-    "Login to your account with netheru to sell and buy NFTs on some easy steps.",
+    "Login to your account with Netheru to sell and buy NFTs on some easy steps.",
 };

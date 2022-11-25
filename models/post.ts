@@ -29,7 +29,7 @@ export interface PostMedia {
   alt?: string;
 }
 
-type PostUser = Pick<
+export type PostUser = Pick<
   User,
   "_id" | "account_address" | "display_name" | "profile_image"
 >;
