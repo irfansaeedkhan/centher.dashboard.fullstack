@@ -13,6 +13,7 @@ import {
   useMarkNotificationsPageAsSeen,
 } from "./_components";
 import { NotificationBell } from "@/assets/svgs";
+import clsx from "clsx";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
@@ -67,7 +68,12 @@ const Notifications: NextPageWithLayout = () => {
 
   return (
     <div className="flex">
-      <div className="space-y-6 flex-grow flex items-center justify-center flex-col">
+      <div
+        className={clsx(
+          "flex-grow flex items-center justify-center flex-col",
+          loading !== "loading" && loading !== "idle" && "space-y-6"
+        )}
+      >
         {/* Today */}
 
         {notificationToday.length > 0 && (
