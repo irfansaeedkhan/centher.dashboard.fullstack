@@ -740,3 +740,12 @@ input:-webkit-autofill {
     stroke-dashoffset: 1260;
   }
 }
+
+.cropper-crop-box {
+  height: 180px !important;
+}
+
+.cropper-view-box {
+  outline: 1px solid #febf32 !important;
+  outline-color: #febf32 !important;
+}
