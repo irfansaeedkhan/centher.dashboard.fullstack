@@ -46,10 +46,8 @@ import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 // import NFTProfileTabs from "./nft.profile.tabs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { ModalWrapper } from "@/components/modal";
-import CropperComp from "./cropper";
 
-export type CoverImageWithFile = Partial<CoverImage> & {
+type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
 };
@@ -395,21 +393,6 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                       </span>
                     </CoverUploadButton>
                   )}
-                  <ModalWrapper
-                    title="Crop"
-                    isOpen={coverImage.newImage}
-                    onClose={() =>
-                      setCoverImage((prev) => {
-                        return {
-                          ...prev,
-                          blob: null,
-                          newImage: false,
-                        };
-                      })
-                    }
-                  >
-                    <CropperComp coverImage={coverImage} />
-                  </ModalWrapper>
                   {coverImage.newImage && (
                     <>
                       <CoverUploadButton
