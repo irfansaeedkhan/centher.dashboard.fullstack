@@ -4,7 +4,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { useInView } from "react-intersection-observer";
 
 // App imports
-import NFTCard from "@/components/nft.card";
+
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { LoadingState } from "@/models/common";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
@@ -12,11 +12,14 @@ import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import CategoryDropdown from "./category.dropdown";
 import SortByDropdown from "./sortby.dropdown";
 import { Category, NFT, SortBy } from "@/models/nft";
+import { useAllNFTsStore } from "@/store/all.nfts.store";
+import { NFTCard } from "@/components/nft.card";
 
 // Current directory imports
 
 interface ExploreProps {
   allNFTs: NFT[];
+  updateOffset: () => void;
   loading: LoadingState;
   category: Category;
   sortBy: SortBy;
@@ -31,11 +34,22 @@ export const Explore: React.FC<ExploreProps> = ({
   sortBy,
   setCategory,
   setSortBy,
+  updateOffset,
 }) => {
+  // const { updateOffset } = useAllNFTsStore((state) => ({
+  //   updateOffset: state.updateOffset,
+  // }));
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [sortByOpen, setSortByOpen] = useState(false);
+  console.log("allNfts", allNFTs);
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [lastPostEntry, updateOffset]);
 
   return (
     <div className={pageWrapper}>
@@ -90,15 +104,19 @@ export const Explore: React.FC<ExploreProps> = ({
       </div>
 
       {allNFTs.length > 0 && (
-        <div className="nftCardContainer">
-          {allNFTs.map((nft) => (
-            <NFTCard data={nft} key={nft.id} />
-          ))}
+        <div className="nftCardContainer h-auto">
+          {allNFTs.map((nft) => {
+            console.log("nft", nft.id === allNFTs[allNFTs.length - 1].id);
+            if (nft.id === allNFTs[allNFTs.length - 1].id) {
+              return <NFTCard data={nft} key={nft.id} ref={lastPostRef} />;
+            }
+            return <NFTCard key={nft.id} data={nft} />;
+          })}
         </div>
       )}
 
       {(loading === "loading" || loading === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
+        <div className="flex flex-wrap gap-5 items-center">
           {/* we are showing 8 skeletons while reloading the page to users */}
           <NftsSkeleton />
           <NftsSkeleton />

@@ -9,7 +9,6 @@ import { Explore } from "./_components";
 import {
   Category,
   OrderBy,
-  orderBy,
   OrderDirection,
   sortBy,
   SortBy,
@@ -27,12 +26,11 @@ const AllNftsPage: NextPageWithLayout = () => {
     sortByInStore,
     sortDir,
     offset,
-    limit,
     fetchAllNFTs,
     updateCategory,
     updateSortBy,
-    updateOffset,
     loading,
+    updateOffset,
   } = useAllNFTsStore((state) => ({
     allNFTs: state.allNFTs,
     category: state.category,
@@ -46,10 +44,15 @@ const AllNftsPage: NextPageWithLayout = () => {
     updateOffset: state.updateOffset,
     loading: state.loading,
   }));
+  useEffect(() => {
+    fetchAllNFTs(category, sortByInStore, sortDir);
+  }, [fetchAllNFTs, category, sortByInStore, sortDir]);
 
   useEffect(() => {
-    fetchAllNFTs(category, sortByInStore, sortDir, offset, limit);
-  }, [fetchAllNFTs, limit, offset, category, sortByInStore, sortDir]);
+    if (offset > 0) {
+      fetchAllNFTs(category, sortByInStore, sortDir);
+    }
+  }, [offset, fetchAllNFTs, category, sortByInStore, sortDir]);
 
   useEffect(() => {
     updateCategory(categoryInView);
@@ -80,6 +83,7 @@ const AllNftsPage: NextPageWithLayout = () => {
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Explore
+          updateOffset={updateOffset}
           loading={loading}
           allNFTs={allNFTs}
           category={category}
