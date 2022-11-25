@@ -122,7 +122,7 @@ export const PostHeader: React.FC<Props> = ({
               post_id: post.parent_post?._id,
             },
           }}
-          className="min-w-max py-2 px-4 text-xs text-white bg-black-shade-7 rounded-xl"
+          className="min-w-max flex items-center py-1.5 px-3 text-xs text-white bg-black-shade-7 rounded-xl"
         >
           View Post
         </Link>
