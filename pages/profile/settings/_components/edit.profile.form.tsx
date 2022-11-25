@@ -258,12 +258,14 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             maxLength={160}
             className={clsx(inputField)}
           ></textarea>
-          <div className="w-7 h-7 ml-4 fsm:ml-0 absolute bottom-2 right-2 z-[100]">
-            <PostTextCounter
-              currentLength={updatedUser.profile_bio.length}
-              maxLength={160}
-            />
-          </div>
+          {updatedUser.profile_bio.length > 0 && (
+            <div className="w-7 h-7 ml-4 fsm:ml-0 absolute bottom-2 right-2 z-[100]">
+              <PostTextCounter
+                currentLength={updatedUser.profile_bio.length}
+                maxLength={160}
+              />
+            </div>
+          )}
         </div>
 
         <button className={connectButton} onClick={updateProfile}>

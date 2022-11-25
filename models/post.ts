@@ -36,6 +36,6 @@ export type PostUser = Pick<
 
 export interface ParentPost {
   _id: string;
-  createdAt?: string;
+  createdAt: string;
   user: PostUser;
 }

@@ -30,7 +30,7 @@ export const ProfileTabs: React.FC = () => {
 
   return (
     <div
-      className={`flex max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-4 fsm:mb-6 space-x-2`}
+      className={`flex fsm:max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-4 fsm:mb-6 space-x-2`}
     >
       <Link
         href={{
