@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 // App imports
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import NFTCard from "@/components/nft.card";
+import { NFTCard } from "@/components/nft.card";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
