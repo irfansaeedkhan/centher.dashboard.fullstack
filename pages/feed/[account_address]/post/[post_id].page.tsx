@@ -106,7 +106,7 @@ const SinglePostPage: NextPageWithLayout = () => {
             <SinglePostV2
               key={post._id}
               post={post}
-              postType={"main"}
+              postType={post.parent_post ? "reply-w-parent-header" : "main"}
               placement={"single-post-page"}
               onClickLike={async () => {
                 await likePostAPI(

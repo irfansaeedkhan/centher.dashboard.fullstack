@@ -28,7 +28,7 @@ Login.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <div className="w-fit md:hidden sm:flex mb-8">
+        <div className="w-fit md:hidden flex mb-8">
           <Link href={AppRoutes.home}>
             <Image
               src="/images/nether.nft.logo.svg"

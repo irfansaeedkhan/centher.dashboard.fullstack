@@ -3,13 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { NFT } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { NFTCard } from "@/components/nft.card";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
 import { useRouter } from "next/router";
-import { NFTCard } from "@/components/nft.card";
 
 const NFTProfile: NextPageWithLayout = () => {
   const router = useRouter();

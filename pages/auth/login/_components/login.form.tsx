@@ -78,8 +78,10 @@ export const LoginForm: React.FC = () => {
       {account ? (
         <>
           <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
-            <MetamaskIcon />
-            <div>
+            <span className="!w-12 !h-12">
+              <MetamaskIcon />
+            </span>
+            <div className="flex flex-col flex-grow">
               <p className="md:text-lg sm:text-base font-semibold text-white md:mt-4">
                 Metamask wallet connected
               </p>
