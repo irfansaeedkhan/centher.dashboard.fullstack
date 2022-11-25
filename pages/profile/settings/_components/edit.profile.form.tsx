@@ -3,18 +3,18 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 // App imports
+import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
+import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
+import { SpinIcon3 } from "@/assets/svgs";
 
 // Current directory imports
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
-import { LoadingState } from "@/models/common";
-import { SpinIcon3 } from "@/assets/svgs";
-import { PostTextCounter } from "@/components/feed.components/create.post/create.post.modal/post.text.counter";
-import clsx from "clsx";
 
 interface EditProfileFormProps {
   user: LoggedInUser;

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
+import { nanoid } from "nanoid";
 import clsx from "clsx";
 
+import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
 import { CompletedPost } from "@/models/post";
 
+import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
 import { PostMedia } from "./post.media";
 import { PostTextContent } from "./post.text.content";
@@ -26,8 +29,8 @@ interface Props {
   shouldShowThread?: boolean;
   className?: string;
   onClickReply?: () => void;
+  onClickEdit?: () => void;
   onClickLike?: () => Promise<void>;
-  onClickEdit?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
   onClickDelete?: () => Promise<void>;
 }
@@ -42,9 +45,10 @@ export const SinglePostV2: React.FC<Props> = ({
   onClickLike = async () => {},
   onClickArchive = async () => {},
   onClickDelete = async () => {},
-  onClickEdit = async () => {},
 }) => {
   const { user: loggedInUser } = useUser();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const openPostModal = useNewPostStore((state) => state.openModal);
 
   return (
     <div
@@ -102,7 +106,20 @@ export const SinglePostV2: React.FC<Props> = ({
             loggedInUser={loggedInUser}
             onClickArchive={onClickArchive}
             onClickDelete={onClickDelete}
-            onClickEdit={onClickEdit}
+            onClickEdit={() => {
+              setIsEditModalOpen(true);
+              openPostModal({
+                modalType: "edit",
+                postId: post._id,
+                postText: post.text_content,
+                editPostFiles: post.media?.map((m) => ({
+                  original: m,
+                  id: nanoid(),
+                  isDeleted: false,
+                })),
+                onCloseModal: () => setIsEditModalOpen(false),
+              });
+            }}
           />
 
           {post.media && !!post.media.length && <PostMedia post={post} />}
@@ -124,6 +141,8 @@ export const SinglePostV2: React.FC<Props> = ({
       </div>
 
       {shouldShowThread && <ShowThread post={post} />}
+
+      {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
     </div>
   );
 };

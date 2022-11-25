@@ -29,6 +29,8 @@ export interface MyPostStore {
   updateOffset: () => void;
 
   loading: LoadingState;
+
+  replaceEditedPost: (post: CompletedPost) => void;
 }
 
 export const useMyPostStore = create<MyPostStore>()(
@@ -152,6 +154,14 @@ export const useMyPostStore = create<MyPostStore>()(
           posts: [],
           offset: 0,
         });
+      },
+
+      replaceEditedPost: (post) => {
+        set((state) => ({
+          posts: state.posts.map((statePost) =>
+            statePost._id === post._id ? post : statePost
+          ),
+        }));
       },
     }),
     { name: "MyPostStore" }

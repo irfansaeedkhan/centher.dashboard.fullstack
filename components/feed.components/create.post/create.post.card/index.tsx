@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
 
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
-import { CreatePostModal } from "../create.post.modal";
+import { PostModal } from "../post.modal";
 
 interface Props {}
 
 export const CreatePostCard: React.FC<Props> = () => {
   const { user } = useUser();
   const { openModal } = useNewPostStore();
+  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
   if (!user) return null;
 
@@ -30,11 +31,13 @@ export const CreatePostCard: React.FC<Props> = () => {
         />
         <button
           className={`w-full text-14px bg-transparent rounded-10px h-10 md:h-12 border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left outline-none focus:outline-none`}
-          onClick={() =>
+          onClick={() => {
+            setIsNewPostModalOpen(true);
             openModal({
               modalType: "new-post",
-            })
-          }
+              onCloseModal: () => setIsNewPostModalOpen(false),
+            });
+          }}
         >
           Start a post
         </button>
@@ -42,7 +45,7 @@ export const CreatePostCard: React.FC<Props> = () => {
 
       <PostModalActionButtons placement="create-post-card" />
 
-      <CreatePostModal modalTitle="Create Post" />
+      {isNewPostModalOpen && <PostModal modalTitle="Create Post" />}
     </div>
   );
 };

@@ -17,8 +17,8 @@ interface Props {
   postUser: PostUser;
   postType: PostType;
   loggedInUser: LoggedInUser | undefined;
+  onClickEdit: (() => void) | undefined;
   onClickDelete: (() => Promise<void>) | undefined;
-  onClickEdit: (() => Promise<void>) | undefined;
   onClickArchive: (() => Promise<void>) | undefined;
 }
 
@@ -109,7 +109,7 @@ export const PostHeader: React.FC<Props> = ({
           {/* 3 dots menu */}
           <PostActionMenu
             isBefore15Minutes={isBefore15Minutes}
-            onClickEdit={onClickEdit ?? (async () => {})}
+            onClickEdit={onClickEdit ?? (() => {})}
             onClickArchive={onClickArchive ?? (async () => {})}
             onClickDelete={onClickDelete ?? (async () => {})}
           />

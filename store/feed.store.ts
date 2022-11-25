@@ -22,6 +22,8 @@ export interface FeedStore {
     postId?: string
   ) => void;
 
+  replaceEditedPost: (post: CompletedPost) => void;
+
   offset: number;
   updateOffset: () => void;
 
@@ -147,6 +149,15 @@ export const useFeedStore = create<FeedStore>()(
               };
             }
             return post;
+          }),
+        }));
+      },
+
+      replaceEditedPost: (post) => {
+        set((state) => ({
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === post._id) return post;
+            return statePost;
           }),
         }));
       },

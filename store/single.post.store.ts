@@ -43,6 +43,8 @@ export interface SinglePostStore {
     postId?: string
   ) => void;
 
+  replaceEditedPost: (post: CompletedPost) => void;
+
   resetStore: (postId: string, loading?: LoadingState) => void;
 }
 
@@ -243,6 +245,18 @@ export const useSinglePostStore = create<SinglePostStore>()(
           repliesLoading: loading,
           repliesOffset: 0,
         });
+      },
+
+      replaceEditedPost: (post) => {
+        set((state) => ({
+          post: post._id === state.post?._id ? post : state.post,
+          replies: state.replies.map((reply) => {
+            if (reply._id === post._id) {
+              return post;
+            }
+            return reply;
+          }),
+        }));
       },
     }),
     { name: "SinglePostStore" }
