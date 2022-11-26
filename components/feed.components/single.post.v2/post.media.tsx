@@ -38,6 +38,12 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
     };
   }, [emblaApi, onSelect]);
 
+  // When media is deleted from post during edit, scroll the carousel to the first image
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollTo(0);
+  }, [post.media?.length, emblaApi]);
+
   return (
     <div className="relative mt-4">
       {/* root node */}

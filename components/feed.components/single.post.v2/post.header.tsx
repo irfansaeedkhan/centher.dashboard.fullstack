@@ -74,7 +74,8 @@ export const PostHeader: React.FC<Props> = ({
           <p
             className={clsx(
               `text-gray-shade-7 text-xs font-medium`,
-              postType === "reply" && "ml-3"
+              postType === "reply" && "ml-3",
+              postType !== "reply" && "mt-0.5"
             )}
           >
             {createdTime}
