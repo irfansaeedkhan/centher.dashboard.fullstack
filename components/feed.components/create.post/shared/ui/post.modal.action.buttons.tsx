@@ -20,10 +20,14 @@ import {
 
 interface Props {
   placement: "in-modal" | "create-post-card";
+  onClickActionButton?: () => void;
 }
 
-export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
-  const { openModal, setPostText, postText } = useNewPostStore();
+export const PostModalActionButtons: React.FC<Props> = ({
+  placement,
+  onClickActionButton,
+}) => {
+  const { setPostText, postText } = useNewPostStore();
   const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
 
@@ -43,12 +47,8 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
     try {
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
-      // Open modal only if placement is create-post-card
-      if (placement === "create-post-card") {
-        openModal({
-          modalType: "new-post",
-        });
-      }
+      // Call the callback function if any
+      onClickActionButton && onClickActionButton();
     } catch (err: any) {
       customLog(err.message, ["development", "staging"]);
       if (err.code.startsWith("app_")) {
@@ -125,12 +125,12 @@ export const PostModalActionButtons: React.FC<Props> = ({ placement }) => {
         )}
         onClick={
           placement === "create-post-card"
-            ? () =>
-                openModal({
-                  modalType: "new-post",
-                })
+            ? () => {
+                onClickActionButton && onClickActionButton();
+              }
             : () => {
                 setShowEmojiPicker((prev) => !prev);
+                onClickActionButton && onClickActionButton();
               }
         }
       >
