@@ -3,21 +3,17 @@ import React, { useEffect, useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { axiosNodeApi } from "@/utils/axios";
 import SingleArchive from "./_components/single.archive";
-
-interface IArchivedPost {
-  _id: string;
-  createdAt: string;
-}
+import { SinglePostV2 } from "@/components/feed.components";
+import { CompletedPost } from "@/models/post";
 
 const ArchivedPosts: NextPageWithLayout = () => {
-  const [archivedPosts, setArchivedPosts] = useState<IArchivedPost[] | null>(
+  const [archivedPosts, setArchivedPosts] = useState<CompletedPost[] | null>(
     []
   );
 
   useEffect(() => {
-    axiosNodeApi.get(`api/socials/posts/archived`).then((res) => {
-      setArchivedPosts(res.data.post);
-      console.log(res.data.post);
+    axiosNodeApi.get(`api/socials/posts`).then((res) => {
+      setArchivedPosts(res.data.posts);
     });
   }, []);
 
@@ -30,10 +26,20 @@ const ArchivedPosts: NextPageWithLayout = () => {
               Items in your archive are only visible to you.
             </div>
           </div>
-          <div className="space-y-2">
-            {archivedPosts?.map((post) => {
-              return <SingleArchive post={post} key={post._id} />;
-            })}
+          <div className="flex justify-center">
+            <div className="space-y-3">
+              {archivedPosts?.map((post) => {
+                return (
+                  <div key={post._id}>
+                    <SinglePostV2
+                      post={post}
+                      postType={"archived"}
+                      placement="profile-archived-page"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>

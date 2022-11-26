@@ -25,7 +25,9 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
 
       <Header />
 
-      <div className={`px-2 fxl:ml-[15.5rem] fsm:px-4 fmd:px-6 py-4 flg:py-6`}>
+      <div
+        className={`px-2 fxl:ml-[15.5rem] fsm:px-4 fmd:px-6 py-4 flg:py-6 mt-[60px]`}
+      >
         {props.children}
       </div>
 
