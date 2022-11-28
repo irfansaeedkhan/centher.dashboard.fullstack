@@ -155,7 +155,9 @@ const nftOwnerWrapper = ctl(
   `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
 );
 
-const nftOwnerName = ctl(`text-white text-xs font-medium`);
+const nftOwnerName = ctl(
+  `w-min text-white text-xs font-medium text-ellipsis line-clamp-1`
+);
 
 const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
 
