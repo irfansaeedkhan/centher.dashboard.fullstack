@@ -69,23 +69,25 @@ export const NFTCard = React.forwardRef<HTMLDivElement, NFTCardProps>(
                   width={28}
                 />
               )}
-              {user?.account_address ? (
-                <Link
-                  className="cursor-pointer"
-                  href={`/profile/${user?.account_address}`}
-                >
-                  <span className={nftOwnerName}>
-                    {user?.display_name ?? formatAddress(nftOwner)}
-                  </span>
-                </Link>
-              ) : (
-                <div>
-                  <span className={nftOwnerName}>
-                    {formatAddress(notRegistered)}
-                  </span>
-                </div>
-              )}
-              <YellowTick />
+              <div className="flex items-center gap-2">
+                {user?.account_address ? (
+                  <Link
+                    className="cursor-pointer truncate max-w-[200px] text-white"
+                    href={`/profile/${user?.account_address}`}
+                  >
+                    <span className={`text-white text-xs font-medium`}>
+                      {user?.display_name ?? formatAddress(nftOwner)}
+                    </span>
+                  </Link>
+                ) : (
+                  <div className="truncate max-w-[200px] text-white">
+                    <span className={`text-white text-xs font-medium`}>
+                      {formatAddress(notRegistered)}
+                    </span>
+                  </div>
+                )}
+                <YellowTick />
+              </div>
             </div>
           ) : (
             <HotNftsHeaderSkeleton />
@@ -153,10 +155,6 @@ const nftName = ctl(`font-semibold text-white`);
 
 const nftOwnerWrapper = ctl(
   `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
-);
-
-const nftOwnerName = ctl(
-  `w-min text-white text-xs font-medium text-ellipsis line-clamp-1`
 );
 
 const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
