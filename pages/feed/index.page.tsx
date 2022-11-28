@@ -84,7 +84,6 @@ const Feed: NextPageWithLayout = () => {
 
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
-          console.log(post);
           return (
             <div key={post._id} ref={lastPostRef}>
               <SinglePostV2

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
+import { HiOutlineArchive } from "react-icons/hi";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
@@ -23,7 +24,7 @@ export type Placement =
   | "profile-archived-page";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
   postType: PostType;
   placement: Placement;
   shouldShowThread?: boolean;
@@ -32,6 +33,7 @@ interface Props {
   onClickEdit?: () => void;
   onClickLike?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
+  onClickRestore?: () => Promise<void>;
   onClickDelete?: () => Promise<void>;
 }
 
@@ -44,6 +46,7 @@ export const SinglePostV2: React.FC<Props> = ({
   onClickReply = () => {},
   onClickLike = async () => {},
   onClickArchive = async () => {},
+  onClickRestore = async () => {},
   onClickDelete = async () => {},
 }) => {
   const { user: loggedInUser } = useUser();
@@ -64,30 +67,40 @@ export const SinglePostV2: React.FC<Props> = ({
         className
       )}
     >
+      {postType === "archived" && (
+        <div className="mb-2 flex text-white gap-x-2.5">
+          <HiOutlineArchive className="w-[18px] h-[18px]" />
+          <span className="text-sm">Archived</span>
+        </div>
+      )}
+
       <div className="grid grid-cols-[auto_1fr] gap-x-3">
-        {postType === "reply-w-parent-header" && (
-          <>
-            <PostUserImage
-              postUser={post.parent_post?.user}
-              shouldShowConnectLines={true}
-            />
-            <div
-              className={clsx(
-                `flex-grow pb-5 mb-5 border-b-2 border-b-gray-shade-3`
-              )}
-            >
-              <PostHeader
-                post={post}
-                postUser={post.parent_post?.user}
-                postType={postType}
-                loggedInUser={undefined}
-                onClickArchive={undefined}
-                onClickDelete={undefined}
-                onClickEdit={undefined}
+        {postType === "reply-w-parent-header" &&
+          post.status !== "archived" &&
+          post.parent_post && (
+            <>
+              <PostUserImage
+                postUser={post.parent_post.user}
+                shouldShowConnectLines={true}
               />
-            </div>
-          </>
-        )}
+              <div
+                className={clsx(
+                  `flex-grow pb-5 mb-5 border-b-2 border-b-gray-shade-3`
+                )}
+              >
+                <PostHeader
+                  post={post}
+                  postUser={post.parent_post?.user!}
+                  postType={postType}
+                  loggedInUser={undefined}
+                  onClickArchive={undefined}
+                  onClickRestore={undefined}
+                  onClickDelete={undefined}
+                  onClickEdit={undefined}
+                />
+              </div>
+            </>
+          )}
 
         <PostUserImage
           postUser={post.user}
@@ -105,6 +118,7 @@ export const SinglePostV2: React.FC<Props> = ({
             postType={postType === "reply-w-parent-header" ? "main" : postType}
             loggedInUser={loggedInUser}
             onClickArchive={onClickArchive}
+            onClickRestore={onClickRestore}
             onClickDelete={onClickDelete}
             onClickEdit={() => {
               setIsEditModalOpen(true);
@@ -134,6 +148,7 @@ export const SinglePostV2: React.FC<Props> = ({
 
           <PostFooter
             post={post}
+            postType={postType}
             onClickLike={onClickLike}
             onClickReply={onClickReply}
           />

@@ -3,10 +3,10 @@ import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
 }
 
 export const PostMedia: React.FC<Props> = ({ post }) => {

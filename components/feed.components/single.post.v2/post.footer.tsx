@@ -3,18 +3,21 @@ import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { FiMessageCircle, FiThumbsUp, FiShare } from "react-icons/fi";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import { ShareMenu } from "./share.menu";
+import { PostType } from "./main";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
+  postType: PostType;
   onClickLike: () => Promise<void>;
   onClickReply: () => void;
 }
 
 export const PostFooter: React.FC<Props> = ({
   post,
+  postType,
   onClickLike,
   onClickReply,
 }) => {
@@ -56,7 +59,7 @@ export const PostFooter: React.FC<Props> = ({
           onClick={() => setIsShareMenuOpen((prev) => !prev)}
         />
 
-        {isShareMenuOpen && <ShareMenu post={post} />}
+        {isShareMenuOpen && <ShareMenu post={post} postType={postType} />}
       </AnalyticsCount>
     </footer>
   );

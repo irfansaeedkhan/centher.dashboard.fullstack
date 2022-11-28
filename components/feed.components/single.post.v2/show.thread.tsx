@@ -2,11 +2,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
 }
 
 export const ShowThread: React.FC<Props> = ({ post }) => {

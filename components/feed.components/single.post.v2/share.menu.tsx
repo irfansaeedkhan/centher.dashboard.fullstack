@@ -6,16 +6,20 @@ import { FiTwitter } from "react-icons/fi";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 import { LinkIcon, WorldIcon } from "@/assets/svgs";
 
+import { PostType } from "./main";
+
 interface SinglePostProps extends HTMLAttributes<HTMLDivElement> {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
+  postType: PostType;
 }
 
 export const ShareMenu: React.FC<SinglePostProps> = ({
   post,
+  postType,
   className,
   ...props
 }) => {
@@ -45,20 +49,22 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
         <div>
           <button onClick={copyShareUrl} className={clsx(shareBtnClasses)}>
             <LinkIcon className={`w-5 h-5`} />
-            <span>Copy link</span>
+            <span>Copy Link</span>
           </button>
-          <button
-            className={clsx(shareBtnClasses)}
-            onClick={() => setShareMenuState("menu-2")}
-          >
-            <WorldIcon className={`w-5 h-5`} />
-            <span className="flex-grow text-left">Share Via...</span>
-            <MdNavigateNext className={`w-6 h-6`} />
-          </button>
+          {postType !== "archived" && (
+            <button
+              className={clsx(shareBtnClasses)}
+              onClick={() => setShareMenuState("menu-2")}
+            >
+              <WorldIcon className={`w-5 h-5`} />
+              <span className="flex-grow text-left">Share Via...</span>
+              <MdNavigateNext className={`w-6 h-6`} />
+            </button>
+          )}
         </div>
       )}
 
-      {shareMenuState === "menu-2" && (
+      {shareMenuState === "menu-2" && postType !== "archived" && (
         <div>
           <button
             className={clsx(shareBtnClasses, "pl-4")}

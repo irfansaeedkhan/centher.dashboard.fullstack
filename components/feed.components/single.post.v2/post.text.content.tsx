@@ -1,12 +1,12 @@
 import React from "react";
 import clsx from "clsx";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import type { Placement, PostType } from "./main";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
   postType: PostType;
   placement: Placement;
 }
