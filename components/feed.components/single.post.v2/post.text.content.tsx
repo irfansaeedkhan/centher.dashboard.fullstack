@@ -22,6 +22,9 @@ export const PostTextContent: React.FC<Props> = ({
         `whitespace-pre-wrap break-all text-app-post-text text-sm mt-4`,
         placement === "single-post-page" && postType === "main" && "font-bold"
       )}
+      style={{
+        wordBreak: "break-word",
+      }}
     >
       {post.text_content}
     </div>

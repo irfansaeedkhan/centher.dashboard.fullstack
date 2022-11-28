@@ -23,7 +23,7 @@ const SidebarAuthModal: React.FC = () => {
 export default SidebarAuthModal;
 
 const modalWrapper = ctl(
-  `w-[218px] min-h-[200px] rounded-[32px] bg-black-shade-10 mx-4 bg-[url('/images/Rectangle.png')] p-6 flex flex-col gap-4`
+  `w-[218px] min-h-[200px] rounded-[32px] bg-black-shade-10 ml-4 bg-[url('/images/Rectangle.png')] p-6 flex flex-col gap-4`
 );
 
 const title = ctl(`text-white font-semibold text-2xl`);
