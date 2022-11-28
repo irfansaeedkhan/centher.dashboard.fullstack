@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
 
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -205,7 +204,8 @@ silver1 silver2 silverLastFrame
           <div className="flex flex-col gap-1">
             <Link
               href={`/profile/${_result.account_address}`}
-              className="text-base font-semibold text-white hover:text-brand-primary"
+              className="text-base font-semibold text-white hover:text-brand-primary text-ellipsis line-clamp-1"
+              title={_result.display_name}
             >
               {_result.display_name}
             </Link>
@@ -242,26 +242,6 @@ UserWithFollow.displayName = "UserWithFollow";
 
 export default UserWithFollow;
 
-const connectButton = ctl(`
-  px-6 
-  py-2
-  flex
-  text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-brand-primary 
-  text-black-shade-2 
-  hover:bg-brand-primary-dark 
-`);
-const followingButton = ctl(`
-  px-6 
-  py-2
-  flex
-  !text-sm 
-  rounded-lg 
-  items-center 
-  font-semibold 
-  bg-gray-shade-3 
-  
-`);
+const connectButton = `px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;
+
+const followingButton = `px-6 py-2 flex !text-sm rounded-lg items-center font-semibold bg-gray-shade-3`;
