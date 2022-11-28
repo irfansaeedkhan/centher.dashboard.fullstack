@@ -40,7 +40,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
       <div className="flex flex-col gap-3">
         <h5 className="flex gap-2 items-center text-white text-12px font-normal">
           {prefix} by{" "}
-          <span className="font-semibold cursor-pointer hover:text-brand-primary-dark">
+          <span className="font-semibold cursor-pointer hover:text-brand-primary-dark text-ellipsis line-clamp-1">
             {item.type === "BuyItem" ||
             item.type === "AcceptBid" ||
             item.type === "EndAuction" ? (
