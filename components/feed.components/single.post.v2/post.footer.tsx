@@ -33,23 +33,28 @@ export const PostFooter: React.FC<Props> = ({
         post.text_content ? "mt-3" : "mt-4"
       )}
     >
-      <AnalyticsCount className="text-gray-shade-10" onClick={onClickReply}>
+      <AnalyticsCount
+        className={clsx(
+          "text-gray-shade-10",
+          postType === "archived" && "!cursor-default"
+        )}
+        onClick={onClickReply}
+      >
         <FiMessageCircle className="w-5 h-5" />
         <span>{post.replies_count}</span>
       </AnalyticsCount>
-
       <AnalyticsCount
         onClick={onClickLike}
         className={clsx(
           post.liked_by_loggedin_user
             ? "text-brand-primary"
-            : "text-gray-shade-10"
+            : "text-gray-shade-10",
+          postType === "archived" && "!cursor-default"
         )}
       >
         <FiThumbsUp className="w-5 h-5" />
         <span className="mt-1">{post.likes_count}</span>
       </AnalyticsCount>
-
       <AnalyticsCount
         ref={shareMenuContainerRef}
         className="relative text-gray-shade-10"
