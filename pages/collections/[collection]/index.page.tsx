@@ -239,17 +239,20 @@ const Collection: NextPageWithLayout = () => {
               <div className={topDetais}>
                 <div>
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <Link
-                    href={{
-                      pathname: AppRoutes.profile.nfts,
-                      query: {
-                        account_address: info?.creator,
-                      },
-                    }}
-                    className="text-gray-shade-18 text-14px font-semibold"
-                  >
-                    Created by {user?.display_name}
-                  </Link>
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-white">Created by</span>
+                    <Link
+                      href={{
+                        pathname: AppRoutes.profile.nfts,
+                        query: {
+                          account_address: info?.creator,
+                        },
+                      }}
+                      className="text-gray-shade-18 text-14px font-semibold text-ellipsis line-clamp-1 hover:text-brand-primary"
+                    >
+                      {user?.display_name}
+                    </Link>
+                  </div>
                 </div>
                 <div className={detailsCard}>
                   <div className="text-center">

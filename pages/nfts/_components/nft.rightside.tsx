@@ -259,7 +259,7 @@ const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2
 `);
 const nameBoxZValue = ctl(`
-text-14px font-semibold text-white hover:text-brand-primary-dark
+text-14px font-semibold text-white hover:text-brand-primary-dark text-ellipsis line-clamp-1
 `);
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap

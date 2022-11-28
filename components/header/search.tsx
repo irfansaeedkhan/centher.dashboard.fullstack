@@ -6,6 +6,7 @@ import { useSearchStore } from "@/store/search.store";
 import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
+import { customLog } from "@/utils/custom.log";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -17,6 +18,8 @@ const SearchBar = () => {
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [result, setResult] = useState([]);
+
+  const searchAbortControllerRef = useRef<AbortController | null>(null);
 
   const ref = useRef<HTMLDivElement>(null);
   useOnClickOutside(ref, () => {
@@ -50,8 +53,16 @@ const SearchBar = () => {
     if (e.target.value.trim() === "") {
       setOpenPopup(false);
     } else {
+      if (searchAbortControllerRef.current) {
+        searchAbortControllerRef.current.abort();
+      }
+
+      searchAbortControllerRef.current = new AbortController();
+
       await axiosNodeApi
-        .get(`/api/search?q=${e.target.value}&limit=5&offset=0`)
+        .get(`/api/search?q=${e.target.value}&limit=5&offset=0`, {
+          signal: searchAbortControllerRef.current.signal,
+        })
         .then((res) => {
           setResult(res.data.search_results);
 
@@ -63,6 +74,9 @@ const SearchBar = () => {
           } else {
             setOpenPopup(false);
           }
+        })
+        .catch((e) => {
+          customLog(e, ["development"]);
         });
     }
   };
