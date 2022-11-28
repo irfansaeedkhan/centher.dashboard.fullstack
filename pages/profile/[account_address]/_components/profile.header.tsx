@@ -394,7 +394,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                     </CoverUploadButton>
                   )}
                   {coverImage.newImage && (
-                    <>
+                    <div className="flex fsm:flex-row flex-col fsm:gap-3 gap-2">
                       <CoverUploadButton
                         variant="cancel"
                         onClick={setInitialCoverImage}
@@ -417,7 +417,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                           Upload Cover
                         </span>
                       </CoverUploadButton>
-                    </>
+                    </div>
                   )}
                 </div>
               </>
