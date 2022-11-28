@@ -26,3 +26,9 @@ export const likePost = async (
     actionType: actionType,
   });
 };
+
+export const createPostView = async (post_id: string) => {
+  await axiosNodeApi.post(`/api/socials/analytics/post-views`, {
+    post_id,
+  });
+};

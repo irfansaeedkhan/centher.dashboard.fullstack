@@ -30,6 +30,8 @@ export interface MyPostStore {
 
   loading: LoadingState;
 
+  createPostViewInStore: (postId: string) => void;
+
   replaceEditedPost: (post: CompletedPost) => void;
 }
 
@@ -154,6 +156,20 @@ export const useMyPostStore = create<MyPostStore>()(
           posts: [],
           offset: 0,
         });
+      },
+
+      createPostViewInStore: (postId) => {
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                viewed_by_loggedin_user: true,
+              };
+            }
+            return post;
+          }),
+        }));
       },
 
       replaceEditedPost: (post) => {

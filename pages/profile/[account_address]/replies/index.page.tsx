@@ -11,6 +11,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   archivePost,
+  createPostView,
   deletePost,
   SinglePostV2,
 } from "@/components/feed.components";
@@ -40,20 +41,17 @@ const Replies: NextPageWithLayout = () => {
     updateOffset,
     loading,
     likePostAPI,
+    createPostViewInStore,
   } = useMyRepliesStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
-
     removePost: state.removePost,
-
     offset: state.offset,
     updateOffset: state.updateOffset,
-
     resetPosts: state.resetPosts,
-
     likePostAPI: state.likePostAPI,
-
     loading: state.loading,
+    createPostViewInStore: state.createPostViewInStore,
   }));
 
   useEffect(() => {
@@ -91,6 +89,15 @@ const Replies: NextPageWithLayout = () => {
     }
   };
 
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       {posts.map((post) => {
@@ -119,6 +126,7 @@ const Replies: NextPageWithLayout = () => {
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
                 onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
           );
@@ -147,6 +155,7 @@ const Replies: NextPageWithLayout = () => {
             }}
             onClickArchive={() => handleAction(post._id, archivePost)}
             onClickDelete={() => handleAction(post._id, deletePost)}
+            onPostInViewport={() => handleCreatePostView(post._id)}
           />
         );
       })}

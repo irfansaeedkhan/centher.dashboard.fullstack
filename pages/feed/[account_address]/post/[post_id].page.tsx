@@ -13,6 +13,7 @@ import {
   SinglePostV2,
   archivePost,
   deletePost,
+  createPostView,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
@@ -36,6 +37,7 @@ const SinglePostPage: NextPageWithLayout = () => {
     likePostAPI,
     updateRepliesOffset,
     removeReply,
+    createPostViewInStore,
   } = useSinglePostStore();
 
   const feedStore = useFeedStore((state) => ({
@@ -96,6 +98,15 @@ const SinglePostPage: NextPageWithLayout = () => {
     }
   };
 
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       <BackButton className="mb-3" />
@@ -125,6 +136,7 @@ const SinglePostPage: NextPageWithLayout = () => {
               }}
               onClickArchive={() => handleAction(post._id, "main", archivePost)}
               onClickDelete={() => handleAction(post._id, "main", deletePost)}
+              onPostInViewport={() => handleCreatePostView(post._id)}
             />
           )}
 
@@ -165,6 +177,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                     onClickDelete={() =>
                       handleAction(reply._id, "reply", deletePost)
                     }
+                    onPostInViewport={() => handleCreatePostView(reply._id)}
                   />
                 </div>
               );
@@ -197,6 +210,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                 onClickDelete={() =>
                   handleAction(reply._id, "reply", deletePost)
                 }
+                onPostInViewport={() => handleCreatePostView(reply._id)}
               />
             );
           })}

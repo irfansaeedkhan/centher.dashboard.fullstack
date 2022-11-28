@@ -43,6 +43,8 @@ export interface SinglePostStore {
     postId?: string
   ) => void;
 
+  createPostViewInStore: (postId: string) => void;
+
   replaceEditedPost: (post: CompletedPost) => void;
 
   resetStore: (postId: string, loading?: LoadingState) => void;
@@ -253,6 +255,21 @@ export const useSinglePostStore = create<SinglePostStore>()(
           replies: state.replies.map((reply) => {
             if (reply._id === post._id) {
               return post;
+            }
+            return reply;
+          }),
+        }));
+      },
+
+      createPostViewInStore: (postId) => {
+        set((state) => ({
+          post:
+            postId === state.post?._id
+              ? { ...state.post, viewed_by_loggedin_user: true }
+              : state.post,
+          replies: state.replies.map((reply) => {
+            if (reply._id === postId) {
+              return { ...reply, viewed_by_loggedin_user: true };
             }
             return reply;
           }),

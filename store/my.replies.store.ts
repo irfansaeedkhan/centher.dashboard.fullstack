@@ -26,6 +26,8 @@ export interface RepliesStore {
 
   offset: number;
   updateOffset: () => void;
+
+  createPostViewInStore: (postId: string) => void;
 }
 
 export const useMyRepliesStore = create<RepliesStore>()(
@@ -139,6 +141,20 @@ export const useMyRepliesStore = create<RepliesStore>()(
           posts: [],
           offset: 0,
         });
+      },
+
+      createPostViewInStore: (postId) => {
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                viewed_by_loggedin_user: true,
+              };
+            }
+            return post;
+          }),
+        }));
       },
     }),
     { name: "RepliesStore" }

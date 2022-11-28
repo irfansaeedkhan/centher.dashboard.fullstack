@@ -22,6 +22,8 @@ export interface FeedStore {
     postId?: string
   ) => void;
 
+  createPostViewInStore: (postId: string) => void;
+
   replaceEditedPost: (post: CompletedPost) => void;
 
   offset: number;
@@ -109,6 +111,20 @@ export const useFeedStore = create<FeedStore>()(
               return {
                 ...post,
                 replies_count: post.replies_count - 1,
+              };
+            }
+            return post;
+          }),
+        }));
+      },
+
+      createPostViewInStore: (postId) => {
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return {
+                ...post,
+                viewed_by_loggedin_user: true,
               };
             }
             return post;

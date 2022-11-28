@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import clsx from "clsx";
 import { HiOutlineArchive } from "react-icons/hi";
+import { useInView } from "react-intersection-observer";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
 import { ArchivedPost, CompletedPost } from "@/models/post";
+import { customLog } from "@/utils/custom.log";
 
 import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
@@ -29,6 +31,7 @@ interface Props {
   placement: Placement;
   shouldShowThread?: boolean;
   className?: string;
+  onPostInViewport?: () => Promise<void>;
   onClickReply?: () => void;
   onClickEdit?: () => void;
   onClickLike?: () => Promise<void>;
@@ -43,6 +46,7 @@ export const SinglePostV2: React.FC<Props> = ({
   placement,
   shouldShowThread = false,
   className,
+  onPostInViewport = async () => {},
   onClickReply = () => {},
   onClickLike = async () => {},
   onClickArchive = async () => {},
@@ -53,8 +57,35 @@ export const SinglePostV2: React.FC<Props> = ({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
 
+  const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
+    threshold: 0.8,
+  });
+
+  // When post is in viewport, call onPostInViewport
+  useEffect(() => {
+    (async () => {
+      if (
+        currentPostEntry &&
+        currentPostEntry.intersectionRatio > 0.8 &&
+        !post.viewed_by_loggedin_user
+      ) {
+        try {
+          await onPostInViewport();
+        } catch (error: any) {
+          customLog(error, ["development"]);
+        }
+      }
+    })();
+  }, [
+    post._id,
+    post.viewed_by_loggedin_user,
+    currentPostEntry,
+    onPostInViewport,
+  ]);
+
   return (
     <div
+      ref={currentPostRef}
       className={clsx(
         `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px`,
         placement === "single-post-page" &&

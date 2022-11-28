@@ -12,6 +12,7 @@ import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   archivePost,
+  createPostView,
   deletePost,
   SinglePostV2,
 } from "@/components/feed.components";
@@ -43,18 +44,17 @@ const Profile: NextPageWithLayout = () => {
     resetPosts,
     loading,
     likePostAPI,
+    createPostViewInStore,
   } = useMyPostStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
-
     addNewPost: state.addNewPost,
     removePost: state.removePost,
-
     likePostAPI: state.likePostAPI,
-
     offset: state.offset,
     updateOffset: state.updateOffset,
     resetPosts: state.resetPosts,
+    createPostViewInStore: state.createPostViewInStore,
     loading: state.loading,
   }));
 
@@ -100,6 +100,15 @@ const Profile: NextPageWithLayout = () => {
     }
   };
 
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       {loggedInUser?.account_address === router.query.account_address && (
@@ -132,6 +141,7 @@ const Profile: NextPageWithLayout = () => {
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
                 onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
           );
@@ -160,6 +170,7 @@ const Profile: NextPageWithLayout = () => {
             }}
             onClickArchive={() => handleAction(post._id, archivePost)}
             onClickDelete={() => handleAction(post._id, deletePost)}
+            onPostInViewport={() => handleCreatePostView(post._id)}
           />
         );
       })}
