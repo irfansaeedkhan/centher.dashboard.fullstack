@@ -11,6 +11,7 @@ export const AppRoutes = {
     replies: "/profile/[account_address]/replies",
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
+    archived_posts: "/profile/[account_address]/archived-posts",
     settings: "/profile/settings",
 
     // Coming soon pages

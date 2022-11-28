@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useCallback, useEffect, useRef, useMemo } from "react";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -21,7 +20,6 @@ import {
   FiYoutube,
 } from "react-icons/fi";
 
-// App imports
 import { useProfileCardStore } from "@/store/profile.card.store";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
@@ -39,13 +37,12 @@ import {
   SpinIcon3,
 } from "@/assets/svgs";
 
-// Current directory imports
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
-// import NFTProfileTabs from "./nft.profile.tabs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import Profile3DotsMenu from "./profile.3.dots.menu";
 
 type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -56,12 +53,10 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
 const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   const { incrementFollowersCount, decrementFollowersCount } =
-    useProfileCardStore((state) => {
-      return {
-        incrementFollowersCount: state.incrementFollowersCount,
-        decrementFollowersCount: state.decrementFollowersCount,
-      };
-    });
+    useProfileCardStore((state) => ({
+      incrementFollowersCount: state.incrementFollowersCount,
+      decrementFollowersCount: state.decrementFollowersCount,
+    }));
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { user, mutateUser } = useGetUser(
@@ -80,10 +75,10 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const isCurrentUserLoggedInUser = useMemo(() => {
+  const isOwnProfile = useMemo(() => {
     return (
-      loggedInUser &&
-      user &&
+      !!loggedInUser &&
+      !!user &&
       loggedInUser.account_address.toLowerCase() ===
         user.account_address.toLowerCase()
     );
@@ -370,7 +365,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
               backgroundPosition: `center center`,
             }}
           >
-            {isCurrentUserLoggedInUser && (
+            {isOwnProfile && (
               <>
                 <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-6 fsm:bottom-4">
                   <input
@@ -480,7 +475,15 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
               </div>
             </div>
           </div>
-          <div className={`mt-16 px-2 fsm:px-8 space-y-4 fmd:space-y-6`}>
+
+          <div
+            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6 pt-10`}
+          >
+            <Profile3DotsMenu
+              isOwnProfile={isOwnProfile}
+              loggedInUser={loggedInUser}
+            />
+
             <div className={`space-y-2`}>
               <div className="w-full justify-center flex">
                 <div
@@ -500,7 +503,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                   <h6 className={`text-white text-14px font-semibold`}>
                     {sliceAccountAddress(user.account_address)}
                   </h6>
-                  {isCurrentUserLoggedInUser ? (
+                  {isOwnProfile ? (
                     <button
                       onClick={() => {
                         copy(

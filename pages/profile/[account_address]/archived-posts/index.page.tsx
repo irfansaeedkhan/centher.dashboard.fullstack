@@ -5,7 +5,6 @@ import { useArchivedPostsStore } from "@/store/archived.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { ArchivedPost } from "@/models/post";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   unArchivePost,
