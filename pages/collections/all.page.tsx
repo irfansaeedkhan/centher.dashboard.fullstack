@@ -42,17 +42,17 @@ const AllNFTCollection: NextPageWithLayout = () => {
     sortDir: state.sortDir,
   }));
   console.log("collections", collections);
-  useEffect(() => {
-    fetchCollections(categoryInStore, category, sortDir);
-  }, [fetchCollections, sortDir, category, categoryInStore]);
+  // useEffect(() => {
+  //   fetchCollections(categoryInStore, category, sortDir);
+  // }, [fetchCollections, sortDir, category, categoryInStore]);
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
-  useEffect(() => {
-    if (offset > 0) {
-      fetchCollections(categoryInStore, category, sortDir);
-    }
-  }, [offset, fetchCollections, category, categoryInStore, sortDir]);
+  // useEffect(() => {
+  //   if (offset > 0) {
+  //     fetchCollections(categoryInStore, category, sortDir);
+  //   }
+  // }, [offset, fetchCollections, category, categoryInStore, sortDir]);
 
   useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
