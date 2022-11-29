@@ -47,6 +47,7 @@ export { default as FollowerIcon } from "./follower.icon.svg";
 export { default as LinkIcon } from "./link.svg";
 export { default as WorldIcon } from "./world.svg";
 export { default as shareIcon } from "./shareIcon.svg";
+export { default as ArchiveEmptyIcon } from "./archive.icon.svg";
 
 export const NTRDAOIcon: React.FC<IconProps> = (props) => {
   return (

@@ -6,6 +6,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { ArchiveEmptyIcon } from "@/assets/svgs";
 import {
   unArchivePost,
   deletePost,
@@ -13,9 +14,11 @@ import {
   getPost,
 } from "@/components/feed.components";
 import { customLog } from "@/utils/custom.log";
+import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 
 const ArchivedPosts: NextPageWithLayout = () => {
-  const { posts, fetchPosts, removePost, offset, updateOffset } =
+  const { posts, fetchPosts, removePost, offset, updateOffset, loading } =
     useArchivedPostsStore((state) => ({
       posts: state.posts,
       fetchPosts: state.fetchPosts,
@@ -24,6 +27,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
 
       offset: state.offset,
       updateOffset: state.updateOffset,
+      loading: state.loading,
     }));
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
@@ -106,6 +110,25 @@ const ArchivedPosts: NextPageWithLayout = () => {
             />
           );
         })}
+
+        {(loading === "loading" || loading === "idle") && (
+          <>
+            <SinglePostCardSkeleton />
+            <SinglePostTextCardSkeleton />
+            <SinglePostCardSkeleton />
+          </>
+        )}
+
+        {loading === "loaded" && posts.length === 0 && (
+          <div>
+            <div className="flex justify-center mt-[60px]">
+              <ArchiveEmptyIcon />
+            </div>
+            <div className="flex justify-center mt-[35px]">
+              <p className="text-white">No Archive posts available</p>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
