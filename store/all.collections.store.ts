@@ -10,28 +10,33 @@ import {
   collectionsQuery,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Category, Collection } from "@/models/nft";
+import { Category, Collection, OrderBy, OrderDirection } from "@/models/nft";
 
 export interface AllCollectionsStore {
   collections: Collection[];
   fetchCollections: (
-    offset?: number,
-    limit?: number,
-    category?: string
+    category: Category,
+    sortBy: OrderBy,
+    sortDir: OrderDirection
   ) => Promise<void>;
   category: Category;
   offset: number;
   updateOffset: () => void;
   updateCategory: (category: Category) => void;
+  updateSortBy: (category: OrderBy, dir: OrderDirection) => void;
   limit: number;
+  sortDir: OrderDirection;
+  sortBy: OrderBy;
   loading: LoadingState;
 }
 
 export const useAllCollectionsStore = create<AllCollectionsStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       collections: [],
       category: "all",
+      sortBy: "tradingVolumn",
+      sortDir: "desc",
       offset: 0,
       limit: 10,
       loading: "idle",
@@ -47,7 +52,15 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           collections: [],
         })),
 
-      fetchCollections: async (offset, limit, category) => {
+      updateSortBy: async (category, dir) =>
+        set((state) => ({
+          sortBy: category,
+          sortDir: dir,
+          offset: 0,
+          collections: [],
+        })),
+
+      fetchCollections: async (category, sortBy, sortDir) => {
         try {
           set({ loading: "loading" });
 
@@ -61,8 +74,10 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
             const { data: result, error } = await client.query({
               query: gql(collectionsQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
+                orderBy: sortBy,
+                orderDirection: sortDir,
               },
               fetchPolicy: "cache-first",
             });
@@ -74,9 +89,11 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
             const { data: result, error } = await client.query({
               query: gql(collectionsByCategoryQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
                 category: category?.toLowerCase(),
+                orderBy: sortBy,
+                orderDirection: sortDir,
               },
               fetchPolicy: "cache-first",
             });

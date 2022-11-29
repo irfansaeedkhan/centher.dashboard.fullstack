@@ -14,6 +14,7 @@ import { useAllCollectionsStore } from "@/store/all.collections.store";
 import CategoryDropdown from "../explore/_components/category.dropdown";
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { NftsCollectionEmpty } from "@/assets/svgs";
+import { useInView } from "react-intersection-observer";
 
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
@@ -24,7 +25,9 @@ const AllNFTCollection: NextPageWithLayout = () => {
     categoryInStore,
     offset,
     limit,
+    sortDir,
     updateCategory,
+    updateOffset,
     fetchCollections,
     loading,
   } = useAllCollectionsStore((state) => ({
@@ -35,11 +38,27 @@ const AllNFTCollection: NextPageWithLayout = () => {
     updateCategory: state.updateCategory,
     fetchCollections: state.fetchCollections,
     loading: state.loading,
+    updateOffset: state.updateOffset,
+    sortDir: state.sortDir,
   }));
+  console.log("collections", collections);
+  useEffect(() => {
+    fetchCollections(categoryInStore, category, sortDir);
+  }, [fetchCollections, sortDir, category, categoryInStore]);
+
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   useEffect(() => {
-    fetchCollections(offset, limit, categoryInStore);
-  }, [fetchCollections, limit, offset, categoryInStore]);
+    if (offset > 0) {
+      fetchCollections(categoryInStore, category, sortDir);
+    }
+  }, [offset, fetchCollections, category, categoryInStore, sortDir]);
+
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [lastPostRef, lastPostEntry, updateOffset]);
 
   useEffect(() => {
     updateCategory(category);
@@ -77,6 +96,13 @@ const AllNFTCollection: NextPageWithLayout = () => {
       {collections.length > 0 && (
         <div className={collectionCardStyle}>
           {collections.map((collection) => {
+            if (collection.id === collections[collections.length - 1].id) {
+              return (
+                <div ref={lastPostRef} key={collection.id}>
+                  <CollectionCard data={collection} />
+                </div>
+              );
+            }
             return <CollectionCard data={collection} key={collection.id} />;
           })}
         </div>
