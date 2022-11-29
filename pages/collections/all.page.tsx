@@ -26,6 +26,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
     offset,
     limit,
     sortDir,
+    sortBy,
     updateCategory,
     updateOffset,
     fetchCollections,
@@ -39,20 +40,22 @@ const AllNFTCollection: NextPageWithLayout = () => {
     fetchCollections: state.fetchCollections,
     loading: state.loading,
     updateOffset: state.updateOffset,
+    sortBy: state.sortBy,
     sortDir: state.sortDir,
   }));
   console.log("collections", collections);
-  // useEffect(() => {
-  //   fetchCollections(categoryInStore, category, sortDir);
-  // }, [fetchCollections, sortDir, category, categoryInStore]);
+
+  useEffect(() => {
+    fetchCollections(categoryInStore, sortBy, sortDir);
+  }, [fetchCollections, sortDir, sortBy, categoryInStore]);
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   // useEffect(() => {
   //   if (offset > 0) {
-  //     fetchCollections(categoryInStore, category, sortDir);
+  //     fetchCollections(categoryInStore, sortBy, sortDir);
   //   }
-  // }, [offset, fetchCollections, category, categoryInStore, sortDir]);
+  // }, [offset, fetchCollections, sortBy, categoryInStore, sortDir]);
 
   useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
