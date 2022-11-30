@@ -1,14 +1,14 @@
-import ctl from "@netlify/classnames-template-literals";
-import clsx from "clsx";
 import React, { useCallback, useRef, useState } from "react";
-import { CoverImageWithFile } from "./profile.header";
-import { ModalWrapper } from "@/components/modal";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
+import { ModalWrapper } from "@/components/modal";
+
+import { CoverImageWithFile } from "./profile.header";
+
 interface CropperProps {
   coverImage: CoverImageWithFile;
-  setCoverImage: (coverImage: any) => void;
+  setCoverImage: React.Dispatch<React.SetStateAction<CoverImageWithFile>>;
 }
 
 const CropperImage: React.FC<CropperProps> = ({
@@ -16,13 +16,20 @@ const CropperImage: React.FC<CropperProps> = ({
   setCoverImage,
 }) => {
   const cropperRef = useRef<HTMLImageElement>(null);
-  const onCrop = () => {
+  const onCrop = async () => {
     const imageElement: any = cropperRef?.current;
     const cropper: any = imageElement?.cropper;
-    // console.log(cropper.getCroppedCanvas().toDataURL());
-    setCoverImage((prev: any) => ({
+
+    const file: File = await dataUrlToFile(
+      cropper.getCroppedCanvas().toDataURL(),
+      coverImage.blob?.name || "cropped-image.png"
+    );
+
+    setCoverImage((prev) => ({
       ...prev,
       path: cropper.getCroppedCanvas().toDataURL(),
+      blob: file,
+      object_name: "cropped-image.png",
       preview: "",
     }));
   };
@@ -54,8 +61,8 @@ const CropperImage: React.FC<CropperProps> = ({
             movable={false}
             zoomable={false}
             scalable={false}
-            initialAspectRatio={622 / 180}
-            aspectRatio={622 / 180}
+            initialAspectRatio={840 / 180}
+            aspectRatio={840 / 180}
             cropBoxResizable={false}
             minContainerHeight={180}
             minCropBoxHeight={180}
@@ -78,3 +85,9 @@ const CropperImage: React.FC<CropperProps> = ({
 };
 
 export default CropperImage;
+
+async function dataUrlToFile(dataUrl: string, fileName: string): Promise<File> {
+  const res: Response = await fetch(dataUrl);
+  const blob: Blob = await res.blob();
+  return new File([blob], fileName, { type: "image/png" });
+}

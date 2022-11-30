@@ -1,5 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -24,6 +26,23 @@ const NFTProfileCollections: NextPageWithLayout = () => {
     })
   );
 
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 3,
+      slidesToSlide: 1,
+    },
+    tablet: {
+      breakpoint: { max: 1440, min: 464 },
+      items: 2,
+      slidesToSlide: 1,
+    },
+    mobile: {
+      breakpoint: { max: 659, min: 0 },
+      items: 1,
+      slidesToSlide: 1,
+    },
+  };
   useEffect(() => {
     if (account) {
       fetchCollections(account);
@@ -33,10 +52,25 @@ const NFTProfileCollections: NextPageWithLayout = () => {
   return (
     <>
       {collections && collections.length > 0 && (
-        <div className="flex  gap-5 md:flex-wrap lg:flex-nowrap">
-          {collections.map((collection) => {
-            return <CollectionCard data={collection} key={collection.id} />;
-          })}
+        <div className="w-full">
+          <Carousel
+            swipeable={true}
+            draggable={false}
+            showDots={false}
+            responsive={responsive}
+            ssr={true} // means to render carousel on server-side.
+            infinite={true}
+            keyBoardControl={true}
+            containerClass="carousel-containerProfile"
+            // dotListClass="custom-dot-list-style"
+            // itemClass="customItemClass"
+            arrows={true}
+          >
+            {collections.map((collection) => {
+              return <CollectionCard data={collection} key={collection.id} />;
+            })}
+          </Carousel>
+          ;
         </div>
       )}
 

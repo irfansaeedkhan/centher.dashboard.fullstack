@@ -1,8 +1,8 @@
 import clsx from "clsx";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import toast from "react-hot-toast";
-import { useOnClickOutside } from "usehooks-ts";
+import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import EmojiPicker, {
   EmojiClickData,
   EmojiStyle,
@@ -28,8 +28,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
   onClickActionButton,
 }) => {
   const { setPostText, postText } = useNewPostStore();
-  const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
+  const belowMobile = useMediaQuery("(max-width: 560px)");
 
   useOnClickOutside(emojiPickerContainerRef, () => {
     setShowEmojiPicker(false);
@@ -146,14 +147,15 @@ export const PostModalActionButtons: React.FC<Props> = ({
       {showEmojiPicker && (
         <div
           ref={emojiPickerContainerRef}
-          className={`absolute left-3/4 -top-16 ${
+          className={clsx(
+            `absolute top-[170%] fsm:top-[120%] pb-2 -right-6 fsm:right-0 `,
             showEmojiPicker && "!block z-50"
-          }`}
+          )}
         >
           <EmojiPicker
             onEmojiClick={onEmojiClick}
             height={400}
-            width={300}
+            width={belowMobile ? 280 : 300}
             autoFocusSearch={false}
             emojiStyle={EmojiStyle.NATIVE}
             theme={Theme.AUTO}

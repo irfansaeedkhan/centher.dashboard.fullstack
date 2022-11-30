@@ -692,6 +692,19 @@ input:-webkit-autofill {
     gap: 0;
   }
 }
+.carousel-containerProfile {
+  transition: all 0.5s linear;
+  /* padding: 0px 0px 0px 17%; */
+}
+.carousel-containerProfile ul {
+  gap: 85px;
+  transition: all 0.5s linear !important;
+}
+@media only screen and (max-width: 659px) {
+  .carousel-containerProfile ul {
+    gap: 0;
+  }
+}
 
 .AnimatecircleRainbow {
   fill: none;
@@ -745,3 +758,21 @@ input:-webkit-autofill {
   background-color: rgb(23 23 26 / 1) !important;
   background-image: none !important;
 } */
+.nftCardOwnedContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.nftCardOwnedContainer .nftCardStyling {
+  width: 267px !important;
+}
+@media only screen and (max-width: 1439px) {
+  .nftCardOwnedContainer {
+    gap: 10px;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .nftCardOwnedContainer {
+    gap: 34px;
+  }
+}
