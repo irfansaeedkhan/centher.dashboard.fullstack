@@ -758,3 +758,21 @@ input:-webkit-autofill {
   background-color: rgb(23 23 26 / 1) !important;
   background-image: none !important;
 } */
+.nftCardOwnedContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.nftCardOwnedContainer .nftCardStyling {
+  width: 267px !important;
+}
+@media only screen and (max-width: 1439px) {
+  .nftCardOwnedContainer {
+    gap: 10px;
+  }
+}
+@media only screen and (max-width: 750px) {
+  .nftCardOwnedContainer {
+    gap: 34px;
+  }
+}

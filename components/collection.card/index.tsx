@@ -32,7 +32,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   return (
     <Link
       href={`/collections/${data.collection}`}
-      className={`w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:390px)]:w-[290px]`}
+      className={`w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:650px)]:w-full`}
     >
       <div className={`relative flex justify-center`}>
         {coverImage && (

@@ -54,7 +54,7 @@ const NFTProfile: NextPageWithLayout = () => {
   return (
     <>
       {displayNFTs.length > 0 && (
-        <div className="nftCardContainer">
+        <div className="nftCardOwnedContainer">
           {displayNFTs.map((nft: any) => (
             <NFTCard data={nft} key={nft.id} />
           ))}
