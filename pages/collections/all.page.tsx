@@ -51,11 +51,11 @@ const AllNFTCollection: NextPageWithLayout = () => {
 
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
-  // useEffect(() => {
-  //   if (offset > 0) {
-  //     fetchCollections(categoryInStore, sortBy, sortDir);
-  //   }
-  // }, [offset, fetchCollections, sortBy, categoryInStore, sortDir]);
+  useEffect(() => {
+    if (offset > 0) {
+      fetchCollections(categoryInStore, sortBy, sortDir);
+    }
+  }, [offset, fetchCollections, sortBy, categoryInStore, sortDir]);
 
   useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
@@ -99,6 +99,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
       {collections.length > 0 && (
         <div className={collectionCardStyle}>
           {collections.map((collection) => {
+            console.log("collection", collection);
             if (collection.id === collections[collections.length - 1].id) {
               return (
                 <div ref={lastPostRef} key={collection.id}>

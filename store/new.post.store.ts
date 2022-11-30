@@ -140,6 +140,7 @@ export const useNewPostStore = create<NewPostStore>()(
           // Starting uploading the files
           await uploadFiles(filesChunksData, 0, data.post_url, data.post_id);
         } catch (error: any) {
+          set({ isPostModalLoading: false });
           customLog("Error in create post: ", ["development"]);
           customLog(error, ["development"]);
         }
@@ -173,7 +174,8 @@ export const useNewPostStore = create<NewPostStore>()(
           get().closeModal();
           return;
         } catch (error: any) {
-          customLog("Error in create post: ", ["development"]);
+          set({ isPostModalLoading: false });
+          customLog("Error in edit post: ", ["development"]);
           customLog(error, ["development"]);
         }
       },

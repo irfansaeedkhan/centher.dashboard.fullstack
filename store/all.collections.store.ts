@@ -105,6 +105,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
 
           set((state) => {
             return {
+              ...state,
               collections: _collections,
               loading: "loaded",
             };
