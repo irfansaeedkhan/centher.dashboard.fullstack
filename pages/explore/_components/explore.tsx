@@ -17,9 +17,8 @@ import { NFTCard } from "@/components/nft.card";
 
 // Current directory imports
 
-interface ExploreProps {
+export interface ExploreProps {
   allNFTs: NFT[];
-  updateOffset: () => void;
   loading: LoadingState;
   category: Category;
   sortBy: SortBy;
@@ -27,121 +26,111 @@ interface ExploreProps {
   setSortBy: (value: SortBy) => void;
 }
 
-export const Explore: React.FC<ExploreProps> = ({
-  allNFTs,
-  loading,
-  category,
-  sortBy,
-  setCategory,
-  setSortBy,
-  updateOffset,
-}) => {
-  // const { updateOffset } = useAllNFTsStore((state) => ({
-  //   updateOffset: state.updateOffset,
-  // }));
-  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
-  const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
-  const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
-  const [categoryOpen, setCategoryOpen] = useState(false);
-  const [sortByOpen, setSortByOpen] = useState(false);
-  console.log("allNfts", allNFTs);
-  useEffect(() => {
-    if (lastPostEntry?.isIntersecting) {
-      updateOffset();
-    }
-  }, [lastPostEntry, updateOffset]);
+export const Explore = React.forwardRef<HTMLDivElement, ExploreProps>(
+  ({ allNFTs, loading, category, sortBy, setCategory, setSortBy }, ref) => {
+    const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
+    const sortByDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
+    const [categoryOpen, setCategoryOpen] = useState(false);
+    const [sortByOpen, setSortByOpen] = useState(false);
 
-  return (
-    <div className={pageWrapper}>
-      <div className={nameButtonWrapper}>
-        <div className={sectionName}>All NFTs</div>
-        <div className={sectionNameStyle}>
-          <div className="relative">
-            <button
-              ref={categoryDropdownOpenerRef}
-              className={allButtonWrapper}
-              onClick={() => setCategoryOpen((prev) => !prev)}
-            >
-              <span className="text-gray-shade-7 text-sm font-semibold">
-                {category}
-              </span>{" "}
-              {categoryOpen ? (
-                <HiChevronUp className="text-2xl" />
-              ) : (
-                <HiChevronDown className="text-2xl" />
-              )}
-            </button>
-            <CategoryDropdown
-              isOpen={categoryOpen}
-              onClose={() => setCategoryOpen(false)}
-              onChange={(value: any) => setCategory(value)}
-              openerRef={categoryDropdownOpenerRef}
-            />
-          </div>
-          <div className="relative">
-            <button
-              ref={sortByDropdownOpenerRef}
-              className={allButtonWrapper}
-              onClick={() => setSortByOpen((prev) => !prev)}
-            >
-              <span className="text-gray-shade-7 text-sm font-semibold">
-                {sortBy}
-              </span>{" "}
-              {sortByOpen ? (
-                <HiChevronUp className="text-2xl" />
-              ) : (
-                <HiChevronDown className="text-2xl" />
-              )}
-            </button>
-            <SortByDropdown
-              isOpen={sortByOpen}
-              onClose={() => setSortByOpen(false)}
-              onChange={(value: any) => setSortBy(value)}
-              openerRef={categoryDropdownOpenerRef}
-            />
+    // console.log("allNFTs", allNFTs);
+    return (
+      <div className={pageWrapper}>
+        <div className={nameButtonWrapper}>
+          <div className={sectionName}>All NFTs</div>
+          <div className={sectionNameStyle}>
+            <div className="relative">
+              <button
+                ref={categoryDropdownOpenerRef}
+                className={allButtonWrapper}
+                onClick={() => setCategoryOpen((prev) => !prev)}
+              >
+                <span className="text-gray-shade-7 text-sm font-semibold">
+                  {category}
+                </span>{" "}
+                {categoryOpen ? (
+                  <HiChevronUp className="text-2xl" />
+                ) : (
+                  <HiChevronDown className="text-2xl" />
+                )}
+              </button>
+              <CategoryDropdown
+                isOpen={categoryOpen}
+                onClose={() => setCategoryOpen(false)}
+                onChange={(value: any) => setCategory(value)}
+                openerRef={categoryDropdownOpenerRef}
+              />
+            </div>
+            <div className="relative">
+              <button
+                ref={sortByDropdownOpenerRef}
+                className={allButtonWrapper2}
+                onClick={() => setSortByOpen((prev) => !prev)}
+              >
+                <span className="text-gray-shade-7 text-sm font-semibold">
+                  {sortBy}
+                </span>{" "}
+                {sortByOpen ? (
+                  <HiChevronUp className="text-2xl" />
+                ) : (
+                  <HiChevronDown className="text-2xl" />
+                )}
+              </button>
+              <SortByDropdown
+                isOpen={sortByOpen}
+                onClose={() => setSortByOpen(false)}
+                onChange={(value: any) => setSortBy(value)}
+                openerRef={sortByDropdownOpenerRef}
+              />
+            </div>
           </div>
         </div>
+
+        {allNFTs.length > 0 && (
+          <div className="nftCardContainer h-auto">
+            {allNFTs.map((nft) => {
+              if (nft.id === allNFTs[allNFTs.length - 1].id) {
+                return (
+                  <div key={nft.id} ref={ref}>
+                    <NFTCard data={nft} />;
+                  </div>
+                );
+              }
+              return <NFTCard key={nft.id} data={nft} />;
+            })}
+          </div>
+        )}
+
+        {(loading === "loading" || loading === "idle") && (
+          <div className="flex flex-wrap gap-5 items-center">
+            {/* we are showing 8 skeletons while reloading the page to users */}
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+            <NftsSkeleton />
+          </div>
+        )}
+
+        {loading === "loaded" && allNFTs.length === 0 && (
+          <>
+            <div className="flex justify-center items-center text-white">
+              <HotNftEmptyIcon />
+            </div>
+            <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+              No NFTs found yet
+            </div>
+          </>
+        )}
       </div>
+    );
+  }
+);
 
-      {allNFTs.length > 0 && (
-        <div className="nftCardContainer h-auto">
-          {allNFTs.map((nft) => {
-            console.log("nft", nft.id === allNFTs[allNFTs.length - 1].id);
-            if (nft.id === allNFTs[allNFTs.length - 1].id) {
-              return <NFTCard data={nft} key={nft.id} ref={lastPostRef} />;
-            }
-            return <NFTCard key={nft.id} data={nft} />;
-          })}
-        </div>
-      )}
-
-      {(loading === "loading" || loading === "idle") && (
-        <div className="flex flex-wrap gap-5 items-center">
-          {/* we are showing 8 skeletons while reloading the page to users */}
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-          <NftsSkeleton />
-        </div>
-      )}
-
-      {loading === "loaded" && allNFTs.length === 0 && (
-        <>
-          <div className="flex justify-center items-center text-white">
-            <HotNftEmptyIcon />
-          </div>
-          <div className="flex justify-center items-center font-semibold text-[16px] text-white">
-            No NFTs found yet
-          </div>
-        </>
-      )}
-    </div>
-  );
-};
+Explore.displayName = "Explore";
 
 const pageWrapper = ctl(`flex flex-col gap-8`);
 
@@ -154,5 +143,8 @@ const sectionName = ctl(`animationTextHeading`);
 const sectionNameStyle = ctl(`flex gap-2 items-center`);
 
 const allButtonWrapper = ctl(
-  `flex items-center gap-7 justify-center py-3 text-white bg-gray-shade-3 w-[186px] min-w-fit px-6 rounded-xl text-center border border-gray-shade-12`
+  `flex items-center gap-7 justify-between p-3 text-white bg-gray-shade-3 w-[186px] min-w-fit rounded-xl border border-gray-shade-12`
+);
+const allButtonWrapper2 = ctl(
+  `flex items-center gap-2 justify-between p-3 text-white bg-gray-shade-3 w-[186px] min-w-fit rounded-xl border border-gray-shade-12`
 );

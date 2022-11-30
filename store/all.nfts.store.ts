@@ -44,6 +44,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
       offset: 0,
       limit: 10,
       loading: "idle",
+
       updateOffset: () =>
         set((state) => ({
           offset: state.allNFTs.length,
@@ -65,8 +66,10 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
         })),
 
       fetchAllNFTs: async (category, sortBy, sortDir) => {
+        if (!category || !sortBy || !sortDir) return;
         try {
           set({ loading: "loading" });
+
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -83,8 +86,9 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
-              fetchPolicy: "cache-first",
+              // fetchPolicy: "cache-first",
             });
+            console.log("gone1", result1);
             result = result1;
             error = error1;
           } else {
@@ -97,7 +101,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
-              fetchPolicy: "cache-first",
+              // fetchPolicy: "cache-first",
             });
             result = result2;
             error = error2;
@@ -128,11 +132,17 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             // Filter out all nfts that are already in the store
             const filteredAllNFTs = state.allNFTs.filter(
               (stateNFTs) =>
-                !_allNFTs.some((nfts: NFT) => stateNFTs.id === nfts.id)
+                !_allNFTs.some((nft: NFT) => stateNFTs.id === nft.id)
             );
 
+            // console.log("new", _allNFTs);
+            // console.log("filtered", filteredAllNFTs);
+
+            const allNFTsFinal = [...filteredAllNFTs, ..._allNFTs];
+
             return {
-              allNFTs: [..._allNFTs, ...filteredAllNFTs],
+              ...state,
+              allNFTs: allNFTsFinal,
               loading: "loaded",
             };
           });

@@ -43,7 +43,6 @@ const AllNFTCollection: NextPageWithLayout = () => {
     sortBy: state.sortBy,
     sortDir: state.sortDir,
   }));
-  console.log("collections", collections);
 
   useEffect(() => {
     fetchCollections(categoryInStore, sortBy, sortDir);
@@ -99,7 +98,6 @@ const AllNFTCollection: NextPageWithLayout = () => {
       {collections.length > 0 && (
         <div className={collectionCardStyle}>
           {collections.map((collection) => {
-            console.log("collection", collection);
             if (collection.id === collections[collections.length - 1].id) {
               return (
                 <div ref={lastPostRef} key={collection.id}>
@@ -142,7 +140,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
 
 AllNFTCollection.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Create NFT">
+    <AllPagesWrapper pageTitle="All Collections">
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>{page}</div>
       </div>

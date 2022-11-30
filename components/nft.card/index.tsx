@@ -21,125 +21,123 @@ export interface NFTCardProps {
   data: NFT;
 }
 
-export const NFTCard = React.forwardRef<HTMLDivElement, NFTCardProps>(
-  ({ data }, ref) => {
-    const [name, setName] = useState("");
-    const nftOwner = useGetNFTOwner(data.collection, data.tokenId, data.owner);
-    const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
-      nftOwner.toLowerCase()
-    );
-    const [collection, setCollection] = useState("");
-    const [description, setDescription] = useState("");
-    const [imageUrl, setImageUrl] = useState("");
-    useEffect(() => {
-      const fetchMetadata = async (ipfs: string) => {
-        try {
-          const metadata = await axios.get(formatIPFSUrl(ipfs));
-          setName(metadata.data.name);
-          setDescription(metadata.data.description);
-          setCollection(metadata.data.collection);
-          setImageUrl(formatIPFSUrl(metadata.data.image));
-        } catch (error) {}
-      };
-      if (data && data.ipfs) {
-        fetchMetadata(data.ipfs);
-      }
-    }, [data]);
+export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
+  const [name, setName] = useState("");
+  const nftOwner = useGetNFTOwner(data.collection, data.tokenId, data.owner);
+  const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
+    nftOwner.toLowerCase()
+  );
+  const [collection, setCollection] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  useEffect(() => {
+    const fetchMetadata = async (ipfs: string) => {
+      try {
+        const metadata = await axios.get(formatIPFSUrl(ipfs));
+        setName(metadata.data.name);
+        setDescription(metadata.data.description);
+        setCollection(metadata.data.collection);
+        setImageUrl(formatIPFSUrl(metadata.data.image));
+      } catch (error) {}
+    };
+    if (data && data.ipfs) {
+      fetchMetadata(data.ipfs);
+    }
+  }, [data]);
 
-    return (
-      <div ref={ref} className={nftCardWrapper}>
-        <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
-          {loading !== "loading" && loading !== "idle" ? (
-            <div className={ownerDpWrapper}>
-              {user?.account_address ? (
-                <Link href={`/profile/${user?.account_address}`}>
-                  <Image
-                    className="cursor-pointer !w-7 !h-7 rounded-full object-cover"
-                    src={user?.profile_image.path ?? imgSrc}
-                    alt="profile"
-                    height={28}
-                    width={28}
-                  />
-                </Link>
-              ) : (
+  return (
+    <div className={nftCardWrapper}>
+      <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
+        {loading !== "loading" && loading !== "idle" ? (
+          <div className={ownerDpWrapper}>
+            {user?.account_address ? (
+              <Link href={`/profile/${user?.account_address}`}>
                 <Image
+                  className="cursor-pointer !w-7 !h-7 rounded-full object-cover"
                   src={user?.profile_image.path ?? imgSrc}
                   alt="profile"
                   height={28}
                   width={28}
                 />
+              </Link>
+            ) : (
+              <Image
+                src={user?.profile_image.path ?? imgSrc}
+                alt="profile"
+                height={28}
+                width={28}
+              />
+            )}
+            <div className="flex items-center gap-2">
+              {user?.account_address ? (
+                <Link
+                  className="cursor-pointer truncate max-w-[200px] text-white"
+                  href={`/profile/${user?.account_address}`}
+                >
+                  <span className={`text-white text-xs font-medium`}>
+                    {user?.display_name ?? formatAddress(nftOwner)}
+                  </span>
+                </Link>
+              ) : (
+                <div className="truncate max-w-[200px] text-white">
+                  <span className={`text-white text-xs font-medium`}>
+                    {formatAddress(notRegistered)}
+                  </span>
+                </div>
               )}
-              <div className="flex items-center gap-2">
-                {user?.account_address ? (
-                  <Link
-                    className="cursor-pointer truncate max-w-[200px] text-white"
-                    href={`/profile/${user?.account_address}`}
-                  >
-                    <span className={`text-white text-xs font-medium`}>
-                      {user?.display_name ?? formatAddress(nftOwner)}
-                    </span>
-                  </Link>
-                ) : (
-                  <div className="truncate max-w-[200px] text-white">
-                    <span className={`text-white text-xs font-medium`}>
-                      {formatAddress(notRegistered)}
-                    </span>
-                  </div>
-                )}
-                <YellowTick />
-              </div>
+              <YellowTick />
             </div>
-          ) : (
-            <HotNftsHeaderSkeleton />
-          )}
-        </div>
-        <Link
-          href={`/nfts/${data.collection}/${data.tokenId}`}
-          className={nftImageWrapper}
-        >
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt="nft"
-              height={222}
-              width={293}
-              className="!w-[293px] !h-[222px] object-cover rounded-md"
-            />
-          ) : (
-            <div className="!w-[293px] !h-[222px] rounded-md bg-[#3C3F4A] mt-10 animate-pulse"></div>
-          )}
-        </Link>
-        <Link
-          href={`/nfts/${data.collection}/${data.tokenId}`}
-          className={nftDetailWrapper}
-        >
-          <div className={nftName}>{name}</div>
-        </Link>
-        <div className={nftOwnerWrapper}>
-          {/* <div className={ownerDpWrapper}>
+          </div>
+        ) : (
+          <HotNftsHeaderSkeleton />
+        )}
+      </div>
+      <Link
+        href={`/nfts/${data.collection}/${data.tokenId}`}
+        className={nftImageWrapper}
+      >
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt="nft"
+            height={222}
+            width={293}
+            className="!w-[293px] !h-[222px] object-cover rounded-md"
+          />
+        ) : (
+          <div className="!w-[293px] !h-[222px] rounded-md bg-[#3C3F4A] mt-10 animate-pulse"></div>
+        )}
+      </Link>
+      <Link
+        href={`/nfts/${data.collection}/${data.tokenId}`}
+        className={nftDetailWrapper}
+      >
+        <div className={nftName}>{name}</div>
+      </Link>
+      <div className={nftOwnerWrapper}>
+        {/* <div className={ownerDpWrapper}>
             <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
             <span className={nftOwnerName}>{props.nftOwnerName}</span>
             <YellowTick />
           </div> */}
-          <div className={nftPriceWrapper}>
-            <span className={nftPrice}>
-              <BNBIcon />
-              <span>{formatEther2Number(data.price)} BNB</span>
-            </span>
-          </div>
-          {/* ) : (
+        <div className={nftPriceWrapper}>
+          <span className={nftPrice}>
+            <BNBIcon />
+            <span>{formatEther2Number(data.price)} BNB</span>
+          </span>
+        </div>
+        {/* ) : (
             <span className={nftPrice}>
               <NTRIcon />
               <span>{props.nftPriceNether.toLocaleString()} NTR</span>
             </span>
           )} */}
 
-          {/* <span className={textSimple}>${formatBNB2USD(data.price)}</span> */}
-        </div>
+        {/* <span className={textSimple}>${formatBNB2USD(data.price)}</span> */}
       </div>
-    );
-  }
-);
+    </div>
+  );
+};
 
 const nftCardWrapper = ctl(
   `[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
@@ -164,5 +162,3 @@ const nftPrice = ctl(
 );
 
 const ownerDpWrapper = ctl(`flex items-center gap-2`);
-
-NFTCard.displayName = "NFTCard";

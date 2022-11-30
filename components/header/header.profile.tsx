@@ -46,13 +46,14 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   useEffect(() => {
     if (!account || !user) {
+      connectWallet();
       return;
     }
     if (user.account_address.toLowerCase() !== account.toLowerCase()) {
       toast.error("Please connect to correct account");
       deactivate();
     }
-  }, [account, deactivate, user]);
+  }, [deactivate, user, account, connectWallet]);
 
   return (
     <>
