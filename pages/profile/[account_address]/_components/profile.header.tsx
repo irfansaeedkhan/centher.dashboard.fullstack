@@ -43,10 +43,12 @@ import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import Profile3DotsMenu from "./profile.3.dots.menu";
+import CropperImage from "./cropper.image";
 
-type CoverImageWithFile = Partial<CoverImage> & {
+export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
+  preview?: string;
 };
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
@@ -68,6 +70,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
     ...user?.cover_image,
     blob: null,
     newImage: false,
+    preview: "",
   });
   const coverImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -106,6 +109,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
         ...user.cover_image,
         blob: null,
         newImage: false,
+        preview: "",
       });
     }
   }, [user?.cover_image]);
@@ -238,6 +242,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
       return;
     }
 
+    const previewUrl = URL.createObjectURL(file);
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
@@ -246,6 +251,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
         object_name: file.name,
         path: reader.result as string,
         blob: file,
+        preview: previewUrl,
         newImage: true,
       }));
     };
@@ -415,6 +421,12 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                     </div>
                   )}
                 </div>
+                {/* {coverImage.newImage && ( */}
+                <CropperImage
+                  coverImage={coverImage}
+                  setCoverImage={setCoverImage}
+                />
+                {/* )} */}
               </>
             )}
 
