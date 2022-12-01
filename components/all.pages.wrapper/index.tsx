@@ -31,13 +31,22 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       <div
         className={clsx(
           `px-2 fsm:px-4 fmd:px-6 py-4 flg:py-6 mt-[60px]`,
-          loggedInUser && "fxl:ml-[15.5rem]"
+          (props.pageTitle === "Coming Soon" ||
+            props.pageTitle === "404 No Page") &&
+            loggedInUser &&
+            "fxl:ml-[15.5rem]"
         )}
       >
         {props.children}
       </div>
-
-      {loggedInUser && (
+      {props.pageTitle === "Coming Soon" ||
+      props.pageTitle === "404 No Page" ? (
+        loggedInUser && (
+          <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
+            <Sidebar />
+          </div>
+        )
+      ) : (
         <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
           <Sidebar />
         </div>
