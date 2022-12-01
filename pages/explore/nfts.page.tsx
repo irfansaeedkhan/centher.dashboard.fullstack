@@ -50,7 +50,7 @@ const AllNftsPage: NextPageWithLayout = () => {
 
   useEffect(() => {
     fetchAllNFTs(category, sortByInStore, sortDir);
-  }, [fetchAllNFTs]);
+  }, [fetchAllNFTs, category, sortByInStore, sortDir]);
 
   useEffect(() => {
     if (offset > 0) {
