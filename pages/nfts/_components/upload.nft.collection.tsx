@@ -49,7 +49,7 @@ export const UploadNFTCollection = ({
     <div className={nftBoxContainer}>
       <div>
         <h4 className={title}>
-          Upload Logo image <span className="text-red-500">*</span>
+          Upload Logo Image <span className="text-red-500">*</span>
         </h4>
         <p className={description}>
           This image will also be used for navigation. 350 x 350 recommended.
@@ -80,7 +80,7 @@ export const UploadNFTCollection = ({
             )}
           </div>
           <div className={uploadBtnContainer}>
-            <span className={chooseFileBtn}>choose File</span>
+            <span className={chooseFileBtn}>Choose File</span>
             <input
               type="file"
               className={chooseFileBtn2}
@@ -91,7 +91,9 @@ export const UploadNFTCollection = ({
         </div>
       </div>
       <div>
-        <h4 className={title}>Upload banner image</h4>
+        <h4 className={title}>
+          Upload banner image <span className="text-red-500">*</span>
+        </h4>
         <p className={description}>
           This image will appear at the top of your collection page. Avoid
           including too much text in this banner image, 1400 x 350 recommended.
@@ -121,7 +123,7 @@ export const UploadNFTCollection = ({
               <div className={uploadBoxContent}>
                 <span className={formatName}>PNG, JPG, GIF</span>
                 <div className={uploadBtnContainer}>
-                  <span className={chooseFileBtn}>choose File</span>
+                  <span className={chooseFileBtn}>Choose File</span>
                   <input
                     type="file"
                     className={chooseFileBtn2}
