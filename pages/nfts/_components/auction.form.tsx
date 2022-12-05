@@ -4,6 +4,7 @@ import Joi, { string } from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
+import moment from "moment";
 
 // App imports
 import Button from "@/components/button";
@@ -53,6 +54,8 @@ const schema = Joi.object({
     "any.required": `Required Field`,
   }),
 });
+
+// schema.validate({ AuctionEndTime: 1994 });
 interface AuctionFormFields {
   NFTName: string;
   Description: string;
@@ -75,6 +78,7 @@ const AuctionForm = ({
 }: AuctionFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
+  const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
@@ -127,8 +131,18 @@ const AuctionForm = ({
     );
   };
 
+  const timeNow = moment().format("LLLL");
+  // moment(post.createdAt).add(15, "minutes");
+  // schema.validate({ AuctionEndTime: 1994 });
   // handle submit
   const onSubmit = async (data: any) => {
+    if (moment(data.AuctionEndTime) <= moment()) {
+      setAuctionEndTimeErr(true);
+      return;
+    } else {
+      setAuctionEndTimeErr(false);
+    }
+
     console.log(data);
     // let finalizedData = {
     //   NFTName: data.NFTName,
@@ -260,6 +274,11 @@ const AuctionForm = ({
         {formState.errors.AuctionEndTime && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.AuctionEndTime.message}
+          </p>
+        )}
+        {AuctionEndTimeErr && (
+          <p className={`text-red-500 ${errMessage}`}>
+            Date and Time must be accurate
           </p>
         )}
       </div>
