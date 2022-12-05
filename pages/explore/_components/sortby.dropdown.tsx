@@ -1,4 +1,4 @@
-import { SortBy, sortBy } from "@/models/nft";
+import { sortBy } from "@/models/nft";
 import React from "react";
 import { useOnClickOutside } from "usehooks-ts";
 

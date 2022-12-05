@@ -138,10 +138,13 @@ export const CreateNFTCollectionForm = ({
     <div className={CreateNFTCollectionFormContainer}>
       <div className={formContainer}>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>Name your Collection</label>
+          <label className={fieldTitle}>
+            Name Your Collection <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             id="name"
+            maxLength={150}
             autoComplete="off"
             {...register("name")}
             placeholder="eg. ‘big skull collection’ "
@@ -154,10 +157,13 @@ export const CreateNFTCollectionForm = ({
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>symbol</label>
+          <label className={fieldTitle}>
+            Symbol <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             id="symbol"
+            maxLength={150}
             autoComplete="off"
             {...register("symbol")}
             placeholder="eg. ‘NTD’ "
@@ -170,7 +176,9 @@ export const CreateNFTCollectionForm = ({
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>description</label>
+          <label className={fieldTitle}>
+            Description <span className="text-red-500">*</span>
+          </label>
           <span className="text-12px leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
             its image.{" "}
@@ -178,6 +186,7 @@ export const CreateNFTCollectionForm = ({
           <textarea
             id="description"
             autoComplete="off"
+            maxLength={550}
             {...register("description")}
             placeholder="Wrirte some details about your NFTs collection"
             className={
@@ -194,7 +203,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label htmlFor="textarea" className={fieldTitle}>
-            category
+            Category <span className="text-red-500">*</span>
           </label>
           <select
             id="category"
@@ -219,7 +228,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            url <span className="text-gray-shade-17"> (optional)</span>
+            URL <span className="text-gray-shade-17"> (optional)</span>
           </label>
           <input
             type="text"
@@ -237,7 +246,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Add links <span className="text-gray-shade-17"> (optional)</span>
+            Add Links <span className="text-gray-shade-17"> (optional)</span>
           </label>
           <div className={linkListContainer}>
             <div>
@@ -282,7 +291,7 @@ export const CreateNFTCollectionForm = ({
             </div>
             <div>
               <div className={linkInputContainer}>
-                <GreyTwitterIcon className={linkIcon} />
+                <FiTwitter className={linkIcon} />
                 <input
                   type="text"
                   id="twitter"
@@ -347,7 +356,7 @@ const linkInputContainer = ctl(`
 inputItem h-[48px]  w-full !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme relative
 `);
 const linkIcon = ctl(`
-z-30 absolute top-[50%] left-[20px] translate-y-[-50%]
+z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] w-5 h-5
 `);
 const linkListContainer = ctl(`
 flex flex-col gap-5

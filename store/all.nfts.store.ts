@@ -44,6 +44,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
       offset: 0,
       limit: 10,
       loading: "idle",
+
       updateOffset: () =>
         set((state) => ({
           offset: state.allNFTs.length,
@@ -67,6 +68,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
       fetchAllNFTs: async (category, sortBy, sortDir) => {
         try {
           set({ loading: "loading" });
+
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -85,6 +87,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
               },
               fetchPolicy: "cache-first",
             });
+
             result = result1;
             error = error1;
           } else {
@@ -128,11 +131,14 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             // Filter out all nfts that are already in the store
             const filteredAllNFTs = state.allNFTs.filter(
               (stateNFTs) =>
-                !_allNFTs.some((nfts: NFT) => stateNFTs.id === nfts.id)
+                !_allNFTs.some((nft: NFT) => stateNFTs.id === nft.id)
             );
 
+            const allNFTsFinal = [...filteredAllNFTs, ..._allNFTs];
+
             return {
-              allNFTs: [..._allNFTs, ...filteredAllNFTs],
+              ...state,
+              allNFTs: allNFTsFinal,
               loading: "loaded",
             };
           });

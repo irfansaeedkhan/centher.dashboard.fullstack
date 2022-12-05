@@ -5,7 +5,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current directory imports
 import { useAllNFTsStore } from "@/store/all.nfts.store";
-import { Explore } from "./_components";
+
 import {
   Category,
   OrderBy,
@@ -13,12 +13,15 @@ import {
   sortBy,
   SortBy,
 } from "@/models/nft";
+import { useInView } from "react-intersection-observer";
+import { Explore } from "./_components";
 
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
   const [categoryInView, setCategory] = useState<Category>("all");
   const [sortByInView, setSortBy] = useState<SortBy>("recently created");
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   const {
     allNFTs,
@@ -44,6 +47,7 @@ const AllNftsPage: NextPageWithLayout = () => {
     updateOffset: state.updateOffset,
     loading: state.loading,
   }));
+
   useEffect(() => {
     fetchAllNFTs(category, sortByInStore, sortDir);
   }, [fetchAllNFTs, category, sortByInStore, sortDir]);
@@ -79,11 +83,18 @@ const AllNftsPage: NextPageWithLayout = () => {
     updateSortBy(_sortBy, _sortDir);
   }, [sortByInView, updateSortBy]);
 
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      console.log("first");
+      updateOffset();
+    }
+  }, [lastPostRef, lastPostEntry, updateOffset]);
+
   return (
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Explore
-          updateOffset={updateOffset}
+          ref={lastPostRef}
           loading={loading}
           allNFTs={allNFTs}
           category={category}

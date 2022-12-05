@@ -11,6 +11,7 @@ import {
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Category, Collection, OrderBy, OrderDirection } from "@/models/nft";
+import _ from "lodash";
 
 export interface AllCollectionsStore {
   collections: Collection[];
@@ -79,7 +80,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
-              fetchPolicy: "cache-first",
+              // fetchPolicy: "cache-first",
             });
 
             if (result && !error) {
@@ -95,7 +96,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
-              fetchPolicy: "cache-first",
+              // fetchPolicy: "cache-first",
             });
 
             if (result && !error) {
@@ -104,9 +105,17 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           }
 
           set((state) => {
+            const filteredCollections = state.collections.filter(
+              (stateCollection) =>
+                !_collections.some(
+                  (collection: Collection) =>
+                    stateCollection.id === collection.id
+                )
+            );
+            const allCollections = [...filteredCollections, ..._collections];
             return {
               ...state,
-              collections: _collections,
+              collections: allCollections,
               loading: "loaded",
             };
           });

@@ -49,7 +49,7 @@ export const UploadNFTCollection = ({
     <div className={nftBoxContainer}>
       <div>
         <h4 className={title}>
-          Upload Logo image <span className="text-red-500">*</span>
+          Upload Logo Image <span className="text-red-500">*</span>
         </h4>
         <p className={description}>
           This image will also be used for navigation. 350 x 350 recommended.
@@ -80,9 +80,12 @@ export const UploadNFTCollection = ({
             )}
           </div>
           <div className={uploadBtnContainer}>
-            <span className={chooseFileBtn}>choose File</span>
+            <label htmlFor="collection-profile-image" className={chooseFileBtn}>
+              Choose File
+            </label>
             <input
               type="file"
+              id="collection-profile-image"
               className={chooseFileBtn2}
               onChange={uploadProfileFile}
               accept="image/png, image/jpeg, image/webp, image/gif"
@@ -91,7 +94,9 @@ export const UploadNFTCollection = ({
         </div>
       </div>
       <div>
-        <h4 className={title}>Upload banner image</h4>
+        <h4 className={title}>
+          Upload banner image <span className="text-red-500">*</span>
+        </h4>
         <p className={description}>
           This image will appear at the top of your collection page. Avoid
           including too much text in this banner image, 1400 x 350 recommended.
@@ -121,9 +126,15 @@ export const UploadNFTCollection = ({
               <div className={uploadBoxContent}>
                 <span className={formatName}>PNG, JPG, GIF</span>
                 <div className={uploadBtnContainer}>
-                  <span className={chooseFileBtn}>choose File</span>
+                  <label
+                    htmlFor="collection-banner-image"
+                    className={chooseFileBtn}
+                  >
+                    Choose File
+                  </label>
                   <input
                     type="file"
+                    id="collection-banner-image"
                     className={chooseFileBtn2}
                     onChange={uploadCoverFile}
                     accept="image/png, image/jpeg, image/webp, image/gif"
@@ -173,7 +184,7 @@ const uploadBtnContainer = ctl(`
   relative w-[132px] h-10
     `);
 const chooseFileBtn = ctl(`
-  absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
+ z-10 absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3 
     `);
 const chooseFileBtn2 = ctl(`
   absolute w-full h-full  opacity-0

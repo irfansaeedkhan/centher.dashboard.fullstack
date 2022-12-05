@@ -4,6 +4,8 @@ import Head from "next/head";
 import { useCountsStore } from "@/store/counts.store";
 import Header from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
+import useUser from "@/hooks/use.user";
+import clsx from "clsx";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -12,6 +14,7 @@ interface AllPagesWrapperProps {
 
 export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   const fetchCounts = useCountsStore((state) => state.fetchCounts);
+  const { user: loggedInUser } = useUser();
 
   useEffect(() => {
     fetchCounts();
@@ -26,14 +29,28 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       <Header />
 
       <div
-        className={`px-2 fxl:ml-[15.5rem] fsm:px-4 fmd:px-6 py-4 flg:py-6 mt-[60px]`}
+        className={clsx(
+          `px-2 fsm:px-4 fmd:px-6 py-4 flg:py-6 mt-[60px]`,
+          props.pageTitle !== "Coming Soon" &&
+            props.pageTitle !== "404 No Page" &&
+            loggedInUser &&
+            "fxl:ml-[15.5rem]"
+        )}
       >
         {props.children}
       </div>
-
-      <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
-        <Sidebar />
-      </div>
+      {props.pageTitle === "Coming Soon" ||
+      props.pageTitle === "404 No Page" ? (
+        loggedInUser && (
+          <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
+            <Sidebar />
+          </div>
+        )
+      ) : (
+        <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
+          <Sidebar />
+        </div>
+      )}
     </div>
   );
 };

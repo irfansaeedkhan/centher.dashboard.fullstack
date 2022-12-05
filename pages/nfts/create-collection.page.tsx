@@ -43,7 +43,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
   // creating modals
   const buyNFTStep1Func = (collectionData: any) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
@@ -75,7 +75,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTStep2Func = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -123,8 +123,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
-            <span className="text-white">{collectionData?.name}</span> NFT on
-            Nether NFT platform, Click Ok to view your Collection.
+            <span className="text-white">{collectionData?.name}</span>{" "}
+            Collection on Nether NFT platform, Click view on profile to view
+            your collection.
           </p>
         )}
         {!txStatus && (
