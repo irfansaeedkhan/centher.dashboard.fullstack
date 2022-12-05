@@ -28,6 +28,7 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   useEffect(() => {
     setShowSecPreivew(false);
     setAsset(undefined);
+    setShowPreviewImage(false);
   }, [clearForm, setAsset]);
   return (
     <>
@@ -103,9 +104,12 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
               <div className={uploadBoxContent}>
                 <span className={formatName}>PNG, JPG, GIF</span>
                 <div className={uploadBtnContainer}>
-                  <span className={chooseFileBtn}>Choose File</span>
+                  <label htmlFor="preview-img" className={chooseFileBtn}>
+                    Choose File
+                  </label>
                   <input
                     type="file"
+                    id="preview-img"
                     className={chooseFileBtn2}
                     onChange={uploadPreviewImageFile}
                     accept="image/png, image/jpeg, image/webp, image/gif"
