@@ -9,8 +9,15 @@ import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { SingleReply } from "@/components/feed.components";
+import {
+  archivePost,
+  createPostView,
+  deletePost,
+  SinglePostV2,
+} from "@/components/feed.components";
 import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
+import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
 import { RepliesIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
@@ -23,7 +30,7 @@ const Replies: NextPageWithLayout = () => {
   const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
-  const [lastPostRef, lastPostInView, lastPostEntry] = useInView();
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   const {
     posts,
@@ -33,18 +40,18 @@ const Replies: NextPageWithLayout = () => {
     offset,
     updateOffset,
     loading,
+    likePostAPI,
+    createPostViewInStore,
   } = useMyRepliesStore((state) => ({
     posts: state.posts,
     fetchPosts: state.fetchPosts,
-
     removePost: state.removePost,
-
     offset: state.offset,
     updateOffset: state.updateOffset,
-
     resetPosts: state.resetPosts,
-
+    likePostAPI: state.likePostAPI,
     loading: state.loading,
+    createPostViewInStore: state.createPostViewInStore,
   }));
 
   useEffect(() => {
@@ -70,20 +77,87 @@ const Replies: NextPageWithLayout = () => {
     };
   }, [user?._id, resetPosts, fetchPosts]);
 
+  const handleAction = async (
+    postId: string,
+    actionFunction: (postId: string) => Promise<void>
+  ) => {
+    try {
+      await actionFunction(postId);
+      removePost(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <SingleReply
-              ref={lastPostRef}
-              key={post._id}
-              post={post}
-              onDelete={removePost}
-            />
+            <div ref={lastPostRef} key={post._id}>
+              <SinglePostV2
+                post={post}
+                postType={"reply-w-parent-header"}
+                placement="profile-replies-page"
+                shouldShowThread={post.replies_count > 0}
+                onClickLike={async () => {
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                }}
+                onClickReply={() => {
+                  router.push({
+                    pathname: AppRoutes.feed.single_post,
+                    query: {
+                      account_address: post.user.account_address,
+                      post_id: post._id,
+                    },
+                  });
+                }}
+                onClickArchive={() => handleAction(post._id, archivePost)}
+                onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
+              />
+            </div>
           );
         }
-        return <SingleReply key={post._id} post={post} onDelete={removePost} />;
+        return (
+          <SinglePostV2
+            key={post._id}
+            post={post}
+            postType={"reply-w-parent-header"}
+            placement="profile-replies-page"
+            shouldShowThread={post.replies_count > 0}
+            onClickLike={async () => {
+              await likePostAPI(
+                post._id,
+                post.liked_by_loggedin_user ? "unlike" : "like"
+              );
+            }}
+            onClickReply={() => {
+              router.push({
+                pathname: AppRoutes.feed.single_post,
+                query: {
+                  account_address: post.user.account_address,
+                  post_id: post._id,
+                },
+              });
+            }}
+            onClickArchive={() => handleAction(post._id, archivePost)}
+            onClickDelete={() => handleAction(post._id, deletePost)}
+            onPostInViewport={() => handleCreatePostView(post._id)}
+          />
+        );
       })}
 
       {(loading === "loading" || loading === "idle") && (

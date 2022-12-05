@@ -24,21 +24,19 @@ export interface AllNFTsStore {
   fetchAllNFTs: (
     category: Category,
     sortBy: OrderBy,
-    sortDir: OrderDirection,
-    offset?: number,
-    limit?: number
+    sortDir: OrderDirection
   ) => Promise<void>;
-  offset: number;
   updateOffset: () => void;
   updateCategory: (value: Category) => void;
   updateSortBy: (value: OrderBy, dir: OrderDirection) => void;
   limit: number;
+  offset: number;
   loading: LoadingState;
 }
 
 export const useAllNFTsStore = create<AllNFTsStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       allNFTs: [],
       category: "all",
       sortBy: "tradingVolumn",
@@ -46,6 +44,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
       offset: 0,
       limit: 10,
       loading: "idle",
+
       updateOffset: () =>
         set((state) => ({
           offset: state.allNFTs.length,
@@ -66,9 +65,10 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           allNFTs: [],
         })),
 
-      fetchAllNFTs: async (category, sortBy, sortDir, offset, limit) => {
+      fetchAllNFTs: async (category, sortBy, sortDir) => {
         try {
           set({ loading: "loading" });
+
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
@@ -80,21 +80,22 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             const { data: result1, error: error1 } = await client.query({
               query: gql(allNFTsQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
                 orderBy: sortBy,
                 orderDirection: sortDir,
               },
               fetchPolicy: "cache-first",
             });
+
             result = result1;
             error = error1;
           } else {
             const { data: result2, error: error2 } = await client.query({
               query: gql(allNFTsByFilterQuery),
               variables: {
-                first: limit,
-                skip: offset,
+                first: get().limit,
+                skip: get().offset,
                 category: category.toLowerCase(),
                 orderBy: sortBy,
                 orderDirection: sortDir,
@@ -130,11 +131,14 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
             // Filter out all nfts that are already in the store
             const filteredAllNFTs = state.allNFTs.filter(
               (stateNFTs) =>
-                !_allNFTs.some((nfts: NFT) => stateNFTs.id === nfts.id)
+                !_allNFTs.some((nft: NFT) => stateNFTs.id === nft.id)
             );
 
+            const allNFTsFinal = [...filteredAllNFTs, ..._allNFTs];
+
             return {
-              allNFTs: [..._allNFTs, ...filteredAllNFTs],
+              ...state,
+              allNFTs: allNFTsFinal,
               loading: "loaded",
             };
           });

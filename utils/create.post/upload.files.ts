@@ -151,7 +151,7 @@ const completeMultipartUpload = async (
 
 export const getNewPostAndUpdateState = async (currentPostId: string) => {
   // Get the new post and add it to the top of the post list
-  const { data: newPostData } = await axiosNodeApi.get(
+  const { data: postData } = await axiosNodeApi.get(
     `/api/socials/posts/${currentPostId}`
   );
 
@@ -160,8 +160,8 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
   const myPostStoreState = useMyPostStore.getState();
 
   if (newPostStoreState.modalType === "new-post") {
-    feedStoreState.addNewPost(newPostData.post);
-    myPostStoreState.addNewPost(newPostData.post);
+    feedStoreState.addNewPost(postData.post);
+    myPostStoreState.addNewPost(postData.post);
     useProfileCardStore.getState().incrementPostsCount();
   } else if (
     newPostStoreState.modalType === "reply" &&
@@ -171,11 +171,16 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
 
     const singlePostStoreState = useSinglePostStore.getState();
 
-    singlePostStoreState.addNewReply(newPostData.post);
+    singlePostStoreState.addNewReply(postData.post);
 
     const prevRepliesCount = singlePostStoreState.post?.replies_count;
     singlePostStoreState.updatePost({
       replies_count: prevRepliesCount ? prevRepliesCount + 1 : 1,
     });
+  } else if (newPostStoreState.modalType === "edit") {
+    // Update all stores as we don't know which store the post is in
+    feedStoreState.replaceEditedPost(postData.post);
+    myPostStoreState.replaceEditedPost(postData.post);
+    useSinglePostStore.getState().replaceEditedPost(postData.post);
   }
 };

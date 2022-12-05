@@ -14,6 +14,7 @@ import { useAllCollectionsStore } from "@/store/all.collections.store";
 import CategoryDropdown from "../explore/_components/category.dropdown";
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { NftsCollectionEmpty } from "@/assets/svgs";
+import { useInView } from "react-intersection-observer";
 
 const AllNFTCollection: NextPageWithLayout = () => {
   const categoryDropdownOpenerRef = React.useRef<HTMLButtonElement>(null);
@@ -24,7 +25,10 @@ const AllNFTCollection: NextPageWithLayout = () => {
     categoryInStore,
     offset,
     limit,
+    sortDir,
+    sortBy,
     updateCategory,
+    updateOffset,
     fetchCollections,
     loading,
   } = useAllCollectionsStore((state) => ({
@@ -35,11 +39,28 @@ const AllNFTCollection: NextPageWithLayout = () => {
     updateCategory: state.updateCategory,
     fetchCollections: state.fetchCollections,
     loading: state.loading,
+    updateOffset: state.updateOffset,
+    sortBy: state.sortBy,
+    sortDir: state.sortDir,
   }));
 
   useEffect(() => {
-    fetchCollections(offset, limit, categoryInStore);
-  }, [fetchCollections, limit, offset, categoryInStore]);
+    fetchCollections(categoryInStore, sortBy, sortDir);
+  }, [fetchCollections, sortDir, sortBy, categoryInStore]);
+
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchCollections(categoryInStore, sortBy, sortDir);
+    }
+  }, [offset, fetchCollections, sortBy, categoryInStore, sortDir]);
+
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      updateOffset();
+    }
+  }, [lastPostRef, lastPostEntry, updateOffset]);
 
   useEffect(() => {
     updateCategory(category);
@@ -77,6 +98,13 @@ const AllNFTCollection: NextPageWithLayout = () => {
       {collections.length > 0 && (
         <div className={collectionCardStyle}>
           {collections.map((collection) => {
+            if (collection.id === collections[collections.length - 1].id) {
+              return (
+                <div ref={lastPostRef} key={collection.id}>
+                  <CollectionCard data={collection} />
+                </div>
+              );
+            }
             return <CollectionCard data={collection} key={collection.id} />;
           })}
         </div>
@@ -112,7 +140,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
 
 AllNFTCollection.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Create NFT">
+    <AllPagesWrapper pageTitle="All Collections">
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>{page}</div>
       </div>

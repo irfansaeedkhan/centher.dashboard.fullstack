@@ -138,7 +138,9 @@ export const CreateNFTCollectionForm = ({
     <div className={CreateNFTCollectionFormContainer}>
       <div className={formContainer}>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>Name your Collection</label>
+          <label className={fieldTitle}>
+            Name Your Collection <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             id="name"
@@ -154,7 +156,9 @@ export const CreateNFTCollectionForm = ({
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>symbol</label>
+          <label className={fieldTitle}>
+            Symbol <span className="text-red-500">*</span>
+          </label>
           <input
             type="text"
             id="symbol"
@@ -170,7 +174,9 @@ export const CreateNFTCollectionForm = ({
           )}
         </div>
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>description</label>
+          <label className={fieldTitle}>
+            Description <span className="text-red-500">*</span>
+          </label>
           <span className="text-12px leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
             its image.{" "}
@@ -194,7 +200,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label htmlFor="textarea" className={fieldTitle}>
-            category
+            Category <span className="text-red-500">*</span>
           </label>
           <select
             id="category"
@@ -219,7 +225,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            url <span className="text-gray-shade-17"> (optional)</span>
+            URL <span className="text-gray-shade-17"> (optional)</span>
           </label>
           <input
             type="text"
@@ -237,7 +243,7 @@ export const CreateNFTCollectionForm = ({
         </div>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
-            Add links <span className="text-gray-shade-17"> (optional)</span>
+            Add Links <span className="text-gray-shade-17"> (optional)</span>
           </label>
           <div className={linkListContainer}>
             <div>

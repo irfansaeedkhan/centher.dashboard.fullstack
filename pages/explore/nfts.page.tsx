@@ -5,21 +5,23 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 // Current directory imports
 import { useAllNFTsStore } from "@/store/all.nfts.store";
-import { Explore } from "./_components";
+
 import {
   Category,
   OrderBy,
-  orderBy,
   OrderDirection,
   sortBy,
   SortBy,
 } from "@/models/nft";
+import { useInView } from "react-intersection-observer";
+import { Explore } from "./_components";
 
 const MAX_HOT_NFTS = 10;
 
 const AllNftsPage: NextPageWithLayout = () => {
   const [categoryInView, setCategory] = useState<Category>("all");
   const [sortByInView, setSortBy] = useState<SortBy>("recently created");
+  const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   const {
     allNFTs,
@@ -27,12 +29,11 @@ const AllNftsPage: NextPageWithLayout = () => {
     sortByInStore,
     sortDir,
     offset,
-    limit,
     fetchAllNFTs,
     updateCategory,
     updateSortBy,
-    updateOffset,
     loading,
+    updateOffset,
   } = useAllNFTsStore((state) => ({
     allNFTs: state.allNFTs,
     category: state.category,
@@ -48,8 +49,14 @@ const AllNftsPage: NextPageWithLayout = () => {
   }));
 
   useEffect(() => {
-    fetchAllNFTs(category, sortByInStore, sortDir, offset, limit);
-  }, [fetchAllNFTs, limit, offset, category, sortByInStore, sortDir]);
+    fetchAllNFTs(category, sortByInStore, sortDir);
+  }, [fetchAllNFTs, category, sortByInStore, sortDir]);
+
+  useEffect(() => {
+    if (offset > 0) {
+      fetchAllNFTs(category, sortByInStore, sortDir);
+    }
+  }, [offset, fetchAllNFTs, category, sortByInStore, sortDir]);
 
   useEffect(() => {
     updateCategory(categoryInView);
@@ -76,10 +83,18 @@ const AllNftsPage: NextPageWithLayout = () => {
     updateSortBy(_sortBy, _sortDir);
   }, [sortByInView, updateSortBy]);
 
+  useEffect(() => {
+    if (lastPostEntry?.isIntersecting) {
+      console.log("first");
+      updateOffset();
+    }
+  }, [lastPostRef, lastPostEntry, updateOffset]);
+
   return (
     <div className="flex flex-col gap-10">
       <div className="AppWrapper flex flex-col gap-10">
         <Explore
+          ref={lastPostRef}
           loading={loading}
           allNFTs={allNFTs}
           category={category}

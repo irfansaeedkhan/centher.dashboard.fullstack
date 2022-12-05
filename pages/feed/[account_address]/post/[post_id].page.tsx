@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
@@ -13,9 +13,10 @@ import {
   SinglePostV2,
   archivePost,
   deletePost,
+  createPostView,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
-import { CreatePostModal } from "@/components/feed.components/create.post/create.post.modal";
+import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -23,6 +24,8 @@ import { BackButton, NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
   const router = useRouter();
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+
   const {
     post,
     fetchPost,
@@ -34,15 +37,14 @@ const SinglePostPage: NextPageWithLayout = () => {
     likePostAPI,
     updateRepliesOffset,
     removeReply,
+    createPostViewInStore,
   } = useSinglePostStore();
 
   const feedStore = useFeedStore((state) => ({
     removePost: state.removePost,
   }));
 
-  const newPostStore = useNewPostStore((state) => ({
-    openModal: state.openModal,
-  }));
+  const openPostModal = useNewPostStore((state) => state.openModal);
 
   const [lastReplyRef, _lastReplyInView, lastReplyEntry] = useInView();
 
@@ -96,6 +98,15 @@ const SinglePostPage: NextPageWithLayout = () => {
     }
   };
 
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
   return (
     <>
       <BackButton className="mb-3" />
@@ -106,7 +117,7 @@ const SinglePostPage: NextPageWithLayout = () => {
             <SinglePostV2
               key={post._id}
               post={post}
-              postType={"main"}
+              postType={post.parent_post ? "reply-w-parent-header" : "main"}
               placement={"single-post-page"}
               onClickLike={async () => {
                 await likePostAPI(
@@ -116,13 +127,16 @@ const SinglePostPage: NextPageWithLayout = () => {
                 );
               }}
               onClickReply={() => {
-                newPostStore.openModal({
+                setIsReplyModalOpen(true);
+                openPostModal({
                   modalType: "reply",
                   parentPostId: post._id,
+                  onCloseModal: () => setIsReplyModalOpen(false),
                 });
               }}
               onClickArchive={() => handleAction(post._id, "main", archivePost)}
               onClickDelete={() => handleAction(post._id, "main", deletePost)}
+              onPostInViewport={() => handleCreatePostView(post._id)}
             />
           )}
 
@@ -163,6 +177,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                     onClickDelete={() =>
                       handleAction(reply._id, "reply", deletePost)
                     }
+                    onPostInViewport={() => handleCreatePostView(reply._id)}
                   />
                 </div>
               );
@@ -195,6 +210,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                 onClickDelete={() =>
                   handleAction(reply._id, "reply", deletePost)
                 }
+                onPostInViewport={() => handleCreatePostView(reply._id)}
               />
             );
           })}
@@ -211,7 +227,7 @@ const SinglePostPage: NextPageWithLayout = () => {
         <NoPostMessage message="Something went wrong!" />
       )}
 
-      <CreatePostModal modalTitle="Reply" />
+      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
     </>
   );
 };

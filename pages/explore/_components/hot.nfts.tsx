@@ -3,11 +3,12 @@ import React, { useEffect } from "react";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 // App imports
-import NFTCard from "@/components/nft.card";
+
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { useExploreStore } from "@/store/explore.store";
+import { NFTCard } from "@/components/nft.card";
 
 export const HotNFTs: React.FC = () => {
   const { hotNFTs, fetchHotNFTs, loadingHotNFTs } = useExploreStore(

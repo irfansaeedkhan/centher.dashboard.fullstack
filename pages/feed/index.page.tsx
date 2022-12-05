@@ -10,6 +10,7 @@ import {
   SinglePostV2,
   archivePost,
   deletePost,
+  createPostView,
 } from "@/components/feed.components";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
@@ -28,6 +29,7 @@ const Feed: NextPageWithLayout = () => {
     offset,
     updateOffset,
     likePostAPI,
+    createPostViewInStore,
     loading,
   } = useFeedStore((state) => ({
     posts: state.posts,
@@ -41,6 +43,7 @@ const Feed: NextPageWithLayout = () => {
 
     likePostAPI: state.likePostAPI,
 
+    createPostViewInStore: state.createPostViewInStore,
     loading: state.loading,
   }));
 
@@ -71,6 +74,15 @@ const Feed: NextPageWithLayout = () => {
       removePost(postId);
       // Decrement post count on profile card
       useProfileCardStore.getState().decrementPostsCount();
+    } catch (error: any) {
+      customLog(error, ["development"]);
+    }
+  };
+
+  const handleCreatePostView = async (postId: string) => {
+    try {
+      await createPostView(postId);
+      createPostViewInStore(postId);
     } catch (error: any) {
       customLog(error, ["development"]);
     }
@@ -108,6 +120,7 @@ const Feed: NextPageWithLayout = () => {
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
                 onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
           );
@@ -137,6 +150,7 @@ const Feed: NextPageWithLayout = () => {
             }}
             onClickArchive={() => handleAction(post._id, archivePost)}
             onClickDelete={() => handleAction(post._id, deletePost)}
+            onPostInViewport={() => handleCreatePostView(post._id)}
           />
         );
       })}

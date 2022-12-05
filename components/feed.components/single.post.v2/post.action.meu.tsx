@@ -5,19 +5,25 @@ import { BsThreeDots } from "react-icons/bs";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
 import { HiOutlineArchive } from "react-icons/hi";
+import { MdSettingsBackupRestore } from "react-icons/md";
 
 import { DeleteModal } from "./delete.modal";
+import { PostType } from "./main";
 
 interface Props {
+  postType: PostType;
   isBefore15Minutes: boolean;
-  onClickEdit: () => Promise<void>;
+  onClickEdit: () => void;
   onClickDelete: () => Promise<void>;
   onClickArchive: () => Promise<void>;
+  onClickRestore: () => Promise<void>;
 }
 
 export const PostActionMenu: React.FC<Props> = ({
+  postType,
   isBefore15Minutes,
   onClickArchive,
+  onClickRestore,
   onClickDelete,
   onClickEdit,
 }) => {
@@ -37,13 +43,18 @@ export const PostActionMenu: React.FC<Props> = ({
         />
 
         {isOpen && (
-          <div className="absolute right-0 z-[500] top-full w-[170px] bg-black-shade-12 rounded-10px overflow-hidden">
-            {/* {isBefore15Minutes && (
+          <div
+            className={clsx(
+              "absolute right-0 z-[500] top-full bg-black-shade-12 rounded-10px overflow-hidden",
+              postType === "archived" ? "w-[190px]" : "w-[170px]"
+            )}
+          >
+            {isBefore15Minutes && postType !== "archived" && (
               <MenuButton onClick={onClickEdit}>
                 <FiEdit className="w-[18px] h-[18px]" />
                 <span>Edit</span>
               </MenuButton>
-            )} */}
+            )}
 
             <MenuButton
               onClick={async (e) => {
@@ -51,19 +62,35 @@ export const PostActionMenu: React.FC<Props> = ({
                 if (button.disabled) return;
 
                 button.disabled = true;
-                await onClickArchive();
+
+                if (postType === "archived") {
+                  await onClickRestore();
+                } else {
+                  await onClickArchive();
+                }
                 button.disabled = false;
               }}
               className="group"
             >
-              <HiOutlineArchive className="w-[18px] h-[18px]" />
-              <span className="text-left  flex-grow">Archive</span>
+              {postType !== "archived" ? (
+                <HiOutlineArchive className="w-[18px] h-[18px]" />
+              ) : (
+                <MdSettingsBackupRestore className="w-[18px] h-[18px]" />
+              )}
+              <span className="text-left flex-grow">
+                {postType !== "archived" ? "Archive" : "Restore Post"}
+              </span>
               <CgSpinner className="w-4 h-4 animate-spin hidden group-disabled:block" />
             </MenuButton>
 
-            <MenuButton onClick={() => setIsDeleteModalOpen(true)}>
+            <MenuButton
+              onClick={() => setIsDeleteModalOpen(true)}
+              className={clsx({
+                "text-danger": postType === "archived",
+              })}
+            >
               <FiTrash2 className="w-[18px] h-[18px]" />
-              <span>Delete</span>
+              <span>Delete {postType === "archived" && "Forever"}</span>
             </MenuButton>
           </div>
         )}

@@ -8,6 +8,7 @@ import {
 } from "@/store/profile.card.store";
 import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
 
 export const useGetProfileCardDetails = (user: User) => {
   const { profileCard, setProfileCard } = useProfileCardStore();
@@ -20,8 +21,7 @@ export const useGetProfileCardDetails = (user: User) => {
           const res = await getProfileCardDetails(account_address);
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.dir(error);
+          customLog(error, ["development"]);
           setProfileCard(initialProfileCard);
         }
       })();

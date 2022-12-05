@@ -2,6 +2,7 @@ import create from "zustand";
 import { devtools } from "zustand/middleware";
 import toast from "react-hot-toast";
 
+import { PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import {
@@ -19,19 +20,25 @@ export interface NewPostStore {
   openModal: (options: OpenModalOptions) => void;
   closeModal: () => void;
 
-  isPostCreateLoading: boolean;
-  setIsPostCreateLoading: (isLoading: boolean) => void;
+  isPostModalLoading: boolean;
+  setisPostModalLoading: (isLoading: boolean) => void;
 
   selectedFiles: FileWithID[];
   setSelectedFiles: (files: FileWithID[]) => void;
   addSelectedFiles: (files: FileWithID[]) => void;
   removeSelectedFile: (fileId: string) => void;
 
+  editPostFiles?: EditFileWithID[];
+  removeEditPostFile: (fileId: string) => void;
+
   postTextMaxLength: 200;
   postText: string;
   setPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
+  editPost: () => Promise<void>;
+
+  onCloseModal: () => void;
 }
 
 export const useNewPostStore = create<NewPostStore>()(
@@ -56,14 +63,21 @@ export const useNewPostStore = create<NewPostStore>()(
           postId: null,
           isModalOpen: false,
           selectedFiles: [],
-          isPostCreateLoading: false,
+          isPostModalLoading: false,
           postText: "",
+          editPostFiles: undefined,
         });
+        if (get().onCloseModal) {
+          get().onCloseModal();
+        }
+        set({ onCloseModal: () => {} });
       },
 
-      isPostCreateLoading: false,
-      setIsPostCreateLoading: (isLoading) =>
-        set({ isPostCreateLoading: isLoading }),
+      onCloseModal: () => {},
+
+      isPostModalLoading: false,
+      setisPostModalLoading: (isLoading) =>
+        set({ isPostModalLoading: isLoading }),
 
       selectedFiles: [],
       setSelectedFiles: (files: FileWithID[]) => set({ selectedFiles: files }),
@@ -75,6 +89,15 @@ export const useNewPostStore = create<NewPostStore>()(
             (file) => file.id !== fileId
           ),
         })),
+
+      editPostFiles: undefined,
+      removeEditPostFile: (fileId: string) => {
+        set((state) => ({
+          editPostFiles: state.editPostFiles?.map((file) =>
+            file.id === fileId ? { ...file, isDeleted: true } : file
+          ),
+        }));
+      },
 
       postTextMaxLength: 200,
       postText: "",
@@ -94,7 +117,7 @@ export const useNewPostStore = create<NewPostStore>()(
             return;
           }
 
-          set({ isPostCreateLoading: true });
+          set({ isPostModalLoading: true });
 
           const filesChunksData = createFilesChunks(selectedFiles);
 
@@ -117,7 +140,42 @@ export const useNewPostStore = create<NewPostStore>()(
           // Starting uploading the files
           await uploadFiles(filesChunksData, 0, data.post_url, data.post_id);
         } catch (error: any) {
+          set({ isPostModalLoading: false });
           customLog("Error in create post: ", ["development"]);
+          customLog(error, ["development"]);
+        }
+      },
+
+      editPost: async () => {
+        try {
+          const { postText, editPostFiles, postId } = get();
+
+          if (
+            postText.trim() === "" &&
+            (!editPostFiles ||
+              editPostFiles.filter((f) => f.isDeleted).length ===
+                editPostFiles.length)
+          ) {
+            toast.error("You can not make the post empty");
+            return;
+          }
+
+          set({ isPostModalLoading: true });
+
+          await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
+            text: postText,
+            deleted_media: editPostFiles
+              ?.filter((file) => file.isDeleted)
+              .map((file) => file.original.url),
+          });
+
+          // If no file media that means only text was available in post
+          await getNewPostAndUpdateState(postId!);
+          get().closeModal();
+          return;
+        } catch (error: any) {
+          set({ isPostModalLoading: false });
+          customLog("Error in edit post: ", ["development"]);
           customLog(error, ["development"]);
         }
       },
@@ -131,9 +189,17 @@ export interface FileWithID {
   id: string;
 }
 
+export type EditFileWithID = {
+  original: PostMedia;
+  id: string;
+  isDeleted: boolean;
+};
+
 type ModalType = null | "new-post" | "reply" | "edit";
 
-interface OpenModalOptionsBase {}
+interface OpenModalOptionsBase {
+  onCloseModal?: () => void;
+}
 
 interface OpenModalOptionsCreate extends OpenModalOptionsBase {
   modalType: "new-post";
@@ -147,6 +213,8 @@ interface OpenModalOptionsReply extends OpenModalOptionsBase {
 interface OpenModalOptionsEdit extends OpenModalOptionsBase {
   modalType: "edit";
   postId: string;
+  editPostFiles?: EditFileWithID[];
+  postText?: string;
 }
 
 type OpenModalOptions =

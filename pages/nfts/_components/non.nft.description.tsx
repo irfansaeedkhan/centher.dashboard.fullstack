@@ -408,12 +408,12 @@ export const NonNFTDescription = ({
       SuccessFunc(false);
     }
   };
-  useEffect(() => {
-    listingModal();
-  }, [!listingForm.formState.isValid]);
-  useEffect(() => {
-    auctionModal();
-  }, [!auctionForm.formState.isValid]);
+  // useEffect(() => {
+  //   listingModal();
+  // }, [!listingForm.formState.isValid]);
+  // useEffect(() => {
+  //   auctionModal();
+  // }, [!auctionForm.formState.isValid]);
 
   return (
     <div className={nftDescriptionContainer}>

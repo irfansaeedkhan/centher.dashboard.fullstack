@@ -1,39 +1,44 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
+import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost, PostUser } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
-import clsx from "clsx";
+import { PostType } from "./main";
 
 interface Props {
-  post: CompletedPost;
-  postType: "main" | "reply" | "reply-w-parent-header" | "archived";
+  post: CompletedPost | ArchivedPost;
+  postUser: PostUser;
+  postType: PostType;
   loggedInUser: LoggedInUser | undefined;
-  onClickDelete: () => Promise<void>;
-  onClickEdit: () => Promise<void>;
-  onClickArchive: () => Promise<void>;
+  onClickEdit: (() => void) | undefined;
+  onClickDelete: (() => Promise<void>) | undefined;
+  onClickArchive: (() => Promise<void>) | undefined;
+  onClickRestore: (() => Promise<void>) | undefined;
 }
 
 export const PostHeader: React.FC<Props> = ({
   post,
+  postUser,
   postType,
   loggedInUser,
   onClickEdit,
   onClickDelete,
   onClickArchive,
+  onClickRestore,
 }) => {
   const isPostOwner = useMemo(() => {
     return (
       loggedInUser?.account_address.toLowerCase() ===
-      post.user.account_address.toLowerCase()
+      postUser.account_address.toLowerCase()
     );
-  }, [loggedInUser?.account_address, post.user.account_address]);
+  }, [loggedInUser?.account_address, postUser.account_address]);
 
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
@@ -41,43 +46,48 @@ export const PostHeader: React.FC<Props> = ({
 
   const createdTime = useMemo(() => {
     // Show relative time under 7 days
-    return dayjs().diff(dayjs(new Date(post.createdAt)), "day") < 7
-      ? dayjs(new Date(post.createdAt)).fromNow()
-      : dayjs(new Date(post.createdAt)).format("D MMM");
-  }, [post.createdAt]);
+    const createdAt =
+      postType === "reply-w-parent-header" &&
+      post.status !== "archived" &&
+      post.parent_post
+        ? post.parent_post.createdAt!
+        : post.createdAt;
+
+    return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
+      ? dayjs(new Date(createdAt)).fromNow()
+      : dayjs(new Date(createdAt)).format("D MMM");
+  }, [post, postType]);
 
   return (
     <div className="flex justify-between">
       {/* Left Side */}
-      <div className="left-side">
+      <div className="left-side mr-2">
         {/* Display Name */}
         <div className={clsx(postType === "reply" && `flex items-center`)}>
           <Link
             href={{
               pathname: AppRoutes.profile.account_address,
-              query: { account_address: post.user.account_address },
+              query: { account_address: postUser.account_address },
             }}
-            className="text-white font-semibold text-sm"
+            className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
           >
-            {post.user.display_name}
+            {postUser.display_name}
           </Link>
 
           {/* Time */}
           <p
             className={clsx(
               `text-gray-shade-7 text-xs font-medium`,
-              postType === "reply" && "ml-3"
+              postType === "reply" && "ml-3",
+              postType !== "reply" && "mt-0.5"
             )}
           >
             {createdTime}
           </p>
         </div>
 
-        {postType === "reply" && (
+        {postType === "reply" && post.status !== "archived" && (
           <>
-            <span className="inline-block text-gray-shade-7 font-medium text-xs">
-              Replying to
-            </span>
             <Link
               href={{
                 pathname: AppRoutes.profile.account_address,
@@ -85,25 +95,48 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="inline-block ml-1 text-white font-medium text-xs"
+              className="mt-0.5 inline-block max-w-max text-white font-medium text-xs text-ellipsis line-clamp-1 group"
             >
-              {post.parent_post?.user.display_name}
+              <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
+                Replying to
+              </span>
+              <span className="group-hover:text-brand-primary">
+                {post.parent_post?.user.display_name}
+              </span>
             </Link>
           </>
         )}
       </div>
 
       {/* Right Side */}
-      {isPostOwner && (
+      {isPostOwner && postType !== "reply-w-parent-header" && (
         <div className="right-side">
           {/* 3 dots menu */}
           <PostActionMenu
+            postType={postType}
             isBefore15Minutes={isBefore15Minutes}
-            onClickEdit={onClickEdit}
-            onClickArchive={onClickArchive}
-            onClickDelete={onClickDelete}
+            onClickEdit={onClickEdit ?? (() => {})}
+            onClickArchive={onClickArchive ?? (async () => {})}
+            onClickRestore={onClickRestore ?? (async () => {})}
+            onClickDelete={onClickDelete ?? (async () => {})}
           />
         </div>
+      )}
+
+      {/* Right Side */}
+      {postType === "reply-w-parent-header" && post.status !== "archived" && (
+        <Link
+          href={{
+            pathname: AppRoutes.feed.single_post,
+            query: {
+              account_address: post.parent_post?.user.account_address,
+              post_id: post.parent_post?._id,
+            },
+          }}
+          className="min-w-max flex items-center py-1.5 px-3 text-xs text-white bg-black-shade-7 rounded-xl"
+        >
+          View Post
+        </Link>
       )}
     </div>
   );

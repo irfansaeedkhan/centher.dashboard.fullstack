@@ -21,7 +21,7 @@ export interface NFTCardProps {
   data: NFT;
 }
 
-const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
+export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   const [name, setName] = useState("");
   const nftOwner = useGetNFTOwner(data.collection, data.tokenId, data.owner);
   const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
@@ -68,23 +68,25 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 width={28}
               />
             )}
-            {user?.account_address ? (
-              <Link
-                className="cursor-pointer"
-                href={`/profile/${user?.account_address}`}
-              >
-                <span className={nftOwnerName}>
-                  {user?.display_name ?? formatAddress(nftOwner)}
-                </span>
-              </Link>
-            ) : (
-              <div>
-                <span className={nftOwnerName}>
-                  {formatAddress(notRegistered)}
-                </span>
-              </div>
-            )}
-            <YellowTick />
+            <div className="flex items-center gap-2">
+              {user?.account_address ? (
+                <Link
+                  className="cursor-pointer truncate max-w-[200px] text-white"
+                  href={`/profile/${user?.account_address}`}
+                >
+                  <span className={`text-white text-xs font-medium`}>
+                    {user?.display_name ?? formatAddress(nftOwner)}
+                  </span>
+                </Link>
+              ) : (
+                <div className="truncate max-w-[200px] text-white">
+                  <span className={`text-white text-xs font-medium`}>
+                    {formatAddress(notRegistered)}
+                  </span>
+                </div>
+              )}
+              <YellowTick />
+            </div>
           </div>
         ) : (
           <HotNftsHeaderSkeleton />
@@ -137,8 +139,6 @@ const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   );
 };
 
-export default NFTCard;
-
 const nftCardWrapper = ctl(
   `[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
 );
@@ -154,8 +154,6 @@ const nftName = ctl(`font-semibold text-white`);
 const nftOwnerWrapper = ctl(
   `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
 );
-
-const nftOwnerName = ctl(`text-white text-xs font-medium`);
 
 const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
 

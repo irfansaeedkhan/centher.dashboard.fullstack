@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
@@ -12,16 +12,24 @@ interface Props {
   modalTitle: string;
 }
 
-export const CreatePostModal: React.FC<Props> = ({ modalTitle }) => {
+export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const {
     selectedFiles,
+    editPostFiles,
     closeModal,
     isModalOpen,
     postText,
     setPostText,
     postTextMaxLength,
   } = useNewPostStore();
+
+  const hasMedia = useMemo(() => {
+    return (
+      !!selectedFiles.length ||
+      !!editPostFiles?.filter((f) => !f.isDeleted).length
+    );
+  }, [selectedFiles, editPostFiles]);
 
   if (!user) {
     return null;
@@ -45,7 +53,9 @@ export const CreatePostModal: React.FC<Props> = ({ modalTitle }) => {
             alt={user.display_name ?? "profile image"}
             sizes={"256px"}
           />
-          <h5 className={`text-14px font-semibold text-white`}>
+          <h5
+            className={`text-14px font-semibold text-white text-ellipsis line-clamp-1`}
+          >
             {user.display_name}
           </h5>
         </div>
@@ -53,7 +63,7 @@ export const CreatePostModal: React.FC<Props> = ({ modalTitle }) => {
         <div>
           <FilesPreview />
 
-          <div className={clsx(`w-full`, !!selectedFiles.length && "mt-4")}>
+          <div className={clsx(`w-full`, hasMedia && "mt-4")}>
             <textarea
               className={`block w-full text-xs fsm:text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-all border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
               cols={12}

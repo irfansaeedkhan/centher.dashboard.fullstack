@@ -1,4 +1,4 @@
-import { Flor, PromotionText } from "@/assets/svgs";
+import { Flor } from "@/assets/svgs";
 import Image from "next/image";
 import React from "react";
 
@@ -8,7 +8,13 @@ export const PromotionCard1 = () => {
       <div className="absolute bottom-0 z-50 left-0 ">
         <Flor />
       </div>
-      <PromotionText />
+      <Image
+        src="/images/promotion.png"
+        alt=""
+        width={220}
+        height={30}
+        className="!max-w-[220px] !h-[30px] object-cover"
+      />
       <div className="flex flex-col items-center justify-center mt-3 mb-[6px]">
         <h2 className="animationTextHeading !text-[21px] font-extrabold leading-[26px]">
           NETHER DAO

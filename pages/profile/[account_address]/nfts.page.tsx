@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { NFT } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import NFTCard from "@/components/nft.card";
+import { NFTCard } from "@/components/nft.card";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { HotNftEmptyIcon } from "@/assets/svgs";
@@ -54,7 +54,7 @@ const NFTProfile: NextPageWithLayout = () => {
   return (
     <>
       {displayNFTs.length > 0 && (
-        <div className="nftCardContainer">
+        <div className="nftCardOwnedContainer">
           {displayNFTs.map((nft: any) => (
             <NFTCard data={nft} key={nft.id} />
           ))}

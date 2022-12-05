@@ -3,10 +3,10 @@ import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
 }
 
 export const PostMedia: React.FC<Props> = ({ post }) => {
@@ -37,6 +37,12 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  // When media is deleted from post during edit, scroll the carousel to the first image
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.scrollTo(0);
+  }, [post.media?.length, emblaApi]);
 
   return (
     <div className="relative mt-4">

@@ -28,7 +28,7 @@ Login.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <div className="w-fit md:hidden sm:flex mb-8">
+        <div className="w-fit md:hidden flex mb-8">
           <Link href={AppRoutes.home}>
             <Image
               src="/images/nether.nft.logo.svg"
@@ -60,5 +60,5 @@ export default Login;
 const signupLeftData = {
   title: "Connect wallet",
   content:
-    "Login to your account with netheru to sell and buy NFTs on some easy steps.",
+    "Login to your account with Netheru to sell and buy NFTs on some easy steps.",
 };

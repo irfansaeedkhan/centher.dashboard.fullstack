@@ -32,7 +32,7 @@ const CreatorCard = ({ publicKey }: CreatorCardProps) => {
                 account_address: user?.account_address,
               },
             }}
-            className="text-sm font-medium text-white hover:text-brand-primary-dark whitespace-nowrap overflow-hidden text-ellipsis"
+            className="text-sm font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1 overflow-hidden"
           >
             {user?.display_name}
           </Link>

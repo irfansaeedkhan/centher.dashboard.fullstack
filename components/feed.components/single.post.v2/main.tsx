@@ -1,9 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { nanoid } from "nanoid";
 import clsx from "clsx";
+import { HiOutlineArchive } from "react-icons/hi";
+import { useInView } from "react-intersection-observer";
 
+import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
-import { CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost } from "@/models/post";
+import { customLog } from "@/utils/custom.log";
 
+import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
 import { PostMedia } from "./post.media";
 import { PostTextContent } from "./post.text.content";
@@ -20,15 +26,17 @@ export type Placement =
   | "profile-archived-page";
 
 interface Props {
-  post: CompletedPost;
+  post: CompletedPost | ArchivedPost;
   postType: PostType;
   placement: Placement;
   shouldShowThread?: boolean;
   className?: string;
+  onPostInViewport?: () => Promise<void>;
   onClickReply?: () => void;
+  onClickEdit?: () => void;
   onClickLike?: () => Promise<void>;
-  onClickEdit?: () => Promise<void>;
   onClickArchive?: () => Promise<void>;
+  onClickRestore?: () => Promise<void>;
   onClickDelete?: () => Promise<void>;
 }
 
@@ -38,20 +46,50 @@ export const SinglePostV2: React.FC<Props> = ({
   placement,
   shouldShowThread = false,
   className,
+  onPostInViewport = async () => {},
   onClickReply = () => {},
   onClickLike = async () => {},
   onClickArchive = async () => {},
+  onClickRestore = async () => {},
   onClickDelete = async () => {},
-  onClickEdit = async () => {},
 }) => {
   const { user: loggedInUser } = useUser();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const openPostModal = useNewPostStore((state) => state.openModal);
+
+  const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
+    threshold: 0.8,
+  });
+
+  // When post is in viewport, call onPostInViewport
+  useEffect(() => {
+    (async () => {
+      if (
+        currentPostEntry &&
+        currentPostEntry.intersectionRatio > 0.8 &&
+        !post.viewed_by_loggedin_user
+      ) {
+        try {
+          await onPostInViewport();
+        } catch (error: any) {
+          customLog(error, ["development"]);
+        }
+      }
+    })();
+  }, [
+    post._id,
+    post.viewed_by_loggedin_user,
+    currentPostEntry,
+    onPostInViewport,
+  ]);
 
   return (
     <div
+      ref={currentPostRef}
       className={clsx(
         `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px`,
         placement === "single-post-page" &&
-          postType === "main" &&
+          (postType === "main" || postType === "reply-w-parent-header") &&
           post.replies_count > 0 &&
           "rounded-b-none",
         placement === "single-post-page" &&
@@ -60,11 +98,46 @@ export const SinglePostV2: React.FC<Props> = ({
         className
       )}
     >
-      <div className="flex gap-x-3">
-        {/* Left */}
-        <PostUserImage post={post} shouldShowThread={shouldShowThread} />
+      {postType === "archived" && (
+        <div className="mb-2 flex text-white gap-x-2.5">
+          <HiOutlineArchive className="w-[18px] h-[18px]" />
+          <span className="text-sm">Archived</span>
+        </div>
+      )}
 
-        {/* Right */}
+      <div className="grid grid-cols-[auto_1fr] gap-x-3">
+        {postType === "reply-w-parent-header" &&
+          post.status !== "archived" &&
+          post.parent_post && (
+            <>
+              <PostUserImage
+                postUser={post.parent_post.user}
+                shouldShowConnectLines={true}
+              />
+              <div
+                className={clsx(
+                  `flex-grow pb-5 mb-5 border-b-2 border-b-gray-shade-3`
+                )}
+              >
+                <PostHeader
+                  post={post}
+                  postUser={post.parent_post?.user!}
+                  postType={postType}
+                  loggedInUser={undefined}
+                  onClickArchive={undefined}
+                  onClickRestore={undefined}
+                  onClickDelete={undefined}
+                  onClickEdit={undefined}
+                />
+              </div>
+            </>
+          )}
+
+        <PostUserImage
+          postUser={post.user}
+          shouldShowConnectLines={shouldShowThread}
+        />
+
         <div
           className={clsx(`flex-grow`, {
             "mb-2": shouldShowThread,
@@ -72,11 +145,26 @@ export const SinglePostV2: React.FC<Props> = ({
         >
           <PostHeader
             post={post}
-            postType={postType}
+            postUser={post.user}
+            postType={postType === "reply-w-parent-header" ? "main" : postType}
             loggedInUser={loggedInUser}
             onClickArchive={onClickArchive}
+            onClickRestore={onClickRestore}
             onClickDelete={onClickDelete}
-            onClickEdit={onClickEdit}
+            onClickEdit={() => {
+              setIsEditModalOpen(true);
+              openPostModal({
+                modalType: "edit",
+                postId: post._id,
+                postText: post.text_content,
+                editPostFiles: post.media?.map((m) => ({
+                  original: m,
+                  id: nanoid(),
+                  isDeleted: false,
+                })),
+                onCloseModal: () => setIsEditModalOpen(false),
+              });
+            }}
           />
 
           {post.media && !!post.media.length && <PostMedia post={post} />}
@@ -91,6 +179,7 @@ export const SinglePostV2: React.FC<Props> = ({
 
           <PostFooter
             post={post}
+            postType={postType}
             onClickLike={onClickLike}
             onClickReply={onClickReply}
           />
@@ -98,6 +187,8 @@ export const SinglePostV2: React.FC<Props> = ({
       </div>
 
       {shouldShowThread && <ShowThread post={post} />}
+
+      {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
     </div>
   );
 };

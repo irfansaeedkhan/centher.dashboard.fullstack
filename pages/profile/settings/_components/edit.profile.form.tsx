@@ -3,16 +3,18 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 // App imports
+import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
+import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
+import { SpinIcon3 } from "@/assets/svgs";
 
 // Current directory imports
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
-import { LoadingState } from "@/models/common";
-import { SpinIcon3 } from "@/assets/svgs";
 
 interface EditProfileFormProps {
   user: LoggedInUser;
@@ -79,6 +81,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           label="Pseudonym"
           placeholder="Enter your pseudonym"
           value={updatedUser.pseudonym}
+          maxLength={60}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
@@ -235,7 +238,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 relative">
           <label htmlFor="textarea" className={fieldTitle}>
             Profile bio
           </label>
@@ -252,8 +255,17 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             id=""
             cols={30}
             rows={5}
-            className={inputField}
+            maxLength={160}
+            className={clsx(inputField)}
           ></textarea>
+          {updatedUser.profile_bio.length > 0 && (
+            <div className="w-7 h-7 ml-4 fsm:ml-0 absolute bottom-2 right-2 z-[100]">
+              <PostTextCounter
+                currentLength={updatedUser.profile_bio.length}
+                maxLength={160}
+              />
+            </div>
+          )}
         </div>
 
         <button className={connectButton} onClick={updateProfile}>
