@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ethers } from "ethers";
 import {
@@ -12,16 +12,18 @@ import {
 } from "../utils/address.helpers";
 import {
   getBusdContract,
+  getNTRContract,
   getNtrdaoContract,
   getPresaleContract,
   getRegistrationContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
 import { ZeroAddress } from "../constants/common";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
 export const useNtrdaoBalance = (account: string | undefined | null) => {
   const [balance, setBalance] = useState(0);
-  const ntrdaoContract = getNtrdaoContract(null); //new Contract(dao_address, dao_abi, undefined);
+  const ntrdaoContract = useMemo(() => getNtrdaoContract(), []);
 
   useEffect(() => {
     const fetchBalance = async (account: string) => {
@@ -42,7 +44,7 @@ export const useBusdBalance = (
   reload: boolean
 ) => {
   const [balance, setBalance] = useState(0);
-  const busdContract = getBusdContract(null);
+  const busdContract = getBusdContract();
   useEffect(() => {
     const fetchBalance = async (account: string) => {
       const rawBalance = await busdContract.balanceOf(account);
@@ -57,11 +59,11 @@ export const useBusdBalance = (
   return balance;
 };
 
-export const useBusdAllowance = (account: string | undefined | null) => {
-  const [balance, setBalance] = useState(0);
-  const busdContract = getBusdContract(null);
+export const useGetBusdAllowance = (account: string | undefined | null) => {
+  const [allowance, setBalance] = useState(0);
+  const busdContract = useMemo(() => getBusdContract(), []);
   useEffect(() => {
-    const fetchBalance = async (account: string) => {
+    const fetchAllowance = async (account: string) => {
       const rawBalance = await busdContract.allowance(
         account,
         getPresaleAddress()
@@ -70,37 +72,51 @@ export const useBusdAllowance = (account: string | undefined | null) => {
       setBalance(Number(value));
     };
     if (account) {
-      fetchBalance(account);
+      fetchAllowance(account);
     }
-  }, [account]);
+  }, [account, busdContract]);
 
-  return balance;
+  return allowance;
 };
 
 export const useGetRoundInfo = () => {
   const [balance, setBalance] = useState<RoundInfo[]>();
-  const presaleContract = getPresaleContract(null);
+  const presaleContract = useMemo(() => getPresaleContract(), []);
+
   useEffect(() => {
     const fetchBalance = async () => {
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
+        console.log("roundInfo from contract");
+
         const _roundInfo: RoundInfo = {
-          price: Number(ethers.utils.formatUnits(roundInfo[0])),
-          startTime: roundInfo[1].toNumber(),
-          duration: roundInfo[2].toNumber(),
-          bonusRate: roundInfo[3],
-          lockMonths: roundInfo[4],
-          busdRaised: Number(ethers.utils.formatUnits(roundInfo[5])),
-          minContribution: Number(ethers.utils.formatUnits(roundInfo[6])),
-          maxContribution: Number(ethers.utils.formatUnits(roundInfo[7])),
+          rateForBusd: roundInfo["rateForBusd"].toNumber() / 100,
+          rateForNtr: roundInfo["rateForNtr"].toNumber() / 100,
+          busdRaised: Number(ethers.utils.formatUnits(roundInfo["busdRaised"])),
+          ntrRaised: Number(ethers.utils.formatUnits(roundInfo["ntrRaised"])),
+          startTime: roundInfo["startTime"].toNumber(),
+          duration: roundInfo["duration"].toNumber(),
+          lockMonths: roundInfo["lockMonths"],
+          minContributionForBusd: Number(
+            ethers.utils.formatUnits(roundInfo["minContributionForBusd"])
+          ),
+          maxContributionForBusd: Number(
+            ethers.utils.formatUnits(roundInfo["maxContributionForBusd"])
+          ),
+          minContributionForNtr: Number(
+            ethers.utils.formatUnits(roundInfo["minContributionForNtr"])
+          ),
+          maxContributionForNtr: Number(
+            ethers.utils.formatUnits(roundInfo["maxContributionForNtr"])
+          ),
         };
         _roundInfos.push(_roundInfo);
       }
       setBalance(_roundInfos);
     };
     fetchBalance();
-  }, []);
+  }, [presaleContract]);
 
   return balance;
 };
@@ -109,46 +125,67 @@ export const useGetPurchasedInfo = (
   account: string | undefined | null,
   reload: boolean
 ) => {
-  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[][]>(
+  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
     []
   );
-  const presaleContract = getPresaleContract(null);
+  const presaleContract = useMemo(() => getPresaleContract(), []);
+
   useEffect(() => {
     const fetchPurchasedInfo = async (account: string) => {
-      let _purchasedInfos = [];
+      let _purchasedInfos: PurchasedInfoResponse[] = [];
       for (let i = 0; i < 3; i++) {
         const purchasedInfoByRound = await presaleContract.getContribute(
           account,
           i
         );
-        const purchasedInfo = purchasedInfoByRound.map((item: any) => {
-          var date = new Date(item[1] * 1000);
-          return {
-            purchasedDate: item[1].toNumber(),
-            contributedBusdAmount: Number(ethers.utils.formatUnits(item[0])),
-            claimedAmount: Number(ethers.utils.formatUnits(item[2])),
-          };
-        });
-        _purchasedInfos.push(purchasedInfo);
+
+        console.log("purchasedInfo from contract");
+        console.log(purchasedInfoByRound);
+        const _purchasedInfo: PurchasedInfoResponse = {
+          contributedBusdAmount: Number(
+            ethers.utils.formatUnits(
+              purchasedInfoByRound["contributedBusdAmount"]
+            )
+          ),
+          contributedNtrAmount: Number(
+            ethers.utils.formatUnits(
+              purchasedInfoByRound["contributedNtrAmount"]
+            )
+          ),
+          claimedTokenAmount: Number(
+            ethers.utils.formatUnits(purchasedInfoByRound["claimedTokenAmount"])
+          ),
+          purchaseTime: purchasedInfoByRound["purchaseTime"].toNumber(),
+          totalClaimableTokenAmount: Number(
+            ethers.utils.formatUnits(
+              purchasedInfoByRound["totalClaimableTokenAmount"]
+            )
+          ),
+        };
+
+        _purchasedInfos.push(_purchasedInfo);
       }
+
       setPurchasedInfo(_purchasedInfos);
     };
     if (account) fetchPurchasedInfo(account);
-  }, [account, reload]);
+  }, [account, reload, presaleContract]);
 
   return purchasedInfo;
 };
 
-export const useRoundState = () => {
-  const [roundState, setRoundState] = useState<RoundState>(RoundState.Undefind);
-  const presaleContract = getPresaleContract(null);
+export const useGetRoundState = () => {
+  const [roundState, setRoundState] = useState<RoundState>(
+    RoundState.RoundsNotStarted
+  );
+  const presaleContract = useMemo(() => getPresaleContract(), []);
   useEffect(() => {
     const fetchRoundState = async () => {
       const _roundState = await presaleContract.getRound();
       setRoundState(_roundState);
     };
     fetchRoundState();
-  }, []);
+  }, [presaleContract]);
 
   return roundState;
 };
@@ -223,4 +260,46 @@ export const useGetNFTOwner = (
     }
   }, [tokenId, collection, ownerOfListed]);
   return owner;
+};
+
+export const getTokenContract = (
+  tokenName: TokenName,
+  library: Web3Provider | JsonRpcSigner
+) => {
+  if (tokenName === "BUSD") {
+    return getBusdContract(library);
+  } else if (tokenName === "NTR") {
+    return getNTRContract(library);
+  }
+};
+
+export type TokenName = "BUSD" | "NTR" | "NTRDAO";
+export const getTokenBalance = async (
+  tokenName: TokenName,
+  account: string,
+  library: Web3Provider
+) => {
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
+
+  const balance = Number(
+    ethers.utils.formatUnits(await tokenContract.balanceOf(account))
+  );
+  return balance;
+};
+
+export const getTokenAllowance = async (
+  tokenName: TokenName,
+  account: string,
+  library: Web3Provider
+) => {
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
+
+  const allowance = Number(
+    ethers.utils.formatUnits(
+      await tokenContract.allowance(account, getPresaleAddress())
+    )
+  );
+  return allowance;
 };
