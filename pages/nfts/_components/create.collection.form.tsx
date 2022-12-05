@@ -144,6 +144,7 @@ export const CreateNFTCollectionForm = ({
           <input
             type="text"
             id="name"
+            maxLength={150}
             autoComplete="off"
             {...register("name")}
             placeholder="eg. ‘big skull collection’ "
@@ -162,6 +163,7 @@ export const CreateNFTCollectionForm = ({
           <input
             type="text"
             id="symbol"
+            maxLength={150}
             autoComplete="off"
             {...register("symbol")}
             placeholder="eg. ‘NTD’ "
@@ -184,6 +186,7 @@ export const CreateNFTCollectionForm = ({
           <textarea
             id="description"
             autoComplete="off"
+            maxLength={550}
             {...register("description")}
             placeholder="Wrirte some details about your NFTs collection"
             className={
@@ -288,7 +291,7 @@ export const CreateNFTCollectionForm = ({
             </div>
             <div>
               <div className={linkInputContainer}>
-                <GreyTwitterIcon className={linkIcon} />
+                <FiTwitter className={linkIcon} />
                 <input
                   type="text"
                   id="twitter"
@@ -353,7 +356,7 @@ const linkInputContainer = ctl(`
 inputItem h-[48px]  w-full !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme relative
 `);
 const linkIcon = ctl(`
-z-30 absolute top-[50%] left-[20px] translate-y-[-50%]
+z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] w-5 h-5
 `);
 const linkListContainer = ctl(`
 flex flex-col gap-5

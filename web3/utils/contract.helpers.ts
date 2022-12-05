@@ -42,7 +42,7 @@ const getContract = (abi: any, address: string, signer?: SignerOrProvider) => {
 //   return new web3.eth.Contract(abi, address)
 // }
 
-export const getNtrdaoContract = (signer: any) => {
+export const getNtrdaoContract = (signer?: SignerOrProvider) => {
   return getContract(ntrdaoAbi, getNtrdaoAddress(), signer);
 };
 
@@ -50,7 +50,7 @@ export const getRegistrationContract = (signer?: SignerOrProvider) => {
   return getContract(registrationAbi, getRegistrationAddress(), signer);
 };
 
-export const getPresaleContract = (signer: any) => {
+export const getPresaleContract = (signer?: SignerOrProvider) => {
   return getContract(presaleAbi, getPresaleAddress(), signer);
 };
 
@@ -77,7 +77,7 @@ export const getRouterContract = (signer: any) => {
   return getContract(routerAbi, getRouterAddress(), signer);
 };
 
-export const getBusdContract = (signer: any) => {
+export const getBusdContract = (signer?: SignerOrProvider) => {
   return getContract(busdAbi, getBusdAddress(), signer);
 };
 
