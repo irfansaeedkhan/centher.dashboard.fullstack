@@ -174,7 +174,7 @@ const AuctionForm = ({
     <div className={formContainer}>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Name your NFT <span className="text-red-500">*</span>{" "}
+          Name Your NFT <span className="text-red-500">*</span>{" "}
         </label>
         <input
           type="text"
@@ -200,7 +200,7 @@ const AuctionForm = ({
           autoComplete="off"
           maxLength={550}
           {...register("Description")}
-          placeholder="Write some details about your NFTs"
+          placeholder="Write some details about your NFT"
           className={
             !formState.errors.Description ? inputField : inputFieldError
           }

@@ -55,7 +55,7 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
             <div className={uploadBoxContent}>
               <span className={formatName}>MP4, QUICKTIME</span>
               <div className={uploadBtnContainer}>
-                <span className={chooseFileBtn}>choose File</span>
+                <span className={chooseFileBtn}>Choose File</span>
                 <input
                   type="file"
                   className={chooseFileBtn2}
@@ -100,7 +100,7 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
               <div className={uploadBoxContent}>
                 <span className={formatName}>PNG, JPG, GIF</span>
                 <div className={uploadBtnContainer}>
-                  <span className={chooseFileBtn}>choose File</span>
+                  <span className={chooseFileBtn}>Choose File</span>
                   <input
                     type="file"
                     className={chooseFileBtn2}

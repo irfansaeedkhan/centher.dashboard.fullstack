@@ -147,7 +147,7 @@ const FixedPriceForm = ({
     <div className={formContainer}>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
-          Name your NFT <span className="text-red-500">*</span>{" "}
+          Name Your NFT <span className="text-red-500">*</span>{" "}
         </label>
         <input
           type="text"
@@ -173,7 +173,7 @@ const FixedPriceForm = ({
           autoComplete="off"
           maxLength={550}
           {...register("Description")}
-          placeholder="Write some details about your NFTs"
+          placeholder="Write some details about your NFT"
           className={
             !formState.errors.Description ? inputField : inputFieldError
           }
@@ -276,7 +276,7 @@ const FixedPriceForm = ({
             !formState.errors.Collection ? inputField : inputFieldError
           }
         >
-          <option value="">Select</option>
+          {/* <option value="">Select</option> */}
           {collections.map((collection) => {
             return (
               <option value={collection.collection} key={collection.id}>

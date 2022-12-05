@@ -44,7 +44,7 @@ export const UploadNFT = ({
           className={`${Tab} ${assetTab === "Image" && activeTab}`}
         />
         <Button
-          title={"Gif"}
+          title={"GIF"}
           variant={assetTab === "Gif" ? "v1" : "v2"}
           Icon={<GifIcon />}
           onClick={() => {
