@@ -1,9 +1,12 @@
 import Image from "next/image";
 import React from "react";
 
-export const LevelChildCard = ({ childData }: any) => {
+export const LevelChildCard = ({ childData, handleCard }: any) => {
   return (
-    <div className="bg-background-shade-3 rounded-t-lg w-full">
+    <div
+      className="bg-background-shade-3 rounded-t-lg w-full"
+      onClick={() => handleCard(childData?.level)}
+    >
       <div className="flex items-center py-4 px-3 gap-3">
         <Image
           src={"/images/robertProfilepic.png"}
