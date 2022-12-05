@@ -6,6 +6,7 @@ import { MessagesCard } from "@/components/feed.components";
 import ProfileHeader from "./profile.header";
 import { ProfileTabs } from "./profile.tabs";
 import { CardsContainerLeft } from "./cards.container.left";
+import { useRouter } from "next/router";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface AllPagesWrapperProps {
 }
 
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
+  const router = useRouter();
   return (
     <>
       <div className="w-full max-w-[1136px] mx-auto">
@@ -23,7 +25,10 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] grid-rows-[auto_1fr]`
           )}
         >
-          <ProfileHeader className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto" />
+          <ProfileHeader
+            param_account_address={router.query.account_address?.toString()}
+            className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto"
+          />
 
           <CardsContainerLeft className="flg:row-start-2 flg:col-start-2 flg:col-span-1 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3" />
 

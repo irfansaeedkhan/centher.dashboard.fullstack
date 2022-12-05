@@ -48,9 +48,12 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
           <div className={uploadBoxContent}>
             <span className={formatName}>PNG, JPG, GIF</span>
             <div className={uploadBtnContainer}>
-              <span className={chooseFileBtn}>Choose File</span>
+              <label htmlFor="image-nft" className={chooseFileBtn}>
+                Choose File
+              </label>
               <input
                 type="file"
+                id="image-nft"
                 className={chooseFileBtn2}
                 onChange={uploadFile}
                 accept="image/png, image/jpeg, image/webp"
@@ -88,8 +91,7 @@ const uploadBtnContainer = ctl(`
   relative w-[132px] h-10
     `);
 const chooseFileBtn = ctl(`
-  absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
+  z-10 absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
     `);
 const chooseFileBtn2 = ctl(`
-  absolute w-full h-full  opacity-0
-    `);
+ absolute w-full h-full  opacity-0`);
