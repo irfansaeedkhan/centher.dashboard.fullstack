@@ -292,7 +292,7 @@ const AuctionForm = ({
         )}
         {AuctionEndTimeErr && (
           <p className={`text-red-500 ${errMessage}`}>
-            Date and Time must be accurate
+            Please select date & time from future
           </p>
         )}
       </div>
