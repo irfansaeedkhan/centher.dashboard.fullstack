@@ -237,7 +237,7 @@ const AuctionForm = ({
             NFT Amount <span className="text-red-500">*</span>{" "}
           </label>
           <input
-            type="text"
+            type="number"
             id="NFTAmount"
             maxLength={10}
             autoComplete="off"
