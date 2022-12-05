@@ -146,10 +146,13 @@ const FixedPriceForm = ({
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Name your NFT</label>
+        <label className={fieldTitle}>
+          Name your NFT <span className="text-red-500">*</span>{" "}
+        </label>
         <input
           type="text"
           id="NFTName"
+          maxLength={150}
           autoComplete="off"
           {...register("NFTName")}
           placeholder="eg. &#34;big skull&#34;"
@@ -162,10 +165,13 @@ const FixedPriceForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Description</label>
+        <label className={fieldTitle}>
+          Description <span className="text-red-500">*</span>{" "}
+        </label>
         <textarea
           id="Description"
           autoComplete="off"
+          maxLength={550}
           {...register("Description")}
           placeholder="Write some details about your NFTs"
           className={
@@ -182,7 +188,7 @@ const FixedPriceForm = ({
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Category
+          Category <span className="text-red-500">*</span>{" "}
         </label>
         <select
           id="Category"
@@ -205,11 +211,14 @@ const FixedPriceForm = ({
       </div>
       <div className="flex gap-3">
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>NFT Amount</label>
+          <label className={fieldTitle}>
+            NFT Amount <span className="text-red-500">*</span>{" "}
+          </label>
           <input
-            type="text"
+            type="number"
             id="NFTAmount"
             autoComplete="off"
+            maxLength={10}
             {...register("NFTAmount")}
             placeholder="0"
             className={
@@ -224,7 +233,9 @@ const FixedPriceForm = ({
         </div>
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>NFT Price</label>
+        <label className={fieldTitle}>
+          NFT Price <span className="text-red-500">*</span>{" "}
+        </label>
 
         <div className="relative">
           <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
@@ -256,7 +267,7 @@ const FixedPriceForm = ({
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Collection
+          Collection <span className="text-red-500">*</span>{" "}
         </label>
         <select
           id="Collection"
