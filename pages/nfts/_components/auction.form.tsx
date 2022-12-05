@@ -283,7 +283,7 @@ const AuctionForm = ({
             BNB
           </span>
           <input
-            type="text"
+            type="number"
             id="StartingNFTPrice"
             autoComplete="off"
             {...register("StartingNFTPrice")}
