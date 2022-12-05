@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
+import { IoClose } from "react-icons/io5";
 
 import { ModalPortal } from "@/components/modal/modal.portal";
-import { IoClose } from "react-icons/io5";
 import {
-  CloseIcon,
+  DeleteCrossIcon,
   NTRDAOIconBG,
   SpinIcon2,
   SuccessIcon,
@@ -67,9 +67,18 @@ export const LaunchpadModal: React.FC<ModalProps> = ({
 
           {/* Content */}
           <div className="p-4 text-center space-y-4">
-            {status === "progress" && <SpinIcon2 className="inline-block" />}
-            {status === "success" && <SuccessIcon className="inline-block" />}
-            {status === "warning" && <WarningIcon className="inline-block" />}
+            {status === "progress" && (
+              <SpinIcon2 className="inline-block w-16 h-16" />
+            )}
+            {status === "success" && (
+              <SuccessIcon className="inline-block w-16 h-16" />
+            )}
+            {status === "warning" && (
+              <WarningIcon className="inline-block w-16 h-16" />
+            )}
+            {status === "error" && (
+              <DeleteCrossIcon className="inline-block w-16 h-16" />
+            )}
             {status === "buy-ntr" && (
               <NTRDAOIconBG className="inline-block w-16 h-16" />
             )}
@@ -82,23 +91,25 @@ export const LaunchpadModal: React.FC<ModalProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex mt-2 font-semibold">
-            <button
-              className="w-full p-4 text-center text-white bg-gray-shade-3"
-              onClick={status === "progress" ? () => {} : onClickClose}
-              disabled={status === "progress"}
-            >
-              Cancel
-            </button>
+          {status !== "success" && (
+            <div className="flex mt-2 font-semibold">
+              <button
+                className="w-full p-4 text-center text-white bg-gray-shade-3"
+                onClick={status === "progress" ? () => {} : onClickClose}
+                disabled={status === "progress"}
+              >
+                Cancel
+              </button>
 
-            <button
-              className="w-full p-4 text-center text-black bg-brand-primary"
-              onClick={status === "progress" ? () => {} : onClickConfirm}
-              disabled={status === "progress"}
-            >
-              {confirmButtonText}
-            </button>
-          </div>
+              <button
+                className="w-full p-4 text-center text-black bg-brand-primary"
+                onClick={status === "progress" ? () => {} : onClickConfirm}
+                disabled={status === "progress"}
+              >
+                {confirmButtonText}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </ModalPortal>

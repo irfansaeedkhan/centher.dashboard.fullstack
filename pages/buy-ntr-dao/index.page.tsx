@@ -1,49 +1,11 @@
-// React, Next, NPM Packages
-import { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
-
-// App imports
+import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { RoundState, RoundInfo } from "@/web3/constants/types";
-import {
-  useGetBusdAllowance,
-  useBusdBalance,
-  useGetPurchasedInfo,
-  useGetRoundInfo,
-  useIsRegistered,
-  useNtrdaoBalance,
-  useGetRoundState,
-} from "@/web3/hooks/use.contracts.functions";
 
-// Current page imports
 import { PresaleCard, PurchaseNTRDAOCard } from "./_components";
 
 const BuyNTRDAOPage: NextPageWithLayout = () => {
-  const { account, library } = useWeb3React();
-  const roundState = useGetRoundState();
-  const roundInfo = useGetRoundInfo();
-
-  const [reload, setReload] = useState(false);
-  const isRegistered = useIsRegistered(account);
-  const ntrdaoBalance = useNtrdaoBalance(account);
-  const busdBalance = useBusdBalance(account, reload);
-  const busdAllowance = useGetBusdAllowance(account);
-  const [isApproved, setApproved] = useState(false);
-  const purchasedInfoResponse = useGetPurchasedInfo(account, reload);
-
-  useEffect(() => {
-    const compareAllowance = async () => {
-      if (busdAllowance !== 0 && busdAllowance >= busdBalance) {
-        setApproved(true);
-      } else {
-        setApproved(false);
-      }
-    };
-    if (account) {
-      compareAllowance();
-    }
-  }, [busdAllowance, busdBalance, account]);
+  const roundsInfo = useGetRoundsInfo();
 
   return (
     <div
@@ -54,118 +16,14 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
       >
         Buy NTRDAO
       </h1>
-      <div className={`flex flex-col gap-5`}>
-        {roundInfo && (
+
+      <div className={`space-y-5`}>
+        {roundsInfo.map((roundInfo) => (
           <>
-            <PresaleCard
-              currentRound={1}
-              roundInfo={roundInfo[0]}
-              roundStatus={
-                roundState === RoundState.RoundsNotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round1Started
-                  ? "active"
-                  : roundState >= RoundState.Round2NotStarted
-                  ? "ended"
-                  : undefined
-              }
-            />
-            <PurchaseNTRDAOCard
-              roundStatus={
-                roundState === RoundState.RoundsNotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round1Started
-                  ? "active"
-                  : roundState >= RoundState.Round2NotStarted
-                  ? "ended"
-                  : undefined
-              }
-              roundInfo={roundInfo[0]}
-              // currentRound={1}
-              // ntrdaoBalance={ntrdaoBalance}
-              // busdBalance={busdBalance}
-              // busdAllowance={busdAllowance}
-              // purchasedInfoResponse={purchasedInfoResponse[0]}
-              // roundState={roundState}
-              // isApproved={isApproved}
-              // setApproved={setApproved}
-              // reload={reload}
-              // setReload={setReload}
-            />
-
-            <PresaleCard
-              roundStatus={
-                roundState <= RoundState.Round2NotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round2Started
-                  ? "active"
-                  : roundState >= RoundState.Round3NotStarted
-                  ? "ended"
-                  : undefined
-              }
-              currentRound={2}
-              roundInfo={roundInfo[1]}
-            />
-            <PurchaseNTRDAOCard
-              roundStatus={
-                roundState <= RoundState.Round2NotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round2Started
-                  ? "active"
-                  : roundState >= RoundState.Round3NotStarted
-                  ? "ended"
-                  : undefined
-              }
-              roundInfo={roundInfo[1]}
-              // currentRound={2}
-              // ntrdaoBalance={ntrdaoBalance}
-              // busdBalance={busdBalance}
-              // busdAllowance={busdAllowance}
-              // purchasedInfoResponse={purchasedInfoResponse[1]}
-              // roundState={roundState}
-              // isApproved={isApproved}
-              // setApproved={setApproved}
-              // reload={reload}
-              // setReload={setReload}
-            />
-
-            <PresaleCard
-              roundStatus={
-                roundState <= RoundState.Round3NotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round3Started
-                  ? "active"
-                  : roundState >= RoundState.RoundsEnded
-                  ? "ended"
-                  : undefined
-              }
-              currentRound={3}
-              roundInfo={roundInfo[2]}
-            />
-            <PurchaseNTRDAOCard
-              roundStatus={
-                roundState <= RoundState.Round3NotStarted
-                  ? "not-started"
-                  : roundState === RoundState.Round3Started
-                  ? "active"
-                  : roundState >= RoundState.RoundsEnded
-                  ? "ended"
-                  : undefined
-              }
-              roundInfo={roundInfo[2]}
-              // currentRound={3}
-              // ntrdaoBalance={ntrdaoBalance}
-              // busdBalance={busdBalance}
-              // busdAllowance={busdAllowance}
-              // purchasedInfoResponse={purchasedInfoResponse[2]}
-              // roundState={roundState}
-              // isApproved={isApproved}
-              // setApproved={setApproved}
-              // reload={reload}
-              // setReload={setReload}
-            />
+            <PresaleCard roundInfo={roundInfo} />
+            <PurchaseNTRDAOCard roundInfo={roundInfo} />
           </>
-        )}
+        ))}
       </div>
     </div>
   );

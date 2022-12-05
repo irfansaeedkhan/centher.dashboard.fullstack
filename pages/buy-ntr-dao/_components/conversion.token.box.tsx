@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { HiChevronDown } from "react-icons/hi";
 
-import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
-import { BUSDIcon, BUSDIconBG, NTRDAOIconBG, NTRIcon } from "@/assets/svgs";
+import { BUSDIcon, NTRIcon } from "@/assets/svgs";
 import { TokenName } from "@/web3/hooks/use.contracts.functions";
-import { useOnClickOutside } from "usehooks-ts";
+
+import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   tokenName: TokenName;

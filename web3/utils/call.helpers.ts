@@ -68,33 +68,18 @@ export const buyNtrDao = async (
     const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
 
     let tokenPurchase;
-    let estimateGasTokenPurchase;
 
     if (tokenName === "BUSD") {
       tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
-      estimateGasTokenPurchase =
-        presaleContract.estimateGas.tokenPurchaseWithBUSD;
     } else if (tokenName === "NTR") {
       tokenPurchase = presaleContract.functions.tokenPurchaseWithNtr;
-      estimateGasTokenPurchase =
-        presaleContract.estimateGas.tokenPurchaseWithNtr;
     }
 
-    if (!tokenPurchase || !estimateGasTokenPurchase) {
+    if (!tokenPurchase) {
       throw new Error("Token cannot be purchased");
     }
 
-    // console.log(
-    //   "gas limit = ",
-    //   (
-    //     await presaleContract.estimateGas.tokenPurchaseWithBUSD(
-    //       purchaseAmount
-    //     )
-    //   ).toNumber()
-    // );
-    const { hash: purchasedHash } = await tokenPurchase(purchaseAmount, {
-      gasLimit: 500000,
-    });
+    const { hash: purchasedHash } = await tokenPurchase(purchaseAmount);
 
     while (loop) {
       tx = await library.getTransactionReceipt(purchasedHash);
@@ -109,9 +94,8 @@ export const buyNtrDao = async (
       hash: purchasedHash,
     };
   } catch (error: any) {
-    console.dir(error);
-    // customLog("[Buy token Error] = ", ["development"]);
-    // customLog(error, ["development"]);
+    customLog("[Buy token Error] = ", ["development"]);
+    customLog(error, ["development"]);
 
     return {
       success: false,

@@ -1,19 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { RoundInfo, RoundState, RoundStatus } from "@/web3/constants/types";
+import React from "react";
+
+import { RoundInfo } from "@/web3/constants/types";
 
 import { TimeCount } from "./time.count";
 
 interface PresaleCardProps {
-  currentRound: number;
   roundInfo: RoundInfo;
-  roundStatus: RoundStatus;
 }
 
-export const PresaleCard: React.FC<PresaleCardProps> = ({
-  roundStatus,
-  roundInfo,
-  currentRound,
-}) => {
+export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
   return (
     <div
       className={`bg-no-repeat bg-top bg-buydao-pattern rounded-2xl bg-background-shade-1 p-8 flg:p-14 bg-cover`}
@@ -41,8 +36,8 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({
 
         <TimeCount
           roundInfo={roundInfo}
-          roundStatus={roundStatus}
-          currentRound={currentRound}
+          roundStatus={roundInfo.status}
+          currentRound={roundInfo.round + 1}
         />
       </div>
     </div>

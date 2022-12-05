@@ -1,20 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
+import { TokenName } from "@/web3/hooks/use.contracts.functions";
+import { RoundInfo } from "@/web3/constants/types";
 import {
   BUSDIconBG,
   LeftArrowIcon,
   NTRDAOIconBG,
   NTRIconBG,
 } from "@/assets/svgs";
-import { TokenName } from "@/web3/hooks/use.contracts.functions";
 
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionTokenBox } from "./conversion.token.box";
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
-import { RoundInfo } from "@/web3/constants/types";
 
 interface Props {
   selectedTokenA: SelectedTokenA;
@@ -42,6 +42,10 @@ export const ConversionContainer: React.FC<Props> = ({
         minContribution: roundInfo.minContributionForBusd,
         maxContribution: roundInfo.maxContributionForBusd,
         rate: roundInfo.rateForBusd,
+
+        inputValue: roundInfo.minContributionForBusd,
+        inputMinValue: roundInfo.minContributionForBusd,
+        inputMaxValue: roundInfo.maxContributionForBusd,
       }));
     } else if (tokenName === "NTR") {
       setSelectedTokenA((prev) => ({
@@ -51,6 +55,10 @@ export const ConversionContainer: React.FC<Props> = ({
         minContribution: roundInfo.minContributionForNtr,
         maxContribution: roundInfo.maxContributionForNtr,
         rate: roundInfo.rateForNtr,
+
+        inputValue: roundInfo.minContributionForNtr,
+        inputMinValue: roundInfo.minContributionForNtr,
+        inputMaxValue: roundInfo.maxContributionForNtr,
       }));
     }
   };

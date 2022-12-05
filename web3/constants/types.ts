@@ -6,7 +6,12 @@ export interface Address {
   1: string;
 }
 
+export type RoundStatus = "not-started" | "active" | "ended" | undefined;
+export type RoundNumber = 0 | 1 | 2;
+
 export interface RoundInfo {
+  round: RoundNumber;
+  status: RoundStatus;
   rateForBusd: number;
   rateForNtr: number;
   startTime: number;
@@ -20,18 +25,6 @@ export interface RoundInfo {
   maxContributionForNtr: number;
 }
 
-// uint256 rateForBusd;
-// uint256 rateForNtr;
-// uint256 startTime;
-// uint256 duration;
-// uint8 lockMonths;
-// uint256 busdRaised;
-// uint256 ntrRaised;
-// uint256 minContributionForBusd;
-// uint256 minContributionForNtr;
-// uint256 maxContributionForBusd;
-// uint256 maxContributionForNtr;
-
 export interface PurchasedInfoResponse {
   contributedBusdAmount: number;
   contributedNtrAmount: number;
@@ -39,12 +32,6 @@ export interface PurchasedInfoResponse {
   claimedTokenAmount: number;
   totalClaimableTokenAmount: number;
 }
-
-// uint256 contributedBusdAmount;
-// uint256 contributedNtrAmount;
-// uint256 purchaseTime;
-// uint256 claimedTokenAmount;
-// uint256 totalClaimableTokenAmount;
 
 export interface PurchasedInfo {
   purchasedDate: string;
@@ -57,13 +44,11 @@ export interface PurchasedInfo {
 }
 
 export enum RoundState {
+  RoundsEnded = -4,
+  Round3NotStarted,
+  Round2NotStarted,
   RoundsNotStarted,
   Round1Started,
-  Round2NotStarted,
   Round2Started,
-  Round3NotStarted,
   Round3Started,
-  RoundsEnded,
 }
-
-export type RoundStatus = "not-started" | "active" | "ended" | undefined;
