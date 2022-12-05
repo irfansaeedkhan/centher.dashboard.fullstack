@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-export const LevelChildCard = () => {
+export const LevelChildCard = ({ childData }: any) => {
   return (
     <div className="bg-background-shade-3 rounded-t-lg w-full">
       <div className="flex items-center py-4 px-3 gap-3">
@@ -14,9 +14,11 @@ export const LevelChildCard = () => {
           className="rounded-full object-cover w-9 h-9"
         />
         <div className="flex flex-col gap-2">
-          <h5 className="text-white text-12px font-medium">Jenny Wilson</h5>
+          <h5 className="text-white text-12px font-medium">
+            {childData?.name}
+          </h5>
           <h6 className="text-gray-shade-19 text-[10px] font-medium">
-            Level 01
+            Level {childData?.level}
           </h6>
         </div>
       </div>

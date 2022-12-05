@@ -1,89 +1,58 @@
 // App imports
 import React from "react";
 // Current directory imports
-import { LevelParentCard } from "./index";
-import { LevelChildCard } from "./index";
+import { LevelMain } from "./level.main";
+//  first array for parents second for children
 
 let dummyData = [
   {
-    id: "1",
-    title: "Level 1",
+    id: 1,
+    level: "01",
+    percent: 9,
     children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
+      { id: 1, name: "irfan", level: "01" },
+      { id: 2, name: "arsalan", level: "01" },
+      { id: 3, name: "jibran", level: "01" },
+      { id: 4, name: "shivam", level: "01" },
     ],
   },
   {
-    id: "2",
-    title: "Level 2",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
+    id: 2,
+    level: "02",
+    percent: 7,
+    children: [],
   },
   {
-    id: "3",
-    title: "Level 3",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
+    id: 3,
+    level: "03",
+    percent: 5,
+    children: [],
   },
   {
-    id: "4",
-    title: "Level 4",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
+    id: 4,
+    level: "04",
+    percent: 3,
+    children: [],
   },
   {
-    id: "5",
-    title: "Level 5",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
+    id: 5,
+    level: "05",
+    percent: 2,
+    children: [],
   },
   {
-    id: "6",
-    title: "Level 6",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
-  },
-  {
-    id: "7",
-    title: "Level 7",
-    children: [
-      {
-        id: "2",
-        title: "Level 2",
-      },
-    ],
+    id: 6,
+    level: "06",
+    percent: 3,
+    children: [],
   },
 ];
 export const Levels = () => {
   return (
-    <div>
-      {/* {dummyData.map(() => (
-        <LevelParentCard />
-      ))} */}
-      <LevelParentCard />
-      <LevelChildCard />
+    <div className="w-full flex gap-3">
+      {dummyData?.map((parentData: any) => {
+        return <LevelMain parentData={parentData} key={parentData?.id} />;
+      })}
     </div>
   );
 };
