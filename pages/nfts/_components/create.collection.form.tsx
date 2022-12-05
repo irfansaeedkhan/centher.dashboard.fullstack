@@ -144,6 +144,7 @@ export const CreateNFTCollectionForm = ({
           <input
             type="text"
             id="name"
+            maxLength={150}
             autoComplete="off"
             {...register("name")}
             placeholder="eg. ‘big skull collection’ "
@@ -162,6 +163,7 @@ export const CreateNFTCollectionForm = ({
           <input
             type="text"
             id="symbol"
+            maxLength={150}
             autoComplete="off"
             {...register("symbol")}
             placeholder="eg. ‘NTD’ "
@@ -184,6 +186,7 @@ export const CreateNFTCollectionForm = ({
           <textarea
             id="description"
             autoComplete="off"
+            maxLength={550}
             {...register("description")}
             placeholder="Wrirte some details about your NFTs collection"
             className={
