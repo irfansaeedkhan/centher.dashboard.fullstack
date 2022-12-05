@@ -177,11 +177,14 @@ const AuctionForm = ({
       reset({
         NFTName: "",
         Description: "",
+        Category: "",
         NFTAmount: null,
         AuctionEndTime: "",
         StartingNFTPrice: null,
         Collection: "",
+        // PropertiesList: "",
       });
+      setPropertyList([]);
     }
   }, [clearForm, reset]);
   return (
