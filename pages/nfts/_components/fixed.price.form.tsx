@@ -242,7 +242,7 @@ const FixedPriceForm = ({
             BNB
           </span>
           <input
-            type="text"
+            type="number"
             id="NFTPrice"
             autoComplete="off"
             {...register("NFTPrice")}
