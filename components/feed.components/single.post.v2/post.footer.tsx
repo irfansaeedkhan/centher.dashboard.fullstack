@@ -7,6 +7,10 @@ import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import { ShareMenu } from "./share.menu";
 import { PostType } from "./main";
+import useUser from "@/hooks/use.user";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -22,7 +26,6 @@ export const PostFooter: React.FC<Props> = ({
   onClickReply,
 }) => {
   const [isShareMenuOpen, setIsShareMenuOpen] = useState(false);
-
   const shareMenuContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(shareMenuContainerRef, () => setIsShareMenuOpen(false));
 
