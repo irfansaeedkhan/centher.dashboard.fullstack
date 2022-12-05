@@ -1,62 +1,27 @@
-// React, Next, NPM Packages
 import React, { useState, useEffect } from "react";
-import { BigNumber } from "ethers";
 import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
+import clsx from "clsx";
 
-// App imports
 import {
-  useGetBusdAllowance,
-  useBusdBalance,
-  useGetPurchasedInfo,
-  useIsRegistered,
-  useNtrdaoBalance,
-  useGetRoundState,
   getTokenBalance,
-  TokenName,
   getTokenAllowance,
 } from "@/web3/hooks/use.contracts.functions";
 import Button from "@/components/button";
-import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
-import { LoadingSkeleton } from "@/web3/utils/utils";
 import { buyNtrDao, getTokenApproval } from "@/web3/utils/call.helpers";
-import {
-  PurchasedInfo,
-  PurchasedInfoResponse,
-  RoundInfo,
-  RoundState,
-  RoundStatus,
-} from "@/web3/constants/types";
-import { DAY } from "@/web3/constants/common";
+import { RoundInfo } from "@/web3/constants/types";
+import { BUSDIconBG, LockedIcon, NTRDAOIconBG } from "@/assets/svgs";
 
-import {
-  BUSDIconBG,
-  LeftArrowIcon,
-  LockedIcon,
-  NTRDAOIconBG,
-  NTRIconBG,
-} from "@/assets/svgs";
-
-// Current directory imports
-import { NTRDAOTable } from "./ntrdao.table";
-import clsx from "clsx";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ConversionContainer } from "./conversion.container";
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { Web3Provider } from "@ethersproject/providers";
-import { LaunchpadModal, ModalStatus, ModalProps } from "./launchpad.modal";
+import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 
 interface Props {
-  roundStatus: RoundStatus;
   roundInfo: RoundInfo;
 }
 
-export const PurchaseNTRDAOCard: React.FC<Props> = ({
-  roundStatus,
-  roundInfo,
-}) => {
+export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
   const { account, library } = useWeb3React<Web3Provider>();
   const [isApproved, setIsApproved] = useState(false);
 
@@ -134,6 +99,19 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
     checkSelectedTokenAllowance();
   }, [account, selectedTokenA, library]);
 
+  const openAuthorizeModal = () => {
+    setModal((prev) => ({
+      ...prev,
+      isOpen: true,
+      status: "warning",
+      title: "Authorization Contract",
+      subtitle: `Allow Nether NFT to use your ${selectedTokenA.tokenName} token`,
+      bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Nether NFT contract.`,
+      confirmButtonText: "Authorize",
+      onClickConfirm: handleClickAuthorize,
+    }));
+  };
+
   const handleClickAuthorize = async () => {
     if (!account || !library) return;
     setModal((prev) => ({
@@ -156,6 +134,27 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
     }
   };
 
+  const openBuyModal = () => {
+    if (!selectedTokenA.inputValue) return;
+    if (selectedTokenA.inputValue < selectedTokenA.minContribution) {
+      toast.error(
+        `Minimum contribution is ${selectedTokenA.minContribution} ${selectedTokenA.tokenName}`
+      );
+      return;
+    }
+
+    setModal((prev) => ({
+      ...prev,
+      isOpen: true,
+      status: "buy-ntr",
+      title: "Buy Now",
+      subtitle: `Do you want to buy NTRDAO?`,
+      bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
+      confirmButtonText: "Buy Now",
+      onClickConfirm: handleBuyNtrDao,
+    }));
+  };
+
   const handleBuyNtrDao = async () => {
     try {
       if (!account || !library) return;
@@ -167,38 +166,38 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
 
       const result = await buyNtrDao(
         selectedTokenA.tokenName,
-        selectedTokenB.inputValue,
+        selectedTokenA.inputValue,
         library
       );
 
       if (result.success) {
-        toast.success("Purchased Successful!");
         setModal((prev) => ({
           ...prev,
           subtitle: "Purchase Successful",
           bodyText: `You have bought NTRDAO tokens. NTRDAO will be locked for ${roundInfo.lockMonths} months. You can claim when unlocked.`,
           status: "success",
-          confirmButtonText: "Close",
         }));
       } else {
-        toast.error("Purchase transaction failed");
+        toast.error("Purchase Transaction Failed");
         setModal((prev) => ({
           ...prev,
           status: "error",
+          confirmButtonText: "Try Again",
         }));
       }
     } catch (error) {
-      toast.error("Purchase transaction failed");
+      toast.error("Purchase Transaction Failed");
       setModal((prev) => ({
         ...prev,
         status: "error",
+        confirmButtonText: "Try Again",
       }));
     }
   };
 
   return (
     <div className="relative">
-      {roundStatus === "not-started" && (
+      {roundInfo.status === "not-started" && (
         <div
           className={`absolute z-10 top-0 left-0 w-full h-full flex items-center justify-center`}
         >
@@ -213,7 +212,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
 
       <div
         className={clsx(
-          roundStatus === "not-started" &&
+          roundInfo.status === "not-started" &&
             "blur-xl bg-black-shade-3/60 pointer-events-none"
         )}
       >
@@ -232,7 +231,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
             roundInfo={roundInfo}
           />
 
-          {roundStatus === "active" && (
+          {roundInfo.status === "active" && (
             <div
               className={`pt-8 lg:pt-12 w-full lg:max-w-[428px] mx-auto text-center`}
             >
@@ -251,31 +250,8 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
                         toast.error("Please connect your wallet");
                       }
                     : isApproved
-                    ? // ? buyNowFunc
-                      () => {
-                        setModal((prev) => ({
-                          ...prev,
-                          isOpen: true,
-                          status: "buy-ntr",
-                          title: "Buy Now",
-                          subtitle: `Do you want to buy NTRDAO?`,
-                          bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
-                          confirmButtonText: "Buy Now",
-                          onClickConfirm: handleBuyNtrDao,
-                        }));
-                      }
-                    : () => {
-                        setModal((prev) => ({
-                          ...prev,
-                          isOpen: true,
-                          status: "warning",
-                          title: "Authorization Contract",
-                          subtitle: `Allow Nether NFT to use your ${selectedTokenA.tokenName} token`,
-                          bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Nether NFT contract.`,
-                          confirmButtonText: "Authorize",
-                          onClickConfirm: handleClickAuthorize,
-                        }));
-                      }
+                    ? openBuyModal
+                    : openAuthorizeModal
                 }
                 className="py-4"
               />
@@ -293,7 +269,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({
             </div>
           )}
 
-          {roundStatus === "ended" && (
+          {roundInfo.status === "ended" && (
             <div
               className={`mt-8 lg:mt-12 text-center mx-auto  py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl`}
             >

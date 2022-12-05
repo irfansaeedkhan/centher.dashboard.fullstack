@@ -1,11 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
-
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import {
-  PurchasedInfoResponse,
-  RoundInfo,
-  RoundState,
-} from "../constants/types";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+
+import { customLog } from "@/utils/custom.log";
+
 import {
   getMarketplaceAddress,
   getPresaleAddress,
@@ -13,84 +11,34 @@ import {
 import {
   getBusdContract,
   getNTRContract,
-  getNtrdaoContract,
   getPresaleContract,
-  getRegistrationContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
+import {
+  PurchasedInfoResponse,
+  RoundInfo,
+  RoundNumber,
+  RoundState,
+  RoundStatus,
+} from "../constants/types";
 import { ZeroAddress } from "../constants/common";
-import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
-export const useNtrdaoBalance = (account: string | undefined | null) => {
-  const [balance, setBalance] = useState(0);
-  const ntrdaoContract = useMemo(() => getNtrdaoContract(), []);
-
-  useEffect(() => {
-    const fetchBalance = async (account: string) => {
-      const rawBalance = await ntrdaoContract.balanceOf(account);
-      const value = ethers.utils.formatUnits(rawBalance.toString(), 6);
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchBalance(account);
-    }
-  }, [account, ntrdaoContract]);
-
-  return balance;
-};
-
-export const useBusdBalance = (
-  account: string | undefined | null,
-  reload: boolean
-) => {
-  const [balance, setBalance] = useState(0);
-  const busdContract = getBusdContract();
-  useEffect(() => {
-    const fetchBalance = async (account: string) => {
-      const rawBalance = await busdContract.balanceOf(account);
-      const value = ethers.utils.formatUnits(rawBalance.toString(), 18);
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchBalance(account);
-    }
-  }, [account, reload]);
-
-  return balance;
-};
-
-export const useGetBusdAllowance = (account: string | undefined | null) => {
-  const [allowance, setBalance] = useState(0);
-  const busdContract = useMemo(() => getBusdContract(), []);
-  useEffect(() => {
-    const fetchAllowance = async (account: string) => {
-      const rawBalance = await busdContract.allowance(
-        account,
-        getPresaleAddress()
-      );
-      const value = ethers.utils.formatUnits(rawBalance.toString());
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchAllowance(account);
-    }
-  }, [account, busdContract]);
-
-  return allowance;
-};
-
-export const useGetRoundInfo = () => {
-  const [balance, setBalance] = useState<RoundInfo[]>();
-  const presaleContract = useMemo(() => getPresaleContract(), []);
+export const useGetRoundsInfo = () => {
+  const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
+  const presaleContract = getPresaleContract();
 
   useEffect(() => {
-    const fetchBalance = async () => {
+    const fetchRoundsInfo = async () => {
+      const roundState = await getRoundState();
+
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
-        console.log("roundInfo from contract");
+        const roundStatus = getRoundStatus(roundState, i);
 
         const _roundInfo: RoundInfo = {
+          round: i as RoundNumber,
+          status: roundStatus,
           rateForBusd: roundInfo["rateForBusd"].toNumber() / 100,
           rateForNtr: roundInfo["rateForNtr"].toNumber() / 100,
           busdRaised: Number(ethers.utils.formatUnits(roundInfo["busdRaised"])),
@@ -113,12 +61,60 @@ export const useGetRoundInfo = () => {
         };
         _roundInfos.push(_roundInfo);
       }
-      setBalance(_roundInfos);
+      setRoundsInfo(_roundInfos);
     };
-    fetchBalance();
+    try {
+      fetchRoundsInfo();
+    } catch (error: any) {
+      customLog("useGetRoundsInfo", ["development"]);
+      customLog(error, ["development"]);
+      setRoundsInfo([]);
+    }
   }, [presaleContract]);
 
-  return balance;
+  return roundsInfo;
+};
+
+export const getRoundState = async () => {
+  const presaleContract = getPresaleContract();
+  return (await presaleContract.getRound()) as RoundState;
+};
+
+export const getRoundStatus = (
+  roundState: RoundState,
+  round: number
+): RoundStatus => {
+  if (round === 0) {
+    return roundState === RoundState.RoundsNotStarted
+      ? "not-started"
+      : roundState === RoundState.Round1Started
+      ? "active"
+      : roundState > RoundState.Round1Started ||
+        roundState <= RoundState.Round2NotStarted
+      ? "ended"
+      : undefined;
+  } else if (round === 1) {
+    return roundState <= RoundState.Round1Started &&
+      roundState >= RoundState.Round2NotStarted
+      ? "not-started"
+      : roundState === RoundState.Round2Started
+      ? "active"
+      : roundState > RoundState.Round2Started ||
+        roundState <= RoundState.Round3NotStarted
+      ? "ended"
+      : undefined;
+  } else if (round === 2) {
+    return roundState <= RoundState.Round2Started &&
+      roundState >= RoundState.Round3NotStarted
+      ? "not-started"
+      : roundState === RoundState.Round3Started
+      ? "active"
+      : roundState <= RoundState.RoundsEnded
+      ? "ended"
+      : undefined;
+  }
+
+  return undefined;
 };
 
 export const useGetPurchasedInfo = (
@@ -128,7 +124,7 @@ export const useGetPurchasedInfo = (
   const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
     []
   );
-  const presaleContract = useMemo(() => getPresaleContract(), []);
+  const presaleContract = getPresaleContract();
 
   useEffect(() => {
     const fetchPurchasedInfo = async (account: string) => {
@@ -174,39 +170,47 @@ export const useGetPurchasedInfo = (
   return purchasedInfo;
 };
 
-export const useGetRoundState = () => {
-  const [roundState, setRoundState] = useState<RoundState>(
-    RoundState.RoundsNotStarted
-  );
-  const presaleContract = useMemo(() => getPresaleContract(), []);
-  useEffect(() => {
-    const fetchRoundState = async () => {
-      const _roundState = await presaleContract.getRound();
-      setRoundState(_roundState);
-    };
-    fetchRoundState();
-  }, [presaleContract]);
+export type TokenName = "BUSD" | "NTR" | "NTRDAO";
 
-  return roundState;
+export const getTokenContract = (
+  tokenName: TokenName,
+  library: Web3Provider | JsonRpcSigner
+) => {
+  if (tokenName === "BUSD") {
+    return getBusdContract(library);
+  } else if (tokenName === "NTR") {
+    return getNTRContract(library);
+  }
 };
 
-export const useIsRegistered = (account: string | undefined | null) => {
-  const [isRegistered, setIsRegistered] = useState(false);
-  const registerContract = getRegistrationContract();
+export const getTokenBalance = async (
+  tokenName: TokenName,
+  account: string,
+  library: Web3Provider
+) => {
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
 
-  useEffect(() => {
-    const fetchIsRegistered = async (account: string) => {
-      const _isRegistered = await registerContract.isUserRegisteredWithAddress(
-        account
-      );
-      setIsRegistered(_isRegistered);
-    };
+  const balance = Number(
+    ethers.utils.formatUnits(await tokenContract.balanceOf(account))
+  );
+  return balance;
+};
 
-    if (account) {
-      fetchIsRegistered(account);
-    }
-  }, [account, registerContract]);
-  return isRegistered;
+export const getTokenAllowance = async (
+  tokenName: TokenName,
+  account: string,
+  library: Web3Provider
+) => {
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
+
+  const allowance = Number(
+    ethers.utils.formatUnits(
+      await tokenContract.allowance(account, getPresaleAddress())
+    )
+  );
+  return allowance;
 };
 
 export const useGetApprovedForAll = (
@@ -260,46 +264,4 @@ export const useGetNFTOwner = (
     }
   }, [tokenId, collection, ownerOfListed]);
   return owner;
-};
-
-export const getTokenContract = (
-  tokenName: TokenName,
-  library: Web3Provider | JsonRpcSigner
-) => {
-  if (tokenName === "BUSD") {
-    return getBusdContract(library);
-  } else if (tokenName === "NTR") {
-    return getNTRContract(library);
-  }
-};
-
-export type TokenName = "BUSD" | "NTR" | "NTRDAO";
-export const getTokenBalance = async (
-  tokenName: TokenName,
-  account: string,
-  library: Web3Provider
-) => {
-  const tokenContract = getTokenContract(tokenName, library);
-  if (!tokenContract) return 0;
-
-  const balance = Number(
-    ethers.utils.formatUnits(await tokenContract.balanceOf(account))
-  );
-  return balance;
-};
-
-export const getTokenAllowance = async (
-  tokenName: TokenName,
-  account: string,
-  library: Web3Provider
-) => {
-  const tokenContract = getTokenContract(tokenName, library);
-  if (!tokenContract) return 0;
-
-  const allowance = Number(
-    ethers.utils.formatUnits(
-      await tokenContract.allowance(account, getPresaleAddress())
-    )
-  );
-  return allowance;
 };
