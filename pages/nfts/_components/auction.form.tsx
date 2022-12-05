@@ -484,5 +484,5 @@ const Type = ctl(`
 text-14px font-semibold text-white
 `);
 const inputFieldModal = ctl(`
-  w-full py-3 px-5  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
