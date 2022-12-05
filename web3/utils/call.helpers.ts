@@ -1,3 +1,4 @@
+import { customLog } from "@/utils/custom.log";
 import { BigNumber, ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 
@@ -10,18 +11,27 @@ import {
 } from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
 import { delay, isEmpty } from "./utility";
+import { getTokenContract, TokenName } from "../hooks/use.contracts.functions";
 
 const MAX_SUPPLY = BigNumber.from("260000");
 
-export const setBusdApprove = async (library: Web3Provider) => {
+export const getTokenApproval = async (
+  tokenName: TokenName,
+  library: Web3Provider
+) => {
   try {
     let loop = true;
     let tx = null;
     const presaleAddress = getPresaleAddress();
-    const busdContract = getBusdContract(library.getSigner());
+
+    const tokenContract = getTokenContract(tokenName, library.getSigner());
+    if (!tokenContract) {
+      throw new Error("Token contract not found");
+    }
+
     const amount = ethers.utils.parseUnits(MAX_SUPPLY.toString());
 
-    const { hash: approveHash } = await busdContract.functions.approve(
+    const { hash: approveHash } = await tokenContract.functions.approve(
       presaleAddress,
       amount
     );
@@ -46,14 +56,46 @@ export const setBusdApprove = async (library: Web3Provider) => {
   }
 };
 
-export const buyNtrDao = async (library: Web3Provider, amount: BigNumber) => {
+export const buyNtrDao = async (
+  tokenName: TokenName,
+  amount: number,
+  library: Web3Provider
+) => {
   try {
     let loop = true;
     let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
-    const purchaseAmount = ethers.utils.parseUnits(amount.toString());
-    const { hash: purchasedHash } =
-      await presaleContract.functions.tokenPurchase(purchaseAmount);
+    const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+    let tokenPurchase;
+    let estimateGasTokenPurchase;
+
+    if (tokenName === "BUSD") {
+      tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
+      estimateGasTokenPurchase =
+        presaleContract.estimateGas.tokenPurchaseWithBUSD;
+    } else if (tokenName === "NTR") {
+      tokenPurchase = presaleContract.functions.tokenPurchaseWithNtr;
+      estimateGasTokenPurchase =
+        presaleContract.estimateGas.tokenPurchaseWithNtr;
+    }
+
+    if (!tokenPurchase || !estimateGasTokenPurchase) {
+      throw new Error("Token cannot be purchased");
+    }
+
+    // console.log(
+    //   "gas limit = ",
+    //   (
+    //     await presaleContract.estimateGas.tokenPurchaseWithBUSD(
+    //       purchaseAmount
+    //     )
+    //   ).toNumber()
+    // );
+    const { hash: purchasedHash } = await tokenPurchase(purchaseAmount, {
+      gasLimit: 500000,
+    });
+
     while (loop) {
       tx = await library.getTransactionReceipt(purchasedHash);
       if (isEmpty(tx)) {
@@ -67,7 +109,10 @@ export const buyNtrDao = async (library: Web3Provider, amount: BigNumber) => {
       hash: purchasedHash,
     };
   } catch (error: any) {
-    console.log("[Buy token Error] = ", error);
+    console.dir(error);
+    // customLog("[Buy token Error] = ", ["development"]);
+    // customLog(error, ["development"]);
+
     return {
       success: false,
       error: parseErrorMsg(error.message),

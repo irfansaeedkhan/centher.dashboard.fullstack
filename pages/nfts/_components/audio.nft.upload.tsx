@@ -42,7 +42,7 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
           <div className={uploadBoxContent}>
             <span className={formatName}>MPEG, WAV, M4A</span>
             <div className={uploadBtnContainer}>
-              <span className={chooseFileBtn}>choose File</span>
+              <span className={chooseFileBtn}>Choose File</span>
               <input
                 type="file"
                 className={chooseFileBtn2}

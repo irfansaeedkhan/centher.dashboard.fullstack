@@ -173,10 +173,13 @@ const AuctionForm = ({
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Name your NFT</label>
+        <label className={fieldTitle}>
+          Name Your NFT <span className="text-red-500">*</span>{" "}
+        </label>
         <input
           type="text"
           id="NFTName"
+          maxLength={150}
           autoComplete="off"
           {...register("NFTName")}
           placeholder="eg. &#34;big skull&#34;"
@@ -189,12 +192,15 @@ const AuctionForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Description</label>
+        <label className={fieldTitle}>
+          Description <span className="text-red-500">*</span>{" "}
+        </label>
         <textarea
           id="Description"
           autoComplete="off"
+          maxLength={550}
           {...register("Description")}
-          placeholder="Write some details about your NFTs"
+          placeholder="Write some details about your NFT"
           className={
             !formState.errors.Description ? inputField : inputFieldError
           }
@@ -227,10 +233,13 @@ const AuctionForm = ({
           )}
         </div> */}
         <div className={fieldWrapper}>
-          <label className={fieldTitle}>NFT Amount</label>
+          <label className={fieldTitle}>
+            NFT Amount <span className="text-red-500">*</span>{" "}
+          </label>
           <input
-            type="text"
+            type="number"
             id="NFTAmount"
+            maxLength={10}
             autoComplete="off"
             {...register("NFTAmount")}
             placeholder="0"
@@ -246,7 +255,9 @@ const AuctionForm = ({
         </div>
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Set Auction End Time</label>
+        <label className={fieldTitle}>
+          Set Auction End Time <span className="text-red-500">*</span>{" "}
+        </label>
         <input
           type="datetime-local"
           id="AuctionEndTime"
@@ -264,7 +275,9 @@ const AuctionForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Starting price for NFT</label>
+        <label className={fieldTitle}>
+          Starting price for NFT <span className="text-red-500">*</span>{" "}
+        </label>
         <div className="relative">
           <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
             BNB
@@ -295,7 +308,7 @@ const AuctionForm = ({
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Category
+          Category <span className="text-red-500">*</span>{" "}
         </label>
         <select
           id="Category"
@@ -318,7 +331,7 @@ const AuctionForm = ({
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
-          Collection
+          Collection <span className="text-red-500">*</span>{" "}
         </label>
         <select
           id="Collection"
@@ -471,5 +484,5 @@ const Type = ctl(`
 text-14px font-semibold text-white
 `);
 const inputFieldModal = ctl(`
-  w-full py-3 px-5  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);

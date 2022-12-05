@@ -46,7 +46,7 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
           <div className={uploadBoxContent}>
             <span className={formatName}>GIF</span>
             <div className={uploadBtnContainer}>
-              <span className={chooseFileBtn}>choose File</span>
+              <span className={chooseFileBtn}>Choose File</span>
               <input
                 type="file"
                 className={chooseFileBtn2}
