@@ -16,6 +16,8 @@ import { PostTextContent } from "./post.text.content";
 import { PostFooter } from "./post.footer";
 import { ShowThread } from "./show.thread";
 import { PostUserImage } from "./post.user.image";
+import toast from "react-hot-toast";
+import { LoggedInModal } from "./logged.in.modal";
 
 export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
 export type Placement =
@@ -56,6 +58,15 @@ export const SinglePostV2: React.FC<Props> = ({
   const { user: loggedInUser } = useUser();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
+  const [loggedInPostModal, setLoggedInPostModal] = useState({
+    isOpen: false,
+    onClose: () => {
+      setLoggedInPostModal((prevState) => ({
+        ...prevState,
+        isOpen: false,
+      }));
+    },
+  });
 
   const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
     threshold: 0.8,
@@ -65,6 +76,7 @@ export const SinglePostV2: React.FC<Props> = ({
   useEffect(() => {
     (async () => {
       if (
+        !!loggedInUser &&
         currentPostEntry &&
         currentPostEntry.intersectionRatio > 0.8 &&
         !post.viewed_by_loggedin_user
@@ -81,6 +93,7 @@ export const SinglePostV2: React.FC<Props> = ({
     post.viewed_by_loggedin_user,
     currentPostEntry,
     onPostInViewport,
+    loggedInUser,
   ]);
 
   return (
@@ -180,8 +193,26 @@ export const SinglePostV2: React.FC<Props> = ({
           <PostFooter
             post={post}
             postType={postType}
-            onClickLike={onClickLike}
-            onClickReply={onClickReply}
+            onClickLike={async () => {
+              if (!loggedInUser) {
+                setLoggedInPostModal((prevState) => ({
+                  ...prevState,
+                  isOpen: true,
+                }));
+                return;
+              }
+              onClickLike();
+            }}
+            onClickReply={async () => {
+              if (!loggedInUser) {
+                setLoggedInPostModal((prevState) => ({
+                  ...prevState,
+                  isOpen: true,
+                }));
+                return;
+              }
+              onClickReply();
+            }}
           />
         </div>
       </div>
@@ -189,6 +220,11 @@ export const SinglePostV2: React.FC<Props> = ({
       {shouldShowThread && <ShowThread post={post} />}
 
       {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
+
+      <LoggedInModal
+        isOpen={loggedInPostModal.isOpen}
+        onClose={loggedInPostModal.onClose}
+      />
     </div>
   );
 };

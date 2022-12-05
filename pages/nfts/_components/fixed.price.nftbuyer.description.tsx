@@ -14,6 +14,7 @@ import { FEE } from "@/web3/constants/common";
 import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import useUser from "@/hooks/use.user";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -25,6 +26,7 @@ export const FixedPriceNFTBuyerDescription = ({
   reload,
   setReload,
 }: FixedPriceNFTBuyerDescriptionProps) => {
+  const { user: loggedInUser } = useUser();
   const { account, library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
@@ -196,7 +198,13 @@ export const FixedPriceNFTBuyerDescription = ({
           title={"Buy NFT"}
           variant="v1"
           className="py-4"
-          onClick={buyNFTStep1Func}
+          onClick={async () => {
+            if (!loggedInUser) {
+              toast.error("Please login to buy this nft");
+              return;
+            }
+            buyNFTStep1Func();
+          }}
         />
       </div>
       {Modal && (

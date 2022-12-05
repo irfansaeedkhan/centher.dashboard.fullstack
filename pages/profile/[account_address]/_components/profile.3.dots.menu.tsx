@@ -9,7 +9,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   isOwnProfile: boolean;
-  loggedInUser: LoggedInUser;
+  loggedInUser?: LoggedInUser;
 }
 
 const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
@@ -18,7 +18,7 @@ const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
   const menuContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(menuContainerRef, () => setIsOpen(false));
 
-  if (!isOwnProfile) return null;
+  if (!isOwnProfile || !loggedInUser) return null;
 
   return (
     <div className="absolute top-2 right-2 z-[100]" ref={menuContainerRef}>
