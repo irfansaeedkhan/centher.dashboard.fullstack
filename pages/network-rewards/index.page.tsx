@@ -3,7 +3,10 @@ import React from "react";
 import { NextPageWithLayout } from "../_app.page";
 import Liscense from "./liscense/index.page";
 import LiscenseSection from "./_components/liscense.section";
+import NetworkDownline from "./_components/network.downline";
 import NetworkTabs from "./_components/network.tabs";
+import NetworkUpline from "./_components/network.upline";
+import SingleNetworkUpline from "./_components/single.network.upline";
 import WalletSection from "./_components/wallet.section";
 
 const NetworkRewards: NextPageWithLayout = () => {
@@ -11,9 +14,9 @@ const NetworkRewards: NextPageWithLayout = () => {
     <div>
       <WalletSection />
       <LiscenseSection />
-      <div className="w-full rounded-[14px] mt-4">
-        <div className="bg-elevation-2"></div>
-      </div>
+      <NetworkUpline />
+      <NetworkDownline />
+      <SingleNetworkUpline />
     </div>
   );
 };
