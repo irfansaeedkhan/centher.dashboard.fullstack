@@ -71,7 +71,7 @@ export const sidebarData: SidebarData = {
       },
       {
         label: "Network Rewards",
-        url: AppRoutes.network_rewards,
+        url: AppRoutes.network_rewards.index,
         icon: NetworkRewards,
       },
     ],
