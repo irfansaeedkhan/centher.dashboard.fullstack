@@ -34,11 +34,7 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
           </div>
         </div>
 
-        <TimeCount
-          roundInfo={roundInfo}
-          roundStatus={roundInfo.status}
-          currentRound={roundInfo.round + 1}
-        />
+        <TimeCount roundInfo={roundInfo} />
       </div>
     </div>
   );

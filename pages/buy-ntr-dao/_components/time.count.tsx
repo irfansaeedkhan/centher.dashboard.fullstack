@@ -1,19 +1,13 @@
 import React, { useState, useEffect } from "react";
 
 import { getUTCNow } from "@/web3/utils/utils";
-import { RoundInfo, RoundStatus } from "@/web3/constants/types";
+import { RoundInfo } from "@/web3/constants/types";
 
 interface TimeCountProps {
   roundInfo: RoundInfo;
-  roundStatus: RoundStatus;
-  currentRound: number;
 }
 
-export const TimeCount: React.FC<TimeCountProps> = ({
-  roundInfo,
-  roundStatus,
-  currentRound,
-}) => {
+export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -21,16 +15,16 @@ export const TimeCount: React.FC<TimeCountProps> = ({
 
   useEffect(() => {
     let timeRemaining = 0;
-    if (!roundStatus || roundStatus === "ended") return;
+    if (!roundInfo.status || roundInfo.status === "ended") return;
 
     console.log("useEffect runs");
-    if (roundStatus === "not-started") {
+    if (roundInfo.status === "not-started") {
       // Calculate time remaining until round starts
       timeRemaining = roundInfo.startTime * 1000 - getUTCNow();
       setCountdownFor(timeRemaining);
     }
 
-    if (roundStatus === "active") {
+    if (roundInfo.status === "active") {
       // Calculate time remaining until round ends
       timeRemaining =
         roundInfo.startTime * 1000 + roundInfo.duration * 1000 - getUTCNow();
@@ -51,7 +45,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({
     return () => {
       clearInterval(interval);
     };
-  }, [roundStatus, roundInfo]);
+  }, [roundInfo.status, roundInfo.startTime, roundInfo.duration]);
 
   const setCountdownFor = (deadline: number) => {
     const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
@@ -68,13 +62,13 @@ export const TimeCount: React.FC<TimeCountProps> = ({
   return (
     <div>
       <div className="mb-4 text-14px text-brand-primary font-semibold text-center">
-        {roundStatus === "not-started" && (
-          <>Presale for round {currentRound} starts in</>
+        {roundInfo.status === "not-started" && (
+          <>Presale for round {roundInfo.round + 1} starts in</>
         )}
-        {roundStatus === "active" && (
+        {roundInfo.status === "active" && (
           <>
             The time remaining to participate in Presale Round{" "}
-            {`(${currentRound})`}
+            {`(${roundInfo.round + 1})`}
           </>
         )}
       </div>

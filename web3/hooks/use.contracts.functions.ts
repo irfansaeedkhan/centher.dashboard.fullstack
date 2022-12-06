@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
@@ -25,7 +25,7 @@ import { ZeroAddress } from "../constants/common";
 
 export const useGetRoundsInfo = () => {
   const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
-  const presaleContract = getPresaleContract();
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
     const fetchRoundsInfo = async () => {
@@ -124,7 +124,7 @@ export const useGetPurchasedInfo = (
   const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
     []
   );
-  const presaleContract = getPresaleContract();
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
     const fetchPurchasedInfo = async (account: string) => {
