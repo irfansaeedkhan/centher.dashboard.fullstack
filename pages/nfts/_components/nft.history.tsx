@@ -228,7 +228,7 @@ export const NFTHistory = ({ prices }: any) => {
                 ) : (
                   <div className="w-full h-28 flex items-center justify-center">
                     <h6 className="text-14px font-medium text-yellow-theme">
-                      No data found yet
+                      No event has occured yet!
                     </h6>
                   </div>
                 )}
