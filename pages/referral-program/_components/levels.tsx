@@ -126,7 +126,7 @@ export const Levels = () => {
     setDummyData(mutatedData);
   }
 
-  console.log("dummyData", dummyData);
+  // console.log("dummyData", dummyData);
   return (
     <div className="w-full flex gap-3">
       {dummyData?.length > 0 &&

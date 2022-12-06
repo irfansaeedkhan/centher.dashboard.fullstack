@@ -264,6 +264,7 @@ export const AuctionNftDescription = ({
     );
     SuccessFunc(result.success);
   };
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>

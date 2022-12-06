@@ -70,6 +70,7 @@ export const NonNFTDescription = ({
 }: NonNFTDescriptionProps) => {
   const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
+  const [renderState, setRenderState] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
@@ -85,6 +86,7 @@ export const NonNFTDescription = ({
   });
 
   const listingModal = () => {
+    setModal(true);
     if (!library) {
       toast.error("Confirm your Wallet Connection.");
       return;
@@ -105,7 +107,7 @@ export const NonNFTDescription = ({
             className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
           >
             <input
-              type="text"
+              type="number"
               // value={listingPrice}
               // onChange={(e: any) => {setListingPrice(e.target.value)}}
               id="bidPrice"
@@ -129,13 +131,14 @@ export const NonNFTDescription = ({
         <Button
           title={"Next"}
           variant={listingForm.formState.isValid ? "v1" : "v2"}
-          disabled={!listingForm.formState.isValid}
+          disabled={listingForm.formState.isValid ? false : true}
           onClick={listingForm.handleSubmit(handleListNFT)}
           className="py-4 mt-2"
         />
       </form>
     );
   };
+
   const auctionModal = () => {
     if (!library) {
       toast.error("Confirm your Wallet Connection.");
@@ -414,7 +417,11 @@ export const NonNFTDescription = ({
   // useEffect(() => {
   //   auctionModal();
   // }, [!auctionForm.formState.isValid]);
-
+  if (listingForm.formState.isValid) {
+    setRenderState(true);
+  } else {
+    setRenderState(false);
+  }
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -448,10 +455,7 @@ export const NonNFTDescription = ({
         />
         <Button
           title={"List"}
-          onClick={() => {
-            listingModal();
-            setModal(true);
-          }}
+          onClick={listingModal}
           variant="v4"
           className="py-4"
         />

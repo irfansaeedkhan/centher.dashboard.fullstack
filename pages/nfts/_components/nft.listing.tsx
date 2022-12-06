@@ -10,7 +10,7 @@ interface NFTListingProps {
 }
 
 export const NFTListing = ({ data }: NFTListingProps) => {
-  console.log("data from nft.listing", data?.[0].buyer);
+  // console.log("data from nft.listing", data?.[0].buyer);
 
   return (
     <div className={NFTlistingsContainer}>
