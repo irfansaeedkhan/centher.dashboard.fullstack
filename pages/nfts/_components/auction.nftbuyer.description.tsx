@@ -318,8 +318,14 @@ export const AuctionNFTBuyerDescription = ({
           disabled={end}
           className="py-4"
           onClick={() => {
-            bidNFTModalFunc();
-            setModal(true);
+            if (!library) {
+              toast.error("Confirm your Wallet Connection.");
+              return;
+            }
+            if (library) {
+              bidNFTModalFunc();
+              setModal(true);
+            }
           }}
         />
       </div>

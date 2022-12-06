@@ -14,6 +14,7 @@ interface NFTLeftSideComponentProps {
   collection: string | undefined;
   attributes: IProperty[] | undefined;
 }
+
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
     <div className={leftSideContainer}>
