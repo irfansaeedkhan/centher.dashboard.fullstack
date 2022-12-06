@@ -53,6 +53,8 @@ export { default as shareIcon } from "./shareIcon.svg";
 export { default as ArchiveEmptyIcon } from "./archive.icon.svg";
 export { default as BUSDIcon } from "./busd.icon.svg";
 export { default as BUSDIconBG } from "./busd.icon.bg.svg";
+export { default as FacbookIcon } from "./facebook.icon.svg";
+export { default as LinkedInIcon } from "./linkedIn.icon.svg";
 
 export const NTRDAOIconBG: React.FC<IconProps> = (props) => {
   return (

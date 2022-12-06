@@ -28,6 +28,12 @@ export const AppRoutes = {
 
   // Authenticated Pages
   notifications: "/notifications",
+  network_rewards: {
+    index: "/network-rewards",
+    liscense: "/network-rewards/liscense",
+    rewards: "/network-rewards/rewards",
+  },
+  // network_rewards: "/network-rewards",
 
   // Coming soon pages
   coming_soon: "/coming-soon",
@@ -49,7 +55,6 @@ export const AppRoutes = {
 
   chat: "/chat",
   buy_ntr_dao: "/buy-ntr-dao",
-  network_rewards: "/network-rewards",
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   referral_program: "/referral-program",

@@ -67,6 +67,9 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.explore,
   AppRoutes.nfts.create_nft,
   AppRoutes.nfts.create_collection,
+  AppRoutes.network_rewards.index,
+  AppRoutes.network_rewards.liscense,
+  AppRoutes.network_rewards.rewards,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
@@ -75,7 +78,6 @@ const _comingSoonPages: string[] = [
   AppRoutes.home,
   AppRoutes.chat,
   AppRoutes.staking_packs,
-  AppRoutes.network_rewards,
   AppRoutes.buy_ntr_dao,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
