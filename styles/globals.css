@@ -776,3 +776,13 @@ input:-webkit-autofill {
     gap: 34px;
   }
 }
+
+.activeLevelCard {
+  background: #fed365 !important;
+}
+.activeLevelCard .dark {
+  color: #1e212b !important;
+}
+.activeLevelCard .light {
+  color: #3b3f54 !important;
+}
