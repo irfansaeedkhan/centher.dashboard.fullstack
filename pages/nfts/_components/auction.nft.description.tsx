@@ -44,11 +44,20 @@ export const AuctionNftDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+  const [nowTime, setNowTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
 
   const bnbPrice = useBNBPrice();
 
+  //console.log("****Data of nft", new Date(data.auctionInfo?.endTime *1000));
+
   useEffect(() => {
     if (data) {
+      var endtime = new Date(data?.auctionInfo.endTime * 1000);
+      var now = new Date();
+      setNowTime(now);
+      setEndTime(endtime);
+
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
@@ -330,19 +339,24 @@ export const AuctionNftDescription = ({
         </div>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <Button
-          title={"Cancel Auction"}
-          variant="v1"
-          className="py-4"
-          onClick={cancelAuctionFunc}
-        />
-        <Button
-          title={"End Auction"}
-          disabled={!end}
-          onClick={endAuctionFunc}
-          variant="v4"
-          className="py-4"
-        />
+        {nowTime < endTime && (
+          <Button
+            title={"Cancel Auction"}
+            variant="v1"
+            className="py-4"
+            onClick={cancelAuctionFunc}
+          />
+        )}
+        {nowTime === endTime ||
+          (nowTime > endTime && (
+            <Button
+              title={"Annouce Winner"}
+              disabled={!end}
+              onClick={endAuctionFunc}
+              variant="v4"
+              className="py-4"
+            />
+          ))}
       </div>
       {Modal && (
         <CustomModal
