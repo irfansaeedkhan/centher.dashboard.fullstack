@@ -32,6 +32,7 @@ const NFT: NextPageWithLayout = () => {
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
         <NFTLeftSideComponent
           image={data?.image}
+          type={data?.type}
           nftId={data?.nftId}
           mintTx={data?.mintTx}
           collection={data?.collection}
