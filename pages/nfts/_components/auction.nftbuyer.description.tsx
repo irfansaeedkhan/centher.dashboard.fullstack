@@ -16,6 +16,7 @@ import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -31,7 +32,9 @@ export const AuctionNFTBuyerDescription = ({
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
+
+  const bnbBalance = useGetBNBBalance(account)
 
   const price =
     Number(data?.auctionInfo.highestBidPrice) === 0
@@ -245,6 +248,10 @@ export const AuctionNFTBuyerDescription = ({
       toast.error(
         `Bid price must be greater than ${formatEther2Number(price)}.`
       );
+      return;
+    }
+    if (bnbBalance < Number(bidPriceVal)) {
+      toast.error("Insufficient BNB Balance in your wallet.");
       return;
     }
     setModal(false);
