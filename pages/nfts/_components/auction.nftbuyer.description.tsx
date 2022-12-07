@@ -34,7 +34,7 @@ export const AuctionNFTBuyerDescription = ({
 
   const { library, account } = useWeb3React();
 
-  const bnbBalance = useGetBNBBalance(account)
+  const bnbBalance = useGetBNBBalance(account);
 
   const price =
     Number(data?.auctionInfo.highestBidPrice) === 0
