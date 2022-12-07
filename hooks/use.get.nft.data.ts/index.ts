@@ -45,6 +45,7 @@ export interface INFTDetailData {
   name: string;
   image: string;
   nftId: number;
+  type: string;
   mintTx: string;
   collection: string;
   attributes: IProperty[];
