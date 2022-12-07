@@ -39,7 +39,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
         setImageUrl(formatIPFSUrl(metadata.data.image));
-        setType(metadata.data.type)
+        setType(metadata.data.type);
       } catch (error) {}
     };
     if (data && data.ipfs) {
