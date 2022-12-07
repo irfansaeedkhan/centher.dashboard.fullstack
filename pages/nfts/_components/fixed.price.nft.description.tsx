@@ -45,6 +45,9 @@ export const FixedPriceNFTDescription = ({
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
+  const [nftPrice, setNFTPrice] = useState<any>(
+    formatEther2Number(data?.listInfo.price)
+  );
 
   const bnbPrice = useBNBPrice();
 
@@ -95,6 +98,7 @@ export const FixedPriceNFTDescription = ({
     );
     setModal(true);
   };
+  console.log("NFT PRICE", formatEther2Number(data?.listInfo.price));
   const bidNFTModalFunc = () => {
     if (!library) {
       toast.error("Confirm your Wallet Connection.");
@@ -116,14 +120,16 @@ export const FixedPriceNFTDescription = ({
             className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
           >
             <input
-              type="text"
+              type="number"
               id="bidPrice"
+              //value={nftPrice}
               autoComplete="off"
               {...register("bidPrice")}
-              placeholder="0.00"
+              placeholder={nftPrice}
               className={
                 "w-full h-full !border-0 !ring-0 bg-transparent text-white"
               }
+              //  onChange={(e) => setNFTPrice(e.target.value)}
             />
             <h6 className="text-14px font-semibold text-gray-shade-7">
               =$0000
