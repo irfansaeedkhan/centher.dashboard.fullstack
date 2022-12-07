@@ -9,8 +9,8 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         activeCard && "activeLevelCard"
       }`}
       onClick={() => {
-        handleCard(childData?.level);
-        setActiveCard(true);
+        handleCard(childData);
+        childData.level !== "06" && setActiveCard(true);
       }}
     >
       <div className="flex items-center py-4 px-3 gap-3 ">
