@@ -107,7 +107,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   };
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
     setClearForm(false);
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image

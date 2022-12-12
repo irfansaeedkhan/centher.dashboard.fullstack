@@ -36,7 +36,7 @@ export const NonNFTBuyerDescription = ({
       toast.error("Confirm your Wallet Connection.");
       return;
     }
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
@@ -97,7 +97,7 @@ export const NonNFTBuyerDescription = ({
     setModal(true);
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image

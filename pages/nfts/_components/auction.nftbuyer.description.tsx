@@ -162,7 +162,7 @@ export const AuctionNFTBuyerDescription = ({
     );
   };
   const ProceedFunc = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper1}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -193,7 +193,7 @@ export const AuctionNFTBuyerDescription = ({
     setModal(true);
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper1}>
         <Image

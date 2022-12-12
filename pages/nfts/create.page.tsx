@@ -47,7 +47,7 @@ const CreateNFT: NextPageWithLayout = () => {
   const { account, library } = useWeb3React();
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
         <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
@@ -75,7 +75,7 @@ const CreateNFT: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTStep2Func = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -107,7 +107,7 @@ const CreateNFT: NextPageWithLayout = () => {
   };
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
     setClearForm(false);
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
         <h2 className="text-18px text-white font-semibold">
