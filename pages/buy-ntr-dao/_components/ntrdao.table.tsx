@@ -8,16 +8,19 @@ import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
 import { claimNtrTokens } from "@/web3/utils/call.helpers";
-import { PurchasedInfo } from "@/web3/constants/types";
+import { PurchasedInfo, RoundInfo } from "@/web3/constants/types";
+import { ModalProps } from "./launchpad.modal";
+import { useGetPurchasedInfo } from "@/web3/hooks/use.contracts.functions";
 
 export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
-  purchasedInfo,
-  reload,
-  setReload,
-  roundNumber,
+  roundInfo,
+  // purchasedInfo,
+  // reload,
+  // setReload,
+  // roundNumber,
 }) => {
   // For modal
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState(<div></div>);
   const [modalTitle, setModalTitle] = useState<string>(
     "Authorization Contract"
@@ -30,15 +33,40 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
   const { account, library } = useWeb3React();
   const [clickItemNumber, setClickItemNumber] = useState(0);
 
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    status: "warning",
+    title: "Authorization Contract",
+    subtitle: `Allow Nether NFT to use your ${"selectedTokenA.tokenName"} token`,
+    bodyText: `Confirmation of the ${"selectedTokenA.tokenName"} token to interact with the Nether NFT contract.`,
+    confirmButtonText: "Authorize",
+    onClose: () => {
+      setModal((prev) => ({
+        ...prev,
+        isOpen: false,
+      }));
+    },
+    onClickConfirm: () => {},
+  });
+
+  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfo[]>([]);
+
+  const [reload, setReload] = useState(false);
+  const purchasedInfoResponse = useGetPurchasedInfo(
+    account,
+    roundInfo.round,
+    reload
+  );
+
   const handleClaim = async () => {
     try {
       setModalStatus("progress");
       const result = await claimNtrTokens(
         library,
-        roundNumber,
+        roundInfo.round,
         clickItemNumber
       );
-      setReload(!reload);
+      // setReload(!reload);
       if (result.success) {
         toast.success("Claim Successed!");
         setModalSubTitle("Claim Success!");
@@ -171,8 +199,20 @@ text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
 `);
 
 interface NTRDAOTableProps {
-  purchasedInfo: PurchasedInfo[] | undefined;
-  reload: boolean;
-  setReload: any;
-  roundNumber: number;
+  roundInfo: RoundInfo;
+  // purchasedInfo: PurchasedInfo[] | undefined;
+  // reload: boolean;
+  // setReload: any;
+  // roundNumber: number;
+}
+
+interface ModalState {
+  isOpen: boolean;
+  status: ModalProps["status"];
+  title: ModalProps["title"];
+  subtitle: ModalProps["subtitle"];
+  bodyText: ModalProps["bodyText"];
+  confirmButtonText: ModalProps["confirmButtonText"];
+  onClose: ModalProps["onClickClose"];
+  onClickConfirm: ModalProps["onClickConfirm"];
 }

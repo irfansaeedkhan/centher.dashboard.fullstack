@@ -1,5 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
-import Image from "next/image";
 import NTRDAOIconImgBg from "./ntr.dao.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
@@ -58,9 +58,9 @@ export { default as LinkedInIcon } from "./linkedIn.icon.svg";
 
 export const NTRDAOIconBG: React.FC<IconProps> = (props) => {
   return (
-    <Image
+    <img
       className={props.className}
-      src={NTRDAOIconImgBg}
+      src={NTRDAOIconImgBg.src}
       alt="NTR Dao Icon BG"
       sizes="256px"
       width={40}
@@ -71,9 +71,9 @@ export const NTRDAOIconBG: React.FC<IconProps> = (props) => {
 
 export const NTRIconBG: React.FC<IconProps> = (props) => {
   return (
-    <Image
+    <img
       className={props.className}
-      src={NTRIconImgBg}
+      src={NTRIconImgBg.src}
       alt="NTR Dao Icon BG"
       sizes="256px"
       width={40}
@@ -84,9 +84,9 @@ export const NTRIconBG: React.FC<IconProps> = (props) => {
 
 export const NTRIcon: React.FC<IconProps> = (props) => {
   return (
-    <Image
+    <img
       className={props.className}
-      src={NTRIconImg}
+      src={NTRIconImg.src}
       alt="NTR Dao Icon"
       sizes="256px"
       width={40}

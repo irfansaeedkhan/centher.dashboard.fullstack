@@ -19,10 +19,10 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
 
       <div className={`space-y-5`}>
         {roundsInfo.map((roundInfo) => (
-          <>
+          <div key={roundInfo.round} className={`space-y-5`}>
             <PresaleCard roundInfo={roundInfo} />
             <PurchaseNTRDAOCard roundInfo={roundInfo} />
-          </>
+          </div>
         ))}
       </div>
     </div>

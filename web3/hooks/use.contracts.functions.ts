@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
@@ -25,7 +25,7 @@ import { ZeroAddress } from "../constants/common";
 
 export const useGetRoundsInfo = () => {
   const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
-  const presaleContract = getPresaleContract();
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
     const fetchRoundsInfo = async () => {
@@ -119,53 +119,53 @@ export const getRoundStatus = (
 
 export const useGetPurchasedInfo = (
   account: string | undefined | null,
+  roundNumber: number,
   reload: boolean
 ) => {
   const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
     []
   );
-  const presaleContract = getPresaleContract();
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
     const fetchPurchasedInfo = async (account: string) => {
       let _purchasedInfos: PurchasedInfoResponse[] = [];
-      for (let i = 0; i < 3; i++) {
-        const purchasedInfoByRound = await presaleContract.getContribute(
-          account,
-          i
-        );
 
-        console.log("purchasedInfo from contract");
-        console.log(purchasedInfoByRound);
-        const _purchasedInfo: PurchasedInfoResponse = {
-          contributedBusdAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["contributedBusdAmount"]
-            )
-          ),
-          contributedNtrAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["contributedNtrAmount"]
-            )
-          ),
-          claimedTokenAmount: Number(
-            ethers.utils.formatUnits(purchasedInfoByRound["claimedTokenAmount"])
-          ),
-          purchaseTime: purchasedInfoByRound["purchaseTime"].toNumber(),
-          totalClaimableTokenAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["totalClaimableTokenAmount"]
-            )
-          ),
-        };
+      const purchasedInfoByRound = await presaleContract.getContribute(
+        account,
+        roundNumber
+      );
 
-        _purchasedInfos.push(_purchasedInfo);
-      }
+      // console.log(purchasedInfoByRound);
+
+      const _purchasedInfo: PurchasedInfoResponse = {
+        contributedBusdAmount: Number(
+          ethers.utils.formatUnits(
+            purchasedInfoByRound["contributedBusdAmount"]
+          )
+        ),
+        contributedNtrAmount: Number(
+          ethers.utils.formatUnits(purchasedInfoByRound["contributedNtrAmount"])
+        ),
+        purchaseTime: purchasedInfoByRound["purchaseTime"].toNumber(),
+        claimedTokenAmount: Number(
+          ethers.utils.formatUnits(purchasedInfoByRound["claimedTokenAmount"])
+        ),
+        totalClaimableTokenAmount: Number(
+          ethers.utils.formatUnits(
+            purchasedInfoByRound["totalClaimableTokenAmount"]
+          )
+        ),
+      };
+      console.log("purchasedInfo round " + roundNumber);
+      console.log(_purchasedInfo);
+
+      _purchasedInfos.push(_purchasedInfo);
 
       setPurchasedInfo(_purchasedInfos);
     };
     if (account) fetchPurchasedInfo(account);
-  }, [account, reload, presaleContract]);
+  }, [account, reload, presaleContract, roundNumber]);
 
   return purchasedInfo;
 };

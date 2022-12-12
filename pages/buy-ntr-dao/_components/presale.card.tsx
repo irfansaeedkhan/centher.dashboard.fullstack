@@ -24,21 +24,17 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
             <div
               className={`text-14px font-bold text-white rounded-xl bg-white/20 backdrop-blur-lg py-1 px-2.5 border border-solid border-white/20`}
             >
-              1 BUSD = 40 NTRDAO
+              1 BUSD = {roundInfo.rateForBusd} NTRDAO
             </div>
             <div
               className={`text-14px font-bold text-white rounded-xl bg-white/20 backdrop-blur-lg py-1 px-2.5 border border-solid border-white/20`}
             >
-              1 NTR = 1 NTRDAO
+              1 NTR = {roundInfo.rateForNtr} NTRDAO
             </div>
           </div>
         </div>
 
-        <TimeCount
-          roundInfo={roundInfo}
-          roundStatus={roundInfo.status}
-          currentRound={roundInfo.round + 1}
-        />
+        <TimeCount roundInfo={roundInfo} />
       </div>
     </div>
   );
