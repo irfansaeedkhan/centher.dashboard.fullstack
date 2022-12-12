@@ -9,11 +9,13 @@ import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
 interface NFTLeftSideComponentProps {
   image: string | undefined;
+  type: string | undefined;
   nftId: number | undefined;
   mintTx: string | undefined;
   collection: string | undefined;
   attributes: IProperty[] | undefined;
 }
+
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
     <div className={leftSideContainer}>

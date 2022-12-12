@@ -12,7 +12,7 @@ interface Props {
 
 export const NFTListingSingle: React.FC<Props> = ({ item }) => {
   const router = useRouter();
-  console.log(router.query.collection);
+  // console.log(router.query.collection);
   const { user: buyer } = useGetUser(item.buyer);
   const { user: seller } = useGetUser(item.seller);
 

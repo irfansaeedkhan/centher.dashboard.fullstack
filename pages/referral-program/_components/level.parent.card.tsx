@@ -9,8 +9,26 @@ export const LevelParentCard = ({ parentData }: any) => {
             {parentData?.level}
           </h6>
         </div>
-        <div className=" rounded-lg w-8 h-8 border-2 border-yellow-theme/60 bg-yellow-theme/10 flex justify-center items-center">
-          <h6 className="text-yellow-theme text-12px font-medium">
+        <div
+          className={`rounded-lg w-8 h-8 border-2 flex justify-center items-center
+          ${parentData?.level === "01" && "border-[#FEBF32]/60 bg-[#FEBF32]/10"}
+          ${parentData?.level === "02" && "border-[#D35DB9]/60 bg-[#D35DB9]/10"}
+          ${parentData?.level === "03" && "border-[#45F0D1]/60 bg-[#45F0D1]/10"}
+          ${parentData?.level === "04" && "border-[#B85FFF]/60 bg-[#B85FFF]/10"}
+          ${parentData?.level === "05" && "border-[#A0ED8D]/60 bg-[#A0ED8D]/10"}
+          ${parentData?.level === "06" && "border-[#5F97FF]/60 bg-[#5F97FF]/10"}
+        `}
+        >
+          <h6
+            className={`text-12px font-medium 
+            ${parentData?.level === "01" && "text-[#FEBF32]"}
+            ${parentData?.level === "02" && "text-[#D35DB9]"}
+            ${parentData?.level === "03" && "text-[#45F0D1]"}
+            ${parentData?.level === "04" && "text-[#B85FFF]"}
+            ${parentData?.level === "05" && "text-[#A0ED8D]"}
+            ${parentData?.level === "06" && "text-[#5F97FF]"}
+            `}
+          >
             {parentData?.percent}%
           </h6>
         </div>

@@ -31,14 +31,20 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
           >
             <div className="accordion-body p-6">
               <div className={propetiesListContainer}>
-                {props.attributes &&
+                {props.attributes?.length ? (
                   props.attributes.map((attribute, index) => (
                     <div className={properyCard} key={index}>
                       <h4 className={PropertyName}>{attribute.Type}</h4>
                       <h5 className={Type}>{attribute.PropertyName}</h5>
                       {/* <h6 className={percentage}>100% have this trail</h6> */}
                     </div>
-                  ))}
+                  ))
+                ) : (
+                  <p className="text-center text-white text-lg">
+                    {" "}
+                    No properties yet!
+                  </p>
+                )}
               </div>
             </div>
           </div>

@@ -22,6 +22,8 @@ const NFT: NextPageWithLayout = () => {
     reload
   );
 
+  console.log("NFT DATA", data?.image);
+
   return (
     <div className="w-full pb-16">
       <button className={backBtn} onClick={() => router.back()}>
@@ -30,6 +32,7 @@ const NFT: NextPageWithLayout = () => {
       <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
         <NFTLeftSideComponent
           image={data?.image}
+          type={data?.type}
           nftId={data?.nftId}
           mintTx={data?.mintTx}
           collection={data?.collection}
@@ -47,7 +50,7 @@ const NFT: NextPageWithLayout = () => {
 
 NFT.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Create NFT">
+    <AllPagesWrapper pageTitle="View NFT">
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>{page}</div>
       </div>

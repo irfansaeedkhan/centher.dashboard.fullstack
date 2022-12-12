@@ -30,6 +30,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   const [collection, setCollection] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [type, setType] = useState("");
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -38,6 +39,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
         setImageUrl(formatIPFSUrl(metadata.data.image));
+        setType(metadata.data.type);
       } catch (error) {}
     };
     if (data && data.ipfs) {
@@ -71,7 +73,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             <div className="flex items-center gap-2">
               {user?.account_address ? (
                 <Link
-                  className="cursor-pointer truncate max-w-[200px] text-white"
+                  className="cursor-pointer truncate w-full max-w-[150px] text-white"
                   href={`/profile/${user?.account_address}`}
                 >
                   <span className={`text-white text-xs font-medium`}>

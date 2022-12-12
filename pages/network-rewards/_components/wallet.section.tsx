@@ -4,7 +4,7 @@ import { FacbookIcon, LinkedInIcon, TwitterSvg } from "@/assets/svgs";
 
 const WalletSection = () => {
   return (
-    <div className="w-full flex md:flex-row flex-col gap-6">
+    <div className="w-full flex md:flex-row flex-col-reverse gap-6">
       <div className="w-full max-w-[810px] py-8 px-6 bg-elevation-1 rounded-[14px]">
         <p className="text-sm font-semibold text-gray-shade-7">YOUR WALLET</p>
         <h5 className="text-2xl font-semibold text-white mt-2">

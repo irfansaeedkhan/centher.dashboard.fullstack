@@ -4,7 +4,17 @@ import React from "react";
 import NetworkTabs from "../_components/network.tabs";
 
 const Rewards: NextPageWithLayout = () => {
-  return <div>Rewards</div>;
+  return (
+    <div>
+      <div className="flex items-center gap-16">
+        <h3 className="text-white font-semibold text-xl">Staking Rewards</h3>
+
+        <h3 className="text-white font-semibold text-xl">Lunchpad Rewards</h3>
+
+        <h3 className="text-white font-semibold text-xl">NFT Rewards</h3>
+      </div>
+    </div>
+  );
 };
 
 Rewards.getLayout = (page) => {
