@@ -17,7 +17,6 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
     let timeRemaining = 0;
     if (!roundInfo.status || roundInfo.status === "ended") return;
 
-    console.log("useEffect runs");
     if (roundInfo.status === "not-started") {
       // Calculate time remaining until round starts
       timeRemaining = roundInfo.startTime * 1000 - getUTCNow();
@@ -73,9 +72,9 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
         )}
       </div>
 
-      <div className="timer flex items-center gap-8">
+      <div className="timer flex items-center gap-8 justify-center">
         <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
             <h1 className="text-black-shade-3 font-semibold text-34px">
               {days}
             </h1>
@@ -83,7 +82,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
           <p className="text-14px font-semibold text-gray-shade-7 ">Days</p>
         </div>
         <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
             <h1 className="text-black-shade-3 font-semibold text-34px">
               {hours}
             </h1>
@@ -91,7 +90,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
           <p className="text-14px font-semibold text-gray-shade-7 ">Hours</p>
         </div>
         <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
             <h1 className="text-black-shade-3 font-semibold text-34px">
               {minutes}
             </h1>
@@ -99,7 +98,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
           <p className="text-14px font-semibold text-gray-shade-7 ">Minutes</p>
         </div>
         <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] sm:w-[60px] sm:h-[60px] flex items-center justify-center">
+          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
             <h1 className="text-black-shade-3 font-semibold text-34px">
               {seconds}
             </h1>

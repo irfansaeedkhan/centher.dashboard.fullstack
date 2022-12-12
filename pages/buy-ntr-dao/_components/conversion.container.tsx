@@ -155,13 +155,13 @@ export const ConversionContainer: React.FC<Props> = ({
   );
 };
 
-const conversionInputContainer = `space-y-3 w-full flg:max-w-[354px]`;
+const conversionInputContainer = `space-y-3 w-full fmd:max-w-[656px] flg:max-w-[354px]`;
 const inputClasses = `inputClasses flex-grow w-4/5 focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 text-14px text-gray-shade-7 font-semibold`;
 
 const ConversionArrowLeft = () => {
   return (
     <div
-      className={`cursor-pointer w-[70px] h-[70px] f2xl:w-[100px] f2xl:h-[100px] bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full`}
+      className={`transform rotate-90 flg:rotate-0 cursor-pointer w-[70px] h-[70px] f2xl:w-[100px] f2xl:h-[100px] bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full`}
     >
       <LeftArrowIcon />
     </div>

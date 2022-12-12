@@ -232,9 +232,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
           />
 
           {roundInfo.status === "active" && (
-            <div
-              className={`pt-8 lg:pt-12 w-full lg:max-w-[428px] mx-auto text-center`}
-            >
+            <div className={`pt-8 lg:pt-12 max-w-[442px] mx-auto text-center`}>
               <h6 className={`text-14px font-semibold text-gray-shade-7 pb-4`}>
                 Minimum Buy:{" "}
                 <span className={`text-white`}>
@@ -274,8 +272,8 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
               className={`mt-8 lg:mt-12 text-center mx-auto  py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl`}
             >
               <p className={`text-[#E6535A] text-16px font-semibold`}>
-                This currentRound is over! Buy another availabe or wait for the
-                next currentRound
+                Round {roundInfo.round + 1} is over! Buy another availabe or
+                wait for the next round.
               </p>
             </div>
           )}
