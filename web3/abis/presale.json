@@ -236,7 +236,14 @@
   },
   {
     "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
-    "name": "claimTokens",
+    "name": "claimTokensFromBusd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
+    "name": "claimTokensFromNtr",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -246,7 +253,17 @@
       { "internalType": "uint8", "name": "_round", "type": "uint8" },
       { "internalType": "address", "name": "_user", "type": "address" }
     ],
-    "name": "getClaimableTokenAmount",
+    "name": "getClaimableTokenAmountFromBusd",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getClaimableTokenAmountFromNtr",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
@@ -272,17 +289,32 @@
           },
           {
             "internalType": "uint256",
-            "name": "purchaseTime",
+            "name": "purchaseTimeForBusd",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "claimedTokenAmount",
+            "name": "purchaseTimeForNtr",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "totalClaimableTokenAmount",
+            "name": "claimedTokenAmountForBusd",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimedTokenAmountForNtr",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalClaimableTokenAmountForBusd",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalClaimableTokenAmountForNtr",
             "type": "uint256"
           }
         ],
@@ -297,7 +329,7 @@
   {
     "inputs": [],
     "name": "getRound",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "outputs": [{ "internalType": "int8", "name": "", "type": "int8" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -328,6 +360,13 @@
     "outputs": [
       { "internalType": "contract IERC20", "name": "", "type": "address" }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ntrdaoDecimal",
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
     "stateMutability": "view",
     "type": "function"
   },

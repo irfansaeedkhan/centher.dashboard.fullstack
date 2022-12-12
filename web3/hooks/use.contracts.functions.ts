@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import dayjs from "dayjs";
 
 import { customLog } from "@/utils/custom.log";
 
@@ -15,7 +16,7 @@ import {
   getStandardNFTContract,
 } from "../utils/contract.helpers";
 import {
-  PurchasedInfoResponse,
+  ContributionInfo,
   RoundInfo,
   RoundNumber,
   RoundState,
@@ -117,57 +118,74 @@ export const getRoundStatus = (
   return undefined;
 };
 
-export const useGetPurchasedInfo = (
+export const useGetContributionInfo = (
   account: string | undefined | null,
-  roundNumber: number,
-  reload: boolean
+  roundNumber: number
 ) => {
-  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
-    []
-  );
+  const [contributionInfo, setPurchasedInfo] =
+    useState<ContributionInfo | null>(null);
   const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
-    const fetchPurchasedInfo = async (account: string) => {
-      let _purchasedInfos: PurchasedInfoResponse[] = [];
-
-      const purchasedInfoByRound = await presaleContract.getContribute(
+    const fetchContributionInfo = async (account: string) => {
+      const contributionInfoRes = await presaleContract.getContribute(
         account,
         roundNumber
       );
 
-      // console.log(purchasedInfoByRound);
-
-      const _purchasedInfo: PurchasedInfoResponse = {
+      const _contributionInfo: ContributionInfo = {
         contributedBusdAmount: Number(
-          ethers.utils.formatUnits(
-            purchasedInfoByRound["contributedBusdAmount"]
-          )
+          ethers.utils.formatUnits(contributionInfoRes["contributedBusdAmount"])
         ),
         contributedNtrAmount: Number(
-          ethers.utils.formatUnits(purchasedInfoByRound["contributedNtrAmount"])
+          ethers.utils.formatUnits(contributionInfoRes["contributedNtrAmount"])
         ),
-        purchaseTime: purchasedInfoByRound["purchaseTime"].toNumber(),
-        claimedTokenAmount: Number(
-          ethers.utils.formatUnits(purchasedInfoByRound["claimedTokenAmount"])
-        ),
-        totalClaimableTokenAmount: Number(
+        purchaseTimeForBusd:
+          contributionInfoRes["purchaseTimeForBusd"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForBusd"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        purchaseTimeForNtr:
+          contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        claimedTokenAmountForBusd: Number(
           ethers.utils.formatUnits(
-            purchasedInfoByRound["totalClaimableTokenAmount"]
+            contributionInfoRes["claimedTokenAmountForBusd"]
+          )
+        ),
+        claimedTokenAmountForNtr: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["claimedTokenAmountForNtr"]
+          )
+        ),
+        totalClaimableTokenAmountForBusd: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["totalClaimableTokenAmountForBusd"],
+            6
+          )
+        ),
+        totalClaimableTokenAmountForNtr: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["totalClaimableTokenAmountForNtr"],
+            6
           )
         ),
       };
-      console.log("purchasedInfo round " + roundNumber);
-      console.log(_purchasedInfo);
 
-      _purchasedInfos.push(_purchasedInfo);
-
-      setPurchasedInfo(_purchasedInfos);
+      setPurchasedInfo(_contributionInfo);
     };
-    if (account) fetchPurchasedInfo(account);
-  }, [account, reload, presaleContract, roundNumber]);
+    if (account) fetchContributionInfo(account);
+  }, [account, presaleContract, roundNumber]);
 
-  return purchasedInfo;
+  return contributionInfo;
 };
 
 export type TokenName = "BUSD" | "NTR" | "NTRDAO";

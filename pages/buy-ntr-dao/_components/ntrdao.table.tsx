@@ -1,218 +1,131 @@
-// React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { HTMLAttributes } from "react";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
-// App imports
-import Button from "@/components/button";
-import { CustomProgressModal } from "@/components/modal/custom.progress.modal";
-import { claimNtrTokens } from "@/web3/utils/call.helpers";
-import { PurchasedInfo, RoundInfo } from "@/web3/constants/types";
-import { ModalProps } from "./launchpad.modal";
-import { useGetPurchasedInfo } from "@/web3/hooks/use.contracts.functions";
+import { useGetContributionInfo } from "@/web3/hooks/use.contracts.functions";
+import { RoundInfo } from "@/web3/constants/types";
 
-export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
-  roundInfo,
-  // purchasedInfo,
-  // reload,
-  // setReload,
-  // roundNumber,
-}) => {
-  // For modal
-  const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState(<div></div>);
-  const [modalTitle, setModalTitle] = useState<string>(
-    "Authorization Contract"
-  );
-  const [modalSubTitle, setModalSubTitle] = useState<string>("");
-  const [modalStatus, setModalStatus] = useState("success");
-  const [modalDescription, setModalDescription] = useState<string>("");
-  const [modalButtonTitle, setModalButtonTitle] = useState<string>("");
+interface NTRDAOTableProps {
+  roundInfo: RoundInfo;
+}
 
-  const { account, library } = useWeb3React();
-  const [clickItemNumber, setClickItemNumber] = useState(0);
+export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
+  const { account } = useWeb3React();
 
-  const [modal, setModal] = useState<ModalState>({
-    isOpen: false,
-    status: "warning",
-    title: "Authorization Contract",
-    subtitle: `Allow Nether NFT to use your ${"selectedTokenA.tokenName"} token`,
-    bodyText: `Confirmation of the ${"selectedTokenA.tokenName"} token to interact with the Nether NFT contract.`,
-    confirmButtonText: "Authorize",
-    onClose: () => {
-      setModal((prev) => ({
-        ...prev,
-        isOpen: false,
-      }));
-    },
-    onClickConfirm: () => {},
-  });
+  const contributionInfo = useGetContributionInfo(account, roundInfo.round);
 
-  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfo[]>([]);
-
-  const [reload, setReload] = useState(false);
-  const purchasedInfoResponse = useGetPurchasedInfo(
-    account,
-    roundInfo.round,
-    reload
-  );
-
-  const handleClaim = async () => {
-    try {
-      setModalStatus("progress");
-      const result = await claimNtrTokens(
-        library,
-        roundInfo.round,
-        clickItemNumber
-      );
-      // setReload(!reload);
-      if (result.success) {
-        toast.success("Claim Successed!");
-        setModalSubTitle("Claim Success!");
-        setModalStatus("success");
-        setModalDescription(
-          `You claimed NTR tokens. Please check your balance.`
-        );
-        setModalButtonTitle("");
-        setShowModal(true);
-      } else {
-        toast.error("Transaction has been failed.");
-        setModalStatus("failed");
-      }
-    } catch (error) {
-      setModalStatus("failed");
-    }
-  };
-
-  const claimFunc = (index: number) => {
-    setModalTitle("Claim NTRDAO");
-    setModalSubTitle("Do you want to claim NTRDAO?");
-    setModalStatus(`claim`);
-    setModalDescription(`Confirmation that you claim NTRDAO.`);
-    setModalButtonTitle("Claim Now");
-    setShowModal(true);
-    setClickItemNumber(Number(index));
-  };
+  if (
+    !contributionInfo ||
+    (!contributionInfo.contributedBusdAmount &&
+      !contributionInfo.contributedNtrAmount)
+  )
+    return null;
 
   return (
-    <div className={nftdaoTableContainer}>
-      <table className={table}>
-        <thead className={thead}>
+    <div
+      className={`overflow-x-auto border border-gray-shade-3 rounded-2xl mt-5`}
+    >
+      <table className={`w-full`}>
+        <thead className={`text-sm text-left text-gray-shade-7 bg-elevation-1`}>
           <tr>
-            <th scope="col" className={th}>
-              #
-            </th>
-            <th scope="col" className={th}>
-              Purchase date
-            </th>
-            <th scope="col" className={th}>
-              BUSD paid amount
-            </th>
-            <th scope="col" className={th}>
-              NTRDOA amount
-            </th>
-            <th scope="col" className={th}>
-              Bonus
-            </th>
-            <th scope="col" className={th}>
-              Lock months
-            </th>
-            <th scope="col" className={th}>
-              Time remaining
-            </th>
-            <th scope="col" className={th}>
-              Action
-            </th>
+            <TableCell element={"th"}>Type</TableCell>
+            <TableCell element={"th"}>Purchase Date</TableCell>
+            <TableCell element={"th"}>Paid Amount</TableCell>
+            <TableCell element={"th"}>Lock Months</TableCell>
+            <TableCell element={"th"}>Total Claimable</TableCell>
+            <TableCell element={"th"}>Claimed</TableCell>
+            <TableCell element={"th"}>Action</TableCell>
           </tr>
         </thead>
         <tbody>
-          {purchasedInfo?.map((item: PurchasedInfo, index: number) => {
-            return (
-              <tr className={tbodyTR} key={index}>
-                <td className={tdh}>{index + 1}</td>
-                <td className={td}>{item.purchasedDate}</td>
-                <td className={td}>{`${item.contributedBusdAmount} BUSD`}</td>
-                <td className={td}>{`${item.ntrdaoAmount} NTRDAO`}</td>
-                <td className={td}>{`${item.bonusAmount} NTRDAO`}</td>
-                <td className={td}>{`${item.lockmonths} MONTH`}</td>
-                <td className={td}>{`${
-                  item.remainingDate >= 0 ? item.remainingDate : 0
-                } days`}</td>
-                <td className={td}>
-                  <Button
-                    title={item.claimed ? "Claimed" : "Claim"}
-                    variant={`${
-                      item.remainingDate <= 0 && !item.claimed ? "v1" : "v2"
-                    }`}
-                    className="max-w-[80px]"
-                    onClick={() => claimFunc(index)}
-                    disabled={
-                      item.remainingDate > 0 || item.claimed ? true : false
-                    }
-                  />
-                </td>
-              </tr>
-            );
-          })}
+          {!!contributionInfo.contributedBusdAmount && (
+            <TableRow>
+              <TableCell element={"td"}>BUSD</TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.purchaseTimeForBusd}
+              </TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.contributedBusdAmount} BUSD
+              </TableCell>
+              <TableCell element={"td"}>{roundInfo.lockMonths}</TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.totalClaimableTokenAmountForBusd}
+              </TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.claimedTokenAmountForBusd}
+              </TableCell>
+              <TableCell element={"td"}>
+                <button className="block max-w-[80px] bg-brand-primary px-4 py-2 rounded text-black-shade-3 font-semibold text-sm">
+                  Claim
+                </button>
+              </TableCell>
+            </TableRow>
+          )}
+
+          {!!contributionInfo.contributedNtrAmount && (
+            <TableRow>
+              <TableCell element={"td"}>NTR</TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.purchaseTimeForNtr}
+              </TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.contributedNtrAmount} NTR
+              </TableCell>
+              <TableCell element={"td"}>{roundInfo.lockMonths}</TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.totalClaimableTokenAmountForNtr}
+              </TableCell>
+              <TableCell element={"td"}>
+                {contributionInfo.claimedTokenAmountForNtr}
+              </TableCell>
+              <TableCell element={"td"}>
+                <button className="block max-w-[80px] bg-brand-primary px-4 py-2 rounded text-black-shade-3 font-semibold text-sm">
+                  Claim
+                </button>
+              </TableCell>
+            </TableRow>
+          )}
         </tbody>
       </table>
-      {showModal && (
-        <CustomProgressModal
-          onClose={() => setShowModal(false)}
-          title={modalTitle}
-          status={modalStatus}
-          subTitle={modalSubTitle}
-          description={modalDescription}
-          buttonTitle={modalButtonTitle}
-          handleBuyNow={() => {}}
-          handleAutorize={() => {}}
-          handleClaim={handleClaim}
-        />
-      )}
     </div>
   );
 };
 
-// stying
+interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
 
-const nftdaoTableContainer = ctl(` 
-overflow-x-auto relative  shadow-md rounded-2xl mt-8 lg:mt-12
-`);
-const table = ctl(` 
-overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-black-shade-4
-`);
-const thead = ctl(` 
-text-14px text-gray-shade-7 uppercase bg-background-shade-3 
-`);
-const th = ctl(` 
-py-4 lg:py-7 px-5 lg:px-3
-`);
-const tbodyTR = ctl(` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`);
-const td = ctl(` 
-text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
-`);
-const tdh = ctl(` 
-text-16px py-4 lg:py-7 px-5 lg:px-3 text-white font-semi-bold
-`);
+const TableRow: React.FC<TableRowProps> = ({ className, ...props }) => {
+  return (
+    <tr
+      className={clsx(
+        `text-sm text-left text-white border-b last:border-none border-gray-shade-3 odd:bg-black-shade-3 even:bg-black-shade-11`,
+        className
+      )}
+      {...props}
+    />
+  );
+};
 
-interface NTRDAOTableProps {
-  roundInfo: RoundInfo;
-  // purchasedInfo: PurchasedInfo[] | undefined;
-  // reload: boolean;
-  // setReload: any;
-  // roundNumber: number;
+interface TableCellProps extends HTMLAttributes<HTMLTableCellElement> {
+  element: "td" | "th";
 }
 
-interface ModalState {
-  isOpen: boolean;
-  status: ModalProps["status"];
-  title: ModalProps["title"];
-  subtitle: ModalProps["subtitle"];
-  bodyText: ModalProps["bodyText"];
-  confirmButtonText: ModalProps["confirmButtonText"];
-  onClose: ModalProps["onClickClose"];
-  onClickConfirm: ModalProps["onClickConfirm"];
-}
+const TableCell: React.FC<TableCellProps> = ({
+  element,
+  className,
+  ...props
+}) => {
+  if (element === "th") {
+    return (
+      <th
+        className={clsx(`py-4 flg:py-7 px-5 flg:px-3 font-semibold`, className)}
+        {...props}
+      />
+    );
+  }
+  return (
+    <td
+      className={clsx(`py-2 flg:py-5 px-5 flg:px-3 font-medium`, className)}
+      {...props}
+    />
+  );
+};

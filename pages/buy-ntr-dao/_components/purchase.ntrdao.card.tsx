@@ -16,6 +16,7 @@ import { BUSDIconBG, LockedIcon, NTRDAOIconBG } from "@/assets/svgs";
 import { ConversionContainer } from "./conversion.container";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { LaunchpadModal, ModalProps } from "./launchpad.modal";
+import { NTRDAOTable } from "./ntrdao.table";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -279,6 +280,8 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
           )}
         </div>
       </div>
+
+      <NTRDAOTable roundInfo={roundInfo} />
     </div>
   );
 };
