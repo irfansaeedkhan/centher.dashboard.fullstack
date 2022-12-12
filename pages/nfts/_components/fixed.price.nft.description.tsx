@@ -189,7 +189,7 @@ export const FixedPriceNFTDescription = ({
     setModal(true);
   };
   const ProceedFunc = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -220,7 +220,7 @@ export const FixedPriceNFTDescription = ({
     setModal(true);
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image

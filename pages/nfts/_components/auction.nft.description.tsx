@@ -49,8 +49,6 @@ export const AuctionNftDescription = ({
 
   const bnbPrice = useBNBPrice();
 
-  //console.log("****Data of nft", new Date(data.auctionInfo?.endTime *1000));
-
   useEffect(() => {
     if (data) {
       var endtime = new Date(data?.auctionInfo.endTime * 1000);
@@ -173,7 +171,7 @@ export const AuctionNftDescription = ({
     setModal(true);
   };
   const ProceedFunc = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -204,7 +202,7 @@ export const AuctionNftDescription = ({
     setModal(true);
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
@@ -291,11 +289,7 @@ export const AuctionNftDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>
-          This NFT is a &quot;bismuth edition&quot; version of Paracelsus. It is
-          a tribute to the great Alchemist Paracelsus as Bismuth is one of the
-          minerals with which the Philosopher&apos;s Stone can be made.
-        </p>
+        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
 
         <div className="auctionTimerBox flex flex-row [@media(max-width:600px)]:!flex-col gap-3 rounded-10px relative overflow-hidden border-2 border-gray-shade-3">
           <div className="iconBox bg-background-shade-2 flex flex-col items-center gap-3 text-center p-6 min-w-[170px]">
