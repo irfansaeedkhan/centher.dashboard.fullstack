@@ -131,7 +131,7 @@ export const NFTRightSideComponent = ({
                 width={48}
                 height={48}
                 alt="profile"
-                className="!w-12 !h-12 object-cover rounded-full"
+                className="!w-full !h-12 object-cover rounded-full"
               />
             ) : (
               <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
@@ -164,7 +164,7 @@ export const NFTRightSideComponent = ({
                 width={48}
                 height={48}
                 alt="profile"
-                className="!w-12 !h-12 object-cover rounded-full"
+                className="!w-full !h-12 object-cover rounded-full"
               />
             ) : (
               <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
