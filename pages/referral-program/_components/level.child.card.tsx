@@ -1,13 +1,19 @@
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
+  const [activeCard, setActiveCard] = useState(false);
   return (
     <div
-      className="bg-background-shade-3 rounded-t-lg w-full"
-      onClick={() => handleCard(childData?.level)}
+      className={`bg-background-shade-3 rounded-t-lg w-full relative ${
+        activeCard && "activeLevelCard"
+      }`}
+      onClick={() => {
+        handleCard(childData);
+        childData.level !== "06" && setActiveCard(true);
+      }}
     >
-      <div className="flex items-center py-4 px-3 gap-3">
+      <div className="flex items-center py-4 px-3 gap-3 ">
         <Image
           src={"/images/robertProfilepic.png"}
           alt={"profile pic"}
@@ -17,28 +23,48 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
           className="rounded-full object-cover w-9 h-9"
         />
         <div className="flex flex-col gap-2">
-          <h5 className="text-white text-12px font-medium">
+          <h5 className="dark text-white text-12px font-medium">
             {childData?.name}
           </h5>
-          <h6 className="text-gray-shade-19 text-[10px] font-medium">
+          <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {childData?.level}
           </h6>
         </div>
       </div>
-      <div className="flex justify-between gap-2 p-3 border-t-2 border-gray-shade-3">
+      <div
+        className={`flex justify-between gap-2 p-3 border-t border-gray-shade-3 ${
+          activeCard && "border-gray-shade-12/10"
+        }`}
+      >
         <div className="flex flex-col gap-2">
-          <h5 className="text-gray-shade-19 text-12px font-medium">
+          <h5 className="light text-gray-shade-19 text-12px font-medium">
             Generated
           </h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">$38,28</h6>
+          <h6 className="dark text-white-shade-1 text-14px font-semibold">
+            $38,28
+          </h6>
         </div>
         <div className="flex flex-col items-end gap-2">
-          <h5 className="text-gray-shade-19 text-12px font-medium">Line</h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">
+          <h5 className="light text-gray-shade-19 text-12px font-medium">
+            Line
+          </h5>
+          <h6 className="dark text-white-shade-1 text-14px font-semibold">
             88 People
           </h6>
         </div>
       </div>
+      {activeCard && (
+        <svg
+          className="absolute top-[50%] translate-y-[-50%] -right-[10px] "
+          width="10"
+          height="21"
+          viewBox="0 0 10 21"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M10 10.5L0 21V0L10 10.5Z" fill="#FED365" />
+        </svg>
+      )}
     </div>
   );
 };

@@ -16,13 +16,8 @@ import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { callBidOnAuction } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
-const schema = Joi.object({
-  bidPrice: Joi.number().required().label("bidPrice").messages({
-    "string.empty": `bid Price Required`,
-    "any.required": `Required Field`,
-  }),
-});
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
@@ -37,7 +32,9 @@ export const AuctionNFTBuyerDescription = ({
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
+
+  const bnbBalance = useGetBNBBalance(account);
 
   const price =
     Number(data?.auctionInfo.highestBidPrice) === 0
@@ -49,6 +46,8 @@ export const AuctionNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
+  const [bidPrice, setBidPrice] = useState<any>(null);
+  const [bidPriceErr, setBidPriceErr] = useState(true);
 
   const bnbPrice = useBNBPrice();
 
@@ -93,12 +92,15 @@ export const AuctionNFTBuyerDescription = ({
   interface bidForm {
     bidPrice: number;
   }
-  const { handleSubmit, register, setError, formState, reset } =
-    useForm<bidForm>({
-      mode: "onChange",
-      resolver: joiResolver(schema),
-    });
+  const handleBidValue = (e: any) => {
+    setBidPrice(e.target.value);
 
+    if (!!e.target.value) {
+      setBidPriceErr(false);
+    } else {
+      setBidPriceErr(true);
+    }
+  };
   const bidNFTModalFunc = () => {
     if (!library) {
       toast.error("Confirm your Wallet Connection.");
@@ -121,9 +123,17 @@ export const AuctionNFTBuyerDescription = ({
           >
             <input
               type="text"
+              onKeyPress={(event) => {
+                if (!/[0-9]/.test(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              pattern="[0-9]*"
               id="bidPrice"
               autoComplete="off"
-              {...register("bidPrice")}
+              name="bidPrice"
+              onChange={handleBidValue}
+              value={bidPrice}
               placeholder="0.00"
               className={
                 "w-full h-full !border-0 !ring-0 bg-transparent text-white"
@@ -133,17 +143,19 @@ export const AuctionNFTBuyerDescription = ({
               =$0000
             </h6>
           </div>
-          {formState.errors.bidPrice && (
+          {bidPriceErr && (
             <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.bidPrice.message}
+              Kindly fill the form using numbers
             </p>
           )}
         </div>
         <Button
           title={"Place bid "}
-          variant={formState.isValid ? "v1" : "v2"}
-          disabled={!formState.isValid}
-          onClick={handleSubmit(onSubmit)}
+          variant={bidPriceErr ? "v2" : "v1"}
+          disabled={bidPriceErr}
+          onClick={() => {
+            onSubmit(bidPrice);
+          }}
           className="py-4 mt-2"
         />
       </div>
@@ -231,11 +243,15 @@ export const AuctionNFTBuyerDescription = ({
     );
     setModal(true);
   };
-  const onSubmit = async (event: any) => {
-    if (Number(event.bidPrice) <= formatEther2Number(price)) {
+  const onSubmit = async (bidPriceVal: any) => {
+    if (Number(bidPriceVal) <= formatEther2Number(price)) {
       toast.error(
         `Bid price must be greater than ${formatEther2Number(price)}.`
       );
+      return;
+    }
+    if (bnbBalance < Number(bidPriceVal)) {
+      toast.error("Insufficient BNB Balance in your wallet.");
       return;
     }
     setModal(false);
@@ -245,17 +261,20 @@ export const AuctionNFTBuyerDescription = ({
         library,
         data.collection,
         data.nftId,
-        event.bidPrice
+        bidPriceVal
       );
       SuccessFunc(result.success);
     } else {
       SuccessFunc(false);
     }
   };
+  console.log("bidPrice:::", bidPrice);
+  console.log("bidPriceErr:::", bidPriceErr);
 
-  // useEffect(() => {
-  //   bidNFTModalFunc();
-  // }, [!formState.isValid]);
+  useEffect(() => {
+    bidNFTModalFunc();
+  }, [bidPriceErr]);
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -318,8 +337,14 @@ export const AuctionNFTBuyerDescription = ({
           disabled={end}
           className="py-4"
           onClick={() => {
-            bidNFTModalFunc();
-            setModal(true);
+            if (!library) {
+              toast.error("Confirm your Wallet Connection.");
+              return;
+            }
+            if (library) {
+              bidNFTModalFunc();
+              setModal(true);
+            }
           }}
         />
       </div>

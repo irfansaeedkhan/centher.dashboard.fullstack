@@ -180,7 +180,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           const profileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
             abi: [
               {
-                path: `nether/${cd.name}`,
+                path: `nether/${(profile as any).name.replace(" ", "_")}`,
                 content: profileFileBuffer.toString("base64"),
               },
             ],
@@ -194,7 +194,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               const coverfileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
                 abi: [
                   {
-                    path: `nether/${cd.name}`,
+                    path: `nether/${(cover as any).name.replace(" ", "_")}`,
                     content: fileBuffer.toString("base64"),
                   },
                 ],
@@ -218,7 +218,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
                 abi: [
                   {
-                    path: `nether/${cd.name}.json`,
+                    path: `nether/${cd.name.replace(" ", "_")}.json`,
                     content: Buffer.from(JSON.stringify(metadata)).toString(
                       "base64"
                     ),

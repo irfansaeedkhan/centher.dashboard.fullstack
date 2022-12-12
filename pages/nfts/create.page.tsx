@@ -169,7 +169,7 @@ const CreateNFT: NextPageWithLayout = () => {
           const assetAdded = await Moralis.EvmApi.ipfs.uploadFolder({
             abi: [
               {
-                path: `nether/${cd.name}`,
+                path: `nether/${(asset as any).name.replace(" ", "_")}`,
                 content: assetBuffer.toString("base64"),
               },
             ],
@@ -181,7 +181,7 @@ const CreateNFT: NextPageWithLayout = () => {
             description: cd.description,
             supply: cd.supply,
             image: "ipfs:/" + assetHash,
-            type: assetTab,
+            type: (asset as any).type,
             collection: cd.collection,
             attributes: cd.properties,
           };
@@ -189,7 +189,7 @@ const CreateNFT: NextPageWithLayout = () => {
           const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
             abi: [
               {
-                path: `nether/${cd.name}.json`,
+                path: `nether/${cd.name.replace(" ", "_")}.json`,
                 content: Buffer.from(JSON.stringify(metadata)).toString(
                   "base64"
                 ),

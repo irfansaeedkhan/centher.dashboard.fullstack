@@ -11,6 +11,7 @@ import {
 } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { AppRoutes } from "@/constants/app.routes";
+import clsx from "clsx";
 
 interface NFTOffersProps {
   data: IBid[];
@@ -40,65 +41,77 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
             data-bs-parent="#accordionExample"
           >
             <div className="accordion-body ">
-              <div className={TableContainer}>
-                <table className={table}>
-                  <thead className={thead}>
-                    <tr>
-                      <th scope="col" className={th}>
-                        Unit Price
-                      </th>
-                      <th scope="col" className={th}>
-                        USD Price
-                      </th>
-                      <th scope="col" className={th}>
-                        Expiration
-                      </th>
-                      <th scope="col" className={th}>
-                        From
-                      </th>
-                      {/* <th scope="col" className={th}>
+              <div
+                className={clsx(
+                  "overflow-x-auto relative  shadow-md rounded-2xl ",
+                  data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
+                )}
+              >
+                {data.length > 0 ? (
+                  <table className={table}>
+                    <thead className={thead}>
+                      <tr>
+                        <th scope="col" className={th}>
+                          Unit Price
+                        </th>
+                        <th scope="col" className={th}>
+                          USD Price
+                        </th>
+                        <th scope="col" className={th}>
+                          Expiration
+                        </th>
+                        <th scope="col" className={th}>
+                          From
+                        </th>
+                        {/* <th scope="col" className={th}>
                         Action
                       </th> */}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((item, index) => {
-                      const current = Date.now() / 1000;
-                      const month = (current - item.txTime) / 86400 / 30;
-                      return (
-                        <tr className={tbodyTR} key={index}>
-                          <td className={`${td} !text-gray-shade-7`}>
-                            {formatEther2Number(item.price)} BNB
-                          </td>
-                          <td className={td}>
-                            ${formatBNB2USD(item.price, bnbPrice)}
-                          </td>
-                          <td className={td}>{month.toFixed(2)} month</td>
-                          <td className={`${td} !text-yellow-theme`}>
-                            <Link
-                              href={{
-                                pathname: AppRoutes.profile.nfts,
-                                query: {
-                                  account_address: item.bidder,
-                                },
-                              }}
-                              className={``}
-                            >
-                              {formatAddress(item.bidder)}
-                            </Link>
-                          </td>
-                          {/* <td className={td}>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data.map((item, index) => {
+                        const current = Date.now() / 1000;
+                        const month = (current - item.txTime) / 86400 / 30;
+                        return (
+                          <tr className={tbodyTR} key={index}>
+                            <td className={`${td} !text-gray-shade-7`}>
+                              {formatEther2Number(item.price)} BNB
+                            </td>
+                            <td className={td}>
+                              ${formatBNB2USD(item.price, bnbPrice)}
+                            </td>
+                            <td className={td}>{month.toFixed(2)} month</td>
+                            <td className={`${td} !text-yellow-theme`}>
+                              <Link
+                                href={{
+                                  pathname: AppRoutes.profile.nfts,
+                                  query: {
+                                    account_address: item.bidder,
+                                  },
+                                }}
+                                className={``}
+                              >
+                                {formatAddress(item.bidder)}
+                              </Link>
+                            </td>
+                            {/* <td className={td}>
                           <Button
                             title="Accept"
                             variant="v1"
                             className="max-w-[80px]"
                           />
                         </td> */}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p className="text-center text-white text-lg">
+                    {" "}
+                    No offers yet!
+                  </p>
+                )}
               </div>
             </div>
           </div>

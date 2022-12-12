@@ -217,8 +217,8 @@ const FixedPriceForm = ({
           <input
             type="number"
             id="NFTAmount"
-            autoComplete="off"
             maxLength={10}
+            autoComplete="off"
             {...register("NFTAmount")}
             placeholder="0"
             className={
