@@ -48,7 +48,7 @@ export const HotCollections: React.FC = () => {
       <div className={hotCollectionGap}>
         <div className={collectionHeaderAnimation}>Collections</div>
         <Link href={AppRoutes.all_collections} className={viewAllLink}>
-          View all
+          View All
         </Link>
       </div>
       <div className={collectionCardStyle}>
@@ -107,7 +107,7 @@ const hotCollectionGap = ctl(
 const collectionHeaderAnimation = ctl(`animationTextHeading`);
 
 const viewAllLink = ctl(
-  `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12`
+  `block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3`
 );
 
 const collectionCardStyle = ctl(`flex gap-10 flex-wrap`);
