@@ -197,7 +197,7 @@ export const NFTHistory = ({ prices }: any) => {
                     </h5>
                     <h5 className="text-14px text-yellow-theme">
                       {" "}
-                      ={priceAverage ? priceAverage.toFixed(4) : "NAN"}
+                      {priceAverage ? priceAverage.toFixed(4) : " No Data"}
                     </h5>
                   </div>
                   <div className={graphDetailBox}>
@@ -206,7 +206,7 @@ export const NFTHistory = ({ prices }: any) => {
                     </h5>
                     <h5 className="text-14px text-[#5F97FF]">
                       {" "}
-                      ={priceVolume ? priceVolume.toFixed(4) : "NAN"}
+                      {priceVolume ? priceVolume.toFixed(4) : " No Data"}
                     </h5>
                   </div>
                   <select
