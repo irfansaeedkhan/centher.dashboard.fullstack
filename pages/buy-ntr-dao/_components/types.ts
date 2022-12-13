@@ -1,4 +1,4 @@
-import { TokenName } from "@/web3/hooks/use.contracts.functions";
+import { TokenName } from "@/web3/utils/call.helpers";
 
 export interface SelectedTokenA {
   tokenName: TokenName;

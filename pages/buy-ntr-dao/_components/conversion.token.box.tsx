@@ -3,8 +3,8 @@ import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { HiChevronDown } from "react-icons/hi";
 
+import { TokenName } from "@/web3/utils/call.helpers";
 import { BUSDIcon, NTRIcon } from "@/assets/svgs";
-import { TokenName } from "@/web3/hooks/use.contracts.functions";
 
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
 

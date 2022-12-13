@@ -1,19 +1,32 @@
 import { customLog } from "@/utils/custom.log";
 import { BigNumber, ethers } from "ethers";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
 import { getMarketplaceAddress, getPresaleAddress } from "./address.helpers";
 import {
   getBusdContract,
   getMarketplaceContract,
+  getNTRContract,
   getPresaleContract,
   getStandardNFTContract,
 } from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
 import { delay, isEmpty } from "./utility";
-import { getTokenContract, TokenName } from "../hooks/use.contracts.functions";
 
 const MAX_SUPPLY = BigNumber.from("260000");
+
+export type TokenName = "BUSD" | "NTR" | "NTRDAO";
+
+export const getTokenContract = (
+  tokenName: TokenName,
+  library: Web3Provider | JsonRpcSigner
+) => {
+  if (tokenName === "BUSD") {
+    return getBusdContract(library);
+  } else if (tokenName === "NTR") {
+    return getNTRContract(library);
+  }
+};
 
 export const getTokenApproval = async (
   tokenName: TokenName,
@@ -104,19 +117,28 @@ export const buyNtrDao = async (
   }
 };
 
+export type ClaimNTRDAOFrom = "BUSD" | "NTR";
+
 export const claimNtrTokens = async (
   library: Web3Provider,
   round: number,
-  index: number
+  claimFrom: ClaimNTRDAOFrom
 ) => {
   try {
     let loop = true;
     let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
-    const { hash: purchasedHash } = await presaleContract.functions.claimTokens(
-      round,
-      index
-    );
+
+    let claimFunction;
+    if (claimFrom === "BUSD") {
+      claimFunction = presaleContract.functions.claimTokensFromBusd;
+    } else if (claimFrom === "NTR") {
+      claimFunction = presaleContract.functions.claimTokensFromNtr;
+    } else {
+      throw new Error("Can not claim tokens");
+    }
+
+    const { hash: purchasedHash } = await claimFunction(round);
     while (loop) {
       tx = await library.getTransactionReceipt(purchasedHash);
       if (isEmpty(tx)) {

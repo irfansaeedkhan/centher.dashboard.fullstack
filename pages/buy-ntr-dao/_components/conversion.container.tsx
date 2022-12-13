@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { TokenName } from "@/web3/hooks/use.contracts.functions";
+import { TokenName } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
 import {
   BUSDIconBG,

@@ -1,18 +1,81 @@
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 import clsx from "clsx";
 
 import { useGetContributionInfo } from "@/web3/hooks/use.contracts.functions";
+import { ClaimNTRDAOFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
+
+import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 
 interface NTRDAOTableProps {
   roundInfo: RoundInfo;
 }
 
 export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
-  const { account } = useWeb3React();
+  const { account, library } = useWeb3React();
+  const contributionInfo = useGetContributionInfo(account, roundInfo);
 
-  const contributionInfo = useGetContributionInfo(account, roundInfo.round);
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    status: "warning",
+    title: "Claim NTRDAO",
+    subtitle: `Do you want to claim NTRDAO?`,
+    bodyText: `Click the button below to claim NTRDAO.`,
+    confirmButtonText: "Claim Now",
+    onClose: () => {
+      setModal((prev) => ({
+        ...prev,
+        isOpen: false,
+      }));
+    },
+    onClickConfirm: () => {},
+  });
+
+  const handleClaim = async (claimFrom: ClaimNTRDAOFrom) => {
+    try {
+      setModal((prev) => ({ ...prev, status: "progress" }));
+      const result = await claimNtrTokens(library, roundInfo.round, claimFrom);
+      // setReload(!reload);
+      if (result.success) {
+        setModal((prev) => ({
+          ...prev,
+          status: "success",
+          subtitle: `Successfully Claimed NTRDAO!`,
+          bodyText: `You calimed NTRDAO. Please check your balance.`,
+          onClickConfirm: () => {},
+        }));
+      } else {
+        toast.error("Claim Transaction Failed");
+        setModal((prev) => ({
+          ...prev,
+          status: "error",
+          confirmButtonText: "Try Again",
+        }));
+      }
+    } catch (error) {
+      toast.error("Claim Transaction Failed");
+      setModal((prev) => ({
+        ...prev,
+        status: "error",
+        confirmButtonText: "Try Again",
+      }));
+    }
+  };
+
+  const openClaimModal = (claimFrom: ClaimNTRDAOFrom) => {
+    setModal((prev) => ({
+      ...prev,
+      isOpen: true,
+      status: "warning",
+      title: "Claim NTRDAO",
+      subtitle: `Do you want to claim NTRDAO?`,
+      bodyText: `Click the button below to claim NTRDAO.`,
+      confirmButtonText: "Claim Now",
+      onClickConfirm: () => handleClaim(claimFrom),
+    }));
+  };
 
   if (
     !contributionInfo ||
@@ -55,8 +118,27 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
                 {contributionInfo.claimedTokenAmountForBusd}
               </TableCell>
               <TableCell element={"td"}>
-                <button className="block max-w-[80px] bg-brand-primary px-4 py-2 rounded text-black-shade-3 font-semibold text-sm">
-                  Claim
+                <button
+                  className={clsx(
+                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    contributionInfo.isClaimableForBusd &&
+                      `bg-brand-primary text-black-shade-3`,
+                    (!contributionInfo.isClaimableForBusd ||
+                      contributionInfo.hasClaimedAllForBusd) &&
+                      `bg-background-shade-2 text-gray-shade-7`
+                  )}
+                  disabled={
+                    !contributionInfo.isClaimableForBusd ||
+                    contributionInfo.hasClaimedAllForBusd
+                  }
+                  onClick={
+                    !contributionInfo.isClaimableForBusd ||
+                    contributionInfo.hasClaimedAllForBusd
+                      ? undefined
+                      : () => openClaimModal("BUSD")
+                  }
+                >
+                  {contributionInfo.hasClaimedAllForBusd ? "Claimed" : "Claim"}
                 </button>
               </TableCell>
             </TableRow>
@@ -79,7 +161,26 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
                 {contributionInfo.claimedTokenAmountForNtr}
               </TableCell>
               <TableCell element={"td"}>
-                <button className="block max-w-[80px] bg-brand-primary px-4 py-2 rounded text-black-shade-3 font-semibold text-sm">
+                <button
+                  className={clsx(
+                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    contributionInfo.isClaimableForNtr &&
+                      `bg-brand-primary text-black-shade-3`,
+                    (!contributionInfo.isClaimableForNtr ||
+                      contributionInfo.hasClaimedAllForNtr) &&
+                      `bg-background-shade-2 text-gray-shade-7`
+                  )}
+                  disabled={
+                    !contributionInfo.isClaimableForNtr ||
+                    contributionInfo.hasClaimedAllForNtr
+                  }
+                  onClick={
+                    !contributionInfo.isClaimableForNtr ||
+                    contributionInfo.hasClaimedAllForNtr
+                      ? undefined
+                      : () => openClaimModal("BUSD")
+                  }
+                >
                   Claim
                 </button>
               </TableCell>
@@ -87,9 +188,31 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
           )}
         </tbody>
       </table>
+
+      <LaunchpadModal
+        isOpen={modal.isOpen}
+        status={modal.status}
+        title={modal.title}
+        subtitle={modal.subtitle}
+        bodyText={modal.bodyText}
+        onClickClose={modal.onClose}
+        confirmButtonText={modal.confirmButtonText}
+        onClickConfirm={modal.onClickConfirm}
+      />
     </div>
   );
 };
+
+interface ModalState {
+  isOpen: boolean;
+  status: ModalProps["status"];
+  title: ModalProps["title"];
+  subtitle: ModalProps["subtitle"];
+  bodyText: ModalProps["bodyText"];
+  confirmButtonText: ModalProps["confirmButtonText"];
+  onClose: ModalProps["onClickClose"];
+  onClickConfirm: ModalProps["onClickConfirm"];
+}
 
 interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
 

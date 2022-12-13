@@ -34,6 +34,10 @@ export interface ContributionInfo {
   claimedTokenAmountForNtr: number;
   totalClaimableTokenAmountForBusd: number;
   totalClaimableTokenAmountForNtr: number;
+  isClaimableForBusd: boolean;
+  isClaimableForNtr: boolean;
+  hasClaimedAllForBusd: boolean;
+  hasClaimedAllForNtr: boolean;
 }
 
 export interface PurchasedInfo {

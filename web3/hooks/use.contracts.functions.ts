@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { ethers } from "ethers";
-import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { BigNumber, ethers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
 import dayjs from "dayjs";
 
 import { customLog } from "@/utils/custom.log";
@@ -15,6 +15,7 @@ import {
   getPresaleContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
+import { getTokenContract, TokenName } from "../utils/call.helpers";
 import {
   ContributionInfo,
   RoundInfo,
@@ -120,7 +121,7 @@ export const getRoundStatus = (
 
 export const useGetContributionInfo = (
   account: string | undefined | null,
-  roundNumber: number
+  roundInfo: RoundInfo
 ) => {
   const [contributionInfo, setPurchasedInfo] =
     useState<ContributionInfo | null>(null);
@@ -130,8 +131,46 @@ export const useGetContributionInfo = (
     const fetchContributionInfo = async (account: string) => {
       const contributionInfoRes = await presaleContract.getContribute(
         account,
-        roundNumber
+        roundInfo.round
       );
+
+      const claimedTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["claimedTokenAmountForBusd"],
+          6
+        )
+      );
+
+      const claimedTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["claimedTokenAmountForNtr"],
+          6
+        )
+      );
+
+      const totalClaimableTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["totalClaimableTokenAmountForBusd"],
+          6
+        )
+      );
+
+      const totalClaimableTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["totalClaimableTokenAmountForNtr"],
+          6
+        )
+      );
+
+      // If claimedTokenAmountForBusd is greater or equal to totalClaimableTokenAmountForBusd, then user has claimed all tokens
+      const hasClaimedAllForBusd = contributionInfoRes[
+        "claimedTokenAmountForBusd"
+      ].gte(contributionInfoRes["totalClaimableTokenAmountForBusd"]);
+
+      // If claimedTokenAmountForNtr is greater or equal to totalClaimableTokenAmountForNtr, then user has claimed all tokens
+      const hasClaimedAllForNtr = contributionInfoRes[
+        "claimedTokenAmountForNtr"
+      ].gte(contributionInfoRes["totalClaimableTokenAmountForNtr"]);
 
       const _contributionInfo: ContributionInfo = {
         contributedBusdAmount: Number(
@@ -156,49 +195,44 @@ export const useGetContributionInfo = (
                   contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
                 )
               ).format("DD-MM-YYYY"),
-        claimedTokenAmountForBusd: Number(
-          ethers.utils.formatUnits(
-            contributionInfoRes["claimedTokenAmountForBusd"]
-          )
-        ),
-        claimedTokenAmountForNtr: Number(
-          ethers.utils.formatUnits(
-            contributionInfoRes["claimedTokenAmountForNtr"]
-          )
-        ),
-        totalClaimableTokenAmountForBusd: Number(
-          ethers.utils.formatUnits(
-            contributionInfoRes["totalClaimableTokenAmountForBusd"],
-            6
-          )
-        ),
-        totalClaimableTokenAmountForNtr: Number(
-          ethers.utils.formatUnits(
-            contributionInfoRes["totalClaimableTokenAmountForNtr"],
-            6
-          )
-        ),
+        claimedTokenAmountForBusd,
+        claimedTokenAmountForNtr,
+        totalClaimableTokenAmountForBusd,
+        totalClaimableTokenAmountForNtr,
+        hasClaimedAllForBusd,
+        hasClaimedAllForNtr,
+        // If lockMonths have passed since purchaseTimeForBusd, then user can claim tokens
+        isClaimableForBusd:
+          !hasClaimedAllForBusd &&
+          isClaimable(
+            contributionInfoRes["purchaseTimeForBusd"],
+            roundInfo.lockMonths
+          ),
+        // If lockMonths have passed since purchaseTimeForNtr, then user can claim tokens
+        isClaimableForNtr:
+          !hasClaimedAllForNtr &&
+          isClaimable(
+            contributionInfoRes["purchaseTimeForNtr"],
+            roundInfo.lockMonths
+          ),
       };
 
       setPurchasedInfo(_contributionInfo);
     };
     if (account) fetchContributionInfo(account);
-  }, [account, presaleContract, roundNumber]);
+  }, [account, presaleContract, roundInfo]);
 
   return contributionInfo;
 };
 
-export type TokenName = "BUSD" | "NTR" | "NTRDAO";
-
-export const getTokenContract = (
-  tokenName: TokenName,
-  library: Web3Provider | JsonRpcSigner
-) => {
-  if (tokenName === "BUSD") {
-    return getBusdContract(library);
-  } else if (tokenName === "NTR") {
-    return getNTRContract(library);
-  }
+const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
+  return process.env.APP_ENV !== "production"
+    ? dayjs(new Date(purchaseTime.toNumber() * 1000))
+        .add(lockMonths * 5, "minutes") // For testing 1 month is considered as 5 minutes
+        .isBefore(dayjs())
+    : dayjs(new Date(purchaseTime.toNumber() * 1000))
+        .add(lockMonths, "months")
+        .isBefore(dayjs());
 };
 
 export const getTokenBalance = async (
