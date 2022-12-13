@@ -46,7 +46,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   useEffect(() => {
     if (!account || !user) {
-      connectWallet();
+      //  connectWallet();
       return;
     }
     if (user.account_address.toLowerCase() !== account.toLowerCase()) {

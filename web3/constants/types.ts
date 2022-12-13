@@ -25,12 +25,15 @@ export interface RoundInfo {
   maxContributionForNtr: number;
 }
 
-export interface PurchasedInfoResponse {
+export interface ContributionInfo {
   contributedBusdAmount: number;
   contributedNtrAmount: number;
-  purchaseTime: number;
-  claimedTokenAmount: number;
-  totalClaimableTokenAmount: number;
+  purchaseTimeForBusd: string;
+  purchaseTimeForNtr: string;
+  claimedTokenAmountForBusd: number;
+  claimedTokenAmountForNtr: number;
+  totalClaimableTokenAmountForBusd: number;
+  totalClaimableTokenAmountForNtr: number;
 }
 
 export interface PurchasedInfo {

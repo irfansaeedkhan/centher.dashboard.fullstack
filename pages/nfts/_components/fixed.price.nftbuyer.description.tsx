@@ -39,7 +39,7 @@ export const FixedPriceNFTBuyerDescription = ({
       toast.error("Confirm your Wallet Connection.");
       return;
     }
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
@@ -81,7 +81,7 @@ export const FixedPriceNFTBuyerDescription = ({
     setModal(true);
   };
   const buyNFTStep2Func = () => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -112,7 +112,7 @@ export const FixedPriceNFTBuyerDescription = ({
     setModal(true);
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete checkout");
+    setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image

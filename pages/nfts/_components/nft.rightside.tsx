@@ -31,6 +31,7 @@ import useGetUser from "@/hooks/use.get.user";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -123,21 +124,19 @@ export const NFTRightSideComponent = ({
       </div>
 
       <div className={desNameContainer}>
-        <div className={nameBox}>
-          <div className="">
-            {user ? (
-              <Image
-                src={user?.profile_image.path}
-                width={48}
-                height={48}
-                alt="profile"
-                className="!w-full !h-12 object-cover rounded-full"
-              />
-            ) : (
-              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
+        <div className={clsx(`basis-[37.7%]`, nameBox)}>
+          {user ? (
+            <Image
+              src={user?.profile_image.path}
+              width={48}
+              height={48}
+              alt="profile"
+              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+            />
+          ) : (
+            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+          )}
+          <div className="flex flex-col gap-1 flex-grow">
             <h5 className={nameBoxTitle}>Creator</h5>
             {user ? (
               <Link
@@ -152,25 +151,23 @@ export const NFTRightSideComponent = ({
                 {user?.display_name}
               </Link>
             ) : (
-              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
             )}
           </div>
         </div>
-        <div className={nameBox}>
-          <div className="">
-            {nftOwner ? (
-              <Image
-                src={nftOwner?.profile_image.path}
-                width={48}
-                height={48}
-                alt="profile"
-                className="!w-full !h-12 object-cover rounded-full"
-              />
-            ) : (
-              <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
-            )}
-          </div>
-          <div className="flex flex-col gap-1">
+        <div className={clsx(`basis-[37.7%]`, nameBox)}>
+          {nftOwner ? (
+            <Image
+              src={nftOwner?.profile_image.path}
+              width={48}
+              height={48}
+              alt="profile"
+              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+            />
+          ) : (
+            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+          )}
+          <div className="flex flex-col gap-1 flex-grow">
             <h5 className={nameBoxTitle}>Owner</h5>
             {nftOwner ? (
               <Link
@@ -185,12 +182,12 @@ export const NFTRightSideComponent = ({
                 {nftOwner?.display_name}
               </Link>
             ) : (
-              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
             )}
           </div>
         </div>
-        <div className={nameBox}>
-          <div className="flex flex-col gap-1">
+        <div className={clsx(`basis-1/4`, nameBox)}>
+          <div className="flex flex-col gap-1 flex-grow">
             <h5 className={nameBoxTitle}>Collection</h5>
             {data?.collection ? (
               <Link
@@ -205,7 +202,7 @@ export const NFTRightSideComponent = ({
                 {formatAddress(data?.collection)}
               </Link>
             ) : (
-              <div className="rounded-sm !w-[50px] mt-1 !h-4 bg-gray-shade-3 animate-pulse"></div>
+              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
             )}
           </div>
         </div>
@@ -253,7 +250,7 @@ const toggleListIcons = ctl(`
 w-[24px] h-[24px] stroke-white
 `);
 const nameBox = ctl(`
-flex items-start gap-3
+flex items-start gap-3 flex-grow
 `);
 const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2

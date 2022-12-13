@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ethers } from "ethers";
 import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import dayjs from "dayjs";
 
 import { customLog } from "@/utils/custom.log";
 
@@ -15,7 +16,7 @@ import {
   getStandardNFTContract,
 } from "../utils/contract.helpers";
 import {
-  PurchasedInfoResponse,
+  ContributionInfo,
   RoundInfo,
   RoundNumber,
   RoundState,
@@ -25,7 +26,7 @@ import { ZeroAddress } from "../constants/common";
 
 export const useGetRoundsInfo = () => {
   const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
-  const presaleContract = getPresaleContract();
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
     const fetchRoundsInfo = async () => {
@@ -117,57 +118,74 @@ export const getRoundStatus = (
   return undefined;
 };
 
-export const useGetPurchasedInfo = (
+export const useGetContributionInfo = (
   account: string | undefined | null,
-  reload: boolean
+  roundNumber: number
 ) => {
-  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[]>(
-    []
-  );
-  const presaleContract = getPresaleContract();
+  const [contributionInfo, setPurchasedInfo] =
+    useState<ContributionInfo | null>(null);
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
-    const fetchPurchasedInfo = async (account: string) => {
-      let _purchasedInfos: PurchasedInfoResponse[] = [];
-      for (let i = 0; i < 3; i++) {
-        const purchasedInfoByRound = await presaleContract.getContribute(
-          account,
-          i
-        );
+    const fetchContributionInfo = async (account: string) => {
+      const contributionInfoRes = await presaleContract.getContribute(
+        account,
+        roundNumber
+      );
 
-        console.log("purchasedInfo from contract");
-        console.log(purchasedInfoByRound);
-        const _purchasedInfo: PurchasedInfoResponse = {
-          contributedBusdAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["contributedBusdAmount"]
-            )
-          ),
-          contributedNtrAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["contributedNtrAmount"]
-            )
-          ),
-          claimedTokenAmount: Number(
-            ethers.utils.formatUnits(purchasedInfoByRound["claimedTokenAmount"])
-          ),
-          purchaseTime: purchasedInfoByRound["purchaseTime"].toNumber(),
-          totalClaimableTokenAmount: Number(
-            ethers.utils.formatUnits(
-              purchasedInfoByRound["totalClaimableTokenAmount"]
-            )
-          ),
-        };
+      const _contributionInfo: ContributionInfo = {
+        contributedBusdAmount: Number(
+          ethers.utils.formatUnits(contributionInfoRes["contributedBusdAmount"])
+        ),
+        contributedNtrAmount: Number(
+          ethers.utils.formatUnits(contributionInfoRes["contributedNtrAmount"])
+        ),
+        purchaseTimeForBusd:
+          contributionInfoRes["purchaseTimeForBusd"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForBusd"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        purchaseTimeForNtr:
+          contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        claimedTokenAmountForBusd: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["claimedTokenAmountForBusd"]
+          )
+        ),
+        claimedTokenAmountForNtr: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["claimedTokenAmountForNtr"]
+          )
+        ),
+        totalClaimableTokenAmountForBusd: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["totalClaimableTokenAmountForBusd"],
+            6
+          )
+        ),
+        totalClaimableTokenAmountForNtr: Number(
+          ethers.utils.formatUnits(
+            contributionInfoRes["totalClaimableTokenAmountForNtr"],
+            6
+          )
+        ),
+      };
 
-        _purchasedInfos.push(_purchasedInfo);
-      }
-
-      setPurchasedInfo(_purchasedInfos);
+      setPurchasedInfo(_contributionInfo);
     };
-    if (account) fetchPurchasedInfo(account);
-  }, [account, reload, presaleContract]);
+    if (account) fetchContributionInfo(account);
+  }, [account, presaleContract, roundNumber]);
 
-  return purchasedInfo;
+  return contributionInfo;
 };
 
 export type TokenName = "BUSD" | "NTR" | "NTRDAO";

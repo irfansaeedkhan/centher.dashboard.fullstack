@@ -29,7 +29,7 @@ export const HotNFTs: React.FC = () => {
         <div className={hotNftAnimation}>Hot NFTs</div>
         <Link
           href={"/explore/nfts"}
-          className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12"
+          className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3"
         >
           View All
         </Link>
