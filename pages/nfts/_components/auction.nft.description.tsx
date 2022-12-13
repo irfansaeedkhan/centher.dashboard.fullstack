@@ -136,12 +136,12 @@ export const AuctionNftDescription = ({
       toast.error("Confirm your Wallet Connection.");
       return;
     }
-    setModalTitle("End Auction");
+    setModalTitle("Announce Winner");
     setModalContent(
       <div className={modalBodyWrapper}>
         <WarningIcon className="mx-auto" />
         <h3 className="text-white text-18px font-semibold leading-6">
-          Are you sure you want to end your Auction Price?
+          Click Proceed to announce winner of your NFT!
         </h3>
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Your NFT will go to{" "}
@@ -344,9 +344,17 @@ export const AuctionNftDescription = ({
         {nowTime === endTime ||
           (nowTime > endTime && (
             <Button
-              title={"Annouce Winner"}
+              title={
+                data.auctionInfo.bids.length > 0
+                  ? "Announce Winner"
+                  : "Cancel Auction"
+              }
               disabled={!end}
-              onClick={endAuctionFunc}
+              onClick={
+                data.auctionInfo.bids.length > 0
+                  ? endAuctionFunc
+                  : cancelAuctionFunc
+              }
               variant="v4"
               className="py-4"
             />
