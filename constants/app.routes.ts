@@ -3,6 +3,7 @@ export const AppRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
+    terms: "/auth/terms",
   },
 
   profile: {
