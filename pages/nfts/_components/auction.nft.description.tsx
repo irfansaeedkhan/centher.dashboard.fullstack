@@ -345,13 +345,13 @@ export const AuctionNftDescription = ({
           (nowTime > endTime && (
             <Button
               title={
-                data?.auctionInfo?.bids.length > 0
+                data?.auctionInfo?.bids && data?.auctionInfo?.bids?.length > 0
                   ? "Announce Winner"
                   : "Cancel Auction"
               }
               disabled={!end}
               onClick={
-                data.auctionInfo.bids.length > 0
+                data?.auctionInfo?.bids && data?.auctionInfo?.bids?.length > 0
                   ? endAuctionFunc
                   : cancelAuctionFunc
               }
