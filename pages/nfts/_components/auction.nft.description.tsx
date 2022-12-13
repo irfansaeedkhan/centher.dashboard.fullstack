@@ -345,7 +345,7 @@ export const AuctionNftDescription = ({
           (nowTime > endTime && (
             <Button
               title={
-                data.auctionInfo.bids.length > 0
+                data?.auctionInfo?.bids.length > 0
                   ? "Announce Winner"
                   : "Cancel Auction"
               }
