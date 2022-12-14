@@ -16,7 +16,7 @@ const Banner = () => {
           Enjoy Your Time, Become a Creator NOW!
         </p>
         <Link
-          href={AppRoutes.nfts.create_nft}
+          href={AppRoutes.marketplace.create_nft}
           className={`mt-6 w-fit px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark `}
         >
           Create NFT

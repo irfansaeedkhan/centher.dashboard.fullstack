@@ -39,8 +39,6 @@ export const AppRoutes = {
   // Coming soon pages
   coming_soon: "/coming-soon",
   home: "/",
-  explore: "/explore",
-  all_collections: "/collections/all",
 
   admin: {
     index: "/admin",
@@ -62,9 +60,13 @@ export const AppRoutes = {
   staking_packs: "/staking-contract",
   liquidity_pool: "/liquidity-pool",
 
-  nfts: {
-    nft: "/nfts/[collection]/[tokenId]",
-    create_nft: "/nfts/create",
-    create_collection: "/nfts/create-collection",
+  marketplace: {
+    nft: "/marketplace/[collection]/[tokenId]",
+    create_nft: "/marketplace/create",
+    create_collection: "/marketplace/create-collection",
+    explore: "/marketplace/explore",
+    all_nfts: "/marketplace/all-nfts",
+    all_collections: "/marketplace/all-collections",
+    collection: "/marketplace/[collection]",
   },
 } as const;

@@ -6,6 +6,7 @@ import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import Link from "next/link";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";
+import { AppRoutes } from "@/constants/app.routes";
 
 export interface CollectionCardProps {
   data: Collection;
@@ -31,7 +32,12 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
   }, [data]);
   return (
     <Link
-      href={`/collections/${data.collection}`}
+      href={{
+        pathname: AppRoutes.marketplace.collection,
+        query: {
+          collection: data.collection,
+        },
+      }}
       className={`w-[340px] border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:650px)]:w-full`}
     >
       <div className={`relative flex justify-center`}>

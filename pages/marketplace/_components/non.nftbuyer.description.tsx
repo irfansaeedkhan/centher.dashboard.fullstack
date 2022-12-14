@@ -123,7 +123,7 @@ export const NonNFTBuyerDescription = ({
           </p>
         )}
         {/* <Link href={{
-              pathname: AppRoutes.nfts.nft,
+              pathname: AppRoutes.marketplace.nft,
               query: {
                 collection: nftData?.collection,
                 nftId: 2,

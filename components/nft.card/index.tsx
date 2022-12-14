@@ -16,6 +16,7 @@ import {
 import { BNBIcon, YellowTick } from "@/assets/svgs";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
+import { AppRoutes } from "@/constants/app.routes";
 
 export interface NFTCardProps {
   data: NFT;
@@ -95,7 +96,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         )}
       </div>
       <Link
-        href={`/nfts/${data.collection}/${data.tokenId}`}
+        href={{
+          pathname: AppRoutes.marketplace.nft,
+          query: {
+            collection: data.collection,
+            tokenId: data.tokenId,
+          },
+        }}
         className={nftImageWrapper}
       >
         {imageUrl ? (
@@ -111,7 +118,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         )}
       </Link>
       <Link
-        href={`/nfts/${data.collection}/${data.tokenId}`}
+        href={{
+          pathname: AppRoutes.marketplace.nft,
+          query: {
+            collection: data.collection,
+            tokenId: data.tokenId,
+          },
+        }}
         className={nftDetailWrapper}
       >
         <div className={nftName}>{name}</div>
