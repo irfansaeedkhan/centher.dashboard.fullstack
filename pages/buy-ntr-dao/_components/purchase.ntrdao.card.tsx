@@ -7,6 +7,7 @@ import clsx from "clsx";
 import {
   getTokenBalance,
   getTokenAllowance,
+  useGetContributionInfo,
 } from "@/web3/hooks/use.contracts.functions";
 import Button from "@/components/button";
 import { buyNtrDao, getTokenApproval } from "@/web3/utils/call.helpers";
@@ -25,6 +26,10 @@ interface Props {
 export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
   const { account, library } = useWeb3React<Web3Provider>();
   const [isApproved, setIsApproved] = useState(false);
+  const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
+    account,
+    roundInfo
+  );
 
   const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
     tokenName: "BUSD",
@@ -172,6 +177,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
       );
 
       if (result.success) {
+        refreshContributionInfo();
         setModal((prev) => ({
           ...prev,
           subtitle: "Purchase Successful",
@@ -281,7 +287,14 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
         </div>
       </div>
 
-      <NTRDAOTable roundInfo={roundInfo} />
+      {!contributionInfo ||
+      (!contributionInfo.contributedBusdAmount &&
+        !contributionInfo.contributedNtrAmount) ? null : (
+        <NTRDAOTable
+          roundInfo={roundInfo}
+          contributionInfo={contributionInfo}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import dayjs from "dayjs";
@@ -127,8 +127,8 @@ export const useGetContributionInfo = (
     useState<ContributionInfo | null>(null);
   const presaleContract = useMemo(() => getPresaleContract(), []);
 
-  useEffect(() => {
-    const fetchContributionInfo = async (account: string) => {
+  const fetchContributionInfo = useCallback(
+    async (account: string) => {
       const contributionInfoRes = await presaleContract.getContribute(
         account,
         roundInfo.round
@@ -218,11 +218,19 @@ export const useGetContributionInfo = (
       };
 
       setPurchasedInfo(_contributionInfo);
-    };
-    if (account) fetchContributionInfo(account);
-  }, [account, presaleContract, roundInfo]);
+    },
+    [presaleContract, roundInfo]
+  );
 
-  return contributionInfo;
+  useEffect(() => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
+
+  const refreshContributionInfo = useCallback(async () => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
+
+  return { contributionInfo, refreshContributionInfo };
 };
 
 const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
