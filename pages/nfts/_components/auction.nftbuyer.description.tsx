@@ -48,11 +48,17 @@ export const AuctionNFTBuyerDescription = ({
   const [seconds, setSeconds] = useState<number>(0);
   const [bidPrice, setBidPrice] = useState<any>(null);
   const [bidPriceErr, setBidPriceErr] = useState(true);
+  const [nowTime, setNowTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
 
   const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
+      var endtime = new Date(data?.auctionInfo.endTime * 1000);
+      var now = new Date();
+      setNowTime(now);
+      setEndTime(endtime);
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
@@ -208,7 +214,7 @@ export const AuctionNFTBuyerDescription = ({
         </h2>
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Congratulations! You have successfully bidded{" "}
+            Congratulations! You have successfully placed bid on{" "}
             <span className="text-white">{data?.name}</span> NFT on Nether NFT
             platform.
           </p>
@@ -331,22 +337,24 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       </div>
       <div className="buttonContainer flex items-center">
-        <Button
-          title={"Place bid"}
-          variant={end ? "v2" : "v1"}
-          disabled={end}
-          className="py-4"
-          onClick={() => {
-            if (!library) {
-              toast.error("Confirm your Wallet Connection.");
-              return;
-            }
-            if (library) {
-              bidNFTModalFunc();
-              setModal(true);
-            }
-          }}
-        />
+        {nowTime <= endTime && (
+          <Button
+            title={"Place bid"}
+            variant={end ? "v2" : "v1"}
+            disabled={end}
+            className="py-4"
+            onClick={() => {
+              if (!library) {
+                toast.error("Confirm your Wallet Connection.");
+                return;
+              }
+              if (library) {
+                bidNFTModalFunc();
+                setModal(true);
+              }
+            }}
+          />
+        )}
       </div>
 
       {Modal && (
