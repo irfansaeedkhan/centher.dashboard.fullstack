@@ -141,11 +141,18 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
   };
 
   const openBuyModal = () => {
-    if (!selectedTokenA.inputValue) return;
-    if (selectedTokenA.inputValue < selectedTokenA.minContribution) {
+    if (
+      !selectedTokenA.inputValue ||
+      selectedTokenA.inputValue < selectedTokenA.minContribution
+    ) {
       toast.error(
         `Minimum contribution is ${selectedTokenA.minContribution} ${selectedTokenA.tokenName}`
       );
+      return;
+    }
+
+    if (selectedTokenA.inputValue > selectedTokenA.tokenBalance) {
+      toast.error(`You do not have enough ${selectedTokenA.tokenName}`);
       return;
     }
 
@@ -301,6 +308,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
         <NTRDAOTable
           roundInfo={roundInfo}
           contributionInfo={contributionInfo}
+          refetchContributionInfo={refreshContributionInfo}
         />
       )}
     </div>

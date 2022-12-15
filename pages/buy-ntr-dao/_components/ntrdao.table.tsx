@@ -11,11 +11,13 @@ import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 interface NTRDAOTableProps {
   roundInfo: RoundInfo;
   contributionInfo: ContributionInfo;
+  refetchContributionInfo: () => void;
 }
 
 export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
   roundInfo,
   contributionInfo,
+  refetchContributionInfo,
 }) => {
   const { library } = useWeb3React();
 
@@ -39,7 +41,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
       const result = await claimNtrTokens(library, roundInfo.round, claimFrom);
-      // setReload(!reload);
+      refetchContributionInfo();
       if (result.success) {
         setModal((prev) => ({
           ...prev,
@@ -92,6 +94,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
             <TableCell element={"th"}>Lock Months</TableCell>
             <TableCell element={"th"}>Total Claimable</TableCell>
             <TableCell element={"th"}>Claimed</TableCell>
+            <TableCell element={"th"}>Claimable Now</TableCell>
             <TableCell element={"th"}>Action</TableCell>
           </tr>
         </thead>
@@ -113,27 +116,25 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
                 {contributionInfo.claimedTokenAmountForBusd}
               </TableCell>
               <TableCell element={"td"}>
+                {contributionInfo.claimableTokenAmountForBusd}
+              </TableCell>
+              <TableCell element={"td"}>
                 <button
                   className={clsx(
                     `block px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForBusd &&
                       `bg-brand-primary text-black-shade-3`,
-                    (!contributionInfo.isClaimableForBusd ||
-                      contributionInfo.hasClaimedAllForBusd) &&
+                    !contributionInfo.isClaimableForBusd &&
                       `bg-background-shade-2 text-gray-shade-7`
                   )}
-                  disabled={
-                    !contributionInfo.isClaimableForBusd ||
-                    contributionInfo.hasClaimedAllForBusd
-                  }
+                  disabled={!contributionInfo.isClaimableForBusd}
                   onClick={
-                    !contributionInfo.isClaimableForBusd ||
-                    contributionInfo.hasClaimedAllForBusd
+                    !contributionInfo.isClaimableForBusd
                       ? undefined
                       : () => openClaimModal("BUSD")
                   }
                 >
-                  {contributionInfo.hasClaimedAllForBusd ? "Claimed" : "Claim"}
+                  Claim
                 </button>
               </TableCell>
             </TableRow>
@@ -156,24 +157,22 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
                 {contributionInfo.claimedTokenAmountForNtr}
               </TableCell>
               <TableCell element={"td"}>
+                {contributionInfo.claimableTokenAmountForNtr}
+              </TableCell>
+              <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block w-24 px-4 py-2 rounded font-semibold text-sm`,
+                    `block px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForNtr &&
                       `bg-brand-primary text-black-shade-3`,
-                    (!contributionInfo.isClaimableForNtr ||
-                      contributionInfo.hasClaimedAllForNtr) &&
+                    !contributionInfo.isClaimableForNtr &&
                       `bg-background-shade-2 text-gray-shade-7`
                   )}
-                  disabled={
-                    !contributionInfo.isClaimableForNtr ||
-                    contributionInfo.hasClaimedAllForNtr
-                  }
+                  disabled={!contributionInfo.isClaimableForNtr}
                   onClick={
-                    !contributionInfo.isClaimableForNtr ||
-                    contributionInfo.hasClaimedAllForNtr
+                    !contributionInfo.isClaimableForNtr
                       ? undefined
-                      : () => openClaimModal("BUSD")
+                      : () => openClaimModal("NTR")
                   }
                 >
                   Claim
