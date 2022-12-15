@@ -71,9 +71,9 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.all_nfts,
   AppRoutes.marketplace.all_collections,
   AppRoutes.marketplace.collection,
-  AppRoutes.network_rewards.index,
-  AppRoutes.network_rewards.liscense,
-  AppRoutes.network_rewards.rewards,
+  AppRoutes.referral.network_genealogy,
+  AppRoutes.referral.overview,
+  AppRoutes.referral.network_rewards,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
@@ -85,7 +85,6 @@ const _comingSoonPages: string[] = [
   AppRoutes.buy_ntr_dao,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
-  AppRoutes.referral_program,
 
   AppRoutes.admin.index,
   AppRoutes.admin.staking_packs,

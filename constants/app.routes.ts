@@ -29,13 +29,6 @@ export const AppRoutes = {
 
   // Authenticated Pages
   notifications: "/notifications",
-  network_rewards: {
-    index: "/network-rewards",
-    liscense: "/network-rewards/liscense",
-    rewards: "/network-rewards/rewards",
-  },
-  // network_rewards: "/network-rewards",
-
   // Coming soon pages
   coming_soon: "/coming-soon",
   home: "/",
@@ -56,7 +49,6 @@ export const AppRoutes = {
   buy_ntr_dao: "/buy-ntr-dao",
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
-  referral_program: "/referral-program",
   staking_packs: "/staking-contract",
   liquidity_pool: "/liquidity-pool",
 
@@ -68,5 +60,11 @@ export const AppRoutes = {
     all_nfts: "/marketplace/all-nfts",
     all_collections: "/marketplace/all-collections",
     collection: "/marketplace/[collection]",
+  },
+
+  referral: {
+    network_genealogy: "/network-genealogy",
+    network_rewards: "/network-rewards/rewards",
+    overview: "/network-rewards/overview",
   },
 } as const;
