@@ -9,11 +9,11 @@ import { HotNftEmptyIcon } from "@/assets/svgs";
 import { LoadingState } from "@/models/common";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
-import CategoryDropdown from "./category.dropdown";
-import SortByDropdown from "./sortby.dropdown";
 import { Category, NFT, SortBy } from "@/models/nft";
 import { useAllNFTsStore } from "@/store/all.nfts.store";
 import { NFTCard } from "@/components/nft.card";
+import CategoryDropdown from "./category.dropdown";
+import SortByDropdown from "./sortby.dropdown";
 
 // Current directory imports
 

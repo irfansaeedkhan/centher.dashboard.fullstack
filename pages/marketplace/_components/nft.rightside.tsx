@@ -109,15 +109,15 @@ export const NFTRightSideComponent = ({
             </button>
 
             <WhatsappShareButton url={shareUrl} className="w-full">
-              <button className={toggleListBtn}>
+              <span className={toggleListBtn}>
                 <SiWhatsapp className={toggleListIcons} /> Share on whatsapp
-              </button>
+              </span>
             </WhatsappShareButton>
 
             <TwitterShareButton url={shareUrl} className="w-full">
-              <button className={toggleListBtn}>
+              <span className={toggleListBtn}>
                 <TwitterSvg className={toggleListIcons} /> Share on twitter
-              </button>
+              </span>
             </TwitterShareButton>
           </div>
         </div>
@@ -192,9 +192,9 @@ export const NFTRightSideComponent = ({
             {data?.collection ? (
               <Link
                 href={{
-                  pathname: AppRoutes.profile.nfts,
+                  pathname: AppRoutes.marketplace.collection,
                   query: {
-                    account_address: data?.collection,
+                    collection: data?.collection,
                   },
                 }}
                 className={nameBoxZValue}

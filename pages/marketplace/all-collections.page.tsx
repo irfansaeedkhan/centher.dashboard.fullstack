@@ -11,7 +11,7 @@ import { CollectionCard } from "@/components/collection.card";
 import { Category } from "@/models/nft";
 
 import { useAllCollectionsStore } from "@/store/all.collections.store";
-import CategoryDropdown from "../explore/_components/category.dropdown";
+import CategoryDropdown from "./_components/category.dropdown";
 import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { NftsCollectionEmpty } from "@/assets/svgs";
 import { useInView } from "react-intersection-observer";

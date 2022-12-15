@@ -46,12 +46,12 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Explore",
-        url: AppRoutes.explore,
+        url: AppRoutes.marketplace.explore,
         icon: Explore,
       },
       {
         label: "Create Collection",
-        url: AppRoutes.nfts.create_collection,
+        url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
       },
     ],

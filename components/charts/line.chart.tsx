@@ -25,6 +25,11 @@ const options = {
       beginAtZero: true,
     },
   },
+  legend: {
+    labels: {
+      boxWidth: 0,
+    },
+  },
 };
 
 ChartJS.register(
