@@ -83,7 +83,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
     <div
       className={`overflow-x-auto border border-gray-shade-3 rounded-2xl mt-5`}
     >
-      <table className={`w-full min-w-[880px]`}>
+      <table className={`w-full min-w-[1024px]`}>
         <thead className={`text-sm text-left text-gray-shade-7 bg-elevation-1`}>
           <tr>
             <TableCell element={"th"}>Type</TableCell>
@@ -115,7 +115,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    `block px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForBusd &&
                       `bg-brand-primary text-black-shade-3`,
                     (!contributionInfo.isClaimableForBusd ||
@@ -158,7 +158,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    `block w-24 px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForNtr &&
                       `bg-brand-primary text-black-shade-3`,
                     (!contributionInfo.isClaimableForNtr ||

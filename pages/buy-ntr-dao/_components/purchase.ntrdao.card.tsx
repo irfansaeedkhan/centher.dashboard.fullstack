@@ -223,67 +223,75 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
             "blur-xl bg-black-shade-3/60 pointer-events-none"
         )}
       >
-        <div className={`bg-background-shade-3 p-8 lg:p-12 rounded-2xl`}>
-          <h1 className={`text-24px text-white text-center font-semibold`}>
+        <div className={`bg-background-shade-3 rounded-2xl`}>
+          <h1
+            className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
+          >
             Please Enter NTRDAO amount to you&apos;d like to purchase
           </h1>
 
-          <div className={`h-[2px] my-8 lg:my-12 bg-gray-shade-3`} />
+          <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">
+            <ConversionContainer
+              selectedTokenA={selectedTokenA}
+              setSelectedTokenA={setSelectedTokenA}
+              selectedTokenB={selectedTokenB}
+              setSelectedTokenB={setSelectedTokenB}
+              roundInfo={roundInfo}
+            />
 
-          <ConversionContainer
-            selectedTokenA={selectedTokenA}
-            setSelectedTokenA={setSelectedTokenA}
-            selectedTokenB={selectedTokenB}
-            setSelectedTokenB={setSelectedTokenB}
-            roundInfo={roundInfo}
-          />
+            {roundInfo.status === "active" && (
+              <div
+                className={`pt-8 lg:pt-12 max-w-[442px] mx-auto text-center`}
+              >
+                <h6
+                  className={`text-xs fmd:text-sm font-semibold text-gray-shade-7 pb-4`}
+                >
+                  Minimum Buy:{" "}
+                  <span className={`text-white`}>
+                    {selectedTokenA.minContribution} {selectedTokenA.tokenName}
+                  </span>
+                </h6>
+                <Button
+                  title={isApproved ? "Buy now" : "Authorize"}
+                  variant="v1"
+                  onClick={
+                    !account
+                      ? () => {
+                          toast.error("Please connect your wallet");
+                        }
+                      : isApproved
+                      ? openBuyModal
+                      : openAuthorizeModal
+                  }
+                  className="py-3"
+                />
 
-          {roundInfo.status === "active" && (
-            <div className={`pt-8 lg:pt-12 max-w-[442px] mx-auto text-center`}>
-              <h6 className={`text-14px font-semibold text-gray-shade-7 pb-4`}>
-                Minimum Buy:{" "}
-                <span className={`text-white`}>
-                  {selectedTokenA.minContribution} {selectedTokenA.tokenName}
-                </span>
-              </h6>
-              <Button
-                title={isApproved ? "Buy now" : "Authorize"}
-                variant="v1"
-                onClick={
-                  !account
-                    ? () => {
-                        toast.error("Please connect your wallet");
-                      }
-                    : isApproved
-                    ? openBuyModal
-                    : openAuthorizeModal
-                }
-                className="py-4"
-              />
+                <LaunchpadModal
+                  isOpen={modal.isOpen}
+                  status={modal.status}
+                  title={modal.title}
+                  subtitle={modal.subtitle}
+                  bodyText={modal.bodyText}
+                  onClickClose={modal.onClose}
+                  confirmButtonText={modal.confirmButtonText}
+                  onClickConfirm={modal.onClickConfirm}
+                />
+              </div>
+            )}
 
-              <LaunchpadModal
-                isOpen={modal.isOpen}
-                status={modal.status}
-                title={modal.title}
-                subtitle={modal.subtitle}
-                bodyText={modal.bodyText}
-                onClickClose={modal.onClose}
-                confirmButtonText={modal.confirmButtonText}
-                onClickConfirm={modal.onClickConfirm}
-              />
-            </div>
-          )}
-
-          {roundInfo.status === "ended" && (
-            <div
-              className={`mt-8 lg:mt-12 text-center mx-auto  py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl`}
-            >
-              <p className={`text-[#E6535A] text-16px font-semibold`}>
-                Round {roundInfo.round + 1} is over! Buy another availabe or
-                wait for the next round.
-              </p>
-            </div>
-          )}
+            {roundInfo.status === "ended" && (
+              <div
+                className={`mt-8 lg:mt-12 text-center mx-auto py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl`}
+              >
+                <p
+                  className={`text-[#E6535A] text-sm fmd:text-base fsm:text-base font-semibold`}
+                >
+                  Round {roundInfo.round + 1} is over! Buy another availabe or
+                  wait for the next round.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

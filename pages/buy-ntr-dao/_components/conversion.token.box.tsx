@@ -39,7 +39,7 @@ export const ConversionTokenBox: React.FC<Props> = ({
           <div className="flex items-center flex-grow">
             {tokenIcon}
             <span
-              className={`ml-2 inline-block text-14px text-white font-semibold`}
+              className={`ml-2 inline-block text-xs fmd:text-sm text-white font-semibold`}
             >
               {tokenName}
             </span>
@@ -52,11 +52,11 @@ export const ConversionTokenBox: React.FC<Props> = ({
               className="p-2"
               onClick={() => setIsDropdownOpen((prev) => !prev)}
             >
-              <HiChevronDown className="w-6 h-6 fill-white" />
+              <HiChevronDown className="w-5 h-5 fsm:w-6 fsm:h-6 fill-white" />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-[calc(100%+6px)] -left-1 w-full bg-popup-0 z-50 rounded-10px text-14px text-white font-medium">
+              <div className="absolute top-[calc(100%+6px)] -left-1 w-full bg-popup-0 z-50 rounded-10px text-xs fmd:text-sm text-white font-medium">
                 <div
                   className="cursor-pointer py-3 px-5 flex items-center border-b border-gray-shade-border-color"
                   onClick={() => {
@@ -84,12 +84,14 @@ export const ConversionTokenBox: React.FC<Props> = ({
       </div>
       <div className={inputBoxRight}>
         <div>
-          <h5 className={`text-14px text-gray-shade-7 font-semibold`}>
+          <div
+            className={`text-xs fmd:text-sm text-gray-shade-7 font-semibold`}
+          >
             Balance
-          </h5>
-          <h6 className={`text-14px text-white font-semibold`}>
+          </div>
+          <span className={`text-xs fmd:text-sm text-white font-semibold`}>
             {tokenBalance}
-          </h6>
+          </span>
         </div>
       </div>
     </div>
