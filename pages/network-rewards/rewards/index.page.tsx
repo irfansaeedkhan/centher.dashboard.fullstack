@@ -7,7 +7,9 @@ const Rewards: NextPageWithLayout = () => {
   return (
     <div>
       <div className="flex items-center gap-16">
-        <h3 className="text-white font-semibold text-xl">Staking Rewards</h3>
+        <h3 className="text-white font-semibold text-xl">
+          Your Network Rewards
+        </h3>
 
         <h3 className="text-white font-semibold text-xl">Lunchpad Rewards</h3>
 

@@ -62,13 +62,16 @@ const modalHeader = ctl(`
   flex 
   py-6
   px-4
+  justify-between
   rounded-t 
   items-center 
-  justify-center
+  flg:justify-center
   relative
 `);
 
-const modalHeaderTitle = ctl(`text-white text-24px text-center font-semibold`);
+const modalHeaderTitle = ctl(
+  `text-white text-sm fsm:text-[16px] flg:text-[24px] font-semibold`
+);
 
 const modalHeaderButton = ctl(`
   px-1 
