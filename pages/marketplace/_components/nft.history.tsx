@@ -42,7 +42,7 @@ export const NFTHistory = ({ prices }: any) => {
   const [priceAverage, setPriceAverage] = useState<number>();
   const [priceVolume, setPriceVolume] = useState<number>();
   const [showModal, setShowModal] = useState(false);
-  const [tableDataArray, setTableDataArray] = useState<any>();
+  const [tableDataArray, setTableDataArray] = useState<any[]>([]);
 
   const closePostModal = () => {
     setShowModal(false);
