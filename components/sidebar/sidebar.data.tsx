@@ -6,13 +6,13 @@ import {
   DaoGovernment,
   Explore,
   Notification,
-  ProfitsDashboard,
-  VotingChain,
-  Multilevel,
+  // ProfitsDashboard,
+  // VotingChain,
+  // Multilevel,
   NetworkGenealogy,
-  LiquidityPoolSvg,
+  // LiquidityPoolSvg,
   NetworkRewards,
-  StakingContract,
+  // StakingContract,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -46,47 +46,42 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Explore",
-        url: AppRoutes.explore,
+        url: AppRoutes.marketplace.explore,
         icon: Explore,
       },
       {
         label: "Create Collection",
-        url: AppRoutes.nfts.create_collection,
+        url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
       },
     ],
   },
-  decentralized_finance: {
-    label: "DECENTRALIZED FINANCE",
-    items: [
-      {
-        label: "Liquidity Pool",
-        url: AppRoutes.liquidity_pool,
-        icon: LiquidityPoolSvg,
-      },
-      {
-        label: "Staking Contract",
-        url: AppRoutes.staking_packs,
-        icon: StakingContract,
-      },
-      {
-        label: "Network Rewards",
-        url: AppRoutes.network_rewards.index,
-        icon: NetworkRewards,
-      },
-    ],
-  },
+  // decentralized_finance: {
+  //   label: "DECENTRALIZED FINANCE",
+  //   items: [
+  //     {
+  //       label: "Liquidity Pool",
+  //       url: AppRoutes.liquidity_pool,
+  //       icon: LiquidityPoolSvg,
+  //     },
+  //     {
+  //       label: "Staking Contract",
+  //       url: AppRoutes.staking_packs,
+  //       icon: StakingContract,
+  //     },
+  //   ],
+  // },
   referral_program: {
     label: "REFERRAL PROGRAM",
     items: [
       {
-        label: "Multilevel License",
-        url: AppRoutes.referral_program,
-        icon: Multilevel,
+        label: "Network Rewards",
+        url: AppRoutes.referral.network_rewards,
+        icon: NetworkRewards,
       },
       {
         label: "Network Genealogy",
-        url: AppRoutes.referral_program,
+        url: AppRoutes.referral.network_genealogy,
         icon: NetworkGenealogy,
       },
     ],
@@ -95,20 +90,20 @@ export const sidebarData: SidebarData = {
     label: "DAO GOVERNMENT",
     items: [
       {
-        label: "Buy NTR DAO",
+        label: "Launchpad",
         url: AppRoutes.buy_ntr_dao,
         icon: DaoGovernment,
       },
-      {
-        label: "Profits Dashboard",
-        url: AppRoutes.profits_dashboard,
-        icon: ProfitsDashboard,
-      },
-      {
-        label: "Voting Chain",
-        url: AppRoutes.voting_chain,
-        icon: VotingChain,
-      },
+      // {
+      //   label: "Profits Dashboard",
+      //   url: AppRoutes.profits_dashboard,
+      //   icon: ProfitsDashboard,
+      // },
+      // {
+      //   label: "Voting Chain",
+      //   url: AppRoutes.voting_chain,
+      //   icon: VotingChain,
+      // },
     ],
   },
 };
@@ -116,7 +111,7 @@ export const sidebarData: SidebarData = {
 export const SidebarSections = [
   sidebarData.social_network,
   sidebarData.nft_marketplace,
-  sidebarData.decentralized_finance,
+  // sidebarData.decentralized_finance,
   sidebarData.referral_program,
   sidebarData.dao_government,
 ];

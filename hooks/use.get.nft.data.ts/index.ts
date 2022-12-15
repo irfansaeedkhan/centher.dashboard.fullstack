@@ -1,4 +1,4 @@
-import { IProperty } from "@/pages/nfts/_components/create.nft.form";
+import { IProperty } from "@/pages/marketplace/_components/create.nft.form";
 import { nftQuery, saleQuery } from "@/subgraph/querys";
 import { formatIPFSUrl } from "@/utils/format.address";
 import useRefresh from "@/web3/hooks/use.refresh";

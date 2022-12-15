@@ -26,7 +26,7 @@ import { useInView } from "react-intersection-observer";
 import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useRouter } from "next/router";
 import axios from "axios";
-import { ICollectionData } from "@/pages/nfts/_components/create.collection.form";
+import { ICollectionData } from "@/pages/marketplace/_components/create.collection.form";
 import {
   formatAddress,
   formatBNB2USD,
@@ -206,16 +206,16 @@ const Collection: NextPageWithLayout = () => {
                       </button>
 
                       <FacebookShareButton url={shareUrl} className="w-full">
-                        <button className={menuButton}>
+                        <span className={menuButton}>
                           <FacebookCircleIcon className={icon} /> Share on
                           facebook
-                        </button>
+                        </span>
                       </FacebookShareButton>
 
                       <TwitterShareButton url={shareUrl} className="w-full">
-                        <button className={menuButton}>
+                        <span className={menuButton}>
                           <TwitterSvg className={icon} /> Share on twitter
-                        </button>
+                        </span>
                       </TwitterShareButton>
                     </div>
                   </div>

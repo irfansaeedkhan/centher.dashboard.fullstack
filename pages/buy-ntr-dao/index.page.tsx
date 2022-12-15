@@ -11,12 +11,6 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
     <div
       className={`bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10`}
     >
-      <h1
-        className={`textGradient leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`}
-      >
-        Buy NTRDAO
-      </h1>
-
       <div className={`space-y-5`}>
         {roundsInfo.map((roundInfo) => (
           <div key={roundInfo.round} className={`space-y-5`}>

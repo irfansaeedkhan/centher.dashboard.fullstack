@@ -3,19 +3,21 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { useGetContributionInfo } from "@/web3/hooks/use.contracts.functions";
 import { ClaimNTRDAOFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
-import { RoundInfo } from "@/web3/constants/types";
+import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 
 import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 
 interface NTRDAOTableProps {
   roundInfo: RoundInfo;
+  contributionInfo: ContributionInfo;
 }
 
-export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
-  const { account, library } = useWeb3React();
-  const contributionInfo = useGetContributionInfo(account, roundInfo);
+export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
+  roundInfo,
+  contributionInfo,
+}) => {
+  const { library } = useWeb3React();
 
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
@@ -77,18 +79,11 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
     }));
   };
 
-  if (
-    !contributionInfo ||
-    (!contributionInfo.contributedBusdAmount &&
-      !contributionInfo.contributedNtrAmount)
-  )
-    return null;
-
   return (
     <div
       className={`overflow-x-auto border border-gray-shade-3 rounded-2xl mt-5`}
     >
-      <table className={`w-full`}>
+      <table className={`w-full min-w-[1024px]`}>
         <thead className={`text-sm text-left text-gray-shade-7 bg-elevation-1`}>
           <tr>
             <TableCell element={"th"}>Type</TableCell>
@@ -120,7 +115,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    `block px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForBusd &&
                       `bg-brand-primary text-black-shade-3`,
                     (!contributionInfo.isClaimableForBusd ||
@@ -163,7 +158,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({ roundInfo }) => {
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block max-w-[80px] px-4 py-2 rounded font-semibold text-sm`,
+                    `block w-24 px-4 py-2 rounded font-semibold text-sm`,
                     contributionInfo.isClaimableForNtr &&
                       `bg-brand-primary text-black-shade-3`,
                     (!contributionInfo.isClaimableForNtr ||

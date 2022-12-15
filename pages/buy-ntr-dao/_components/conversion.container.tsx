@@ -103,7 +103,7 @@ export const ConversionContainer: React.FC<Props> = ({
           <div className={inputBoxRight}>
             <div className={`flex-grow flex justify-center`}>
               <button
-                className={`cursor-pointer text-14px text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0`}
+                className={`cursor-pointer text-xs fmd:text-sm text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");
@@ -156,12 +156,12 @@ export const ConversionContainer: React.FC<Props> = ({
 };
 
 const conversionInputContainer = `space-y-3 w-full fmd:max-w-[656px] flg:max-w-[354px]`;
-const inputClasses = `inputClasses flex-grow w-4/5 focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 text-14px text-gray-shade-7 font-semibold`;
+const inputClasses = `inputClasses flex-grow w-4/5 focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 text-sm text-gray-shade-7 font-semibold`;
 
 const ConversionArrowLeft = () => {
   return (
     <div
-      className={`transform rotate-90 flg:rotate-0 cursor-pointer w-[70px] h-[70px] f2xl:w-[100px] f2xl:h-[100px] bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full`}
+      className={`transform rotate-90 flg:rotate-0 cursor-pointer w-16 h-16 fmd:w-20 fmd:h-20 f2xl:w-[100px] f2xl:h-[100px] bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full`}
     >
       <LeftArrowIcon />
     </div>

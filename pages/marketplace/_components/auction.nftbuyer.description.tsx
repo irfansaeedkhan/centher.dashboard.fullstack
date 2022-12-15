@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -48,11 +48,17 @@ export const AuctionNFTBuyerDescription = ({
   const [seconds, setSeconds] = useState<number>(0);
   const [bidPrice, setBidPrice] = useState<any>(null);
   const [bidPriceErr, setBidPriceErr] = useState(true);
+  const [nowTime, setNowTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
 
   const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
+      var endtime = new Date(data?.auctionInfo.endTime * 1000);
+      var now = new Date();
+      setNowTime(now);
+      setEndTime(endtime);
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
@@ -101,7 +107,79 @@ export const AuctionNFTBuyerDescription = ({
       setBidPriceErr(true);
     }
   };
-  const bidNFTModalFunc = () => {
+
+  const SuccessFunc = useCallback(
+    (txStatus: boolean) => {
+      setModalTitle("Complete Checkout");
+      setModalContent(
+        <div className={modalBodyWrapper1}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px text-white font-semibold">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
+            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+              Congratulations! You have successfully placed bid on{" "}
+              <span className="text-white">{data?.name}</span> NFT on Nether NFT
+              platform.
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+              Transaction Failed.
+            </p>
+          )}
+          <Button
+            title={"Ok"}
+            variant="v1"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+        </div>
+      );
+      setModal(true);
+    },
+    [data]
+  );
+  const onSubmit = useCallback(
+    async (bidPriceVal: any) => {
+      if (Number(bidPriceVal) <= formatEther2Number(price)) {
+        toast.error(
+          `Bid price must be greater than ${formatEther2Number(price)}.`
+        );
+        return;
+      }
+      if (bnbBalance < Number(bidPriceVal)) {
+        toast.error("Insufficient BNB Balance in your wallet.");
+        return;
+      }
+      setModal(false);
+      ProceedFunc();
+      if (library && data) {
+        const result = await callBidOnAuction(
+          library,
+          data.collection,
+          data.nftId,
+          bidPriceVal
+        );
+        SuccessFunc(result.success);
+      } else {
+        SuccessFunc(false);
+      }
+    },
+    [SuccessFunc, bnbBalance, data, library, price]
+  );
+  const bidNFTModalFunc = useCallback(() => {
     if (!library) {
       toast.error("Confirm your Wallet Connection.");
       return;
@@ -124,11 +202,11 @@ export const AuctionNFTBuyerDescription = ({
             <input
               type="text"
               onKeyPress={(event) => {
-                if (!/[0-9]/.test(event.key)) {
+                if (!/[0-9.]/.test(event.key)) {
                   event.preventDefault();
                 }
               }}
-              pattern="[0-9]*"
+              pattern="[0-9.]*"
               id="bidPrice"
               autoComplete="off"
               name="bidPrice"
@@ -160,7 +238,8 @@ export const AuctionNFTBuyerDescription = ({
         />
       </div>
     );
-  };
+  }, [bidPrice, bidPriceErr, library, onSubmit]);
+
   const ProceedFunc = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -172,108 +251,10 @@ export const AuctionNFTBuyerDescription = ({
         <p className="text-gray-shade-2 text-14px font-normal leading-6">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
   };
-  const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper1}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Congratulations! You have successfully bidded{" "}
-            <span className="text-white">{data?.name}</span> NFT on Nether NFT
-            platform.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Transaction Failed.
-          </p>
-        )}
-        {/* <Link href={{
-              pathname: AppRoutes.nfts.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
-        {/* <div className={footerBtnContainer}> */}
-        <Button
-          title={"Ok"}
-          variant="v1"
-          className="py-4"
-          onClick={() => {
-            setModal(false);
-            setModalTitle("");
-            setModalContent(null);
-          }}
-        />
-        {/* </Link> */}
-        {/* </div> */}
-      </div>
-    );
-    setModal(true);
-  };
-  const onSubmit = async (bidPriceVal: any) => {
-    if (Number(bidPriceVal) <= formatEther2Number(price)) {
-      toast.error(
-        `Bid price must be greater than ${formatEther2Number(price)}.`
-      );
-      return;
-    }
-    if (bnbBalance < Number(bidPriceVal)) {
-      toast.error("Insufficient BNB Balance in your wallet.");
-      return;
-    }
-    setModal(false);
-    ProceedFunc();
-    if (library && data) {
-      const result = await callBidOnAuction(
-        library,
-        data.collection,
-        data.nftId,
-        bidPriceVal
-      );
-      SuccessFunc(result.success);
-    } else {
-      SuccessFunc(false);
-    }
-  };
-  console.log("bidPrice:::", bidPrice);
-  console.log("bidPriceErr:::", bidPriceErr);
-
-  useEffect(() => {
-    bidNFTModalFunc();
-  }, [bidPriceErr]);
 
   return (
     <div className={nftDescriptionContainer}>
@@ -331,22 +312,24 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       </div>
       <div className="buttonContainer flex items-center">
-        <Button
-          title={"Place bid"}
-          variant={end ? "v2" : "v1"}
-          disabled={end}
-          className="py-4"
-          onClick={() => {
-            if (!library) {
-              toast.error("Confirm your Wallet Connection.");
-              return;
-            }
-            if (library) {
-              bidNFTModalFunc();
-              setModal(true);
-            }
-          }}
-        />
+        {nowTime <= endTime && (
+          <Button
+            title={"Place bid"}
+            variant={end ? "v2" : "v1"}
+            disabled={end}
+            className="py-4"
+            onClick={() => {
+              if (!library) {
+                toast.error("Confirm your Wallet Connection.");
+                return;
+              }
+              if (library) {
+                bidNFTModalFunc();
+                setModal(true);
+              }
+            }}
+          />
+        )}
       </div>
 
       {Modal && (

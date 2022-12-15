@@ -60,7 +60,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
 
   return (
     <div>
-      <div className="mb-4 text-14px text-brand-primary font-semibold text-center">
+      <div className="mb-4 text-xs fsm:text-sm text-brand-primary text-center font-semibold">
         {roundInfo.status === "not-started" && (
           <>Presale for round {roundInfo.round + 1} starts in</>
         )}
@@ -72,40 +72,32 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
         )}
       </div>
 
-      <div className="timer flex items-center gap-8 justify-center">
-        <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
-            <h1 className="text-black-shade-3 font-semibold text-34px">
-              {days}
-            </h1>
-          </div>
-          <p className="text-14px font-semibold text-gray-shade-7 ">Days</p>
-        </div>
-        <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
-            <h1 className="text-black-shade-3 font-semibold text-34px">
-              {hours}
-            </h1>
-          </div>
-          <p className="text-14px font-semibold text-gray-shade-7 ">Hours</p>
-        </div>
-        <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
-            <h1 className="text-black-shade-3 font-semibold text-34px">
-              {minutes}
-            </h1>
-          </div>
-          <p className="text-14px font-semibold text-gray-shade-7 ">Minutes</p>
-        </div>
-        <div className="box flex flex-col gap-2 items-center ">
-          <div className="date bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-[60px] h-[60px] flex items-center justify-center">
-            <h1 className="text-black-shade-3 font-semibold text-34px">
-              {seconds}
-            </h1>
-          </div>
-          <p className="text-14px font-semibold text-gray-shade-7 ">Seconds</p>
-        </div>
+      <div className="timer flex items-center gap-5 fsm:gap-8 justify-center">
+        <SingleUnitBox value={days} unit="Days" />
+        <SingleUnitBox value={hours} unit="Hours" />
+        <SingleUnitBox value={minutes} unit="Minutes" />
+        <SingleUnitBox value={seconds} unit="Seconds" />
       </div>
+    </div>
+  );
+};
+
+interface SingleUnitBoxProps {
+  value: number;
+  unit: string;
+}
+
+const SingleUnitBox: React.FC<SingleUnitBoxProps> = ({ value, unit }) => {
+  return (
+    <div className={"box flex flex-col gap-2 items-center"}>
+      <div className="bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-12 h-12 fsm:w-16 fsm:h-16 flg:w-20 flg:h-20 flex items-center justify-center">
+        <h1 className="text-xl fsm:text-2xl flg:text-[34px] text-black-shade-3 font-semibold">
+          {value}
+        </h1>
+      </div>
+      <p className="text-[10px] fsm:text-sm font-semibold text-gray-shade-7 ">
+        {unit}
+      </p>
     </div>
   );
 };
