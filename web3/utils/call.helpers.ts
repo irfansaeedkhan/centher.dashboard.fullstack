@@ -7,6 +7,7 @@ import {
   getBusdContract,
   getMarketplaceContract,
   getNTRContract,
+  getNtrdaoContract,
   getPresaleContract,
   getStandardNFTContract,
 } from "./contract.helpers";
@@ -25,6 +26,8 @@ export const getTokenContract = (
     return getBusdContract(library);
   } else if (tokenName === "NTR") {
     return getNTRContract(library);
+  } else if (tokenName === "NTRDAO") {
+    return getNtrdaoContract(library);
   }
 };
 

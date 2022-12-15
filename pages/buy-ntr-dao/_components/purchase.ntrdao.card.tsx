@@ -47,6 +47,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
   const [selectedTokenB, setSelectedTokenB] = useState<SelectedTokenB>({
     tokenName: "NTRDAO",
     tokenIcon: <NTRDAOIconBG className="w-10 h-10" />,
+    tokenBalance: 0,
     inputValue: roundInfo.minContributionForBusd * roundInfo.rateForBusd,
   });
 
@@ -66,22 +67,35 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
     onClickConfirm: () => {},
   });
 
-  // Get selected token balance
+  // Get selectedTokenA balance
   useEffect(() => {
     if (!account || !library) return;
     const getSelectedTokenBalance = async () => {
-      const tokenBalance = await getTokenBalance(
-        selectedTokenA.tokenName,
-        account,
-        library
+      getTokenBalance(selectedTokenA.tokenName, 18, account, library).then(
+        (tokenBalanace) =>
+          setSelectedTokenA((prev) => ({
+            ...prev,
+            tokenBalance: tokenBalanace,
+          }))
       );
-      setSelectedTokenA((prev) => ({
-        ...prev,
-        tokenBalance: tokenBalance,
-      }));
     };
     getSelectedTokenBalance();
-  }, [account, selectedTokenA, library]);
+  }, [account, selectedTokenA.tokenName, library]);
+
+  // Get selectedTokenB balance
+  useEffect(() => {
+    if (!account || !library) return;
+    const getSelectedTokenBalance = async () => {
+      getTokenBalance(selectedTokenB.tokenName, 6, account, library).then(
+        (tokenBalanace) =>
+          setSelectedTokenB((prev) => ({
+            ...prev,
+            tokenBalance: tokenBalanace,
+          }))
+      );
+    };
+    getSelectedTokenBalance();
+  }, [account, selectedTokenB.tokenName, library]);
 
   // Get selected token allowance
   useEffect(() => {

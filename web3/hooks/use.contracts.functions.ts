@@ -257,6 +257,7 @@ const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
 
 export const getTokenBalance = async (
   tokenName: TokenName,
+  tokenDecimals: number,
   account: string,
   library: Web3Provider
 ) => {
@@ -264,7 +265,10 @@ export const getTokenBalance = async (
   if (!tokenContract) return 0;
 
   const balance = Number(
-    ethers.utils.formatUnits(await tokenContract.balanceOf(account))
+    ethers.utils.formatUnits(
+      await tokenContract.balanceOf(account),
+      tokenDecimals
+    )
   );
   return balance;
 };
