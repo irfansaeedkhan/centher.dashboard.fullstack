@@ -9,7 +9,7 @@ import clsx from "clsx";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
-  pageTitle: string;
+  pageTitle?: string;
 }
 
 export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
