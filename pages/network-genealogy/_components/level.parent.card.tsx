@@ -36,14 +36,19 @@ export const LevelParentCard = ({ parentData }: any) => {
       <div className="flex justify-between gap-2 p-3 pb-4 border-t-2 border-gray-shade-3 bg-background-shade-2">
         <div className="flex flex-col gap-2">
           <h5 className="text-gray-shade-19 text-12px font-medium">People</h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">118</h6>
+          <h6 className="text-white-shade-1 text-14px font-semibold">
+            {parentData?.people}
+          </h6>
         </div>
         <div className="flex flex-col items-end gap-2">
           <h5 className="text-gray-shade-19 text-12px font-medium">
             Generated
           </h5>
           <h6 className="text-white-shade-1 text-14px font-semibold">
-            $37,459
+            {`${parentData?.generatedBUSD} BUSD`}
+          </h6>
+          <h6 className="text-white-shade-1 text-14px font-semibold">
+            {`${parentData?.generatedNTR} NTR`}
           </h6>
         </div>
       </div>

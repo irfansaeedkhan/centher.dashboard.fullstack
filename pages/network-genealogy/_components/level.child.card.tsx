@@ -1,3 +1,4 @@
+import { formatAddress } from "@/utils/format.address";
 import Image from "next/image";
 import React, { useState } from "react";
 
@@ -24,7 +25,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         />
         <div className="flex flex-col gap-2">
           <h5 className="dark text-white text-12px font-medium">
-            {childData?.name}
+            {formatAddress(childData?.address)}
           </h5>
           <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {childData?.level}
@@ -41,7 +42,10 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
             Generated
           </h5>
           <h6 className="dark text-white-shade-1 text-14px font-semibold">
-            $38,28
+            {`${childData?.generatedBUSD} BUSD`}
+          </h6>
+          <h6 className="dark text-white-shade-1 text-14px font-semibold">
+            {`${childData?.generatedNTR} NTR`}
           </h6>
         </div>
         <div className="flex flex-col items-end gap-2">
@@ -49,7 +53,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
             Line
           </h5>
           <h6 className="dark text-white-shade-1 text-14px font-semibold">
-            88 People
+            {`${childData?.people} People`}
           </h6>
         </div>
       </div>

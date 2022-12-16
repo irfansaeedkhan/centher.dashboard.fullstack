@@ -36,3 +36,5 @@ export const FEE = {
   level5: 0.7,
   level6: 0.7,
 };
+
+export const percent = [6, 4, 2, 2, 2, 2];

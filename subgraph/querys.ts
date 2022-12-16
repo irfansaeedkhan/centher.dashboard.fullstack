@@ -319,3 +319,30 @@ export const topCreators = `
     }
   }
 `;
+
+export const genealogyBaseDataQuery = `
+  query MyQuery($publicKey: Bytes!) {
+    users(where: {publicKey: $publicKey}) {
+      userInfo {
+        people
+        earningNTRFromInICO
+        earningFromInMarketplace
+        earningBUSDFromInICO
+      }
+    }
+  }
+`;
+
+export const referrerQuery = `
+  query MyQuery($referrer: Bytes!) {
+    users(where: {referrer: $referrer}) {
+      userInfo {
+        people
+        earningNTRFromInICO
+        earningFromInMarketplace
+        earningBUSDFromInICO
+      }
+      publicKey
+    }
+  }
+`;
