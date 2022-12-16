@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const NetherNativeCollection = {
   id: "1",
-  name: "Nether Native NFT",
+  name: "CENTHER Native NFT",
   collection: "0xc38ca0fe4910dc2bf5ecb2470a899321c62883e6",
 };
 

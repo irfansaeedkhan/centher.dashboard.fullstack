@@ -32,7 +32,7 @@ Login.getLayout = (page) => {
           <Link href={AppRoutes.home}>
             <Image
               src="/images/nether.nft.logo.svg"
-              alt="Nether NFT Logo"
+              alt="CENTHER NFT Logo"
               width={154}
               height={32}
             />

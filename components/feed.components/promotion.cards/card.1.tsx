@@ -17,7 +17,7 @@ export const PromotionCard1 = () => {
       />
       <div className="flex flex-col items-center justify-center mt-3 mb-[6px]">
         <h2 className="animationTextHeading !text-[21px] font-extrabold leading-[26px]">
-          NETHER DAO
+          CENTHER
         </h2>
         <h2 className="text-white !text-[21px] font-extrabold leading-[26px]">
           LAUNCHPAD
