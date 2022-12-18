@@ -36,6 +36,9 @@ export const Levels = () => {
 
   // handles the active parentCard and list shown
   const handleCard = async (childData: any) => {
+    const level = Number(childData.level);
+    if (updating === "loading") return;
+    if (level === 6) return;
     childData.level !== "06" &&
       setActiveParent((prev: any) => {
         if (prev.length > 0) {
@@ -44,7 +47,6 @@ export const Levels = () => {
           return [childData];
         }
       });
-    const level = Number(childData.level);
     fetchReferrers(childData.user, level + 1);
   };
 

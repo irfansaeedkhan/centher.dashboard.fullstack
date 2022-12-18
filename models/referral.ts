@@ -17,4 +17,5 @@ export interface GenealogyChild {
   generatedBUSD: number;
   generatedNTR: number;
   generatedBNB: number;
+  active: boolean;
 }

@@ -8,8 +8,6 @@ import { genealogyAtLevelQuery, genealogyQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Genealogy, GenealogyChild } from "@/models/referral";
 import { ethers } from "ethers";
-import { any } from "joi";
-import { getItem } from "localforage";
 
 export const referralPercent = [6, 4, 2, 2, 2, 2];
 
@@ -108,6 +106,23 @@ export const useGenealogyStore = create<GenealogyStore>()(
             for (let i = level - 1; i < 6; i++) {
               _genealogies[i].children = [];
             }
+            // console.log("sniper: _genealogies[i].children: ", _genealogies[level-2].children)
+            if (level > 1 && level <= 6) {
+              for (
+                let i = 0;
+                i < _genealogies[level - 2].children.length;
+                i++
+              ) {
+                _genealogies[level - 2].children[i].active = false;
+                if (
+                  _genealogies[level - 2].children[
+                    i
+                  ].user.toLocaleLowerCase() === account?.toLocaleLowerCase()
+                ) {
+                  _genealogies[level - 2].children[i].active = true;
+                }
+              }
+            }
           }
           const {
             data: result,
@@ -142,6 +157,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
                   generatedBNB: Number(
                     ethers.utils.formatEther(item.user.generatedBNB[level - 1])
                   ),
+                  active: false,
                 };
               });
               if (_children && _children.length > 0) {
