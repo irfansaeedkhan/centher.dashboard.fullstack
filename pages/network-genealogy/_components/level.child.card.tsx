@@ -25,7 +25,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         />
         <div className="flex flex-col gap-2">
           <h5 className="dark text-white text-12px font-medium">
-            {formatAddress(childData?.address)}
+            {formatAddress(childData?.user)}
           </h5>
           <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {childData?.level}

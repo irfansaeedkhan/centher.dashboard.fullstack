@@ -1,4 +1,4 @@
-import { referrerQuery } from "@/subgraph/querys";
+import { genealogyAtLevelQuery, referrerQuery } from "@/subgraph/querys";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { ethers } from "ethers";
 import { percent } from "../constants/common";
@@ -12,37 +12,31 @@ export const getReferrers = async (
     cache: new InMemoryCache(),
   });
   const { data: result } = await client.query({
-    query: gql(referrerQuery),
+    query: gql(genealogyAtLevelQuery),
     variables: {
       referrer: account,
+      level: Number(level),
     },
     fetchPolicy: "cache-first",
   });
 
-  if (result.users && result.users.length > 0) {
-    const _genealogyBaseData = result.users.map((item: any, index: number) => {
-      const people = item.userInfo[0].people;
-      const generatedBUSD = item.userInfo
-        .map((item2: any) => item2.earningBUSDFromInICO)
-        .reduce(
-          (pre: any, next: any) =>
-            Number(pre) + Number(ethers.utils.formatEther(next))
+  if (result.genealogies && result.genealogies.length > 0) {
+    const _genealogyBaseData = result.genealogies.map(
+      (item: any, index: number) => {
+        const people = item.user.people.reduce(
+          (partialSum: any, a: any) => partialSum + a,
+          0
         );
-      const generatedNTR = item.userInfo
-        .map((item2: any) => item2.earningNTRFromInICO)
-        .reduce(
-          (pre: any, next: any) =>
-            Number(pre) + Number(ethers.utils.formatEther(next))
-        );
-      return {
-        id: index + 1,
-        address: item.publicKey,
-        level: level,
-        generatedBUSD: generatedBUSD,
-        generatedNTR: generatedNTR,
-        people: Number(people),
-      };
-    });
+        return {
+          id: index + 1,
+          address: item.user.publicKey,
+          level: level,
+          generatedBUSD: item.user.generatedBUSD[0],
+          generatedNTR: item.user.generatedNTR[0],
+          people: people,
+        };
+      }
+    );
     return _genealogyBaseData;
   }
   return [];

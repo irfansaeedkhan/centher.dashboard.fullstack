@@ -346,3 +346,35 @@ export const referrerQuery = `
     }
   }
 `;
+
+export const genealogyQuery = `
+  query MyQuery($referrer: Bytes) {
+    genealogies(where: {referrer: $referrer}) {
+      user {
+        generatedBUSD
+        generatedNTR
+        publicKey
+        people
+        generatedBNB
+      }
+      createdAt
+      level
+    }
+  }
+`;
+
+export const genealogyAtLevelQuery = `
+  query MyQuery($level: Int, $referrer: Bytes) {
+    genealogies(where: {level: $level, referrer: $referrer}) {
+      user {
+        generatedBUSD
+        generatedNTR
+        generatedBNB
+        publicKey
+        people
+      }
+      createdAt
+      level
+    }
+  }
+`;
