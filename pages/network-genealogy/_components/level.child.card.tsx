@@ -3,15 +3,15 @@ import Image from "next/image";
 import React, { useState } from "react";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
-  const [activeCard, setActiveCard] = useState(false);
+  // const [activeCard, setActiveCard] = useState(false);
   return (
     <div
       className={`bg-background-shade-3 rounded-t-lg w-full relative ${
-        activeCard && "activeLevelCard"
+        childData.active && "activeLevelCard"
       }`}
       onClick={() => {
         handleCard(childData);
-        childData.level !== "06" && setActiveCard(true);
+        // childData.level !== "06" && setActiveCard(true);
       }}
     >
       <div className="flex items-center py-4 px-3 gap-3 ">
@@ -25,7 +25,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         />
         <div className="flex flex-col gap-2">
           <h5 className="dark text-white text-12px font-medium">
-            {formatAddress(childData?.address)}
+            {formatAddress(childData?.user)}
           </h5>
           <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {childData?.level}
@@ -34,7 +34,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
       </div>
       <div
         className={`flex justify-between gap-2 p-3 border-t border-gray-shade-3 ${
-          activeCard && "border-gray-shade-12/10"
+          childData.active && "border-gray-shade-12/10"
         }`}
       >
         <div className="flex flex-col gap-2">
@@ -57,7 +57,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
           </h6>
         </div>
       </div>
-      {activeCard && (
+      {childData.active && (
         <svg
           className="absolute top-[50%] translate-y-[-50%] -right-[10px] "
           width="10"

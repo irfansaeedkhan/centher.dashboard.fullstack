@@ -6,11 +6,11 @@ export const LevelMain = ({ parentData, handleCard }: any) => {
   return (
     <div className="w-full flex flex-col gap-1">
       <LevelParentCard parentData={parentData} />
-      {parentData?.children?.map((childData: any) => {
+      {parentData?.children?.map((childData: any, index: number) => {
         return (
           <LevelChildCard
             childData={childData}
-            key={childData?.id}
+            key={index}
             handleCard={handleCard}
           />
         );
