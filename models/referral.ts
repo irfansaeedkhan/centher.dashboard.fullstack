@@ -19,3 +19,19 @@ export interface GenealogyChild {
   generatedBNB: number;
   active: boolean;
 }
+
+export interface ReferralRewardInLaunchpad {
+  id: string;
+  createdAt: number;
+  user: string;
+  level: number;
+  round: number;
+  isBusd: boolean;
+  amount: number;
+}
+
+export interface RewardsEachAsset {
+  busd: number;
+  ntr: number;
+  bnb: number;
+}

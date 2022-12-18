@@ -23,11 +23,11 @@ export const Levels = () => {
       loading: state.loading,
       updating: state.updating,
     }));
-  console.log("sniper: genealogies: ", genealogies);
+
   useEffect(() => {
     const fetchGeealogyBaseData = async (account: string) => {
       await fetchGenealogy(account);
-      await fetchReferrers(account, 1);
+      await fetchReferrers(account, 0);
     };
     if (loggedInUser?.account_address) {
       fetchGeealogyBaseData(loggedInUser?.account_address);
@@ -47,7 +47,7 @@ export const Levels = () => {
           return [childData];
         }
       });
-    fetchReferrers(childData.user, level + 1);
+    fetchReferrers(childData.user, level);
   };
 
   // handle the backbutton - previous active parent - level to show

@@ -103,23 +103,22 @@ export const useGenealogyStore = create<GenealogyStore>()(
           let _children: GenealogyChild[];
           let _genealogies: Genealogy[] | null = get().genealogies;
           if (_genealogies) {
-            for (let i = level - 1; i < 6; i++) {
+            for (let i = level; i < 6; i++) {
               _genealogies[i].children = [];
             }
-            // console.log("sniper: _genealogies[i].children: ", _genealogies[level-2].children)
-            if (level > 1 && level <= 6) {
+            if (level > 0 && level < 6) {
               for (
                 let i = 0;
-                i < _genealogies[level - 2].children.length;
+                i < _genealogies[level - 1].children.length;
                 i++
               ) {
-                _genealogies[level - 2].children[i].active = false;
+                _genealogies[level - 1].children[i].active = false;
                 if (
-                  _genealogies[level - 2].children[
+                  _genealogies[level - 1].children[
                     i
                   ].user.toLocaleLowerCase() === account?.toLocaleLowerCase()
                 ) {
-                  _genealogies[level - 2].children[i].active = true;
+                  _genealogies[level - 1].children[i].active = true;
                 }
               }
             }
@@ -144,18 +143,18 @@ export const useGenealogyStore = create<GenealogyStore>()(
                   0
                 );
                 return {
-                  id: level,
-                  level: `0${level}`,
+                  id: level + 1,
+                  level: `0${level + 1}`,
                   user: item.user.publicKey,
                   people: people,
                   generatedBUSD: Number(
-                    ethers.utils.formatEther(item.user.generatedBUSD[level - 1])
+                    ethers.utils.formatEther(item.user.generatedBUSD[level])
                   ),
                   generatedNTR: Number(
-                    ethers.utils.formatEther(item.user.generatedNTR[level - 1])
+                    ethers.utils.formatEther(item.user.generatedNTR[level])
                   ),
                   generatedBNB: Number(
-                    ethers.utils.formatEther(item.user.generatedBNB[level - 1])
+                    ethers.utils.formatEther(item.user.generatedBNB[level])
                   ),
                   active: false,
                 };
@@ -163,16 +162,16 @@ export const useGenealogyStore = create<GenealogyStore>()(
               if (_children && _children.length > 0) {
                 if (_genealogies) {
                   _genealogies = _genealogies.slice();
-                  _genealogies[level - 1].children = _children;
-
-                  set((state) => {
-                    return {
-                      genealogies: _genealogies,
-                      updating: "loaded",
-                    };
-                  });
+                  _genealogies[level].children = _children;
                 }
               }
+
+              set((state) => {
+                return {
+                  genealogies: _genealogies,
+                  updating: "loaded",
+                };
+              });
             }
           }
         } catch (error) {

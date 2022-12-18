@@ -378,3 +378,24 @@ export const genealogyAtLevelQuery = `
     }
   }
 `;
+
+export const referralRewardsInPresaleQuery = `
+  query MyQuery($referrer: Bytes, $skip: Int, $first: Int) {
+    presaleGenealogyHistories(
+      where: {referrer: $referrer}
+      orderDirection: desc
+      orderBy: createdAt
+      skip: $skip
+      first: $first
+    ) {
+      user
+      round
+      referrer
+      level
+      isBusd
+      id
+      createdAt
+      amount
+    }
+  }
+`;
