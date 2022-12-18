@@ -29,6 +29,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
       rewardsEachLevel: [],
       rewardsTotal: { busd: 0, ntr: 0, bnb: 0 },
       limit: 1000,
+      offset: 0,
       loading: "idle",
 
       updateOffset: () =>
