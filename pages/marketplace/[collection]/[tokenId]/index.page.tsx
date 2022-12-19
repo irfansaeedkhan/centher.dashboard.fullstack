@@ -9,6 +9,7 @@ import { ArrowLeftSimpleIcon } from "@/assets/svgs";
 import { useRouter } from "next/router";
 import { INFTDetailData, useGetNftData } from "@/hooks/use.get.nft.data.ts";
 import { useState } from "react";
+import Head from "next/head";
 
 const NFT: NextPageWithLayout = () => {
   const [reload, setReload] = useState(false);
@@ -22,35 +23,40 @@ const NFT: NextPageWithLayout = () => {
     reload
   );
 
-  console.log("NFT DATA", data?.image);
+  console.log("NFT DATA", data);
 
   return (
-    <div className="w-full pb-16">
-      <button className={backBtn} onClick={() => router.back()}>
-        <ArrowLeftSimpleIcon />
-      </button>
-      <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
-        <NFTLeftSideComponent
-          image={data?.image}
-          type={data?.type}
-          nftId={data?.nftId}
-          mintTx={data?.mintTx}
-          collection={data?.collection}
-          attributes={data?.attributes}
-        />
-        <NFTRightSideComponent
-          data={data}
-          reload={reload}
-          setReload={setReload}
-        />
+    <>
+      <Head>
+        <title>{data?.name}</title>
+      </Head>
+      <div className="w-full pb-16">
+        <button className={backBtn} onClick={() => router.back()}>
+          <ArrowLeftSimpleIcon />
+        </button>
+        <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
+          <NFTLeftSideComponent
+            image={data?.image}
+            type={data?.type}
+            nftId={data?.nftId}
+            mintTx={data?.mintTx}
+            collection={data?.collection}
+            attributes={data?.attributes}
+          />
+          <NFTRightSideComponent
+            data={data}
+            reload={reload}
+            setReload={setReload}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
 NFT.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="View NFT">
+    <AllPagesWrapper>
       <div className={dashboardContentContainer}>
         <div className={feedContainer}>{page}</div>
       </div>

@@ -104,23 +104,98 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "userAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "sponsorAddresses",
+        "name": "referrer",
         "type": "address"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "tokenAmount",
+        "name": "amount",
         "type": "uint256"
       }
     ],
-    "name": "ReferralBonus",
+    "name": "RefRewardClaimBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RefRewardClaimNTR",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "refererAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "round",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRefRewardBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "refererAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "round",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRefRewardNTR",
     "type": "event"
   },
   {
@@ -208,6 +283,47 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "busdAmountForCoreTeam",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "busdAmountForOwner",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "centher",
+    "outputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeCentherAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeCoreTeamAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
@@ -220,16 +336,21 @@
     "inputs": [
       { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
-    "name": "changeNtrdaoAddress",
+    "name": "changeRegisterAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "_newAddress", "type": "address" }
-    ],
-    "name": "changeRegisterAddress",
+    "inputs": [],
+    "name": "claimRefRewardBUSD",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimRefRewardNTR",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -246,6 +367,13 @@
     "name": "claimTokensFromNtr",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "coreTeamAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -318,7 +446,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct NTRDAOPresale.ContributionInfo",
+        "internalType": "struct CentherPresale.ContributionInfo",
         "name": "",
         "type": "tuple"
       }
@@ -335,10 +463,11 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_ntrdao", "type": "address" },
+      { "internalType": "address", "name": "_centher", "type": "address" },
       { "internalType": "address", "name": "_ntr", "type": "address" },
       { "internalType": "address", "name": "_busd", "type": "address" },
-      { "internalType": "address", "name": "_register", "type": "address" }
+      { "internalType": "address", "name": "_register", "type": "address" },
+      { "internalType": "address", "name": "_coreTeam", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -356,17 +485,15 @@
   },
   {
     "inputs": [],
-    "name": "ntrdao",
-    "outputs": [
-      { "internalType": "contract IERC20", "name": "", "type": "address" }
-    ],
+    "name": "ntrAmountForCoreTeam",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "ntrdaoDecimal",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "name": "ntrAmountForOwner",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -374,6 +501,27 @@
     "inputs": [],
     "name": "owner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rateForCoreTeam",
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "refRewardByBUSD",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "refRewardByNTR",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -444,6 +592,13 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_rate", "type": "uint8" }],
+    "name": "setRateForCoreTeam",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -525,7 +680,14 @@
   },
   {
     "inputs": [],
-    "name": "withdrawNTRDAO",
+    "name": "withdrawBusdForCoreTeam",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawCenther",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -533,6 +695,13 @@
   {
     "inputs": [],
     "name": "withdrawNtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawNtrForCoreTeam",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

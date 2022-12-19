@@ -592,7 +592,7 @@
     "name": "_nftInfoForAuction",
     "outputs": [
       {
-        "internalType": "enum NetherMarketplace.AuctionState",
+        "internalType": "enum CentherMarketplace.AuctionState",
         "name": "state",
         "type": "uint8"
       },
@@ -830,7 +830,7 @@
       {
         "components": [
           {
-            "internalType": "enum NetherMarketplace.AuctionState",
+            "internalType": "enum CentherMarketplace.AuctionState",
             "name": "state",
             "type": "uint8"
           },
@@ -852,7 +852,7 @@
           },
           { "internalType": "address", "name": "seller", "type": "address" }
         ],
-        "internalType": "struct NetherMarketplace.AuctionInfo",
+        "internalType": "struct CentherMarketplace.AuctionInfo",
         "name": "",
         "type": "tuple"
       }
@@ -874,7 +874,7 @@
             "type": "address"
           }
         ],
-        "internalType": "struct NetherMarketplace.CollectionInfo",
+        "internalType": "struct CentherMarketplace.CollectionInfo",
         "name": "",
         "type": "tuple"
       }
@@ -894,7 +894,7 @@
           { "internalType": "address", "name": "seller", "type": "address" },
           { "internalType": "uint256", "name": "price", "type": "uint256" }
         ],
-        "internalType": "struct NetherMarketplace.SaleInfo",
+        "internalType": "struct CentherMarketplace.SaleInfo",
         "name": "",
         "type": "tuple"
       }

@@ -16,6 +16,7 @@ export interface SelectedTokenA {
 export interface SelectedTokenB {
   tokenName: TokenName;
   tokenIcon: React.ReactNode;
+  tokenBalance: number;
 
   inputValue: number;
 }

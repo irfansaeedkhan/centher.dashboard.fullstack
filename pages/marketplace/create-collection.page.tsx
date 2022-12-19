@@ -29,6 +29,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [loadingState, setLoadingState] = useState(false);
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
+  const [ModalDisable, setModalDisable] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
@@ -76,6 +77,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   };
   const buyNFTStep2Func = () => {
     setModalTitle("Complete Checkout");
+    setModalDisable("yes");
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -108,6 +110,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
     setClearForm(false);
     setModalTitle("Complete Checkout");
+    setModalDisable("");
     setModalContent(
       <div className={modalBodyWrapper}>
         <Image
@@ -141,6 +144,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             onClick={() => {
               setModal(false);
               setModalTitle("");
+              setModalDisable("");
               setModalContent(null);
               setClearForm(true);
             }}
@@ -311,6 +315,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             setModal(false);
           }}
           title={ModalTitle}
+          disable={ModalDisable}
         >
           {ModalContent}
         </CustomModal>

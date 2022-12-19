@@ -42,7 +42,7 @@ export const NFTHistory = ({ prices }: any) => {
   const [priceAverage, setPriceAverage] = useState<number>();
   const [priceVolume, setPriceVolume] = useState<number>();
   const [showModal, setShowModal] = useState(false);
-  const [tableDataArray, setTableDataArray] = useState<any>();
+  const [tableDataArray, setTableDataArray] = useState<any[]>([]);
 
   const closePostModal = () => {
     setShowModal(false);
@@ -235,14 +235,16 @@ export const NFTHistory = ({ prices }: any) => {
               </div>
 
               <div className="w-full flex justify-end p-3">
-                <button
-                  onClick={() => {
-                    setShowModal(true);
-                  }}
-                  className="w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
-                >
-                  Details
-                </button>
+                {tableDataArray.length > 0 && (
+                  <button
+                    onClick={() => {
+                      setShowModal(true);
+                    }}
+                    className="w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
+                  >
+                    Details
+                  </button>
+                )}
               </div>
             </div>
           </div>

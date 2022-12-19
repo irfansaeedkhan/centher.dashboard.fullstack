@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   const sessionId = request.cookies.get("sid");
 
   if (checkMatch(request.nextUrl, onlyPublicPages)) {
-    const user = await getSessionUser(sessionId);
+    const user = await getSessionUser(sessionId?.value);
     if (user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.feed.index}`
@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (checkMatch(request.nextUrl, authenticatedUserPages)) {
-    const user = await getSessionUser(sessionId);
+    const user = await getSessionUser(sessionId?.value);
     if (!user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.auth.login}`

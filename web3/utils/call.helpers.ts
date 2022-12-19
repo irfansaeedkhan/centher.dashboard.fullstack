@@ -7,6 +7,7 @@ import {
   getBusdContract,
   getMarketplaceContract,
   getNTRContract,
+  getNtrdaoContract,
   getPresaleContract,
   getStandardNFTContract,
 } from "./contract.helpers";
@@ -25,6 +26,8 @@ export const getTokenContract = (
     return getBusdContract(library);
   } else if (tokenName === "NTR") {
     return getNTRContract(library);
+  } else if (tokenName === "NTRDAO") {
+    return getNtrdaoContract(library);
   }
 };
 
@@ -33,8 +36,6 @@ export const getTokenApproval = async (
   library: Web3Provider
 ) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleAddress = getPresaleAddress();
 
     const tokenContract = getTokenContract(tokenName, library.getSigner());
@@ -44,21 +45,12 @@ export const getTokenApproval = async (
 
     const amount = ethers.utils.parseUnits(MAX_SUPPLY.toString());
 
-    const { hash: approveHash } = await tokenContract.functions.approve(
-      presaleAddress,
-      amount
-    );
-    while (loop) {
-      tx = await library.getTransactionReceipt(approveHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
-    }
+    const tx = await tokenContract.functions.approve(presaleAddress, amount);
+    await tx.wait();
+
     return {
       success: true,
-      hash: approveHash,
+      hash: tx.hash,
     };
   } catch (error: any) {
     console.log("[Busd Approve Error] = ", error);
@@ -75,8 +67,6 @@ export const buyNtrDao = async (
   library: Web3Provider
 ) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
     const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
 
@@ -92,19 +82,12 @@ export const buyNtrDao = async (
       throw new Error("Token cannot be purchased");
     }
 
-    const { hash: purchasedHash } = await tokenPurchase(purchaseAmount);
+    const tx = await tokenPurchase(purchaseAmount);
+    await tx.wait();
 
-    while (loop) {
-      tx = await library.getTransactionReceipt(purchasedHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
-    }
     return {
       success: true,
-      hash: purchasedHash,
+      hash: tx.hash,
     };
   } catch (error: any) {
     customLog("[Buy token Error] = ", ["development"]);
@@ -125,8 +108,6 @@ export const claimNtrTokens = async (
   claimFrom: ClaimNTRDAOFrom
 ) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
 
     let claimFunction;
@@ -138,21 +119,56 @@ export const claimNtrTokens = async (
       throw new Error("Can not claim tokens");
     }
 
-    const { hash: purchasedHash } = await claimFunction(round);
-    while (loop) {
-      tx = await library.getTransactionReceipt(purchasedHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
-    }
+    const tx = await claimFunction(round);
+    await tx.wait();
     return {
       success: true,
-      hash: purchasedHash,
+      hash: tx.hash,
     };
   } catch (error: any) {
     console.log("[Claim token Error] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const callClaimBUSDForReferral = async (
+  library: Web3Provider,
+  account: string
+) => {
+  try {
+    const presale = getPresaleContract(library.getSigner());
+    const tx = await presale.functions.claimRefRewardBUSD(account);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Claim BUSD Error] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const callClaimNTRForReferral = async (
+  library: Web3Provider,
+  account: string
+) => {
+  try {
+    const presale = getPresaleContract(library.getSigner());
+    const tx = await presale.functions.claimRefRewardNTR(account);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Claim NTR Error] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),

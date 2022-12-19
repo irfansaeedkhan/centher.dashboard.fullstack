@@ -162,15 +162,27 @@ export const useGetContributionInfo = (
         )
       );
 
-      // If claimedTokenAmountForBusd is greater or equal to totalClaimableTokenAmountForBusd, then user has claimed all tokens
-      const hasClaimedAllForBusd = contributionInfoRes[
-        "claimedTokenAmountForBusd"
-      ].gte(contributionInfoRes["totalClaimableTokenAmountForBusd"]);
+      // Get Claimable Amount Now For BUSD
+      const claimableTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          await presaleContract.getClaimableTokenAmountFromBusd(
+            roundInfo.round,
+            account
+          ),
+          6
+        )
+      );
 
-      // If claimedTokenAmountForNtr is greater or equal to totalClaimableTokenAmountForNtr, then user has claimed all tokens
-      const hasClaimedAllForNtr = contributionInfoRes[
-        "claimedTokenAmountForNtr"
-      ].gte(contributionInfoRes["totalClaimableTokenAmountForNtr"]);
+      // Get Claimable Amount Now For NTR
+      const claimableTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          await presaleContract.getClaimableTokenAmountFromNtr(
+            roundInfo.round,
+            account
+          ),
+          6
+        )
+      );
 
       const _contributionInfo: ContributionInfo = {
         contributedBusdAmount: Number(
@@ -199,18 +211,18 @@ export const useGetContributionInfo = (
         claimedTokenAmountForNtr,
         totalClaimableTokenAmountForBusd,
         totalClaimableTokenAmountForNtr,
-        hasClaimedAllForBusd,
-        hasClaimedAllForNtr,
+        claimableTokenAmountForBusd,
+        claimableTokenAmountForNtr,
         // If lockMonths have passed since purchaseTimeForBusd, then user can claim tokens
         isClaimableForBusd:
-          !hasClaimedAllForBusd &&
+          claimableTokenAmountForBusd > 0 &&
           isClaimable(
             contributionInfoRes["purchaseTimeForBusd"],
             roundInfo.lockMonths
           ),
         // If lockMonths have passed since purchaseTimeForNtr, then user can claim tokens
         isClaimableForNtr:
-          !hasClaimedAllForNtr &&
+          claimableTokenAmountForNtr > 0 &&
           isClaimable(
             contributionInfoRes["purchaseTimeForNtr"],
             roundInfo.lockMonths
@@ -245,6 +257,7 @@ const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
 
 export const getTokenBalance = async (
   tokenName: TokenName,
+  tokenDecimals: number,
   account: string,
   library: Web3Provider
 ) => {
@@ -252,7 +265,10 @@ export const getTokenBalance = async (
   if (!tokenContract) return 0;
 
   const balance = Number(
-    ethers.utils.formatUnits(await tokenContract.balanceOf(account))
+    ethers.utils.formatUnits(
+      await tokenContract.balanceOf(account),
+      tokenDecimals
+    )
   );
   return balance;
 };
