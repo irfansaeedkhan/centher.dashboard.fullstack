@@ -24,9 +24,9 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
-    title: "Claim NTRDAO",
-    subtitle: `Do you want to claim NTRDAO?`,
-    bodyText: `Click the button below to claim NTRDAO.`,
+    title: "Claim CENTHER",
+    subtitle: `Do you want to claim CENTHER?`,
+    bodyText: `Click the button below to claim CENTHER.`,
     confirmButtonText: "Claim Now",
     onClose: () => {
       setModal((prev) => ({
@@ -46,8 +46,8 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
         setModal((prev) => ({
           ...prev,
           status: "success",
-          subtitle: `Successfully Claimed NTRDAO!`,
-          bodyText: `You calimed NTRDAO. Please check your balance.`,
+          subtitle: `Successfully Claimed CTHR!`,
+          bodyText: `You calimed CTHR. Please check your balance.`,
           onClickConfirm: () => {},
         }));
       } else {
@@ -73,9 +73,9 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
       ...prev,
       isOpen: true,
       status: "warning",
-      title: "Claim NTRDAO",
-      subtitle: `Do you want to claim NTRDAO?`,
-      bodyText: `Click the button below to claim NTRDAO.`,
+      title: "Claim CENTHER",
+      subtitle: `Do you want to claim CENTHER?`,
+      bodyText: `Click the button below to claim CTHR.`,
       confirmButtonText: "Claim Now",
       onClickConfirm: () => handleClaim(claimFrom),
     }));

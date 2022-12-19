@@ -20,18 +20,18 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
           <h1
             className={`text-base fsm:text-xl flg:text-2xl text-center flg:text-left text-white font-semibold pb-2.5`}
           >
-            Join with BUSD or NTR to Claim Your NTRDAO
+            Join with BUSD or NTR to Claim Your CTHR
           </h1>
           <div className="flex gap-x-2 justify-center flg:justify-start">
             <div
               className={`text-[10px] fsm:text-xs flg:text-sm text-white font-bold rounded-10px bg-white/20 backdrop-blur-lg py-1 px-2.5 border border-solid border-white/20`}
             >
-              1 BUSD = {roundInfo.rateForBusd} NTRDAO
+              1 BUSD = {roundInfo.rateForBusd} CTHR
             </div>
             <div
               className={`text-[10px] fsm:text-xs flg:text-sm text-white font-bold rounded-10px bg-white/20 backdrop-blur-lg py-1 px-2.5 border border-solid border-white/20`}
             >
-              1 NTR = {roundInfo.rateForNtr} NTRDAO
+              1 NTR = {roundInfo.rateForNtr} CTHR
             </div>
           </div>
         </div>

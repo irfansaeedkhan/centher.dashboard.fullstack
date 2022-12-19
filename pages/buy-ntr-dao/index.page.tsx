@@ -24,7 +24,7 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
 };
 
 BuyNTRDAOPage.getLayout = (page) => (
-  <AllPagesWrapper pageTitle="Buy NTRDAO">{page}</AllPagesWrapper>
+  <AllPagesWrapper pageTitle="Buy CENTHER">{page}</AllPagesWrapper>
 );
 
 export default BuyNTRDAOPage;

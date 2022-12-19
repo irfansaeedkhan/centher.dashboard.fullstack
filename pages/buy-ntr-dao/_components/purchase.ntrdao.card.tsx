@@ -47,7 +47,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
   });
 
   const [selectedTokenB, setSelectedTokenB] = useState<SelectedTokenB>({
-    tokenName: "NTRDAO",
+    tokenName: "CTHR",
     tokenIcon: <NTRDAOIconBG className="w-10 h-10" />,
     tokenBalance: 0,
     inputValue: roundInfo.minContributionForBusd * roundInfo.rateForBusd,
@@ -183,7 +183,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
       isOpen: true,
       status: "buy-ntr",
       title: "Buy Now",
-      subtitle: `Do you want to buy NTRDAO?`,
+      subtitle: `Do you want to buy CENTHER?`,
       bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
       confirmButtonText: "Buy Now",
       onClickConfirm: handleBuyNtrDao,
@@ -210,7 +210,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
         setModal((prev) => ({
           ...prev,
           subtitle: "Purchase Successful",
-          bodyText: `You have bought NTRDAO tokens. NTRDAO will be locked for ${roundInfo.lockMonths} months. You can claim when unlocked.`,
+          bodyText: `You have bought CENTHER tokens. CENTHER will be locked for ${roundInfo.lockMonths} months. You can claim when unlocked.`,
           status: "success",
         }));
       } else {
@@ -256,7 +256,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
           <h1
             className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
           >
-            Please Enter NTRDAO amount to you&apos;d like to purchase
+            Please Enter CENTHER amount to you&apos;d like to purchase
           </h1>
 
           <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">

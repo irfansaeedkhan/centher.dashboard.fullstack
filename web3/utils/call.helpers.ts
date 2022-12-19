@@ -16,7 +16,7 @@ import { delay, isEmpty } from "./utility";
 
 const MAX_SUPPLY = BigNumber.from("260000");
 
-export type TokenName = "BUSD" | "NTR" | "NTRDAO";
+export type TokenName = "BUSD" | "NTR" | "CTHR";
 
 export const getTokenContract = (
   tokenName: TokenName,
@@ -26,7 +26,7 @@ export const getTokenContract = (
     return getBusdContract(library);
   } else if (tokenName === "NTR") {
     return getNTRContract(library);
-  } else if (tokenName === "NTRDAO") {
+  } else if (tokenName === "CTHR") {
     return getNtrdaoContract(library);
   }
 };

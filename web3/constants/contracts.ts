@@ -1,6 +1,6 @@
 const contracts = {
   ntrdao: {
-    // NTRDAO Token Contract Address
+    // CENTHER Token Contract Address
     97: "0x790900431F3565C4f3840E3725d4AEF610A30Ae5",
     56: "0x5CF4890E08f50Dbc80A8A67FadbD5517922B2C37",
     5: "0x2b6526F243a5cF6fBe25a3a1C15aEBa94Cfb0Ff0",

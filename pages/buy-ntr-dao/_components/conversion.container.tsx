@@ -133,7 +133,7 @@ export const ConversionContainer: React.FC<Props> = ({
       <div className={conversionInputContainer}>
         <ConversionTokenBox
           tokenIcon={<NTRDAOIconBG className="w-10 h-10" />}
-          tokenName="NTRDAO"
+          tokenName="CTHR"
           tokenBalance={selectedTokenB.tokenBalance}
         />
 
