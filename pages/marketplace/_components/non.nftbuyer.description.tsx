@@ -113,7 +113,8 @@ export const NonNFTBuyerDescription = ({
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully placed bid on{" "}
-            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            <span className="text-white">{data?.name}</span> NFT on{" "}
+            <b>Centher</b>
             platform.
           </p>
         )}

@@ -32,8 +32,8 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
           <header className="flex items-center justify-between text-white">
             <h3 className="text-lg font-semibold">
               <Image
-                src="/images/nether.nft.logo.svg"
-                alt="Nether NFT Logo"
+                src="/images/centher.logo.png"
+                alt="Centher Logo"
                 width={154}
                 height={32}
               />
@@ -46,7 +46,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
           <main className="py-2 fmd:p-4">
             <div className="space-y-8 text-center mt-4">
               <h3 className="font-semibold text-2xl text-white">
-                Register or login to Nether NFT
+                Register or login to <b>Centher</b>
               </h3>
               <div>
                 <Link href={"/auth/login"}>

@@ -236,8 +236,8 @@ export const FixedPriceNFTDescription = ({
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully changed{" "}
-            <span className="text-white">{data?.name}</span> NFT price on Nether
-            NFT platform.
+            <span className="text-white">{data?.name}</span> NFT price on
+            <b>Centher</b> NFT platform.
           </p>
         )}
         {!txStatus && (

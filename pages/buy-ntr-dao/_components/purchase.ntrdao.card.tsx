@@ -55,8 +55,8 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
     isOpen: false,
     status: "warning",
     title: "Authorization Contract",
-    subtitle: `Allow Nether NFT to use your ${selectedTokenA.tokenName} token`,
-    bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Nether NFT contract.`,
+    subtitle: `Allow Centher to use your ${selectedTokenA.tokenName} token`,
+    bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Centher contract.`,
     confirmButtonText: "Authorize",
     onClose: () => {
       setModal((prev) => ({
@@ -130,8 +130,8 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
       isOpen: true,
       status: "warning",
       title: "Authorization Contract",
-      subtitle: `Allow Nether NFT to use your ${selectedTokenA.tokenName} token`,
-      bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Nether NFT contract.`,
+      subtitle: `Allow Centher to use your ${selectedTokenA.tokenName} token`,
+      bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Centher contract.`,
       confirmButtonText: "Authorize",
       onClickConfirm: handleClickAuthorize,
     }));
