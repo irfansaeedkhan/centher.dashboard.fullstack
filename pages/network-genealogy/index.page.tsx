@@ -11,7 +11,7 @@ const ReferralProgram: NextPageWithLayout = () => {
 
 ReferralProgram.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Referral Program - Nether NFT">
+    <AllPagesWrapper pageTitle="Referral Program - Centher">
       {page}
     </AllPagesWrapper>
   );

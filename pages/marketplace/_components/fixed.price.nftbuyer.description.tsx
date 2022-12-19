@@ -128,7 +128,8 @@ export const FixedPriceNFTBuyerDescription = ({
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
-            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            <span className="text-white">{data?.name}</span> NFT on{" "}
+            <b>Centher</b>
             platform.
           </p>
         )}

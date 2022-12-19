@@ -33,8 +33,8 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
             className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
           >
             <Image
-              src="/images/nether.nft.logo.svg"
-              alt="Nether NFT Logo"
+              src="/images/centher.logo.png"
+              alt="Centher Logo"
               width={154}
               height={32}
             />

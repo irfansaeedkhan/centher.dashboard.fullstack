@@ -326,7 +326,8 @@ export const NonNFTDescription = ({
         {txStatus && (
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully listed{" "}
-            <span className="text-white">{data?.name}</span> NFT on Nether NFT
+            <span className="text-white">{data?.name}</span> NFT on{" "}
+            <b>Centher</b>
             platform.
           </p>
         )}

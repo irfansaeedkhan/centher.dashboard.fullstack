@@ -31,8 +31,8 @@ Login.getLayout = (page) => {
         <div className="w-fit md:hidden flex mb-8">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/nether.nft.logo.svg"
-              alt="Nether NFT Logo"
+              src="/images/centher.logo.png"
+              alt="Centher Logo"
               width={154}
               height={32}
             />
@@ -60,5 +60,5 @@ export default Login;
 const signupLeftData = {
   title: "Connect wallet",
   content:
-    "Login to your account with Netheru to sell and buy NFTs on some easy steps.",
+    "Login to your account with Centher to sell and buy NFTs on some easy steps.",
 };

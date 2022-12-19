@@ -36,15 +36,15 @@ const Header = () => {
         className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
       >
         <Image
-          src="/images/nether.nft.logo.svg"
-          alt="Nether NFT Logo"
+          src="/images/centher.logo.png"
+          alt="Centher Logo"
           width={154}
           height={32}
           className="md:block hidden"
         />
         <Image
-          src="/images/nether.nft.favicon.svg"
-          alt="Nether NFT Logo"
+          src="/images/centher.logo.favicon.png"
+          alt="Centher Logo"
           width={32}
           height={32}
           className="md:hidden block"

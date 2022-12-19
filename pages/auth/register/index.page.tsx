@@ -31,8 +31,8 @@ Register.getLayout = (page) => {
         <div className="w-fit md:hidden sm:flex mb-8">
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/nether.nft.logo.svg"
-              alt="Nether NFT Logo"
+              src="/images/centher.logo.png"
+              alt="Centher Logo"
               width={154}
               height={32}
             />
@@ -58,7 +58,7 @@ Register.getLayout = (page) => {
 export default Register;
 
 const signupLeftData = {
-  title: "Register to Nether NFT",
+  title: "Register to Centher",
   content:
-    "Register your account with Nether NFT to sell and buy NFTs on some easy steps.",
+    "Register your account with Centher to sell and buy NFTs on some easy steps.",
 };

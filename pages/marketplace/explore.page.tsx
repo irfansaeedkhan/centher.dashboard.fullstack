@@ -22,7 +22,7 @@ const ExplorePage: NextPageWithLayout = () => {
 
 ExplorePage.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Explore - Nether NFT">{page}</AllPagesWrapper>
+    <AllPagesWrapper pageTitle="Explore - Centher">{page}</AllPagesWrapper>
   );
 };
 

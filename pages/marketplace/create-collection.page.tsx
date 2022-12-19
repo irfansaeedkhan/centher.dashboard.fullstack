@@ -124,7 +124,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           <p className="text-gray-shade-2 text-14px font-normal leading-6">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{collectionData?.name}</span>{" "}
-            Collection on Nether NFT platform, Click view on profile to view
+            Collection on <b>Centher</b> platform, Click view on profile to view
             your collection.
           </p>
         )}
