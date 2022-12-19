@@ -1,7 +1,10 @@
+import useUser from "@/hooks/use.user";
+import { formatAddress } from "@/utils/format.address";
 import React from "react";
 import { FiCopy } from "react-icons/fi";
 
-const WalletSection = () => {
+const WalletSection = ({ data }: any) => {
+  const { user: loggedInUser } = useUser();
   return (
     <div className="w-full flex md:flex-row flex-col gap-6">
       <div className="w-full max-w-[810px] bg-elevation-1 rounded-[14px] h-[198px]">
@@ -11,8 +14,8 @@ const WalletSection = () => {
             <p className="text-right">Total members in your network</p>
           </div>
           <div className="text-sm font-semibold leading-6 text-white flex justify-between items-center gap-10">
-            <p>0x5615456fe</p>
-            <p>2000</p>
+            <p>{formatAddress(loggedInUser?.account_address)}</p>
+            <p>{data.people}</p>
           </div>
         </div>
         <div className="h-1/2 py-5 px-6 bg-elevation-1 rounded-b-[14px] space-y-1 flex flex-col justify-center">
@@ -21,8 +24,8 @@ const WalletSection = () => {
             <p>MARKETPALCE</p>
           </div>
           <div className="text-sm font-semibold leading-6 text-white flex justify-between items-center gap-10">
-            <p>0x5615456fe</p>
-            <p>500 (BNB)</p>
+            <p>{`${data.busd} (BUSD) ${data.ntr} (NTR)`}</p>
+            <p>{`${data.bnb} (BNB)`}</p>
           </div>
         </div>
       </div>

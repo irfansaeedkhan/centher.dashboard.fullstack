@@ -36,9 +36,9 @@ export const Levels = () => {
 
   // handles the active parentCard and list shown
   const handleCard = async (childData: any) => {
-    const level = Number(childData.level);
+    const _level = Number(childData.level);
     if (updating === "loading") return;
-    if (level === 6) return;
+    if (_level === 6) return;
     childData.level !== "06" &&
       setActiveParent((prev: any) => {
         if (prev.length > 0) {
@@ -47,7 +47,8 @@ export const Levels = () => {
           return [childData];
         }
       });
-    fetchReferrers(childData.user, level);
+    await fetchReferrers(childData.user, _level);
+    setLevel(_level);
   };
 
   // handle the backbutton - previous active parent - level to show

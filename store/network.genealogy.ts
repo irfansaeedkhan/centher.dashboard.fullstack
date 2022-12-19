@@ -6,13 +6,14 @@ import { devtools } from "zustand/middleware";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { genealogyAtLevelQuery, genealogyQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { Genealogy, GenealogyChild } from "@/models/referral";
+import { Genealogy, GenealogyChild, RewardsTotal } from "@/models/referral";
 import { ethers } from "ethers";
 
 export const referralPercent = [6, 4, 2, 2, 2, 2];
 
 export interface GenealogyStore {
   genealogies: Genealogy[] | null;
+  rewardsTotal: RewardsTotal;
   fetchGenealogy: (account: string | undefined) => Promise<void>;
   fetchReferrers: (account: string | undefined, level: number) => Promise<void>;
   loading: LoadingState;
@@ -23,6 +24,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
   devtools(
     (set, get) => ({
       genealogies: null,
+      rewardsTotal: { people: 0, busd: 0, bnb: 0, ntr: 0 },
       loading: "idle",
       updating: "loaded",
       fetchGenealogy: async (account) => {
@@ -33,6 +35,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
             cache: new InMemoryCache(),
           });
           let _genealogies: Genealogy[];
+          let _rewardsTotal: RewardsTotal;
           const {
             data: result,
             error,
@@ -47,6 +50,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
           if (!loading) {
             if (result && !error) {
               _genealogies = [];
+              _rewardsTotal = { people: 0, busd: 0, bnb: 0, ntr: 0 };
               for (let i = 0; i < 6; i++) {
                 let levelArray = result.genealogies.filter(
                   (item: any) => item.level === i + 1
@@ -78,6 +82,11 @@ export const useGenealogyStore = create<GenealogyStore>()(
                   children: [],
                 };
                 _genealogies.push(levelInfo);
+
+                _rewardsTotal.people += levelArray.length;
+                _rewardsTotal.bnb += generatedBNB;
+                _rewardsTotal.busd += generatedBUSD;
+                _rewardsTotal.ntr += generatedNTR;
               }
             }
           }
@@ -85,6 +94,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
           set((state) => {
             return {
               genealogies: _genealogies,
+              rewardsTotal: _rewardsTotal,
               loading: "loaded",
             };
           });

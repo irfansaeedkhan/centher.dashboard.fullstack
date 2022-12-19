@@ -1,15 +1,36 @@
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import React from "react";
+import useUser from "@/hooks/use.user";
+import { useGenealogyStore } from "@/store/network.genealogy";
+import React, { useEffect } from "react";
 import { NextPageWithLayout } from "../../_app.page";
 import NetworkDownline from "../_components/network.downline";
 import NetworkTabs from "../_components/network.tabs";
 import WalletSection from "../_components/wallet.section";
 
 const NetworkRewards: NextPageWithLayout = () => {
+  const { user: loggedInUser } = useUser();
+  const { genealogies, rewardsTotal, fetchGenealogy, loading, updating } =
+    useGenealogyStore((state) => ({
+      genealogies: state.genealogies,
+      rewardsTotal: state.rewardsTotal,
+      fetchGenealogy: state.fetchGenealogy,
+      loading: state.loading,
+      updating: state.updating,
+    }));
+
+  useEffect(() => {
+    const fetchGeealogyBaseData = async (account: string) => {
+      await fetchGenealogy(account);
+    };
+    if (loggedInUser?.account_address) {
+      fetchGeealogyBaseData(loggedInUser?.account_address);
+    }
+  }, [fetchGenealogy, loggedInUser?.account_address]);
+
   return (
     <div>
-      <WalletSection />
-      <NetworkDownline />
+      <WalletSection data={rewardsTotal} />
+      <NetworkDownline genealogy={genealogies} />
     </div>
   );
 };

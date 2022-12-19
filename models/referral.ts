@@ -20,6 +20,12 @@ export interface GenealogyChild {
   active: boolean;
 }
 
+export interface RewardsTotal {
+  people: number;
+  busd: number;
+  ntr: number;
+  bnb: number;
+}
 export interface ReferralRewardInLaunchpad {
   id: string;
   createdAt: number;
