@@ -7,7 +7,16 @@ const NetworkDownline = () => {
       <div className="text-2xl font-semibold mb-6 text-white">
         Network Downline
       </div>
-      <div className="bg-elevation-1 rounded-[14px]">
+      <div className="w-full flex gap-4 flex-wrap">
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
+        <SingleNetworkDownline />
         <SingleNetworkDownline />
         <SingleNetworkDownline />
       </div>
