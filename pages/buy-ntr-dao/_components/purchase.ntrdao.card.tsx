@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import toast from "react-hot-toast";
@@ -97,27 +97,32 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
     getSelectedTokenBalance();
   }, [account, selectedTokenB.tokenName, library]);
 
+  const checkSelectedTokenAllowance = useCallback(async () => {
+    if (!account || !library) return;
+    const tokenAllowance = await getTokenAllowance(
+      selectedTokenA.tokenName,
+      account,
+      library
+    );
+    if (
+      tokenAllowance !== 0 &&
+      tokenAllowance >= selectedTokenA.minContribution
+    ) {
+      setIsApproved(true);
+    } else {
+      setIsApproved(false);
+    }
+  }, [
+    account,
+    selectedTokenA.minContribution,
+    selectedTokenA.tokenName,
+    library,
+  ]);
+
   // Get selected token allowance
   useEffect(() => {
-    if (!account || !library) return;
-    const checkSelectedTokenAllowance = async () => {
-      const tokenAllowance = await getTokenAllowance(
-        selectedTokenA.tokenName,
-        account,
-        library
-      );
-      if (
-        tokenAllowance !== 0 &&
-        tokenAllowance >= selectedTokenA.tokenBalance
-      ) {
-        setIsApproved(true);
-      } else {
-        setIsApproved(false);
-      }
-    };
-
     checkSelectedTokenAllowance();
-  }, [account, selectedTokenA, library]);
+  }, [checkSelectedTokenAllowance]);
 
   const openAuthorizeModal = () => {
     setModal((prev) => ({
@@ -145,6 +150,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
         ...prev,
         isOpen: false,
       }));
+      checkSelectedTokenAllowance();
     } else {
       toast.error("Token authorization failed");
       setModal((prev) => ({
