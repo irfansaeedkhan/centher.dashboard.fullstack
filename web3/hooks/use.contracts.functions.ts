@@ -136,29 +136,25 @@ export const useGetContributionInfo = (
 
       const claimedTokenAmountForBusd = Number(
         ethers.utils.formatUnits(
-          contributionInfoRes["claimedTokenAmountForBusd"],
-          6
+          contributionInfoRes["claimedTokenAmountForBusd"]
         )
       );
 
       const claimedTokenAmountForNtr = Number(
         ethers.utils.formatUnits(
-          contributionInfoRes["claimedTokenAmountForNtr"],
-          6
+          contributionInfoRes["claimedTokenAmountForNtr"]
         )
       );
 
       const totalClaimableTokenAmountForBusd = Number(
         ethers.utils.formatUnits(
-          contributionInfoRes["totalClaimableTokenAmountForBusd"],
-          6
+          contributionInfoRes["totalClaimableTokenAmountForBusd"]
         )
       );
 
       const totalClaimableTokenAmountForNtr = Number(
         ethers.utils.formatUnits(
-          contributionInfoRes["totalClaimableTokenAmountForNtr"],
-          6
+          contributionInfoRes["totalClaimableTokenAmountForNtr"]
         )
       );
 
@@ -168,8 +164,7 @@ export const useGetContributionInfo = (
           await presaleContract.getClaimableTokenAmountFromBusd(
             roundInfo.round,
             account
-          ),
-          6
+          )
         )
       );
 
@@ -179,8 +174,7 @@ export const useGetContributionInfo = (
           await presaleContract.getClaimableTokenAmountFromNtr(
             roundInfo.round,
             account
-          ),
-          6
+          )
         )
       );
 
