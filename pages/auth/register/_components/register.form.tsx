@@ -168,14 +168,15 @@ export const RegisterForm: React.FC = () => {
             id=""
             onClick={() => setIsChecked(!isChecked)}
           />
-          <Link href={AppRoutes.auth.terms}>
-            <p className="text-white text-sm">
-              I have read and agree to Binance&apos;s{" "}
+
+          <p className="text-white text-sm">
+            I have read and agree to Binance&apos;s{" "}
+            <Link href={AppRoutes.auth.terms}>
               <span className="font-semibold underline cursor-pointer">
                 Terms & Condition
               </span>
-            </p>
-          </Link>
+            </Link>
+          </p>
         </div>
 
         {isChecked ? (
