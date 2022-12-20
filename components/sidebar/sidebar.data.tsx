@@ -76,7 +76,7 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Network Rewards",
-        url: AppRoutes.referral.network_rewards,
+        url: AppRoutes.referral.overview,
         icon: NetworkRewards,
       },
       {
