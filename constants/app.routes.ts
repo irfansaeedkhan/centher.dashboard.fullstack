@@ -46,7 +46,7 @@ export const AppRoutes = {
   },
 
   chat: "/chat",
-  buy_ntr_dao: "/buy-ntr-dao",
+  buy_centher: "/buy-centher",
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   staking_packs: "/staking-contract",
