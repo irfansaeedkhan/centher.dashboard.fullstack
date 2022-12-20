@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 // Addresses
 import {
-  getNtrdaoAddress,
+  getCentherAddress,
   getPresaleAddress,
   getBusdAddress,
   getMulticallAddress,
@@ -13,7 +13,7 @@ import {
 } from "./address.helpers";
 
 // ABI
-import ntrdaoAbi from "../abis/ntrdao.json";
+import centherAbi from "../abis/centher.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
 import registrationAbi from "../abis/registration.json";
@@ -43,7 +43,7 @@ const getContract = (abi: any, address: string, signer?: SignerOrProvider) => {
 // }
 
 export const getNtrdaoContract = (signer?: SignerOrProvider) => {
-  return getContract(ntrdaoAbi, getNtrdaoAddress(), signer);
+  return getContract(centherAbi, getCentherAddress(), signer);
 };
 
 export const getRegistrationContract = (signer?: SignerOrProvider) => {

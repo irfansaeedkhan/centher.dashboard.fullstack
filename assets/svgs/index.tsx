@@ -56,7 +56,7 @@ export { default as BUSDIconBG } from "./busd.icon.bg.svg";
 export { default as FacbookIcon } from "./facebook.icon.svg";
 export { default as LinkedInIcon } from "./linkedIn.icon.svg";
 
-export const NTRDAOIconBG: React.FC<IconProps> = (props) => {
+export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
     <img
       className={props.className}

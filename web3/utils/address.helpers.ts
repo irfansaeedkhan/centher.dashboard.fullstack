@@ -7,8 +7,8 @@ export const getAddress = (address: Address): string => {
   return address[chainId].toLowerCase();
 };
 
-export const getNtrdaoAddress = () => {
-  return getAddress(addresses.ntrdao);
+export const getCentherAddress = () => {
+  return getAddress(addresses.centher);
 };
 export const getPresaleAddress = () => {
   return getAddress(addresses.presale);

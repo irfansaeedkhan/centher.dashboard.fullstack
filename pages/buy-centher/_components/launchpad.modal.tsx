@@ -4,7 +4,7 @@ import { IoClose } from "react-icons/io5";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import {
   DeleteCrossIcon,
-  NTRDAOIconBG,
+  CentherIconBG,
   SpinIcon2,
   SuccessIcon,
   WarningIcon,
@@ -80,7 +80,7 @@ export const LaunchpadModal: React.FC<ModalProps> = ({
               <DeleteCrossIcon className="inline-block w-16 h-16" />
             )}
             {status === "buy-ntr" && (
-              <NTRDAOIconBG className="inline-block w-16 h-16" />
+              <CentherIconBG className="inline-block w-16 h-16" />
             )}
 
             {!!subtitle && (

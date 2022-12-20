@@ -8,7 +8,7 @@ import { RoundInfo } from "@/web3/constants/types";
 import {
   BUSDIconBG,
   LeftArrowIcon,
-  NTRDAOIconBG,
+  CentherIconBG,
   NTRIconBG,
 } from "@/assets/svgs";
 
@@ -132,7 +132,7 @@ export const ConversionContainer: React.FC<Props> = ({
 
       <div className={conversionInputContainer}>
         <ConversionTokenBox
-          tokenIcon={<NTRDAOIconBG className="w-10 h-10" />}
+          tokenIcon={<CentherIconBG className="w-10 h-10" />}
           tokenName="CTHR"
           tokenBalance={selectedTokenB.tokenBalance}
         />
