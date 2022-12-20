@@ -2,9 +2,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { useForm } from "react-hook-form";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
@@ -18,6 +15,8 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
+// same directory
+import AuctionBidModal from "./auction.bid.modal";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
@@ -29,6 +28,7 @@ export const AuctionNFTBuyerDescription = ({
   setReload,
 }: AuctionNFTBuyerDescriptionProps) => {
   const [Modal, setModal] = useState(false);
+  const [BidModal, setBidModalModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
@@ -46,8 +46,8 @@ export const AuctionNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  const [bidPrice, setBidPrice] = useState<any>(null);
-  const [bidPriceErr, setBidPriceErr] = useState(true);
+  // const [bidPrice, setBidPrice] = useState<any>(null);
+  // const [bidPriceErr, setBidPriceErr] = useState(true);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
 
@@ -98,15 +98,15 @@ export const AuctionNFTBuyerDescription = ({
   interface bidForm {
     bidPrice: number;
   }
-  const handleBidValue = (e: any) => {
-    setBidPrice(e.target.value);
+  // const handleBidValue = (e: any) => {
+  //   setBidPrice(e.target.value);
 
-    if (!!e.target.value) {
-      setBidPriceErr(false);
-    } else {
-      setBidPriceErr(true);
-    }
-  };
+  //   if (!!e.target.value) {
+  //     setBidPriceErr(false);
+  //   } else {
+  //     setBidPriceErr(true);
+  //   }
+  // };
 
   const SuccessFunc = useCallback(
     (txStatus: boolean) => {
@@ -180,66 +180,66 @@ export const AuctionNFTBuyerDescription = ({
     },
     [SuccessFunc, bnbBalance, data, library, price]
   );
-  const bidNFTModalFunc = useCallback(() => {
-    if (!library) {
-      toast.error("Confirm your Wallet Connection.");
-      return;
-    }
-    setModalTitle("Place a bid");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Blockchain</label>
-          <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
-            <BNBIcon />{" "}
-            <h6 className="text-14px font-semibold text-white">BNB</h6>
-          </div>
-        </div>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Price</label>
-          <div
-            className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
-          >
-            <input
-              type="text"
-              onKeyPress={(event) => {
-                if (!/[0-9.]/.test(event.key)) {
-                  event.preventDefault();
-                }
-              }}
-              pattern="[0-9.]*"
-              id="bidPrice"
-              autoComplete="off"
-              name="bidPrice"
-              onChange={handleBidValue}
-              value={bidPrice}
-              placeholder="0.00"
-              className={
-                "w-full h-full !border-0 !ring-0 bg-transparent text-white"
-              }
-            />
-            <h6 className="text-14px font-semibold text-gray-shade-7">
-              =$0000
-            </h6>
-          </div>
-          {bidPriceErr && (
-            <p className={`text-red-500 ${errMessage}`}>
-              Kindly fill the form using numbers
-            </p>
-          )}
-        </div>
-        <Button
-          title={"Place bid "}
-          variant={bidPriceErr ? "v2" : "v1"}
-          disabled={bidPriceErr}
-          onClick={() => {
-            onSubmit(bidPrice);
-          }}
-          className="py-4 mt-2"
-        />
-      </div>
-    );
-  }, [bidPrice, bidPriceErr, library, onSubmit]);
+  // const bidNFTModalFunc = useCallback(() => {
+  //   if (!library) {
+  //     toast.error("Confirm your Wallet Connection.");
+  //     return;
+  //   }
+  //   setModalTitle("Place a bid");
+  //   setModalContent(
+  //     <div className={modalBodyWrapper}>
+  //       <div className={fieldWrapper}>
+  //         <label className={fieldTitle}>Blockchain</label>
+  //         <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
+  //           <BNBIcon />{" "}
+  //           <h6 className="text-14px font-semibold text-white">BNB</h6>
+  //         </div>
+  //       </div>
+  //       <div className={fieldWrapper}>
+  //         <label className={fieldTitle}>Price</label>
+  //         <div
+  //           className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
+  //         >
+  //           <input
+  //             type="text"
+  //             onKeyPress={(event) => {
+  //               if (!/[0-9.]/.test(event.key)) {
+  //                 event.preventDefault();
+  //               }
+  //             }}
+  //             pattern="[0-9.]*"
+  //             id="bidPrice"
+  //             autoComplete="off"
+  //             name="bidPrice"
+  //             onChange={handleBidValue}
+  //             value={bidPrice}
+  //             placeholder="0.00"
+  //             className={
+  //               "w-full h-full !border-0 !ring-0 bg-transparent text-white"
+  //             }
+  //           />
+  //           <h6 className="text-14px font-semibold text-gray-shade-7">
+  //             =$0000
+  //           </h6>
+  //         </div>
+  //         {bidPriceErr && (
+  //           <p className={`text-red-500 ${errMessage}`}>
+  //             Kindly fill the form using numbers
+  //           </p>
+  //         )}
+  //       </div>
+  //       <Button
+  //         title={"Place bid "}
+  //         variant={bidPriceErr ? "v2" : "v1"}
+  //         disabled={bidPriceErr}
+  //         onClick={() => {
+  //           onSubmit(bidPrice);
+  //         }}
+  //         className="py-4 mt-2"
+  //       />
+  //     </div>
+  //   );
+  // }, [bidPrice, bidPriceErr, library, onSubmit]);
 
   const ProceedFunc = () => {
     setModalTitle("Complete Checkout");
@@ -325,8 +325,9 @@ export const AuctionNFTBuyerDescription = ({
                 return;
               }
               if (library) {
-                bidNFTModalFunc();
-                setModal(true);
+                // bidNFTModalFunc();
+                setBidModalModal(true);
+                // setModal(true);
               }
             }}
           />
@@ -343,6 +344,7 @@ export const AuctionNFTBuyerDescription = ({
           {ModalContent}
         </CustomModal>
       )}
+      {BidModal && <AuctionBidModal onSubmit={onSubmit} />}
     </div>
   );
 };
