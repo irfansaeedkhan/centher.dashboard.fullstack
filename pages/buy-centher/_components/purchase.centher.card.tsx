@@ -86,7 +86,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
   useEffect(() => {
     if (!account || !library) return;
     const getSelectedTokenBalance = async () => {
-      getTokenBalance(selectedTokenB.tokenName, 6, account, library).then(
+      getTokenBalance(selectedTokenB.tokenName, 18, account, library).then(
         (tokenBalanace) =>
           setSelectedTokenB((prev) => ({
             ...prev,
