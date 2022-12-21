@@ -82,7 +82,7 @@ const _comingSoonPages: string[] = [
   AppRoutes.home,
   AppRoutes.chat,
   AppRoutes.staking_packs,
-  AppRoutes.buy_ntr_dao,
+  AppRoutes.buy_centher,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
 

@@ -15,12 +15,13 @@ import NftCollectionSkeleton from "@/components/loading.skeletons/nft.collection
 
 const responsive = {
   desktop: {
-    breakpoint: { max: 3000, min: 1024 },
+    breakpoint: { max: 3000, min: 1670 },
     items: 3,
     slidesToSlide: 1,
+    // paritialVisibilityGutter: 20,
   },
   tablet: {
-    breakpoint: { max: 1440, min: 464 },
+    breakpoint: { max: 1670, min: 660 },
     items: 2,
     slidesToSlide: 1,
   },
@@ -63,7 +64,7 @@ export const HotCollections: React.FC = () => {
               showDots={false}
               responsive={responsive}
               ssr={true} // means to render carousel on server-side.
-              infinite={true}
+              infinite={false}
               keyBoardControl={true}
               containerClass="carousel-container"
               // dotListClass="custom-dot-list-style"
@@ -101,7 +102,7 @@ export const HotCollections: React.FC = () => {
   );
 };
 
-const hotCollectionWrapper = ctl(`flex flex-col gap-8`);
+const hotCollectionWrapper = ctl(`flex flex-col gap-8 max-w-[1300px]`);
 
 const hotCollectionGap = ctl(
   `flex [@media(max-width:767px)]:flex-col [@media(max-width:767px)]:gap-5 items-center justify-between gap-10`

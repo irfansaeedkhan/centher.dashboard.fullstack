@@ -3,18 +3,18 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { ClaimNTRDAOFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
+import { ClaimCentherFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 
 import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 
-interface NTRDAOTableProps {
+interface CentherTableProps {
   roundInfo: RoundInfo;
   contributionInfo: ContributionInfo;
   refetchContributionInfo: () => void;
 }
 
-export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
+export const CentherTable: React.FC<CentherTableProps> = ({
   roundInfo,
   contributionInfo,
   refetchContributionInfo,
@@ -37,7 +37,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
     onClickConfirm: () => {},
   });
 
-  const handleClaim = async (claimFrom: ClaimNTRDAOFrom) => {
+  const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
       const result = await claimNtrTokens(library, roundInfo.round, claimFrom);
@@ -68,7 +68,7 @@ export const NTRDAOTable: React.FC<NTRDAOTableProps> = ({
     }
   };
 
-  const openClaimModal = (claimFrom: ClaimNTRDAOFrom) => {
+  const openClaimModal = (claimFrom: ClaimCentherFrom) => {
     setModal((prev) => ({
       ...prev,
       isOpen: true,

@@ -61,7 +61,7 @@ export const getTokenApproval = async (
   }
 };
 
-export const buyNtrDao = async (
+export const buyCenther = async (
   tokenName: TokenName,
   amount: number,
   library: Web3Provider
@@ -100,12 +100,12 @@ export const buyNtrDao = async (
   }
 };
 
-export type ClaimNTRDAOFrom = "BUSD" | "NTR";
+export type ClaimCentherFrom = "BUSD" | "NTR";
 
 export const claimNtrTokens = async (
   library: Web3Provider,
   round: number,
-  claimFrom: ClaimNTRDAOFrom
+  claimFrom: ClaimCentherFrom
 ) => {
   try {
     const presaleContract = getPresaleContract(library.getSigner());

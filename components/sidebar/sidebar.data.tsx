@@ -76,7 +76,7 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Network Rewards",
-        url: AppRoutes.referral.network_rewards,
+        url: AppRoutes.referral.overview,
         icon: NetworkRewards,
       },
       {
@@ -91,7 +91,7 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Launchpad",
-        url: AppRoutes.buy_ntr_dao,
+        url: AppRoutes.buy_centher,
         icon: DaoGovernment,
       },
       // {

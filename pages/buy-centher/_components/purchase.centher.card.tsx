@@ -10,22 +10,20 @@ import {
   useGetContributionInfo,
 } from "@/web3/hooks/use.contracts.functions";
 import Button from "@/components/button";
-import { buyNtrDao, getTokenApproval } from "@/web3/utils/call.helpers";
+import { buyCenther, getTokenApproval } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
-import { BUSDIconBG, LockedIcon, NTRDAOIconBG } from "@/assets/svgs";
-
-// test
+import { BUSDIconBG, LockedIcon, CentherIconBG } from "@/assets/svgs";
 
 import { ConversionContainer } from "./conversion.container";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { LaunchpadModal, ModalProps } from "./launchpad.modal";
-import { NTRDAOTable } from "./ntrdao.table";
+import { CentherTable } from "./centher.table";
 
 interface Props {
   roundInfo: RoundInfo;
 }
 
-export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
+export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
   const { account, library } = useWeb3React<Web3Provider>();
   const [isApproved, setIsApproved] = useState(false);
   const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
@@ -48,7 +46,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
 
   const [selectedTokenB, setSelectedTokenB] = useState<SelectedTokenB>({
     tokenName: "CTHR",
-    tokenIcon: <NTRDAOIconBG className="w-10 h-10" />,
+    tokenIcon: <CentherIconBG className="w-10 h-10" />,
     tokenBalance: 0,
     inputValue: roundInfo.minContributionForBusd * roundInfo.rateForBusd,
   });
@@ -199,7 +197,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
         status: "progress",
       }));
 
-      const result = await buyNtrDao(
+      const result = await buyCenther(
         selectedTokenA.tokenName,
         selectedTokenA.inputValue,
         library
@@ -327,7 +325,7 @@ export const PurchaseNTRDAOCard: React.FC<Props> = ({ roundInfo }) => {
       {!contributionInfo ||
       (!contributionInfo.contributedBusdAmount &&
         !contributionInfo.contributedNtrAmount) ? null : (
-        <NTRDAOTable
+        <CentherTable
           roundInfo={roundInfo}
           contributionInfo={contributionInfo}
           refetchContributionInfo={refreshContributionInfo}

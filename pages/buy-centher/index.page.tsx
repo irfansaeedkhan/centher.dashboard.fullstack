@@ -2,7 +2,7 @@ import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
-import { PresaleCard, PurchaseNTRDAOCard } from "./_components";
+import { PresaleCard, PurchaseCentherCard } from "./_components";
 
 const BuyNTRDAOPage: NextPageWithLayout = () => {
   const roundsInfo = useGetRoundsInfo();
@@ -15,7 +15,7 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
         {roundsInfo.map((roundInfo) => (
           <div key={roundInfo.round} className={`space-y-5`}>
             <PresaleCard roundInfo={roundInfo} />
-            <PurchaseNTRDAOCard roundInfo={roundInfo} />
+            <PurchaseCentherCard roundInfo={roundInfo} />
           </div>
         ))}
       </div>
