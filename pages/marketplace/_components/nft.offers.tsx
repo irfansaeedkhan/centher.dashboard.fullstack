@@ -142,9 +142,9 @@ text-14px text-gray-shade-7 uppercase bg-background-shade-3
 const th = ctl(` 
 py-4 lg:py-7 px-5 lg:px-3
 `);
-const tbodyTR = ctl(` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`);
 const td = ctl(` 
 text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
+`);
+const tbodyTR = ctl(` 
+border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
 `);
