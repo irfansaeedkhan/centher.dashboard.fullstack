@@ -3,6 +3,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 
 import { PresaleCard, PurchaseCentherCard } from "./_components";
+import LaunchpadSkeleton from "@/components/loading.skeletons/launchpad.skeleton";
 
 const BuyNTRDAOPage: NextPageWithLayout = () => {
   const roundsInfo = useGetRoundsInfo();
@@ -11,14 +12,18 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
     <div
       className={`bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10`}
     >
-      <div className={`space-y-5`}>
-        {roundsInfo.map((roundInfo) => (
-          <div key={roundInfo.round} className={`space-y-5`}>
-            <PresaleCard roundInfo={roundInfo} />
-            <PurchaseCentherCard roundInfo={roundInfo} />
-          </div>
-        ))}
-      </div>
+      {!!roundsInfo.length ? (
+        <div className={`space-y-5`}>
+          {roundsInfo.map((roundInfo) => (
+            <div key={roundInfo.round} className={`space-y-5`}>
+              <PresaleCard roundInfo={roundInfo} />
+              <PurchaseCentherCard roundInfo={roundInfo} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <LaunchpadSkeleton />
+      )}
     </div>
   );
 };
