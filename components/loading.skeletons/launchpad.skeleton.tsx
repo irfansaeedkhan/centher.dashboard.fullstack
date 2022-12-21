@@ -1,6 +1,6 @@
 import React from "react";
 
-const Launchpad = () => {
+const LaunchpadSkeleton = () => {
   return (
     <>
       <div className="flex items-center justify-center mb-4 max-w-[1000px] h-[230px] flg:h-[256px] bg-[#131314] rounded-2xl">
@@ -8,7 +8,7 @@ const Launchpad = () => {
           <div className="w-full flex flg:flex-row flex-col gap-5 justify-center items-center">
             <div className="w-full flg:max-w-[400px] fsm:max-w-[300px] max-w-[200px]">
               <div className="w-full flg:h-[60px] fsm:h-[40px] h-[30px] bg-[#3C3F4A] rounded-md animate-pulse"></div>
-              <div className="flex w-full mt-4 gap-2">
+              <div className="flex justify-center flg:justify-start w-full mt-4 gap-2">
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] rounded-md animate-pulse"></div>
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] rounded-md animate-pulse"></div>
               </div>
@@ -52,7 +52,7 @@ const Launchpad = () => {
           <div className="w-full flex flg:flex-row flex-col gap-5 justify-center items-center">
             <div className="w-full flg:max-w-[400px] fsm:max-w-[300px] max-w-[200px]">
               <div className="w-full flg:h-[60px] fsm:h-[40px] h-[30px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
-              <div className="flex w-full mt-4 gap-2">
+              <div className="flex justify-center flg:justify-start w-full mt-4 gap-2">
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
               </div>
@@ -96,7 +96,7 @@ const Launchpad = () => {
           <div className="w-full flex flg:flex-row flex-col gap-5 justify-center items-center">
             <div className="w-full flg:max-w-[400px] fsm:max-w-[300px] max-w-[200px]">
               <div className="w-full flg:h-[60px] fsm:h-[40px] h-[30px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
-              <div className="flex w-full mt-4 gap-2">
+              <div className="flex justify-center flg:justify-start w-full mt-4 gap-2">
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
                 <div className="w-full flg:max-w-[150px] fsm:max-w-[120px] max-w-[90px] flg:h-[30px] fsm:h-[20px] h-[15px] bg-[#3C3F4A] animate-pulse rounded-md"></div>
               </div>
@@ -138,6 +138,6 @@ const Launchpad = () => {
   );
 };
 
-export default Launchpad;
+export default LaunchpadSkeleton;
 
 //98 + 364 = 462
