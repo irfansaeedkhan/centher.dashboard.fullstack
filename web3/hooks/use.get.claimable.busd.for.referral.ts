@@ -2,7 +2,10 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { getPresaleContract } from "../utils/contract.helpers";
 
-export const useGetClaimableBusdForReferral = (account: string | undefined) => {
+export const useGetClaimableBusdForReferral = (
+  account: string | undefined,
+  reload?: boolean
+) => {
   const [claimable, setClaimable] = useState(0);
 
   useEffect(() => {
@@ -18,6 +21,6 @@ export const useGetClaimableBusdForReferral = (account: string | undefined) => {
     if (account) {
       fetchClaimable(account);
     }
-  }, [account]);
+  }, [account, reload]);
   return claimable;
 };

@@ -1,21 +1,36 @@
 import React, { useEffect } from "react";
 import { IoClose } from "react-icons/io5";
 
-import { ModalPortal } from "@/components/modal/modal.portal";
+import { ModalPortal } from "./modal.portal";
 import {
   DeleteCrossIcon,
   CentherIconBG,
   SpinIcon2,
   SuccessIcon,
   WarningIcon,
+  BUSDIconBG,
+  NTRIconBG,
 } from "@/assets/svgs";
+
+export interface ModalState {
+  isOpen: boolean;
+  status: ModalProps["status"];
+  title: ModalProps["title"];
+  subtitle: ModalProps["subtitle"];
+  bodyText: ModalProps["bodyText"];
+  confirmButtonText: ModalProps["confirmButtonText"];
+  onClose: ModalProps["onClickClose"];
+  onClickConfirm: ModalProps["onClickConfirm"];
+}
 
 export type ModalStatus =
   | "success"
   | "progress"
   | "warning"
   | "error"
-  | "buy-ntr";
+  | "buy-ntr"
+  | "claim-busd"
+  | "claim-ntr";
 
 export interface ModalProps {
   isOpen: boolean;
@@ -28,7 +43,7 @@ export interface ModalProps {
   onClickConfirm: () => void;
 }
 
-export const LaunchpadModal: React.FC<ModalProps> = ({
+export const StandardModal: React.FC<ModalProps> = ({
   isOpen,
   status,
   title,
@@ -81,6 +96,14 @@ export const LaunchpadModal: React.FC<ModalProps> = ({
             )}
             {status === "buy-ntr" && (
               <CentherIconBG className="inline-block w-16 h-16" />
+            )}
+
+            {status === "claim-busd" && (
+              <BUSDIconBG className="inline-block w-16 h-16" />
+            )}
+
+            {status === "claim-ntr" && (
+              <NTRIconBG className="inline-block w-16 h-16" />
             )}
 
             {!!subtitle && (

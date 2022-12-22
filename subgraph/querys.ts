@@ -399,3 +399,17 @@ export const referralRewardsInPresaleQuery = `
     }
   }
 `;
+
+export const referrerClaimPresaleQuery = `
+  query MyQuery($referrer: Bytes) {
+    presaleGenalogyClaimHistories(
+      where: {referrer: $referrer}
+      orderDirection: desc
+      orderBy: createdAt
+    ) {
+      isBusd
+      createdAt
+      amount
+    }
+  }
+`;

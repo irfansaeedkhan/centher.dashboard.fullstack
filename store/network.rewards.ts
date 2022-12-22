@@ -4,17 +4,26 @@ import { devtools } from "zustand/middleware";
 
 // App imports
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { referralRewardsInPresaleQuery } from "@/subgraph/querys";
+import {
+  referralRewardsInPresaleQuery,
+  referrerClaimPresaleQuery,
+} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import { ReferralRewardInLaunchpad, RewardsEachAsset } from "@/models/referral";
+import {
+  ReferralClaim,
+  ReferralReward,
+  RewardsEachAsset,
+} from "@/models/referral";
 import { ethers } from "ethers";
 
 export interface NetworkRewards {
-  rewardsInLaunchpad: ReferralRewardInLaunchpad[];
-  rewardsInMarketplace: ReferralRewardInLaunchpad[];
+  rewardsInLaunchpad: ReferralReward[];
+  claimsInLaunchpad: ReferralClaim;
+  rewardsInMarketplace: ReferralReward[];
   rewardsEachLevel: RewardsEachAsset[];
   rewardsTotal: RewardsEachAsset;
   fetchReferralRewardsInLaunchpad: (referrer: string) => Promise<void>;
+  fetchReferralClaimsInLaunchpad: (referrer: string) => Promise<void>;
   updateOffset: () => void;
   limit: number;
   offset: number;
@@ -25,6 +34,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
   devtools(
     (set, get) => ({
       rewardsInLaunchpad: [],
+      claimsInLaunchpad: { busd: [], ntr: [] },
       rewardsInMarketplace: [],
       rewardsEachLevel: [],
       rewardsTotal: { busd: 0, ntr: 0, bnb: 0 },
@@ -44,7 +54,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
           });
-          let _rewardsInLaunchpad: ReferralRewardInLaunchpad[] = [];
+          let _rewardsInLaunchpad: ReferralReward[] = [];
 
           const { data: result, error: error } = await client.query({
             query: gql(referralRewardsInPresaleQuery),
@@ -77,7 +87,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
             const filteredItems = state.rewardsInLaunchpad.filter(
               (item) =>
                 !_rewardsInLaunchpad.some(
-                  (item1: ReferralRewardInLaunchpad) => item.id === item1.id
+                  (item1: ReferralReward) => item.id === item1.id
                 )
             );
 
@@ -126,6 +136,54 @@ export const useNetworkRewards = create<NetworkRewards>()(
           });
         } catch (error) {
           set({ loading: "failed" });
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+      fetchReferralClaimsInLaunchpad: async (referrer) => {
+        try {
+          const client = new ApolloClient({
+            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+
+          const { data: result, error: error } = await client.query({
+            query: gql(referrerClaimPresaleQuery),
+            variables: {
+              referrer: referrer,
+            },
+            fetchPolicy: "cache-first",
+          });
+          let _claimsInLaunchpad: ReferralClaim = { busd: [], ntr: [] };
+          if (result && !error) {
+            _claimsInLaunchpad.busd = result
+              .filter((item: any) => item.isBusd)
+              .map((item1: any) => {
+                return {
+                  createdAt: item1.createdAt,
+                  amount: Number(
+                    ethers.utils.formatEther(item1.amount.toString())
+                  ),
+                };
+              });
+            _claimsInLaunchpad.ntr = result
+              .filter((item: any) => !item.isBusd)
+              .map((item1: any) => {
+                return {
+                  createdAt: item1.createdAt,
+                  amount: Number(
+                    ethers.utils.formatEther(item1.amount.toString())
+                  ),
+                };
+              });
+          }
+
+          set((state) => {
+            return {
+              ...state,
+              claimsInLaunchpad: _claimsInLaunchpad,
+            };
+          });
+        } catch (error) {
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },

@@ -3,24 +3,24 @@ import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/evm-utils";
 import useRefresh from "@/web3/hooks/use.refresh";
 
-export const useBNBPrice = () => {
-  const [bnbPrice, setBNBPrice] = useState(0);
+export const useNTRPrice = () => {
+  const [ntrPrice, setNTRPrice] = useState(0);
   // const { slowRefresh } = useRefresh();
 
   useEffect(() => {
-    const fetchBNBPrice = async () => {
+    const fetchNTRPrice = async () => {
       try {
         const _price: any = await Moralis.EvmApi.token.getTokenPrice({
-          address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+          address: "0x8182ac1c5512eb67756a89c40fadb2311757bd32",
           chain: EvmChain.BSC,
         });
-        setBNBPrice(_price.data.usdPrice);
+        setNTRPrice(_price.data.usdPrice);
       } catch (error) {
-        setBNBPrice(0);
+        setNTRPrice(0);
       }
     };
-    fetchBNBPrice();
+    fetchNTRPrice();
   }, []);
 
-  return bnbPrice;
+  return ntrPrice;
 };

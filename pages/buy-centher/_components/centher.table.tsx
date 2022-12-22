@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { ClaimCentherFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 
-import { LaunchpadModal, ModalProps } from "./launchpad.modal";
+import { StandardModal, ModalProps } from "@/components/modal/standard.modal";
 
 interface CentherTableProps {
   roundInfo: RoundInfo;
@@ -183,7 +183,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
         </tbody>
       </table>
 
-      <LaunchpadModal
+      <StandardModal
         isOpen={modal.isOpen}
         status={modal.status}
         title={modal.title}

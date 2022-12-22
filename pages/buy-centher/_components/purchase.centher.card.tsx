@@ -12,11 +12,11 @@ import {
 import Button from "@/components/button";
 import { buyCenther, getTokenApproval } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
+import { StandardModal, ModalState } from "@/components/modal/standard.modal";
 import { BUSDIconBG, LockedIcon, CentherIconBG } from "@/assets/svgs";
 
 import { ConversionContainer } from "./conversion.container";
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { LaunchpadModal, ModalProps } from "./launchpad.modal";
 import { CentherTable } from "./centher.table";
 
 interface Props {
@@ -293,7 +293,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
                   className="py-3"
                 />
 
-                <LaunchpadModal
+                <StandardModal
                   isOpen={modal.isOpen}
                   status={modal.status}
                   title={modal.title}
@@ -334,14 +334,3 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
     </div>
   );
 };
-
-interface ModalState {
-  isOpen: boolean;
-  status: ModalProps["status"];
-  title: ModalProps["title"];
-  subtitle: ModalProps["subtitle"];
-  bodyText: ModalProps["bodyText"];
-  confirmButtonText: ModalProps["confirmButtonText"];
-  onClose: ModalProps["onClickClose"];
-  onClickConfirm: ModalProps["onClickConfirm"];
-}

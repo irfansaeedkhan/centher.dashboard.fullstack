@@ -134,13 +134,10 @@ export const claimNtrTokens = async (
   }
 };
 
-export const callClaimBUSDForReferral = async (
-  library: Web3Provider,
-  account: string
-) => {
+export const callClaimBUSDForReferral = async (library: Web3Provider) => {
   try {
     const presale = getPresaleContract(library.getSigner());
-    const tx = await presale.functions.claimRefRewardBUSD(account);
+    const tx = await presale.functions.claimRefRewardBUSD();
     await tx.wait();
     return {
       success: true,
@@ -155,13 +152,10 @@ export const callClaimBUSDForReferral = async (
   }
 };
 
-export const callClaimNTRForReferral = async (
-  library: Web3Provider,
-  account: string
-) => {
+export const callClaimNTRForReferral = async (library: Web3Provider) => {
   try {
     const presale = getPresaleContract(library.getSigner());
-    const tx = await presale.functions.claimRefRewardNTR(account);
+    const tx = await presale.functions.claimRefRewardNTR();
     await tx.wait();
     return {
       success: true,

@@ -26,7 +26,7 @@ export interface RewardsTotal {
   ntr: number;
   bnb: number;
 }
-export interface ReferralRewardInLaunchpad {
+export interface ReferralReward {
   id: string;
   createdAt: number;
   user: string;
@@ -34,6 +34,16 @@ export interface ReferralRewardInLaunchpad {
   round: number;
   isBusd: boolean;
   amount: number;
+}
+
+export interface ReferralClaimItem {
+  createdAt: number;
+  amount: number;
+}
+
+export interface ReferralClaim {
+  busd: ReferralClaimItem[];
+  ntr: ReferralClaimItem[];
 }
 
 export interface RewardsEachAsset {
