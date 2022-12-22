@@ -6,7 +6,7 @@ import { useGetClaimableBusdForReferral } from "@/web3/hooks/use.get.claimable.b
 import { useNetworkRewards } from "@/store/network.rewards";
 import useUser from "@/hooks/use.user";
 import SingleLevelReward from "./single.level.reward";
-import { RewardsEachAsset } from "@/models/referral";
+import { ReferralClaimItem, RewardsEachAsset } from "@/models/referral";
 import { formatAddress } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useNTRPrice } from "@/hooks/use.get.ntr.price.ts";
@@ -46,13 +46,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
     fetchReferralRewardsInLaunchpad: state.fetchReferralRewardsInLaunchpad,
     fetchReferralClaimsInLaunchpad: state.fetchReferralClaimsInLaunchpad,
   }));
-  console.log("sniper: rewardsInLaunchpad: ", rewardsInLaunchpad);
-  console.log("sniper: rewardsEachLevel: ", rewardsEachLevel);
-  console.log("sniper: rewardsTotal: ", rewardsTotal);
 
   const bnbPrice = useBNBPrice();
   const ntrPrice = useNTRPrice();
-  console.log("sniper: bnb, ntr prices: ", bnbPrice, ntrPrice);
   const [reload, setReload] = useState(false);
   const claimableBusd = useGetClaimableBusdForReferral(
     loggedInUser?.account_address,
@@ -62,8 +58,6 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
     loggedInUser?.account_address,
     reload
   );
-  console.log("sniper: claimableBusd: ", claimableBusd);
-  console.log("sniper: claimableNtr: ", claimableNtr);
 
   useEffect(() => {
     if (loggedInUser?.account_address) {
@@ -90,10 +84,10 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
-    title: "Authorization Contract",
-    subtitle: `Allow Centher to use youtoken`,
-    bodyText: `Confirmation of theoken to interact with the Centher contract.`,
-    confirmButtonText: "Authorize",
+    title: "Claim NTR",
+    subtitle: `Do you want to claim NTR?`,
+    bodyText: `Claim to receive NTR.`,
+    confirmButtonText: "Claim NTR",
     onClose: () => {
       setModal((prev) => ({
         ...prev,
@@ -359,6 +353,22 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                 {rewardsInLaunchpad &&
                   rewardsInLaunchpad.map((item: any, index: number) => {
                     const date = new Date(item.createdAt * 1000);
+                    const claims: ReferralClaimItem[] = item.isBusd
+                      ? claimsInLaunchpad.busd
+                      : claimsInLaunchpad.ntr;
+                    let state;
+                    if (roundState !== RoundState.RoundsEnded) {
+                      state = "Locked";
+                    } else {
+                      if (claims.length > 0) {
+                        state =
+                          item.createdAt > claims[0].createdAt
+                            ? "Claimable"
+                            : "Claimed";
+                      } else {
+                        state = "Claimable";
+                      }
+                    }
                     return (
                       <tr className={tbodyTR} key={index}>
                         <td
@@ -372,7 +382,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                             ? `${item.amount} BUSD`
                             : `${item.amount} NTR`}
                         </td>
-                        <td className={td}>00</td>
+                        <td className={td}>{state}</td>
                       </tr>
                     );
                   })}

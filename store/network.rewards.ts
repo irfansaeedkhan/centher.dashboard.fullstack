@@ -155,7 +155,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
           });
           let _claimsInLaunchpad: ReferralClaim = { busd: [], ntr: [] };
           if (result && !error) {
-            _claimsInLaunchpad.busd = result
+            _claimsInLaunchpad.busd = result.presaleGenalogyClaimHistories
               .filter((item: any) => item.isBusd)
               .map((item1: any) => {
                 return {
@@ -165,7 +165,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
                   ),
                 };
               });
-            _claimsInLaunchpad.ntr = result
+            _claimsInLaunchpad.ntr = result.presaleGenalogyClaimHistories
               .filter((item: any) => !item.isBusd)
               .map((item1: any) => {
                 return {
