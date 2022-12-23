@@ -170,7 +170,7 @@ export const RegisterForm: React.FC = () => {
           />
 
           <p className="text-white text-sm">
-            I have read and agree to Binance&apos;s{" "}
+            I have read and agree to Centher{" "}
             <Link href={AppRoutes.auth.terms}>
               <span className="font-semibold underline cursor-pointer">
                 Terms & Condition
