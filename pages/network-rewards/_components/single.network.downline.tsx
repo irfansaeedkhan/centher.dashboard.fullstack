@@ -14,7 +14,7 @@ const SingleNetworkDownline = ({ data }: any) => {
       ? "Fifth Level"
       : "Sixth Level";
   return (
-    <div className="h-[228px] w-full f2xl:w-[368px] f2xl:max-w-[368px] fxl:w-[317px] fxl:max-w-[368px] flg:w-[315px] flg:max-w-[368px] fmd:w-[352px] fsm:w-[256px] flex-grow bg-elevation-1 py-6 rounded-xl">
+    <div className="h-[228px] w-full f2xl:w-[364px] f2xl:max-w-[364px] fxl:w-[317px] fxl:max-w-[368px] flg:w-[315px] flg:max-w-[368px] fmd:w-[352px] fsm:w-[256px] flex-grow bg-elevation-1 py-6 rounded-xl">
       <div className="px-6 pb-4 flex justify-between items-center gap-10 text-sm font-semibold leading-6 border-b border-gray-shade-3">
         <p className="text-gray-shade-7">{level}</p>
         {/* <p className="text-brand-primary">{`${data.percent}%`}</p> */}

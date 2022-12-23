@@ -1,4 +1,7 @@
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import LaunchpadSkeleton from "@/components/loading.skeletons/launchpad.skeleton";
+import NetworkDownlineSkeleton from "@/components/loading.skeletons/network.overview.downline";
+import WalletSectionSkeleton from "@/components/loading.skeletons/network.overview.wallet";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
 import React, { useEffect } from "react";
@@ -29,7 +32,12 @@ const NetworkRewards: NextPageWithLayout = () => {
 
   return (
     <div>
-      <WalletSection data={rewardsTotal} />
+      {rewardsTotal ? (
+        <WalletSection data={rewardsTotal} />
+      ) : (
+        <WalletSectionSkeleton />
+      )}
+
       <NetworkDownline genealogy={genealogies} />
     </div>
   );

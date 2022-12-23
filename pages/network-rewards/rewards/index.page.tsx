@@ -1,4 +1,5 @@
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import ClaimableRewardsSkeleton from "@/components/loading.skeletons/network.rewards.claimable";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import clsx from "clsx";
 import React, { useState } from "react";
@@ -21,7 +22,7 @@ const Rewards: NextPageWithLayout = () => {
               : "text-gray-shade-7 text-xs"
           )}
         >
-          Lunchpad Rewards
+          Launchpad Rewards
         </h3>
         <h3
           onClick={() => setRewardState("marketplace-rewards")}
@@ -36,7 +37,11 @@ const Rewards: NextPageWithLayout = () => {
         </h3>
       </div>
       <div className="mt-6">
-        <LaunchpadClaimableRewards rewardState={rewardState} />
+        {rewardState ? (
+          <LaunchpadClaimableRewards rewardState={rewardState} />
+        ) : (
+          <ClaimableRewardsSkeleton />
+        )}
       </div>
     </div>
   );
