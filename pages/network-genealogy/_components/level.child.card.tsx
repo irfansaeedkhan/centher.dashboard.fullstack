@@ -1,8 +1,11 @@
+import useGetUser from "@/hooks/use.get.user";
+import useUser from "@/hooks/use.user";
 import { formatAddress } from "@/utils/format.address";
 import Image from "next/image";
 import React, { useState } from "react";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
+  const { user } = useGetUser(childData?.user);
   // const [activeCard, setActiveCard] = useState(false);
   return (
     <div
@@ -15,18 +18,26 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
       }}
     >
       <div className="flex items-center py-4 px-3 gap-3 ">
-        <Image
-          src={"/images/robertProfilepic.png"}
-          alt={"profile pic"}
-          width={36}
-          height={36}
-          sizes="36px"
-          className="rounded-full object-cover w-9 h-9"
-        />
+        {user ? (
+          <Image
+            src={user.profile_image.path}
+            alt={"profile pic"}
+            width={36}
+            height={36}
+            sizes="36px"
+            className="rounded-full object-cover w-9 h-9"
+          />
+        ) : (
+          <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+        )}
         <div className="flex flex-col gap-2">
-          <h5 className="dark text-white text-12px font-medium">
-            {formatAddress(childData?.user)}
-          </h5>
+          {user ? (
+            <h5 className="dark text-white text-12px font-medium flex-shrink-0">
+              {user?.display_name}
+            </h5>
+          ) : (
+            <div className="rounded-sm max-w-[180px] h-4 bg-gray-shade-3 animate-pulse"></div>
+          )}
           <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {childData?.level}
           </h6>
