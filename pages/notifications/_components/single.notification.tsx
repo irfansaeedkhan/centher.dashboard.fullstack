@@ -62,6 +62,26 @@ export const SingleNotification = React.forwardRef<
         {notification.by.display_name} has joined your network.
       </Link>
     );
+  } else if (notification.type === "centher_purchase_ntr") {
+    notificationLink = (
+      <Link
+        href={`/profile/${notification.by.account_address}`}
+        className="text-sm text-white hover:text-brand-primary"
+      >
+        {notification.amount} NTR network rewards from{" "}
+        {notification.by.display_name}
+      </Link>
+    );
+  } else if (notification.type === "centher_purchase_busd") {
+    notificationLink = (
+      <Link
+        href={`/profile/${notification.by.account_address}`}
+        className="text-sm text-white hover:text-brand-primary"
+      >
+        {notification.amount} BUSD network rewards from{" "}
+        {notification.by.display_name}
+      </Link>
+    );
   }
 
   return (
