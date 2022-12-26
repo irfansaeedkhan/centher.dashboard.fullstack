@@ -19,11 +19,11 @@ const ClaimableRewardsSkeleton = () => {
       {/* table */}
       <div className="w-full flex flex-col bg-[#131314] rounded-[14px]">
         <div className="w-full h-auto bg-[#131314] rounded-[14px] p-2">
-          <div className="w-full fsm:h-[92px] h-[146px] flex  bg-[#3C3F4A]  animate-pulse border-2 rounded-2xl border-gray-shade-3"></div>
-          <div className="w-full fsm:h-[92px] h-[146px] flex   animate-pulse border-b-2  border-gray-shade-3"></div>
-          <div className="w-full fsm:h-[92px] h-[146px] flex    animate-pulse border-b-2  border-gray-shade-3"></div>
-          <div className="w-full fsm:h-[92px] h-[146px] flex   animate-pulse border-b-2  border-gray-shade-3"></div>
-          <div className="w-full fsm:h-[92px] h-[146px] flex    animate-pulse border-b-2  border-gray-shade-3"></div>
+          <div className="w-full h-[92px]  flex  bg-[#3C3F4A]  animate-pulse border-2 rounded-2xl border-gray-shade-3"></div>
+          <div className="w-full h-[92px]  flex   animate-pulse border-b-2  border-gray-shade-3"></div>
+          <div className="w-full h-[92px]  flex    animate-pulse border-b-2  border-gray-shade-3"></div>
+          <div className="w-full h-[92px]  flex   animate-pulse border-b-2  border-gray-shade-3"></div>
+          <div className="w-full h-[92px]  flex    animate-pulse border-b-2  border-gray-shade-3"></div>
         </div>
       </div>
     </div>

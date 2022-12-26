@@ -38,11 +38,12 @@ export const AppRoutes = {
     staking_packs: "/admin/staking-packs",
     create_staking_pack: "/admin/create-staking-pack",
     update_staking_pack: "/admin/update-staking-pack",
-    network_rewards: "/admin/network-rewards",
     influencer_requests: "/admin/influencer-requests",
     influencer_details: "/admin/influencer-details",
     transactions: "/admin/transactions",
     users: "/admin/users",
+    network_rewards: "/admin/network-rewards/launchpad",
+    network_rewards_marketplace: "/admin/network-rewards/marketplace",
   },
 
   chat: "/chat",
