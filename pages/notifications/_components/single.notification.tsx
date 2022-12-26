@@ -30,7 +30,7 @@ export const SingleNotification = React.forwardRef<
     }
   };
 
-  let notificationLink: JSX.Element | null = null;
+  let notificationLink: JSX.Element | JSX.Element[] | null = null;
   if (notification.type === "post_like" || notification.type === "post_reply") {
     notificationLink = (
       <Link
@@ -68,8 +68,10 @@ export const SingleNotification = React.forwardRef<
         href={`/profile/${notification.by.account_address}`}
         className="text-sm text-white hover:text-brand-primary"
       >
-        {notification.amount} NTR network rewards from{" "}
-        {notification.by.display_name}
+        <>
+          {notification.amount} NTR network rewards from{" "}
+          {notification.by.display_name}
+        </>
       </Link>
     );
   } else if (notification.type === "centher_purchase_busd") {
@@ -78,12 +80,18 @@ export const SingleNotification = React.forwardRef<
         href={`/profile/${notification.by.account_address}`}
         className="text-sm text-white hover:text-brand-primary"
       >
-        {notification.amount} BUSD network rewards from{" "}
-        {notification.by.display_name}
+        <>
+          {notification.amount} BUSD network rewards from{" "}
+          {notification.by.display_name}
+        </>
       </Link>
     );
   }
 
+  /**
+   * {notification.amount} BUSD network rewards from{" "}
+        {notification.by.display_name}
+   */
   return (
     <div
       ref={ref}
