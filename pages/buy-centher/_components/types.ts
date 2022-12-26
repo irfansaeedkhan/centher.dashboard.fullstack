@@ -8,7 +8,7 @@ export interface SelectedTokenA {
   maxContribution: number;
   rate: number;
 
-  inputValue: number;
+  inputValue: number | "";
   inputMinValue: number;
   inputMaxValue: number;
 }
