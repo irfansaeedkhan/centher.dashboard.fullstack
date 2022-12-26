@@ -59,10 +59,15 @@ export const LoginForm: React.FC = () => {
 
       router.push(AppRoutes.feed.index);
     } catch (error: any) {
+      console.dir(error);
       button.disabled = false;
       setisLoading("failed");
       if (error.code === "ACTION_REJECTED") {
         toast.error("Login request rejected.");
+        return;
+      }
+      if (error?.response?.status === 404) {
+        toast.error("User not found.");
         return;
       }
       if (error?.response?.data?.message_description) {
