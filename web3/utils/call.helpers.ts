@@ -87,7 +87,7 @@ export const buyCenther = async (
 
     return {
       success: true,
-      hash: tx.hash,
+      hash: tx.hash as string,
     };
   } catch (error: any) {
     customLog("[Buy token Error] = ", ["development"]);
