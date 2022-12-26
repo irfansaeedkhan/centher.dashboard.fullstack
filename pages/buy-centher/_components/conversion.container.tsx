@@ -84,7 +84,10 @@ export const ConversionContainer: React.FC<Props> = ({
               placeholder={selectedTokenA.inputMinValue.toFixed(2)}
               value={selectedTokenA.inputValue}
               onChange={(e) => {
-                const value = Number(e.target.value);
+                const value =
+                  e.target.value === ""
+                    ? e.target.value
+                    : Number(e.target.value);
 
                 setSelectedTokenA((prev) => ({
                   ...prev,
@@ -92,7 +95,7 @@ export const ConversionContainer: React.FC<Props> = ({
                 }));
                 setSelectedTokenB((prev) => ({
                   ...prev,
-                  inputValue: value * selectedTokenA.rate,
+                  inputValue: (value === "" ? 0 : value) * selectedTokenA.rate,
                 }));
               }}
               min={selectedTokenA.inputMinValue}

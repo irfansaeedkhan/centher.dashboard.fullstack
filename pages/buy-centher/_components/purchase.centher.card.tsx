@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
+import { isString } from "lodash";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -190,7 +191,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
 
   const handleBuyNtrDao = async () => {
     try {
-      if (!account || !library) return;
+      if (!account || !library || !selectedTokenA.inputValue) return;
 
       setModal((prev) => ({
         ...prev,
