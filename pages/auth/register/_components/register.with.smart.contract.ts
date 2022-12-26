@@ -46,6 +46,15 @@ export const registerWithSmartContract = async (
         signupData.referred_by,
         `Referral address is not valid!`
       );
+
+      // Check if the referral address is registered
+      if (!(await registrationContract.isRegistered(address))) {
+        throw {
+          status: "app_error",
+          message: "referral_address_not_registered",
+          message_description: "Referral address is not registered",
+        };
+      }
     }
 
     // Get balance of the user's account
