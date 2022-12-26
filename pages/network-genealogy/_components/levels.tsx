@@ -7,6 +7,8 @@ import { LevelMainMobile } from "./level.main.mobile";
 import { ActiveCardMobile } from "./active.card.mobile";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
+import NetworkGenealogySkeleton from "@/components/loading.skeletons/network.genealogy.skeleton";
+import NetworkGenealogySingleCard from "@/components/loading.skeletons/network.genealogy.single.card";
 
 export const Levels = () => {
   const { width } = useWindowSize();
@@ -82,34 +84,46 @@ export const Levels = () => {
   return (
     <>
       {mobileView ? (
-        <div className="w-full flex flex-col gap-3">
-          {activeParent?.length > 0 && (
-            <ActiveCardMobile
-              activeParent={activeParent}
-              handleMobileBack={handleMobileBack}
-            />
-          )}
-          {genealogies && genealogies.length > level && (
-            <LevelMainMobile
-              mobileData={genealogies[level]}
-              handleCard={handleCard}
-            />
-          )}
-        </div>
-      ) : (
-        <div className="w-full flex gap-3">
-          {genealogies &&
-            genealogies.length > 0 &&
-            genealogies.map((parentData: any, index: number) => {
-              return (
-                <LevelMain
-                  parentData={parentData}
-                  handleCard={handleCard}
-                  key={index}
+        <>
+          {!!genealogies?.length ? (
+            <div className="w-full flex flex-col gap-3">
+              {activeParent?.length > 0 && (
+                <ActiveCardMobile
+                  activeParent={activeParent}
+                  handleMobileBack={handleMobileBack}
                 />
-              );
-            })}
-        </div>
+              )}
+              {genealogies && genealogies.length > level && (
+                <LevelMainMobile
+                  mobileData={genealogies[level]}
+                  handleCard={handleCard}
+                />
+              )}
+            </div>
+          ) : (
+            <NetworkGenealogySingleCard />
+          )}
+        </>
+      ) : (
+        <>
+          {!!genealogies?.length ? (
+            <div className="w-full flex gap-3">
+              {genealogies &&
+                genealogies.length > 0 &&
+                genealogies.map((parentData: any, index: number) => {
+                  return (
+                    <LevelMain
+                      parentData={parentData}
+                      handleCard={handleCard}
+                      key={index}
+                    />
+                  );
+                })}
+            </div>
+          ) : (
+            <NetworkGenealogySkeleton />
+          )}
+        </>
       )}
     </>
   );
