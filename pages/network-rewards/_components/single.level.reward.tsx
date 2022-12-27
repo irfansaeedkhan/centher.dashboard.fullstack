@@ -18,7 +18,7 @@ const SingleLevelReward: React.FC<SingleLevelRewardPProps> = ({
   level,
 }) => {
   return (
-    <div className="w-full f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px]">
+    <div className="w-[43%] f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px]">
       <div className="text-xs font-semibold text-gray-shade-7">
         {`From Level ${level}`}
       </div>

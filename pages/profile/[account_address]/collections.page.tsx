@@ -76,9 +76,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
       )}
 
       {(loading === "loading" || loading === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
-          <NftProfileCollectionSkeleton />
-          <NftProfileCollectionSkeleton />
+        <div className="flex justify-center fsm:justify-start flex-wrap gap-10 items-center">
           <NftProfileCollectionSkeleton />
           <NftProfileCollectionSkeleton />
         </div>

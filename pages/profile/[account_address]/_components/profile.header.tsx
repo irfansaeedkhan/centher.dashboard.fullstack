@@ -491,7 +491,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
           </div>
 
           <div
-            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6 pt-10`}
+            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6  pt-16`}
           >
             <Profile3DotsMenu
               isOwnProfile={isOwnProfile}

@@ -6,7 +6,7 @@ import React from "react";
 const Banner = () => {
   return (
     <div className="relative flex max-w-[1300px]">
-      <div className="f2xl:max-w-[595px] md:max-w-[70%] sm:max-w-full md:m-10 sm:m-5 !z-50 flex flex-col">
+      <div className="f2xl:max-w-[595px] md:max-w-[70%] sm:max-w-full md:m-10 sm:m-5 !z-50 flex flex-col p-4 fsm:p-0">
         <p className="md:text-34 sm:text-2xl font-bold text-white md:!leading-[43px] sm:!leading-7">
           Social, <span className="text-brand-primary">Entertainment</span>, and{" "}
           <span className="text-brand-primary">NFTs.</span> All YOU want
