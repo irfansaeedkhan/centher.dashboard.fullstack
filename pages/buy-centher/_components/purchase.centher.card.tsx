@@ -208,6 +208,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
         refreshContributionInfo();
         setModal((prev) => ({
           ...prev,
+          title: "Success",
           subtitle: "Purchase Successful",
           bodyText: `You have bought CENTHER tokens. CENTHER will be locked for ${roundInfo.lockMonths} months. You can claim when unlocked.`,
           status: "success",

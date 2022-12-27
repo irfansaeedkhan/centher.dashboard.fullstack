@@ -89,8 +89,13 @@ export const ConversionTokenBox: React.FC<Props> = ({
           >
             Balance
           </div>
-          <span className={`text-xs fmd:text-sm text-white font-semibold`}>
-            {tokenBalance}
+          <span
+            className={`text-xs fmd:text-sm text-white font-semibold`}
+            title={tokenBalance.toString()}
+          >
+            {tokenBalance < 9999999 && tokenBalance.toString().length < 7
+              ? tokenBalance
+              : tokenBalance.toString().slice(0, 7) + "+"}
           </span>
         </div>
       </div>
