@@ -65,7 +65,7 @@ const NFTProfile: NextPageWithLayout = () => {
         loadingListedNFTs === "loading" ||
         loadingOwnedNFTs === "idle" ||
         loadingListedNFTs === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
+        <div className="flex justify-center flex-wrap gap-10 items-center">
           <NftsSkeleton />
           <NftsSkeleton />
           <NftsSkeleton />

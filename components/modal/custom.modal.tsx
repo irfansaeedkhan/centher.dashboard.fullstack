@@ -57,10 +57,10 @@ const modalContent = ctl(`
   border 
   flex-col 
   relative 
+  w-full
   lg:w-164 
   md:w-140
   f2xl:w-164 
-  sm:w-full 
   rounded-lg
   bg-black-shade-3
   focus:outline-none 

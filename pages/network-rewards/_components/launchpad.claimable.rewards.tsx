@@ -214,7 +214,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
       <div className="w-full h-auto bg-elevation-1 rounded-[14px]">
         <div
           className={clsx(
-            `w-full fsm:h-[92px] h-[200px] bg-no-repeat bg-center bg-cover py-5 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4`,
+            `w-full h-auto fsm:h-[92px]  bg-no-repeat bg-center bg-cover py-5 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4`,
             rewardState === "marketplace-rewards"
               ? "bg-[url(/images/liscense1.png)]"
               : "bg-[url(/images/liscense3.png)]"

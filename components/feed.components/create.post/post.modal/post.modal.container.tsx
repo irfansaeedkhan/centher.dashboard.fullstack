@@ -37,7 +37,7 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
     <ModalPortal wrapperId="post-modal-portal">
       {/* Background */}
       <div
-        className={`font-monto flex justify-center items-center fixed inset-0 z-[1050] backdrop-filter backdrop-blur-lg overflow-y-auto overflow-x-hidden`}
+        className={`font-monto flex justify-center items-center fixed inset-0 z-[1050] backdrop-filter backdrop-blur-lg overflow-y-auto overflow-x-hidden bg-black-shade-12 fsm:bg-transparent`}
       >
         {/* Container */}
         <div
