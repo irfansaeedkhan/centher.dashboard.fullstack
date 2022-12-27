@@ -7,6 +7,7 @@ import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -43,7 +44,10 @@ const SearchBar = () => {
     }
 
     setSearchQuery(searchQueryInput);
-    router.push(`/search?q=${searchQueryInput.trim()}`);
+    router.push({
+      pathname: AppRoutes.search,
+      query: { q: searchQueryInput.trim() },
+    });
   };
 
   const handleSearchQueryInput: React.ChangeEventHandler<
