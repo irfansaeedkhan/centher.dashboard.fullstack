@@ -48,7 +48,7 @@ export const registerWithSmartContract = async (
       );
 
       // Check if the referral address is registered
-      if (!(await registrationContract.isRegistered(address))) {
+      if (!(await registrationContract.isRegistered(signupData.referred_by))) {
         throw {
           status: "app_error",
           message: "referral_address_not_registered",
