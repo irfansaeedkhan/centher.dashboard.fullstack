@@ -20,26 +20,29 @@ export const useConnectWallet = () => {
     }
   }, [error]);
 
-  const connectWallet = useCallback(async () => {
-    if (typeof window.ethereum !== "undefined") {
-      await activate(injectedConnector);
-    } else {
-      toast.error("Please install MetaMask!");
-    }
-  }, [activate]);
-
-  const disconnectWallet = useCallback(() => {
-    deactivate();
-  }, [deactivate]);
-
   const getConnectedAccount = useCallback(async () => {
     if (window.ethereum) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       try {
         return await provider.getSigner().getAddress();
-      } catch {}
+      } catch {
+        return null;
+      }
     }
   }, []);
+
+  const connectWallet = useCallback(async () => {
+    if (typeof window.ethereum !== "undefined") {
+      await activate(injectedConnector);
+      return await getConnectedAccount();
+    } else {
+      toast.error("Please install MetaMask!");
+    }
+  }, [activate, getConnectedAccount]);
+
+  const disconnectWallet = useCallback(() => {
+    deactivate();
+  }, [deactivate]);
 
   return { connectWallet, getConnectedAccount, disconnectWallet };
 };
