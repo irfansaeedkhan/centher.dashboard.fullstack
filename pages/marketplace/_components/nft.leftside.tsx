@@ -7,6 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
+import AudioPlayer from "./audio.player";
 interface NFTLeftSideComponentProps {
   image: string | undefined;
   type: string | undefined;
@@ -22,13 +23,17 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
       <div className={ImgContainer}>
         {ImgStyling && (
           <div>
-            <Image
-              className={ImgStyling}
-              src={props.image ? props.image : ""}
-              alt="image"
-              height={270}
-              width={270}
-            />
+            {props.image?.includes("mp3") ? (
+              <AudioPlayer src={props.image} />
+            ) : (
+              <Image
+                className={ImgStyling}
+                src={props.image ? props.image : ""}
+                alt="image"
+                height={270}
+                width={270}
+              />
+            )}
           </div>
         )}
       </div>

@@ -76,7 +76,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
         className={`w-[15.5rem] py-5 gap-8 fxl:hidden flex flex-col font-monto justify-between overflow-y-scroll h-[calc(100vh-60px)] bg-background-shade-1`}
       >
         <div>
-          {user && (
+          {/* {user && (
             <div className={`flex gap-2 items-center my-4 pl-6 xl:hidden`}>
               <CreateNFT />
               <Link
@@ -87,7 +87,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
                 Create NFT
               </Link>
             </div>
-          )}
+          )} */}
 
           <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
             <IoSearchSharp className="text-xl text-gray-shade-7" />

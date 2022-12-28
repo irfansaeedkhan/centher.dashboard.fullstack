@@ -81,14 +81,14 @@ const Header = () => {
 
         {user && (
           <>
-            <div className="hidden fxl:block">
+            {/* <div className="hidden fxl:block">
               <Link
                 href={AppRoutes.marketplace.create_nft}
                 className={connectButton}
               >
                 Create NFT
               </Link>
-            </div>
+            </div> */}
             <div className="relative">
               <div
                 ref={modalOpenerRef}
