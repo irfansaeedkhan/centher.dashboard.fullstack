@@ -237,9 +237,13 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             <p className="">Claimable Rewards</p>
             {rewardState === "lunchpad-rewards" ? (
               <span className="font-semibold flex gap-2 items-center">
-                <p>{`${claimableBusd} (BUSD)`}</p>
+                <p>{`${
+                  roundState !== RoundState.RoundsEnded ? claimableBusd : "0"
+                } (BUSD)`}</p>
                 <span className="border-l border-white/[0.1] h-3" />
-                <p>{`${claimableNtr} (NTR)`}</p>
+                <p>{`${
+                  roundState !== RoundState.RoundsEnded ? claimableNtr : "0"
+                } (NTR)`}</p>
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="font-semibold flex gap-2 items-center">00 (BNB)</p>
@@ -258,7 +262,15 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimBUSDModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                (roundState !== RoundState.RoundsEnded ||
+                  claimableBusd === 0) &&
+                  `bg-background-shade-2 text-gray-shade-7`,
+                !(
+                  roundState !== RoundState.RoundsEnded || claimableBusd === 0
+                ) && `bg-brand-primary text-black-shade-3`
+              )}
             >
               Claim BSUD
             </button>
@@ -275,13 +287,21 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimNTRModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                (roundState !== RoundState.RoundsEnded || claimableNtr === 0) &&
+                  `bg-background-shade-2 text-gray-shade-7`,
+                !(
+                  roundState !== RoundState.RoundsEnded || claimableNtr === 0
+                ) && `bg-brand-primary text-black-shade-3`
+              )}
             >
               Claim NTR
             </button>
           )}
           {rewardState === "marketplace-rewards" && (
             <button
+              disabled={true}
               onClick={
                 !account
                   ? () => {
@@ -289,7 +309,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimBNBModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl bg-background-shade-2 text-gray-shade-7`
+              )}
             >
               Claim BNB
             </button>
