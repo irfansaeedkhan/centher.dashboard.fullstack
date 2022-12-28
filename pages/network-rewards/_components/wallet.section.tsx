@@ -1,12 +1,19 @@
 import useUser from "@/hooks/use.user";
 import { formatAddress } from "@/utils/format.address";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
-import { useCopyToClipboard } from "usehooks-ts";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();
+  const [referralLink, setReferralLink] = useState("");
+
+  useEffect(() => {
+    setReferralLink(
+      `${window.location.origin}/auth/register?referred_by=${loggedInUser?.account_address}`
+    );
+  }, [loggedInUser?.account_address]);
 
   const [_, copy] = useCopyToClipboard();
 
@@ -43,7 +50,7 @@ const WalletSection = ({ data }: any) => {
         </p>
         <div className="w-full rounded-xl p-2 bg-white/[0.07] border border-white/20 backdrop-blur-md h-[52px] flex items-center justify-between gap-2">
           <p className="w-full max-w-[210px] font-semibold text-xs text-white truncate">
-            {`${window.location.origin}/auth/register?`}
+            {referralLink}
           </p>
           <button
             className="h-9 w-9 rounded-lg p-2 bg-white/20 backdrop-blur-[18px]"
