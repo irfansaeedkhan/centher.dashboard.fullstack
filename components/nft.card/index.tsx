@@ -39,6 +39,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         setName(metadata.data.name);
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
+        console.log("user", formatIPFSUrl(metadata.data.image));
         setImageUrl(formatIPFSUrl(metadata.data.image));
         setType(metadata.data.type);
       } catch (error) {}
@@ -107,7 +108,9 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
       >
         {imageUrl ? (
           <Image
-            src={imageUrl}
+            src={
+              imageUrl.includes("mp3") ? "/images/default-music.png" : imageUrl
+            }
             alt="nft"
             height={222}
             width={293}
