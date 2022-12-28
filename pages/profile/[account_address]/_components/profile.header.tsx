@@ -490,15 +490,13 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
             </div>
           </div>
 
-          <div
-            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6  pt-16`}
-          >
+          <div className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6`}>
             <Profile3DotsMenu
               isOwnProfile={isOwnProfile}
               loggedInUser={loggedInUser}
             />
 
-            <div className={`space-y-2`}>
+            <div className={`space-y-2 !mt-14`}>
               <div className="w-full justify-center flex">
                 <div
                   className={`flex flex-col lg:flex-row items-baseline justify-between`}
