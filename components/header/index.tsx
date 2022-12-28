@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
@@ -16,6 +17,8 @@ import SearchBar from "./search";
 const Header = () => {
   const { width } = useWindowSize();
   const { user, isLoading: isUserLoading } = useUser();
+  const { connectWallet, disconnectWallet, getConnectedAccount } =
+    useConnectWallet();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +29,22 @@ const Header = () => {
       setSidebarOpen(false);
     }
   }, [width]);
+
+  // For auto-connecting wallet on page load if user is logged in
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    // Get connected account
+    const connectedAccount = getConnectedAccount();
+    connectedAccount
+      .then((_acc) => {
+        if (_acc && _acc.toLowerCase() === user.account_address.toLowerCase()) {
+          connectWallet();
+        }
+      })
+      .catch(() => {});
+  }, [user, connectWallet, disconnectWallet, getConnectedAccount]);
 
   return (
     <div

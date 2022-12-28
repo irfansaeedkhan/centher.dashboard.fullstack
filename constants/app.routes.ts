@@ -15,7 +15,7 @@ export const AppRoutes = {
     archived_posts: "/profile/[account_address]/archived-posts",
     settings: "/profile/settings",
 
-    // Coming soon pages
+    // Not ready pages
     nfts: "/profile/[account_address]/nfts",
     purchased: "/profile/[account_address]/purchased",
     collections: "/profile/[account_address]/collections",
@@ -28,10 +28,24 @@ export const AppRoutes = {
   },
 
   // Authenticated Pages
-  notifications: "/notifications",
-  // Coming soon pages
-  coming_soon: "/coming-soon",
   home: "/",
+  search: "/search",
+  coming_soon: "/coming-soon",
+  notifications: "/notifications",
+  buy_centher: "/buy-centher",
+  referral: {
+    network_genealogy: "/network-genealogy",
+    network_rewards: "/network-rewards/rewards",
+    overview: "/network-rewards/overview",
+    liscense: "/network-rewards/liscense",
+  },
+
+  // Not ready pages
+  chat: "/chat",
+  profits_dashboard: "/profits-dashboard",
+  voting_chain: "/voting-chain",
+  staking_packs: "/staking-packs",
+  liquidity_pool: "/liquidity-pool",
 
   admin: {
     index: "/admin",
@@ -46,13 +60,6 @@ export const AppRoutes = {
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
   },
 
-  chat: "/chat",
-  buy_centher: "/buy-centher",
-  profits_dashboard: "/profits-dashboard",
-  voting_chain: "/voting-chain",
-  staking_packs: "/staking-contract",
-  liquidity_pool: "/liquidity-pool",
-
   marketplace: {
     nft: "/marketplace/[collection]/[tokenId]",
     create_nft: "/marketplace/create",
@@ -61,11 +68,5 @@ export const AppRoutes = {
     all_nfts: "/marketplace/all-nfts",
     all_collections: "/marketplace/all-collections",
     collection: "/marketplace/[collection]",
-  },
-
-  referral: {
-    network_genealogy: "/network-genealogy",
-    network_rewards: "/network-rewards/rewards",
-    overview: "/network-rewards/overview",
   },
 } as const;

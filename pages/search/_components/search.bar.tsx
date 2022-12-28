@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchStore } from "@/store/search.store";
 import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -35,7 +36,10 @@ const Searchbar = () => {
     }
 
     setSearchQuery(searchQueryInput);
-    router.push(`/search?q=${searchQueryInput.trim()}`);
+    router.push({
+      pathname: AppRoutes.search,
+      query: { q: searchQueryInput.trim() },
+    });
   };
 
   const handleSearchQueryInput: React.ChangeEventHandler<

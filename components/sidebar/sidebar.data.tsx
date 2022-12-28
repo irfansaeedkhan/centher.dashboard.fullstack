@@ -28,16 +28,16 @@ export const sidebarData: SidebarData = {
         icon: Feed,
       },
       {
-        label: "Chat",
-        url: AppRoutes.chat,
-        icon: Chat,
-        countType: "chats",
-      },
-      {
         label: "Notifications",
         url: AppRoutes.notifications,
         icon: Notification,
         countType: "notifications",
+      },
+      {
+        label: "Chat",
+        url: AppRoutes.chat,
+        icon: Chat,
+        countType: "chats",
       },
     ],
   },

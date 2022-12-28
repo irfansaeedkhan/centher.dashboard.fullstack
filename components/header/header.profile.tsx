@@ -46,11 +46,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 
   useEffect(() => {
     if (!account || !user) {
-      //  connectWallet();
       return;
     }
     if (user.account_address.toLowerCase() !== account.toLowerCase()) {
-      toast.error("Please connect to correct account");
       deactivate();
     }
   }, [deactivate, user, account, connectWallet]);
@@ -132,7 +130,15 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               <button
                 className={connectButton}
                 onClick={async () => {
-                  await connectWallet();
+                  if (!user) return;
+                  const _account = await connectWallet();
+                  if (
+                    user.account_address.toLowerCase() !==
+                    _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
                 }}
               >
                 Connect
