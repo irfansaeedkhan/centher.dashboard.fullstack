@@ -47,7 +47,7 @@ export const ProfileTabs: React.FC = () => {
           className="fsm:px-8 fsm:py-3"
         />
       </Link>
-      <Link
+      {/* <Link
         href={{
           pathname: AppRoutes.profile.nfts,
           query: {
@@ -61,7 +61,7 @@ export const ProfileTabs: React.FC = () => {
           variant={`${currentPageRoute.isNFTProfilePage ? "v1" : "v2"}`}
           className="fsm:px-8 fsm:py-3"
         />
-      </Link>
+      </Link> */}
     </div>
   );
 };
