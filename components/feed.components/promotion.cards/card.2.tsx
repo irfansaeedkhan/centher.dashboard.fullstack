@@ -37,7 +37,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         </p>
       </div>
       <Link
-        href={AppRoutes.nfts.create_nft}
+        href={AppRoutes.marketplace.create_nft}
         className={`mt-4 w-fit px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark `}
       >
         Create Now

@@ -22,8 +22,8 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
         <div className={`w-fit`}>
           <Link href={AppRoutes.home}>
             <Image
-              src="/images/nether.nft.logo.svg"
-              alt="Nether NFT Logo"
+              src="/images/centher.logo.png"
+              alt="Centher Logo"
               width={154}
               height={32}
             />
@@ -34,7 +34,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
         >
           <div className={`w-fit`}>
             <Image
-              src="/images/nether.nft.favicon.svg"
+              src="/images/centher.logo.favicon.png"
               alt="logo"
               width={310}
               height={310}

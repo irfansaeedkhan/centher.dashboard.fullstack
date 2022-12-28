@@ -46,18 +46,41 @@ export const registerWithSmartContract = async (
         signupData.referred_by,
         `Referral address is not valid!`
       );
+
+      // Check if the referral address is registered
+      if (!(await registrationContract.isRegistered(signupData.referred_by))) {
+        throw {
+          status: "app_error",
+          message: "referral_address_not_registered",
+          message_description: "Referral address is not registered",
+        };
+      }
     }
+
+    // Get balance of the user's account
+    const bnbBalance = await library.getBalance(address);
 
     let tx: TransactionResponse;
 
     if (signupData.referred_by !== "") {
+      // If BNB balance is less than estimated gas fee, return error
+      if (
+        bnbBalance.lt(
+          await registrationContract.estimateGas.registerWithReferrer(
+            signupData.referred_by
+          )
+        )
+      ) {
+        throw {
+          status: "app_error",
+          message: "insufficient_funds",
+          message_description: `You don't have enough balance to pay the gas fee`,
+        };
+      }
       tx = await registrationContract.registerWithReferrer(
         signupData.referred_by
       );
     } else {
-      // Get balance of the user's account
-      const bnbBalance = await library.getBalance(address);
-
       // Convert registration fee to BigNumber
       const registrationFee = ethers.utils.parseEther(fee);
 

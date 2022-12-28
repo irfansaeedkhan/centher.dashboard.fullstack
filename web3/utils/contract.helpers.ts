@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 // Addresses
 import {
-  getNtrdaoAddress,
+  getCentherAddress,
   getPresaleAddress,
   getBusdAddress,
   getMulticallAddress,
@@ -13,7 +13,7 @@ import {
 } from "./address.helpers";
 
 // ABI
-import ntrdaoAbi from "../abis/ntrdao.json";
+import centherAbi from "../abis/centher.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
 import registrationAbi from "../abis/registration.json";
@@ -42,15 +42,15 @@ const getContract = (abi: any, address: string, signer?: SignerOrProvider) => {
 //   return new web3.eth.Contract(abi, address)
 // }
 
-export const getNtrdaoContract = (signer: any) => {
-  return getContract(ntrdaoAbi, getNtrdaoAddress(), signer);
+export const getNtrdaoContract = (signer?: SignerOrProvider) => {
+  return getContract(centherAbi, getCentherAddress(), signer);
 };
 
 export const getRegistrationContract = (signer?: SignerOrProvider) => {
   return getContract(registrationAbi, getRegistrationAddress(), signer);
 };
 
-export const getPresaleContract = (signer: any) => {
+export const getPresaleContract = (signer?: SignerOrProvider) => {
   return getContract(presaleAbi, getPresaleAddress(), signer);
 };
 
@@ -77,7 +77,7 @@ export const getRouterContract = (signer: any) => {
   return getContract(routerAbi, getRouterAddress(), signer);
 };
 
-export const getBusdContract = (signer: any) => {
+export const getBusdContract = (signer?: SignerOrProvider) => {
   return getContract(busdAbi, getBusdAddress(), signer);
 };
 

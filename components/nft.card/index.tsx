@@ -16,6 +16,7 @@ import {
 import { BNBIcon, YellowTick } from "@/assets/svgs";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
+import { AppRoutes } from "@/constants/app.routes";
 
 export interface NFTCardProps {
   data: NFT;
@@ -30,6 +31,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   const [collection, setCollection] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [type, setType] = useState("");
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -38,6 +40,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
         setImageUrl(formatIPFSUrl(metadata.data.image));
+        setType(metadata.data.type);
       } catch (error) {}
     };
     if (data && data.ipfs) {
@@ -71,7 +74,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             <div className="flex items-center gap-2">
               {user?.account_address ? (
                 <Link
-                  className="cursor-pointer truncate max-w-[200px] text-white"
+                  className="cursor-pointer truncate w-full max-w-[150px] text-white"
                   href={`/profile/${user?.account_address}`}
                 >
                   <span className={`text-white text-xs font-medium`}>
@@ -93,7 +96,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         )}
       </div>
       <Link
-        href={`/nfts/${data.collection}/${data.tokenId}`}
+        href={{
+          pathname: AppRoutes.marketplace.nft,
+          query: {
+            collection: data.collection,
+            tokenId: data.tokenId,
+          },
+        }}
         className={nftImageWrapper}
       >
         {imageUrl ? (
@@ -109,7 +118,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         )}
       </Link>
       <Link
-        href={`/nfts/${data.collection}/${data.tokenId}`}
+        href={{
+          pathname: AppRoutes.marketplace.nft,
+          query: {
+            collection: data.collection,
+            tokenId: data.tokenId,
+          },
+        }}
         className={nftDetailWrapper}
       >
         <div className={nftName}>{name}</div>

@@ -9,10 +9,25 @@ import {
 import { AppRoutes } from "@/constants/app.routes";
 
 export async function middleware(request: NextRequest) {
+  if (checkMatch(request.nextUrl, publicOrAuthenticatedPages)) {
+    return NextResponse.next();
+  }
+
+  if (checkMatch(request.nextUrl, notReadyPages)) {
+    if (
+      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
+      process.env.NEXT_PUBLIC_APP_ENV === "staging"
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = AppRoutes.coming_soon;
+      return NextResponse.redirect(url);
+    }
+  }
+
   const sessionId = request.cookies.get("sid");
 
   if (checkMatch(request.nextUrl, onlyPublicPages)) {
-    const user = await getSessionUser(sessionId);
+    const user = await getSessionUser(sessionId?.value);
     if (user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.feed.index}`
@@ -20,19 +35,8 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (checkMatch(request.nextUrl, comingSoonPages)) {
-    if (
-      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
-      process.env.NEXT_PUBLIC_APP_ENV === "staging"
-    ) {
-      return NextResponse.redirect(
-        `${request.nextUrl.origin}${AppRoutes.coming_soon}`
-      );
-    }
-  }
-
   if (checkMatch(request.nextUrl, authenticatedUserPages)) {
-    const user = await getSessionUser(sessionId);
+    const user = await getSessionUser(sessionId?.value);
     if (!user) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.auth.login}`
@@ -51,39 +55,66 @@ const _onlyPublicPages: string[] = [
 ];
 const onlyPublicPages = changePaths(_onlyPublicPages);
 
-// Authenticated Pages
+// public or authenticated pages
+const _publicOrAuthenticatedPages: string[] = [AppRoutes.auth.terms];
+const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
+
+// on;y authenticated pages
 const _authenticatedUserPages: string[] = [
+  AppRoutes.home,
+  AppRoutes.search,
+
   AppRoutes.profile.account_address,
   AppRoutes.profile.replies,
-  AppRoutes.profile.followers,
   AppRoutes.profile.following,
-  AppRoutes.profile.collections,
-  AppRoutes.profile.purchased,
-  AppRoutes.profile.nfts,
+  AppRoutes.profile.followers,
+  AppRoutes.profile.archived_posts,
   AppRoutes.profile.settings,
+
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
+
   AppRoutes.notifications,
-  AppRoutes.explore,
-  AppRoutes.nfts.create_nft,
-  AppRoutes.nfts.create_collection,
+
+  AppRoutes.buy_centher,
+
+  AppRoutes.referral.network_genealogy,
+  AppRoutes.referral.overview,
+  AppRoutes.referral.network_rewards,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
-const _comingSoonPages: string[] = [
-  AppRoutes.home,
+const _notReadyPages: string[] = [
+  AppRoutes.profile.collections,
+  AppRoutes.profile.purchased,
+  AppRoutes.profile.nfts,
+
   AppRoutes.chat,
-  AppRoutes.staking_packs,
-  AppRoutes.network_rewards,
-  AppRoutes.buy_ntr_dao,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
-  AppRoutes.referral_program,
+  AppRoutes.staking_packs,
+  AppRoutes.liquidity_pool,
 
   AppRoutes.admin.index,
   AppRoutes.admin.staking_packs,
   AppRoutes.admin.create_staking_pack,
   AppRoutes.admin.update_staking_pack,
+  AppRoutes.admin.influencer_requests,
+  AppRoutes.admin.influencer_details,
+  AppRoutes.admin.transactions,
+  AppRoutes.admin.users,
+  AppRoutes.admin.network_rewards,
+  AppRoutes.admin.network_rewards_marketplace,
+
+  AppRoutes.marketplace.nft,
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+  AppRoutes.marketplace.explore,
+  AppRoutes.marketplace.all_nfts,
+  AppRoutes.marketplace.all_collections,
+  AppRoutes.marketplace.collection,
+
+  AppRoutes.referral.liscense,
 ];
-const comingSoonPages = changePaths(_comingSoonPages);
+const notReadyPages = changePaths(_notReadyPages);

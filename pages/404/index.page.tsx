@@ -38,7 +38,7 @@ const ErrorPage: NextPageWithLayout = () => {
 };
 
 ErrorPage.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="404 No Page">{page}</AllPagesWrapper>;
+  return <AllPagesWrapper pageTitle="404 Not Found">{page}</AllPagesWrapper>;
 };
 
 export default ErrorPage;

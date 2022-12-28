@@ -1,4 +1,4 @@
-import { IProperty } from "@/pages/nfts/_components/create.nft.form";
+import { IProperty } from "@/pages/marketplace/_components/create.nft.form";
 import { nftQuery, saleQuery } from "@/subgraph/querys";
 import { formatIPFSUrl } from "@/utils/format.address";
 import useRefresh from "@/web3/hooks/use.refresh";
@@ -45,6 +45,7 @@ export interface INFTDetailData {
   name: string;
   image: string;
   nftId: number;
+  type: string;
   mintTx: string;
   collection: string;
   attributes: IProperty[];
@@ -104,6 +105,7 @@ export const useGetNftData = (
           name: metadata.data.name,
           image: formatIPFSUrl(metadata.data.image),
           nftId: nftResult.nfts[0].tokenId,
+          type: metadata.data.type,
           mintTx: nftResult.nfts[0].mintHash,
           collection: nftResult.nfts[0].collection,
           attributes: metadata.data.attributes,

@@ -319,3 +319,97 @@ export const topCreators = `
     }
   }
 `;
+
+export const genealogyBaseDataQuery = `
+  query MyQuery($publicKey: Bytes!) {
+    users(where: {publicKey: $publicKey}) {
+      userInfo {
+        people
+        earningNTRFromInICO
+        earningFromInMarketplace
+        earningBUSDFromInICO
+      }
+    }
+  }
+`;
+
+export const referrerQuery = `
+  query MyQuery($referrer: Bytes!) {
+    users(where: {referrer: $referrer}) {
+      userInfo {
+        people
+        earningNTRFromInICO
+        earningFromInMarketplace
+        earningBUSDFromInICO
+      }
+      publicKey
+    }
+  }
+`;
+
+export const genealogyQuery = `
+  query MyQuery($referrer: Bytes) {
+    genealogies(where: {referrer: $referrer}) {
+      user {
+        generatedBUSD
+        generatedNTR
+        publicKey
+        people
+        generatedBNB
+      }
+      createdAt
+      level
+    }
+  }
+`;
+
+export const genealogyAtLevelQuery = `
+  query MyQuery($level: Int, $referrer: Bytes) {
+    genealogies(where: {level: $level, referrer: $referrer}) {
+      user {
+        generatedBUSD
+        generatedNTR
+        generatedBNB
+        publicKey
+        people
+      }
+      createdAt
+      level
+    }
+  }
+`;
+
+export const referralRewardsInPresaleQuery = `
+  query MyQuery($referrer: Bytes, $skip: Int, $first: Int) {
+    presaleGenealogyHistories(
+      where: {referrer: $referrer}
+      orderDirection: desc
+      orderBy: createdAt
+      skip: $skip
+      first: $first
+    ) {
+      user
+      round
+      referrer
+      level
+      isBusd
+      id
+      createdAt
+      amount
+    }
+  }
+`;
+
+export const referrerClaimPresaleQuery = `
+  query MyQuery($referrer: Bytes) {
+    presaleGenalogyClaimHistories(
+      where: {referrer: $referrer}
+      orderDirection: desc
+      orderBy: createdAt
+    ) {
+      isBusd
+      createdAt
+      amount
+    }
+  }
+`;

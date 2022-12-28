@@ -11,7 +11,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "price",
+        "name": "rateForBusd",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "rateForNtr",
         "type": "uint256"
       },
       {
@@ -29,25 +35,31 @@
       {
         "indexed": false,
         "internalType": "uint8",
-        "name": "bonusRate",
-        "type": "uint8"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint8",
         "name": "lockMonths",
         "type": "uint8"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "minContribution",
+        "name": "minContributionBusd",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "maxContribution",
+        "name": "minContributionNtr",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "maxContributionBusd",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "maxContributionNtr",
         "type": "uint256"
       }
     ],
@@ -92,7 +104,51 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "beneficiary",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RefRewardClaimBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "RefRewardClaimNTR",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "refererAddress",
         "type": "address"
       },
       {
@@ -103,8 +159,58 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRefRewardBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "refererAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "uint8",
-        "name": "index",
+        "name": "round",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRefRewardNTR",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "round",
         "type": "uint8"
       },
       {
@@ -137,15 +243,34 @@
         "internalType": "uint256",
         "name": "busdAmount",
         "type": "uint256"
+      }
+    ],
+    "name": "TokenPurchaseWithBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "round",
+        "type": "uint8"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "purchaseTime",
+        "name": "ntrAmount",
         "type": "uint256"
       }
     ],
-    "name": "TokenPurchase",
+    "name": "TokenPurchaseWithNTR",
     "type": "event"
   },
   {
@@ -158,10 +283,51 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "busdAmountForCoreTeam",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "busdAmountForOwner",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "centher",
+    "outputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
-    "name": "changeNtrdaoAddress",
+    "name": "changeCentherAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeCoreTeamAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeNtrAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -176,13 +342,58 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint8", "name": "_round", "type": "uint8" },
-      { "internalType": "uint8", "name": "_index", "type": "uint8" }
-    ],
-    "name": "claimTokens",
+    "inputs": [],
+    "name": "claimRefRewardBUSD",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimRefRewardNTR",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
+    "name": "claimTokensFromBusd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
+    "name": "claimTokensFromNtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "coreTeamAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getClaimableTokenAmountFromBusd",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "address", "name": "_user", "type": "address" }
+    ],
+    "name": "getClaimableTokenAmountFromNtr",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -201,18 +412,43 @@
           },
           {
             "internalType": "uint256",
-            "name": "purchaseTime",
+            "name": "contributedNtrAmount",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "claimedTokenAmount",
+            "name": "purchaseTimeForBusd",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "purchaseTimeForNtr",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimedTokenAmountForBusd",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimedTokenAmountForNtr",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalClaimableTokenAmountForBusd",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalClaimableTokenAmountForNtr",
             "type": "uint256"
           }
         ],
-        "internalType": "struct NTRDAOPresale.ContributionInfo[]",
+        "internalType": "struct CentherPresale.ContributionInfo",
         "name": "",
-        "type": "tuple[]"
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -221,22 +457,17 @@
   {
     "inputs": [],
     "name": "getRound",
-    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTimestamp",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [{ "internalType": "int8", "name": "", "type": "int8" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_token", "type": "address" },
+      { "internalType": "address", "name": "_centher", "type": "address" },
+      { "internalType": "address", "name": "_ntr", "type": "address" },
       { "internalType": "address", "name": "_busd", "type": "address" },
-      { "internalType": "address", "name": "_register", "type": "address" }
+      { "internalType": "address", "name": "_register", "type": "address" },
+      { "internalType": "address", "name": "_coreTeam", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -245,8 +476,52 @@
   },
   {
     "inputs": [],
+    "name": "ntr",
+    "outputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ntrAmountForCoreTeam",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ntrAmountForOwner",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "rateForCoreTeam",
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "refRewardByBUSD",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "refRewardByNTR",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -288,24 +563,42 @@
     "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "roundInfo",
     "outputs": [
-      { "internalType": "uint256", "name": "price", "type": "uint256" },
+      { "internalType": "uint256", "name": "rateForBusd", "type": "uint256" },
+      { "internalType": "uint256", "name": "rateForNtr", "type": "uint256" },
       { "internalType": "uint256", "name": "startTime", "type": "uint256" },
       { "internalType": "uint256", "name": "duration", "type": "uint256" },
-      { "internalType": "uint8", "name": "bonusRate", "type": "uint8" },
       { "internalType": "uint8", "name": "lockMonths", "type": "uint8" },
       { "internalType": "uint256", "name": "busdRaised", "type": "uint256" },
+      { "internalType": "uint256", "name": "ntrRaised", "type": "uint256" },
       {
         "internalType": "uint256",
-        "name": "minContribution",
+        "name": "minContributionForBusd",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "maxContribution",
+        "name": "minContributionForNtr",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxContributionForBusd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxContributionForNtr",
         "type": "uint256"
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_rate", "type": "uint8" }],
+    "name": "setRateForCoreTeam",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -320,19 +613,29 @@
   {
     "inputs": [
       { "internalType": "uint8", "name": "_index", "type": "uint8" },
-      { "internalType": "uint256", "name": "_price", "type": "uint256" },
+      { "internalType": "uint256", "name": "_rateForBusd", "type": "uint256" },
+      { "internalType": "uint256", "name": "_rateForNtr", "type": "uint256" },
       { "internalType": "uint256", "name": "_startTime", "type": "uint256" },
       { "internalType": "uint256", "name": "_duration", "type": "uint256" },
-      { "internalType": "uint8", "name": "_bonusRate", "type": "uint8" },
       { "internalType": "uint8", "name": "_lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
-        "name": "_minContribution",
+        "name": "_minContributionForBusd",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "_maxContribution",
+        "name": "_minContributionForNtr",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxContributionForBusd",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxContributionForNtr",
         "type": "uint256"
       }
     ],
@@ -342,19 +645,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "token",
-    "outputs": [
-      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    "inputs": [
+      { "internalType": "uint256", "name": "_busdAmount", "type": "uint256" }
     ],
-    "stateMutability": "view",
+    "name": "tokenPurchaseWithBUSD",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint256", "name": "_busdAmount", "type": "uint256" }
+      { "internalType": "uint256", "name": "_ntrAmount", "type": "uint256" }
     ],
-    "name": "tokenPurchase",
+    "name": "tokenPurchaseWithNtr",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -377,7 +680,28 @@
   },
   {
     "inputs": [],
-    "name": "withdrawTokens",
+    "name": "withdrawBusdForCoreTeam",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawCenther",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawNtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawNtrForCoreTeam",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

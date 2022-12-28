@@ -12,12 +12,9 @@ const ScriptTags = () => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui"
         />
-        <meta
-          name="description"
-          content="Official Nether-NFT Platform website."
-        />
-        <meta name="keywords" content="nethernft, login , sign up" />
-        <meta name="author" content="Nether-NFT Platform." />
+        <meta name="description" content="Official Centher Platform website." />
+        <meta name="keywords" content="Centher, login , sign up" />
+        <meta name="author" content="Centher Platform." />
         <meta name="robots" content="all,follow" />
         <meta name="google" content="notranslate" />
         <meta name="theme-color" content="#000000" />
@@ -25,17 +22,17 @@ const ScriptTags = () => {
         <meta name="apple-mobile-web-app-status-bar-style" content="#000000" />
         <meta name="msapplication-TileColor" content="#000000" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Nether-NFT Platform" />
-        <meta property="og:description" content="Nether-NFT Platform" />
-        <meta property="og:url" content="https://app.nethernft.io/" />
-        <meta property="og:site_name" content="Nether-NFT  Platform" />
-        <meta property="og:image" content="/images/nether.nft.logo.svg" />
+        <meta property="og:title" content="Centher Platform" />
+        <meta property="og:description" content="Centher Platform" />
+        <meta property="og:url" content="https://app.centher.io/" />
+        <meta property="og:site_name" content="Centher  Platform" />
+        <meta property="og:image" content="/images/Centher.nft.logo.svg" />
         <meta property="og:image:width" content="420" />
         <meta property="og:image:height" content="420" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:description" content="Uroboro Platform" />
-        <meta name="twitter:title" content="Nether-NFT Platform" />
-        <meta name="twitter:image" content="/images/nether.nft.logo.svg" />
+        <meta name="twitter:title" content="Centher Platform" />
+        <meta name="twitter:image" content="/images/centher.logo.png" />
         <meta name="google-site-verification" content="Will-Provide-later" />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.ico" />

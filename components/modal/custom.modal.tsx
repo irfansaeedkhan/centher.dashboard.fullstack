@@ -5,6 +5,7 @@ interface CustomModalProps {
   children: React.ReactNode;
   title: string;
   onClose: () => void;
+  disable?: string;
 }
 
 export const CustomModal: React.FC<CustomModalProps> = (props) => {
@@ -15,11 +16,19 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
         {/*header*/}
         <div className={modalHeader}>
           <span className={modalHeaderTitle}>{props.title}</span>
-          <button className={modalHeaderButton} onClick={props.onClose}>
-            ×
-          </button>
+          {props.disable === "yes" ? (
+            <button
+              className={`px-1 py-1 ml-auto border-0 text-3xl text-white opacity-100 float-right outline-none leading-none font-semibold bg-transparent focus:outline-none absolute top-[50%] translate-y-[-50%] right-6 transition`}
+              disabled
+            >
+              ×
+            </button>
+          ) : (
+            <button className={modalHeaderButton} onClick={props.onClose}>
+              ×
+            </button>
+          )}
         </div>
-        {/* BodyWrapper */}
         <div className={bodyWrapper}>{props.children}</div>
       </div>
     </div>
@@ -48,10 +57,10 @@ const modalContent = ctl(`
   border 
   flex-col 
   relative 
+  w-full
   lg:w-164 
   md:w-140
   f2xl:w-164 
-  sm:w-full 
   rounded-lg
   bg-black-shade-3
   focus:outline-none 
@@ -62,13 +71,16 @@ const modalHeader = ctl(`
   flex 
   py-6
   px-4
+  justify-between
   rounded-t 
   items-center 
-  justify-center
+  flg:justify-center
   relative
 `);
 
-const modalHeaderTitle = ctl(`text-white text-24px text-center font-semibold`);
+const modalHeaderTitle = ctl(
+  `text-white text-sm fsm:text-[16px] flg:text-[24px] font-semibold`
+);
 
 const modalHeaderButton = ctl(`
   px-1 

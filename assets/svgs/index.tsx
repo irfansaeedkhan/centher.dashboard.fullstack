@@ -1,5 +1,8 @@
-import Image from "next/image";
-import NTRDAOIconImg from "./ntr.dao.icon.png";
+/* eslint-disable @next/next/no-img-element */
+import clsx from "clsx";
+import NTRDAOIconImgBg from "./ntr.dao.icon.bg.png";
+import NTRIconImgBg from "./ntr.icon.bg.png";
+import NTRIconImg from "./ntr.icon.png";
 
 export interface IconProps {
   className?: string;
@@ -48,12 +51,42 @@ export { default as LinkIcon } from "./link.svg";
 export { default as WorldIcon } from "./world.svg";
 export { default as shareIcon } from "./shareIcon.svg";
 export { default as ArchiveEmptyIcon } from "./archive.icon.svg";
+export { default as BUSDIcon } from "./busd.icon.svg";
+export { default as BUSDIconBG } from "./busd.icon.bg.svg";
+export { default as FacbookIcon } from "./facebook.icon.svg";
+export { default as LinkedInIcon } from "./linkedIn.icon.svg";
 
-export const NTRDAOIcon: React.FC<IconProps> = (props) => {
+export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
-    <Image
+    <img
       className={props.className}
-      src={NTRDAOIconImg}
+      src={NTRDAOIconImgBg.src}
+      alt="NTR Dao Icon BG"
+      sizes="256px"
+      width={40}
+      height={40}
+    />
+  );
+};
+
+export const NTRIconBG: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={NTRIconImgBg.src}
+      alt="NTR Dao Icon BG"
+      sizes="256px"
+      width={40}
+      height={40}
+    />
+  );
+};
+
+export const NTRIcon: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={NTRIconImg.src}
       alt="NTR Dao Icon"
       sizes="256px"
       width={40}
@@ -480,58 +513,6 @@ export const DeleteIconBtnCoinPack: React.FC<IconProps> = (props) => {
   );
 };
 
-export const BUSDIcon: React.FC<IconProps> = (props) => {
-  return (
-    <svg
-      className={props.className}
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="20" cy="20" r="20" fill="#FEBF32" fillOpacity="0.1" />
-      <circle
-        cx="20"
-        cy="20"
-        r="19.5"
-        stroke="url(#paint0_linear_7275_64280)"
-        strokeOpacity="0.1"
-      />
-      <circle cx="20" cy="20" r="11" fill="#DA9C24" />
-      <path
-        d="M19.9987 12.8047L21.7759 14.6248L17.3007 19.1L15.5234 17.3228L19.9987 12.8047Z"
-        fill="white"
-      />
-      <path
-        d="M22.6967 15.5L24.4739 17.3201L17.3007 24.4933L15.5234 22.7161L22.6967 15.5Z"
-        fill="white"
-      />
-      <path
-        d="M14.6054 18.2031L16.3826 20.0232L14.6054 21.8005L12.8281 20.0232L14.6054 18.2031Z"
-        fill="white"
-      />
-      <path
-        d="M25.3998 18.2031L27.1771 20.0232L20.0038 27.1965L18.2266 25.4192L25.3998 18.2031Z"
-        fill="white"
-      />
-      <defs>
-        <linearGradient
-          id="paint0_linear_7275_64280"
-          x1="13.5"
-          y1="-5.5"
-          x2="35"
-          y2="37"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#FEBF32" />
-          <stop offset="1" stopColor="#FEBF32" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-};
-
 export const LeftArrowIcon: React.FC<IconProps> = (props) => {
   return (
     <svg
@@ -577,52 +558,50 @@ export const SpinIcon = () => {
   );
 };
 
-export const SpinIcon2 = () => {
+export const SpinIcon2: React.FC<IconProps> = ({ className, ...props }) => {
   return (
-    <div role="status">
-      <svg
-        className="animate-spin"
-        width="64"
-        height="64"
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <ellipse
-          cx="32.0002"
-          cy="32.0002"
-          rx="24.01"
-          ry="24.01"
-          stroke="#2A2D3C"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M56.0102 32.0002C56.0102 36.749 54.6021 41.391 51.9638 45.3395C49.3256 49.2879 45.5757 52.3653 41.1885 54.1826C36.8012 55.9998 31.9736 56.4753 27.3161 55.5489C22.6586 54.6225 18.3805 52.3357 15.0226 48.9779C11.6647 45.62 9.37801 41.3418 8.45158 36.6844C7.52515 32.0269 8.00063 27.1993 9.81789 22.812C11.6351 18.4248 14.7126 14.6749 18.661 12.0366C22.6094 9.3984 27.2515 7.99023 32.0002 7.99023"
-          stroke="url(#paint0_linear_6774_66731)"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <defs>
-          <linearGradient
-            id="paint0_linear_6774_66731"
-            x1="7.99023"
-            y1="7.99023"
-            x2="57.0405"
-            y2="9.06678"
-            gradientUnits="userSpaceOnUse"
-          >
-            <stop stopColor="#A9CDFF" />
-            <stop offset="0.21875" stopColor="#72F6D1" />
-            <stop offset="0.557292" stopColor="#A0ED8D" />
-            <stop offset="0.817708" stopColor="#FED365" />
-            <stop offset="1" stopColor="#FAA49E" />
-          </linearGradient>
-        </defs>
-      </svg>
-    </div>
+    <svg
+      className={clsx(`animate-spin`, className)}
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <ellipse
+        cx="32.0002"
+        cy="32.0002"
+        rx="24.01"
+        ry="24.01"
+        stroke="#2A2D3C"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M56.0102 32.0002C56.0102 36.749 54.6021 41.391 51.9638 45.3395C49.3256 49.2879 45.5757 52.3653 41.1885 54.1826C36.8012 55.9998 31.9736 56.4753 27.3161 55.5489C22.6586 54.6225 18.3805 52.3357 15.0226 48.9779C11.6647 45.62 9.37801 41.3418 8.45158 36.6844C7.52515 32.0269 8.00063 27.1993 9.81789 22.812C11.6351 18.4248 14.7126 14.6749 18.661 12.0366C22.6094 9.3984 27.2515 7.99023 32.0002 7.99023"
+        stroke="url(#paint0_linear_6774_66731)"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <defs>
+        <linearGradient
+          id="paint0_linear_6774_66731"
+          x1="7.99023"
+          y1="7.99023"
+          x2="57.0405"
+          y2="9.06678"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#A9CDFF" />
+          <stop offset="0.21875" stopColor="#72F6D1" />
+          <stop offset="0.557292" stopColor="#A0ED8D" />
+          <stop offset="0.817708" stopColor="#FED365" />
+          <stop offset="1" stopColor="#FAA49E" />
+        </linearGradient>
+      </defs>
+    </svg>
   );
 };
 
@@ -739,10 +718,6 @@ export const LockedIcon: React.FC<IconProps> = (props) => {
         stroke="#2A2D3C"
         rx="39.5"
       ></rect>
-      <path
-        fill="#888DAA"
-        d="M48.724 46.36V49H36.34v-2.088l6.672-6.336c.752-.72 1.256-1.344 1.512-1.872.272-.544.408-1.08.408-1.608 0-.784-.264-1.384-.792-1.8-.528-.416-1.304-.624-2.328-.624-1.712 0-3.024.584-3.936 1.752l-2.184-1.68c.656-.88 1.536-1.56 2.64-2.04 1.12-.496 2.368-.744 3.744-.744 1.824 0 3.28.432 4.368 1.296 1.088.864 1.632 2.04 1.632 3.528 0 .912-.192 1.768-.576 2.568-.384.8-1.12 1.712-2.208 2.736l-4.488 4.272h7.92z"
-      ></path>
       <g filter="url(#filter0_b_7275_64835)">
         <rect
           width="48"

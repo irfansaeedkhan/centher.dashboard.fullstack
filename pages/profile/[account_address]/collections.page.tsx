@@ -28,17 +28,18 @@ const NFTProfileCollections: NextPageWithLayout = () => {
 
   const responsive = {
     desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-      slidesToSlide: 1,
+      breakpoint: { max: 3000, min: 1680 },
+      items: 2,
+      slidesToSlide: 2,
+      // paritialVisibilityGutter: 20,
     },
     tablet: {
-      breakpoint: { max: 1440, min: 464 },
+      breakpoint: { max: 1680, min: 615 },
       items: 2,
-      slidesToSlide: 1,
+      slidesToSlide: 2,
     },
     mobile: {
-      breakpoint: { max: 659, min: 0 },
+      breakpoint: { max: 615, min: 0 },
       items: 1,
       slidesToSlide: 1,
     },
@@ -59,7 +60,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
             showDots={false}
             responsive={responsive}
             ssr={true} // means to render carousel on server-side.
-            infinite={true}
+            infinite={false}
             keyBoardControl={true}
             containerClass="carousel-containerProfile"
             // dotListClass="custom-dot-list-style"
@@ -75,9 +76,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
       )}
 
       {(loading === "loading" || loading === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
-          <NftProfileCollectionSkeleton />
-          <NftProfileCollectionSkeleton />
+        <div className="flex justify-center fsm:justify-start flex-wrap gap-10 items-center">
           <NftProfileCollectionSkeleton />
           <NftProfileCollectionSkeleton />
         </div>

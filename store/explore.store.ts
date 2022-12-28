@@ -107,7 +107,6 @@ export const useExploreStore = create<ExploreStore>()(
           if (result && !error) {
             _collections = result.collections;
           }
-
           set((state) => {
             return {
               collections: _collections,

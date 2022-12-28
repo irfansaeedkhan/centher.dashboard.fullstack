@@ -22,6 +22,7 @@ import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
+import Link from "next/link";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -167,10 +168,14 @@ export const RegisterForm: React.FC = () => {
             id=""
             onClick={() => setIsChecked(!isChecked)}
           />
+
           <p className="text-white text-sm">
-            I have read and agree to Binance&apos;s{" "}
-            <span className="font-semibold underline">Terms of Service</span>{" "}
-            and <span className="font-semibold underline">Privacy Policy.</span>
+            I have read and agree to Centher{" "}
+            <Link href={AppRoutes.auth.terms}>
+              <span className="font-semibold underline cursor-pointer">
+                Terms & Condition
+              </span>
+            </Link>
           </p>
         </div>
 

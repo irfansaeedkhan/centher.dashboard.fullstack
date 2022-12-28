@@ -170,7 +170,6 @@ const Notifications: NextPageWithLayout = () => {
             })}
           </div>
         )}
-        seven
         {/* Remaining */}
         {notificationsBeforeSevendays.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">

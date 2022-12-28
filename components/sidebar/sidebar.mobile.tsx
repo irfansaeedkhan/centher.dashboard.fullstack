@@ -77,10 +77,10 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       >
         <div>
           {user && (
-            <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
+            <div className={`flex gap-2 items-center my-4 pl-6 xl:hidden`}>
               <CreateNFT />
               <Link
-                href={AppRoutes.nfts.create_nft}
+                href={AppRoutes.marketplace.create_nft}
                 className={`text-sm font-semibold text-gray-shade-7`}
                 onClick={onClose}
               >
@@ -92,7 +92,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
           <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
             <IoSearchSharp className="text-xl text-gray-shade-7" />
             <Link
-              href={`/search`}
+              href={AppRoutes.search}
               className={`text-sm font-semibold text-gray-shade-7`}
               onClick={onClose}
             >

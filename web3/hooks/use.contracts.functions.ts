@@ -1,175 +1,286 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { BigNumber, ethers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
+import dayjs from "dayjs";
 
-import { ethers } from "ethers";
-import {
-  PurchasedInfoResponse,
-  RoundInfo,
-  RoundState,
-} from "../constants/types";
+import { customLog } from "@/utils/custom.log";
+
 import {
   getMarketplaceAddress,
   getPresaleAddress,
 } from "../utils/address.helpers";
 import {
   getBusdContract,
-  getNtrdaoContract,
+  getNTRContract,
   getPresaleContract,
-  getRegistrationContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
+import { getTokenContract, TokenName } from "../utils/call.helpers";
+import {
+  ContributionInfo,
+  RoundInfo,
+  RoundNumber,
+  RoundState,
+  RoundStatus,
+} from "../constants/types";
 import { ZeroAddress } from "../constants/common";
 
-export const useNtrdaoBalance = (account: string | undefined | null) => {
-  const [balance, setBalance] = useState(0);
-  const ntrdaoContract = getNtrdaoContract(null); //new Contract(dao_address, dao_abi, undefined);
+export const useGetRoundsInfo = () => {
+  const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
+  const presaleContract = useMemo(() => getPresaleContract(), []);
 
   useEffect(() => {
-    const fetchBalance = async (account: string) => {
-      const rawBalance = await ntrdaoContract.balanceOf(account);
-      const value = ethers.utils.formatUnits(rawBalance.toString(), 6);
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchBalance(account);
-    }
-  }, [account, ntrdaoContract]);
+    const fetchRoundsInfo = async () => {
+      const roundState = await getRoundState();
 
-  return balance;
-};
-
-export const useBusdBalance = (
-  account: string | undefined | null,
-  reload: boolean
-) => {
-  const [balance, setBalance] = useState(0);
-  const busdContract = getBusdContract(null);
-  useEffect(() => {
-    const fetchBalance = async (account: string) => {
-      const rawBalance = await busdContract.balanceOf(account);
-      const value = ethers.utils.formatUnits(rawBalance.toString(), 18);
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchBalance(account);
-    }
-  }, [account, reload]);
-
-  return balance;
-};
-
-export const useBusdAllowance = (account: string | undefined | null) => {
-  const [balance, setBalance] = useState(0);
-  const busdContract = getBusdContract(null);
-  useEffect(() => {
-    const fetchBalance = async (account: string) => {
-      const rawBalance = await busdContract.allowance(
-        account,
-        getPresaleAddress()
-      );
-      const value = ethers.utils.formatUnits(rawBalance.toString());
-      setBalance(Number(value));
-    };
-    if (account) {
-      fetchBalance(account);
-    }
-  }, [account]);
-
-  return balance;
-};
-
-export const useGetRoundInfo = () => {
-  const [balance, setBalance] = useState<RoundInfo[]>();
-  const presaleContract = getPresaleContract(null);
-  useEffect(() => {
-    const fetchBalance = async () => {
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
+        const roundStatus = getRoundStatus(roundState, i);
+
         const _roundInfo: RoundInfo = {
-          price: Number(ethers.utils.formatUnits(roundInfo[0])),
-          startTime: roundInfo[1].toNumber(),
-          duration: roundInfo[2].toNumber(),
-          bonusRate: roundInfo[3],
-          lockMonths: roundInfo[4],
-          busdRaised: Number(ethers.utils.formatUnits(roundInfo[5])),
-          minContribution: Number(ethers.utils.formatUnits(roundInfo[6])),
-          maxContribution: Number(ethers.utils.formatUnits(roundInfo[7])),
+          round: i as RoundNumber,
+          status: roundStatus,
+          rateForBusd: roundInfo["rateForBusd"].toNumber() / 100,
+          rateForNtr: roundInfo["rateForNtr"].toNumber() / 100,
+          busdRaised: Number(ethers.utils.formatUnits(roundInfo["busdRaised"])),
+          ntrRaised: Number(ethers.utils.formatUnits(roundInfo["ntrRaised"])),
+          startTime: roundInfo["startTime"].toNumber(),
+          duration: roundInfo["duration"].toNumber(),
+          lockMonths: roundInfo["lockMonths"],
+          minContributionForBusd: Number(
+            ethers.utils.formatUnits(roundInfo["minContributionForBusd"])
+          ),
+          maxContributionForBusd: Number(
+            ethers.utils.formatUnits(roundInfo["maxContributionForBusd"])
+          ),
+          minContributionForNtr: Number(
+            ethers.utils.formatUnits(roundInfo["minContributionForNtr"])
+          ),
+          maxContributionForNtr: Number(
+            ethers.utils.formatUnits(roundInfo["maxContributionForNtr"])
+          ),
         };
         _roundInfos.push(_roundInfo);
       }
-      setBalance(_roundInfos);
+      setRoundsInfo(_roundInfos);
     };
-    fetchBalance();
-  }, []);
+    try {
+      fetchRoundsInfo();
+    } catch (error: any) {
+      customLog("useGetRoundsInfo", ["development"]);
+      customLog(error, ["development"]);
+      setRoundsInfo([]);
+    }
+  }, [presaleContract]);
 
+  return roundsInfo;
+};
+
+export const getRoundState = async () => {
+  const presaleContract = getPresaleContract();
+  return (await presaleContract.getRound()) as RoundState;
+};
+
+export const getRoundStatus = (
+  roundState: RoundState,
+  round: number
+): RoundStatus => {
+  if (round === 0) {
+    return roundState === RoundState.RoundsNotStarted
+      ? "not-started"
+      : roundState === RoundState.Round1Started
+      ? "active"
+      : roundState > RoundState.Round1Started ||
+        roundState <= RoundState.Round2NotStarted
+      ? "ended"
+      : undefined;
+  } else if (round === 1) {
+    return roundState <= RoundState.Round1Started &&
+      roundState >= RoundState.Round2NotStarted
+      ? "not-started"
+      : roundState === RoundState.Round2Started
+      ? "active"
+      : roundState > RoundState.Round2Started ||
+        roundState <= RoundState.Round3NotStarted
+      ? "ended"
+      : undefined;
+  } else if (round === 2) {
+    return roundState <= RoundState.Round2Started &&
+      roundState >= RoundState.Round3NotStarted
+      ? "not-started"
+      : roundState === RoundState.Round3Started
+      ? "active"
+      : roundState <= RoundState.RoundsEnded
+      ? "ended"
+      : undefined;
+  }
+
+  return undefined;
+};
+
+export const useGetContributionInfo = (
+  account: string | undefined | null,
+  roundInfo: RoundInfo
+) => {
+  const [contributionInfo, setPurchasedInfo] =
+    useState<ContributionInfo | null>(null);
+  const presaleContract = useMemo(() => getPresaleContract(), []);
+
+  const fetchContributionInfo = useCallback(
+    async (account: string) => {
+      const contributionInfoRes = await presaleContract.getContribute(
+        account,
+        roundInfo.round
+      );
+
+      const claimedTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["claimedTokenAmountForBusd"]
+        )
+      );
+
+      const claimedTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["claimedTokenAmountForNtr"]
+        )
+      );
+
+      const totalClaimableTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["totalClaimableTokenAmountForBusd"]
+        )
+      );
+
+      const totalClaimableTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          contributionInfoRes["totalClaimableTokenAmountForNtr"]
+        )
+      );
+
+      // Get Claimable Amount Now For BUSD
+      const claimableTokenAmountForBusd = Number(
+        ethers.utils.formatUnits(
+          await presaleContract.getClaimableTokenAmountFromBusd(
+            roundInfo.round,
+            account
+          )
+        )
+      );
+
+      // Get Claimable Amount Now For NTR
+      const claimableTokenAmountForNtr = Number(
+        ethers.utils.formatUnits(
+          await presaleContract.getClaimableTokenAmountFromNtr(
+            roundInfo.round,
+            account
+          )
+        )
+      );
+
+      const _contributionInfo: ContributionInfo = {
+        contributedBusdAmount: Number(
+          ethers.utils.formatUnits(contributionInfoRes["contributedBusdAmount"])
+        ),
+        contributedNtrAmount: Number(
+          ethers.utils.formatUnits(contributionInfoRes["contributedNtrAmount"])
+        ),
+        purchaseTimeForBusd:
+          contributionInfoRes["purchaseTimeForBusd"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForBusd"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        purchaseTimeForNtr:
+          contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
+            ? "0"
+            : dayjs(
+                new Date(
+                  contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
+                )
+              ).format("DD-MM-YYYY"),
+        claimedTokenAmountForBusd,
+        claimedTokenAmountForNtr,
+        totalClaimableTokenAmountForBusd,
+        totalClaimableTokenAmountForNtr,
+        claimableTokenAmountForBusd,
+        claimableTokenAmountForNtr,
+        // If lockMonths have passed since purchaseTimeForBusd, then user can claim tokens
+        isClaimableForBusd:
+          claimableTokenAmountForBusd > 0 &&
+          isClaimable(
+            contributionInfoRes["purchaseTimeForBusd"],
+            roundInfo.lockMonths
+          ),
+        // If lockMonths have passed since purchaseTimeForNtr, then user can claim tokens
+        isClaimableForNtr:
+          claimableTokenAmountForNtr > 0 &&
+          isClaimable(
+            contributionInfoRes["purchaseTimeForNtr"],
+            roundInfo.lockMonths
+          ),
+      };
+
+      setPurchasedInfo(_contributionInfo);
+    },
+    [presaleContract, roundInfo]
+  );
+
+  useEffect(() => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
+
+  const refreshContributionInfo = useCallback(async () => {
+    if (account) fetchContributionInfo(account);
+  }, [account, fetchContributionInfo]);
+
+  return { contributionInfo, refreshContributionInfo };
+};
+
+const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
+  return process.env.APP_ENV !== "production"
+    ? dayjs(new Date(purchaseTime.toNumber() * 1000))
+        .add(lockMonths * 5, "minutes") // For testing 1 month is considered as 5 minutes
+        .isBefore(dayjs())
+    : dayjs(new Date(purchaseTime.toNumber() * 1000))
+        .add(lockMonths, "months")
+        .isBefore(dayjs());
+};
+
+export const getTokenBalance = async (
+  tokenName: TokenName,
+  tokenDecimals: number,
+  account: string,
+  library: Web3Provider
+) => {
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
+
+  const balance = Number(
+    ethers.utils.formatUnits(
+      await tokenContract.balanceOf(account),
+      tokenDecimals
+    )
+  );
   return balance;
 };
 
-export const useGetPurchasedInfo = (
-  account: string | undefined | null,
-  reload: boolean
+export const getTokenAllowance = async (
+  tokenName: TokenName,
+  account: string,
+  library: Web3Provider
 ) => {
-  const [purchasedInfo, setPurchasedInfo] = useState<PurchasedInfoResponse[][]>(
-    []
+  const tokenContract = getTokenContract(tokenName, library);
+  if (!tokenContract) return 0;
+
+  const allowance = Number(
+    ethers.utils.formatUnits(
+      await tokenContract.allowance(account, getPresaleAddress())
+    )
   );
-  const presaleContract = getPresaleContract(null);
-  useEffect(() => {
-    const fetchPurchasedInfo = async (account: string) => {
-      let _purchasedInfos = [];
-      for (let i = 0; i < 3; i++) {
-        const purchasedInfoByRound = await presaleContract.getContribute(
-          account,
-          i
-        );
-        const purchasedInfo = purchasedInfoByRound.map((item: any) => {
-          var date = new Date(item[1] * 1000);
-          return {
-            purchasedDate: item[1].toNumber(),
-            contributedBusdAmount: Number(ethers.utils.formatUnits(item[0])),
-            claimedAmount: Number(ethers.utils.formatUnits(item[2])),
-          };
-        });
-        _purchasedInfos.push(purchasedInfo);
-      }
-      setPurchasedInfo(_purchasedInfos);
-    };
-    if (account) fetchPurchasedInfo(account);
-  }, [account, reload]);
-
-  return purchasedInfo;
-};
-
-export const useRoundState = () => {
-  const [roundState, setRoundState] = useState<RoundState>(RoundState.Undefind);
-  const presaleContract = getPresaleContract(null);
-  useEffect(() => {
-    const fetchRoundState = async () => {
-      const _roundState = await presaleContract.getRound();
-      setRoundState(_roundState);
-    };
-    fetchRoundState();
-  }, []);
-
-  return roundState;
-};
-
-export const useIsRegistered = (account: string | undefined | null) => {
-  const [isRegistered, setIsRegistered] = useState(false);
-  const registerContract = getRegistrationContract();
-
-  useEffect(() => {
-    const fetchIsRegistered = async (account: string) => {
-      const _isRegistered = await registerContract.isUserRegisteredWithAddress(
-        account
-      );
-      setIsRegistered(_isRegistered);
-    };
-
-    if (account) {
-      fetchIsRegistered(account);
-    }
-  }, [account, registerContract]);
-  return isRegistered;
+  return allowance;
 };
 
 export const useGetApprovedForAll = (

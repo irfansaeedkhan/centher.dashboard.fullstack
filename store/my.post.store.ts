@@ -57,6 +57,7 @@ export const useMyPostStore = create<MyPostStore>()(
 
           const url = `/api/socials/posts/user/${userId}?offset=${offset}&limit=${limit}`;
           const { data } = await axiosNodeApi.get(url);
+
           set((state) => {
             const filteredPosts = state.posts.filter(
               (statePost) =>

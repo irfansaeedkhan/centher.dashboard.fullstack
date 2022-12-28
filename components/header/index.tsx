@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
@@ -16,6 +17,8 @@ import SearchBar from "./search";
 const Header = () => {
   const { width } = useWindowSize();
   const { user, isLoading: isUserLoading } = useUser();
+  const { connectWallet, disconnectWallet, getConnectedAccount } =
+    useConnectWallet();
   const [openModal, setOpenModal] = useState(false);
   const modalOpenerRef = React.useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,6 +30,22 @@ const Header = () => {
     }
   }, [width]);
 
+  // For auto-connecting wallet on page load if user is logged in
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    // Get connected account
+    const connectedAccount = getConnectedAccount();
+    connectedAccount
+      .then((_acc) => {
+        if (_acc && _acc.toLowerCase() === user.account_address.toLowerCase()) {
+          connectWallet();
+        }
+      })
+      .catch(() => {});
+  }, [user, connectWallet, disconnectWallet, getConnectedAccount]);
+
   return (
     <div
       className={`flex gap-10 px-5 h-[60px] fixed w-full top-0 z-[1000] items-center justify-between border-b-[1.5px] bg-black-shade-9 border-gray-shade-border-color`}
@@ -36,15 +55,15 @@ const Header = () => {
         className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
       >
         <Image
-          src="/images/nether.nft.logo.svg"
-          alt="Nether NFT Logo"
+          src="/images/centher.logo.png"
+          alt="Centher Logo"
           width={154}
           height={32}
           className="md:block hidden"
         />
         <Image
-          src="/images/nether.nft.favicon.svg"
-          alt="Nether NFT Logo"
+          src="/images/centher.logo.favicon.png"
+          alt="Centher Logo"
           width={32}
           height={32}
           className="md:hidden block"
@@ -63,7 +82,10 @@ const Header = () => {
         {user && (
           <>
             <div className="hidden fxl:block">
-              <Link href={AppRoutes.nfts.create_nft} className={connectButton}>
+              <Link
+                href={AppRoutes.marketplace.create_nft}
+                className={connectButton}
+              >
                 Create NFT
               </Link>
             </div>

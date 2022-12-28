@@ -4,6 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #131314;
+  --secondary: #3c3f4a;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--primary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--primary);
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 14px;
+  border: 3px solid var(--primary);
+}
+
+@tailwind components;
+@tailwind utilities;
+
 html {
   scroll-behavior: smooth;
 }
@@ -98,7 +128,7 @@ input:-webkit-autofill {
   } */
   @media only screen and (max-width: 659px) {
     .AppWrapper {
-      max-width: 268px;
+      max-width: 300px;
     }
     .nftCardStyling {
       margin: 0 auto;
@@ -367,7 +397,6 @@ input:-webkit-autofill {
     );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
     background-clip: text;
     width: fit-content;
   }
@@ -681,30 +710,92 @@ input:-webkit-autofill {
 
 .carousel-container {
   transition: all 0.5s linear;
-  /* padding: 0px 0px 0px 17%; */
+}
+/* feed page carousel */
+.carousel-container .react-multi-carousel-item:last-child {
+  margin: 0 0;
+  margin-left: 10px;
+}
+.carousel-container .react-multi-carousel-item:first-child {
+  margin: 0 0;
+  margin-right: 10px;
+}
+.carousel-container .react-multi-carousel-item {
+  width: 416px !important;
+  margin: 0 10px;
+}
+@media only screen and (max-width: 1670px) {
+  .carousel-container .react-multi-carousel-item {
+    width: 468px !important;
+  }
+}
+@media only screen and (max-width: 1440px) {
+  .carousel-container .react-multi-carousel-item {
+    width: 303px !important;
+  }
+}
+
+@media only screen and (max-width: 659px) {
+  .carousel-container .react-multi-carousel-item:last-child {
+    margin: 0 0;
+    margin-left: 0;
+  }
+  .carousel-container .react-multi-carousel-item:first-child {
+    margin: 0 0;
+    margin-right: 0;
+  }
+  .carousel-container .react-multi-carousel-item {
+    width: 300px !important;
+    margin: auto;
+    margin: 0 0;
+    margin: 0 !important;
+  }
+}
+/* profile carousel */
+.carousel-containerProfile .react-multi-carousel-item:last-child {
+  margin: 0 0;
+}
+.carousel-containerProfile .react-multi-carousel-item:first-child {
+  margin: 0 0;
+}
+.carousel-containerProfile .react-multi-carousel-item {
+  width: 405px !important;
+  margin: 0 10px;
+}
+@media only screen and (max-width: 1439px) {
+  .carousel-containerProfile .react-multi-carousel-item {
+    width: 262px !important;
+  }
+}
+@media only screen and (max-width: 559px) {
+  .carousel-containerProfile .react-multi-carousel-item {
+    width: calc(100vw - 16px) !important;
+    margin: auto;
+    margin: 0 0;
+  }
 }
 .carousel-container ul {
-  gap: 24px;
+  /* gap: 20px; */
   transition: all 0.5s linear !important;
 }
-@media only screen and (max-width: 659px) {
+/* @media only screen and (max-width: 659px) {
   .carousel-container ul {
     gap: 0;
   }
-}
+} */
 .carousel-containerProfile {
   transition: all 0.5s linear;
   /* padding: 0px 0px 0px 17%; */
 }
 .carousel-containerProfile ul {
-  gap: 85px;
+  /* gap: 85px; */
   transition: all 0.5s linear !important;
 }
-@media only screen and (max-width: 659px) {
+/* @media only screen and (max-width: 659px) {
   .carousel-containerProfile ul {
     gap: 0;
   }
-}
+} */
 
 .AnimatecircleRainbow {
   fill: none;
@@ -775,4 +866,26 @@ input:-webkit-autofill {
   .nftCardOwnedContainer {
     gap: 34px;
   }
+}
+
+.activeLevelCard {
+  background: #fed365 !important;
+}
+.activeLevelCard .dark {
+  color: #1e212b !important;
+}
+.activeLevelCard .light {
+  color: #3b3f54 !important;
+}
+
+/* carousel styling */
+.embla {
+  overflow: hidden;
+}
+.embla__container {
+  display: flex;
+}
+.embla__slide {
+  flex: 0 0 100%;
+  min-width: 0;
 }

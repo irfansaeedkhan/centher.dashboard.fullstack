@@ -44,6 +44,8 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
+import { custom } from "joi";
+import { customLog } from "@/utils/custom.log";
 
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -51,7 +53,9 @@ export type CoverImageWithFile = Partial<CoverImage> & {
   preview?: string;
 };
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  param_account_address?: string;
+}
 
 const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   const { incrementFollowersCount, decrementFollowersCount } =
@@ -213,9 +217,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
         );
         setFollow(data.follow);
       } catch (error: any) {
-        toast.error(
-          error.response.data?.message_description || "Something went wrong"
-        );
+        customLog(error, ["development"]);
       }
     };
     if (user?._id) {
@@ -356,7 +358,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
 
   return (
     <div className={clsx(className)} {...props}>
-      {user && loggedInUser ? (
+      {user ? (
         <div className={`bg-background-shade-3 rounded-2xl`}>
           <div
             // onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
@@ -489,7 +491,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
           </div>
 
           <div
-            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6 pt-10`}
+            className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6  pt-16`}
           >
             <Profile3DotsMenu
               isOwnProfile={isOwnProfile}
@@ -502,7 +504,11 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                   className={`flex flex-col lg:flex-row items-baseline justify-between`}
                 >
                   <h5
-                    className={`text-center text-white text-20px font-semibold text-ellipsis line-clamp-1`}
+                    className={clsx(
+                      loggedInUser
+                        ? `text-center text-white text-20px font-semibold text-ellipsis line-clamp-1`
+                        : "text-center text-white text-20px font-semibold text-ellipsis line-clamp-1 mt-6"
+                    )}
                   >
                     {user.display_name}
                   </h5>
@@ -626,23 +632,24 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
               </div>
             )}
 
-            {loggedInUser.account_address.toLowerCase() !==
-              user.account_address.toLowerCase() && (
-              <div className="w-full justify-center flex">
-                {loadingState ? (
-                  <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                    <SpinIcon3 />
-                  </button>
-                ) : (
-                  <Button
-                    title={follow ? "Unfollow" : "Follow"}
-                    variant="v1"
-                    className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
-                    onClick={() => followUser(user._id)}
-                  />
-                )}
-              </div>
-            )}
+            {!!loggedInUser &&
+              loggedInUser?.account_address.toLowerCase() !==
+                user.account_address.toLowerCase() && (
+                <div className="w-full justify-center flex">
+                  {loadingState ? (
+                    <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
+                      <SpinIcon3 />
+                    </button>
+                  ) : (
+                    <Button
+                      title={follow ? "Unfollow" : "Follow"}
+                      variant="v1"
+                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                      onClick={() => followUser(user._id)}
+                    />
+                  )}
+                </div>
+              )}
 
             {user.profile_bio && (
               <p

@@ -47,7 +47,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             reverseOrder={false}
             toastOptions={{
               // Define default options
-              className: "",
               duration: 5000,
               style: {
                 background: "#363636",
@@ -57,10 +56,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               // Default options for specific types
               success: {
                 duration: 3000,
-                theme: {
-                  primary: "green",
-                  secondary: "black",
-                },
               },
             }}
           />

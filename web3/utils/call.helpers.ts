@@ -1,10 +1,13 @@
+import { customLog } from "@/utils/custom.log";
 import { BigNumber, ethers } from "ethers";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 
 import { getMarketplaceAddress, getPresaleAddress } from "./address.helpers";
 import {
   getBusdContract,
   getMarketplaceContract,
+  getNTRContract,
+  getNtrdaoContract,
   getPresaleContract,
   getStandardNFTContract,
 } from "./contract.helpers";
@@ -13,29 +16,41 @@ import { delay, isEmpty } from "./utility";
 
 const MAX_SUPPLY = BigNumber.from("260000");
 
-export const setBusdApprove = async (library: Web3Provider) => {
+export type TokenName = "BUSD" | "NTR" | "CTHR";
+
+export const getTokenContract = (
+  tokenName: TokenName,
+  library: Web3Provider | JsonRpcSigner
+) => {
+  if (tokenName === "BUSD") {
+    return getBusdContract(library);
+  } else if (tokenName === "NTR") {
+    return getNTRContract(library);
+  } else if (tokenName === "CTHR") {
+    return getNtrdaoContract(library);
+  }
+};
+
+export const getTokenApproval = async (
+  tokenName: TokenName,
+  library: Web3Provider
+) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleAddress = getPresaleAddress();
-    const busdContract = getBusdContract(library.getSigner());
+
+    const tokenContract = getTokenContract(tokenName, library.getSigner());
+    if (!tokenContract) {
+      throw new Error("Token contract not found");
+    }
+
     const amount = ethers.utils.parseUnits(MAX_SUPPLY.toString());
 
-    const { hash: approveHash } = await busdContract.functions.approve(
-      presaleAddress,
-      amount
-    );
-    while (loop) {
-      tx = await library.getTransactionReceipt(approveHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
-    }
+    const tx = await tokenContract.functions.approve(presaleAddress, amount);
+    await tx.wait();
+
     return {
       success: true,
-      hash: approveHash,
+      hash: tx.hash,
     };
   } catch (error: any) {
     console.log("[Busd Approve Error] = ", error);
@@ -46,28 +61,38 @@ export const setBusdApprove = async (library: Web3Provider) => {
   }
 };
 
-export const buyNtrDao = async (library: Web3Provider, amount: BigNumber) => {
+export const buyCenther = async (
+  tokenName: TokenName,
+  amount: number,
+  library: Web3Provider
+) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
-    const purchaseAmount = ethers.utils.parseUnits(amount.toString());
-    const { hash: purchasedHash } =
-      await presaleContract.functions.tokenPurchase(purchaseAmount);
-    while (loop) {
-      tx = await library.getTransactionReceipt(purchasedHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
+    const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+    let tokenPurchase;
+
+    if (tokenName === "BUSD") {
+      tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
+    } else if (tokenName === "NTR") {
+      tokenPurchase = presaleContract.functions.tokenPurchaseWithNtr;
     }
+
+    if (!tokenPurchase) {
+      throw new Error("Token cannot be purchased");
+    }
+
+    const tx = await tokenPurchase(purchaseAmount);
+    await tx.wait();
+
     return {
       success: true,
-      hash: purchasedHash,
+      hash: tx.hash as string,
     };
   } catch (error: any) {
-    console.log("[Buy token Error] = ", error);
+    customLog("[Buy token Error] = ", ["development"]);
+    customLog(error, ["development"]);
+
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -75,33 +100,69 @@ export const buyNtrDao = async (library: Web3Provider, amount: BigNumber) => {
   }
 };
 
+export type ClaimCentherFrom = "BUSD" | "NTR";
+
 export const claimNtrTokens = async (
   library: Web3Provider,
   round: number,
-  index: number
+  claimFrom: ClaimCentherFrom
 ) => {
   try {
-    let loop = true;
-    let tx = null;
     const presaleContract = getPresaleContract(library.getSigner());
-    const { hash: purchasedHash } = await presaleContract.functions.claimTokens(
-      round,
-      index
-    );
-    while (loop) {
-      tx = await library.getTransactionReceipt(purchasedHash);
-      if (isEmpty(tx)) {
-        await delay(300);
-      } else {
-        loop = false;
-      }
+
+    let claimFunction;
+    if (claimFrom === "BUSD") {
+      claimFunction = presaleContract.functions.claimTokensFromBusd;
+    } else if (claimFrom === "NTR") {
+      claimFunction = presaleContract.functions.claimTokensFromNtr;
+    } else {
+      throw new Error("Can not claim tokens");
     }
+
+    const tx = await claimFunction(round);
+    await tx.wait();
     return {
       success: true,
-      hash: purchasedHash,
+      hash: tx.hash,
     };
   } catch (error: any) {
     console.log("[Claim token Error] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const callClaimBUSDForReferral = async (library: Web3Provider) => {
+  try {
+    const presale = getPresaleContract(library.getSigner());
+    const tx = await presale.functions.claimRefRewardBUSD();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Claim BUSD Error] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const callClaimNTRForReferral = async (library: Web3Provider) => {
+  try {
+    const presale = getPresaleContract(library.getSigner());
+    const tx = await presale.functions.claimRefRewardNTR();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Claim NTR Error] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),

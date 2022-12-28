@@ -3,6 +3,7 @@ export const AppRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
+    terms: "/auth/terms",
   },
 
   profile: {
@@ -14,7 +15,7 @@ export const AppRoutes = {
     archived_posts: "/profile/[account_address]/archived-posts",
     settings: "/profile/settings",
 
-    // Coming soon pages
+    // Not ready pages
     nfts: "/profile/[account_address]/nfts",
     purchased: "/profile/[account_address]/purchased",
     collections: "/profile/[account_address]/collections",
@@ -27,38 +28,45 @@ export const AppRoutes = {
   },
 
   // Authenticated Pages
-  notifications: "/notifications",
-
-  // Coming soon pages
-  coming_soon: "/coming-soon",
   home: "/",
-  explore: "/explore",
-  all_collections: "/collections/all",
+  search: "/search",
+  coming_soon: "/coming-soon",
+  notifications: "/notifications",
+  buy_centher: "/buy-centher",
+  referral: {
+    network_genealogy: "/network-genealogy",
+    network_rewards: "/network-rewards/rewards",
+    overview: "/network-rewards/overview",
+    liscense: "/network-rewards/liscense",
+  },
+
+  // Not ready pages
+  chat: "/chat",
+  profits_dashboard: "/profits-dashboard",
+  voting_chain: "/voting-chain",
+  staking_packs: "/staking-packs",
+  liquidity_pool: "/liquidity-pool",
 
   admin: {
     index: "/admin",
     staking_packs: "/admin/staking-packs",
     create_staking_pack: "/admin/create-staking-pack",
     update_staking_pack: "/admin/update-staking-pack",
-    network_rewards: "/admin/network-rewards",
     influencer_requests: "/admin/influencer-requests",
     influencer_details: "/admin/influencer-details",
     transactions: "/admin/transactions",
     users: "/admin/users",
+    network_rewards: "/admin/network-rewards/launchpad",
+    network_rewards_marketplace: "/admin/network-rewards/marketplace",
   },
 
-  chat: "/chat",
-  buy_ntr_dao: "/buy-ntr-dao",
-  network_rewards: "/network-rewards",
-  profits_dashboard: "/profits-dashboard",
-  voting_chain: "/voting-chain",
-  referral_program: "/referral-program",
-  staking_packs: "/staking-contract",
-  liquidity_pool: "/liquidity-pool",
-
-  nfts: {
-    nft: "/nfts/[collection]/[tokenId]",
-    create_nft: "/nfts/create",
-    create_collection: "/nfts/create-collection",
+  marketplace: {
+    nft: "/marketplace/[collection]/[tokenId]",
+    create_nft: "/marketplace/create",
+    create_collection: "/marketplace/create-collection",
+    explore: "/marketplace/explore",
+    all_nfts: "/marketplace/all-nfts",
+    all_collections: "/marketplace/all-collections",
+    collection: "/marketplace/[collection]",
   },
 } as const;

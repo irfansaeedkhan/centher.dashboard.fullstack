@@ -277,8 +277,22 @@ interface NewReferralNotification extends BaseNotification {
   type: "new_referral";
 }
 
+interface NTRNetworkRewardsNotification extends BaseNotification {
+  type: "centher_purchase_ntr";
+  amount: Number;
+  level: Number;
+}
+
+interface BUSDNetworkRewardsNotification extends BaseNotification {
+  type: "centher_purchase_busd";
+  amount: Number;
+  level: Number;
+}
+
 export type Notification =
   | PostLikeNotification
   | PostReplyNotification
   | FollowNotification
-  | NewReferralNotification;
+  | NewReferralNotification
+  | NTRNetworkRewardsNotification
+  | BUSDNetworkRewardsNotification;
