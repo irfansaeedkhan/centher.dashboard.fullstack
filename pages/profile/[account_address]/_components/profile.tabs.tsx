@@ -30,7 +30,7 @@ export const ProfileTabs: React.FC = () => {
 
   return (
     <div
-      className={`flex fsm:max-w-[430px] w-full fsm:w-max bg-black-shade-6 p-1.5 rounded-2xl mb-4 fsm:mb-6 space-x-2`}
+      className={`flex fsm:max-w-[430px] w-full bg-black-shade-6 p-1.5 rounded-2xl mb-4 fsm:mb-6 space-x-2`}
     >
       <Link
         href={{
@@ -44,10 +44,10 @@ export const ProfileTabs: React.FC = () => {
         <Button
           title={"Social Profile"}
           variant={`${currentPageRoute.isProfilePage ? "v1" : "v2"}`}
-          className="fsm:px-8 fsm:py-3  fsm:max-w-[200px]"
+          className="fsm:px-8 fsm:py-3"
         />
       </Link>
-      {/* <Link
+      <Link
         href={{
           pathname: AppRoutes.profile.nfts,
           query: {
@@ -61,7 +61,7 @@ export const ProfileTabs: React.FC = () => {
           variant={`${currentPageRoute.isNFTProfilePage ? "v1" : "v2"}`}
           className="fsm:px-8 fsm:py-3"
         />
-      </Link> */}
+      </Link>
     </div>
   );
 };
