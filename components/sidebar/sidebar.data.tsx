@@ -91,6 +91,7 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Launchpad",
+        label2: "Buy Centher",
         url: AppRoutes.buy_centher,
         icon: DaoGovernment,
       },

@@ -42,9 +42,15 @@ export const Section: React.FC<SectionProps> = (props) => {
               <div className={itemWrapper}>
                 <item.icon
                   className={
-                    router.pathname
-                      .replaceAll("-", " ")
-                      .includes(item.label.toLowerCase())
+                    item.label2
+                      ? router.pathname
+                          .replaceAll("-", " ")
+                          .includes(item.label2.toLowerCase())
+                        ? itemIconsActive
+                        : itemIcons
+                      : router.pathname
+                          .replaceAll("-", " ")
+                          .includes(item.label.toLowerCase())
                       ? itemIconsActive
                       : itemIcons
                   }
@@ -53,9 +59,15 @@ export const Section: React.FC<SectionProps> = (props) => {
                   href={item.url}
                   onClick={props.onClose}
                   className={
-                    router.pathname
-                      .replaceAll("-", " ")
-                      .includes(item.label.toLowerCase())
+                    item.label2
+                      ? router.pathname
+                          .replaceAll("-", " ")
+                          .includes(item.label2.toLowerCase())
+                        ? itemLabelActive
+                        : itemLabel
+                      : router.pathname
+                          .replaceAll("-", " ")
+                          .includes(item.label.toLowerCase())
                       ? itemLabelActive
                       : itemLabel
                   }
