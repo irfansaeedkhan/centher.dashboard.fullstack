@@ -9,7 +9,7 @@ import { FiTwitter } from "react-icons/fi";
 
 // App imports
 import Button from "@/components/button";
-import { GreyWorldIcon, GreyFBIcon, GreyTwitterIcon } from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
 import { categories } from "@/models/nft";
 
 // form validations
@@ -235,7 +235,7 @@ export const CreateNFTCollectionForm = ({
             id="url"
             autoComplete="off"
             {...register("url")}
-            placeholder="https://nethernft.io/collection/ skull- Price"
+            placeholder="https://centher.io/collection/ skull- Price"
             className={!formState.errors.url ? inputField : inputFieldError}
           />
           {formState.errors.url && (

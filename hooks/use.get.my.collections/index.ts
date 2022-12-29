@@ -1,11 +1,8 @@
-import { myCollections, nftQuery, saleQuery } from "@/subgraph/querys";
-import { formatIPFSUrl } from "@/utils/format.address";
-import useRefresh from "@/web3/hooks/use.refresh";
+import { myCollections } from "@/subgraph/querys";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 
-const NetherNativeCollection = {
+const CentherNativeCollection = {
   id: "1",
   name: "CENTHER Native NFT",
   collection: "0x453Ac6fCA7184cd09e3bbFE11D9679E2F17Ce0Fc",
@@ -19,7 +16,7 @@ export interface IMyCollection {
 
 export const useGetMyCollections = (account: string | null | undefined) => {
   const [collections, setCollections] = useState<IMyCollection[]>([
-    NetherNativeCollection,
+    CentherNativeCollection,
   ]);
 
   useEffect(() => {
@@ -44,7 +41,7 @@ export const useGetMyCollections = (account: string | null | undefined) => {
             collection: item.collection,
           };
         });
-        setCollections([NetherNativeCollection, ..._collections]);
+        setCollections([CentherNativeCollection, ..._collections]);
       }
     };
 
