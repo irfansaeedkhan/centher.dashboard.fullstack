@@ -15,6 +15,7 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { Polygon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import clsx from "clsx";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -53,6 +54,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     }
   }, [deactivate, user, account, connectWallet]);
 
+  console.log("user", user);
+
   return (
     <>
       <div className={`absolute top-12`}>
@@ -70,7 +73,12 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           className={`rounded-t-lg !h-[96px] object-cover`}
         />
         <div className={`space-y-3 text-white`}>
-          <div className={`flex gap-2 items-start px-6 py-4`}>
+          <div
+            className={clsx(
+              `flex gap-2 px-6 py-4`,
+              user?.pseudonym ? "items-start" : "items-center"
+            )}
+          >
             {user && (
               <Image
                 src={user.profile_image.path}
@@ -83,9 +91,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             )}
 
             <div className={`space-y-1`}>
-              <div className={`text-ellipsis text-sm text-white line-clamp-1`}>
-                {user?.display_name}
-              </div>
+              {user?.pseudonym && (
+                <div
+                  className={`text-ellipsis text-sm text-white line-clamp-1`}
+                >
+                  {user?.display_name}
+                </div>
+              )}
               <div className={`flex gap-2 items-center`}>
                 <p className={`text-sm`}>
                   {sliceAccountAddress(user?.account_address ?? "")}

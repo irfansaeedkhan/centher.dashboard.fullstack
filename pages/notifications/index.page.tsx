@@ -70,8 +70,8 @@ const Notifications: NextPageWithLayout = () => {
     <div className="flex">
       <div
         className={clsx(
-          "flex-grow flex items-center justify-center flex-col",
-          loading !== "loading" && loading !== "idle" && "space-y-6"
+          "flex-grow flex items-center justify-center flex-col space-y-6"
+          // loading !== "loading" && loading !== "idle" && "space-y-6"
         )}
       >
         {/* Today */}
@@ -205,7 +205,9 @@ const Notifications: NextPageWithLayout = () => {
           </div>
         )}
         {(loading === "loading" || loading === "idle") && (
-          <SingleNotificationSkeleton />
+          <div className="flex flex-col w-full max-w-[1005px]">
+            <SingleNotificationSkeleton />
+          </div>
         )}
         {loading === "loaded" &&
           notifications.length === 0 &&
