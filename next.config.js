@@ -9,9 +9,9 @@ const nextConfig = {
   images: {
     domains: [
       "ipfs.moralis.io",
-      "devapi.nethernft.io",
+      "devapi.centher.io",
       "localhost",
-      "nethernftdevelopment.s3.eu-west-3.amazonaws.com",
+      "centher-development.s3.eu-west-3.amazonaws.com",
       "s3.eu-west-3.amazonaws.com",
     ],
   },
@@ -25,26 +25,6 @@ const nextConfig = {
 
     return config;
   },
-  // async headers() {
-  //   return [
-  //     {
-  //       source: "/feed/(.*)",
-  //       headers: [
-  //         { key: "Access-Control-Allow-Credentials", value: "true" },
-  //         { key: "Access-Control-Allow-Origin", value: "*" },
-  //         {
-  //           key: "Access-Control-Allow-Methods",
-  //           value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
-  //         },
-  //         {
-  //           key: "Access-Control-Allow-Headers",
-  //           value:
-  //             "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, ETag, Etag",
-  //         }
-  //       ],
-  //     }
-  //   ];
-  // },
 };
 
 module.exports = withBundleAnalyzer(nextConfig);
