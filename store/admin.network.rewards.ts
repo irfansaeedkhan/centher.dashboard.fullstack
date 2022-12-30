@@ -5,185 +5,297 @@ import { devtools } from "zustand/middleware";
 // App imports
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import {
-  referralRewardsInPresaleQuery,
-  referrerClaimPresaleQuery,
+  claimCentherHistory,
+  purchaseWithBusdHistory,
+  purchaseWithNtrHistory,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import {
-  ReferralClaim,
-  ReferralReward,
-  RewardsEachAsset,
+  ClaimHistory,
+  Overview,
+  PurchaseHistory,
+  Rewards,
 } from "@/models/referral";
 import { ethers } from "ethers";
+import { getPresaleContract } from "@/web3/utils/contract.helpers";
 
 export interface NetworkRewards {
-  rewardsInLaunchpad: ReferralReward[];
-  claimsInLaunchpad: ReferralClaim;
-  rewardsInMarketplace: ReferralReward[];
-  rewardsEachLevel: RewardsEachAsset[];
-  rewardsTotal: RewardsEachAsset;
-  fetchReferralRewardsInLaunchpad: (referrer: string) => Promise<void>;
-  fetchReferralClaimsInLaunchpad: (referrer: string) => Promise<void>;
-  updateOffset: () => void;
-  limit: number;
-  offset: number;
-  loading: LoadingState;
+  coreTeamRewards: Rewards;
+  companyRewards: Rewards;
+  overview: Overview;
+  purchaseWithBusdHistory: PurchaseHistory[];
+  purchaseWithNtrHistory: PurchaseHistory[];
+  claimHistory: ClaimHistory[];
+  fetchPurchaseWithBusdHistoryInLaunchpad: () => Promise<void>;
+  fetchPurchaseWithNtrHistoryInLaunchpad: () => Promise<void>;
+  fetchClaimHistoryInLaunchpad: () => Promise<void>;
+  loadingPurchaseWithBusdHistory: LoadingState;
+  loadingPurchaseWithNtrHistory: LoadingState;
+  loadingClaimHistory: LoadingState;
 }
 
-export const useAdminNetworkRewards = create<NetworkRewards>()(
+export const useAdminLaunchpadRewards = create<NetworkRewards>()(
   devtools(
     (set, get) => ({
-      rewardsInLaunchpad: [],
-      claimsInLaunchpad: { busd: [], ntr: [] },
-      rewardsInMarketplace: [],
-      rewardsEachLevel: [],
-      rewardsTotal: { busd: 0, ntr: 0, bnb: 0 },
-      limit: 1000,
-      offset: 0,
-      loading: "idle",
+      coreTeamRewards: {
+        totalEarning: { busd: 0, ntr: 0 },
+        claimed: { busd: 0, ntr: 0 },
+        claimable: { busd: 0, ntr: 0 },
+      },
+      companyRewards: {
+        totalEarning: { busd: 0, ntr: 0 },
+        claimed: { busd: 0, ntr: 0 },
+        claimable: { busd: 0, ntr: 0 },
+      },
+      overview: {
+        totalBusdContributors: 0,
+        totalNtrContributors: 0,
+        totalRaisingBusd: 0,
+        totalRaisingNtr: 0,
+        totalCentherTobeDistributedFromBusd: 0,
+        totalCentherTobeDistributedFromNtr: 0,
+      },
+      purchaseWithBusdHistory: [],
+      purchaseWithNtrHistory: [],
+      claimHistory: [],
+      loadingPurchaseWithBusdHistory: "idle",
+      loadingPurchaseWithNtrHistory: "idle",
+      loadingClaimHistory: "idle",
 
-      updateOffset: () =>
-        set((state) => ({
-          offset: state.rewardsInLaunchpad.length,
-        })),
-
-      fetchReferralRewardsInLaunchpad: async (referrer) => {
+      fetchPurchaseWithBusdHistoryInLaunchpad: async () => {
         try {
-          set({ loading: "loading" });
+          set({ loadingPurchaseWithBusdHistory: "loading" });
           const client = new ApolloClient({
             uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
             cache: new InMemoryCache(),
           });
-          let _rewardsInLaunchpad: ReferralReward[] = [];
+          let _purchaseWithBusdHistory: PurchaseHistory[] = [];
 
           const { data: result, error: error } = await client.query({
-            query: gql(referralRewardsInPresaleQuery),
+            query: gql(purchaseWithBusdHistory),
             variables: {
-              first: get().limit,
-              skip: get().offset,
-              referrer: referrer,
+              first: 1000,
+              skip: 0,
             },
             fetchPolicy: "cache-first",
           });
 
           if (result && !error) {
-            _rewardsInLaunchpad = result.presaleGenealogyHistories.map(
-              (item: any) => {
+            _purchaseWithBusdHistory =
+              result.presalePurchaseWithBusdHistories.map((item: any) => {
+                const date = new Date(item.createdAt * 1000);
+                const paidAmount = Number(
+                  ethers.utils.formatEther(item.busdAmount.toString())
+                );
+                const company = Number(
+                  ethers.utils.formatEther(item.busdAmountForOwner.toString())
+                );
+                const coreTeam = paidAmount / 10;
+                const referralNetwork = paidAmount - company - coreTeam;
+                console.log("sniper: item: ", item);
                 return {
-                  id: item.id,
-                  createdAt: item.createdAt,
-                  user: item.user,
-                  level: item.level,
-                  round: item.round,
-                  isBusd: item.isBusd,
-                  amount: Number(ethers.utils.formatEther(item.amount)),
+                  date: `${date.getDate()}-${
+                    date.getMonth() + 1
+                  }-${date.getFullYear()}`,
+                  publicKey: item.publicKey,
+                  paidAmount: paidAmount,
+                  round: Number(item.roundIndex) + 1,
+                  coreTeam: coreTeam,
+                  referralNetwork: referralNetwork,
+                  company: company,
+                };
+              });
+          }
+
+          const presaleContract = getPresaleContract();
+          const claimableBusdCompanyRaw =
+            await presaleContract.busdAmountForOwner();
+          const claimableBusdCompany = Number(
+            ethers.utils.formatEther(claimableBusdCompanyRaw.toString())
+          );
+          const claimableBusdCoreTeamRaw =
+            await presaleContract.busdAmountForCoreTeam();
+          const claimableBusdCoreTeam = Number(
+            ethers.utils.formatEther(claimableBusdCoreTeamRaw.toString())
+          );
+
+          set((state) => {
+            let company = state.companyRewards;
+            let coreTeam = state.coreTeamRewards;
+            const busdCompany = _purchaseWithBusdHistory
+              .map((item: any) => item.company)
+              .reduce((prev: any, next: any) => prev + next);
+            const busdCoreTeam = _purchaseWithBusdHistory
+              .map((item: any) => item.coreTeam)
+              .reduce((prev: any, next: any) => prev + next);
+            company.totalEarning.busd = busdCompany;
+            company.claimable.busd = claimableBusdCompany;
+            company.claimed.busd = busdCompany - claimableBusdCompany;
+            coreTeam.totalEarning.busd = busdCoreTeam;
+            coreTeam.claimable.busd = claimableBusdCoreTeam;
+            coreTeam.claimed.busd = busdCoreTeam - claimableBusdCoreTeam;
+
+            let overview = state.overview;
+            overview.totalBusdContributors = _purchaseWithBusdHistory.length;
+            overview.totalRaisingBusd = _purchaseWithBusdHistory
+              .map((item: any) => item.paidAmount)
+              .reduce((prev: any, next: any) => prev + next);
+            return {
+              ...state,
+              overview: overview,
+              companyRewards: company,
+              coreTeamRewards: coreTeam,
+              purchaseWithBusdHistory: _purchaseWithBusdHistory,
+              loadingPurchaseWithBusdHistory: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingPurchaseWithBusdHistory: "failed" });
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      fetchPurchaseWithNtrHistoryInLaunchpad: async () => {
+        try {
+          set({ loadingPurchaseWithNtrHistory: "loading" });
+          const client = new ApolloClient({
+            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _purchaseWithNtrHistory: PurchaseHistory[] = [];
+
+          const { data: result, error: error } = await client.query({
+            query: gql(purchaseWithNtrHistory),
+            variables: {
+              first: 1000,
+              skip: 0,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result && !error) {
+            _purchaseWithNtrHistory =
+              result.presalePurchaseWithNtrHistories.map((item: any) => {
+                const date = new Date(item.createdAt * 1000);
+                const paidAmount = Number(
+                  ethers.utils.formatEther(item.ntrAmount.toString())
+                );
+                const company = Number(
+                  ethers.utils.formatEther(item.ntrAmountForOwner.toString())
+                );
+                const coreTeam = paidAmount / 10;
+                const referralNetwork = paidAmount - company - coreTeam;
+                return {
+                  date: `${date.getDate()}-${
+                    date.getMonth() + 1
+                  }-${date.getFullYear()}`,
+                  publicKey: item.publicKey,
+                  paidAmount: paidAmount,
+                  round: Number(item.roundIndex) + 1,
+                  coreTeam: coreTeam,
+                  referralNetwork: referralNetwork,
+                  company: company,
+                };
+              });
+          }
+
+          const presaleContract = getPresaleContract();
+          const claimableNtrCompanyRaw =
+            await presaleContract.ntrAmountForOwner();
+          const claimableNtrCompany = Number(
+            ethers.utils.formatEther(claimableNtrCompanyRaw.toString())
+          );
+          const claimableNtrCoreTeamRaw =
+            await presaleContract.ntrAmountForCoreTeam();
+          const claimableNtrCoreTeam = Number(
+            ethers.utils.formatEther(claimableNtrCoreTeamRaw.toString())
+          );
+
+          set((state) => {
+            let company = state.companyRewards;
+            let coreTeam = state.coreTeamRewards;
+            const ntrCompany = _purchaseWithNtrHistory
+              .map((item: any) => item.company)
+              .reduce((prev: any, next: any) => prev + next);
+            const ntrCoreTeam = _purchaseWithNtrHistory
+              .map((item: any) => item.coreTeam)
+              .reduce((prev: any, next: any) => prev + next);
+            company.totalEarning.ntr = ntrCompany;
+            company.claimable.ntr = claimableNtrCompany;
+            company.claimed.ntr = ntrCompany - claimableNtrCompany;
+            coreTeam.totalEarning.ntr = ntrCoreTeam;
+            coreTeam.claimable.ntr = claimableNtrCoreTeam;
+            coreTeam.claimed.ntr = ntrCoreTeam - claimableNtrCoreTeam;
+
+            let overview = state.overview;
+            overview.totalNtrContributors = _purchaseWithNtrHistory.length;
+            overview.totalRaisingNtr = _purchaseWithNtrHistory
+              .map((item: any) => item.paidAmount)
+              .reduce((prev: any, next: any) => prev + next);
+
+            return {
+              ...state,
+              overview: overview,
+              companyRewards: company,
+              coreTeamRewards: coreTeam,
+              purchaseWithNtrHistory: _purchaseWithNtrHistory,
+              loadingPurchaseWithNtrHistory: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingPurchaseWithNtrHistory: "failed" });
+          process.env.APP_ENV !== "production" && console.error(error);
+        }
+      },
+
+      fetchClaimHistoryInLaunchpad: async () => {
+        try {
+          set({ loadingClaimHistory: "loading" });
+          const client = new ApolloClient({
+            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _claimHistory: ClaimHistory[] = [];
+
+          const { data: result, error: error } = await client.query({
+            query: gql(claimCentherHistory),
+            variables: {
+              first: 1000,
+              skip: 0,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result && !error) {
+            _claimHistory = result.presaleCentherClaimHistories.map(
+              (item: any) => {
+                const date = new Date(item.createdAt * 1000);
+                const paidAmount = 0; //Number(ethers.utils.formatEther(item.busdAmount.toString()))
+                const claimAmount = Number(
+                  ethers.utils.formatEther(item.centherAmount.toString())
+                );
+                return {
+                  date: `${date.getDate()}-${
+                    date.getMonth() + 1
+                  }-${date.getFullYear()}`,
+                  publicKey: item.publicKey,
+                  paidAmount: paidAmount,
+                  round: Number(item.roundIndex) + 1,
+                  claimAmount: claimAmount,
                 };
               }
             );
           }
 
           set((state) => {
-            // Filter out all nfts that are already in the store
-            const filteredItems = state.rewardsInLaunchpad.filter(
-              (item) =>
-                !_rewardsInLaunchpad.some(
-                  (item1: ReferralReward) => item.id === item1.id
-                )
-            );
-
-            const _rewardsInLaunchpadFinal = [
-              ...filteredItems,
-              ..._rewardsInLaunchpad,
-            ];
-            const _rewardsEachLevel: RewardsEachAsset[] = [];
-            for (let i = 0; i < 6; i++) {
-              const group = _rewardsInLaunchpadFinal.filter(
-                (item: any) => item.level === i + 1
-              );
-              const sumBusd = group
-                .filter((item: any) => item.isBusd)
-                .map((item: any) => item.amount)
-                .reduce((prev: any, next: any) => prev + next, 0);
-              const sumNtr = group
-                .filter((item: any) => !item.isBusd)
-                .map((item: any) => item.amount)
-                .reduce((prev: any, next: any) => prev + next, 0);
-              _rewardsEachLevel.push({
-                busd: sumBusd,
-                ntr: sumNtr,
-                bnb: 0,
-              });
-            }
-
-            const _rewardsTotal: RewardsEachAsset = get().rewardsTotal;
-            _rewardsTotal.busd = _rewardsEachLevel
-              .map((item: any) => item.busd)
-              .reduce((prev: any, next: any) => prev + next, 0);
-            _rewardsTotal.ntr = _rewardsEachLevel
-              .map((item: any) => item.ntr)
-              .reduce((prev: any, next: any) => prev + next, 0);
-            _rewardsTotal.bnb = _rewardsEachLevel
-              .map((item: any) => item.bnb)
-              .reduce((prev: any, next: any) => prev + next, 0);
-
             return {
               ...state,
-              rewardsInLaunchpad: _rewardsInLaunchpadFinal,
-              rewardsEachLevel: _rewardsEachLevel,
-              rewardsTotal: _rewardsTotal,
-              loading: "loaded",
+              claimHistory: _claimHistory,
+              loadingClaimHistory: "loaded",
             };
           });
         } catch (error) {
-          set({ loading: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
-        }
-      },
-      fetchReferralClaimsInLaunchpad: async (referrer) => {
-        try {
-          const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-
-          const { data: result, error: error } = await client.query({
-            query: gql(referrerClaimPresaleQuery),
-            variables: {
-              referrer: referrer,
-            },
-            fetchPolicy: "cache-first",
-          });
-          let _claimsInLaunchpad: ReferralClaim = { busd: [], ntr: [] };
-          if (result && !error) {
-            _claimsInLaunchpad.busd = result.presaleGenalogyClaimHistories
-              .filter((item: any) => item.isBusd)
-              .map((item1: any) => {
-                return {
-                  createdAt: item1.createdAt,
-                  amount: Number(
-                    ethers.utils.formatEther(item1.amount.toString())
-                  ),
-                };
-              });
-            _claimsInLaunchpad.ntr = result.presaleGenalogyClaimHistories
-              .filter((item: any) => !item.isBusd)
-              .map((item1: any) => {
-                return {
-                  createdAt: item1.createdAt,
-                  amount: Number(
-                    ethers.utils.formatEther(item1.amount.toString())
-                  ),
-                };
-              });
-          }
-
-          set((state) => {
-            return {
-              ...state,
-              claimsInLaunchpad: _claimsInLaunchpad,
-            };
-          });
-        } catch (error) {
+          set({ loadingClaimHistory: "failed" });
           process.env.APP_ENV !== "production" && console.error(error);
         }
       },

@@ -473,3 +473,75 @@ export const callCancelAuction = async (
     };
   }
 };
+
+export const adminCallClaimBusdForCompany = async (library: Web3Provider) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.withdrawBUSD();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Claim Busd For Company] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminCallClaimNtrForCompany = async (library: Web3Provider) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.withdrawNtr();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Claim Ntr For Company] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminCallClaimBusdForCoreTeam = async (library: Web3Provider) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.withdrawBusdForCoreTeam();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Claim Busd For Company] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminCallClaimNtrForCoreTeam = async (library: Web3Provider) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.withdrawNtrForCoreTeam();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Claim Ntr For Company] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};

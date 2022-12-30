@@ -237,13 +237,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             <p className="">Claimable Rewards</p>
             {rewardState === "lunchpad-rewards" ? (
               <span className="font-semibold flex gap-2 items-center">
-                <p>{`${
-                  roundState !== RoundState.RoundsEnded ? claimableBusd : "0"
-                } (BUSD)`}</p>
+                <p>{`${claimableBusd} (BUSD)`}</p>
                 <span className="border-l border-white/[0.1] h-3" />
-                <p>{`${
-                  roundState !== RoundState.RoundsEnded ? claimableNtr : "0"
-                } (NTR)`}</p>
+                <p>{`${claimableNtr} (NTR)`}</p>
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="font-semibold flex gap-2 items-center">00 (BNB)</p>
@@ -252,9 +248,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
           {rewardState === "lunchpad-rewards" && (
             <button
-              disabled={
-                roundState !== RoundState.RoundsEnded || claimableBusd === 0
-              }
+              disabled={claimableBusd === 0}
               onClick={
                 !account
                   ? () => {
@@ -264,12 +258,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
               }
               className={clsx(
                 `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
-                (roundState !== RoundState.RoundsEnded ||
-                  claimableBusd === 0) &&
+                claimableBusd === 0 &&
                   `bg-background-shade-2 text-gray-shade-7`,
-                !(
-                  roundState !== RoundState.RoundsEnded || claimableBusd === 0
-                ) && `bg-brand-primary text-black-shade-3`
+                !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
               )}
             >
               Claim BSUD
@@ -277,9 +268,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
           )}
           {rewardState === "lunchpad-rewards" && (
             <button
-              disabled={
-                roundState !== RoundState.RoundsEnded || claimableNtr === 0
-              }
+              disabled={claimableNtr === 0}
               onClick={
                 !account
                   ? () => {
@@ -289,11 +278,8 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
               }
               className={clsx(
                 `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
-                (roundState !== RoundState.RoundsEnded || claimableNtr === 0) &&
-                  `bg-background-shade-2 text-gray-shade-7`,
-                !(
-                  roundState !== RoundState.RoundsEnded || claimableNtr === 0
-                ) && `bg-brand-primary text-black-shade-3`
+                claimableNtr === 0 && `bg-background-shade-2 text-gray-shade-7`,
+                !(claimableNtr === 0) && `bg-brand-primary text-black-shade-3`
               )}
             >
               Claim NTR
@@ -379,17 +365,25 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                       ? claimsInLaunchpad.busd
                       : claimsInLaunchpad.ntr;
                     let state;
-                    if (roundState !== RoundState.RoundsEnded) {
-                      state = "Locked";
+                    // if (roundState !== RoundState.RoundsEnded) {
+                    //   state = "Locked";
+                    // } else {
+                    //   if (claims.length > 0) {
+                    //     state =
+                    //       item.createdAt > claims[0].createdAt
+                    //         ? "Claimable"
+                    //         : "Claimed";
+                    //   } else {
+                    //     state = "Claimable";
+                    //   }
+                    // }
+                    if (claims.length > 0) {
+                      state =
+                        item.createdAt > claims[0].createdAt
+                          ? "Claimable"
+                          : "Claimed";
                     } else {
-                      if (claims.length > 0) {
-                        state =
-                          item.createdAt > claims[0].createdAt
-                            ? "Claimable"
-                            : "Claimed";
-                      } else {
-                        state = "Claimable";
-                      }
+                      state = "Claimable";
                     }
                     return (
                       <tr className={tbodyTR} key={index}>
