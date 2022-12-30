@@ -248,9 +248,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
           {rewardState === "lunchpad-rewards" && (
             <button
-              disabled={
-                roundState !== RoundState.RoundsEnded || claimableBusd === 0
-              }
+              disabled={claimableBusd === 0}
               onClick={
                 !account
                   ? () => {
@@ -258,16 +256,19 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimBUSDModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                claimableBusd === 0 &&
+                  `bg-background-shade-2 text-gray-shade-7`,
+                !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
+              )}
             >
               Claim BSUD
             </button>
           )}
           {rewardState === "lunchpad-rewards" && (
             <button
-              disabled={
-                roundState !== RoundState.RoundsEnded || claimableNtr === 0
-              }
+              disabled={claimableNtr === 0}
               onClick={
                 !account
                   ? () => {
@@ -275,13 +276,18 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimNTRModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                claimableNtr === 0 && `bg-background-shade-2 text-gray-shade-7`,
+                !(claimableNtr === 0) && `bg-brand-primary text-black-shade-3`
+              )}
             >
               Claim NTR
             </button>
           )}
           {rewardState === "marketplace-rewards" && (
             <button
+              disabled={true}
               onClick={
                 !account
                   ? () => {
@@ -289,7 +295,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimBNBModal
               }
-              className="fsm:w-[172px] w-full h-10 text-black-shade-3 text-sm font-bold text-center bg-brand-primary rounded-xl"
+              className={clsx(
+                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl bg-background-shade-2 text-gray-shade-7`
+              )}
             >
               Claim BNB
             </button>
@@ -357,17 +365,25 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                       ? claimsInLaunchpad.busd
                       : claimsInLaunchpad.ntr;
                     let state;
-                    if (roundState !== RoundState.RoundsEnded) {
-                      state = "Locked";
+                    // if (roundState !== RoundState.RoundsEnded) {
+                    //   state = "Locked";
+                    // } else {
+                    //   if (claims.length > 0) {
+                    //     state =
+                    //       item.createdAt > claims[0].createdAt
+                    //         ? "Claimable"
+                    //         : "Claimed";
+                    //   } else {
+                    //     state = "Claimable";
+                    //   }
+                    // }
+                    if (claims.length > 0) {
+                      state =
+                        item.createdAt > claims[0].createdAt
+                          ? "Claimable"
+                          : "Claimed";
                     } else {
-                      if (claims.length > 0) {
-                        state =
-                          item.createdAt > claims[0].createdAt
-                            ? "Claimable"
-                            : "Claimed";
-                      } else {
-                        state = "Claimable";
-                      }
+                      state = "Claimable";
                     }
                     return (
                       <tr className={tbodyTR} key={index}>

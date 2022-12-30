@@ -51,3 +51,41 @@ export interface RewardsEachAsset {
   ntr: number;
   bnb: number;
 }
+
+export interface RewardBusdAndNtr {
+  busd: number;
+  ntr: number;
+}
+
+export interface Rewards {
+  totalEarning: RewardBusdAndNtr;
+  claimed: RewardBusdAndNtr;
+  claimable: RewardBusdAndNtr;
+}
+
+export interface Overview {
+  totalBusdContributors: number;
+  totalNtrContributors: number;
+  totalRaisingBusd: number;
+  totalRaisingNtr: number;
+  totalCentherTobeDistributedFromBusd: number;
+  totalCentherTobeDistributedFromNtr: number;
+}
+
+export interface PurchaseHistory {
+  date: string;
+  publicKey: string;
+  paidAmount: number;
+  round: number;
+  coreTeam: number;
+  referralNetwork: number;
+  company: number;
+}
+
+export interface ClaimHistory {
+  date: string;
+  publicKey: string;
+  paidAmount: number;
+  round: number;
+  claimAmount: number;
+}

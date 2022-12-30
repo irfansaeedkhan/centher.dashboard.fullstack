@@ -6,7 +6,7 @@ import React from "react";
 import Bar from "./audio.bar";
 
 interface AudioPlayerProps {
-  srcObject: any;
+  srcObject?: any;
   src: any;
 }
 
@@ -23,7 +23,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
         <Music3DIcon className={clsx(playing && "animate-pulse")} />
         <div className="flex flex-col my-7">
           <div className="text-lg font-semibold text-brand-primary">
-            {props.srcObject.name}
+            {props?.srcObject?.name}
           </div>
           {curTime === 0 ? (
             <div className="text-sm font-medium text-white">

@@ -1,26 +1,55 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import ctl from "@netlify/classnames-template-literals";
+import { useAdminLaunchpadRewards } from "@/store/admin.network.rewards";
 
 import HistoryTableSkeleton from "@/components/loading.skeletons/admin.network.history";
+import { formatAddress } from "@/utils/format.address";
 
 const RewardsHistory = () => {
-  const [historyState, setHistoryState] = useState<"purchase" | "claim">(
-    "purchase"
-  );
+  const [historyState, setHistoryState] = useState<
+    "purchaseBusd" | "purchaseNtr" | "claim"
+  >("purchaseBusd");
+  const {
+    purchaseWithBusdHistory,
+    purchaseWithNtrHistory,
+    claimHistory,
+    loadingPurchaseWithBusdHistory,
+    loadingPurchaseWithNtrHistory,
+    loadingClaimHistory,
+  } = useAdminLaunchpadRewards((state) => ({
+    purchaseWithBusdHistory: state.purchaseWithBusdHistory,
+    purchaseWithNtrHistory: state.purchaseWithNtrHistory,
+    claimHistory: state.claimHistory,
+    loadingPurchaseWithBusdHistory: state.loadingPurchaseWithBusdHistory,
+    loadingPurchaseWithNtrHistory: state.loadingPurchaseWithNtrHistory,
+    loadingClaimHistory: state.loadingClaimHistory,
+  }));
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center fsm:gap-10 gap-4">
         <h3
-          onClick={() => setHistoryState("purchase")}
+          onClick={() => setHistoryState("purchaseBusd")}
           className={clsx(
             `font-semibold fsm:text-xl cursor-pointer`,
-            historyState === "purchase"
+            historyState === "purchaseBusd"
               ? "text-white text-sm"
               : "text-gray-shade-7 text-xs"
           )}
         >
-          Purchase History
+          Purchase Busd History
+        </h3>
+        <h3
+          onClick={() => setHistoryState("purchaseNtr")}
+          className={clsx(
+            `font-semibold fsm:text-xl cursor-pointer`,
+            historyState === "purchaseNtr"
+              ? "text-white text-sm"
+              : "text-gray-shade-7 text-xs"
+          )}
+        >
+          Purchase Ntr History
         </h3>
         <h3
           onClick={() => setHistoryState("claim")}
@@ -35,7 +64,7 @@ const RewardsHistory = () => {
         </h3>
       </div>
       <div>
-        {historyState === "purchase" && (
+        {historyState === "purchaseBusd" && (
           <div className={TableContainer}>
             <table className={table}>
               <thead className={thead}>
@@ -63,17 +92,85 @@ const RewardsHistory = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody>
-                <tr className={tbodyTR}>
-                  <td className={td}>0x866...8fAc</td>
-                  <td className={td}>21 Sep 2022</td>
-                  <td className={td}>200 BUSD</td>
-                  <td className={td}>1</td>
-                  <td className={td}>50 BUSD</td>
-                  <td className={td}>60 BUSD</td>
-                  <td className={td}>390 BUSD</td>
+
+              {loadingPurchaseWithBusdHistory === "loaded" &&
+                loadingPurchaseWithNtrHistory === "loaded" &&
+                loadingClaimHistory === "loaded" && (
+                  <tbody>
+                    {purchaseWithBusdHistory &&
+                      purchaseWithBusdHistory.map(
+                        (item: any, index: number) => {
+                          return (
+                            <tr className={tbodyTR} key={index}>
+                              <td className={td}>
+                                {formatAddress(item.publicKey)}
+                              </td>
+                              <td className={td}>{item.date}</td>
+                              <td className={td}>{item.paidAmount}</td>
+                              <td className={td}>{item.round}</td>
+                              <td className={td}>{item.coreTeam}</td>
+                              <td className={td}>{item.referralNetwork}</td>
+                              <td className={td}>{item.company}</td>
+                            </tr>
+                          );
+                        }
+                      )}
+                  </tbody>
+                )}
+            </table>
+          </div>
+        )}
+        {historyState === "purchaseNtr" && (
+          <div className={TableContainer}>
+            <table className={table}>
+              <thead className={thead}>
+                <tr>
+                  <th scope="col" className={th}>
+                    Public Key
+                  </th>
+                  <th scope="col" className={th}>
+                    Date
+                  </th>
+                  <th scope="col" className={th}>
+                    Amount
+                  </th>
+                  <th scope="col" className={th}>
+                    Round
+                  </th>
+                  <th scope="col" className={th}>
+                    Core team (10%)
+                  </th>
+                  <th scope="col" className={th}>
+                    Referral network <br /> (6,4,2,2,2%)
+                  </th>
+                  <th scope="col" className={th}>
+                    Company
+                  </th>
                 </tr>
-              </tbody>
+              </thead>
+
+              {loadingPurchaseWithBusdHistory === "loaded" &&
+                loadingPurchaseWithNtrHistory === "loaded" &&
+                loadingClaimHistory === "loaded" && (
+                  <tbody>
+                    {purchaseWithNtrHistory &&
+                      purchaseWithNtrHistory.map((item: any, index: number) => {
+                        return (
+                          <tr className={tbodyTR} key={index}>
+                            <td className={td}>
+                              {formatAddress(item.publicKey)}
+                            </td>
+                            <td className={td}>{item.date}</td>
+                            <td className={td}>{item.paidAmount}</td>
+                            <td className={td}>{item.round}</td>
+                            <td className={td}>{item.coreTeam}</td>
+                            <td className={td}>{item.referralNetwork}</td>
+                            <td className={td}>{item.company}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                )}
             </table>
           </div>
         )}
@@ -89,38 +186,42 @@ const RewardsHistory = () => {
                     Date
                   </th>
                   <th scope="col" className={th}>
-                    Paid Amount
-                  </th>
-                  <th scope="col" className={th}>
                     Round
-                  </th>
-                  <th scope="col" className={th}>
-                    Rate
                   </th>
                   <th scope="col" className={th}>
                     Claim amount
                   </th>
-                  <th scope="col" className={th}>
-                    State
-                  </th>
                 </tr>
               </thead>
-              <tbody>
-                <tr className={tbodyTR}>
-                  <td className={td}>0x866...8fAc</td>
-                  <td className={td}>21 Sep 2022</td>
-                  <td className={td}>200 BUSD</td>
-                  <td className={td}>1</td>
-                  <td className={td}>1:40</td>
-                  <td className={td}>200000 CTHR</td>
-                  <td className={td}>Claimed</td>
-                </tr>
-              </tbody>
+
+              {loadingPurchaseWithBusdHistory === "loaded" &&
+                loadingPurchaseWithNtrHistory === "loaded" &&
+                loadingClaimHistory === "loaded" && (
+                  <tbody>
+                    {claimHistory &&
+                      claimHistory.map((item: any, index: number) => {
+                        return (
+                          <tr className={tbodyTR} key={index}>
+                            <td className={td}>
+                              {formatAddress(item.publicKey)}
+                            </td>
+                            <td className={td}>{item.date}</td>
+                            <td className={td}>{item.round}</td>
+                            <td className={td}>{item.claimAmount}</td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                )}
             </table>
           </div>
         )}
       </div>
-      <HistoryTableSkeleton />
+      {!(
+        loadingPurchaseWithBusdHistory === "loaded" &&
+        loadingPurchaseWithNtrHistory === "loaded" &&
+        loadingClaimHistory === "loaded"
+      ) && <HistoryTableSkeleton />}
     </div>
   );
 };

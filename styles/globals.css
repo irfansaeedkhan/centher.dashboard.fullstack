@@ -718,7 +718,7 @@ input:-webkit-autofill {
 }
 .carousel-container .react-multi-carousel-item:first-child {
   margin: 0 0;
-  margin-right: 10px;
+  margin-right: 0px;
 }
 .carousel-container .react-multi-carousel-item {
   width: 416px !important;

@@ -1,10 +1,22 @@
 import useUser from "@/hooks/use.user";
 import { formatAddress } from "@/utils/format.address";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { useCopyToClipboard } from "usehooks-ts";
+import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();
+  const [referralLink, setReferralLink] = useState("");
+
+  useEffect(() => {
+    setReferralLink(
+      `${window.location.origin}/auth/register?referred_by=${loggedInUser?.account_address}`
+    );
+  }, [loggedInUser?.account_address]);
+
+  const [_, copy] = useCopyToClipboard();
+
   return (
     <div className="w-full flex md:flex-row flex-col gap-6">
       <div className="w-full max-w-[810px] bg-elevation-1 rounded-[14px] h-[198px]">
@@ -38,9 +50,19 @@ const WalletSection = ({ data }: any) => {
         </p>
         <div className="w-full rounded-xl p-2 bg-white/[0.07] border border-white/20 backdrop-blur-md h-[52px] flex items-center justify-between gap-2">
           <p className="w-full max-w-[210px] font-semibold text-xs text-white truncate">
-            https://app.nethernft.io/register?...
+            {referralLink}
           </p>
-          <button className="h-9 w-9 rounded-lg p-2 bg-white/20 backdrop-blur-[18px]">
+          <button
+            className="h-9 w-9 rounded-lg p-2 bg-white/20 backdrop-blur-[18px]"
+            onClick={() => {
+              copy(
+                window.location.origin +
+                  "/auth/register?referred_by=" +
+                  loggedInUser?.account_address
+              );
+              toast.success("Referral link copied!");
+            }}
+          >
             <FiCopy className="text-white text-xl" />
           </button>
         </div>

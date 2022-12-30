@@ -413,3 +413,38 @@ export const referrerClaimPresaleQuery = `
     }
   }
 `;
+
+export const purchaseWithBusdHistory = `
+  query MyQuery($first: Int!, $skip: Int!) {
+    presalePurchaseWithBusdHistories(skip: $skip, first: $first) {
+      roundIndex
+      publicKey
+      createdAt
+      busdAmountForOwner
+      busdAmount
+    }
+  }
+`;
+
+export const purchaseWithNtrHistory = `
+  query MyQuery($first: Int!, $skip: Int!) {
+    presalePurchaseWithNtrHistories(first: $first, skip: $skip) {
+      roundIndex
+      publicKey
+      ntrAmountForOwner
+      ntrAmount
+      createdAt
+    }
+  }
+`;
+
+export const claimCentherHistory = `
+  query MyQuery($first: Int!, $skip: Int!) {
+    presaleCentherClaimHistories(skip: $skip, first: $first) {
+      roundIndex
+      publicKey
+      createdAt
+      centherAmount
+    }
+  }
+`;

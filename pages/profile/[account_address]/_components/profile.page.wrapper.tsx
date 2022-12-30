@@ -18,7 +18,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   return (
     <>
       <div className="w-full max-w-[1136px] mx-auto">
-        <ProfileTabs />
+        {/* <ProfileTabs /> */}
 
         <div
           className={clsx(

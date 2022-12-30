@@ -3,4 +3,4 @@ Allow: /
 Allow: /feed/*
 Disallow: /admin/
 
-Sitemap: https://app.nethernft.io/sitemap.xml
+Sitemap: https://app.centher.io/sitemap.xml
