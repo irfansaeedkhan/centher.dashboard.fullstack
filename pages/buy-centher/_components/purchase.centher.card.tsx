@@ -180,16 +180,16 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
     setModal((prev) => ({
       ...prev,
       isOpen: true,
-      status: "buy-ntr",
+      status: "buy-cthr",
       title: "Buy Now",
       subtitle: `Do you want to buy CENTHER?`,
       bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
       confirmButtonText: "Buy Now",
-      onClickConfirm: handleBuyNtrDao,
+      onClickConfirm: handleBuyCenther,
     }));
   };
 
-  const handleBuyNtrDao = async () => {
+  const handleBuyCenther = async () => {
     try {
       if (!account || !library || !selectedTokenA.inputValue) return;
 
