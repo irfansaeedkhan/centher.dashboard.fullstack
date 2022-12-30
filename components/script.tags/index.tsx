@@ -5,6 +5,8 @@ const ScriptTags = () => {
   return (
     <>
       <Head>
+        <title>Centher.io</title>
+
         <meta httpEquiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta
