@@ -72,7 +72,7 @@ export const ConversionContainer: React.FC<Props> = ({
           tokenIcon={selectedTokenA.tokenIcon}
           tokenName={selectedTokenA.tokenName}
           tokenBalance={selectedTokenA.tokenBalance}
-          hasDropdown={true}
+          // hasDropdown={true}
           onChangeSelectedToken={handleChangeSelectedToken}
         />
 
