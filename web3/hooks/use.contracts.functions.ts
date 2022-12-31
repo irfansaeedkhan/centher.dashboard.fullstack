@@ -10,8 +10,6 @@ import {
   getPresaleAddress,
 } from "../utils/address.helpers";
 import {
-  getBusdContract,
-  getNTRContract,
   getPresaleContract,
   getStandardNFTContract,
 } from "../utils/contract.helpers";
@@ -29,8 +27,8 @@ export const useGetRoundsInfo = () => {
   const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
   const presaleContract = useMemo(() => getPresaleContract(), []);
 
-  useEffect(() => {
-    const fetchRoundsInfo = async () => {
+  const fetchRoundsInfo = useCallback(async () => {
+    try {
       const roundState = await getRoundState();
 
       let _roundInfos = [];
@@ -64,9 +62,6 @@ export const useGetRoundsInfo = () => {
         _roundInfos.push(_roundInfo);
       }
       setRoundsInfo(_roundInfos);
-    };
-    try {
-      fetchRoundsInfo();
     } catch (error: any) {
       customLog("useGetRoundsInfo", ["development"]);
       customLog(error, ["development"]);
@@ -74,7 +69,14 @@ export const useGetRoundsInfo = () => {
     }
   }, [presaleContract]);
 
-  return roundsInfo;
+  useEffect(() => {
+    fetchRoundsInfo();
+  }, [fetchRoundsInfo]);
+
+  return {
+    roundsInfo,
+    refreshRoundsInfo: fetchRoundsInfo,
+  };
 };
 
 export const getRoundState = async () => {

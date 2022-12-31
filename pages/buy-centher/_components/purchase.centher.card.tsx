@@ -21,9 +21,13 @@ import { CentherTable } from "./centher.table";
 
 interface Props {
   roundInfo: RoundInfo;
+  refreshRoundsInfo: () => void;
 }
 
-export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
+export const PurchaseCentherCard: React.FC<Props> = ({
+  roundInfo,
+  refreshRoundsInfo,
+}) => {
   const { account, library } = useWeb3React<Web3Provider>();
   const [isApproved, setIsApproved] = useState(false);
   const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
@@ -205,6 +209,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
 
       if (result.success) {
         refreshContributionInfo();
+        refreshRoundsInfo();
         setModal((prev) => ({
           ...prev,
           title: "Success",

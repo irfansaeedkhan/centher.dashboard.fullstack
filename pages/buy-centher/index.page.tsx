@@ -6,7 +6,7 @@ import { PresaleCard, PurchaseCentherCard, RoundStats } from "./_components";
 import LaunchpadSkeleton from "@/components/loading.skeletons/launchpad.skeleton";
 
 const BuyNTRDAOPage: NextPageWithLayout = () => {
-  const roundsInfo = useGetRoundsInfo();
+  const { roundsInfo, refreshRoundsInfo } = useGetRoundsInfo();
 
   return (
     <div
@@ -22,7 +22,10 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
                 roundInfo.status === "ended") && (
                 <RoundStats roundInfo={roundInfo} />
               )}
-              <PurchaseCentherCard roundInfo={roundInfo} />
+              <PurchaseCentherCard
+                roundInfo={roundInfo}
+                refreshRoundsInfo={refreshRoundsInfo}
+              />
             </div>
           ))}
         </div>
