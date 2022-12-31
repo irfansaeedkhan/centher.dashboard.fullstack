@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { isString } from "lodash";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -252,7 +251,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
             "blur-xl bg-black-shade-3/60 pointer-events-none"
         )}
       >
-        <div className={`bg-background-shade-3 rounded-2xl`}>
+        <div className={`bg-background-shade-3 rounded-xl`}>
           <h1
             className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
           >
