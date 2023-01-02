@@ -234,7 +234,10 @@ const TableCell: React.FC<TableCellProps> = ({
   if (element === "th") {
     return (
       <th
-        className={clsx(`py-4 flg:py-7 px-5 flg:px-3 font-semibold`, className)}
+        className={clsx(
+          `py-4 flg:py-7 px-5 flg:px-3 font-semibold min-w-[157px]`,
+          className
+        )}
         {...props}
       />
     );

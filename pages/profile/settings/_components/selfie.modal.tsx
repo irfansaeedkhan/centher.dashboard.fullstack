@@ -21,7 +21,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
   const [previewPicture, setPreviewPicture] = useState("");
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
-  const aspectRatio = useMemo(() => 1 / 1, []);
+  const aspectRatio = useMemo(() => 16 / 9, []);
 
   const imgRef = useRef<HTMLImageElement | null>(null);
   const webRef = useRef<Webcam | null>(null);
