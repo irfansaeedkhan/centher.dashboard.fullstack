@@ -1,7 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-/**
- * @type {import('@types/tailwindcss/tailwind-config').TailwindConfig}
- */
 
 const defaultTheme = require("tailwindcss/defaultTheme");
 
