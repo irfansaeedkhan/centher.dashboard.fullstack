@@ -28,7 +28,7 @@ export type ModalStatus =
   | "progress"
   | "warning"
   | "error"
-  | "buy-ntr"
+  | "buy-cthr"
   | "claim-busd"
   | "claim-ntr";
 
@@ -94,7 +94,7 @@ export const StandardModal: React.FC<ModalProps> = ({
             {status === "error" && (
               <DeleteCrossIcon className="inline-block w-16 h-16" />
             )}
-            {status === "buy-ntr" && (
+            {status === "buy-cthr" && (
               <CentherIconBG className="inline-block w-16 h-16" />
             )}
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { isString } from "lodash";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -22,9 +21,13 @@ import { CentherTable } from "./centher.table";
 
 interface Props {
   roundInfo: RoundInfo;
+  refreshRoundsInfo: () => void;
 }
 
-export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
+export const PurchaseCentherCard: React.FC<Props> = ({
+  roundInfo,
+  refreshRoundsInfo,
+}) => {
   const { account, library } = useWeb3React<Web3Provider>();
   const [isApproved, setIsApproved] = useState(false);
   const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
@@ -180,16 +183,16 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
     setModal((prev) => ({
       ...prev,
       isOpen: true,
-      status: "buy-ntr",
+      status: "buy-cthr",
       title: "Buy Now",
       subtitle: `Do you want to buy CENTHER?`,
       bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
       confirmButtonText: "Buy Now",
-      onClickConfirm: handleBuyNtrDao,
+      onClickConfirm: handleBuyCenther,
     }));
   };
 
-  const handleBuyNtrDao = async () => {
+  const handleBuyCenther = async () => {
     try {
       if (!account || !library || !selectedTokenA.inputValue) return;
 
@@ -206,6 +209,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
 
       if (result.success) {
         refreshContributionInfo();
+        refreshRoundsInfo();
         setModal((prev) => ({
           ...prev,
           title: "Success",
@@ -252,7 +256,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({ roundInfo }) => {
             "blur-xl bg-black-shade-3/60 pointer-events-none"
         )}
       >
-        <div className={`bg-background-shade-3 rounded-2xl`}>
+        <div className={`bg-background-shade-3 rounded-xl`}>
           <h1
             className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
           >

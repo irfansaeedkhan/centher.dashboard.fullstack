@@ -121,6 +121,7 @@ module.exports = {
         elevation: {
           1: "#1B1C22",
           2: "#1C1F29",
+          3: "#1E1F28",
         },
         popup: {
           0: "#0B0B0B",
