@@ -260,7 +260,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           <h1
             className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
           >
-            Please Enter CENTHER amount to you&apos;d like to purchase
+            Please Enter CENTHER amount you&apos;d like to purchase
           </h1>
 
           <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">
