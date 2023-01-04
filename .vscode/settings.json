@@ -3,6 +3,8 @@
   "scss.lint.unknownAtRules": "ignore",
   "editor.tabSize": 2,
   "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "tailwindCSS.experimental.classRegex": [
     ["ctl\\(`([^)]*)`\\)"],
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
