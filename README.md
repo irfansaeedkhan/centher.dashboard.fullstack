@@ -94,6 +94,29 @@ yarn format
 
 ---
 
+### Branching Model
+
+👉 [GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow)
+We will be using the GitHub Flow branching model for this project.
+
+💥 **Note:** We will be using the `main` branch as the default branch instead of `master`.
+
+**Branches:**
+
+👉 `main` - The default branch. All the changes will be merged into this branch and deployed to production.
+
+👉 `staging` - The staging branch. All the changes will be merged into this branch and deployed to staging.
+
+👉 `ft-feature-name` - Feature branches. All the changes should be made in a separate feature branch and a pull request should be created to merge the changes into the `staging` branch.
+
+**Pull Requests:**
+
+👉 All the changes should be made in a separate _feature branch_ and a _pull request_ should be created to merge the changes into the `staging` branch first and deployed to [devapp.centher.io](https://devapp.centher.io)
+
+👉 After the changes are tested in `staging`, a pull request should be created to merge the changes into the `main` branch and deployed to [app.centher.io](https://app.centher.io)
+
+---
+
 ### File Naming Conventions
 
 👉 All the files and folder should use dot (.) as separater instead of hyphens or underscores (e.g. `file.name.js` or `folder.name`)
