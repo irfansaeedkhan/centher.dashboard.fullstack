@@ -25,8 +25,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
 
     if (roundInfo.status === "active") {
       // Calculate time remaining until round ends
-      timeRemaining =
-        roundInfo.startTime * 1000 + roundInfo.duration * 1000 - getUTCNow();
+      timeRemaining = roundInfo.endTime * 1000 - getUTCNow();
       setCountdownFor(timeRemaining);
     }
 
@@ -44,7 +43,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
     return () => {
       clearInterval(interval);
     };
-  }, [roundInfo.status, roundInfo.startTime, roundInfo.duration]);
+  }, [roundInfo.status, roundInfo.startTime, roundInfo.endTime]);
 
   const setCountdownFor = (deadline: number) => {
     const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
@@ -52,10 +51,10 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
     const _minutes = Math.floor((deadline / 1000 / 60) % 60);
     const _seconds = Math.floor((deadline / 1000) % 60);
 
-    setDays(_days);
-    setHours(_hours);
-    setMinutes(_minutes);
-    setSeconds(_seconds);
+    setDays(_days <= 0 ? 0 : _days);
+    setHours(_hours <= 0 ? 0 : _hours);
+    setMinutes(_minutes <= 0 ? 0 : _minutes);
+    setSeconds(_seconds <= 0 ? 0 : _seconds);
   };
 
   return (

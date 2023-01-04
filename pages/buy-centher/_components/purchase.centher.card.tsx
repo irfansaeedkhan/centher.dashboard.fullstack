@@ -41,7 +41,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     tokenBalance: 0,
     minContribution: roundInfo.minContributionForBusd,
     maxContribution: roundInfo.maxContributionForBusd,
-    rate: roundInfo.rateForBusd,
+    rate: roundInfo.priceForBusd,
 
     inputValue: roundInfo.minContributionForBusd,
     inputMinValue: roundInfo.minContributionForBusd,
@@ -52,7 +52,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     tokenName: "CTHR",
     tokenIcon: <CentherIconBG className="w-10 h-10" />,
     tokenBalance: 0,
-    inputValue: roundInfo.minContributionForBusd * roundInfo.rateForBusd,
+    inputValue: roundInfo.minContributionForBusd / roundInfo.priceForBusd,
   });
 
   const [modal, setModal] = useState<ModalState>({

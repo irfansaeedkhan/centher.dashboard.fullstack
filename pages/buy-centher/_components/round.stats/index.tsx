@@ -25,7 +25,7 @@ export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
         <AmountCard
           icon={<CentherIconBG className="w-10 h-10" />}
           title="CTHR To Be Distributed"
-          amount={`${roundInfo.busdRaised * roundInfo.rateForBusd} CTHR`}
+          amount={`${roundInfo.busdRaised / roundInfo.priceForBusd} CTHR`}
         />
         {/* Flip the arrow vertically */}
         <Arrow className="relative top-[16%] transform -scale-x-100 md:block hidden" />

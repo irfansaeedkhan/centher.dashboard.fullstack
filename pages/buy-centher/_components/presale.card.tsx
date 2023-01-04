@@ -26,7 +26,7 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
             <div
               className={`text-[10px] fsm:text-xs flg:text-sm text-white font-bold rounded-10px bg-white/20 backdrop-blur-lg py-1 px-2.5 border border-solid border-white/20`}
             >
-              1 CTHR = {1 / roundInfo.rateForBusd} BUSD
+              1 CTHR = {roundInfo.priceForBusd} BUSD
             </div>
           </div>
         </div>

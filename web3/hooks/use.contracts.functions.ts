@@ -39,12 +39,17 @@ export const useGetRoundsInfo = () => {
         const _roundInfo: RoundInfo = {
           round: i as RoundNumber,
           status: roundStatus,
-          rateForBusd: roundInfo["rateForBusd"].toNumber() / 100,
-          rateForNtr: roundInfo["rateForNtr"].toNumber() / 100,
+          priceForBusd: roundInfo["priceForBusd"].toNumber() / 100000,
+          priceForNtr: roundInfo["priceForNtr"].toNumber() / 100000,
           busdRaised: Number(ethers.utils.formatUnits(roundInfo["busdRaised"])),
           ntrRaised: Number(ethers.utils.formatUnits(roundInfo["ntrRaised"])),
           startTime: roundInfo["startTime"].toNumber(),
-          duration: roundInfo["duration"].toNumber(),
+          endTime: roundInfo["endTime"].toNumber(),
+          maxCentherAmountToSell: Number(
+            ethers.utils.formatEther(roundInfo["maxCentherAmountToSell"])
+          ),
+          busdEnabled: roundInfo["busdEnabled"],
+          ntrEnabled: roundInfo["ntrEnabled"],
           lockMonths: roundInfo["lockMonths"],
           minContributionForBusd: Number(
             ethers.utils.formatUnits(roundInfo["minContributionForBusd"])

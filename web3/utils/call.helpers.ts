@@ -545,3 +545,60 @@ export const adminCallClaimNtrForCoreTeam = async (library: Web3Provider) => {
     };
   }
 };
+
+export const adminCallUpdateRoundInfo = async (
+  library: Web3Provider,
+  roundIndex: number,
+  startTime: number,
+  endTime: number,
+  lockMonths: number,
+  centherPriceForBusd: number,
+  centherPriceForNtr: number,
+  maxCentherAmountToSell: number,
+  minBusdAmountPerUser: number,
+  maxBusdAmountPerUser: number,
+  minNtrAmountPerUser: number,
+  maxNtrAmountPerUser: number,
+  enableBusd: boolean,
+  enableNtr: boolean
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    let tx;
+    if (enableBusd) {
+      tx = await presaleContract.functions.setRoundInfoForBusd(
+        roundIndex,
+        centherPriceForBusd * 100000,
+        Math.floor(startTime),
+        Math.floor(endTime),
+        lockMonths,
+        ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+        ethers.utils.parseEther(minBusdAmountPerUser.toString()),
+        ethers.utils.parseEther(maxBusdAmountPerUser.toString())
+      );
+    } else {
+      tx = await presaleContract.functions.setRoundInfoForNtr(
+        roundIndex,
+        centherPriceForNtr * 100000,
+        Math.floor(startTime),
+        Math.floor(endTime),
+        lockMonths,
+        ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+        ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+        ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+      );
+    }
+
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Update Round Info] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
