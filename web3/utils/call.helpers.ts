@@ -9,6 +9,7 @@ import {
   getNTRContract,
   getNtrdaoContract,
   getPresaleContract,
+  getRegistrationContract,
   getStandardNFTContract,
 } from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
@@ -596,6 +597,24 @@ export const adminCallUpdateRoundInfo = async (
     };
   } catch (error: any) {
     console.log("[Admin Call Update Round Info] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminClaimRegistrationBNB = async (library: Web3Provider) => {
+  try {
+    const regsitrationContract = getRegistrationContract(library.getSigner());
+    const tx = await regsitrationContract.functions.withdraw();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Registration BNB] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),

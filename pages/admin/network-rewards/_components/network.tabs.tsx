@@ -10,6 +10,17 @@ const NetworkTabs = () => {
   return (
     <div className="max-w-[500px] w-full bg-black-shade-6 h-auto p-[6px] rounded-[14px] text-sm font-bold flex gap-4 mb-6 items-center">
       <Link
+        href={AppRoutes.admin.registration}
+        className={clsx(
+          `w-full max-w-[250px] text-center h-full rounded-xl flex items-center justify-center py-3`,
+          router.pathname === AppRoutes.admin.registration
+            ? `bg-brand-primary text-black-shade-3`
+            : `bg-black-shade-6 text-gray-shade-7`
+        )}
+      >
+        Registration
+      </Link>
+      <Link
         href={AppRoutes.admin.network_rewards}
         className={clsx(
           `w-full max-w-[250px] text-center h-full rounded-xl flex items-center justify-center py-3`,

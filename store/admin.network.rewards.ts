@@ -214,12 +214,18 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           set((state) => {
             let company = state.companyRewards;
             let coreTeam = state.coreTeamRewards;
-            const ntrCompany = _purchaseWithNtrHistory
-              .map((item: any) => item.company)
-              .reduce((prev: any, next: any) => prev + next);
-            const ntrCoreTeam = _purchaseWithNtrHistory
-              .map((item: any) => item.coreTeam)
-              .reduce((prev: any, next: any) => prev + next);
+            const ntrCompany =
+              _purchaseWithNtrHistory.length > 0
+                ? _purchaseWithNtrHistory
+                    .map((item: any) => item.company)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
+            const ntrCoreTeam =
+              _purchaseWithNtrHistory.length > 0
+                ? _purchaseWithNtrHistory
+                    .map((item: any) => item.coreTeam)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
             company.totalEarning.ntr = ntrCompany;
             company.claimable.ntr = claimableNtrCompany;
             company.claimed.ntr = ntrCompany - claimableNtrCompany;
@@ -229,9 +235,12 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
 
             let overview = state.overview;
             overview.totalNtrContributors = _purchaseWithNtrHistory.length;
-            overview.totalRaisingNtr = _purchaseWithNtrHistory
-              .map((item: any) => item.paidAmount)
-              .reduce((prev: any, next: any) => prev + next);
+            overview.totalRaisingNtr =
+              _purchaseWithNtrHistory.length > 0
+                ? _purchaseWithNtrHistory
+                    .map((item: any) => item.paidAmount)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
 
             return {
               ...state,

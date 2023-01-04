@@ -57,6 +57,7 @@ export const AppRoutes = {
     transactions: "/admin/transactions",
     users: "/admin/users",
     network_rewards: "/admin/network-rewards/launchpad",
+    registration: "/admin/network-rewards/registration",
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
   },

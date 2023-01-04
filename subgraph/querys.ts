@@ -448,3 +448,13 @@ export const claimCentherHistory = `
     }
   }
 `;
+
+export const registrationHistory = `
+  query MyQuery {
+    users {
+      referrer
+      publicKey
+      createdAt
+    }
+  }
+`;
