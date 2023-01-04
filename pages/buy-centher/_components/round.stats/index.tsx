@@ -12,7 +12,7 @@ interface Props {
 
 export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
   return (
-    <div className="flex sm:flex-row flex-col justify-center gap-10 bg-elevation-1 p-2 rounded-xl">
+    <div className="flex fsm:flex-row flex-col justify-center gap-5 fmd:gap-8 bg-elevation-1 p-2 rounded-xl">
       <div className="flex gap-x-4 relative w-full md:max-w-[300px] max-w-full">
         <Arrow className="relative top-[16%] md:block hidden" />
         <AmountCard
