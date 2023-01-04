@@ -71,7 +71,7 @@ const Header = () => {
       </Link>
 
       <div className={`flex flex-grow gap-6 items-center justify-end`}>
-        <SearchBar />
+        {user && <SearchBar />}
 
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>

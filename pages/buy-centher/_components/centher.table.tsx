@@ -47,7 +47,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
           ...prev,
           status: "success",
           subtitle: `Successfully Claimed CTHR!`,
-          bodyText: `You calimed CTHR. Please check your balance.`,
+          bodyText: `You claimed CTHR. Please check your balance.`,
           onClickConfirm: () => {},
         }));
       } else {
