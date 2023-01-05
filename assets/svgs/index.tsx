@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import clsx from "clsx";
-import NTRDAOIconImgBg from "./ntr.dao.icon.bg.png";
+import CentherIconImgBg from "./centher.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
 
@@ -15,7 +15,7 @@ export { default as LiquidityPoolSvg } from "./liquidity.icon.svg";
 export { default as CopySvg } from "./copy.svg";
 export { default as NetworkRewards } from "./network.rewards.svg";
 export { default as StakingContract } from "./staking.contract.svg";
-export { default as DaoGovernment } from "./ntr.dao.svg";
+export { default as DaoGovernment } from "./dao.govt.svg";
 export { default as ProfitsDashboard } from "./profits.dashboard.svg";
 export { default as VotingChain } from "./voting.chain.svg";
 export { default as Multilevel } from "./multilevel.svg";
@@ -60,8 +60,8 @@ export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
     <img
       className={props.className}
-      src={NTRDAOIconImgBg.src}
-      alt="NTR Dao Icon BG"
+      src={CentherIconImgBg.src}
+      alt="Centher Icon BG"
       sizes="256px"
       width={40}
       height={40}
@@ -74,7 +74,7 @@ export const NTRIconBG: React.FC<IconProps> = (props) => {
     <img
       className={props.className}
       src={NTRIconImgBg.src}
-      alt="NTR Dao Icon BG"
+      alt="NTR Icon BG"
       sizes="256px"
       width={40}
       height={40}
