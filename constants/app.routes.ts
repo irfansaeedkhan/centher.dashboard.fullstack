@@ -3,8 +3,10 @@ export const AppRoutes = {
   auth: {
     login: "/auth/login",
     register: "/auth/register",
-    terms: "/auth/terms",
   },
+
+  // Public or Authenticated Pages
+  terms: "/terms",
 
   profile: {
     // Authenticated Pages
