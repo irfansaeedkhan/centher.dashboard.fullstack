@@ -47,7 +47,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
             alt="collection Image"
             width={340}
             height={180}
-            className={`rounded-t-lg w-auto h-[180px] object-cover`}
+            className={`rounded-t-lg  h-[180px] object-cover w-full`}
             // className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
           />
         )}

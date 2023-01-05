@@ -11,6 +11,7 @@ import RegistrationOverviewCards from "./_components/registration.overview.card"
 import RegistrationRewards from "./_components/registration.rewards";
 import RegistrationHistory from "./_components/registration.history";
 import { useWeb3React } from "@web3-react/core";
+import RegistrationTabs from "./_components/registration.tabs";
 
 const AdminRegistration: NextPageWithLayout = () => {
   const { library } = useWeb3React();
@@ -42,7 +43,7 @@ const AdminRegistration: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-18px font-semibold text-white ">Overview</h1>
+      <RegistrationTabs />
       {loading === "loaded" ? (
         <RegistrationOverviewCards
           totalMembers={totalMembers}
