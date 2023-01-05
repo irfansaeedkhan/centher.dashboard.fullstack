@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 import { formatAddress } from "@/utils/format.address";
+import { ZeroAddress } from "@/web3/constants/common";
 
 const RegistrationHistory = ({ data }: any) => {
   return (
@@ -34,7 +35,11 @@ const RegistrationHistory = ({ data }: any) => {
                       <tr className={tbodyTR} key={index}>
                         <td className={td}>{item.date}</td>
                         <td className={td}>{formatAddress(item.publicKey)}</td>
-                        <td className={td}>{formatAddress(item.referrer)}</td>
+                        <td className={td}>
+                          {item.referrer === ZeroAddress
+                            ? "No"
+                            : formatAddress(item.referrer)}
+                        </td>
                         <td className={td}>{item.paidAmount}</td>
                       </tr>
                     );
