@@ -56,10 +56,10 @@ const _onlyPublicPages: string[] = [
 const onlyPublicPages = changePaths(_onlyPublicPages);
 
 // public or authenticated pages
-const _publicOrAuthenticatedPages: string[] = [AppRoutes.auth.terms];
+const _publicOrAuthenticatedPages: string[] = [AppRoutes.terms];
 const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 
-// on;y authenticated pages
+// only authenticated pages
 const _authenticatedUserPages: string[] = [
   AppRoutes.home,
   AppRoutes.search,
@@ -76,11 +76,7 @@ const _authenticatedUserPages: string[] = [
 
   AppRoutes.notifications,
 
-  AppRoutes.buy_centher,
-
   AppRoutes.referral.network_genealogy,
-  AppRoutes.referral.overview,
-  AppRoutes.referral.network_rewards,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
@@ -89,6 +85,10 @@ const _notReadyPages: string[] = [
   AppRoutes.profile.collections,
   AppRoutes.profile.purchased,
   AppRoutes.profile.nfts,
+
+  AppRoutes.buy_centher,
+  AppRoutes.referral.overview,
+  AppRoutes.referral.network_rewards,
 
   AppRoutes.chat,
   AppRoutes.profits_dashboard,

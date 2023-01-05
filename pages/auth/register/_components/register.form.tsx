@@ -171,7 +171,7 @@ export const RegisterForm: React.FC = () => {
 
           <p className="text-white text-sm">
             I have read and agree to Centher{" "}
-            <Link href={AppRoutes.auth.terms}>
+            <Link href={AppRoutes.terms}>
               <span className="font-semibold underline cursor-pointer">
                 Terms & Condition
               </span>

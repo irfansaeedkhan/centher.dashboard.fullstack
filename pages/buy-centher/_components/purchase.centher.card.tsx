@@ -319,7 +319,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                 <p
                   className={`text-[#E6535A] text-sm fmd:text-base fsm:text-base font-semibold`}
                 >
-                  Round {roundInfo.round + 1} is over! Buy another availabe or
+                  Round {roundInfo.round + 1} is over! Buy another available or
                   wait for the next round.
                 </p>
               </div>
