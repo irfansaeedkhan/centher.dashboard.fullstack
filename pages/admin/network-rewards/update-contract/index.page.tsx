@@ -13,7 +13,7 @@ const UpdateContract: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="contractContainer grid grid-cols-[repeat(auto-fit,_minmax(470px,_1fr))] gap-4 ">
+      <div className="contractContainer grid grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] gap-4 max-w-auto">
         <CommonCard refreshRoundsInfo={refreshRoundsInfo} />
         {roundsInfo &&
           roundsInfo.map((round: any) => {

@@ -180,7 +180,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
     }
   };
   return (
-    <div className="card bg-elevation-1 rounded-xl max-w-[470px] overflow-hidden flex flex-col ">
+    <div className="card bg-elevation-1 rounded-xl max-w-[470px]  overflow-hidden flex flex-col ">
       <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
         <h2 className="cardTitle text-gray-shade-7 text-14px font-semibold">
           Round

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import HistoryTableSkeleton from "@/components/loading.skeletons/admin.network.history";
 import RewardsTableSkeleton from "@/components/loading.skeletons/admin.network.rewards";
 
-import OverviewCardsSkeleton from "@/components/loading.skeletons/admin.network.cards";
+import AdminOverviewCardsSkeleton from "@/components/loading.skeletons/admin.registration.cards";
 import { useAdminRegistration } from "@/store/admin.registration";
 import RegistrationOverviewCards from "./_components/registration.overview.card";
 import RegistrationRewards from "./_components/registration.rewards";
@@ -49,7 +50,7 @@ const AdminRegistration: NextPageWithLayout = () => {
           membersWithReferrer={totalMembersWithReferrer}
         />
       ) : (
-        <OverviewCardsSkeleton />
+        <AdminOverviewCardsSkeleton />
       )}
       {loading === "loaded" ? (
         <RegistrationRewards
@@ -61,7 +62,11 @@ const AdminRegistration: NextPageWithLayout = () => {
       ) : (
         <RewardsTableSkeleton />
       )}
-      <RegistrationHistory data={registrationHistory} />
+      {loading === "loaded" ? (
+        <RegistrationHistory data={registrationHistory} />
+      ) : (
+        <HistoryTableSkeleton />
+      )}
     </div>
   );
 };
