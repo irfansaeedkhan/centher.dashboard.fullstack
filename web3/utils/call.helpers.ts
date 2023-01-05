@@ -621,3 +621,68 @@ export const adminClaimRegistrationBNB = async (library: Web3Provider) => {
     };
   }
 };
+
+export const adminChangeCoreTeamAddress = async (
+  library: Web3Provider,
+  newAddress: string
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.changeCoreTeamAddress(
+      newAddress
+    );
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Core Team Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeCompanyAddress = async (
+  library: Web3Provider,
+  newAddress: string
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.changeCompanyAddress(newAddress);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeReferralRate = async (
+  library: Web3Provider,
+  rates: number[]
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.setReferralRate(rates);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};

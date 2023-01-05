@@ -4,12 +4,11 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import RewardsTableSkeleton from "@/components/loading.skeletons/admin.network.rewards";
 
-import NetworkTabs from "../_components/network.tabs";
 import OverviewCardsSkeleton from "@/components/loading.skeletons/admin.network.cards";
 import { useAdminRegistration } from "@/store/admin.registration";
-import RegistrationOverviewCards from "../_components/registration.overview.card";
-import RegistrationRewards from "../_components/registration.rewards";
-import RegistrationHistory from "../_components/registration.history";
+import RegistrationOverviewCards from "./_components/registration.overview.card";
+import RegistrationRewards from "./_components/registration.rewards";
+import RegistrationHistory from "./_components/registration.history";
 import { useWeb3React } from "@web3-react/core";
 
 const AdminRegistration: NextPageWithLayout = () => {
@@ -35,16 +34,6 @@ const AdminRegistration: NextPageWithLayout = () => {
   }));
 
   const [reload, setReload] = useState(false);
-
-  console.log(
-    "sniper: registration: ",
-    totalMembersWithoutReferrer,
-    totalMembersWithReferrer,
-    totalMembers,
-    registrationHistory,
-    claimableBNB,
-    claimedBNB
-  );
 
   useEffect(() => {
     fetchRegistrationInfo();
@@ -80,10 +69,7 @@ const AdminRegistration: NextPageWithLayout = () => {
 AdminRegistration.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Network Rewards">
-      <div className="w-full max-w-[1136px] mx-auto">
-        <NetworkTabs />
-        {page}
-      </div>
+      <div className="w-full max-w-[1136px] mx-auto">{page}</div>
     </AllPagesWrapper>
   );
 };

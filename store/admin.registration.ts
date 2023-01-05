@@ -68,7 +68,6 @@ export const useAdminRegistration = create<NetworkRewards>()(
             _registrationHistory = result.users.map((item: any) => {
               const date = new Date(item.createdAt * 1000);
               const paidAmount = item.referrer === ZeroAddress ? 0 : 0.025;
-              console.log("sniper: item: ", item);
               return {
                 date: `${date.getDate()}-${
                   date.getMonth() + 1

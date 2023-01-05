@@ -92,7 +92,6 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
                 );
                 const coreTeam = paidAmount / 10;
                 const referralNetwork = paidAmount - company - coreTeam;
-                console.log("sniper: item: ", item);
                 return {
                   date: `${date.getDate()}-${
                     date.getMonth() + 1

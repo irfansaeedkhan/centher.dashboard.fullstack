@@ -47,9 +47,9 @@ export const LevelParentCard = ({ parentData }: any) => {
           <h6 className="text-white-shade-1 text-14px font-semibold">
             {`${parentData?.generatedBUSD} BUSD`}
           </h6>
-          <h6 className="text-white-shade-1 text-14px font-semibold">
+          {/* <h6 className="text-white-shade-1 text-14px font-semibold">
             {`${parentData?.generatedNTR} NTR`}
-          </h6>
+          </h6> */}
         </div>
       </div>
     </div>

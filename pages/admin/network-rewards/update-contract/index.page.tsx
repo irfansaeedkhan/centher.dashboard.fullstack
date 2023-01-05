@@ -6,6 +6,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import NetworkTabs from "../_components/network.tabs";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 import { ContractCard } from "./_components/ContractCard";
+import { CommonCard } from "./_components/CommonCard";
 
 const UpdateContract: NextPageWithLayout = () => {
   const { roundsInfo, refreshRoundsInfo } = useGetRoundsInfo();
@@ -13,6 +14,7 @@ const UpdateContract: NextPageWithLayout = () => {
   return (
     <div className="flex flex-col gap-6">
       <div className="contractContainer grid grid-cols-[repeat(auto-fit,_minmax(470px,_1fr))] gap-4 ">
+        <CommonCard refreshRoundsInfo={refreshRoundsInfo} />
         {roundsInfo &&
           roundsInfo.map((round: any) => {
             return (

@@ -236,7 +236,6 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                 id="StartDate"
                 value={startTime}
                 onChange={(e) => {
-                  console.log("sniper: ", e.target.value);
                   setStartTime(e.target.value);
                 }}
                 type="datetime-local"

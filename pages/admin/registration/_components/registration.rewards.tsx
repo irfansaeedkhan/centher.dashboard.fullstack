@@ -1,6 +1,6 @@
 import { adminClaimRegistrationBNB } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 
 const RegistrationRewards = ({
@@ -10,14 +10,19 @@ const RegistrationRewards = ({
   setReload,
 }: any) => {
   const { library } = useWeb3React();
+  const [pendingTx, setPendingTx] = useState(false);
   const handleClaimBNB = async () => {
     if (claimableBNB <= 0) {
       toast.error("Nothing to Claim!");
       return;
     }
+
+    setPendingTx(true);
     const result = await adminClaimRegistrationBNB(library);
+    setPendingTx(false);
     if (result.success) {
       setReload(!reload);
+      toast.success("Claimed Successfully!");
     } else {
       toast.error("Something Went Wrong!");
     }
@@ -54,10 +59,12 @@ const RegistrationRewards = ({
           <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2 justify-between">
             <p className="text-white">{claimableBNB} (BNB)</p>
             <button
-              className="text-brand-primary text-12px font-semibold "
+              // className="text-brand-primary text-12px font-semibold "
+              className="text-black-shade-3 text-12px font-semibold p-3 w-full bg-yellow-theme rounded-lg max-w-[120px]"
               onClick={handleClaimBNB}
+              disabled={pendingTx}
             >
-              Claim now
+              {pendingTx ? "Claiming..." : "Claim now"}
             </button>
           </div>
         </div>
