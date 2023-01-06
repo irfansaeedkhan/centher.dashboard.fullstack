@@ -1,10 +1,17 @@
 import { ethers } from "ethers";
 
-export const CHAIN = process.env.NEXT_PUBLIC_APP_ENV === "production" ? 56 : 5;
-// export const RPC_URL = "https://data-seed-prebsc-1-s1.binance.org:8545/"; // BSC Testnet
-// export const RPC_URL = 'https://goerli.infura.io/v3/' // Goerli Testnet
-export const RPC_URL =
-  "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"; // Goerli Testnet
+// export const CHAIN = process.env.NEXT_PUBLIC_APP_ENV === "production" ? 56 : 5;
+// export const BSC_RPC_URLS = process.env.NEXT_PUBLIC_APP_ENV === "production" ?
+//   [
+//     'https://bsc-dataseed1.ninicoin.io',
+//     'https://bsc-dataseed1.defibit.io',
+//     'https://bsc-dataseed.binance.org',
+//   ] :
+//   ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
+
+export const CHAIN = 56;
+export const BSC_RPC_URLS = ["https://bsc-dataseed1.binance.org"];
+
 // IPFS Platform Url
 export const NEXT_PUBLIC_IPFS_URL = "https://ipfs.moralis.io:2053";
 // IPFS Host
@@ -38,3 +45,6 @@ export const FEE = {
 };
 
 export const percent = [6, 4, 2, 2, 2, 2];
+
+export const ADMIN_ACCOUNT_ADDRESS =
+  "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801";

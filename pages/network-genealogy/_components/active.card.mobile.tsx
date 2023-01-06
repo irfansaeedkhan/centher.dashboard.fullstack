@@ -65,9 +65,9 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
           <h6 className="dark text-white-shade-1 text-14px font-semibold">
             {`${Active?.generatedBUSD} BUSD`}
           </h6>
-          <h6 className="dark text-white-shade-1 text-14px font-semibold">
+          {/* <h6 className="dark text-white-shade-1 text-14px font-semibold">
             {`${Active?.generatedNTR} NTR`}
-          </h6>
+          </h6> */}
         </div>
         <div className="flex flex-col items-end gap-2">
           <h5 className="light text-gray-shade-19 text-12px font-medium">

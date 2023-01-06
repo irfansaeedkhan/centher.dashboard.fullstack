@@ -12,10 +12,13 @@ export type RoundNumber = 0 | 1 | 2;
 export interface RoundInfo {
   round: RoundNumber;
   status: RoundStatus;
-  rateForBusd: number;
-  rateForNtr: number;
+  priceForBusd: number;
+  priceForNtr: number;
   startTime: number;
-  duration: number;
+  endTime: number;
+  busdEnabled: boolean;
+  ntrEnabled: boolean;
+  maxCentherAmountToSell: number;
   lockMonths: number;
   busdRaised: number;
   ntrRaised: number;

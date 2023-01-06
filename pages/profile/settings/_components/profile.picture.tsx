@@ -170,7 +170,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
               </div>
 
               {/* Take Selfie */}
-              <div className="flex gap-2 items-center">
+              {/* <div className="flex gap-2 items-center">
                 <CameraIcon2 />
                 <span
                   className="text-sm font-medium hover:text-brand-primary"
@@ -178,7 +178,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                 >
                   Take Selfie
                 </span>
-              </div>
+              </div> */}
 
               {/* Choose NFT Image */}
               {/* <div className="flex gap-2 items-center">

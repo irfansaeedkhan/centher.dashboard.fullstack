@@ -89,3 +89,10 @@ export interface ClaimHistory {
   round: number;
   claimAmount: number;
 }
+
+export interface RegistrationHistory {
+  publicKey: string;
+  referrer: string;
+  createdAt: number;
+  paidAmount: number;
+}

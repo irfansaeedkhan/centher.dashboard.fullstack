@@ -41,7 +41,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     tokenBalance: 0,
     minContribution: roundInfo.minContributionForBusd,
     maxContribution: roundInfo.maxContributionForBusd,
-    rate: roundInfo.rateForBusd,
+    rate: roundInfo.priceForBusd,
 
     inputValue: roundInfo.minContributionForBusd,
     inputMinValue: roundInfo.minContributionForBusd,
@@ -52,7 +52,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     tokenName: "CTHR",
     tokenIcon: <CentherIconBG className="w-10 h-10" />,
     tokenBalance: 0,
-    inputValue: roundInfo.minContributionForBusd * roundInfo.rateForBusd,
+    inputValue: roundInfo.minContributionForBusd / roundInfo.priceForBusd,
   });
 
   const [modal, setModal] = useState<ModalState>({
@@ -260,7 +260,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           <h1
             className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
           >
-            Please Enter CENTHER amount to you&apos;d like to purchase
+            Please Enter CENTHER amount you&apos;d like to purchase
           </h1>
 
           <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">
@@ -319,7 +319,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                 <p
                   className={`text-[#E6535A] text-sm fmd:text-base fsm:text-base font-semibold`}
                 >
-                  Round {roundInfo.round + 1} is over! Buy another availabe or
+                  Round {roundInfo.round + 1} is over! Buy another available or
                   wait for the next round.
                 </p>
               </div>

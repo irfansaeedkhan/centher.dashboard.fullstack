@@ -9,6 +9,7 @@ import {
   getNTRContract,
   getNtrdaoContract,
   getPresaleContract,
+  getRegistrationContract,
   getStandardNFTContract,
 } from "./contract.helpers";
 import { parseErrorMsg } from "./utils";
@@ -539,6 +540,207 @@ export const adminCallClaimNtrForCoreTeam = async (library: Web3Provider) => {
     };
   } catch (error: any) {
     console.log("[Admin Call Claim Ntr For Company] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminCallUpdateRoundInfo = async (
+  library: Web3Provider,
+  roundIndex: number,
+  startTime: number,
+  endTime: number,
+  lockMonths: number,
+  centherPriceForBusd: number,
+  centherPriceForNtr: number,
+  maxCentherAmountToSell: number,
+  minBusdAmountPerUser: number,
+  maxBusdAmountPerUser: number,
+  minNtrAmountPerUser: number,
+  maxNtrAmountPerUser: number,
+  enableBusd: boolean,
+  enableNtr: boolean
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    let tx;
+    if (enableBusd) {
+      tx = await presaleContract.functions.setRoundInfoForBusd(
+        roundIndex,
+        centherPriceForBusd * 100000,
+        Math.floor(startTime),
+        Math.floor(endTime),
+        lockMonths,
+        ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+        ethers.utils.parseEther(minBusdAmountPerUser.toString()),
+        ethers.utils.parseEther(maxBusdAmountPerUser.toString())
+      );
+    } else {
+      tx = await presaleContract.functions.setRoundInfoForNtr(
+        roundIndex,
+        centherPriceForNtr * 100000,
+        Math.floor(startTime),
+        Math.floor(endTime),
+        lockMonths,
+        ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+        ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+        ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+      );
+    }
+
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Update Round Info] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminClaimRegistrationBNB = async (library: Web3Provider) => {
+  try {
+    const regsitrationContract = getRegistrationContract(library.getSigner());
+    const tx = await regsitrationContract.functions.withdraw();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Registration BNB] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeCoreTeamAddress = async (
+  library: Web3Provider,
+  newAddress: string
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.changeCoreTeamAddress(
+      newAddress
+    );
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Core Team Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeCompanyAddress = async (
+  library: Web3Provider,
+  newAddress: string
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.changeCompanyAddress(newAddress);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeReferralRate = async (
+  library: Web3Provider,
+  rates: number[]
+) => {
+  try {
+    const presaleContract = getPresaleContract(library.getSigner());
+    const tx = await presaleContract.functions.setReferralRate(rates);
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminChangeRegistrationFees = async (
+  library: Web3Provider,
+  feeWithReferralLink: number,
+  feeWithoutReferralLink: number
+) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.changeFees(
+      ethers.utils.parseEther(feeWithoutReferralLink.toString()),
+      ethers.utils.parseEther(feeWithReferralLink.toString())
+    );
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminPauseRegistration = async (library: Web3Provider) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.pause();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call pause registration] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminUnPauseRegistration = async (library: Web3Provider) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.unPause();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call unpause registration] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),

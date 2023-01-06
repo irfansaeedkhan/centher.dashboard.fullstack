@@ -171,7 +171,7 @@ export const RegisterForm: React.FC = () => {
 
           <p className="text-white text-sm">
             I have read and agree to Centher{" "}
-            <Link href={AppRoutes.auth.terms}>
+            <Link href={AppRoutes.terms}>
               <span className="font-semibold underline cursor-pointer">
                 Terms & Condition
               </span>
@@ -190,7 +190,7 @@ export const RegisterForm: React.FC = () => {
         )}
 
         <ModalWrapper
-          title="Registration Fee"
+          title="Registration"
           isOpen={feeModal.isOpen}
           onClose={() => {
             feeModal.status !== "progress" &&
@@ -208,15 +208,25 @@ export const RegisterForm: React.FC = () => {
               )}
             </div>
             <div className={feeModalStatus}>
+              {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
+                <h2 className={feeModalProgress}>
+                  Referred users do not pay registration fees.
+                </h2>
+              )}
+              {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
+                <h2 className={feeModalProgress}>You only pay gas fee.</h2>
+              )}
               <h2 className={feeModalProgress}>
                 {feeModal.status === "start"
-                  ? "Pay Registration Fee"
+                  ? Number(feeModal.fee) !== 0 && "Pay Registration Fee"
                   : feeModal.status === "progress"
                   ? "Transaction in progress"
                   : feeModal.status === "end" && "Successfully"}
               </h2>
               {feeModal.status === "start" ? (
-                <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+                Number(feeModal.fee) !== 0 && (
+                  <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+                )
               ) : feeModal.status === "progress" ? (
                 <p className={modalInnerText}>
                   Please do not close or refresh page.
@@ -232,7 +242,7 @@ export const RegisterForm: React.FC = () => {
             <div>
               {feeModal.status === "start" ? (
                 <button className={button} type="submit">
-                  Pay
+                  {Number(feeModal.fee) === 0 ? "Join For Free" : "Pay"}
                 </button>
               ) : (
                 (feeModal.status === "progress" ||

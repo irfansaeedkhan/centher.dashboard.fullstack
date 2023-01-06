@@ -41,7 +41,7 @@ export const ConversionContainer: React.FC<Props> = ({
         tokenIcon: <BUSDIconBG className="w-10 h-10" />,
         minContribution: roundInfo.minContributionForBusd,
         maxContribution: roundInfo.maxContributionForBusd,
-        rate: roundInfo.rateForBusd,
+        rate: roundInfo.priceForBusd,
 
         inputValue: roundInfo.minContributionForBusd,
         inputMinValue: roundInfo.minContributionForBusd,
@@ -54,7 +54,7 @@ export const ConversionContainer: React.FC<Props> = ({
         tokenIcon: <NTRIconBG className="w-10 h-10" />,
         minContribution: roundInfo.minContributionForNtr,
         maxContribution: roundInfo.maxContributionForNtr,
-        rate: roundInfo.rateForNtr,
+        rate: roundInfo.priceForNtr,
 
         inputValue: roundInfo.minContributionForNtr,
         inputMinValue: roundInfo.minContributionForNtr,
@@ -95,7 +95,7 @@ export const ConversionContainer: React.FC<Props> = ({
                 }));
                 setSelectedTokenB((prev) => ({
                   ...prev,
-                  inputValue: (value === "" ? 0 : value) * selectedTokenA.rate,
+                  inputValue: (value === "" ? 0 : value) / selectedTokenA.rate,
                 }));
               }}
               min={selectedTokenA.inputMinValue}
@@ -120,7 +120,7 @@ export const ConversionContainer: React.FC<Props> = ({
                   setSelectedTokenB((prev) => ({
                     ...prev,
                     inputValue:
-                      selectedTokenA.tokenBalance * selectedTokenA.rate,
+                      selectedTokenA.tokenBalance / selectedTokenA.rate,
                   }));
                 }}
               >
