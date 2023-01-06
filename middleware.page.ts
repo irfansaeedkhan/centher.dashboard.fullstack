@@ -4,7 +4,8 @@ import type { NextRequest } from "next/server";
 import {
   changePaths,
   checkMatch,
-  getSessionUser,
+  isAdmin,
+  isAuthenticated,
 } from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -24,23 +25,33 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const sessionId = request.cookies.get("sid");
-
-  if (checkMatch(request.nextUrl, onlyPublicPages)) {
-    const user = await getSessionUser(sessionId?.value);
-    if (user) {
+  if (checkMatch(request.nextUrl, adminPages)) {
+    if (!(await isAdmin(request))) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.feed.index}`
       );
+    } else {
+      return NextResponse.next();
+    }
+  }
+
+  if (checkMatch(request.nextUrl, onlyPublicPages)) {
+    if (await isAuthenticated(request)) {
+      return NextResponse.redirect(
+        `${request.nextUrl.origin}${AppRoutes.feed.index}`
+      );
+    } else {
+      return NextResponse.next();
     }
   }
 
   if (checkMatch(request.nextUrl, authenticatedUserPages)) {
-    const user = await getSessionUser(sessionId?.value);
-    if (!user) {
+    if (!(await isAuthenticated(request))) {
       return NextResponse.redirect(
         `${request.nextUrl.origin}${AppRoutes.auth.login}`
       );
+    } else {
+      return NextResponse.next();
     }
   }
 
@@ -58,6 +69,13 @@ const onlyPublicPages = changePaths(_onlyPublicPages);
 // public or authenticated pages
 const _publicOrAuthenticatedPages: string[] = [AppRoutes.terms];
 const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
+
+// admin specific pages
+const _adminPages: string[] = [
+  AppRoutes.admin.registration,
+  AppRoutes.admin.registration_setting,
+];
+const adminPages = changePaths(_adminPages);
 
 // only authenticated pages
 const _authenticatedUserPages: string[] = [

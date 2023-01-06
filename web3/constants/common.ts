@@ -45,3 +45,6 @@ export const FEE = {
 };
 
 export const percent = [6, 4, 2, 2, 2, 2];
+
+export const ADMIN_ACCOUNT_ADDRESS =
+  "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801";
