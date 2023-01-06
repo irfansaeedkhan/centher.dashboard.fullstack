@@ -213,6 +213,9 @@ export const RegisterForm: React.FC = () => {
                   Referred users do not pay registration fees.
                 </h2>
               )}
+              {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
+                <h2 className={feeModalProgress}>You only pay gas fee.</h2>
+              )}
               <h2 className={feeModalProgress}>
                 {feeModal.status === "start"
                   ? Number(feeModal.fee) !== 0 && "Pay Registration Fee"
