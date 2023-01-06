@@ -56,7 +56,7 @@ const _onlyPublicPages: string[] = [
 const onlyPublicPages = changePaths(_onlyPublicPages);
 
 // public or authenticated pages
-const _publicOrAuthenticatedPages: string[] = [AppRoutes.auth.terms];
+const _publicOrAuthenticatedPages: string[] = [AppRoutes.terms];
 const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 
 // only authenticated pages
