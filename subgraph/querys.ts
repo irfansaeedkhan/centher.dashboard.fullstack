@@ -451,7 +451,7 @@ export const claimCentherHistory = `
 
 export const registrationHistory = `
   query MyQuery {
-    users {
+    users(orderBy: createdAt, orderDirection: asc) {
       referrer
       publicKey
       createdAt

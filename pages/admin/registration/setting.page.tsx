@@ -40,9 +40,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
       updateRegistrationFeeWithoutReferral
     );
     setChangeFeeTx(false);
-    setReload(!reload);
     if (result.success) {
       toast.success("Changed Registration Fee Successfully");
+      setReload(!reload);
     } else {
       toast.error("Something Went Wrong.");
     }
@@ -58,9 +58,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
     }
 
     setChangeStatusTx(false);
-    setReload(!reload);
     if (result.success) {
       toast.success("Changed Registration Statue Successfully");
+      setReload(!reload);
     } else {
       toast.error("Something Went Wrong.");
     }
