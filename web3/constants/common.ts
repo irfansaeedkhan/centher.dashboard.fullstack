@@ -1,16 +1,10 @@
 import { ethers } from "ethers";
 
-// export const CHAIN = process.env.NEXT_PUBLIC_APP_ENV === "production" ? 56 : 5;
-// export const BSC_RPC_URLS = process.env.NEXT_PUBLIC_APP_ENV === "production" ?
-//   [
-//     'https://bsc-dataseed1.ninicoin.io',
-//     'https://bsc-dataseed1.defibit.io',
-//     'https://bsc-dataseed.binance.org',
-//   ] :
-//   ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
-
-export const CHAIN = 56;
-export const BSC_RPC_URLS = ["https://bsc-dataseed1.binance.org"];
+export const CHAIN = process.env.NEXT_PUBLIC_APP_ENV === "production" ? 56 : 5;
+export const BSC_RPC_URLS =
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? ["https://bsc-dataseed1.binance.org"]
+    : ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
 
 // IPFS Platform Url
 export const NEXT_PUBLIC_IPFS_URL = "https://ipfs.moralis.io:2053";
@@ -47,4 +41,6 @@ export const FEE = {
 export const percent = [6, 4, 2, 2, 2, 2];
 
 export const ADMIN_ACCOUNT_ADDRESS =
-  "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801";
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801"
+    : "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7";
