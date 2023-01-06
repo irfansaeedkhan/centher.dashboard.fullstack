@@ -11,10 +11,10 @@ export const useConnectWallet = () => {
   useEffect(() => {
     if (error) {
       if (error.message.toLocaleLowerCase().includes("unsupported chain id")) {
-        let network = "Goerli testnet";
-        if (process.env.NEXT_PUBLIC_APP_ENV === "production") {
-          network = "BSC mainnet";
-        }
+        const network =
+          process.env.NEXT_PUBLIC_APP_ENV === "production"
+            ? "BSC mainnet"
+            : "Goerli testnet";
         toast.error(`Please connect to the ${network}!`);
       }
     }

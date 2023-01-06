@@ -94,5 +94,5 @@ export interface RegistrationHistory {
   publicKey: string;
   referrer: string;
   createdAt: number;
-  paidBNB: number;
+  paidAmount: number;
 }

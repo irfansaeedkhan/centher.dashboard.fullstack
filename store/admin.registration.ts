@@ -23,6 +23,7 @@ import { getPresaleContract } from "@/web3/utils/contract.helpers";
 import { getRegistrationAddress } from "@/web3/utils/address.helpers";
 import { ZeroAddress } from "@/web3/constants/common";
 import { Web3Provider } from "@ethersproject/providers";
+import { simpleRpcProvider } from "@/web3/utils/providers";
 
 export interface NetworkRewards {
   totalMembersWithoutReferrer: number;
@@ -67,13 +68,14 @@ export const useAdminRegistration = create<NetworkRewards>()(
           if (result && !error) {
             _registrationHistory = result.users.map((item: any) => {
               const date = new Date(item.createdAt * 1000);
-              const paidAmount = item.referrer === ZeroAddress ? 0 : 0.025;
               return {
                 date: `${date.getDate()}-${
                   date.getMonth() + 1
                 }-${date.getFullYear()}`,
                 publicKey: item.publicKey,
-                paidAmount: paidAmount,
+                paidAmount: Number(
+                  ethers.utils.formatEther(item.paidAmountForRegistration)
+                ),
                 referrer: item.referrer,
               };
             });
@@ -82,9 +84,7 @@ export const useAdminRegistration = create<NetworkRewards>()(
           const registrationAddress = getRegistrationAddress();
           const _claimableBNB = Number(
             ethers.utils.formatEther(
-              await ethers
-                .getDefaultProvider("goerli")
-                .getBalance(registrationAddress)
+              await simpleRpcProvider.getBalance(registrationAddress)
             )
           );
 

@@ -1,8 +1,8 @@
 import sample from "lodash/sample";
-import { RPC_URL } from "../constants/common";
+import { BSC_RPC_URLS } from "../constants/common";
 
 // Array of available nodes to connect to
-export const nodes = [RPC_URL];
+export const nodes = BSC_RPC_URLS;
 
 const getNodeUrl = () => {
   return sample(nodes);

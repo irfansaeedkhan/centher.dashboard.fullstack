@@ -455,6 +455,7 @@ export const registrationHistory = `
       referrer
       publicKey
       createdAt
+      paidAmountForRegistration
     }
   }
 `;

@@ -22,6 +22,10 @@ export const formatBNB2USD = (bnb: number | undefined, bnbPrice: number) => {
   return bnb ? Number((formatEther2Number(bnb) * bnbPrice).toFixed(5)) : 0;
 };
 
+export const formatNum2DispNum = (num: number | undefined) => {
+  return num ? Number(num.toFixed(5)) : 0;
+};
+
 export const formatPriceInUSD = (bnb: number | undefined, bnbPrice: number) => {
   return bnb ? Number((bnb * bnbPrice).toFixed(5)) : 0;
 };

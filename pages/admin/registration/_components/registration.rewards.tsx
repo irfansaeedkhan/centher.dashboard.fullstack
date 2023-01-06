@@ -1,3 +1,4 @@
+import { formatNum2DispNum } from "@/utils/format.address";
 import { adminClaimRegistrationBNB } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
@@ -41,7 +42,9 @@ const RegistrationRewards = ({
             Total earnings
           </div>
           <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
-            <p className="text-white">{claimableBNB + claimedBNB} (BNB)</p>
+            <p className="text-white">
+              {formatNum2DispNum(claimableBNB + claimedBNB)} (BNB)
+            </p>
           </div>
         </div>
         <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px] border-r-2 border-black-shade-7 ">
@@ -49,7 +52,7 @@ const RegistrationRewards = ({
             Claimed
           </div>
           <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
-            <p className="text-white">{claimedBNB} (BNB)</p>
+            <p className="text-white">{formatNum2DispNum(claimedBNB)} (BNB)</p>
           </div>
         </div>
         <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px]">
@@ -57,7 +60,9 @@ const RegistrationRewards = ({
             Claimable
           </div>
           <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2 justify-between">
-            <p className="text-white">{claimableBNB} (BNB)</p>
+            <p className="text-white">
+              {formatNum2DispNum(claimableBNB)} (BNB)
+            </p>
             <button
               // className="text-brand-primary text-12px font-semibold "
               className="text-black-shade-3 text-12px font-semibold p-3 w-full bg-yellow-theme rounded-lg max-w-[120px]"

@@ -686,3 +686,64 @@ export const adminChangeReferralRate = async (
     };
   }
 };
+
+export const adminChangeRegistrationFees = async (
+  library: Web3Provider,
+  feeWithReferralLink: number,
+  feeWithoutReferralLink: number
+) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.changeFees(
+      ethers.utils.parseEther(feeWithoutReferralLink.toString()),
+      ethers.utils.parseEther(feeWithReferralLink.toString())
+    );
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call Change Company Address] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminPauseRegistration = async (library: Web3Provider) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.pause();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call pause registration] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};
+
+export const adminUnPauseRegistration = async (library: Web3Provider) => {
+  try {
+    const registrationContract = getRegistrationContract(library.getSigner());
+    const tx = await registrationContract.functions.unPause();
+    await tx.wait();
+    return {
+      success: true,
+      hash: tx.hash,
+    };
+  } catch (error: any) {
+    console.log("[Admin Call unpause registration] = ", error);
+    return {
+      success: false,
+      error: parseErrorMsg(error.message),
+    };
+  }
+};

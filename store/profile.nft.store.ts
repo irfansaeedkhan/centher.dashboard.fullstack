@@ -180,7 +180,10 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           let _nfts: NFT[] = [];
           const result: any = await Moralis.EvmApi.nft.getWalletNFTs({
             address: account,
-            chain: EvmChain.GOERLI,
+            chain:
+              process.env.NEXT_PUBLIC_APP_ENV === "production"
+                ? EvmChain.BSC
+                : EvmChain.GOERLI,
           });
 
           const client = new ApolloClient({
