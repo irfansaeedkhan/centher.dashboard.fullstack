@@ -32,7 +32,7 @@
     "dayjs": "^1.11.6",
     "embla-carousel-react": "^7.0.5",
     "emoji-picker-react": "^4.1.1",
-    "ethers": "^5.7.0",
+    "ethers": "^5.7.2",
     "graphql": "^16.6.0",
     "ipfs-http-client": "^59.0.0",
     "joi": "^17.6.0",

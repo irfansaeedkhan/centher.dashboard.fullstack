@@ -10,11 +10,7 @@ import { ethers } from "ethers";
 //   ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
 
 export const CHAIN = 56;
-export const BSC_RPC_URLS = [
-  "https://bsc-dataseed1.ninicoin.io",
-  "https://bsc-dataseed1.defibit.io",
-  "https://bsc-dataseed.binance.org",
-];
+export const BSC_RPC_URLS = ["https://bsc-dataseed1.binance.org"];
 
 // IPFS Platform Url
 export const NEXT_PUBLIC_IPFS_URL = "https://ipfs.moralis.io:2053";
