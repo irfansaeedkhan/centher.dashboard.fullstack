@@ -271,7 +271,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <button className={connectButton} onClick={updateProfile}>
           {isLoading === "loading" ? (
             <>
-              <SpinIcon3 />
+              <SpinIcon3 className="animate-spin" />
             </>
           ) : (
             ButtonsText.update_profile

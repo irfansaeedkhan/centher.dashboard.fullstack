@@ -202,7 +202,7 @@ export const RegisterForm: React.FC = () => {
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
-                <SpinIcon2 />
+                <SpinIcon2 className="animate-spin" />
               ) : (
                 feeModal.status === "end" && <Successfully />
               )}

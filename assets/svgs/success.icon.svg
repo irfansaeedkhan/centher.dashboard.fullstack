@@ -1,0 +1,24 @@
+<svg
+  width="64"
+  height="64"
+  viewBox="0 0 64 64"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <circle
+    cx="31.9944"
+    cy="32.0007"
+    r="24.01"
+    stroke="#76E268"
+    strokeWidth="0.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+  <path
+    d="M22.5078 32.905L28.2889 38.6861L28.2515 38.6487L41.2943 25.606"
+    stroke="#76E268"
+    strokeWidth="0.8"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  />
+</svg>

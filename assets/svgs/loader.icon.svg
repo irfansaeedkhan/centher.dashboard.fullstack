@@ -1,0 +1,19 @@
+<svg class="mx-auto animate-spin" width="64" height="64" viewBox="0 0 64 64" fill="none"
+  xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="31.9983" cy="32.0002" rx="24.01" ry="24.01" stroke="#2A2D3C" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round"></ellipse>
+  <path
+    d="M56.0122 32.0002C56.0122 36.749 54.604 41.391 51.9658 45.3395C49.3275 49.2879 45.5777 52.3653 41.1904 54.1826C36.8032 55.9998 31.9756 56.4753 27.3181 55.5489C22.6606 54.6225 18.3824 52.3357 15.0246 48.9779C11.6667 45.62 9.37996 41.3418 8.45353 36.6844C7.5271 32.0269 8.00258 27.1993 9.81984 22.812C11.6371 18.4248 14.7145 14.6749 18.6629 12.0366C22.6114 9.3984 27.2535 7.99023 32.0022 7.99023"
+    stroke="url(#paint0_linear_8027_75054)" stroke-width="2" stroke-linecap="round"
+    stroke-linejoin="round"></path>
+  <defs>
+    <linearGradient id="paint0_linear_8027_75054" x1="7.99219" y1="7.99023" x2="57.0425"
+      y2="9.06678" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A9CDFF"></stop>
+      <stop offset="0.21875" stop-color="#72F6D1"></stop>
+      <stop offset="0.557292" stop-color="#A0ED8D"></stop>
+      <stop offset="0.817708" stop-color="#FED365"></stop>
+      <stop offset="1" stop-color="#FAA49E"></stop>
+    </linearGradient>
+  </defs>
+</svg>

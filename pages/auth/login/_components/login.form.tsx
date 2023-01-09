@@ -102,7 +102,7 @@ export const LoginForm: React.FC = () => {
           <button className={button} onClick={handleMetamaskLogin}>
             {isLoading === "loading" ? (
               <>
-                <SpinIcon3 />
+                <SpinIcon3 className="animate-spin" />
                 {ButtonsText.loading}
               </>
             ) : (

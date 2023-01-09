@@ -636,7 +636,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                 <div className="w-full justify-center flex">
                   {loadingState ? (
                     <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                      <SpinIcon3 />
+                      <SpinIcon3 className="animate-spin" />
                     </button>
                   ) : (
                     <Button
@@ -651,7 +651,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
 
             {user.profile_bio && (
               <p
-                className={`text-16px text-center break-all font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+                className={`text-16px text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
               >
                 {user.profile_bio}
               </p>
