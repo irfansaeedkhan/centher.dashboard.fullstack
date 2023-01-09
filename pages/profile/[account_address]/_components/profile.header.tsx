@@ -651,7 +651,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
 
             {user.profile_bio && (
               <p
-                className={`text-16px text-center break-all font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+                className={`text-16px text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
               >
                 {user.profile_bio}
               </p>
