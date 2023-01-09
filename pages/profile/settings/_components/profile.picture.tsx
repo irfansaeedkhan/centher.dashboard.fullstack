@@ -9,7 +9,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage } from "@/utils/user.helpers";
-import { AvatarIcon, CameraIcon2, Polygon, UploadIcon } from "@/assets/svgs";
+import { AvatarIcon, Polygon, UploadIcon } from "@/assets/svgs";
 
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";

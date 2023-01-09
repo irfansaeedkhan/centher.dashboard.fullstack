@@ -10,7 +10,6 @@ import { sliceAccountAddress } from "@/utils/user.helpers";
 
 import type { IUserWithFollow } from "./types";
 import {
-  Circle,
   DefaultCircle,
   GoldCircle,
   RainbowCircle,

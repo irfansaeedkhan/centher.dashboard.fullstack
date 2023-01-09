@@ -237,7 +237,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   return (
     <div className="relative">
-      {roundInfo.status === "not-started" && (
+      {roundInfo.status === "active" && (
         <div
           className={`absolute z-10 top-0 left-0 w-full h-full flex items-center justify-center`}
         >
@@ -252,7 +252,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
       <div
         className={clsx(
-          roundInfo.status === "not-started" &&
+          roundInfo.status === "active" &&
             "blur-xl bg-black-shade-3/60 pointer-events-none"
         )}
       >

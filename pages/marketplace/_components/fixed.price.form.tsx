@@ -7,7 +7,7 @@ import Joi from "joi";
 
 // App imports
 import Button from "@/components/button";
-import { AddIcon, CrossFullIcon } from "@/assets/svgs";
+import { AddIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
@@ -317,7 +317,7 @@ const FixedPriceForm = ({
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  <CrossFullIcon />
+                  {/* <CrossFullIcon /> */}
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>

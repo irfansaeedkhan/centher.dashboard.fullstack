@@ -9,7 +9,7 @@ import moment from "moment";
 // App imports
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { AddIcon, CrossFullIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { AddIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { categories } from "@/models/nft";
@@ -403,7 +403,7 @@ const AuctionForm = ({
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  <CrossFullIcon />
+                  {/* <CrossFullIcon /> */}
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>
