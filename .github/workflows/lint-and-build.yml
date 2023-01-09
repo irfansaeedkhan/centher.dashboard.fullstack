@@ -1,0 +1,32 @@
+name: Lint & Build
+run-name: ${{ github.actor }} has triggered lint-and-build 🚀
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.18.1
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          yarn install
+      - name: Lint
+        run: |
+          yarn lint
+      - name: Build
+        run: |
+          yarn build
