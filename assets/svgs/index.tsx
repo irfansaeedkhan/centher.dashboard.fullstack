@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-import clsx from "clsx";
 import CentherIconImgBg from "./centher.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
