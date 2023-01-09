@@ -96,6 +96,13 @@ yarn format
 
 ### Docker setup
 First install `make` :
+
+### Mac :
+```bash
+xcode-select --install
+```
+In the windows that pops up, click `Install`, and agree to the Terms of Service.
+
 ### Linux :
 
 ```bash
