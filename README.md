@@ -118,7 +118,7 @@ choco install make
 ```
 
 ### Build development :
-Make sure that file `.env.development` is exist in project root in advance, then :
+Make sure that file `.env.development` exists in project's root in advance, then :
 ```bash
 make build-development
 ```
@@ -132,7 +132,7 @@ make stop-development
 ```
 
 ### Build staging :
-Make sure that file `.env.staging` is exist in project root in advance, then :
+Make sure that file `.env.staging` exists in project's root in advance, then :
 ```bash
 make build-staging
 ```
@@ -146,7 +146,7 @@ make stop-staging
 ```
 
 ### Build production :
-Make sure that file `.env.production` is exist in project root in advance, then :
+Make sure that file `.env.production` exists in project's root in advance, then :
 ```bash
 make build-production
 ```
