@@ -32,7 +32,7 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
         }}
         className="text-xs text-brand-primary font-medium bg-brand-primary/10 rounded-[40px] px-3 py-1.5"
       >
-        Show Thread
+        Show Comments
       </Link>
     </div>
   );

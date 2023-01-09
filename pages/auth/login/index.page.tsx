@@ -60,5 +60,5 @@ export default Login;
 const signupLeftData = {
   title: "Connect wallet",
   content:
-    "Login to your account with Centher to sell and buy NFTs on some easy steps.",
+    "Log into your Centher account to buy and sell NFTs in just a few easy steps.",
 };
