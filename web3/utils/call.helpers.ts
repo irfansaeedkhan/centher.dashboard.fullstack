@@ -54,7 +54,7 @@ export const getTokenApproval = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Busd Approve Error] = ", error);
+    customLog("[Busd Approve Error] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -127,7 +127,7 @@ export const claimNtrTokens = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Claim token Error] = ", error);
+    customLog("[Claim token Error] = ", error);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -145,7 +145,7 @@ export const callClaimBUSDForReferral = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Claim BUSD Error] = ", error);
+    customLog("[Claim BUSD Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -163,7 +163,7 @@ export const callClaimNTRForReferral = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Claim NTR Error] = ", error);
+    customLog("[Claim NTR Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -185,7 +185,7 @@ export const callApproveNFTToMarketplace = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Create Collection Error] = ", error);
+    customLog("[Create Collection Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -218,7 +218,7 @@ export const callCreateCollection = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Create Collection Error] = ", error);
+    customLog("[Create Collection Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -255,7 +255,7 @@ export const callCreateNFT = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Create NFT Error] = ", error);
+    customLog("[Create NFT Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -280,7 +280,7 @@ export const callCancelItemForSale = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Cancel Item for Sale Error] = ", error);
+    customLog("[Cancel Item for Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -307,7 +307,7 @@ export const callEditItemForSale = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -334,7 +334,7 @@ export const callListItemForSale = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -361,7 +361,7 @@ export const callBuyListedItem = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -390,7 +390,7 @@ export const callCreateAuction = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -417,7 +417,7 @@ export const callBidOnAuction = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -442,7 +442,7 @@ export const callEndAuction = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -467,7 +467,7 @@ export const callCancelAuction = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Edit Item For Sale Error] = ", error);
+    customLog("[Edit Item For Sale Error] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -485,7 +485,7 @@ export const adminCallClaimBusdForCompany = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Claim Busd For Company] = ", error);
+    customLog("[Admin Call Claim Busd For Company] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -503,7 +503,7 @@ export const adminCallClaimNtrForCompany = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Claim Ntr For Company] = ", error);
+    customLog("[Admin Call Claim Ntr For Company] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -521,7 +521,7 @@ export const adminCallClaimBusdForCoreTeam = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Claim Busd For Company] = ", error);
+    customLog("[Admin Call Claim Busd For Company] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -539,7 +539,7 @@ export const adminCallClaimNtrForCoreTeam = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Claim Ntr For Company] = ", error);
+    customLog("[Admin Call Claim Ntr For Company] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -596,7 +596,7 @@ export const adminCallUpdateRoundInfo = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Update Round Info] = ", error);
+    customLog("[Admin Call Update Round Info] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -614,7 +614,7 @@ export const adminClaimRegistrationBNB = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Registration BNB] = ", error);
+    customLog("[Admin Call Registration BNB] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -637,7 +637,7 @@ export const adminChangeCoreTeamAddress = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Change Core Team Address] = ", error);
+    customLog("[Admin Call Change Core Team Address] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -658,7 +658,7 @@ export const adminChangeCompanyAddress = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Change Company Address] = ", error);
+    customLog("[Admin Call Change Company Address] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -679,7 +679,7 @@ export const adminChangeReferralRate = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Change Company Address] = ", error);
+    customLog("[Admin Call Change Company Address] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -704,7 +704,7 @@ export const adminChangeRegistrationFees = async (
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call Change Company Address] = ", error);
+    customLog("[Admin Call Change Company Address] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -722,7 +722,7 @@ export const adminPauseRegistration = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call pause registration] = ", error);
+    customLog("[Admin Call pause registration] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -740,7 +740,7 @@ export const adminUnPauseRegistration = async (library: Web3Provider) => {
       hash: tx.hash,
     };
   } catch (error: any) {
-    console.log("[Admin Call unpause registration] = ", error);
+    customLog("[Admin Call unpause registration] = ", ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),

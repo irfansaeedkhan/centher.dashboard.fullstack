@@ -23,8 +23,6 @@ const NFT: NextPageWithLayout = () => {
     reload
   );
 
-  console.log("NFT DATA", data);
-
   return (
     <>
       <Head>

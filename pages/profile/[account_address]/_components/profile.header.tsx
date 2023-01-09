@@ -167,7 +167,6 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
         clearInterval(interval2);
       };
     } else if (iconVerifyProps == "gold") {
-      console.log("Inside Gold Index");
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/gold1.gif");
       }, 3000);

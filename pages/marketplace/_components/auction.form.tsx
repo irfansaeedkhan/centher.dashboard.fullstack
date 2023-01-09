@@ -143,7 +143,6 @@ const AuctionForm = ({
       setAuctionEndTimeErr(false);
     }
 
-    console.log(data);
     // let finalizedData = {
     //   NFTName: data.NFTName,
     //   Description: data.Description,

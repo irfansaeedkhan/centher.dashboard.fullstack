@@ -47,7 +47,6 @@ const Notifications: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (lastNotiEntry?.isIntersecting) {
-      console.log("intersecting");
       updateOffset();
     }
   }, [lastNotiEntry, updateOffset]);
