@@ -94,6 +94,65 @@ yarn format
 
 ---
 
+### Docker setup
+First install `make` :
+### Linux :
+
+```bash
+sudo apt install make
+```
+### Windows :
+
+```bash
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```
+```bash
+choco install make
+```
+
+### Build development :
+Make sure that file `.env.development` is exist in project root in advance, then :
+```bash
+make build-development
+```
+### Start development :
+```bash
+make start-development
+```
+### Stop development :
+```bash
+make stop-development
+```
+
+### Build staging :
+Make sure that file `.env.staging` is exist in project root in advance, then :
+```bash
+make build-staging
+```
+### Start staging :
+```bash
+make start-staging
+```
+### Stop staging :
+```bash
+make stop-staging
+```
+
+### Build production :
+Make sure that file `.env.production` is exist in project root in advance, then :
+```bash
+make build-production
+```
+### Start production :
+```bash
+make start-production
+```
+### Stop production :
+```bash
+make stop-production
+```
+---
+
 ### Branching Model
 
 👉 [GitHub Flow](https://docs.github.com/en/get-started/quickstart/github-flow)
@@ -141,6 +200,16 @@ We will be using the GitHub Flow branching model for this project.
 │   │   └── ...
 │   └── ...
 ├── constants # Constants for the app
+├── docker # docker and docker-compose files
+│   ├── development
+│   │   ├── docker-compose.yml
+│   │   └── Dockerfile
+│   ├── production
+│   │   ├── docker-compose.yml
+│   │   └── Dockerfile
+│   └── staging
+│       ├── docker-compose.yml
+│       └── Dockerfile
 ├── hooks # Custom Hooks
 │   ├── use.user # Hook
 │   │   ├── index.tsx
@@ -186,6 +255,7 @@ We will be using the GitHub Flow branching model for this project.
 │   ├── connector.ts # Web3 Connector
 │   ├── index.ts
 │   └── ... # Other Web3 related stuff
+├── .dockerignore
 ├── middleware.page.ts # Next.js Middleware - Runs before every request - Used for authentication
 ├── next-env.d.ts # Next.js Types
 ├── next.config.js # Next.js Configuration
