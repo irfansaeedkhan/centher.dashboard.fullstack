@@ -4,7 +4,7 @@ build-development: ## Build the development docker image.
 
 .PHONY: start-development
 start-development: ## Start the development docker container.
-	docker compose -f docker/development/docker-compose.yml up -d
+	docker compose -f docker/development/docker-compose.yml up
 
 .PHONY: stop-development
 stop-development: ## Stop the development docker container.
