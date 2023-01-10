@@ -148,13 +148,13 @@ silver1 silver2 silverLastFrame
       >
         <div className="flex gap-2 items-center">
           <Link href={`/profile/${_result.account_address}`}>
-            <div className="relative h-12 !w-12">
+            <div className="relative sm:!h-12 sm:!w-12 h-10 w-10">
               <Image
                 src={_result.profile_image.path}
                 alt=""
                 width={40}
                 height={40}
-                className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-12 !w-12 object-cover border-2 border-background-shade-3 !m-0"
+                className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full sm:!h-12 sm:!w-12 h-10 w-10 object-cover border-2 border-background-shade-3 !m-0"
                 sizes={"256px"}
               />
               {iconVerifyProps !== "no-icon" && (
@@ -203,12 +203,12 @@ silver1 silver2 silverLastFrame
           <div className="flex flex-col gap-1">
             <Link
               href={`/profile/${_result.account_address}`}
-              className="text-base font-semibold text-white hover:text-brand-primary text-ellipsis line-clamp-1"
+              className="fsm:text-base text-sm fsm:font-semibold font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1"
               title={_result.display_name}
             >
               {_result.display_name}
             </Link>
-            <div className="text-sm text-gray-shade-2">
+            <div className="fsm:text-sm text-xs text-gray-shade-2">
               {sliceAccountAddress(_result.account_address)}
             </div>
           </div>
@@ -241,6 +241,6 @@ UserWithFollow.displayName = "UserWithFollow";
 
 export default UserWithFollow;
 
-const connectButton = `px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;
+const connectButton = `fsm:px-6 px-4 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;
 
-const followingButton = `px-6 py-2 flex !text-sm rounded-lg items-center font-semibold bg-gray-shade-3`;
+const followingButton = `fsm:px-6 px-4 py-2 flex !text-sm rounded-lg items-center font-semibold bg-gray-shade-3`;
