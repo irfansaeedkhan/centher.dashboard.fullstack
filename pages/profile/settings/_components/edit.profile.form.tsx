@@ -151,7 +151,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="twitter_username"
           label="Twitter Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.twitter_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -164,7 +164,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="facebook_username"
           label="Facebook Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.facebook_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -177,7 +177,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="instagram_username"
           label="Instagram Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.instagram_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -190,7 +190,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="tiktok_username"
           label="Tiktok Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.tiktok_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -203,7 +203,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="twitch_username"
           label="Twitch Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.twitch_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -216,7 +216,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="onlyfans_username"
           label="OnlyFans Username"
-          placeholder="e.g. @stevenpaul"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.onlyfans_username}
           onChange={(e) => {
             setUpdatedUser({

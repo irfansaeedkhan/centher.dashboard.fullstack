@@ -557,7 +557,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                 <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
                   {user.tiktok_username && (
                     <a
-                      href={`https://tiktok.com/${user.tiktok_username}`}
+                      href={`https://tiktok.com/@${user.tiktok_username}`}
                       target="_blank"
                       rel="noreferrer"
                     >
