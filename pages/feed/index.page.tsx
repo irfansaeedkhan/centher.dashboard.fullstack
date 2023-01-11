@@ -97,7 +97,19 @@ const Feed: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <div key={post._id} ref={lastPostRef}>
+            <div
+              key={post._id}
+              ref={lastPostRef}
+              onClick={() =>
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    account_address: post.user.account_address,
+                    post_id: post._id,
+                  },
+                })
+              }
+            >
               <SinglePostV2
                 post={post}
                 postType={"main"}
@@ -108,15 +120,6 @@ const Feed: NextPageWithLayout = () => {
                     post._id,
                     post.liked_by_loggedin_user ? "unlike" : "like"
                   );
-                }}
-                onClickReply={() => {
-                  router.push({
-                    pathname: AppRoutes.feed.single_post,
-                    query: {
-                      account_address: post.user.account_address,
-                      post_id: post._id,
-                    },
-                  });
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
                 onClickDelete={() => handleAction(post._id, deletePost)}
@@ -138,15 +141,6 @@ const Feed: NextPageWithLayout = () => {
                 post._id,
                 post.liked_by_loggedin_user ? "unlike" : "like"
               );
-            }}
-            onClickReply={() => {
-              router.push({
-                pathname: AppRoutes.feed.single_post,
-                query: {
-                  account_address: post.user.account_address,
-                  post_id: post._id,
-                },
-              });
             }}
             onClickArchive={() => handleAction(post._id, archivePost)}
             onClickDelete={() => handleAction(post._id, deletePost)}

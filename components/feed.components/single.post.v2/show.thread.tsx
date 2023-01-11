@@ -14,6 +14,9 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
     <div className="flex items-center">
       {/* User Image */}
       <Image
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         src={post.user.profile_image.path}
         alt={post.user.display_name}
         width={48}
