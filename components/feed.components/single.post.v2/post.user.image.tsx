@@ -35,9 +35,9 @@ export const PostUserImage: React.FC<Props> = ({
       </Link>
 
       {/* Vertical Line */}
-      {shouldShowConnectLines && (
+      {/* {shouldShowConnectLines && (
         <div className="flex-grow border-l-2 border-gray-shade-3" />
-      )}
+      )} */}
     </div>
   );
 };
