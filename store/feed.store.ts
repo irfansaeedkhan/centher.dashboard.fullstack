@@ -26,6 +26,8 @@ export interface FeedStore {
 
   replaceEditedPost: (post: CompletedPost) => void;
 
+  removeUnfollowedUserPosts: (userId: string) => void;
+
   offset: number;
   updateOffset: () => void;
 
@@ -42,6 +44,12 @@ export const useFeedStore = create<FeedStore>()(
       updateOffset: () => set((state) => ({ offset: state.posts.length })),
 
       posts: [],
+
+      removeUnfollowedUserPosts: (userId) => {
+        set((state) => ({
+          posts: state.posts.filter((post) => post.user._id !== userId),
+        }));
+      },
 
       fetchPosts: async () => {
         try {

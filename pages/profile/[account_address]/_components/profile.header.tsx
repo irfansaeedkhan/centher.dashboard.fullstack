@@ -46,6 +46,7 @@ import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import { custom } from "joi";
 import { customLog } from "@/utils/custom.log";
+import { useFeedStore } from "@/store/feed.store";
 
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -63,6 +64,11 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
       incrementFollowersCount: state.incrementFollowersCount,
       decrementFollowersCount: state.decrementFollowersCount,
     }));
+
+  const { removeUnfollowedUserPosts } = useFeedStore((state) => ({
+    removeUnfollowedUserPosts: state.removeUnfollowedUserPosts,
+  }));
+
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { user, mutateUser } = useGetUser(
@@ -346,6 +352,7 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
       } else if (response.data.message == "unfollow_success") {
         setFollow(false);
         decrementFollowersCount();
+        removeUnfollowedUserPosts(following_id);
       }
       setLoadingState(false);
     } catch (error: any) {
