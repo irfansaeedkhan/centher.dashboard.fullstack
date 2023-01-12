@@ -6,3 +6,4 @@ docker
 node_modules
 .dockerignore
 .env.development
+*.log

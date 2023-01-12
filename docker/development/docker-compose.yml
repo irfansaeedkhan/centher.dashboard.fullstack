@@ -1,12 +1,12 @@
 version: "3"
 
 services:
-  service-development:
+  app-centher-io-development:
     network_mode: host
     build:
       context: ../../
       dockerfile: docker/development/Dockerfile
-    image: service-development
+    image: app-centher-io-development
     volumes:
       - ../../:/app
       - /app/node_modules
