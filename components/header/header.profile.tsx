@@ -1,21 +1,23 @@
 // React, Next, NPM Packages
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { MdContentCopy } from "react-icons/md";
 import { useCopyToClipboard, useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
 
 // App Imports
-import useUser from "@/hooks/use.user";
+
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { sliceAccountAddress } from "@/utils/user.helpers";
 import { Polygon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import clsx from "clsx";
+import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { sliceAccountAddress } from "@/utils/user.helpers";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -28,10 +30,22 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { user } = useUser();
+  const { user: loggedInUser } = useUser();
+  const { user, mutateUser } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
   const [_, copy] = useCopyToClipboard();
   const { connectWallet, disconnectWallet } = useConnectWallet();
   const { active, account, deactivate } = useWeb3React();
+
+  const isOwnProfile = useMemo(() => {
+    return (
+      !!loggedInUser &&
+      !!user &&
+      loggedInUser?.account_address.toLowerCase() ===
+        user?.account_address.toLowerCase()
+    );
+  }, [user, loggedInUser]);
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -46,13 +60,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   useOnClickOutside(ref, handleClickOutside);
 
   useEffect(() => {
-    if (!account || !user) {
+    if (!account || !loggedInUser) {
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (loggedInUser.account_address.toLowerCase() !== account.toLowerCase()) {
       deactivate();
     }
-  }, [deactivate, user, account, connectWallet]);
+  }, [deactivate, loggedInUser, account, connectWallet]);
 
   return (
     <>
@@ -70,49 +84,54 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           height={96}
           className={`rounded-t-lg !h-[96px] object-cover`}
         />
-        <div className={`space-y-3 text-white`}>
+        <div className={`space-y-1 text-white`}>
           <div
             className={clsx(
-              `flex gap-2 px-6 py-4`,
-              user?.pseudonym ? "items-start" : "items-center"
+              `flex gap-3 px-6 py-4`,
+              // loggedInUser?.pseudonym ? "items-start" : "items-center" #hafiz why did u applied this
+              loggedInUser?.pseudonym ? "items-center" : "items-center"
             )}
           >
-            {user && (
+            {loggedInUser && (
               <Image
-                src={user.profile_image.path}
-                alt={user.display_name}
-                width={40}
-                height={40}
-                className={`rounded-full object-cover h-[40px] w-[40px]`}
+                src={loggedInUser.profile_image.path}
+                alt={loggedInUser.display_name}
+                width={48}
+                height={48}
+                className={`rounded-full object-cover h-[48px] w-[48px]`}
                 sizes={"256px"}
               />
             )}
 
             <div className={`space-y-1`}>
-              {user?.pseudonym && (
+              {loggedInUser?.pseudonym && (
                 <div
                   className={`text-ellipsis text-sm text-white line-clamp-1`}
                 >
-                  {user?.display_name}
+                  {loggedInUser?.display_name}
                 </div>
               )}
               <div className={`flex gap-2 items-center`}>
+                <p className="text-gray-shade-7 font-medium text-12px">
+                  Wallet:
+                </p>
                 <p className={`text-sm`}>
-                  {sliceAccountAddress(user?.account_address ?? "")}
+                  {sliceAccountAddress(loggedInUser?.account_address ?? "")}
                 </p>
                 <MdContentCopy
                   className={`cursor-pointer text-sm text-white hover:text-brand-primary`}
                   onClick={() => {
-                    copy(user?.account_address ?? "");
+                    copy(loggedInUser?.account_address ?? "");
                     toast.success("Account Address Copied!");
                   }}
                 />
                 <a
                   href={
                     process.env.NEXT_PUBLIC_APP_ENV === "production"
-                      ? "https://bscscan.com/address/" + user?.account_address
+                      ? "https://bscscan.com/address/" +
+                        loggedInUser?.account_address
                       : "https://goerli.etherscan.io/address/" +
-                        user?.account_address
+                        loggedInUser?.account_address
                   }
                   target={"_blank"}
                   rel="noreferrer"
@@ -125,7 +144,44 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               </div>
             </div>
           </div>
-
+          <div className={`w-full  px-6  flex flex-col gap-2`}>
+            <p className="text-gray-shade-7 font-medium text-12px">
+              Referral Link
+            </p>
+            <div className="w-full justify-start flex">
+              <div className={`flex items-center gap-2 relative`}>
+                <h6 className={`text-white text-14px font-semibold`}>
+                  referral/
+                  {sliceAccountAddress(
+                    user?.account_address ? user.account_address : ""
+                  )}
+                </h6>
+                {isOwnProfile ? (
+                  <button
+                    onClick={() => {
+                      copy(
+                        window.location.origin +
+                          "/auth/register?referred_by=" +
+                          user?.account_address
+                      );
+                      toast.success("Referral link copied!");
+                    }}
+                  >
+                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => {
+                      copy(user?.account_address ? user?.account_address : "");
+                      toast.success("Address copied!");
+                    }}
+                  >
+                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
           <div className={`w-full flex justify-end items-end px-6 py-4`}>
             {active ? (
               <button
@@ -140,10 +196,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               <button
                 className={connectButton}
                 onClick={async () => {
-                  if (!user) return;
+                  if (!loggedInUser) return;
                   const _account = await connectWallet();
                   if (
-                    user.account_address.toLowerCase() !==
+                    loggedInUser.account_address.toLowerCase() !==
                     _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
@@ -161,7 +217,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               href={{
                 pathname: AppRoutes.profile.account_address,
                 query: {
-                  account_address: user?.account_address,
+                  account_address: loggedInUser?.account_address,
                 },
               }}
               className={link}
