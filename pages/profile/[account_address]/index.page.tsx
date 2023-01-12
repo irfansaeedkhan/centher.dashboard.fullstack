@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import { useMyPostStore } from "@/store/my.post.store";

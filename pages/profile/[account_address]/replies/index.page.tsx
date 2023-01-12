@@ -9,6 +9,8 @@ import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { useNewPostStore } from "@/store/new.post.store";
+import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import {
   archivePost,
   createPostView,
@@ -17,7 +19,6 @@ import {
 } from "@/components/feed.components";
 import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
 import { customLog } from "@/utils/custom.log";
-import { AppRoutes } from "@/constants/app.routes";
 import { RepliesIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
