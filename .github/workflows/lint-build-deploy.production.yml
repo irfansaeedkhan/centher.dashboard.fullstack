@@ -31,8 +31,10 @@ jobs:
 
   lint-build-deploy:
     runs-on: ubuntu-latest
-    environment: production
     if: github.event_name == 'push'
+    environment:
+      name: production
+      url: https://app.centher.io
 
     steps:
       - name: Checkout

@@ -31,8 +31,10 @@ jobs:
 
   lint-build-deploy:
     runs-on: ubuntu-latest
-    environment: staging
     if: github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://devapp.centher.io
 
     steps:
       - name: Checkout
