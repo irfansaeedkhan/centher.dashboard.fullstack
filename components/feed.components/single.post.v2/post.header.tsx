@@ -11,6 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
+import { useRouter } from "next/router";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -40,6 +41,8 @@ export const PostHeader: React.FC<Props> = ({
     );
   }, [loggedInUser?.account_address, postUser.account_address]);
 
+  const router = useRouter();
+
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
   }, [post.createdAt]);
@@ -59,7 +62,18 @@ export const PostHeader: React.FC<Props> = ({
   }, [post, postType]);
 
   return (
-    <div className="flex justify-between">
+    <div
+      className="flex justify-between"
+      onClick={() =>
+        router.push({
+          pathname: AppRoutes.feed.single_post,
+          query: {
+            account_address: post.user.account_address,
+            post_id: post._id,
+          },
+        })
+      }
+    >
       {/* Left Side */}
       <div className="left-side mr-2">
         {/* Display Name */}

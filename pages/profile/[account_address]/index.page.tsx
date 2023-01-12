@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
@@ -24,12 +24,16 @@ import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
+import { useNewPostStore } from "@/store/new.post.store";
+import { PostModal } from "@/components/feed.components/create.post/post.modal";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
   useCreateUserProfileView();
 
   const router = useRouter();
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
+  const openPostModal = useNewPostStore((state) => state.openModal);
   const { user: loggedInUser } = useUser();
   const { user } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
@@ -118,7 +122,19 @@ const Profile: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <div key={post._id} ref={lastPostRef}>
+            <div
+              key={post._id}
+              ref={lastPostRef}
+              onClick={() =>
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    account_address: post.user.account_address,
+                    post_id: post._id,
+                  },
+                })
+              }
+            >
               <SinglePostV2
                 post={post}
                 postType={"main"}
@@ -131,12 +147,11 @@ const Profile: NextPageWithLayout = () => {
                   );
                 }}
                 onClickReply={() => {
-                  router.push({
-                    pathname: AppRoutes.feed.single_post,
-                    query: {
-                      account_address: post.user.account_address,
-                      post_id: post._id,
-                    },
+                  setIsReplyModalOpen(true);
+                  openPostModal({
+                    modalType: "reply",
+                    parentPostId: post._id,
+                    onCloseModal: () => setIsReplyModalOpen(false),
                   });
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
@@ -160,12 +175,11 @@ const Profile: NextPageWithLayout = () => {
               );
             }}
             onClickReply={() => {
-              router.push({
-                pathname: AppRoutes.feed.single_post,
-                query: {
-                  account_address: post.user.account_address,
-                  post_id: post._id,
-                },
+              setIsReplyModalOpen(true);
+              openPostModal({
+                modalType: "reply",
+                parentPostId: post._id,
+                onCloseModal: () => setIsReplyModalOpen(false),
               });
             }}
             onClickArchive={() => handleAction(post._id, archivePost)}
@@ -204,6 +218,8 @@ const Profile: NextPageWithLayout = () => {
           <p className="text-gray-500">Something went wrong!</p>
         </div>
       )}
+
+      {isReplyModalOpen && <PostModal modalTitle="Reply" />}
     </>
   );
 };
