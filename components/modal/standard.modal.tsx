@@ -83,7 +83,7 @@ export const StandardModal: React.FC<ModalProps> = ({
           {/* Content */}
           <div className="p-4 text-center space-y-4">
             {status === "progress" && (
-              <SpinIcon2 className="inline-block w-16 h-16" />
+              <SpinIcon2 className="inline-block w-16 h-16 animate-spin" />
             )}
             {status === "success" && (
               <SuccessIcon className="inline-block w-16 h-16" />

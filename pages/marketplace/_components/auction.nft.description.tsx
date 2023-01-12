@@ -6,13 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import {
-  ShareBigIcon,
-  BNBIcon,
-  AuctionIcon,
-  WarningIcon,
-  LoaderIcon,
-} from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
@@ -294,7 +288,7 @@ export const AuctionNftDescription = ({
 
         <div className="auctionTimerBox flex flex-row [@media(max-width:600px)]:!flex-col gap-3 rounded-10px relative overflow-hidden border-2 border-gray-shade-3">
           <div className="iconBox bg-background-shade-2 flex flex-col items-center gap-3 text-center p-6 min-w-[170px]">
-            <AuctionIcon />
+            {/* <AuctionIcon /> */}
             <h4 className="text-14px font-normal text-white">
               Auction ends in
             </h4>

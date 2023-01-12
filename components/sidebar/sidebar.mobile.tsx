@@ -10,7 +10,7 @@ import { IoSearchSharp } from "react-icons/io5";
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
-import { CreateNFT, Logout, SettingIcon } from "@/assets/svgs";
+import { CreateNFT, Logout } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports

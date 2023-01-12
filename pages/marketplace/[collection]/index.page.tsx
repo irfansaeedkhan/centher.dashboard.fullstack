@@ -105,7 +105,6 @@ const Collection: NextPageWithLayout = () => {
       fetchMetadata(info.ipfs);
     }
   }, [info]);
-  console.log(metadata);
   const [lastNotiRef, _lastNotiInView, lastNotiEntry] = useInView();
 
   useEffect(() => {

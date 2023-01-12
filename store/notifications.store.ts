@@ -77,6 +77,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
             filterToday = filterToday.sort((a, b) =>
               a.status > b.status ? -1 : 1
             );
+            // Sort by date
+            filterToday = filterToday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
+            );
 
             let filterYesterday = notificationsArray.filter(
               (props) =>
@@ -85,6 +89,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             filterYesterday = filterYesterday.sort((a, b) =>
               a.status > b.status ? -1 : 1
+            );
+            // Sort by date
+            filterYesterday = filterYesterday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
             );
 
             let filterSevenday = notificationsArray.filter(
@@ -96,6 +104,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
             filterSevenday = filterSevenday.sort((a, b) =>
               a.status > b.status ? -1 : 1
             );
+            // Sort by date
+            filterSevenday = filterSevenday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
+            );
 
             let filteredMainNotifications = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
@@ -103,6 +115,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
               a.status > b.status ? -1 : 1
+            );
+            // Sort by date
+            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
             );
 
             return {
@@ -156,6 +172,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
             filterToday = filterToday.sort((a, b) =>
               a.status > b.status ? -1 : 1
             );
+            // Sort by date
+            filterToday = filterToday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
+            );
 
             let filterYesterday = notificationsArray.filter(
               (props) =>
@@ -164,6 +184,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             filterYesterday = filterYesterday.sort((a, b) =>
               a.status > b.status ? -1 : 1
+            );
+            // Sort by date
+            filterYesterday = filterYesterday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
             );
 
             let filterSevenday = notificationsArray.filter(
@@ -175,6 +199,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
             filterSevenday = filterSevenday.sort((a, b) =>
               a.status > b.status ? -1 : 1
             );
+            // Sort by date
+            filterSevenday = filterSevenday.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
+            );
 
             let filteredMainNotifications = notificationsArray.filter(
               (props) => moment(props.createdAt).format("YYYY-MM-DD") < sevenday
@@ -182,6 +210,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
             filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
               a.status > b.status ? -1 : 1
+            );
+            // Sort by date
+            filteredMainNotifications = filteredMainNotifications.sort((a, b) =>
+              moment(a.createdAt).isBefore(moment(b.createdAt)) ? 1 : -1
             );
 
             return {

@@ -18,6 +18,9 @@ export const PostUserImage: React.FC<Props> = ({
     <div className="flex flex-col items-center">
       {/* Image with link to user profile */}
       <Link
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         className="w-12 h-12"
         href={{
           pathname: AppRoutes.profile.account_address,
@@ -35,9 +38,9 @@ export const PostUserImage: React.FC<Props> = ({
       </Link>
 
       {/* Vertical Line */}
-      {shouldShowConnectLines && (
+      {/* {shouldShowConnectLines && (
         <div className="flex-grow border-l-2 border-gray-shade-3" />
-      )}
+      )} */}
     </div>
   );
 };

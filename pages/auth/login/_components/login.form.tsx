@@ -70,6 +70,12 @@ export const LoginForm: React.FC = () => {
         toast.error("User not found.");
         return;
       }
+
+      if (error?.response?.data?.message === "already_logged_in") {
+        window.location.href = AppRoutes.feed.index;
+        return;
+      }
+
       if (error?.response?.data?.message_description) {
         toast.error(error.response.data.message_description);
         return;
@@ -102,7 +108,7 @@ export const LoginForm: React.FC = () => {
           <button className={button} onClick={handleMetamaskLogin}>
             {isLoading === "loading" ? (
               <>
-                <SpinIcon3 />
+                <SpinIcon3 className="animate-spin" />
                 {ButtonsText.loading}
               </>
             ) : (
