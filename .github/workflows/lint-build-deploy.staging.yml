@@ -1,5 +1,5 @@
-name: Staging Lint & Build
-run-name: ${{ github.actor }} has triggered lint-and-build 🚀
+name: Staging - Lint, Build & Deploy
+
 on:
   push:
     branches:
@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
       - staging
-  workflow_dispatch:
 
 env:
   AWS_REGION: ${{ vars.AWS_REGION }}
@@ -18,31 +17,22 @@ env:
   CONTAINER_NAME: ${{ vars.CONTAINER_NAME }}
 
 jobs:
-  lint-and-build:
+  lint-build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
     steps:
-      - name: Check out repository code
+      - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.18.1
-          cache: yarn
-      - name: Install dependencies
+
+      - name: Build image to test build
         run: |
-          yarn install
-      - name: Lint
-        run: |
-          yarn lint
-      - name: Build
-        run: |
-          yarn build
-  deploy:
-    name: Deploy
+          docker build -t test-image -f docker/staging/Dockerfile .
+
+  lint-build-deploy:
     runs-on: ubuntu-latest
     environment: staging
-    if: ${{ success() }}
-    needs: lint-and-build
+    if: github.event_name == 'push'
 
     steps:
       - name: Checkout
