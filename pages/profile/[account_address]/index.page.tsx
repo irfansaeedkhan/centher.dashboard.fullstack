@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import { useMyPostStore } from "@/store/my.post.store";
@@ -35,7 +35,7 @@ const Profile: NextPageWithLayout = () => {
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
   const { user: loggedInUser } = useUser();
-  const { user } = useGetUser(
+  const { user, loading: loadingGetUser } = useGetUser(
     router.query.account_address?.toString()?.toLowerCase()
   );
 
@@ -81,7 +81,6 @@ const Profile: NextPageWithLayout = () => {
       resetPosts(user?._id, "loading");
       fetchPosts();
     }
-
     return () => {
       resetPosts("", "idle");
     };
@@ -112,6 +111,14 @@ const Profile: NextPageWithLayout = () => {
       customLog(error, ["development"]);
     }
   };
+  const handleNotFoundPage = async () => {
+    const user1 = await user;
+    console.log("final::::", user1, loadingGetUser);
+    if (user1 === null && loadingGetUser === "failed") {
+      router.push(AppRoutes.profile.not_found);
+    }
+  };
+  handleNotFoundPage();
 
   return (
     <>

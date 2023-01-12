@@ -6,17 +6,17 @@ import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 import Image from "next/image";
 
-const ErrorPage: NextPageWithLayout = () => {
+const ProfileNotFoundPage: NextPageWithLayout = () => {
   return (
     <div className="min-h-[calc(100vh-60px-64px)] h-auto flex items-center">
       <div className="flex flex-col-reverse md:flex-col  w-full justify-center items-center">
         <div className="w-full flex flex-col gap-3 items-center justify-center">
           <div className="text-white font-semibold md:!text-[34px] sm:!text-[30px]">
-            Page not found
+            User not found
           </div>
           <div className="md:max-w-[412px] sm:max-w-[300px] md:text-base sm:text-sm text-center text-gray-shade-7">
-            Seems our developers forgot to manage the delivery of a certain URL
-            here.
+            Seems account address you searched for doesnot exits, Please try
+            again.
           </div>
           <Link
             href={AppRoutes.feed.index}
@@ -37,8 +37,8 @@ const ErrorPage: NextPageWithLayout = () => {
   );
 };
 
-ErrorPage.getLayout = (page) => {
+ProfileNotFoundPage.getLayout = (page) => {
   return <AllPagesWrapper pageTitle="404 Not Found">{page}</AllPagesWrapper>;
 };
 
-export default ErrorPage;
+export default ProfileNotFoundPage;

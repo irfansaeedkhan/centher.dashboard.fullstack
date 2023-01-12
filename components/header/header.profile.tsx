@@ -38,14 +38,14 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { connectWallet, disconnectWallet } = useConnectWallet();
   const { active, account, deactivate } = useWeb3React();
 
-  const isOwnProfile = useMemo(() => {
-    return (
-      !!loggedInUser &&
-      !!user &&
-      loggedInUser?.account_address.toLowerCase() ===
-        user?.account_address.toLowerCase()
-    );
-  }, [user, loggedInUser]);
+  // const isOwnProfile = useMemo(() => {
+  //   return (
+  //     !!loggedInUser &&
+  //     !!user &&
+  //     loggedInUser?.account_address.toLowerCase() ===
+  //       user?.account_address.toLowerCase()
+  //   );
+  // }, [user, loggedInUser]);
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -116,7 +116,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                   Wallet:
                 </p>
                 <p className={`text-sm`}>
-                  {sliceAccountAddress(loggedInUser?.account_address ?? "")}
+                  {loggedInUser != null &&
+                    sliceAccountAddress(loggedInUser.account_address)}
                 </p>
                 <MdContentCopy
                   className={`cursor-pointer text-sm text-white hover:text-brand-primary`}
@@ -152,33 +153,21 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               <div className={`flex items-center gap-2 relative`}>
                 <h6 className={`text-white text-14px font-semibold`}>
                   referral/
-                  {sliceAccountAddress(
-                    user?.account_address ? user.account_address : ""
-                  )}
+                  {loggedInUser != null &&
+                    sliceAccountAddress(loggedInUser.account_address)}
                 </h6>
-                {isOwnProfile ? (
-                  <button
-                    onClick={() => {
-                      copy(
-                        window.location.origin +
-                          "/auth/register?referred_by=" +
-                          user?.account_address
-                      );
-                      toast.success("Referral link copied!");
-                    }}
-                  >
-                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => {
-                      copy(user?.account_address ? user?.account_address : "");
-                      toast.success("Address copied!");
-                    }}
-                  >
-                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
-                  </button>
-                )}
+                <button
+                  onClick={() => {
+                    copy(
+                      window.location.origin +
+                        "/auth/register?referred_by=" +
+                        loggedInUser?.account_address
+                    );
+                    toast.success("Referral link copied!");
+                  }}
+                >
+                  <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
+                </button>
               </div>
             </div>
           </div>

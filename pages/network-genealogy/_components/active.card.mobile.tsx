@@ -1,6 +1,9 @@
-import { formatAddress } from "@/utils/format.address";
 import Image from "next/image";
+import Link from "next/link";
 import React, { useState } from "react";
+
+import { AppRoutes } from "@/constants/app.routes";
+import { formatAddress } from "@/utils/format.address";
 
 export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
   let Active = activeParent.at(-1);
@@ -47,9 +50,22 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
           className="rounded-full object-cover w-9 h-9"
         />
         <div className="flex flex-col gap-2">
-          <h5 className="dark text-white text-12px font-medium">
-            {formatAddress(Active?.user)}
-          </h5>
+          <Link
+            href={{
+              pathname: AppRoutes.profile.account_address,
+              query: {
+                account_address: Active?.user?.account_address,
+              },
+            }}
+            className={
+              "whitespace-nowrap overflow-hidden text-ellipsis  text-white "
+            }
+          >
+            <h5 className="dark text-white text-12px font-medium">
+              {formatAddress(Active?.user)}
+            </h5>
+          </Link>
+
           <h6 className="light text-gray-shade-19 text-[10px] font-medium">
             Level {Active?.level}
           </h6>

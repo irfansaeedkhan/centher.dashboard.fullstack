@@ -1,8 +1,11 @@
+import Image from "next/image";
+import Link from "next/link";
+import React, { useState } from "react";
+
+import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
 import { formatAddress } from "@/utils/format.address";
-import Image from "next/image";
-import React, { useState } from "react";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
   const { user } = useGetUser(childData?.user);
@@ -32,9 +35,21 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         )}
         <div className="flex flex-col gap-2">
           {user ? (
-            <h5 className="dark text-white text-12px font-medium flex-shrink-0">
-              {user?.display_name}
-            </h5>
+            <Link
+              href={{
+                pathname: AppRoutes.profile.account_address,
+                query: {
+                  account_address: user?.account_address,
+                },
+              }}
+              className={
+                "whitespace-nowrap overflow-hidden text-ellipsis  text-white"
+              }
+            >
+              <h5 className="dark text-white text-12px font-medium flex-shrink-0">
+                {user?.display_name}
+              </h5>
+            </Link>
           ) : (
             <div className="rounded-sm max-w-[180px] h-4 bg-gray-shade-3 animate-pulse"></div>
           )}
