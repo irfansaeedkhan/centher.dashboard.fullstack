@@ -8,13 +8,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import Button from "@/components/button";
-import {
-  ShareBigIcon,
-  BNBIcon,
-  WarningIcon,
-  LoaderIcon,
-  QuestionIcon,
-} from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -179,13 +173,6 @@ export const NonNFTDescription = ({
             />
           </div>
 
-          <div className={serviceFee}>
-            <div className={serviceFeeTitle}>
-              <span className={serviceFeeName}>Service fee</span>
-              <QuestionIcon />
-            </div>
-            <span className={serviceFeeNumber}>0.0370 BNB</span>
-          </div>
           {auctionForm.formState.errors.StartingNFTPrice && (
             <p className={`text-red-500 ${errMessage}`}>
               {auctionForm.formState.errors.StartingNFTPrice.message}
@@ -514,17 +501,4 @@ const fieldTitle = ctl(`
 `);
 const inputFieldModal = ctl(`
   w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-
-const serviceFee = ctl(`
-flex justify-between items-center pt-1
-`);
-const serviceFeeTitle = ctl(`
-flex items-center gap-3
-`);
-const serviceFeeName = ctl(`
-text-[#838B8F] text-12px font-normal
-`);
-const serviceFeeNumber = ctl(`
- text-white text-12px font-normal
 `);

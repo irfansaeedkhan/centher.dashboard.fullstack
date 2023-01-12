@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import {
-  Circle,
   DefaultCircle,
   GoldCircle,
   RainbowCircle,

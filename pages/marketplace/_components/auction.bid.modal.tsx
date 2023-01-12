@@ -1,13 +1,10 @@
 // React, Next, NPM Packages
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
-import { useForm } from "react-hook-form";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, AuctionIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 
 const AuctionBidModal = ({ onSubmit }: any) => {

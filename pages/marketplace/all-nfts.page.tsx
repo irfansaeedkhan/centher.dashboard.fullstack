@@ -85,7 +85,6 @@ const AllNftsPage: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (lastPostEntry?.isIntersecting) {
-      console.log("first");
       updateOffset();
     }
   }, [lastPostRef, lastPostEntry, updateOffset]);

@@ -79,7 +79,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="pseudonym"
           label="Pseudonym"
-          placeholder="Enter your pseudonym"
+          placeholder="e.g. Steven Paul"
           value={updatedUser.pseudonym}
           maxLength={60}
           onChange={(e) => {
@@ -93,7 +93,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="first_name"
           label="First Name"
-          placeholder="Enter your first name"
+          placeholder="e.g. Steven"
           value={updatedUser.first_name}
           onChange={(e) => {
             setUpdatedUser({
@@ -106,7 +106,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="last_name"
           label="Last Name"
-          placeholder="Enter your last name"
+          placeholder="e.g. Paul"
           value={updatedUser.last_name}
           onChange={(e) => {
             setUpdatedUser({
@@ -138,7 +138,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="website_url"
           label="Website URL"
-          placeholder="Enter your website url"
+          placeholder="e.g. https://stevenpaul.com"
           value={updatedUser.website_url}
           onChange={(e) => {
             setUpdatedUser({
@@ -151,7 +151,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="twitter_username"
           label="Twitter Username"
-          placeholder="Enter your twitter username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.twitter_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -164,7 +164,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="facebook_username"
           label="Facebook Username"
-          placeholder="Enter your facebook username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.facebook_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -177,7 +177,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="instagram_username"
           label="Instagram Username"
-          placeholder="Enter your instagram username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.instagram_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -190,7 +190,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="tiktok_username"
           label="Tiktok Username"
-          placeholder="Enter your tiktok username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.tiktok_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -203,7 +203,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="twitch_username"
           label="Twitch Username"
-          placeholder="Enter your twitch username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.twitch_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -216,7 +216,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="onlyfans_username"
           label="OnlyFans Username"
-          placeholder="Enter your onlyfans username"
+          placeholder="e.g. stevenpaul"
           value={updatedUser.onlyfans_username}
           onChange={(e) => {
             setUpdatedUser({
@@ -228,7 +228,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <InputField
           id="youtube_url"
           label="Youtube URL"
-          placeholder="Enter your youtube url"
+          placeholder="e.g. https://youtube.com/stevenpaul"
           value={updatedUser.youtube_url}
           onChange={(e) => {
             setUpdatedUser({
@@ -271,7 +271,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
         <button className={connectButton} onClick={updateProfile}>
           {isLoading === "loading" ? (
             <>
-              <SpinIcon3 />
+              <SpinIcon3 className="animate-spin" />
             </>
           ) : (
             ButtonsText.update_profile

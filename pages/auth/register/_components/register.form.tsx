@@ -202,21 +202,23 @@ export const RegisterForm: React.FC = () => {
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
-                <SpinIcon2 />
+                <SpinIcon2 className="animate-spin" />
               ) : (
                 feeModal.status === "end" && <Successfully />
               )}
             </div>
             <div className={feeModalStatus}>
               {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
-                <h2 className={feeModalProgress}>
+                <h2 className="font-semibold flg:text-lg fmd:text-sm text-xs text-center text-white">
                   Referred users do not pay registration fees.
                 </h2>
               )}
               {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
-                <h2 className={feeModalProgress}>You only pay gas fee.</h2>
+                <h2 className="font-semibold flg:text-lg fmd:text-sm text-xs text-center text-white">
+                  You only pay gas fee.
+                </h2>
               )}
-              <h2 className={feeModalProgress}>
+              <h2 className="font-semibold lg:text-lg sm:text-xs text-center text-white">
                 {feeModal.status === "start"
                   ? Number(feeModal.fee) !== 0 && "Pay Registration Fee"
                   : feeModal.status === "progress"
@@ -335,10 +337,6 @@ lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
 const feeModalWrapper = ctl(`flex justify-center`);
 
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
-
-const feeModalProgress = ctl(
-  `font-semibold lg:text-lg sm:text-xs text-center text-white`
-);
 
 const textFee = ctl(
   `text-brand-primary text-center font-semibold tracking-wider text-base`

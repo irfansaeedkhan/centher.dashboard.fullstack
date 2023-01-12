@@ -54,8 +54,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     }
   }, [deactivate, user, account, connectWallet]);
 
-  console.log("user", user);
-
   return (
     <>
       <div className={`absolute top-12`}>

@@ -14,6 +14,9 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
     <div className="flex items-center">
       {/* User Image */}
       <Image
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         src={post.user.profile_image.path}
         alt={post.user.display_name}
         width={48}
@@ -32,7 +35,7 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
         }}
         className="text-xs text-brand-primary font-medium bg-brand-primary/10 rounded-[40px] px-3 py-1.5"
       >
-        Show Thread
+        Show Comments
       </Link>
     </div>
   );

@@ -65,6 +65,9 @@ export const PostHeader: React.FC<Props> = ({
         {/* Display Name */}
         <div className={clsx(postType === "reply" && `flex items-center`)}>
           <Link
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             href={{
               pathname: AppRoutes.profile.account_address,
               query: { account_address: postUser.account_address },
@@ -110,7 +113,12 @@ export const PostHeader: React.FC<Props> = ({
 
       {/* Right Side */}
       {isPostOwner && postType !== "reply-w-parent-header" && (
-        <div className="right-side">
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+          className="right-side"
+        >
           {/* 3 dots menu */}
           <PostActionMenu
             postType={postType}
