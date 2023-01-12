@@ -26,7 +26,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # local env files
-.env*.local
+.env*
+!.env.development
 
 # vercel
 .vercel
@@ -36,3 +37,8 @@ yarn-error.log*
 next-env.d.ts
 
 *.zip
+
+# vscode extentions 
+.vscode
+!.vscode/extensions.json
+!.vscode/settings.json
