@@ -95,7 +95,8 @@ export const useCollectionStore = create<CollectionStore>()(
           });
         } catch (error) {
           set({ loadingCollectionInfo: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -177,7 +178,8 @@ export const useCollectionStore = create<CollectionStore>()(
           });
         } catch (error) {
           set({ loadingNFTs: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

@@ -6,7 +6,9 @@ import React, { useState } from "react";
 import { ModalWrapper } from "@/components/modal";
 import { useAvatars } from "@/hooks/use.avatars";
 import { UserImage } from "@/models/user";
-import { NODE_API_URL } from "@/constants/common";
+import { getBackendUrl } from "@/constants/common";
+
+const BACKEND_HTTP_URL = getBackendUrl("http", "frontend-to-backend");
 
 interface AvatarProps {
   defaultAvatar: UserImage["path"];
@@ -28,7 +30,7 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
 `}
     >
       <Image
-        src={`${NODE_API_URL}${profileImage}`}
+        src={`${BACKEND_HTTP_URL}${profileImage}`}
         className={`
   object-cover
   rounded-full 
@@ -72,7 +74,7 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
             return (
               <Image
                 key={avatar.path}
-                src={`${NODE_API_URL}${avatar.path}`}
+                src={`${BACKEND_HTTP_URL}${avatar.path}`}
                 alt={avatar.name}
                 className={`
   ${`

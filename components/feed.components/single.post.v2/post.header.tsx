@@ -12,7 +12,6 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
-import { useRouter } from "next/router";
 
 interface Props {
   post: CompletedPost | ArchivedPost;

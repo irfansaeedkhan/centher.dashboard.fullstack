@@ -103,7 +103,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           });
         } catch (error) {
           set({ loadingCollections: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -170,7 +171,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           });
         } catch (error) {
           set({ loadingListedNFTs: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -244,7 +246,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           });
         } catch (error) {
           set({ loadingOwnedNFTs: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

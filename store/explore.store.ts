@@ -82,7 +82,8 @@ export const useExploreStore = create<ExploreStore>()(
           });
         } catch (error) {
           set({ loadingHotNFTs: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -115,7 +116,8 @@ export const useExploreStore = create<ExploreStore>()(
           });
         } catch (error) {
           set({ loadingCollections: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -149,7 +151,8 @@ export const useExploreStore = create<ExploreStore>()(
           });
         } catch (error) {
           set({ loadingTopCreators: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

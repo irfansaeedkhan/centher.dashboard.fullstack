@@ -247,7 +247,7 @@ export const useGetContributionInfo = (
 };
 
 const isClaimable = (purchaseTime: BigNumber, lockMonths: number) => {
-  return process.env.APP_ENV !== "production"
+  return process.env.NEXT_PUBLIC_APP_ENV !== "production"
     ? dayjs(new Date(purchaseTime.toNumber() * 1000))
         .add(lockMonths * 5, "minutes") // For testing 1 month is considered as 5 minutes
         .isBefore(dayjs())

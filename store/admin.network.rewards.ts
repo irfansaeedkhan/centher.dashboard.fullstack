@@ -150,7 +150,8 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           });
         } catch (error) {
           set({ loadingPurchaseWithBusdHistory: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -252,7 +253,8 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           });
         } catch (error) {
           set({ loadingPurchaseWithNtrHistory: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
 
@@ -304,7 +306,8 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           });
         } catch (error) {
           set({ loadingClaimHistory: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

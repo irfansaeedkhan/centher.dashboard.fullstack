@@ -1,11 +1,11 @@
 import axios from "axios";
 
-import { NODE_API_URL } from "@/constants/common";
+import { getBackendUrl } from "@/constants/common";
 
 import { encryptReqPayload } from "./encrypt.request.payload";
 
 export const axiosNodeApi = axios.create({
-  baseURL: NODE_API_URL,
+  baseURL: getBackendUrl("http", "frontend-to-backend"),
   withCredentials: true,
 });
 

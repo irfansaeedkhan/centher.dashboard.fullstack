@@ -22,8 +22,6 @@ import { customLog } from "@/utils/custom.log";
 import { RepliesIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
-import { useNewPostStore } from "@/store/new.post.store";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
 
 const Replies: NextPageWithLayout = () => {
   // Create User Profile View

@@ -1,11 +1,13 @@
-import { NODE_API_URL } from "@/constants/common";
+import { getBackendUrl } from "@/constants/common";
+
+const BACKEND_HTTP_URL = getBackendUrl("http", "backend-to-backend");
 
 // Get logged in user from Node JS API using session id
 export async function getSessionUser(sessionId: string | undefined) {
   if (!sessionId) return null;
 
   try {
-    const res = await fetch(`${NODE_API_URL}/api/auth/session`, {
+    const res = await fetch(`${BACKEND_HTTP_URL}/api/auth/session`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

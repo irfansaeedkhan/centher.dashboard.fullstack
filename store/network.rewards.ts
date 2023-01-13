@@ -136,7 +136,8 @@ export const useNetworkRewards = create<NetworkRewards>()(
           });
         } catch (error) {
           set({ loading: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
       fetchReferralClaimsInLaunchpad: async (referrer) => {
@@ -184,7 +185,8 @@ export const useNetworkRewards = create<NetworkRewards>()(
             };
           });
         } catch (error) {
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

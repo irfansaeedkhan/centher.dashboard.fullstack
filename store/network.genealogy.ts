@@ -100,7 +100,8 @@ export const useGenealogyStore = create<GenealogyStore>()(
           });
         } catch (error) {
           set({ loading: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
       fetchReferrers: async (account, level) => {
@@ -186,7 +187,8 @@ export const useGenealogyStore = create<GenealogyStore>()(
           }
         } catch (error) {
           set({ updating: "failed" });
-          process.env.APP_ENV !== "production" && console.error(error);
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
         }
       },
     }),

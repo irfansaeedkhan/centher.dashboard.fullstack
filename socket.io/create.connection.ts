@@ -4,7 +4,9 @@ import { io } from "socket.io-client";
 import { useSocketIOStore } from "@/store/socket.io.store";
 import { useCountsStore } from "@/store/counts.store";
 import useUser from "@/hooks/use.user";
-import { SOCKET_IO_URL } from "@/constants/common";
+import { getBackendUrl } from "@/constants/common";
+
+const BACKEND_WS_URL = getBackendUrl("ws", "frontend-to-backend");
 
 export const useCreateSocketIOConnection = () => {
   const { user, updateUser } = useUser();
@@ -19,7 +21,7 @@ export const useCreateSocketIOConnection = () => {
 
   useEffect(() => {
     if (!socket && user) {
-      setSocket(io(SOCKET_IO_URL + "/?user_id=" + user._id));
+      setSocket(io(BACKEND_WS_URL + "/?user_id=" + user._id));
       return;
     }
 
