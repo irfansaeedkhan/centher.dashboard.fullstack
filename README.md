@@ -16,7 +16,7 @@ This repository contains the source code for the [Centher Platform - app.centher
 
 👉 [Moralis](https://moralis.io/)
 
-👉 [Ether.js](https://docs.ethers.io/v5/)
+👉 [Ethers.js](https://docs.ethers.io/v5/)
 
 👉 [GraphQL](https://graphql.org/)
 
@@ -133,7 +133,7 @@ We will be using the GitHub Flow branching model for this project.
 
 ### File Naming Conventions
 
-👉 All the files and folder should use dot (.) as separater instead of hyphens or underscores (e.g. `file.name.js` or `folder.name`)
+👉 All the files and folder should use dot (.) as separater instead of hyphens or underscores (e.g. `file.name.js` or `folder.name`). This is to avoid issues with case-insensitive file systems.
 
 👉 For all pages the file extension should be `.page.tsx` (e.g. `home.page.tsx`)
 
@@ -142,6 +142,7 @@ We will be using the GitHub Flow branching model for this project.
 ### Folder Structure
 
 ```bash
+├── .aws # AWS ECS and ECR configuration files
 ├── .github # GitHub Actions and Workflows
 ├── .husky # Husky Git Hooks
 ├── .next # Next.js Build Output
