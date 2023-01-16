@@ -525,29 +525,14 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                   <h6 className={`text-white text-14px font-semibold`}>
                     {sliceAccountAddress(user.account_address)}
                   </h6>
-                  {isOwnProfile ? (
-                    <button
-                      onClick={() => {
-                        copy(
-                          window.location.origin +
-                            "/auth/register?referred_by=" +
-                            user.account_address
-                        );
-                        toast.success("Referral link copied!");
-                      }}
-                    >
-                      <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        copy(user.account_address);
-                        toast.success("Address copied!");
-                      }}
-                    >
-                      <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => {
+                      copy(user.account_address);
+                      toast.success("Address copied!");
+                    }}
+                  >
+                    <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
+                  </button>
                 </div>
               </div>
             </div>
