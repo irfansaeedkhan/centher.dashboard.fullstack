@@ -36,18 +36,20 @@ export const PostFooter: React.FC<Props> = ({
       <AnalyticsCount
         onClick={(e) => {
           e.stopPropagation();
+          onClickReply();
         }}
         className={clsx(
           "text-gray-shade-10",
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiMessageCircle onClick={onClickReply} className="w-5 h-5" />
+        <FiMessageCircle className="w-5 h-5" />
         <span>{post.replies_count}</span>
       </AnalyticsCount>
       <AnalyticsCount
         onClick={(e) => {
           e.stopPropagation();
+          onClickLike();
         }}
         className={clsx(
           post.liked_by_loggedin_user
@@ -56,7 +58,7 @@ export const PostFooter: React.FC<Props> = ({
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiThumbsUp onClick={onClickLike} className="w-5 h-5" />
+        <FiThumbsUp className="w-5 h-5" />
         <span className="mt-1">{post.likes_count}</span>
       </AnalyticsCount>
       <AnalyticsCount
@@ -67,7 +69,7 @@ export const PostFooter: React.FC<Props> = ({
         className="relative text-gray-shade-10"
       >
         <IoMdShareAlt
-          className="w-5 h-5"
+          className="w-7 h-7 p-1"
           onClick={() => setIsShareMenuOpen((prev) => !prev)}
         />
 
