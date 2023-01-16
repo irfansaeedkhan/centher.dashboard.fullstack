@@ -34,6 +34,8 @@ This repository contains the source code for the [Centher Platform - app.centher
 
 👉 [GitHub Actions](https://docs.github.com/en/actions)
 
+👉 [Docker](https://www.docker.com/)
+
 ### Editor
 
 👉 [Visual Studio Code](https://code.visualstudio.com/)
@@ -45,52 +47,6 @@ This repository contains the source code for the [Centher Platform - app.centher
 ### Package Manager
 
 👉 [Yarn: 1.22.19](https://yarnpkg.com/)
-
----
-
-### Setup
-
-```bash
-git clone git@github.com:algoalliance-io/app.centher.io.git
-```
-
-### Install Yarn
-
-```bash
-npm install -g yarn
-```
-
-### Dependencies Installation
-
-Change directory to project root and run:
-
-```bash
-yarn install
-```
-
-### Run Project
-
-```bash
-yarn dev
-```
-
-### Build Project
-
-```bash
-yarn build
-```
-
-### Lint Project
-
-```bash
-yarn lint
-```
-
-### Format Project
-
-```bash
-yarn format
-```
 
 ---
 
@@ -122,24 +78,32 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManage
 choco install make
 ```
 
-### Build development :
+---
 
-Make sure that file `.env.development` exists in project's root in advance, then :
+### Clone Project
 
 ```bash
-make build-development
+git clone git@github.com:algoalliance-io/app.centher.io.git
 ```
 
-### Start development :
+### Start development
+
+Make sure that file `.env.development` exists in project's root in advance, then:
 
 ```bash
 make start-development
 ```
 
-### Stop development :
+### Stop development
 
 ```bash
 make stop-development
+```
+
+### Build development
+
+```bash
+make build-development
 ```
 
 ---
