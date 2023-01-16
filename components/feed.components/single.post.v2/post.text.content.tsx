@@ -18,8 +18,11 @@ export const PostTextContent: React.FC<Props> = ({
 }) => {
   return (
     <div
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className={clsx(
-        `whitespace-pre-wrap break-all text-app-post-text text-sm mt-4`,
+        `whitespace-pre-wrap break-all text-app-post-text text-sm mt-4 cursor-text`,
         placement === "single-post-page" && postType === "main" && "font-bold"
       )}
       style={{

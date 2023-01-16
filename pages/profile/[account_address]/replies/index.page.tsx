@@ -19,6 +19,7 @@ import {
 } from "@/components/feed.components";
 import RepliesProfileSkeletons from "@/components/loading.skeletons/replies.profile";
 import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
 import { RepliesIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
@@ -106,7 +107,19 @@ const Replies: NextPageWithLayout = () => {
       {posts.map((post) => {
         if (post._id === posts[posts.length - 1]._id) {
           return (
-            <div ref={lastPostRef} key={post._id}>
+            <div
+              ref={lastPostRef}
+              key={post._id}
+              onClick={() => {
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    account_address: post.user.account_address,
+                    post_id: post._id,
+                  },
+                });
+              }}
+            >
               <SinglePostV2
                 post={post}
                 postType={"reply-w-parent-header"}
@@ -134,30 +147,42 @@ const Replies: NextPageWithLayout = () => {
           );
         }
         return (
-          <SinglePostV2
+          <div
             key={post._id}
-            post={post}
-            postType={"reply-w-parent-header"}
-            placement="profile-replies-page"
-            shouldShowThread={post.replies_count > 0}
-            onClickLike={async () => {
-              await likePostAPI(
-                post._id,
-                post.liked_by_loggedin_user ? "unlike" : "like"
-              );
-            }}
-            onClickReply={() => {
-              setIsReplyModalOpen(true);
-              openPostModal({
-                modalType: "reply",
-                parentPostId: post._id,
-                onCloseModal: () => setIsReplyModalOpen(false),
+            onClick={() => {
+              router.push({
+                pathname: AppRoutes.feed.single_post,
+                query: {
+                  account_address: post.user.account_address,
+                  post_id: post._id,
+                },
               });
             }}
-            onClickArchive={() => handleAction(post._id, archivePost)}
-            onClickDelete={() => handleAction(post._id, deletePost)}
-            onPostInViewport={() => handleCreatePostView(post._id)}
-          />
+          >
+            <SinglePostV2
+              post={post}
+              postType={"reply-w-parent-header"}
+              placement="profile-replies-page"
+              shouldShowThread={post.replies_count > 0}
+              onClickLike={async () => {
+                await likePostAPI(
+                  post._id,
+                  post.liked_by_loggedin_user ? "unlike" : "like"
+                );
+              }}
+              onClickReply={() => {
+                setIsReplyModalOpen(true);
+                openPostModal({
+                  modalType: "reply",
+                  parentPostId: post._id,
+                  onCloseModal: () => setIsReplyModalOpen(false),
+                });
+              }}
+              onClickArchive={() => handleAction(post._id, archivePost)}
+              onClickDelete={() => handleAction(post._id, deletePost)}
+              onPostInViewport={() => handleCreatePostView(post._id)}
+            />
+          </div>
         );
       })}
 

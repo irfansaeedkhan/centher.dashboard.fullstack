@@ -16,7 +16,6 @@ import { PostTextContent } from "./post.text.content";
 import { PostFooter } from "./post.footer";
 import { ShowThread } from "./show.thread";
 import { PostUserImage } from "./post.user.image";
-import toast from "react-hot-toast";
 import { LoggedInModal } from "./logged.in.modal";
 
 export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
@@ -100,7 +99,7 @@ export const SinglePostV2: React.FC<Props> = ({
     <div
       ref={currentPostRef}
       className={clsx(
-        `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px`,
+        `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px cursor-pointer`,
         placement === "single-post-page" &&
           (postType === "main" || postType === "reply-w-parent-header") &&
           post.replies_count > 0 &&

@@ -150,7 +150,19 @@ const SinglePostPage: NextPageWithLayout = () => {
           {replies.map((reply) => {
             if (reply._id === replies[replies.length - 1]._id) {
               return (
-                <div ref={lastReplyRef} key={reply._id}>
+                <div
+                  ref={lastReplyRef}
+                  key={reply._id}
+                  onClick={() => {
+                    router.push({
+                      pathname: AppRoutes.feed.single_post,
+                      query: {
+                        account_address: reply.user.account_address,
+                        post_id: reply._id,
+                      },
+                    });
+                  }}
+                >
                   <SinglePostV2
                     post={reply}
                     postType={"reply"}
@@ -183,19 +195,9 @@ const SinglePostPage: NextPageWithLayout = () => {
               );
             }
             return (
-              <SinglePostV2
+              <div
                 key={reply._id}
-                post={reply}
-                postType={"reply"}
-                placement={"single-post-page"}
-                onClickLike={async () => {
-                  await likePostAPI(
-                    reply._id,
-                    reply.liked_by_loggedin_user ? "unlike" : "like",
-                    "reply"
-                  );
-                }}
-                onClickReply={() => {
+                onClick={() => {
                   router.push({
                     pathname: AppRoutes.feed.single_post,
                     query: {
@@ -204,14 +206,36 @@ const SinglePostPage: NextPageWithLayout = () => {
                     },
                   });
                 }}
-                onClickArchive={() =>
-                  handleAction(reply._id, "reply", archivePost)
-                }
-                onClickDelete={() =>
-                  handleAction(reply._id, "reply", deletePost)
-                }
-                onPostInViewport={() => handleCreatePostView(reply._id)}
-              />
+              >
+                <SinglePostV2
+                  post={reply}
+                  postType={"reply"}
+                  placement={"single-post-page"}
+                  onClickLike={async () => {
+                    await likePostAPI(
+                      reply._id,
+                      reply.liked_by_loggedin_user ? "unlike" : "like",
+                      "reply"
+                    );
+                  }}
+                  onClickReply={() => {
+                    router.push({
+                      pathname: AppRoutes.feed.single_post,
+                      query: {
+                        account_address: reply.user.account_address,
+                        post_id: reply._id,
+                      },
+                    });
+                  }}
+                  onClickArchive={() =>
+                    handleAction(reply._id, "reply", archivePost)
+                  }
+                  onClickDelete={() =>
+                    handleAction(reply._id, "reply", deletePost)
+                  }
+                  onPostInViewport={() => handleCreatePostView(reply._id)}
+                />
+              </div>
             );
           })}
 

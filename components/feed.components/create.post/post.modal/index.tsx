@@ -65,7 +65,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
 
           <div className={clsx(`w-full`, hasMedia && "mt-4")}>
             <textarea
-              className={`block w-full text-xs fsm:text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-all border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
+              className={`block w-full text-xs fsm:text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-words border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
               cols={12}
               rows={4}
               maxLength={postTextMaxLength}

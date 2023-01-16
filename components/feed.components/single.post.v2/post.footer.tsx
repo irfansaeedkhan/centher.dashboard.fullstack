@@ -1,16 +1,13 @@
 import React, { HTMLAttributes, useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
-import { FiMessageCircle, FiThumbsUp, FiShare } from "react-icons/fi";
+import { FiMessageCircle, FiThumbsUp } from "react-icons/fi";
+import { IoMdShareAlt } from "react-icons/io";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import { ShareMenu } from "./share.menu";
 import { PostType } from "./main";
-import useUser from "@/hooks/use.user";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
-import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -69,7 +66,7 @@ export const PostFooter: React.FC<Props> = ({
         ref={shareMenuContainerRef}
         className="relative text-gray-shade-10"
       >
-        <FiShare
+        <IoMdShareAlt
           className="w-5 h-5"
           onClick={() => setIsShareMenuOpen((prev) => !prev)}
         />

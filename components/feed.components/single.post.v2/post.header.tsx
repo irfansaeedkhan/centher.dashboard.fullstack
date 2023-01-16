@@ -62,18 +62,7 @@ export const PostHeader: React.FC<Props> = ({
   }, [post, postType]);
 
   return (
-    <div
-      className="flex justify-between"
-      onClick={() =>
-        router.push({
-          pathname: AppRoutes.feed.single_post,
-          query: {
-            account_address: post.user.account_address,
-            post_id: post._id,
-          },
-        })
-      }
-    >
+    <div className="flex justify-between">
       {/* Left Side */}
       <div className="left-side mr-2">
         {/* Display Name */}
@@ -106,6 +95,9 @@ export const PostHeader: React.FC<Props> = ({
         {postType === "reply" && post.status !== "archived" && (
           <>
             <Link
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
               href={{
                 pathname: AppRoutes.profile.account_address,
                 query: {

@@ -5,6 +5,7 @@ import { useInView } from "react-intersection-observer";
 import { useMyPostStore } from "@/store/my.post.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
+import { useNewPostStore } from "@/store/new.post.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
@@ -17,6 +18,7 @@ import {
   SinglePostV2,
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
+import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
 import { customLog } from "@/utils/custom.log";
@@ -24,8 +26,6 @@ import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "./_components";
-import { useNewPostStore } from "@/store/new.post.store";
-import { PostModal } from "@/components/feed.components/create.post/post.modal";
 
 const Profile: NextPageWithLayout = () => {
   // Create User Profile View
@@ -113,7 +113,6 @@ const Profile: NextPageWithLayout = () => {
   };
   const handleNotFoundPage = async () => {
     const user1 = await user;
-    console.log("final::::", user1, loadingGetUser);
     if (user1 === null && loadingGetUser === "failed") {
       router.push(AppRoutes.profile.not_found);
     }
@@ -169,30 +168,42 @@ const Profile: NextPageWithLayout = () => {
           );
         }
         return (
-          <SinglePostV2
+          <div
             key={post._id}
-            post={post}
-            postType={"main"}
-            placement="profile-posts-page"
-            shouldShowThread={post.replies_count > 0}
-            onClickLike={async () => {
-              await likePostAPI(
-                post._id,
-                post.liked_by_loggedin_user ? "unlike" : "like"
-              );
-            }}
-            onClickReply={() => {
-              setIsReplyModalOpen(true);
-              openPostModal({
-                modalType: "reply",
-                parentPostId: post._id,
-                onCloseModal: () => setIsReplyModalOpen(false),
-              });
-            }}
-            onClickArchive={() => handleAction(post._id, archivePost)}
-            onClickDelete={() => handleAction(post._id, deletePost)}
-            onPostInViewport={() => handleCreatePostView(post._id)}
-          />
+            onClick={() =>
+              router.push({
+                pathname: AppRoutes.feed.single_post,
+                query: {
+                  account_address: post.user.account_address,
+                  post_id: post._id,
+                },
+              })
+            }
+          >
+            <SinglePostV2
+              post={post}
+              postType={"main"}
+              placement="profile-posts-page"
+              shouldShowThread={post.replies_count > 0}
+              onClickLike={async () => {
+                await likePostAPI(
+                  post._id,
+                  post.liked_by_loggedin_user ? "unlike" : "like"
+                );
+              }}
+              onClickReply={() => {
+                setIsReplyModalOpen(true);
+                openPostModal({
+                  modalType: "reply",
+                  parentPostId: post._id,
+                  onCloseModal: () => setIsReplyModalOpen(false),
+                });
+              }}
+              onClickArchive={() => handleAction(post._id, archivePost)}
+              onClickDelete={() => handleAction(post._id, deletePost)}
+              onPostInViewport={() => handleCreatePostView(post._id)}
+            />
+          </div>
         );
       })}
 
