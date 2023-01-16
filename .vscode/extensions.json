@@ -8,6 +8,7 @@
     "mhutchie.git-graph",
     "Gruntfuggly.todo-tree",
     "wayou.vscode-todo-highlight",
-    "donjayamanne.githistory"
+    "donjayamanne.githistory",
+    "ms-azuretools.vscode-docker"
   ]
 }
