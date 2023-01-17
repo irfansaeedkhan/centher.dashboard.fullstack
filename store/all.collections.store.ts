@@ -12,6 +12,7 @@ import {
 import { LoadingState } from "@/models/common";
 import { Category, Collection, OrderBy, OrderDirection } from "@/models/nft";
 import _ from "lodash";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface AllCollectionsStore {
   collections: Collection[];
@@ -66,7 +67,7 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           set({ loading: "loading" });
 
           const client = new ApolloClient({
-            uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
 

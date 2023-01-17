@@ -14,6 +14,7 @@ import {
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
@@ -63,7 +64,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingCollections: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _collections: Collection[];
@@ -112,7 +113,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingListedNFTs: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _nfts: NFT[] = [];
@@ -189,7 +190,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           });
 
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _collections: any[] = [];

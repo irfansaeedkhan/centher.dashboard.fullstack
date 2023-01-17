@@ -18,6 +18,7 @@ import {
 } from "@/models/referral";
 import { ethers } from "ethers";
 import { getPresaleContract } from "@/web3/utils/contract.helpers";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface NetworkRewards {
   coreTeamRewards: Rewards;
@@ -66,7 +67,7 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
         try {
           set({ loadingPurchaseWithBusdHistory: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _purchaseWithBusdHistory: PurchaseHistory[] = [];
@@ -159,7 +160,7 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
         try {
           set({ loadingPurchaseWithNtrHistory: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _purchaseWithNtrHistory: PurchaseHistory[] = [];
@@ -262,7 +263,7 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
         try {
           set({ loadingClaimHistory: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _claimHistory: ClaimHistory[] = [];

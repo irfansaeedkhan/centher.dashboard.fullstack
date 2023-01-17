@@ -1,6 +1,7 @@
 import { IProperty } from "@/pages/marketplace/_components/create.nft.form";
 import { nftQuery, saleQuery } from "@/subgraph/querys";
 import { formatIPFSUrl } from "@/utils/format.address";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 import useRefresh from "@/web3/hooks/use.refresh";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import axios from "axios";
@@ -70,7 +71,7 @@ export const useGetNftData = (
   useEffect(() => {
     const fetchNFTData = async (collection: string, tokenId: number) => {
       const client = new ApolloClient({
-        uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+        uri: SUBGRAPH_URL,
         cache: new InMemoryCache(),
       });
       const { data: nftResult } = await client.query({

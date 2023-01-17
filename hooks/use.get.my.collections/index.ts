@@ -1,4 +1,5 @@
 import { myCollections } from "@/subgraph/querys";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { useEffect, useState } from "react";
 
@@ -22,7 +23,7 @@ export const useGetMyCollections = (account: string | null | undefined) => {
   useEffect(() => {
     const fetchMyCollections = async (account: string) => {
       const client = new ApolloClient({
-        uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+        uri: SUBGRAPH_URL,
         cache: new InMemoryCache(),
       });
       const { data: result } = await client.query({
