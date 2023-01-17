@@ -48,7 +48,6 @@ jobs:
         run: |
           echo "NEXT_PUBLIC_APP_ENV=${{ vars.NEXT_PUBLIC_APP_ENV }}" >> .env.staging
           echo "NEXT_PUBLIC_NODE_API_HOST=${{ vars.NEXT_PUBLIC_NODE_API_HOST }}" >> .env.staging
-          echo "NEXT_PUBLIC_THEGRAPH_URL=${{ vars.NEXT_PUBLIC_THEGRAPH_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_MORALIS_URL=${{ vars.NEXT_PUBLIC_MORALIS_URL }}" >> .env.staging
 
       - name: Configure AWS credentials
