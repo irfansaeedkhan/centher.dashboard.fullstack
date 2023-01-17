@@ -45,7 +45,12 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
   }, [post.media?.length, emblaApi]);
 
   return (
-    <div className="relative mt-4">
+    <div
+      className="relative mt-4"
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {/* root node */}
       <div className="rounded-10px overflow-hidden" ref={emblaRef}>
         {/* container node */}
