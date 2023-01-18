@@ -111,13 +111,6 @@ const Profile: NextPageWithLayout = () => {
       customLog(error, ["development"]);
     }
   };
-  const handleNotFoundPage = async () => {
-    const user1 = await user;
-    if (user1 === null && loadingGetUser === "failed") {
-      router.push(AppRoutes.profile.not_found);
-    }
-  };
-  handleNotFoundPage();
 
   return (
     <>

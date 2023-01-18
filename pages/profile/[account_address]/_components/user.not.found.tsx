@@ -1,12 +1,10 @@
 import React from "react";
-
-import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
 import Image from "next/image";
+import Link from "next/link";
 
-const ProfileNotFoundPage: NextPageWithLayout = () => {
+import { AppRoutes } from "@/constants/app.routes";
+
+export const UserNotFound: React.FC = () => {
   return (
     <div className="min-h-[calc(100vh-60px-64px)] h-auto flex items-center">
       <div className="flex flex-col-reverse md:flex-col  w-full justify-center items-center">
@@ -15,8 +13,8 @@ const ProfileNotFoundPage: NextPageWithLayout = () => {
             User not found
           </div>
           <div className="md:max-w-[412px] sm:max-w-[300px] md:text-base sm:text-sm text-center text-gray-shade-7">
-            Seems account address you searched for doesnot exits, Please try
-            again.
+            Seems like the account address you searched for does not exist,
+            Please try again.
           </div>
           <Link
             href={AppRoutes.feed.index}
@@ -30,15 +28,9 @@ const ProfileNotFoundPage: NextPageWithLayout = () => {
           alt="404"
           width={967}
           height={340}
-          className="!max-w-[967px] !max-h-[340px] md:!h-[340px] md:!w-[767px] !w-[80%]  mb-10"
+          className="!max-w-[967px] !max-h-[340px] md:!h-[340px] md:!w-[767px] !w-[80%] mb-10"
         />
       </div>
     </div>
   );
 };
-
-ProfileNotFoundPage.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="404 Not Found">{page}</AllPagesWrapper>;
-};
-
-export default ProfileNotFoundPage;

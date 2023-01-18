@@ -21,9 +21,6 @@ export const AppRoutes = {
     nfts: "/profile/[account_address]/nfts",
     purchased: "/profile/[account_address]/purchased",
     collections: "/profile/[account_address]/collections",
-
-    // not found
-    not_found: "/profile/not-found",
   },
 
   feed: {
