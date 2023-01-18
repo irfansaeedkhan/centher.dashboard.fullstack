@@ -175,12 +175,11 @@ const SinglePostPage: NextPageWithLayout = () => {
                       );
                     }}
                     onClickReply={() => {
-                      router.push({
-                        pathname: AppRoutes.feed.single_post,
-                        query: {
-                          account_address: reply.user.account_address,
-                          post_id: reply._id,
-                        },
+                      setIsReplyModalOpen(true);
+                      openPostModal({
+                        modalType: "reply-of-reply",
+                        parentPostId: reply._id,
+                        onCloseModal: () => setIsReplyModalOpen(false),
                       });
                     }}
                     onClickArchive={() =>
@@ -219,12 +218,11 @@ const SinglePostPage: NextPageWithLayout = () => {
                     );
                   }}
                   onClickReply={() => {
-                    router.push({
-                      pathname: AppRoutes.feed.single_post,
-                      query: {
-                        account_address: reply.user.account_address,
-                        post_id: reply._id,
-                      },
+                    setIsReplyModalOpen(true);
+                    openPostModal({
+                      modalType: "reply-of-reply",
+                      parentPostId: reply._id,
+                      onCloseModal: () => setIsReplyModalOpen(false),
                     });
                   }}
                   onClickArchive={() =>

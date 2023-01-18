@@ -195,7 +195,7 @@ export type EditFileWithID = {
   isDeleted: boolean;
 };
 
-type ModalType = null | "new-post" | "reply" | "edit";
+type ModalType = null | "new-post" | "reply" | "reply-of-reply" | "edit";
 
 interface OpenModalOptionsBase {
   onCloseModal?: () => void;
@@ -210,6 +210,11 @@ interface OpenModalOptionsReply extends OpenModalOptionsBase {
   parentPostId: string;
 }
 
+interface OpenModalOptionsReplyOfReply extends OpenModalOptionsBase {
+  modalType: "reply-of-reply";
+  parentPostId: string;
+}
+
 interface OpenModalOptionsEdit extends OpenModalOptionsBase {
   modalType: "edit";
   postId: string;
@@ -220,4 +225,5 @@ interface OpenModalOptionsEdit extends OpenModalOptionsBase {
 type OpenModalOptions =
   | OpenModalOptionsCreate
   | OpenModalOptionsReply
+  | OpenModalOptionsReplyOfReply
   | OpenModalOptionsEdit;
