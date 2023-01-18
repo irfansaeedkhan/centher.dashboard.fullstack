@@ -4,63 +4,62 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary: #131314;
-  --secondary: #3c3f4a;
-}
+@layer base {
+  /* Firefox */
+  /* * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary) var(--primary);
+  } */
 
-/* Firefox */
-/* * {
-  scrollbar-width: thin;
-  scrollbar-color: var(--secondary) var(--primary);
-} */
+  /* Chrome, Edge, and Safari */
+  /* *::-webkit-scrollbar {
+    width: 15px;
+  } */
 
-/* Chrome, Edge, and Safari */
-/* *::-webkit-scrollbar {
-  width: 15px;
-} */
+  /* *::-webkit-scrollbar-track {
+    background: var(--primary);
+    border-radius: 5px;
+  } */
 
-/* *::-webkit-scrollbar-track {
-  background: var(--primary);
-  border-radius: 5px;
-} */
+  :root {
+    --primary: #131314;
+    --secondary: #3c3f4a;
+  }
 
-*::-webkit-scrollbar-thumb {
-  background-color: var(--secondary);
-  border-radius: 14px;
-  border: 3px solid var(--primary);
-}
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--secondary);
+    border-radius: 14px;
+    border: 3px solid var(--primary);
+  }
 
-@tailwind components;
-@tailwind utilities;
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    @apply bg-black-shade-3;
+  }
 
-body {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+  input:-webkit-autofill,
+  input:-webkit-autofill:active,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:hover {
+    transition: background-color 5000s ease-in-out 0s;
+    background-clip: text;
+    -webkit-background-clip: text;
+    box-shadow: 0 0 0 30px #1e1e21 inset !important;
+    -webkit-box-shadow: 0 0 0 30px #1e1e21 inset !important;
+  }
 
-input:-webkit-autofill,
-input:-webkit-autofill:active,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:hover {
-  transition: background-color 5000s ease-in-out 0s;
-  background-clip: text;
-  -webkit-background-clip: text;
-  box-shadow: 0 0 0 30px #1e1e21 inset !important;
-  -webkit-box-shadow: 0 0 0 30px #1e1e21 inset !important;
-}
-input:-webkit-autofill {
-  -webkit-text-fill-color: #fff !important;
+  input:-webkit-autofill {
+    -webkit-text-fill-color: #fff !important;
+  }
 }
 
 @layer components {
-  body {
-    @apply bg-black-shade-3;
-  }
   .carousel.carousel-slider {
     border-radius: 12px !important;
   }
