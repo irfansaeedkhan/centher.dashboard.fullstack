@@ -241,7 +241,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       {(profileCardDetails.profile_views_count === 0 ||
         profileCardDetails.profile_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
-          <h5 className={clsx(label)}>Your Profile viewed by</h5>
+          <h5 className={clsx(label)}>Your Profile Viewed By</h5>
           <h6 className={clsx(countBrand)}>
             {profileCardDetails.profile_views_count}
           </h6>
@@ -251,7 +251,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       {(profileCardDetails.posts_views_count === 0 ||
         profileCardDetails.posts_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
-          <h5 className={clsx(label)}>Your Posts viewed by</h5>
+          <h5 className={clsx(label)}>Your Posts Views</h5>
           <h6 className={clsx(countBrand)}>
             {" "}
             {profileCardDetails.posts_views_count}
