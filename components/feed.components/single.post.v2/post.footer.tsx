@@ -7,11 +7,12 @@ import { IoMdShareAlt } from "react-icons/io";
 import { ArchivedPost, CompletedPost } from "@/models/post";
 
 import { ShareMenu } from "./share.menu";
-import { PostType } from "./main";
+import { Placement, PostType } from "./main";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
   postType: PostType;
+  placement: Placement;
   onClickLike: () => Promise<void>;
   onClickReply: () => void;
 }
@@ -19,6 +20,7 @@ interface Props {
 export const PostFooter: React.FC<Props> = ({
   post,
   postType,
+  placement,
   onClickLike,
   onClickReply,
 }) => {
@@ -30,7 +32,10 @@ export const PostFooter: React.FC<Props> = ({
     <footer
       className={clsx(
         "flex justify-between",
-        post.text_content ? "mt-3" : "mt-4"
+        post.text_content ? "mt-3" : "mt-4",
+        placement === "single-post-page" &&
+          (postType === "main" || postType === "reply-w-parent-header") &&
+          "-ml-14"
       )}
     >
       <AnalyticsCount
