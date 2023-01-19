@@ -17,7 +17,6 @@ import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
 interface ProfileDetailCardProps {
   user: User;
-  postId: string | undefined;
 }
 
 export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
