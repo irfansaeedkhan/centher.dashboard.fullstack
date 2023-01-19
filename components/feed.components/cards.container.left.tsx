@@ -37,7 +37,7 @@ export const CardsContainerLeft = () => {
     <div className={`hidden flg:block max-w-[272px] space-y-3`}>
       {profileCardUser ? (
         <>
-          <ProfileDetailCard user={profileCardUser} postId={postId} />
+          <ProfileDetailCard user={profileCardUser} />
           <PromotionCard1 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>
