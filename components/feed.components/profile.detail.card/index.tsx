@@ -4,6 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 
 import { User } from "@/models/user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
 import {
   DefaultCircle,
@@ -13,18 +14,16 @@ import {
 } from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
-import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface ProfileDetailCardProps {
   user: User;
-  postid: string | undefined;
+  postId: string | undefined;
 }
 
 export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
-  postid,
 }) => {
-  const profileCardDetails = useGetProfileCardDetails(user, postid);
+  const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
   const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 

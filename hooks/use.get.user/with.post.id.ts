@@ -1,21 +1,19 @@
-// React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
 
-// App imports
 import { User } from "@/models/user";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
 
-const useGetUserUsingPostID = (postid?: string) => {
+const useGetUserWithPostId = (postId?: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   useEffect(() => {
-    if (postid) {
+    if (postId) {
       setLoading("loading");
       (async () => {
         try {
-          const { data } = await axiosNodeApi.get(`/api/users/post/${postid}`);
+          const { data } = await axiosNodeApi.get(`/api/users/post/${postId}`);
           setUser(data.user as User);
           setLoading("loaded");
         } catch (error) {
@@ -25,7 +23,7 @@ const useGetUserUsingPostID = (postid?: string) => {
         }
       })();
     }
-  }, [postid]);
+  }, [postId]);
 
   const mutateUser = useCallback(
     async (userPartial: Partial<User>) => {
@@ -48,4 +46,4 @@ const useGetUserUsingPostID = (postid?: string) => {
   };
 };
 
-export default useGetUserUsingPostID;
+export default useGetUserWithPostId;
