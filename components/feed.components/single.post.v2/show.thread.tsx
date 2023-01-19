@@ -39,7 +39,7 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
         href={{
           pathname: AppRoutes.feed.single_post,
           query: {
-            account_address: post.user.account_address,
+            //account_address: post.user.account_address,
             post_id: post._id,
           },
         }}

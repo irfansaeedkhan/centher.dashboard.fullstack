@@ -135,7 +135,7 @@ const Profile: NextPageWithLayout = () => {
                 router.push({
                   pathname: AppRoutes.feed.single_post,
                   query: {
-                    account_address: post.user.account_address,
+                    //account_address: post.user.account_address,
                     post_id: post._id,
                   },
                 })
@@ -174,7 +174,7 @@ const Profile: NextPageWithLayout = () => {
               router.push({
                 pathname: AppRoutes.feed.single_post,
                 query: {
-                  account_address: post.user.account_address,
+                  //account_address: post.user.account_address,
                   post_id: post._id,
                 },
               })

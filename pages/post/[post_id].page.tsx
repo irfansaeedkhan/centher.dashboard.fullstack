@@ -157,7 +157,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                     router.push({
                       pathname: AppRoutes.feed.single_post,
                       query: {
-                        account_address: reply.user.account_address,
+                        //account_address: reply.user.account_address,
                         post_id: reply._id,
                       },
                     });
@@ -178,7 +178,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                       router.push({
                         pathname: AppRoutes.feed.single_post,
                         query: {
-                          account_address: reply.user.account_address,
+                          //account_address: reply.user.account_address,
                           post_id: reply._id,
                         },
                       });
@@ -201,7 +201,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                   router.push({
                     pathname: AppRoutes.feed.single_post,
                     query: {
-                      account_address: reply.user.account_address,
+                      //account_address: reply.user.account_address,
                       post_id: reply._id,
                     },
                   });
@@ -222,7 +222,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                     router.push({
                       pathname: AppRoutes.feed.single_post,
                       query: {
-                        account_address: reply.user.account_address,
+                        //account_address: reply.user.account_address,
                         post_id: reply._id,
                       },
                     });

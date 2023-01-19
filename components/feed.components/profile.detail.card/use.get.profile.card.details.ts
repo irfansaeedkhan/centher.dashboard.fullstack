@@ -10,7 +10,10 @@ import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
-export const useGetProfileCardDetails = (user: User) => {
+export const useGetProfileCardDetails = (
+  user: User,
+  postid: string | undefined
+) => {
   const { profileCard, setProfileCard } = useProfileCardStore();
 
   useEffect(() => {
@@ -18,8 +21,15 @@ export const useGetProfileCardDetails = (user: User) => {
     if (account_address) {
       (async () => {
         try {
-          const res = await getProfileCardDetails(account_address);
-          setProfileCard(res.profileCardDetails);
+          if (postid && postid != "") {
+            const res = await getUserProfileCardDetailsUsingPostID(
+              postid.toString()
+            );
+            setProfileCard(res.profileCardDetails);
+          } else {
+            const res = await getProfileCardDetails(account_address);
+            setProfileCard(res.profileCardDetails);
+          }
         } catch (error: any) {
           customLog(error, ["development"]);
           setProfileCard(initialProfileCard);
@@ -34,6 +44,13 @@ export const useGetProfileCardDetails = (user: User) => {
 const getProfileCardDetails = async (account_address: string) => {
   const { data } = await axiosNodeApi.get(
     `/api/socials/analytics/profile-card/${account_address}`
+  );
+  return data;
+};
+
+const getUserProfileCardDetailsUsingPostID = async (postid: string) => {
+  const { data } = await axiosNodeApi.get(
+    `/api/socials/analytics/profile-card-post/${postid}`
   );
   return data;
 };

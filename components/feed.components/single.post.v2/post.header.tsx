@@ -143,7 +143,7 @@ export const PostHeader: React.FC<Props> = ({
           href={{
             pathname: AppRoutes.feed.single_post,
             query: {
-              account_address: post.parent_post?.user.account_address,
+              //account_address: post.parent_post?.user.account_address,
               post_id: post.parent_post?._id,
             },
           }}

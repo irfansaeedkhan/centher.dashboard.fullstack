@@ -34,9 +34,10 @@ export const SingleNotification = React.forwardRef<
   if (notification.type === "post_like" || notification.type === "post_reply") {
     notificationLink = (
       <Link
-        href={`/feed/${notification.post.user.account_address}/post/${notification.post._id}`}
+        href={`/post/${notification.post._id}`}
         className="text-sm text-white hover:text-brand-primary"
       >
+        {/* TO DO : Remove <Link href={`/feed/${notification.post.user.account_address}/post/${notification.post._id}`} className="text-sm text-white hover:text-brand-primary"> */}
         {notification.by.display_name}{" "}
         {notification.type === "post_like"
           ? "liked "

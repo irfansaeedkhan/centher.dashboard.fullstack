@@ -17,12 +17,14 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface ProfileDetailCardProps {
   user: User;
+  postid: string | undefined;
 }
 
 export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
+  postid,
 }) => {
-  const profileCardDetails = useGetProfileCardDetails(user);
+  const profileCardDetails = useGetProfileCardDetails(user, postid);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
   const [strokeColor, setStrokeColor] = useState<string>("none");
   /* 

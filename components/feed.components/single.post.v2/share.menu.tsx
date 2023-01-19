@@ -24,8 +24,10 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
   ...props
 }) => {
   const shareUrl = useMemo(() => {
-    return `${window.location.origin}${AppRoutes.feed.index}/${post.user.account_address}/post/${post._id}`;
-  }, [post._id, post.user.account_address]);
+    //return `${window.location.origin}${AppRoutes.feed.index}/${post.user.account_address}/post/${post._id}`;
+    return `${window.location.origin}/post/${post._id}`;
+    //}, [post._id, post.user.account_address]);
+  }, [post._id]);
 
   const [shareMenuState, setShareMenuState] = useState<"menu-1" | "menu-2">(
     "menu-1"

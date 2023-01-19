@@ -29,7 +29,9 @@ export const AppRoutes = {
   feed: {
     // Authenticated Pages
     index: "/feed",
-    single_post: "/feed/[account_address]/post/[post_id]",
+    //TO DO : Remove it after testing complete
+    //single_post: "/feed/[account_address]/post/[post_id]",
+    single_post: "/post/[post_id]",
   },
 
   // Authenticated Pages
