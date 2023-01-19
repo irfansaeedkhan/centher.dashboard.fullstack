@@ -1,9 +1,7 @@
-// React, Next, NPM Packages
 import React from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 
-// App imports
 import useGetUser from "@/hooks/use.get.user";
 import {
   PromotionCard1,
