@@ -15,6 +15,7 @@ import {
   OrderBy,
   OrderDirection,
 } from "@/models/nft";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface AllNFTsStore {
   allNFTs: NFT[];
@@ -70,7 +71,7 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           set({ loading: "loading" });
 
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _allNFTs: NFT[] = [];

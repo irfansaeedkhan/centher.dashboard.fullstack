@@ -15,6 +15,7 @@ import {
   RewardsEachAsset,
 } from "@/models/referral";
 import { ethers } from "ethers";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface NetworkRewards {
   rewardsInLaunchpad: ReferralReward[];
@@ -51,7 +52,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _rewardsInLaunchpad: ReferralReward[] = [];
@@ -143,7 +144,7 @@ export const useNetworkRewards = create<NetworkRewards>()(
       fetchReferralClaimsInLaunchpad: async (referrer) => {
         try {
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
 

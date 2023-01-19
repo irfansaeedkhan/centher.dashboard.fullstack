@@ -7,6 +7,8 @@ import ProfileHeader from "./profile.header";
 import { ProfileTabs } from "./profile.tabs";
 import { CardsContainerLeft } from "./cards.container.left";
 import { useRouter } from "next/router";
+import useGetUser from "@/hooks/use.get.user";
+import { UserNotFound } from "./user.not.found";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -15,6 +17,15 @@ interface AllPagesWrapperProps {
 
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   const router = useRouter();
+
+  const { user, loading: loadingGetUser } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
+
+  if (user === null && loadingGetUser === "failed") {
+    return <UserNotFound />;
+  }
+
   return (
     <>
       <div className="w-full max-w-[1136px] mx-auto">

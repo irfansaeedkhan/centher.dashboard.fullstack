@@ -4,12 +4,16 @@ import useEmblaCarousel from "embla-carousel-react";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
+import { Placement, PostType } from "./main";
+import clsx from "clsx";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
+  postType: PostType;
+  placement: Placement;
 }
 
-export const PostMedia: React.FC<Props> = ({ post }) => {
+export const PostMedia: React.FC<Props> = ({ post, postType, placement }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     draggable: post.media!.length > 1,
   });
@@ -45,7 +49,18 @@ export const PostMedia: React.FC<Props> = ({ post }) => {
   }, [post.media?.length, emblaApi]);
 
   return (
-    <div className="relative mt-4">
+    <div
+      className={clsx(
+        "relative",
+        placement === "single-post-page" &&
+          (postType === "main" || postType === "reply-w-parent-header")
+          ? "-ml-14 mt-6"
+          : "mt-4"
+      )}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {/* root node */}
       <div className="rounded-10px overflow-hidden" ref={emblaRef}>
         {/* container node */}

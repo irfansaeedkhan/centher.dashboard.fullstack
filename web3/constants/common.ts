@@ -40,7 +40,7 @@ export const FEE = {
 
 export const percent = [6, 4, 2, 2, 2, 2];
 
-export const ADMIN_ACCOUNT_ADDRESS =
+export const SUBGRAPH_URL =
   process.env.NEXT_PUBLIC_APP_ENV === "production"
-    ? "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801"
-    : "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7";
+    ? "https://api.thegraph.com/subgraphs/name/seniorblockchaindev/centher"
+    : "https://api.studio.thegraph.com/query/39184/nethernft_dev/0.0.20";

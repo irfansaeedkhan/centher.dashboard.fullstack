@@ -47,6 +47,11 @@ export interface SinglePostStore {
 
   replaceEditedPost: (post: CompletedPost) => void;
 
+  updateRepliesCountForReply: (
+    actionType: "increment" | "decrement",
+    postId?: string
+  ) => void;
+
   resetStore: (postId: string, loading?: LoadingState) => void;
 }
 
@@ -274,6 +279,31 @@ export const useSinglePostStore = create<SinglePostStore>()(
             return reply;
           }),
         }));
+      },
+
+      updateRepliesCountForReply: (actionType, postId) => {
+        if (!postId) return;
+
+        set((state) => {
+          const replies = state.replies.map((reply) => {
+            if (reply._id !== postId) {
+              return reply;
+            }
+
+            return {
+              ...reply,
+              replies_count:
+                actionType === "increment"
+                  ? reply.replies_count + 1
+                  : reply.replies_count - 1,
+            };
+          });
+
+          return {
+            ...state,
+            replies,
+          };
+        });
       },
     }),
     { name: "SinglePostStore" }

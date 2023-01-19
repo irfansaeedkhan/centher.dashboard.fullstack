@@ -1,14 +1,14 @@
 import { genealogyAtLevelQuery, referrerQuery } from "@/subgraph/querys";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { ethers } from "ethers";
-import { percent } from "../constants/common";
+import { percent, SUBGRAPH_URL } from "../constants/common";
 
 export const getReferrers = async (
   account: string | null | undefined,
   level: string
 ) => {
   const client = new ApolloClient({
-    uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+    uri: SUBGRAPH_URL,
     cache: new InMemoryCache(),
   });
   const { data: result } = await client.query({

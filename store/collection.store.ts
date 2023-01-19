@@ -12,6 +12,7 @@ import {
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { CollectionInfo, NFT } from "@/models/nft";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export type Filter = "All" | "List" | "Auction";
 
@@ -66,7 +67,7 @@ export const useCollectionStore = create<CollectionStore>()(
         try {
           set({ loadingCollectionInfo: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _collection: CollectionInfo;
@@ -104,7 +105,7 @@ export const useCollectionStore = create<CollectionStore>()(
         try {
           set({ loadingNFTs: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _nfts: NFT[] = [];

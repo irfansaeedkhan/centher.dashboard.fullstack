@@ -9,6 +9,7 @@ import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { collectionsQuery, hotNFTsQuery, topCreators } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export interface ExploreStore {
   hotNFTs: NFT[];
@@ -41,7 +42,7 @@ export const useExploreStore = create<ExploreStore>()(
         try {
           set({ loadingHotNFTs: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _hotNFTs: NFT[] = [];
@@ -91,7 +92,7 @@ export const useExploreStore = create<ExploreStore>()(
         try {
           set({ loadingCollections: "loading" });
           const client = new ApolloClient({
-            uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
 
@@ -125,7 +126,7 @@ export const useExploreStore = create<ExploreStore>()(
         try {
           set({ loadingTopCreators: "loading" });
           const client = new ApolloClient({
-            uri: `${process.env.NEXT_PUBLIC_THEGRAPH_URL}`,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _topCreators: string[] = [];

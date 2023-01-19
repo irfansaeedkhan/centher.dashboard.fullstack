@@ -21,7 +21,7 @@ import {
 import { ethers } from "ethers";
 import { getPresaleContract } from "@/web3/utils/contract.helpers";
 import { getRegistrationAddress } from "@/web3/utils/address.helpers";
-import { ZeroAddress } from "@/web3/constants/common";
+import { SUBGRAPH_URL, ZeroAddress } from "@/web3/constants/common";
 import { Web3Provider } from "@ethersproject/providers";
 import { simpleRpcProvider } from "@/web3/utils/providers";
 
@@ -51,7 +51,7 @@ export const useAdminRegistration = create<NetworkRewards>()(
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _registrationHistory: RegistrationHistory[] = [];

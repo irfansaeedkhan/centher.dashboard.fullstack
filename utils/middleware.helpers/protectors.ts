@@ -1,7 +1,5 @@
 import type { NextRequest } from "next/server";
 
-import { ADMIN_ACCOUNT_ADDRESS } from "@/web3/constants/common";
-
 import { getSessionUser } from "./get.session.user";
 
 export const isAuthenticated = async (request: NextRequest) => {
@@ -15,6 +13,11 @@ export const isAuthenticated = async (request: NextRequest) => {
     return false;
   }
 };
+
+const ADMIN_ACCOUNT_ADDRESS =
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801"
+    : "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7";
 
 export const isAdmin = async (request: NextRequest) => {
   try {

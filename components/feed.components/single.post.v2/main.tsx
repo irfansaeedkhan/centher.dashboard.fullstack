@@ -179,7 +179,9 @@ export const SinglePostV2: React.FC<Props> = ({
             }}
           />
 
-          {post.media && !!post.media.length && <PostMedia post={post} />}
+          {post.media && !!post.media.length && (
+            <PostMedia post={post} postType={postType} placement={placement} />
+          )}
 
           {post.text_content && (
             <PostTextContent
@@ -192,6 +194,7 @@ export const SinglePostV2: React.FC<Props> = ({
           <PostFooter
             post={post}
             postType={postType}
+            placement={placement}
             onClickLike={async () => {
               if (!loggedInUser) {
                 setLoggedInPostModal((prevState) => ({

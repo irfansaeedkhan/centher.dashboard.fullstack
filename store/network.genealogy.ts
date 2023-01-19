@@ -8,6 +8,7 @@ import { genealogyAtLevelQuery, genealogyQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Genealogy, GenealogyChild, RewardsTotal } from "@/models/referral";
 import { ethers } from "ethers";
+import { SUBGRAPH_URL } from "@/web3/constants/common";
 
 export const referralPercent = [6, 4, 2, 2, 2, 2];
 
@@ -31,7 +32,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
         try {
           set({ loading: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _genealogies: Genealogy[];
@@ -108,7 +109,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
         try {
           set({ updating: "loading" });
           const client = new ApolloClient({
-            uri: process.env.NEXT_PUBLIC_THEGRAPH_URL,
+            uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
           let _children: GenealogyChild[];

@@ -9,6 +9,7 @@ import { useProfileCardStore } from "@/store/profile.card.store";
 import { axiosNodeApi } from "../axios";
 import { customLog } from "../custom.log";
 import { FileChunksData } from "./create.files.chunks";
+import { useMyRepliesStore } from "@/store/my.replies.store";
 
 export const uploadFiles = async (
   filesChunksData: FileChunksData[],
@@ -158,6 +159,7 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
   const newPostStoreState = useNewPostStore.getState();
   const feedStoreState = useFeedStore.getState();
   const myPostStoreState = useMyPostStore.getState();
+  const myRepliesStoreState = useMyRepliesStore.getState();
 
   if (newPostStoreState.modalType === "new-post") {
     feedStoreState.addNewPost(postData.post);
@@ -168,6 +170,10 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
     newPostStoreState.parentPostId
   ) {
     feedStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
+    myPostStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
+    myRepliesStoreState.incrementPostRepliesCount(
+      newPostStoreState.parentPostId
+    );
 
     const singlePostStoreState = useSinglePostStore.getState();
 
@@ -177,6 +183,16 @@ export const getNewPostAndUpdateState = async (currentPostId: string) => {
     singlePostStoreState.updatePost({
       replies_count: prevRepliesCount ? prevRepliesCount + 1 : 1,
     });
+  } else if (
+    newPostStoreState.modalType === "reply-of-reply" &&
+    newPostStoreState.parentPostId
+  ) {
+    // Increment replies count of reply
+    const singlePostStoreState = useSinglePostStore.getState();
+    singlePostStoreState.updateRepliesCountForReply(
+      "increment",
+      newPostStoreState.parentPostId
+    );
   } else if (newPostStoreState.modalType === "edit") {
     // Update all stores as we don't know which store the post is in
     feedStoreState.replaceEditedPost(postData.post);
