@@ -2,9 +2,10 @@ import React from "react";
 
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
+import UpdateContractAdminPanelSkeleton from "@/components/loading.skeletons/update.contract.adminpanel";
 
 import NetworkTabs from "../_components/network.tabs";
-import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 import { ContractCard } from "./_components/ContractCard";
 import { CommonCard } from "./_components/CommonCard";
 
@@ -15,7 +16,7 @@ const UpdateContract: NextPageWithLayout = () => {
     <div className="flex flex-col gap-6">
       <div className="contractContainer grid grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] gap-4 max-w-auto">
         <CommonCard refreshRoundsInfo={refreshRoundsInfo} />
-        {roundsInfo &&
+        {!!roundsInfo.length ? (
           roundsInfo.map((round: any) => {
             return (
               <ContractCard
@@ -24,7 +25,13 @@ const UpdateContract: NextPageWithLayout = () => {
                 key={round.round}
               />
             );
-          })}
+          })
+        ) : (
+          <>
+            <UpdateContractAdminPanelSkeleton />
+            <UpdateContractAdminPanelSkeleton />
+          </>
+        )}
       </div>
     </div>
   );
