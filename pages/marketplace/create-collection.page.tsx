@@ -2,8 +2,8 @@
 import { useState } from "react";
 import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import Moralis from "moralis";
 
 // App imports
 import { useWeb3React } from "@web3-react/core";
@@ -12,18 +12,15 @@ import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import {
-  FEE,
-  NEXT_PUBLIC_API_Secret,
-  NEXT_PUBLIC_Project_ID,
-} from "@/web3/constants/common";
+import { FEE } from "@/web3/constants/common";
 import { LoaderIcon } from "@/assets/svgs";
+import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
+import { readFileAsync } from "@/utils/file.reader.util";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
-import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
-import { useRouter } from "next/router";
+
+const collectionsRemoteBasePath = "ipfs:/";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
   const [loadingState, setLoadingState] = useState(false);
@@ -169,105 +166,50 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     );
     setModal(true);
   };
-
   const handleCreateCollection = async (collectionData: any) => {
     buyNFTStep2Func();
+    let collectionCreated = false;
     try {
-      const profileReader = new window.FileReader();
-      profileReader.onloadend = async () => {
-        try {
-          let profileFileBuffer = Buffer.from(
-            profileReader.result as ArrayBuffer
-          );
+      collectionData = collectionData as ICollectionData;
+      const collectionUploader = new CollectionUploader(
+        collectionsRemoteBasePath
+      );
 
-          const cd = collectionData as ICollectionData;
-          const profileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-            abi: [
-              {
-                path: `nether/${(profile as any).name.replace(" ", "_")}`,
-                content: profileFileBuffer.toString("base64"),
-              },
-            ],
-          });
-          const profileHash = profileAdded.result[0].path.split("ipfs")[2];
-
-          const coverReader = new window.FileReader();
-          coverReader.onloadend = async () => {
-            try {
-              let fileBuffer = Buffer.from(coverReader.result as ArrayBuffer);
-              const coverfileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-                abi: [
-                  {
-                    path: `nether/${(cover as any).name.replace(" ", "_")}`,
-                    content: fileBuffer.toString("base64"),
-                  },
-                ],
-              });
-              const coverHash = coverfileAdded.result[0].path.split("ipfs")[2];
-
-              const metadata = {
-                name: cd.name,
-                Symbol: cd.symbol,
-                description: cd.description,
-                totalsupply: cd.totalsupply,
-                url: cd.url,
-                category: cd.category,
-                yoursite: cd.yoursite,
-                facebook: cd.facebook,
-                twitter: cd.twitter,
-                profileIPFSHash: "ipfs:/" + profileHash,
-                coverIPFSHash: "ipfs:/" + coverHash,
-              };
-
-              const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-                abi: [
-                  {
-                    path: `nether/${cd.name.replace(" ", "_")}.json`,
-                    content: Buffer.from(JSON.stringify(metadata)).toString(
-                      "base64"
-                    ),
-                  },
-                ],
-              });
-              const jsonHash = jsonFileAdded.result[0].path.split("ipfs")[2];
-
-              const result = await callCreateCollection(
-                library,
-                cd.name,
-                cd.symbol,
-                cd.category,
-                "ipfs:/" + jsonHash,
-                cd.totalsupply,
-                FEE.createCollectionFee
-              );
-              buyNFTSuccessFunc(result.success, collectionData);
-            } catch (error) {
-              console.error(error);
-              toast.error(
-                "Something went wrong while create a collection. Please try again."
-              );
-              buyNFTSuccessFunc(false, collectionData);
-            }
-          };
-          coverReader.readAsArrayBuffer(cover as Blob);
-        } catch (error) {
-          console.error(error);
-          toast.error(
-            "Something went wrong while create a collection. Please try again."
-          );
-          buyNFTSuccessFunc(false, collectionData);
-        }
+      const assetBuffer = await readFileAsync(profile);
+      const uploadDto = {
+        path: collectionUploader._uploader.makePath(
+          profile as any as { name: string }
+        ),
+        content: assetBuffer.toString("base64"),
       };
-      profileReader.readAsArrayBuffer(profile as Blob);
+
+      const profilePath = await collectionUploader._uploader.upload(uploadDto);
+      const coverBuffer = await readFileAsync(cover);
+      const collectionMetaDataPath = await collectionUploader.uploadCollection(
+        coverBuffer,
+        collectionData,
+        profilePath
+      );
+      const { name, symbol, category, totalsupply } = collectionData;
+      const result = await callCreateCollection(
+        library,
+        name,
+        symbol,
+        category,
+        collectionsRemoteBasePath + collectionMetaDataPath,
+        totalsupply,
+        FEE.createCollectionFee
+      );
+      collectionCreated = result.success;
     } catch (error) {
       console.error(error);
       toast.error(
         "Something went wrong while create a collection. Please try again."
       );
-      buyNFTSuccessFunc(false, collectionData);
+    } finally {
+      buyNFTSuccessFunc(collectionCreated, collectionData);
     }
   };
-
   const createCollection = (values: ICollectionData) => {
     if (profile === undefined) {
       toast.error("Choose profile image.");

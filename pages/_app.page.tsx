@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Toaster } from "react-hot-toast";
-import Moralis from "moralis";
 
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
@@ -23,12 +22,6 @@ type AppPropsWithLayout = AppProps & {
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
   useCreateSocketIOConnection();
-
-  Moralis.start({
-    apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-    // ...and any other configuration
-  });
-
   const getLayout = Component.getLayout || ((page) => page);
 
   return (

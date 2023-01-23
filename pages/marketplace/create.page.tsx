@@ -1,12 +1,9 @@
 // React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Moralis from "moralis";
-import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
-import { create as ipfsCreate, IPFSHTTPClient } from "ipfs-http-client";
 
 // App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -15,20 +12,17 @@ import Button from "@/components/button";
 import { callCreateNFT } from "@/web3/utils/call.helpers";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
-import {
-  FEE,
-  NEXT_PUBLIC_API_Secret,
-  NEXT_PUBLIC_IPFS_HOST,
-  NEXT_PUBLIC_IPFS_URL,
-  NEXT_PUBLIC_Project_ID,
-} from "@/web3/constants/common";
+import { FEE } from "@/web3/constants/common";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
+import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
+import { readFileAsync } from "@/utils/file.reader.util";
 
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
+
+const nftRemoteBasePath = "ipfs:/";
 
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -75,6 +69,7 @@ const CreateNFT: NextPageWithLayout = () => {
     );
     setModal(true);
   };
+
   const buyNFTStep2Func = () => {
     setModalTitle("Transaction in progress");
     setBtnDisabled("yes");
@@ -107,6 +102,7 @@ const CreateNFT: NextPageWithLayout = () => {
     );
     setModal(true);
   };
+
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
     setClearForm(false);
     setModalTitle("Complete Checkout");
@@ -163,69 +159,35 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const handleCreateCollection = async (nftData: any) => {
     buyNFTStep2Func();
+    let nfdCreated = false;
     try {
-      const assetReader = new window.FileReader();
-      assetReader.onloadend = async () => {
-        try {
-          const cd = nftData as INFTData;
-          let assetBuffer = Buffer.from(assetReader.result as ArrayBuffer);
-          const assetAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-            abi: [
-              {
-                path: `nether/${(asset as any).name.replace(" ", "_")}`,
-                content: assetBuffer.toString("base64"),
-              },
-            ],
-          });
-          const assetHash = assetAdded.result[0].path.split("ipfs")[2];
+      const nftUploader = new NFTUploader(nftRemoteBasePath);
+      const file = await readFileAsync(asset);
+      const castedNftData = nftData as INFTData;
+      const nftMetadataPath = await nftUploader.uploadNFT(
+        file,
+        castedNftData,
+        asset as any as safeNameType
+      );
 
-          const metadata = {
-            name: cd.name,
-            description: cd.description,
-            supply: cd.supply,
-            image: "ipfs:/" + assetHash,
-            type: (asset as any).type,
-            collection: cd.collection,
-            attributes: cd.properties,
-          };
-
-          const jsonFileAdded = await Moralis.EvmApi.ipfs.uploadFolder({
-            abi: [
-              {
-                path: `nether/${cd.name.replace(" ", "_")}.json`,
-                content: Buffer.from(JSON.stringify(metadata)).toString(
-                  "base64"
-                ),
-              },
-            ],
-          });
-          const jsonHash = jsonFileAdded.result[0].path.split("ipfs")[2];
-          const result = await callCreateNFT(
-            library,
-            cd.collection,
-            cd.category,
-            "ipfs:/" + jsonHash,
-            cd.supply,
-            cd.isAuction,
-            cd.price,
-            cd.period,
-            (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) *
-              cd.supply
-          );
-          buyNFTSuccessFunc(result.success, nftData);
-        } catch (error) {
-          toast.error(
-            "Something went wrong while create a nft. Please try again."
-          );
-          buyNFTSuccessFunc(false, nftData);
-          console.error(error);
-        }
-      };
-      assetReader.readAsArrayBuffer(asset as Blob);
+      const result = await callCreateNFT(
+        library,
+        castedNftData.collection,
+        castedNftData.category,
+        "ipfs:/" + nftMetadataPath,
+        castedNftData.supply,
+        castedNftData.isAuction,
+        castedNftData.price,
+        castedNftData.period,
+        (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) *
+          castedNftData.supply
+      );
+      nfdCreated = result.success;
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong while create a nft. Please try again.");
-      buyNFTSuccessFunc(false, nftData);
+    } finally {
+      buyNFTSuccessFunc(nfdCreated, nftData);
     }
   };
 
@@ -271,7 +233,7 @@ const CreateNFT: NextPageWithLayout = () => {
   );
 };
 
-CreateNFT.getLayout = (page) => {
+CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
