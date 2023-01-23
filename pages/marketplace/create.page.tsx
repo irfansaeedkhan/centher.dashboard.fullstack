@@ -35,6 +35,7 @@ const CreateNFT: NextPageWithLayout = () => {
   const [clearForm, setClearForm] = useState(false);
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
+  const [btnDisabled, setBtnDisabled] = useState<"yes" | "no">("no");
   const [ModalContent, setModalContent] = useState<any>();
 
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
@@ -75,7 +76,8 @@ const CreateNFT: NextPageWithLayout = () => {
     setModal(true);
   };
   const buyNFTStep2Func = () => {
-    setModalTitle("Complete Checkout");
+    setModalTitle("Transaction in progress");
+    setBtnDisabled("yes");
     setModalContent(
       <div className={modalBodyWrapper2}>
         <LoaderIcon className="mx-auto animate-spin" />
@@ -259,6 +261,7 @@ const CreateNFT: NextPageWithLayout = () => {
           onClose={() => {
             setModal(false);
           }}
+          disable={btnDisabled}
           title={ModalTitle}
         >
           {ModalContent}

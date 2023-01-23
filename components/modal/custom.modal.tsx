@@ -16,14 +16,7 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
         {/*header*/}
         <div className={modalHeader}>
           <span className={modalHeaderTitle}>{props.title}</span>
-          {props.disable === "yes" ? (
-            <button
-              className={`px-1 py-1 ml-auto border-0 text-3xl text-white opacity-100 float-right outline-none leading-none font-semibold bg-transparent focus:outline-none absolute top-[50%] translate-y-[-50%] right-6 transition`}
-              disabled
-            >
-              ×
-            </button>
-          ) : (
+          {props.disable === "yes" ? null : (
             <button className={modalHeaderButton} onClick={props.onClose}>
               ×
             </button>
