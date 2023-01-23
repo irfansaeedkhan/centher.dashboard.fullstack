@@ -106,6 +106,14 @@ make stop-development
 make build-development
 ```
 
+### Remove resources
+
+Use this command to remove all the resources created by `make start-development` command. Usually used when you install a new npm package and want to rebuild the docker images.
+
+```bash
+make rm-resources
+```
+
 ---
 
 ### Branching Model
