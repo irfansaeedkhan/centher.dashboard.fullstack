@@ -65,9 +65,11 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
       throw new Error("Moralis apikey not found in environment variables.");
     }
 
-    await Moralis.start({
-      apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-    });
+    try {
+      await Moralis.start({
+        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
+      });
+    } catch (err) {}
 
     return Moralis.EvmApi.ipfs.uploadFolder;
   }
