@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import create from "zustand";
+import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 // App imports
