@@ -1,5 +1,6 @@
 # 1. Install dependencies and build app
 FROM ubuntu:20.04 AS builder
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update > /dev/null && apt-get install curl build-essential -qq > /dev/null
 
