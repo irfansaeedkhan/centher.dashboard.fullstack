@@ -9,3 +9,7 @@ start-development: ## Start the development docker container.
 .PHONY: stop-development
 stop-development: ## Stop the development docker container.
 	docker compose -f docker/development/docker-compose.yml down
+
+.PHONY: rm-resources
+rm-resources: ## Remove all docker resources (containers, images, volumes, networks).
+	docker compose -f docker/development/docker-compose.yml down --rmi all -v --remove-orphans

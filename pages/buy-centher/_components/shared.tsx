@@ -11,3 +11,10 @@ export const inputBoxLeft = clsx(
 export const inputBoxRight = clsx(
   `inputBoxRight flex items-center flex-grow bg-background-shade-3 px-4 w-full max-w-[95px] flg:max-w-[115px] rounded-r-2xl`
 );
+
+export const truncateTokenAmount = (tokenAmount: number, threshold: number) => {
+  return tokenAmount < threshold &&
+    tokenAmount.toString().length < threshold.toString().length
+    ? tokenAmount
+    : tokenAmount.toString().slice(0, threshold.toString().length) + "+";
+};

@@ -6,7 +6,12 @@ import { HiChevronDown } from "react-icons/hi";
 import { TokenName } from "@/web3/utils/call.helpers";
 import { BUSDIcon, NTRIcon } from "@/assets/svgs";
 
-import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
+import {
+  inputBox,
+  inputBoxLeft,
+  inputBoxRight,
+  truncateTokenAmount,
+} from "./shared";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   tokenName: TokenName;
@@ -93,9 +98,7 @@ export const ConversionTokenBox: React.FC<Props> = ({
             className={`text-xs fmd:text-sm text-white font-semibold`}
             title={tokenBalance.toString()}
           >
-            {tokenBalance < 9999999 && tokenBalance.toString().length < 7
-              ? tokenBalance
-              : tokenBalance.toString().slice(0, 7) + "+"}
+            {truncateTokenAmount(tokenBalance, 9999999)}
           </span>
         </div>
       </div>

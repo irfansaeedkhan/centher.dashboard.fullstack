@@ -1,4 +1,5 @@
 import React from "react";
+import DOMPurify from "dompurify";
 import clsx from "clsx";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
@@ -31,8 +32,13 @@ export const PostTextContent: React.FC<Props> = ({
       style={{
         wordBreak: "break-word",
       }}
-    >
-      {post.text_content}
-    </div>
+      dangerouslySetInnerHTML={{ __html: purify(post.text_content) }}
+    />
   );
+};
+
+const purify = (text: string = "") => {
+  return DOMPurify.sanitize(text, {
+    ALLOWED_TAGS: [],
+  });
 };

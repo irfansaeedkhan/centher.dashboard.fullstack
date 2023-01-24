@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { RoundInfo } from "@/web3/constants/types";
 import { BUSDIconBG, CentherIconBG } from "@/assets/svgs";
 
+import { truncateTokenAmount } from "../shared";
 import Arrow from "./arrow.svg";
 
 interface Props {
@@ -18,14 +19,16 @@ export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
         <AmountCard
           icon={<BUSDIconBG className="w-10 h-10" />}
           title="BUSD Raised Amount"
-          amount={`${roundInfo.busdRaised} BUSD`}
+          amount={roundInfo.busdRaised}
+          tokenName="BUSD"
         />
       </div>
       <div className="flex gap-x-4 relative w-full md:max-w-[300px] max-w-full">
         <AmountCard
           icon={<CentherIconBG className="w-10 h-10" />}
           title="CTHR To Be Distributed"
-          amount={`${roundInfo.busdRaised / roundInfo.priceForBusd} CTHR`}
+          amount={roundInfo.busdRaised / roundInfo.priceForBusd}
+          tokenName="CTHR"
         />
         {/* Flip the arrow vertically */}
         <Arrow className="relative top-[16%] transform -scale-x-100 md:block hidden" />
@@ -37,13 +40,15 @@ export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
 interface AmountCardProps extends HTMLAttributes<HTMLDivElement> {
   icon: React.ReactNode;
   title: string;
-  amount: string;
+  amount: number;
+  tokenName: "BUSD" | "CTHR";
 }
 
 const AmountCard: React.FC<AmountCardProps> = ({
   icon,
   title,
   amount,
+  tokenName,
   className,
   ...props
 }) => {
@@ -61,7 +66,13 @@ const AmountCard: React.FC<AmountCardProps> = ({
       {/* Data */}
       <div>
         <div className="text-sm font-normal text-gray-shade-7">{title}</div>
-        <div className="text-sm font-semibold text-white mt-0.5">{amount}</div>
+        <div
+          className="text-sm font-semibold text-white mt-0.5"
+          title={`${amount.toString()} ${tokenName}`}
+        >
+          <span>{truncateTokenAmount(amount, 9999999999999)}</span>{" "}
+          <span>{tokenName}</span>
+        </div>
       </div>
     </div>
   );
