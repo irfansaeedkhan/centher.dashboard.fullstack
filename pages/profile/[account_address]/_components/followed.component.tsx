@@ -12,7 +12,7 @@ interface Props {
 
 const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
   return (
-    <div className="flex w-full items-center gap-2 mt-2 justify-center">
+    <div className="flex w-full items-center gap-2 mt-3 justify-center">
       <div
         className={clsx(
           `flex relative w-full h-6`,
@@ -38,27 +38,34 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
           );
         })}
       </div>
-      <div className="text-xs font-medium text-gray-shade-7">
-        <span>followed by </span>
-        {mutualFollowersData?.users.map((user, index) => (
-          <Link
-            href={{
-              pathname: AppRoutes.profile.account_address,
-              query: {
-                account_address: user.account_address,
-              },
-            }}
-            key={user._id}
-            className="hover:text-brand-primary"
-          >
-            {user.display_name}
-            {index !== mutualFollowersData?.users.length - 1 && ", "}
-          </Link>
-        ))}
-        {mutualFollowersData && mutualFollowersData.other_users_count !== 0 && (
-          <span>, and {mutualFollowersData.other_users_count} others</span>
+      {mutualFollowersData &&
+        (mutualFollowersData.users.length > 0 ||
+          mutualFollowersData.other_users_count > 0) && (
+          <div className="text-xs font-medium text-gray-shade-7">
+            <span>followed by </span>
+            {mutualFollowersData.users.map((user, index) => (
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.account_address,
+                  query: {
+                    account_address: user.account_address,
+                  },
+                }}
+                key={user._id}
+                className="hover:text-brand-primary"
+              >
+                {user.display_name}
+                {index !== mutualFollowersData.users.length - 1 && ", "}
+              </Link>
+            ))}
+            {mutualFollowersData &&
+              mutualFollowersData.other_users_count !== 0 && (
+                <span>
+                  , and {mutualFollowersData.other_users_count} others
+                </span>
+              )}
+          </div>
         )}
-      </div>
     </div>
   );
 };

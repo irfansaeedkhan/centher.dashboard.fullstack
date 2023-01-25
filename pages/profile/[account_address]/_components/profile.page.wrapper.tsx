@@ -30,12 +30,9 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
     useState<MutualFollowersData | null>(null);
 
   useEffect(() => {
+    if (router.query.account_address === undefined) return;
     axiosNodeApi
-      .get(
-        `/api/users/${router.query.account_address
-          ?.toString()
-          ?.toLowerCase()}/mutual-followers`
-      )
+      .get(`/api/users/${router.query.account_address}/mutual-followers`)
       .then((res) => {
         setMutualFollowersData(res.data.mutual_followers);
       })

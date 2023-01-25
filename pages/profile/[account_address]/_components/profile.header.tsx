@@ -84,7 +84,6 @@ const ProfileHeader: React.FC<Props> = ({
   const { removeUnfollowedUserPosts } = useFeedStore((state) => ({
     removeUnfollowedUserPosts: state.removeUnfollowedUserPosts,
   }));
-
   const router = useRouter();
   const { user: loggedInUser } = useUser();
 
@@ -368,6 +367,7 @@ const ProfileHeader: React.FC<Props> = ({
       }
       setLoadingState(false);
     } catch (error: any) {
+      setLoadingState(false);
       toast.error(
         error.response.data?.message_description || "Something went wrong"
       );
@@ -510,11 +510,11 @@ const ProfileHeader: React.FC<Props> = ({
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
-                <div className="absolute right-4 w-full max-w-[157px] fmd:block hidden">
+                <div className="absolute right-4 w-full max-w-[122px] fmd:block hidden">
                   {loadingState ? (
                     <button
                       className={clsx(
-                        `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`,
+                        `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
                         follow ? "bg-gray-shade-20" : "bg-brand-primary "
                       )}
                     >
@@ -522,9 +522,9 @@ const ProfileHeader: React.FC<Props> = ({
                     </button>
                   ) : (
                     <Button
-                      title={follow ? "following" : "Follow"}
+                      title={follow ? "Following" : "Follow"}
                       variant={follow ? "v5" : "v1"}
-                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[122px]`}
                       onClick={() => followUser(user._id)}
                     />
                   )}
@@ -567,18 +567,18 @@ const ProfileHeader: React.FC<Props> = ({
                     <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
                   </button>
                 </div>
-                <p className="text-sm leading-6 font-medium text-gray-shade-7">
+                <p className="text-[11px] mt-1 leading-6 font-medium text-gray-shade-7">
                   Joined at {dayjs(user.createdAt).format("MMM, YYYY")}
                 </p>
 
                 {!!loggedInUser &&
                   loggedInUser?.account_address.toLowerCase() !==
                     user.account_address.toLowerCase() && (
-                    <div className="max-w-[157px] fmd:hidden flex w-full justify-center mt-3">
+                    <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-3">
                       {loadingState ? (
                         <button
                           className={clsx(
-                            `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`,
+                            `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
                             follow ? "bg-gray-shade-20" : "bg-brand-primary "
                           )}
                         >
@@ -586,9 +586,9 @@ const ProfileHeader: React.FC<Props> = ({
                         </button>
                       ) : (
                         <Button
-                          title={follow ? "following" : "Follow"}
+                          title={follow ? "Following" : "Follow"}
                           variant={follow ? "v5" : "v1"}
-                          className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                          className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[122px]`}
                           onClick={() => followUser(user._id)}
                         />
                       )}
@@ -597,25 +597,25 @@ const ProfileHeader: React.FC<Props> = ({
                 {!!loggedInUser &&
                   loggedInUser?.account_address.toLowerCase() !==
                     user.account_address.toLowerCase() && (
-                    <div className="w-full flex justify-center mt-2 gap-5 flg:hidden">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-medium text-gray-shade-7">
+                    <div className="flex justify-center gap-5 mt-3 flg:hidden">
+                      <div className="text-center space-y-1.5 w-16">
+                        <span className="text-xs font-medium block text-gray-shade-7">
                           Post
                         </span>
                         <span className="text-xs font-semibold text-white">
                           {profileCardDetails.posts_count ?? "--"}
                         </span>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-medium text-gray-shade-7">
+                      <div className="text-center space-y-1.5 w-16">
+                        <span className="text-xs font-medium block text-gray-shade-7">
                           Followers
                         </span>
                         <span className="text-xs font-semibold text-white">
                           {profileCardDetails.followers_count ?? "--"}
                         </span>
                       </div>
-                      <div className="flex flex-col items-center">
-                        <span className="text-xs font-medium text-gray-shade-7">
+                      <div className="text-center space-y-1.5 w-16">
+                        <span className="text-xs font-medium block text-gray-shade-7">
                           Following
                         </span>
                         <span className="text-xs font-semibold text-white">
