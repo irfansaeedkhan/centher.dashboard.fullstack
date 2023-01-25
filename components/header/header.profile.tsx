@@ -75,13 +75,11 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           />
         )}
         <div className={`space-y-1`}>
-          {loggedInUser?.pseudonym && (
-            <div
-              className={`text-ellipsis text-sm text-white font-semibold line-clamp-1`}
-            >
-              {loggedInUser?.display_name}
-            </div>
-          )}
+          <div
+            className={`text-ellipsis text-sm text-white font-semibold line-clamp-1`}
+          >
+            {loggedInUser?.display_name}
+          </div>
           <a
             href={
               process.env.NEXT_PUBLIC_APP_ENV === "production"
