@@ -1,0 +1,9 @@
+.git
+.github
+.next
+.vscode
+docker
+node_modules
+.dockerignore
+.env.development
+*.log

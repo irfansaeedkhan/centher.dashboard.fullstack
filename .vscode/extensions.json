@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "redhat.vscode-xml",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+    "Gruntfuggly.todo-tree",
+    "wayou.vscode-todo-highlight",
+    "donjayamanne.githistory",
+    "ms-azuretools.vscode-docker"
+  ]
+}

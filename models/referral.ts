@@ -1,0 +1,98 @@
+export interface Genealogy {
+  id: number;
+  level: string;
+  percent: number;
+  people: number;
+  generatedBUSD: number;
+  generatedNTR: number;
+  generatedBNB: number;
+  children: GenealogyChild[];
+}
+
+export interface GenealogyChild {
+  id: number;
+  level: string;
+  user: string;
+  people: number;
+  generatedBUSD: number;
+  generatedNTR: number;
+  generatedBNB: number;
+  active: boolean;
+}
+
+export interface RewardsTotal {
+  people: number;
+  busd: number;
+  ntr: number;
+  bnb: number;
+}
+export interface ReferralReward {
+  id: string;
+  createdAt: number;
+  user: string;
+  level: number;
+  round: number;
+  isBusd: boolean;
+  amount: number;
+}
+
+export interface ReferralClaimItem {
+  createdAt: number;
+  amount: number;
+}
+
+export interface ReferralClaim {
+  busd: ReferralClaimItem[];
+  ntr: ReferralClaimItem[];
+}
+
+export interface RewardsEachAsset {
+  busd: number;
+  ntr: number;
+  bnb: number;
+}
+
+export interface RewardBusdAndNtr {
+  busd: number;
+  ntr: number;
+}
+
+export interface Rewards {
+  totalEarning: RewardBusdAndNtr;
+  claimed: RewardBusdAndNtr;
+  claimable: RewardBusdAndNtr;
+}
+
+export interface Overview {
+  totalBusdContributors: number;
+  totalNtrContributors: number;
+  totalRaisingBusd: number;
+  totalRaisingNtr: number;
+  totalCentherTobeDistributedFromBusd: number;
+  totalCentherTobeDistributedFromNtr: number;
+}
+
+export interface PurchaseHistory {
+  date: string;
+  publicKey: string;
+  paidAmount: number;
+  round: number;
+  coreTeam: number;
+  referralNetwork: number;
+  company: number;
+}
+
+export interface ClaimHistory {
+  date: string;
+  publicKey: string;
+  paidAmount: number;
+  round: number;
+  claimAmount: number;
+}
+
+export interface RegistrationHistory {
+  publicKey: string;
+  referrer: string;
+  createdAt: number;
+  paidAmount: number;
+}
