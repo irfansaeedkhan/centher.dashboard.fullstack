@@ -1,7 +1,7 @@
 import React from "react";
 export const LevelParentCard = ({ parentData }: any) => {
   return (
-    <div className="bg-background-shade-3 rounded-t-lg w-full">
+    <div className=" rounded-t-lg w-full bg-background-shade-3 fmd:bg-background-shade-3">
       <div className="flex items-center justify-between p-3 pb-5 gap-2">
         <div className="flex flex-col gap-2">
           <h5 className="text-gray-shade-19 text-12px font-medium">LEVEL</h5>
@@ -33,7 +33,7 @@ export const LevelParentCard = ({ parentData }: any) => {
           </h6>
         </div>
       </div>
-      <div className="flex justify-between gap-2 p-3 pb-4 border-t-2 border-gray-shade-3 bg-background-shade-2">
+      <div className="flex justify-between gap-2 p-3 pb-4 border-t-2 border-gray-shade-3 bg-brand-primary/90 fmd:bg-background-shade-2">
         <div className="flex flex-col gap-2">
           <h5 className="text-gray-shade-19 text-12px font-medium">People</h5>
           <h6 className="text-white-shade-1 text-14px font-semibold">
@@ -42,7 +42,7 @@ export const LevelParentCard = ({ parentData }: any) => {
         </div>
         <div className="flex flex-col items-end gap-2">
           <h5 className="text-gray-shade-19 text-12px font-medium">
-            Generated
+            Total BUSD Generated
           </h5>
           <h6 className="text-white-shade-1 text-14px font-semibold">
             {`${parentData?.generatedBUSD} BUSD`}

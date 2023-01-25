@@ -12,7 +12,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
   // const [activeCard, setActiveCard] = useState(false);
   return (
     <div
-      className={`bg-background-shade-3 rounded-t-lg w-full relative ${
+      className={`bg-background-shade-3 rounded-t-lg w-full relative cursor-pointer  ${
         childData.active && "activeLevelCard"
       }`}
       onClick={() => {

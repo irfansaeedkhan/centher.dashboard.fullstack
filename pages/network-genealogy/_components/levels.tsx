@@ -81,6 +81,7 @@ export const Levels = () => {
       setMobileView(false);
     }
   }, [width]);
+
   return (
     <>
       {mobileView ? (
