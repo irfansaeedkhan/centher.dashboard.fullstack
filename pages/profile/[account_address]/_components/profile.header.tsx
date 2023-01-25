@@ -1,5 +1,10 @@
-import React, { useCallback, useEffect, useRef, useMemo } from "react";
-import { useState } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+  useMemo,
+} from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import axios from "axios";
@@ -19,15 +24,18 @@ import {
   FiTwitter,
   FiYoutube,
 } from "react-icons/fi";
+import dayjs from "dayjs";
 
 import { useProfileCardStore } from "@/store/profile.card.store";
+import { useFeedStore } from "@/store/feed.store";
 import useUser from "@/hooks/use.user";
-import useGetUser from "@/hooks/use.get.user";
-import { CoverImage } from "@/models/user";
+import { CoverImage, MutualFollowersData, User } from "@/models/user";
 import Button from "@/components/button";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
+import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
+import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import {
   DefaultCircle,
@@ -36,17 +44,15 @@ import {
   SilverCircle,
   SpinIcon3,
 } from "@/assets/svgs";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
-import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
-import { custom } from "joi";
-import { customLog } from "@/utils/custom.log";
-import { useFeedStore } from "@/store/feed.store";
+import FollowedComponent from "./followed.component";
 
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
@@ -56,9 +62,19 @@ export type CoverImageWithFile = Partial<CoverImage> & {
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   param_account_address?: string;
+  mutualFollowersData: MutualFollowersData | null;
+  user: User;
+  mutateUser: (userPartial: Partial<User>) => Promise<void>;
 }
 
-const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
+const ProfileHeader: React.FC<Props> = ({
+  className,
+  mutualFollowersData,
+  user,
+  mutateUser,
+  ...props
+}) => {
+  const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
       incrementFollowersCount: state.incrementFollowersCount,
@@ -71,9 +87,6 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
 
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { user, mutateUser } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
 
   const { imagePosition } = useDragCoverImage();
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
@@ -129,7 +142,6 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
   }, [setInitialCoverImage]);
 
   const iconVerifyProps = useVerificationTick(user?.account_address);
-  // console.log("icon in profile header", iconVerify);
 
   useEffect(() => {
     if (iconVerifyProps === "rainbow") {
@@ -367,7 +379,6 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
       {user ? (
         <div className={`bg-background-shade-3 rounded-2xl`}>
           <div
-            // onMouseDown={coverImage.newImage ? handleMouseDown : undefined}
             className={clsx(
               `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
               {
@@ -429,12 +440,11 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                     </div>
                   )}
                 </div>
-                {/* {coverImage.newImage && ( */}
+
                 <CropperImage
                   coverImage={coverImage}
                   setCoverImage={setCoverImage}
                 />
-                {/* )} */}
               </>
             )}
 
@@ -496,13 +506,37 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
             </div>
           </div>
 
-          <div className={`relative px-2 fsm:px-4 space-y-4 fmd:space-y-6`}>
+          <div className={`relative px-2 fsm:px-4`}>
+            {!!loggedInUser &&
+              loggedInUser?.account_address.toLowerCase() !==
+                user.account_address.toLowerCase() && (
+                <div className="absolute right-4 w-full max-w-[157px] fmd:block hidden">
+                  {loadingState ? (
+                    <button
+                      className={clsx(
+                        `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`,
+                        follow ? "bg-gray-shade-20" : "bg-brand-primary "
+                      )}
+                    >
+                      <SpinIcon3 className="animate-spin" />
+                    </button>
+                  ) : (
+                    <Button
+                      title={follow ? "following" : "Follow"}
+                      variant={follow ? "v5" : "v1"}
+                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                      onClick={() => followUser(user._id)}
+                    />
+                  )}
+                </div>
+              )}
+
             <Profile3DotsMenu
               isOwnProfile={isOwnProfile}
               loggedInUser={loggedInUser}
             />
 
-            <div className={`space-y-2 !mt-14`}>
+            <div className={`!mt-14`}>
               <div className="w-full justify-center flex">
                 <div
                   className={`flex flex-col lg:flex-row items-baseline justify-between`}
@@ -516,11 +550,10 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                   >
                     {user.display_name}
                   </h5>
-                  <div className={`flex items-center gap-3`}></div>
                 </div>
               </div>
 
-              <div className="w-full justify-center flex">
+              <div className="w-full justify-center flex flex-col items-center">
                 <div className={`flex items-center gap-2 relative`}>
                   <h6 className={`text-white text-14px font-semibold`}>
                     {sliceAccountAddress(user.account_address)}
@@ -534,7 +567,71 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
                     <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
                   </button>
                 </div>
+                <p className="text-sm leading-6 font-medium text-gray-shade-7">
+                  Joined at {dayjs(user.createdAt).format("MMM, YYYY")}
+                </p>
+
+                {!!loggedInUser &&
+                  loggedInUser?.account_address.toLowerCase() !==
+                    user.account_address.toLowerCase() && (
+                    <div className="max-w-[157px] fmd:hidden flex w-full justify-center mt-3">
+                      {loadingState ? (
+                        <button
+                          className={clsx(
+                            `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]`,
+                            follow ? "bg-gray-shade-20" : "bg-brand-primary "
+                          )}
+                        >
+                          <SpinIcon3 className="animate-spin" />
+                        </button>
+                      ) : (
+                        <Button
+                          title={follow ? "following" : "Follow"}
+                          variant={follow ? "v5" : "v1"}
+                          className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
+                          onClick={() => followUser(user._id)}
+                        />
+                      )}
+                    </div>
+                  )}
+                {!!loggedInUser &&
+                  loggedInUser?.account_address.toLowerCase() !==
+                    user.account_address.toLowerCase() && (
+                    <div className="w-full flex justify-center mt-2 gap-5 flg:hidden">
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs font-medium text-gray-shade-7">
+                          Post
+                        </span>
+                        <span className="text-xs font-semibold text-white">
+                          {profileCardDetails.posts_count ?? "--"}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs font-medium text-gray-shade-7">
+                          Followers
+                        </span>
+                        <span className="text-xs font-semibold text-white">
+                          {profileCardDetails.followers_count ?? "--"}
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <span className="text-xs font-medium text-gray-shade-7">
+                          Following
+                        </span>
+                        <span className="text-xs font-semibold text-white">
+                          {profileCardDetails.following_count ?? "--"}
+                        </span>
+                      </div>
+                    </div>
+                  )}
               </div>
+              {user.profile_bio && (
+                <p
+                  className={`text-sm mt-3 text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+                >
+                  {user.profile_bio}
+                </p>
+              )}
             </div>
 
             {(user.tiktok_username ||
@@ -545,108 +642,86 @@ const ProfileHeader: React.FC<Props> = ({ className, ...props }) => {
               user.twitter_username ||
               user.website_url ||
               user.youtube_url) && (
-              <div className="w-full justify-center flex">
-                <div className="flex items-center gap-3 py-3 px-4 bg-gray-shade-9 rounded-2xl">
-                  {user.tiktok_username && (
-                    <a
-                      href={`https://tiktok.com/@${user.tiktok_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <TbBrandTiktok className={socialLinks} />
-                    </a>
-                  )}
-                  {user.facebook_username && (
-                    <a
-                      href={`https://facebook.com/${user.facebook_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <RiFacebookCircleLine className={socialLinks} />
-                    </a>
-                  )}
-                  {user.twitter_username && (
-                    <a
-                      href={`https://twitter.com/${user.twitter_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiTwitter className={socialLinks} />
-                    </a>
-                  )}
-                  {user.youtube_url && (
-                    <a
-                      href={`${user.youtube_url}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiYoutube className={socialLinks} />
-                    </a>
-                  )}
-                  {user.website_url && (
-                    <a href={user.website_url} target="_blank" rel="noreferrer">
-                      <HiLink className={socialLinks} />
-                    </a>
-                  )}
+              <div className="w-full justify-center flex mt-2 items-center gap-4">
+                {user.tiktok_username && (
+                  <a
+                    href={`https://tiktok.com/@${user.tiktok_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <TbBrandTiktok className={socialLinks} />
+                  </a>
+                )}
+                {user.facebook_username && (
+                  <a
+                    href={`https://facebook.com/${user.facebook_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <RiFacebookCircleLine className={socialLinks} />
+                  </a>
+                )}
+                {user.twitter_username && (
+                  <a
+                    href={`https://twitter.com/${user.twitter_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FiTwitter className={socialLinks} />
+                  </a>
+                )}
+                {user.youtube_url && (
+                  <a
+                    href={`${user.youtube_url}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FiYoutube className={socialLinks} />
+                  </a>
+                )}
+                {user.website_url && (
+                  <a href={user.website_url} target="_blank" rel="noreferrer">
+                    <HiLink className={socialLinks} />
+                  </a>
+                )}
 
-                  {user.instagram_username && (
-                    <a
-                      href={`https://instagram.com/${user.instagram_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiInstagram className={socialLinks} />
-                    </a>
-                  )}
-                  {user.twitch_username && (
-                    <a
-                      href={`https://twitch.tv/${user.twitch_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <FiTwitch className={socialLinks} />
-                    </a>
-                  )}
+                {user.instagram_username && (
+                  <a
+                    href={`https://instagram.com/${user.instagram_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FiInstagram className={socialLinks} />
+                  </a>
+                )}
+                {user.twitch_username && (
+                  <a
+                    href={`https://twitch.tv/${user.twitch_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <FiTwitch className={socialLinks} />
+                  </a>
+                )}
 
-                  {user.onlyfans_username && (
-                    <a
-                      href={`https://onlyfans.com/${user.onlyfans_username}`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <SiOnlyfans className={socialLinks} />
-                    </a>
-                  )}
-                </div>
+                {user.onlyfans_username && (
+                  <a
+                    href={`https://onlyfans.com/${user.onlyfans_username}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <SiOnlyfans className={socialLinks} />
+                  </a>
+                )}
               </div>
             )}
 
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
-                user.account_address.toLowerCase() && (
-                <div className="w-full justify-center flex">
-                  {loadingState ? (
-                    <button className="bg-brand-primary  text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[157px] h-[36px]">
-                      <SpinIcon3 className="animate-spin" />
-                    </button>
-                  ) : (
-                    <Button
-                      title={follow ? "Unfollow" : "Follow"}
-                      variant="v1"
-                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[157px]`}
-                      onClick={() => followUser(user._id)}
-                    />
-                  )}
-                </div>
+                user.account_address.toLowerCase() &&
+              mutualFollowersData?.users && (
+                <FollowedComponent mutualFollowersData={mutualFollowersData} />
               )}
-
-            {user.profile_bio && (
-              <p
-                className={`text-16px text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
-              >
-                {user.profile_bio}
-              </p>
-            )}
 
             {currentPageRoute.isProfilePage && (
               <ProfileTabsSocial

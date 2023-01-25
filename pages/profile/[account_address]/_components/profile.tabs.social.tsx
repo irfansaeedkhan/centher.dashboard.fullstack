@@ -17,7 +17,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
   const { user: loggedInUser } = useUser();
 
   return (
-    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base">
+    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base mt-4">
       <Link
         href={`/profile/${account_address}`}
         className={clsx(
@@ -42,33 +42,35 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
         Replies
       </Link>
 
-      {loggedInUser && (
-        <Link
-          href={`/profile/${account_address}/followers`}
-          className={clsx(
-            router.pathname === AppRoutes.profile.followers
-              ? "border-b-2 text-white"
-              : "text-gray-shade-7",
-            "py-2 px-4 cursor-pointer"
-          )}
-        >
-          Followers
-        </Link>
-      )}
+      {loggedInUser &&
+        loggedInUser.account_address === router.query.account_address && (
+          <Link
+            href={`/profile/${account_address}/followers`}
+            className={clsx(
+              router.pathname === AppRoutes.profile.followers
+                ? "border-b-2 text-white"
+                : "text-gray-shade-7",
+              "py-2 px-4 cursor-pointer"
+            )}
+          >
+            Followers
+          </Link>
+        )}
 
-      {loggedInUser && (
-        <Link
-          href={`/profile/${account_address}/following`}
-          className={clsx(
-            router.pathname === AppRoutes.profile.following
-              ? "border-b-2 text-white"
-              : "text-gray-shade-7",
-            "py-2 px-4 cursor-pointer"
-          )}
-        >
-          Followings
-        </Link>
-      )}
+      {loggedInUser &&
+        loggedInUser.account_address === router.query.account_address && (
+          <Link
+            href={`/profile/${account_address}/following`}
+            className={clsx(
+              router.pathname === AppRoutes.profile.following
+                ? "border-b-2 text-white"
+                : "text-gray-shade-7",
+              "py-2 px-4 cursor-pointer"
+            )}
+          >
+            Followings
+          </Link>
+        )}
     </div>
   );
 };

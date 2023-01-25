@@ -112,7 +112,7 @@ export const SingleNotification = React.forwardRef<
     <div
       ref={ref}
       className={clsx(
-        `w-full max-w-[1005px] h-[76px] px-6 py-4 flex justify-between`,
+        `w-full max-w-[1005px] h-[76px] fsm:px-6 px-3 py-4 flex justify-between gap-2`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,
@@ -139,7 +139,7 @@ export const SingleNotification = React.forwardRef<
 
         {notificationLink}
       </div>
-      <p className="text-sm text-gray-shade-2 ">
+      <p className="fsm:text-sm text-xs text-gray-shade-2 text-end">
         {moment(notification.createdAt).format(
           days === "seven" || days === "befor_seven" ? `ll` : `LT`
         )}
