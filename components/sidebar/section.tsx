@@ -41,7 +41,8 @@ export const Section: React.FC<SectionProps> = (props) => {
             >
               <div className={itemWrapper}>
                 <item.icon
-                  className={
+                  className={clsx(
+                    "w-5 h-5",
                     item.label2
                       ? router.pathname
                           .replaceAll("-", " ")
@@ -53,7 +54,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                           .includes(item.label.toLowerCase())
                       ? itemIconsActive
                       : itemIcons
-                  }
+                  )}
                 />
                 <Link
                   href={item.url}
