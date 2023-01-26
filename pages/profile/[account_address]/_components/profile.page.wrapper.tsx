@@ -1,13 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import clsx from "clsx";
 
 import { MessagesCard } from "@/components/feed.components";
+import useGetUser from "@/hooks/use.get.user";
+import { axiosNodeApi } from "@/utils/axios";
+import { customLog } from "@/utils/custom.log";
+import { MutualFollowersData } from "@/models/user";
 
 import ProfileHeader from "./profile.header";
-import { ProfileTabs } from "./profile.tabs";
 import { CardsContainerLeft } from "./cards.container.left";
-import { useRouter } from "next/router";
-import useGetUser from "@/hooks/use.get.user";
 import { UserNotFound } from "./user.not.found";
 
 interface AllPagesWrapperProps {
@@ -18,9 +20,26 @@ interface AllPagesWrapperProps {
 export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   const router = useRouter();
 
-  const { user, loading: loadingGetUser } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
+  const {
+    user,
+    mutateUser,
+    loading: loadingGetUser,
+  } = useGetUser(router.query.account_address?.toString()?.toLowerCase());
+
+  const [mutualFollowersData, setMutualFollowersData] =
+    useState<MutualFollowersData | null>(null);
+
+  useEffect(() => {
+    if (router.query.account_address === undefined) return;
+    axiosNodeApi
+      .get(`/api/users/${router.query.account_address}/mutual-followers`)
+      .then((res) => {
+        setMutualFollowersData(res.data.mutual_followers);
+      })
+      .catch((err) => {
+        customLog(err, ["development"]);
+      });
+  }, [router.query.account_address]);
 
   if (user === null && loadingGetUser === "failed") {
     return <UserNotFound />;
@@ -36,10 +55,15 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] grid-rows-[auto_1fr]`
           )}
         >
-          <ProfileHeader
-            param_account_address={router.query.account_address?.toString()}
-            className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto"
-          />
+          {user && (
+            <ProfileHeader
+              mutateUser={mutateUser}
+              user={user}
+              mutualFollowersData={mutualFollowersData}
+              param_account_address={router.query.account_address?.toString()}
+              className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto"
+            />
+          )}
 
           <CardsContainerLeft className="flg:row-start-2 flg:col-start-2 flg:col-span-1 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3" />
 

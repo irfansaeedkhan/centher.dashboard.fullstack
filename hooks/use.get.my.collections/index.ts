@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const CentherNativeCollection = {
   id: "1",
   name: "CENTHER Native NFT",
-  collection: "0x453Ac6fCA7184cd09e3bbFE11D9679E2F17Ce0Fc",
+  collection: "0x29791EAdDc3a0E1CFE54f6eC7f24FAbe1Cdc471e",
 };
 
 export interface IMyCollection {

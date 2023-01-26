@@ -97,6 +97,11 @@ export { default as FacebookCircleIcon } from "./facebook.icon.collection.svg";
 export { default as DeleteCrossIcon } from "./delete.cross.icon.svg";
 export { default as SuccessIcon } from "./success.icon.svg";
 export { default as WarningIcon } from "./warning.icon.svg";
+export { default as UserIcon } from "./user.icon.svg";
+export { default as SettingIcon } from "./setting.icon.svg";
+export { default as DisconnectIcon } from "./wallet.disconnect.svg";
+export { default as ConnectIcon } from "./wallet.connect.svg";
+export { default as Launchpad } from "./launchpad.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

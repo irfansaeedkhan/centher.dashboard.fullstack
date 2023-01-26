@@ -88,7 +88,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
                   </span>
                 </div>
               )}
-              <YellowTick />
+              <YellowTick className="w-[12px] h-[12px]" />
             </div>
           </div>
         ) : (

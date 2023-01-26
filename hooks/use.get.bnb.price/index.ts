@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
-import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/evm-utils";
-import useRefresh from "@/web3/hooks/use.refresh";
+
+import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
+import { customLog } from "@/utils/custom.log";
 
 export const useBNBPrice = () => {
   const [bnbPrice, setBNBPrice] = useState(0);
-  // const { slowRefresh } = useRefresh();
 
   useEffect(() => {
     const fetchBNBPrice = async () => {
+      let _price = 0;
       try {
-        const _price: any = await Moralis.EvmApi.token.getTokenPrice({
+        const fetcher = new MoralisFetcher();
+        const tempPrice = await fetcher.getTokenPrice({
           address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
           chain: EvmChain.BSC,
         });
-        setBNBPrice(_price.data.usdPrice);
-      } catch (error) {
-        setBNBPrice(0);
+
+        if (!tempPrice) {
+          throw new Error("Cannot get token price.");
+        }
+
+        _price = tempPrice;
+      } catch (error: any) {
+        customLog(error, ["development"]);
+      } finally {
+        setBNBPrice(_price);
       }
     };
     fetchBNBPrice();

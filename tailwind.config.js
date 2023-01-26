@@ -41,7 +41,7 @@ module.exports = {
       },
       width: {
         18: "4.5rem",
-        77: "19.25rem",
+        300: "18.75rem",
         82.5: "20.625rem",
         100: "25rem",
         106: "26.5rem",
@@ -91,6 +91,7 @@ module.exports = {
           17: "#45474D",
           18: "#B7BBCC",
           19: "#707699",
+          20: "#282A33",
           "border-color": "#202027",
         },
         "white-shade": {

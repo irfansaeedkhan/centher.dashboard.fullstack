@@ -32,3 +32,13 @@ export interface LoggedInUser extends User {
   display_name_field: "real_name" | "pseudonym" | "account_address";
   has_seen_notifications_page: boolean;
 }
+
+export interface MutualFollowersData {
+  other_users_count: number;
+  users: {
+    _id: string;
+    account_address: string;
+    display_name: string;
+    profile_image: UserImage;
+  }[];
+}
