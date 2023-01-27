@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { FiArrowUpRight } from "react-icons/fi";
+import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
@@ -17,6 +17,7 @@ import {
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
+import { copyText } from "@/utils/copy.text";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -132,29 +133,52 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       <div className="p-4 border-b border-gray-shade-border-color">
         <div className="space-y-[6px]">
           <h6 className="text-xs text-white">Referral Link</h6>
-          <input
-            type="text"
-            name="referral_link"
-            id="referral_link"
-            readOnly
-            value={
-              window.location.origin +
-              "/auth/register?referred_by=" +
-              loggedInUser?.account_address
-            }
-            className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
-          />
+          <div className="flex items-center cursor-pointer">
+            <input
+              type="text"
+              name="referral_link"
+              id="referral_link"
+              readOnly
+              value={
+                window.location.origin +
+                "/auth/register?referred_by=" +
+                loggedInUser?.account_address
+              }
+              className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
+            />
+            <FiCopy
+              className="stroke-gray-shade-7 hover:stroke-brand-primary ml-2 w-5 h-5"
+              onClick={async () => {
+                await copyText(
+                  window.location.origin +
+                    "/auth/register?referred_by=" +
+                    loggedInUser?.account_address
+                );
+                toast.success("Referral link copied!");
+              }}
+            />
+          </div>
         </div>
         <div className="space-y-[6px] mt-4">
           <h6 className="text-xs text-white">Wallet Address</h6>
-          <input
-            type="text"
-            name="referral_link"
-            id="referral_link"
-            readOnly
-            value={loggedInUser?.account_address}
-            className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
-          />
+
+          <div className="flex items-center cursor-pointer">
+            <input
+              type="text"
+              name="referral_link"
+              id="referral_link"
+              readOnly
+              value={loggedInUser?.account_address}
+              className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
+            />
+            <FiCopy
+              className="stroke-gray-shade-7 hover:stroke-brand-primary ml-2 w-5 h-5"
+              onClick={async () => {
+                await copyText(loggedInUser?.account_address ?? "");
+                toast.success("Account address copied!");
+              }}
+            />
+          </div>
         </div>
         <p className="text-[10px] text-gray-shade-7 mt-2">
           Copy your referral link and share it with your friends to generate

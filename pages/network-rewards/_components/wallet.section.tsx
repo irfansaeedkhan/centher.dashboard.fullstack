@@ -1,9 +1,10 @@
-import useUser from "@/hooks/use.user";
-import { formatAddress } from "@/utils/format.address";
-import React, { useEffect, useMemo, useState } from "react";
-import { useCopyToClipboard } from "usehooks-ts";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
+
+import { formatAddress } from "@/utils/format.address";
+import useUser from "@/hooks/use.user";
+import { copyText } from "@/utils/copy.text";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();
@@ -14,8 +15,6 @@ const WalletSection = ({ data }: any) => {
       `${window.location.origin}/auth/register?referred_by=${loggedInUser?.account_address}`
     );
   }, [loggedInUser?.account_address]);
-
-  const [_, copy] = useCopyToClipboard();
 
   return (
     <div className="w-full flex md:flex-row flex-col gap-6">
@@ -54,8 +53,8 @@ const WalletSection = ({ data }: any) => {
           </p>
           <button
             className="h-9 w-9 rounded-lg p-2 bg-white/20 backdrop-blur-[18px]"
-            onClick={() => {
-              copy(
+            onClick={async () => {
+              await copyText(
                 window.location.origin +
                   "/auth/register?referred_by=" +
                   loggedInUser?.account_address

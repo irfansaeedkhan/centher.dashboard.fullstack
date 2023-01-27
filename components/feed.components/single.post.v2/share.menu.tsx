@@ -7,6 +7,7 @@ import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
+import { copyText } from "@/utils/copy.text";
 import { LinkIcon, WorldIcon } from "@/assets/svgs";
 
 import { PostType } from "./main";
@@ -31,8 +32,8 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
   );
 
   // Copy post share url to clipboard
-  const copyShareUrl = useCallback(() => {
-    navigator.clipboard.writeText(shareUrl);
+  const copyShareUrl = useCallback(async () => {
+    await copyText(shareUrl);
     toast.success("Post link copied to clipboard!");
   }, [shareUrl]);
 

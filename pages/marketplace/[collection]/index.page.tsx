@@ -1,44 +1,36 @@
-// React, Next, NPM Packages
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
 import Image from "next/image";
-import { useOnClickOutside } from "usehooks-ts";
+import { useRouter } from "next/router";
+import axios from "axios";
+import ctl from "@netlify/classnames-template-literals";
+import toast from "react-hot-toast";
 import clsx from "clsx";
+import { useOnClickOutside } from "usehooks-ts";
+import { TwitterShareButton, FacebookShareButton } from "react-share";
+import { useInView } from "react-intersection-observer";
 import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
 import { TbWorld } from "react-icons/tb";
 
-// App imports
+import { NextPageWithLayout } from "@/pages/_app.page";
+import { Filter, useCollectionStore } from "@/store/collection.store";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import useGetUser from "@/hooks/use.get.user";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import Button from "@/components/button";
+import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
+import NftsSkeleton from "@/components/loading.skeletons/nfts";
+import { NFTCard } from "@/components/nft.card";
+import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
+import { copyText } from "@/utils/copy.text";
 import {
   DotsIcon,
   FacebookCircleIcon,
   CopyIcon,
   TwitterSvg,
-  NftsCollectionEmpty,
   HotNftEmptyIcon,
 } from "@/assets/svgs";
-import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Button from "@/components/button";
-
-import { TwitterShareButton, FacebookShareButton } from "react-share";
-import { useInView } from "react-intersection-observer";
-import { Filter, useCollectionStore } from "@/store/collection.store";
-import { useRouter } from "next/router";
-import axios from "axios";
-import { ICollectionData } from "@/pages/marketplace/_components/create.collection.form";
-import {
-  formatAddress,
-  formatBNB2USD,
-  formatIPFSUrl,
-} from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
-import NftsSkeleton from "@/components/loading.skeletons/nfts";
-import useGetUser from "@/hooks/use.get.user";
-import toast from "react-hot-toast";
-import { NFTCard } from "@/components/nft.card";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -56,9 +48,9 @@ const Collection: NextPageWithLayout = () => {
   }, [router.asPath]);
 
   // Copy nft share url to clipboard
-  const copyShareUrl = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("Copy Link Successfully!");
+  const copyShareUrl = async () => {
+    await copyText(shareUrl);
+    toast.success("NFT link copied!");
   };
 
   const {

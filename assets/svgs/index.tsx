@@ -11,7 +11,6 @@ export { default as MetamaskIcon } from "./metamask.icon.svg";
 export { default as WebsiteIcon } from "./website.link.icon.svg";
 export { default as TwitterSvg } from "./twitter.svg";
 export { default as LiquidityPoolSvg } from "./liquidity.icon.svg";
-export { default as CopySvg } from "./copy.svg";
 export { default as NetworkRewards } from "./network.rewards.svg";
 export { default as StakingContract } from "./staking.contract.svg";
 export { default as DaoGovernment } from "./dao.govt.svg";
