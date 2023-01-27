@@ -53,7 +53,6 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
-
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
@@ -74,6 +73,7 @@ const ProfileHeader: React.FC<Props> = ({
   mutateUser,
   ...props
 }) => {
+  const router = useRouter();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
@@ -84,7 +84,7 @@ const ProfileHeader: React.FC<Props> = ({
   const { removeUnfollowedUserPosts } = useFeedStore((state) => ({
     removeUnfollowedUserPosts: state.removeUnfollowedUserPosts,
   }));
-  const router = useRouter();
+
   const { user: loggedInUser } = useUser();
 
   const { imagePosition } = useDragCoverImage();
@@ -99,6 +99,7 @@ const ProfileHeader: React.FC<Props> = ({
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
+
   const isOwnProfile = useMemo(() => {
     return (
       !!loggedInUser &&
@@ -517,7 +518,7 @@ const ProfileHeader: React.FC<Props> = ({
                         follow ? "bg-gray-shade-20" : "bg-brand-primary "
                       )}
                     >
-                      <SpinIcon3 className="animate-spin" />
+                      <CgSpinner className="animate-spin text-2xl" />
                     </button>
                   ) : (
                     <Button
@@ -577,11 +578,11 @@ const ProfileHeader: React.FC<Props> = ({
                       {loadingState ? (
                         <button
                           className={clsx(
-                            `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
+                            `!text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
                             follow ? "bg-gray-shade-20" : "bg-brand-primary "
                           )}
                         >
-                          <SpinIcon3 className="animate-spin" />
+                          <CgSpinner className="animate-spin text-2xl" />
                         </button>
                       ) : (
                         <Button
