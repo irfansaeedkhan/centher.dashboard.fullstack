@@ -2,11 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 
+import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { formatAddress } from "@/utils/format.address";
 
 export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
   let Active = activeParent.at(-1);
+  const { user } = useGetUser(Active?.user);
   return (
     <div
       className={`bg-background-shade-3 rounded-t-lg w-full relative activeLevelCard`}
@@ -41,20 +43,25 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
       </button>
 
       <div className="flex items-center pb-4 px-3 gap-3 ">
-        <Image
-          src={"/images/robertProfilepic.png"}
-          alt={"profile pic"}
-          width={36}
-          height={36}
-          sizes="36px"
-          className="rounded-full object-cover w-9 h-9"
-        />
+        {user ? (
+          <Image
+            src={user.profile_image.path}
+            alt={"profile pic"}
+            width={36}
+            height={36}
+            sizes="36px"
+            className="rounded-full object-cover w-9 h-9"
+          />
+        ) : (
+          <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+        )}
+
         <div className="flex flex-col gap-2">
           <Link
             href={{
               pathname: AppRoutes.profile.account_address,
               query: {
-                account_address: Active?.user?.account_address,
+                account_address: Active?.user,
               },
             }}
             className={
