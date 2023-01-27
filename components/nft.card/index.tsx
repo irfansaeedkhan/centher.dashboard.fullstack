@@ -35,11 +35,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
-        const metadata = await axios.get(formatIPFSUrl(ipfs));
+        const formattedUrl = formatIPFSUrl(ipfs);
+        const metadata = await axios.get(formattedUrl);
         setName(metadata.data.name);
         setDescription(metadata.data.description);
         setCollection(metadata.data.collection);
-        setImageUrl(formatIPFSUrl(metadata.data.image));
+        const imgUrl = formatIPFSUrl(metadata.data.image);
+        setImageUrl(imgUrl);
         setType(metadata.data.type);
       } catch (error) {}
     };
