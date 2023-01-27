@@ -8,7 +8,6 @@ import React, {
 import { useRouter } from "next/router";
 import Image from "next/image";
 import axios from "axios";
-import { useCopyToClipboard } from "usehooks-ts";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
@@ -36,6 +35,7 @@ import { useGetProfileCardDetails } from "@/components/feed.components/profile.d
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
+import { copyText } from "@/utils/copy.text";
 import { AppRoutes } from "@/constants/app.routes";
 import {
   DefaultCircle,
@@ -96,7 +96,6 @@ const ProfileHeader: React.FC<Props> = ({
   });
   const coverImageInputRef = useRef<HTMLInputElement>(null);
 
-  const [_, copy] = useCopyToClipboard();
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
@@ -559,8 +558,8 @@ const ProfileHeader: React.FC<Props> = ({
                     {sliceAccountAddress(user.account_address)}
                   </h6>
                   <button
-                    onClick={() => {
-                      copy(user.account_address);
+                    onClick={async () => {
+                      await copyText(user.account_address);
                       toast.success("Address copied!");
                     }}
                   >
