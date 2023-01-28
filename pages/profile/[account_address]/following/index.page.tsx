@@ -7,12 +7,15 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import UserWithFollow from "@/components/user.with.follow";
 import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
+import useUser from "@/hooks/use.user";
+import { AppRoutes } from "@/constants/app.routes";
+import { FollowerIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
-import { FollowerIcon } from "@/assets/svgs";
 
 const Following: NextPageWithLayout = () => {
   const router = useRouter();
+  const { user } = useUser();
 
   const {
     followingLoading,
@@ -44,18 +47,33 @@ const Following: NextPageWithLayout = () => {
   }, [fetchFollowing, offset]);
 
   useEffect(() => {
-    if (router.query.account_address) {
-      resetFollowing(
-        router.query.account_address.toString().toLowerCase(),
-        "loading"
-      );
+    if (router.query.account_address && user) {
+      if (
+        router.query.account_address.toString().toLowerCase() !==
+        user.account_address.toLowerCase()
+      ) {
+        // Redirect to the profile page if the account address in the URL is not the same as the logged in user's account address
+        router.replace({
+          pathname: AppRoutes.profile.account_address,
+          query: { account_address: router.query.account_address },
+        });
+        return;
+      }
+
+      resetFollowing("loading");
       fetchFollowing();
     }
 
     return () => {
-      resetFollowing("", "idle");
+      resetFollowing("idle");
     };
-  }, [router.query.account_address, resetFollowing, fetchFollowing]);
+  }, [
+    router.query.account_address,
+    resetFollowing,
+    fetchFollowing,
+    user,
+    router,
+  ]);
 
   return (
     <>
