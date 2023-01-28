@@ -160,7 +160,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </div>
         </div>
         <div className="space-y-[6px] mt-4">
-          <h6 className="text-xs text-white">Wallet Address</h6>
+          <h6 className="text-xs text-white">Account Address</h6>
 
           <div className="flex items-center cursor-pointer">
             <input
