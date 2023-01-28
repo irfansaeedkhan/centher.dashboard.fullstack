@@ -52,7 +52,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     if (loggedInUser.account_address.toLowerCase() !== account.toLowerCase()) {
       deactivate();
     }
-  }, [deactivate, loggedInUser, account, connectWallet]);
+  }, [deactivate, loggedInUser, account]);
 
   return (
     <div
