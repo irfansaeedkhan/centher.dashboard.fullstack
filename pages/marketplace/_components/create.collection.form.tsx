@@ -188,7 +188,7 @@ export const CreateNFTCollectionForm = ({
             autoComplete="off"
             maxLength={550}
             {...register("description")}
-            placeholder="Wrirte some details about your NFTs collection"
+            placeholder="Write some details about your NFTs collection"
             className={
               !formState.errors.description ? inputField : inputFieldError
             }
@@ -235,7 +235,7 @@ export const CreateNFTCollectionForm = ({
             id="url"
             autoComplete="off"
             {...register("url")}
-            placeholder="https://centher.io/collection/ skull- Price"
+            placeholder="eg. https://centher.io/collection/ skull- Price"
             className={!formState.errors.url ? inputField : inputFieldError}
           />
           {formState.errors.url && (
@@ -257,7 +257,7 @@ export const CreateNFTCollectionForm = ({
                   id="yoursite"
                   autoComplete="off"
                   {...register("yoursite")}
-                  placeholder="https://yoursite.io"
+                  placeholder="eg. https://yoursite.io"
                   className={
                     !formState.errors.yoursite ? linkField : linkFieldError
                   }
@@ -277,7 +277,7 @@ export const CreateNFTCollectionForm = ({
                   id="facebook"
                   autoComplete="off"
                   {...register("facebook")}
-                  placeholder="https://facebook.com/your profile"
+                  placeholder="eg. https://facebook.com/your profile"
                   className={
                     !formState.errors.facebook ? linkField : linkFieldError
                   }
@@ -297,7 +297,7 @@ export const CreateNFTCollectionForm = ({
                   id="twitter"
                   autoComplete="off"
                   {...register("twitter")}
-                  placeholder="https://Twitter.com/your profile"
+                  placeholder="eg. https://Twitter.com/your profile"
                   className={
                     !formState.errors.twitter ? linkField : linkFieldError
                   }

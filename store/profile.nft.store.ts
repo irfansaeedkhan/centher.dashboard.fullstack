@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import Moralis from "moralis";
 import { EvmChain } from "@moralisweb3/evm-utils";
 
 // App imports
@@ -15,6 +14,7 @@ import {
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
+import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
@@ -181,13 +181,18 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         try {
           set({ loadingOwnedNFTs: "loading" });
           let _nfts: NFT[] = [];
-          const result: any = await Moralis.EvmApi.nft.getWalletNFTs({
+          const fetcher = new MoralisFetcher();
+          const result = await fetcher.getWalletNfts({
             address: account,
             chain:
               process.env.NEXT_PUBLIC_APP_ENV === "production"
                 ? EvmChain.BSC
                 : EvmChain.GOERLI,
           });
+
+          if (!Array.isArray(result?.result)) {
+            throw new Error("Cannot get wallet NFTs.");
+          }
 
           const client = new ApolloClient({
             uri: SUBGRAPH_URL,
@@ -211,7 +216,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           }
 
           if (result) {
-            const result2 = result.data.result.filter((item: any) => {
+            const result2 = result?.result.filter((item: any) => {
               return _collections.includes(item.token_address);
             });
             _nfts = result2.map((item: any) => {

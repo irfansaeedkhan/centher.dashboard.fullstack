@@ -9,21 +9,19 @@ type Followers = IUserWithFollow;
 
 export interface FollowersStore {
   loading: LoadingState;
-  accountAddress: string;
 
   offset: number;
   updateOffset: () => void;
 
   followers: IUserWithFollow[];
   fetchFollowers: () => Promise<void>;
-  resetFollowers: (accountAddress: string, loading?: LoadingState) => void;
+  resetFollowers: (loading?: LoadingState) => void;
 }
 
 export const useFollowersStore = create<FollowersStore>()(
   devtools(
     (set, get) => ({
       loading: "idle",
-      accountAddress: "",
 
       offset: 0,
       updateOffset: () => set((state) => ({ offset: state.followers.length })),
@@ -33,11 +31,10 @@ export const useFollowersStore = create<FollowersStore>()(
         try {
           set({ loading: "loading" });
 
-          const accountAddress = get().accountAddress;
           const offset = get().offset;
           const limit = 10;
 
-          const url = `/api/users/${accountAddress}/followers?offset=${offset}&limit=${limit}`;
+          const url = `/api/users/me/followers?offset=${offset}&limit=${limit}`;
 
           const { data } = await axiosNodeApi.get(url);
 
@@ -63,9 +60,8 @@ export const useFollowersStore = create<FollowersStore>()(
             console.error(error);
         }
       },
-      resetFollowers: (accountAddress, loading = "idle") => {
+      resetFollowers: (loading = "idle") => {
         set({
-          accountAddress,
           loading,
           followers: [],
           offset: 0,

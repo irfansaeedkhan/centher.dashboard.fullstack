@@ -1,37 +1,34 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
+import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
+import { useWeb3React } from "@web3-react/core";
+import { SiWhatsapp } from "react-icons/si";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
+import toast from "react-hot-toast";
+import clsx from "clsx";
+import ctl from "@netlify/classnames-template-literals";
 
+import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-// same directory imports
+import useGetUser from "@/hooks/use.get.user";
+import { copyText } from "@/utils/copy.text";
+import { formatAddress } from "@/utils/format.address";
+import { AppRoutes } from "@/constants/app.routes";
+import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
+
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
 import { NFTHistory } from "./nft.history";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
+import { NonNFTDescription } from "./non.nft.description";
+import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
-import {
-  ShareBigIcon,
-  FacebookCircleIcon,
-  LinkIcon,
-  TwitterSvg,
-} from "@/assets/svgs";
-import { SiWhatsapp } from "react-icons/si";
-import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import { useWeb3React } from "@web3-react/core";
-import { NonNFTDescription } from "./non.nft.description";
-import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
-import { formatAddress } from "@/utils/format.address";
-import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
-import { AppRoutes } from "@/constants/app.routes";
-import useGetUser from "@/hooks/use.get.user";
-import Image from "next/image";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
-import clsx from "clsx";
+
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
   reload: boolean;
@@ -58,9 +55,9 @@ export const NFTRightSideComponent = ({
   }, [router.asPath]);
 
   // Copy nft share url to clipboard
-  const copyShareUrl = () => {
-    navigator.clipboard.writeText(shareUrl);
-    toast.success("Copy Link Successfully!");
+  const copyShareUrl = async () => {
+    await copyText(shareUrl);
+    toast.success("NFT link copied!");
   };
 
   const nftOwnerAddress = useGetNFTOwner(

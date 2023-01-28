@@ -1,20 +1,14 @@
 // App imports
 import React, { useEffect, useState } from "react";
-import { useWindowSize } from "usehooks-ts";
 // Current directory imports
 import { LevelMain } from "./level.main";
-import { LevelMainMobile } from "./level.main.mobile";
-import { ActiveCardMobile } from "./active.card.mobile";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
 import NetworkGenealogySkeleton from "@/components/loading.skeletons/network.genealogy.skeleton";
-import NetworkGenealogySingleCard from "@/components/loading.skeletons/network.genealogy.single.card";
 
 export const Levels = () => {
-  const { width } = useWindowSize();
   const [level, setLevel] = useState(0);
   const [activeParent, setActiveParent] = useState<any>([]);
-  const [mobileView, setMobileView] = useState<any>(true);
   const { user: loggedInUser } = useUser();
 
   const { genealogies, fetchGenealogy, fetchReferrers, loading, updating } =
@@ -52,79 +46,44 @@ export const Levels = () => {
     await fetchReferrers(childData.user, _level);
     setLevel(_level);
   };
-
-  // handle the backbutton - previous active parent - level to show
-  function handleMobileBack(activeParentLevel: any) {
-    let newParentList = activeParent;
-    newParentList.pop();
-    setActiveParent(newParentList);
-    if (activeParentLevel === "01") {
-      setActiveParent([]);
-      setLevel(0);
-    } else if (activeParentLevel === "02") {
-      setLevel(1);
-    } else if (activeParentLevel === "03") {
-      setLevel(2);
-    } else if (activeParentLevel === "04") {
-      setLevel(3);
-    } else if (activeParentLevel === "05") {
-      setLevel(4);
-    } else if (activeParentLevel === "06") {
-      setLevel(5);
-    } else {
-      setActiveParent([]);
-    }
-  }
-
-  useEffect(() => {
-    if (width > 1000) {
-      setMobileView(false);
-    }
-  }, [width]);
+  const totalPeople =
+    genealogies &&
+    genealogies.length > 0 &&
+    genealogies.map((level) => level.people).reduce((a, b) => a + b, 0);
   return (
-    <>
-      {mobileView ? (
-        <>
-          {!!genealogies?.length ? (
-            <div className="w-full flex flex-col gap-3">
-              {activeParent?.length > 0 && (
-                <ActiveCardMobile
-                  activeParent={activeParent}
-                  handleMobileBack={handleMobileBack}
-                />
-              )}
-              {genealogies && genealogies.length > level && (
-                <LevelMainMobile
-                  mobileData={genealogies[level]}
-                  handleCard={handleCard}
-                />
-              )}
-            </div>
-          ) : (
-            <NetworkGenealogySingleCard />
-          )}
-        </>
+    <div>
+      {totalPeople ? (
+        <div className="pl-1 pr-2 ">
+          <div className="w-full rounded-t-lg  bg-background-shade-3 px-4 py-3 flex flex-col gap-2  mb-4 max-w-[300px]">
+            <h5 className="text-gray-shade-19 text-14px font-medium">
+              Total Numbers Of People
+            </h5>
+            <h6 className="text-white-shade-1 text-14px font-semibold">
+              {totalPeople ?? "N/A"}
+            </h6>
+          </div>
+        </div>
       ) : (
-        <>
-          {!!genealogies?.length ? (
-            <div className="w-full flex gap-3">
-              {genealogies &&
-                genealogies.length > 0 &&
-                genealogies.map((parentData: any, index: number) => {
-                  return (
-                    <LevelMain
-                      parentData={parentData}
-                      handleCard={handleCard}
-                      key={index}
-                    />
-                  );
-                })}
-            </div>
-          ) : (
-            <NetworkGenealogySkeleton />
-          )}
-        </>
+        <div className="w-full rounded-t-lg  bg-background-shade-3 mb-4 max-w-[300px] h-16 animate-pulse"></div>
       )}
-    </>
+
+      {!!genealogies?.length ? (
+        <div className="w-full customScrollbar flex gap-3 pl-1 pr-2 geonologyScroll">
+          {genealogies &&
+            genealogies.length > 0 &&
+            genealogies.map((parentData: any, index: number) => {
+              return (
+                <LevelMain
+                  parentData={parentData}
+                  handleCard={handleCard}
+                  key={index}
+                />
+              );
+            })}
+        </div>
+      ) : (
+        <NetworkGenealogySkeleton />
+      )}
+    </div>
   );
 };

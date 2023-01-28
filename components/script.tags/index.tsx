@@ -31,7 +31,7 @@ const ScriptTags = () => {
         />
         <meta property="og:url" content="https://app.centher.io/" />
         <meta property="og:site_name" content="Centher.io" />
-        <meta property="og:image" content="/images/centher.logo.png" />
+        <meta property="og:image" content="/images/centher.logo.bg.png" />
         <meta property="og:image:width" content="420" />
         <meta property="og:image:height" content="420" />
 
@@ -41,7 +41,7 @@ const ScriptTags = () => {
           content="Centher.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
         <meta name="twitter:title" content="Centher.io" />
-        <meta name="twitter:image" content="/images/centher.logo.png" />
+        <meta name="twitter:image" content="/images/centher.logo.bg.png" />
 
         {/* TODO: Shivam - Need google site verification content */}
         <meta name="google-site-verification" content="Will-Provide-later" />

@@ -147,7 +147,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
-                router.push(`/profile/${account}/collections`);
+                router.push(`/profile/${account}/nfts`);
               }}
             />
           )}

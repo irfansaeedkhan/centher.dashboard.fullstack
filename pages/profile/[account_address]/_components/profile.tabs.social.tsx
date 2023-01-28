@@ -17,7 +17,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
   const { user: loggedInUser } = useUser();
 
   return (
-    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base mt-4">
+    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-sm fmd:text-base mt-2 fmd:mt-4">
       <Link
         href={`/profile/${account_address}`}
         className={clsx(

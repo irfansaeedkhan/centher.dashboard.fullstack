@@ -24,19 +24,10 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
   const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const [strokeColor, setStrokeColor] = useState<string>("none");
-  /* 
-  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-  verification icon variants
-  Rainbow1  Rainbow2 RainbowLastFrame
-  gold1 gold2 goldLastFrame
-  silver1 silver2 silverLastFrame
-  */
   const iconVerifyProps = useVerificationTick(user?.account_address);
 
   useEffect(() => {
     if (iconVerifyProps === "rainbow") {
-      setStrokeColor("#1B1C22");
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/Rainbow1.gif");
       }, 3000);
@@ -57,8 +48,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         clearInterval(interval2);
       };
     } else if (iconVerifyProps === "silver") {
-      setStrokeColor("#B1B1B1");
-
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/silver1.gif");
       }, 3000);
@@ -79,8 +68,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         clearInterval(interval2);
       };
     } else if (iconVerifyProps == "gold") {
-      setStrokeColor("#E2BD3A");
-
       const timeout1 = setTimeout(function () {
         setVerifyIcon("/images/gold1.gif");
       }, 3000);
@@ -213,28 +200,28 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
       >
         <div>
-          <Link href={`/profile/${user.account_address}`}>
+          <div>
             <h4 className={clsx(label, `mb-2`)}>Posts</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.posts_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
         <div>
-          <Link href={`/profile/${user.account_address}/followers`}>
+          <div>
             <h4 className={clsx(label, `mb-2`)}>Followers</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.followers_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
         <div>
-          <Link href={`/profile/${user.account_address}/following`}>
+          <div>
             <h4 className={clsx(label, `mb-2`)}>Followings</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.following_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
       </div>
 
