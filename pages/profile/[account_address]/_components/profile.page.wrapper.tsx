@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 
 import { MessagesCard } from "@/components/feed.components";
+import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 import useGetUser from "@/hooks/use.get.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
@@ -55,15 +56,21 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
             `grid justify-center gap-4 flg:gap-6 grid-cols-[1fr_minmax(0,544px)_1fr] flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] grid-rows-[auto_1fr]`
           )}
         >
-          {user && (
-            <ProfileHeader
-              mutateUser={mutateUser}
-              user={user}
-              mutualFollowersData={mutualFollowersData}
-              param_account_address={router.query.account_address?.toString()}
-              className="row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto"
-            />
-          )}
+          <div
+            className={clsx(
+              `row-start-1 row-end-2 col-span-full f2xl:col-start-2 overflow-auto`
+            )}
+          >
+            {user ? (
+              <ProfileHeader
+                mutateUser={mutateUser}
+                user={user}
+                mutualFollowersData={mutualFollowersData}
+              />
+            ) : (
+              <UserProfileHeaderSkeleton />
+            )}
+          </div>
 
           <CardsContainerLeft className="flg:row-start-2 flg:col-start-2 flg:col-span-1 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3" />
 
