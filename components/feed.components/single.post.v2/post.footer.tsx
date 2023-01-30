@@ -32,10 +32,7 @@ export const PostFooter: React.FC<Props> = ({
     <footer
       className={clsx(
         "flex justify-between",
-        post.text_content ? "mt-3" : "mt-4",
-        placement === "single-post-page" &&
-          (postType === "main" || postType === "reply-w-parent-header") &&
-          "-ml-14"
+        post.text_content ? "mt-3" : "mt-4"
       )}
     >
       <AnalyticsCount

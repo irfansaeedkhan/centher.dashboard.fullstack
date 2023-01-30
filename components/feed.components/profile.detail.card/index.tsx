@@ -217,7 +217,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         </div>
         <div>
           <div>
-            <h4 className={clsx(label, `mb-2`)}>Followings</h4>
+            <h4 className={clsx(label, `mb-2`)}>Following</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.following_count ?? "--"}
             </h5>

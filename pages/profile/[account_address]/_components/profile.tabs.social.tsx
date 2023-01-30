@@ -68,7 +68,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
               "py-2 px-4 cursor-pointer"
             )}
           >
-            Followings
+            Following
           </Link>
         )}
     </div>

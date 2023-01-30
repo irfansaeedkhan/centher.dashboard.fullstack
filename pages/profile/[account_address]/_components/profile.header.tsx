@@ -559,7 +559,7 @@ const ProfileHeader: React.FC<Props> = ({
               </button>
             </div>
             <p className="text-[11px] mt-1 leading-6 font-medium text-gray-shade-7">
-              Joined at {dayjs(user.createdAt).format("MMM, YYYY")}
+              Member since {dayjs(user.createdAt).format("MMM, YYYY")}
             </p>
 
             {!!loggedInUser &&

@@ -130,7 +130,7 @@ export const RegisterForm: React.FC = () => {
           <button
             className={connectButton}
             type="button"
-            onClick={connectWallet}
+            onClick={() => connectWallet()}
           >
             <Image
               src="/images/metamask_icon.png"

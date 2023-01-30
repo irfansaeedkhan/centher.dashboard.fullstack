@@ -106,7 +106,7 @@ export const SinglePostV2: React.FC<Props> = ({
           "rounded-b-none",
         placement === "single-post-page" &&
           postType === "reply" &&
-          "rounded-t-none rounded-b-none last:rounded-b-10px border-t border-t-gray-shade-3",
+          "rounded-t-none rounded-b-none border-t border-t-gray-shade-3",
         className
       )}
     >
@@ -150,35 +150,42 @@ export const SinglePostV2: React.FC<Props> = ({
           shouldShowConnectLines={shouldShowThread}
         />
 
-        <div
-          className={clsx(`flex-grow`, {
-            "mb-2": shouldShowThread,
-          })}
-        >
-          <PostHeader
-            post={post}
-            postUser={post.user}
-            postType={postType === "reply-w-parent-header" ? "main" : postType}
-            loggedInUser={loggedInUser}
-            onClickArchive={onClickArchive}
-            onClickRestore={onClickRestore}
-            onClickDelete={onClickDelete}
-            onClickEdit={() => {
-              setIsEditModalOpen(true);
-              openPostModal({
-                modalType: "edit",
-                postId: post._id,
-                postText: post.text_content,
-                editPostFiles: post.media?.map((m) => ({
-                  original: m,
-                  id: nanoid(),
-                  isDeleted: false,
-                })),
-                onCloseModal: () => setIsEditModalOpen(false),
-              });
-            }}
-          />
+        <PostHeader
+          post={post}
+          postUser={post.user}
+          postType={postType === "reply-w-parent-header" ? "main" : postType}
+          loggedInUser={loggedInUser}
+          onClickArchive={onClickArchive}
+          onClickRestore={onClickRestore}
+          onClickDelete={onClickDelete}
+          onClickEdit={() => {
+            setIsEditModalOpen(true);
+            openPostModal({
+              modalType: "edit",
+              postId: post._id,
+              postText: post.text_content,
+              editPostFiles: post.media?.map((m) => ({
+                original: m,
+                id: nanoid(),
+                isDeleted: false,
+              })),
+              onCloseModal: () => setIsEditModalOpen(false),
+            });
+          }}
+        />
 
+        <div
+          className={clsx(
+            `overflow-hidden`,
+            {
+              "mb-2": shouldShowThread,
+            },
+            placement === "single-post-page" &&
+              (postType === "main" || postType === "reply-w-parent-header")
+              ? "col-span-full"
+              : "col-start-2 col-span-1"
+          )}
+        >
           {post.media && !!post.media.length && (
             <PostMedia post={post} postType={postType} placement={placement} />
           )}

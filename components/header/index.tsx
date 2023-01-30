@@ -40,7 +40,7 @@ const Header = () => {
     connectedAccount
       .then((_acc) => {
         if (_acc && _acc.toLowerCase() === user.account_address.toLowerCase()) {
-          connectWallet();
+          connectWallet(false);
         }
       })
       .catch(() => {});
