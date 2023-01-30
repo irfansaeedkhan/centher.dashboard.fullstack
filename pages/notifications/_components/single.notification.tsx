@@ -39,7 +39,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.feed.single_post,
           query: { post_id: notification.post._id },
         }}
-        className="text-sm text-white hover:text-brand-primary"
+        className="text-sm leading-3 text-white hover:text-brand-primary"
       >
         {notification.by.display_name}{" "}
         {notification.type === "post_like"
@@ -55,7 +55,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm text-white hover:text-brand-primary"
+        className="text-sm leading-3 text-white hover:text-brand-primary"
       >
         {notification.by.display_name} started following you.
       </Link>
@@ -67,7 +67,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm text-white hover:text-brand-primary"
+        className="text-sm leading-3 text-white hover:text-brand-primary"
       >
         {notification.by.display_name} has joined your network.
       </Link>
@@ -79,7 +79,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm text-white hover:text-brand-primary"
+        className="text-sm leading-3 text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} NTR network rewards from{" "}
@@ -94,7 +94,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm text-white hover:text-brand-primary"
+        className="text-sm leading-3 text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
@@ -112,7 +112,7 @@ export const SingleNotification = React.forwardRef<
     <div
       ref={ref}
       className={clsx(
-        `w-full max-w-[1005px] h-[76px] fsm:px-6 px-3 py-4 flex justify-between gap-2`,
+        `w-full max-w-[1005px] min-h-[76px] fsm:px-6 px-3 py-4 flex justify-between gap-2`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,
@@ -127,19 +127,26 @@ export const SingleNotification = React.forwardRef<
             pathname: AppRoutes.profile.account_address,
             query: { account_address: notification.by.account_address },
           }}
+          className="flex flex-shrink-0"
         >
           <Image
             src={notification.by?.profile_image?.path}
             alt="dp"
             width={44}
             height={44}
-            className="rounded-full h-[44px] w-[44px] object-cover"
+            className="rounded-full sm:h-[44px] sm:w-[44px] !h-[40px] !w-[40px] object-cover"
           />
         </Link>
-
-        {notificationLink}
+        <div className="flex flex-grow flex-col">
+          <span>{notificationLink}</span>
+          <p className="fsm:text-sm text-xs text-gray-shade-2 text-end fsm:hidden flex flex-shrink-0">
+            {moment(notification.createdAt).format(
+              days === "seven" || days === "befor_seven" ? `ll` : `LT`
+            )}
+          </p>
+        </div>
       </div>
-      <p className="fsm:text-sm text-xs text-gray-shade-2 text-end">
+      <p className="fsm:text-sm text-xs text-gray-shade-2 text-end fsm:flex flex-shrink-0 hidden">
         {moment(notification.createdAt).format(
           days === "seven" || days === "befor_seven" ? `ll` : `LT`
         )}
