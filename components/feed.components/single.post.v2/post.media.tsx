@@ -54,8 +54,8 @@ export const PostMedia: React.FC<Props> = ({ post, postType, placement }) => {
         "relative",
         placement === "single-post-page" &&
           (postType === "main" || postType === "reply-w-parent-header")
-          ? "-ml-14 mt-6"
-          : "mt-4"
+          ? "mt-3"
+          : "mt-1"
       )}
       onClick={(e) => {
         e.stopPropagation();
