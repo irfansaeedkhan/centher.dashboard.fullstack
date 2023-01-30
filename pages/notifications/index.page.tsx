@@ -21,10 +21,6 @@ const Notifications: NextPageWithLayout = () => {
 
   const {
     notifications,
-    notificationsBeforeSevendays,
-    notificationToday,
-    notificationYesterday,
-    notificationSevenday,
     fetchNotifications,
     fetchNewNotifications,
     offset,
@@ -32,10 +28,6 @@ const Notifications: NextPageWithLayout = () => {
     updateOffset,
   } = useNotificationsStore((state) => ({
     notifications: state.notifications,
-    notificationsBeforeSevendays: state.notificationsBeforeSevendays,
-    notificationToday: state.notificationToday,
-    notificationYesterday: state.notificationYesterday,
-    notificationSevenday: state.notificationSevenday,
     fetchNotifications: state.fetchNotifications,
     fetchNewNotifications: state.fetchNewNotifications,
     offset: state.offset,
@@ -70,159 +62,55 @@ const Notifications: NextPageWithLayout = () => {
       <div
         className={clsx(
           "flex-grow flex items-center justify-center flex-col space-y-6"
-          // loading !== "loading" && loading !== "idle" && "space-y-6"
         )}
       >
-        {/* Today */}
-        {notificationToday.length > 0 && (
+        {notifications.length > 0 && (
           <div className="flex flex-col w-full max-w-[1005px]">
-            <div className={sectionName}>Earlier</div>
+            <div className={sectionName}>Notifications</div>
 
-            {notificationToday.map((notification, index) => {
+            {notifications.map((notification, index) => {
               if (
                 notification._id === notifications[notifications.length - 1]._id
               ) {
                 return (
                   <SingleNotification
                     ref={lastNotiRef}
-                    length={notificationToday.length}
+                    length={notifications.length}
                     notification={notification}
                     key={notification._id}
-                    index={index}
-                    days="today"
-                  />
-                );
-              }
-              return (
-                <SingleNotification
-                  length={notificationToday.length}
-                  notification={notification}
-                  key={notification._id}
-                  index={index}
-                  days="today"
-                />
-              );
-            })}
-          </div>
-        )}
-        {/* Yesterday */}
-        {notificationYesterday.length > 0 && (
-          <div className="flex flex-col w-full max-w-[1005px]">
-            <div className={sectionName}>Yesterday</div>
-
-            {notificationYesterday.map((notification, index) => {
-              if (
-                notification._id === notifications[notifications.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationYesterday.length}
-                    index={index}
-                    days="yesterday"
-                  />
-                );
-              }
-              return (
-                <SingleNotification
-                  length={notificationYesterday.length}
-                  notification={notification}
-                  key={notification._id}
-                  index={index}
-                  days="yesterday"
-                />
-              );
-            })}
-          </div>
-        )}
-        {/* Seven days */}
-        {notificationSevenday.length > 0 && (
-          <div className="flex flex-col w-full max-w-[1005px]">
-            <div className={sectionName}>Last 7 Days</div>
-
-            {notificationSevenday.map((notification, index) => {
-              if (
-                notification._id === notifications[notifications.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationSevenday.length}
-                    index={index}
-                    days="seven"
-                  />
-                );
-              }
-              return (
-                <SingleNotification
-                  length={notificationSevenday.length}
-                  notification={notification}
-                  key={notification._id}
-                  index={index}
-                  days="seven"
-                />
-              );
-            })}
-          </div>
-        )}
-        {/* Remaining */}
-        {notificationsBeforeSevendays.length > 0 && (
-          <div className="flex flex-col w-full max-w-[1005px]">
-            <div className={sectionName}>Older</div>
-            <div className="flex flex-col">
-              {notificationsBeforeSevendays.map((notification, index) => {
-                if (
-                  notification._id ===
-                  notifications[notifications.length - 1]._id
-                ) {
-                  return (
-                    <SingleNotification
-                      ref={lastNotiRef}
-                      notification={notification}
-                      key={notification._id}
-                      length={notificationsBeforeSevendays.length}
-                      index={index}
-                      days="befor_seven"
-                    />
-                  );
-                }
-                return (
-                  <SingleNotification
-                    notification={notification}
-                    key={notification._id}
-                    length={notificationsBeforeSevendays.length}
                     index={index}
                     days="befor_seven"
                   />
                 );
-              })}
-            </div>
+              }
+              return (
+                <SingleNotification
+                  length={notifications.length}
+                  notification={notification}
+                  key={notification._id}
+                  index={index}
+                  days="befor_seven"
+                />
+              );
+            })}
           </div>
         )}
+
         {(loading === "loading" || loading === "idle") && (
           <div className="flex flex-col w-full max-w-[1005px]">
             <SingleNotificationSkeleton />
           </div>
         )}
-        {loading === "loaded" &&
-          notifications.length === 0 &&
-          notificationToday.length === 0 &&
-          notificationSevenday.length === 0 &&
-          notificationYesterday.length === 0 &&
-          notificationsBeforeSevendays.length === 0 && (
-            <div>
-              <div className="flex justify-center mt-[60px]">
-                <NotificationBell />
-              </div>
-              <div className="flex justify-center mt-[35px]">
-                <p className="text-white">No notifications available</p>
-              </div>
+        {loading === "loaded" && notifications.length === 0 && (
+          <div>
+            <div className="flex justify-center mt-[60px]">
+              <NotificationBell />
             </div>
-          )}
+            <div className="flex justify-center mt-[35px]">
+              <p className="text-white">No notifications available</p>
+            </div>
+          </div>
+        )}
         {loading === "failed" && (
           <div className="flex justify-center">
             <p className="text-gray-500">Something went wrong!</p>
