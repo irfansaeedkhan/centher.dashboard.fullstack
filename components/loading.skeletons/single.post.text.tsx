@@ -6,7 +6,7 @@ const SinglePostTextCardSkeleton = () => {
     // main container
     <div className="h-[264px] max-w-[544px] w-full relative py-4 bg-[#131314] rounded-10px flex">
       {/*  left line */}
-      <div className="absolute top-[64px] left-[38px] z-0 w-[2px] h-[calc(100%-118px)]  bg-[#3C3F4A]"></div>
+      {/* <div className="absolute top-[64px] left-[38px] z-0 w-[2px] h-[calc(100%-118px)]  bg-[#3C3F4A]"></div> */}
 
       <div className="w-full z-10 items-center justify-between gap-2 mb-2 px-4">
         <div className="flex gap-3 w-full">
@@ -20,9 +20,9 @@ const SinglePostTextCardSkeleton = () => {
             <div className="h-[15px] max-w-[440px] w-full mt-2 rounded-md bg-[#3C3F4A] animate-pulse"></div>
           </div>
         </div>
-        <div className="flex gap-3 pl-2">
+        {/* <div className="flex gap-3 pl-2">
           <div className="h-[30px] w-[30px] rounded-full bg-[#3C3F4A] animate-pulse"></div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
