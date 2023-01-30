@@ -151,7 +151,7 @@ export const SinglePostV2: React.FC<Props> = ({
         />
 
         <div
-          className={clsx(`flex-grow`, {
+          className={clsx(`overflow-hidden`, {
             "mb-2": shouldShowThread,
           })}
         >

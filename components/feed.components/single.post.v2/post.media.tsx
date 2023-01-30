@@ -76,7 +76,7 @@ export const PostMedia: React.FC<Props> = ({ post, postType, placement }) => {
                   width={544}
                   height={326}
                   sizes="544px"
-                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] object-cover rounded-10px mx-2`}
+                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] object-cover rounded-10px mx-2 break-all`}
                 />
               );
             } else if (media.type === "video") {
@@ -85,7 +85,7 @@ export const PostMedia: React.FC<Props> = ({ post, postType, placement }) => {
                 <video
                   key={media.url}
                   src={media.url}
-                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover mx-2`}
+                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover mx-2 break-all`}
                   controls
                   controlsList="nodownload"
                 />
