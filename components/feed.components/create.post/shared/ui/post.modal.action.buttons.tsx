@@ -11,6 +11,7 @@ import EmojiPicker, {
 
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
+import { SUPPORTED_VIDEO_TYPES } from "@/constants/supported.media.type";
 import { PhotoIcon, VideoIcon, EmojiIcon } from "@/assets/svgs";
 
 import {
@@ -112,7 +113,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
           type="file"
           id="files-videos"
           name="videos-file"
-          accept=".webm,.mp4,.mpg,.avi,.m4v"
+          accept={SUPPORTED_VIDEO_TYPES}
           style={{ display: "none" }}
           multiple
           onChange={(e) => handleSelectFiles(e, "video")}

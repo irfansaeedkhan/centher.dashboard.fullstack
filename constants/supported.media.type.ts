@@ -1,13 +1,16 @@
-//Video format allowed to upload on server
-export const SUPPORTED_VIDEO_TYPES = [
-  "video/m4v",
-  "video/avi",
-  "video/mpg",
-  "video/mp4",
-  "video/webm",
+// Video format allowed to upload on server
+export const SUPPORTED_VIDEO_TYPES = ".webm,.mp4,.m4v,.mov,.ogv,.mkv";
+
+export const SUPPORTED_VIDEO_MIME_TYPES = [
+  "video/webm", // Supported
+  "video/mp4", // Supported
+  "video/x-m4v", // Supported (.m4v for iOS)
+  "video/quicktime", // Supported (.mov)
+  "video/ogg", // Supported (.ogv)
+  "video/x-matroska", // Supported (.mkv)
 ];
 
-//Image format allowed to upload on server
+// Image format allowed to upload on server
 export const SUPPORTED_IMAGE_TYPES = [
   "image/gif",
   "image/jpeg",
