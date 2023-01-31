@@ -52,7 +52,7 @@ export const Levels = () => {
     genealogies.map((level) => level.people).reduce((a, b) => a + b, 0);
   return (
     <div>
-      {totalPeople ? (
+      {totalPeople === 0 ? (
         <div className="pl-1 pr-2 ">
           <div className="w-full rounded-t-lg  bg-background-shade-3 px-4 py-3 flex flex-col gap-2  mb-4 max-w-[300px]">
             <h5 className="text-gray-shade-19 text-14px font-medium">
@@ -64,7 +64,7 @@ export const Levels = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full rounded-t-lg  bg-background-shade-3 mb-4 max-w-[300px] h-16 animate-pulse"></div>
+        <div className="w-full rounded-t-lg bg-background-shade-3 mb-4 max-w-[300px] h-16 animate-pulse"></div>
       )}
 
       {!!genealogies?.length ? (
