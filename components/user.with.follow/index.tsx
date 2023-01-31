@@ -5,17 +5,12 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 
 import useUser from "@/hooks/use.user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
+import { DefaultCircle, RainbowCircle } from "@/assets/svgs";
 
 import type { IUserWithFollow } from "./types";
-import {
-  DefaultCircle,
-  GoldCircle,
-  RainbowCircle,
-  SilverCircle,
-} from "@/assets/svgs";
-import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface SingleSearchUserProps {
   result: IUserWithFollow;
@@ -25,17 +20,8 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
   ({ result }, ref) => {
     const [_result, setResult] = useState<IUserWithFollow>(result);
     const { user: loggedInUser } = useUser();
-    const [verifyIcon, setVerifyIcon] = useState<string>("");
-    const [strokeColor, setStrokeColor] = useState<string>("#B1B1B1");
-    /* 
-  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-verification icon variants
-Rainbow1  Rainbow2 RainbowLastFrame
-gold1 gold2 goldLastFrame
-silver1 silver2 silverLastFrame
-*/
+    const verificationTick = useVerificationTick(_result);
 
-    const iconVerifyProps = useVerificationTick(_result?.account_address);
     const followUser = async (following_id: string) => {
       try {
         setResult((prev) => ({
@@ -53,94 +39,6 @@ silver1 silver2 silverLastFrame
       }
     };
 
-    useLayoutEffect(() => {
-      if (iconVerifyProps === "rainbow") {
-        setStrokeColor("#1B1C22");
-        const timeout1 = setTimeout(function () {
-          setVerifyIcon("/images/Rainbow1.gif");
-        }, 3000);
-        const timeout2 = setTimeout(function () {
-          setVerifyIcon("/images/Rainbow2.gif");
-        }, 4600);
-        const interval1 = setInterval(() => {
-          setVerifyIcon("/images/RainbowLastFrame.png");
-        }, 9200);
-        const interval2 = setInterval(() => {
-          setVerifyIcon("/images/Rainbow2.gif");
-        }, 20000);
-
-        return () => {
-          clearTimeout(timeout1);
-          clearTimeout(timeout2);
-          clearInterval(interval1);
-          clearInterval(interval2);
-        };
-      } else if (iconVerifyProps === "silver") {
-        setStrokeColor("#B1B1B1");
-
-        const timeout1 = setTimeout(function () {
-          setVerifyIcon("/images/silver1.gif");
-        }, 3000);
-        const timeout2 = setTimeout(function () {
-          setVerifyIcon("/images/silver2.gif");
-        }, 4600);
-        const interval1 = setInterval(() => {
-          setVerifyIcon("/images/silverLastFrame.png");
-        }, 9200);
-        const interval2 = setInterval(() => {
-          setVerifyIcon("/images/silver2.gif");
-        }, 20000);
-
-        return () => {
-          clearTimeout(timeout1);
-          clearTimeout(timeout2);
-          clearInterval(interval1);
-          clearInterval(interval2);
-        };
-      } else if (iconVerifyProps == "gold") {
-        setStrokeColor("#E2BD3A");
-
-        const timeout1 = setTimeout(function () {
-          setVerifyIcon("/images/gold1.gif");
-        }, 3000);
-        const timeout2 = setTimeout(function () {
-          setVerifyIcon("/images/gold2.gif");
-        }, 4600);
-        const interval1 = setInterval(() => {
-          setVerifyIcon("/images/goldLastFrame.png");
-        }, 9200);
-        const interval2 = setInterval(() => {
-          setVerifyIcon("/images/gold2.gif");
-        }, 20000);
-        return () => {
-          clearTimeout(timeout1);
-          clearTimeout(timeout2);
-          clearInterval(interval1);
-          clearInterval(interval2);
-        };
-      } else if (iconVerifyProps === "no-icon") {
-        const timeout1 = setTimeout(function () {
-          setVerifyIcon("/images/silver1.gif");
-        }, 3000);
-        const timeout2 = setTimeout(function () {
-          setVerifyIcon("/images/silver2.gif");
-        }, 4600);
-        const interval1 = setInterval(() => {
-          setVerifyIcon("/images/silverLastFrame.png");
-        }, 9200);
-        const interval2 = setInterval(() => {
-          setVerifyIcon("/images/silver2.gif");
-        }, 20000);
-
-        return () => {
-          clearTimeout(timeout1);
-          clearTimeout(timeout2);
-          clearInterval(interval1);
-          clearInterval(interval2);
-        };
-      }
-    }, [iconVerifyProps, _result?.account_address]);
-
     return (
       <div
         ref={ref}
@@ -157,47 +55,29 @@ silver1 silver2 silverLastFrame
                 className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full sm:!h-12 sm:!w-12 h-10 w-10 object-cover border-2 border-background-shade-3 !m-0"
                 sizes={"256px"}
               />
-              {iconVerifyProps !== "no-icon" && (
-                <>
-                  {iconVerifyProps === "rainbow" && (
-                    <RainbowCircle
-                      className={clsx(
-                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                      )}
-                    />
+              {!!verificationTick ? (
+                <RainbowCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
                   )}
-                  {iconVerifyProps === "silver" && (
-                    <SilverCircle
-                      className={clsx(
-                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                      )}
-                    />
+                />
+              ) : (
+                <DefaultCircle
+                  className={clsx(
+                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
                   )}
-                  {iconVerifyProps === "gold" && (
-                    <GoldCircle
-                      className={clsx(
-                        `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                      )}
-                    />
-                  )}
-                  <DefaultCircle
-                    className={clsx(
-                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                    )}
-                  />
-                </>
+                />
               )}
-              <div className="verifiedIcon absolute bottom-[-12px] right-[-17px] !h-[34px] !w-[34px] !m-0">
-                {iconVerifyProps !== "no-icon" && verifyIcon && (
+              {!!verificationTick && (
+                <div className="verifiedIcon absolute bottom-[-12px] right-[-17px] !h-[34px] !w-[34px] !m-0">
                   <Image
-                    src={verifyIcon}
-                    alt={"verified icon"}
+                    src={verificationTick}
+                    alt={"Verified"}
                     width={24}
                     height={24}
-                    className=""
                   />
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </Link>
           <div className="flex flex-col gap-1">

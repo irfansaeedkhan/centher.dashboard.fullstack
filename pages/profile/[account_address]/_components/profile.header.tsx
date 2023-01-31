@@ -135,90 +135,7 @@ const ProfileHeader: React.FC<Props> = ({
     setInitialCoverImage();
   }, [setInitialCoverImage]);
 
-  const iconVerifyProps = useVerificationTick(user?.account_address);
-
-  useEffect(() => {
-    if (iconVerifyProps === "rainbow") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/RainbowLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "silver") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps == "gold") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/gold1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/gold2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/goldLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/gold2.gif");
-      }, 20000);
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "no-icon") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    }
-  }, [iconVerifyProps, user?.account_address]);
+  const verificationTick = useVerificationTick(user);
 
   useEffect(() => {
     const fetchFollow = async () => {
@@ -451,48 +368,30 @@ const ProfileHeader: React.FC<Props> = ({
               className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
               sizes={"256px"}
             />
-            {iconVerifyProps !== "no-icon" && (
-              <>
-                {iconVerifyProps === "rainbow" && (
-                  <RainbowCircle
-                    className={clsx(
-                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                    )}
-                  />
+            {!!verificationTick ? (
+              <RainbowCircle
+                className={clsx(
+                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
                 )}
-                {iconVerifyProps === "silver" && (
-                  <SilverCircle
-                    className={clsx(
-                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                    )}
-                  />
+              />
+            ) : (
+              <DefaultCircle
+                className={clsx(
+                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
                 )}
-                {iconVerifyProps === "gold" && (
-                  <GoldCircle
-                    className={clsx(
-                      `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                    )}
-                  />
-                )}
-                <DefaultCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                  )}
-                />
-              </>
+              />
             )}
 
-            <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-              {iconVerifyProps !== "no-icon" && verifyIcon && (
+            {!!verificationTick && (
+              <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
                 <Image
-                  src={verifyIcon}
-                  alt={"verified icon"}
+                  src={verificationTick}
+                  alt={"Verified"}
                   width={34}
                   height={34}
-                  className=""
                 />
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

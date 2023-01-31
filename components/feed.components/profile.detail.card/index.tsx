@@ -6,12 +6,7 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
-import {
-  DefaultCircle,
-  GoldCircle,
-  RainbowCircle,
-  SilverCircle,
-} from "@/assets/svgs";
+import { DefaultCircle, RainbowCircle } from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
@@ -23,91 +18,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
-  const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const iconVerifyProps = useVerificationTick(user?.account_address);
-
-  useEffect(() => {
-    if (iconVerifyProps === "rainbow") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/RainbowLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "silver") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps == "gold") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/gold1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/gold2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/goldLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/gold2.gif");
-      }, 20000);
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "no-icon") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    }
-  }, [iconVerifyProps, user?.account_address]);
+  const verificationTick = useVerificationTick(user);
 
   return (
     <div
@@ -137,29 +48,16 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             height={60}
             sizes={"256px"}
           />
-          {iconVerifyProps !== "no-icon" && (
+          {!!verificationTick ? (
             <>
-              {iconVerifyProps === "rainbow" && (
-                <RainbowCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
-              {iconVerifyProps === "silver" && (
-                <SilverCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
-              {iconVerifyProps === "gold" && (
-                <GoldCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
+              <RainbowCircle
+                className={clsx(
+                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
+                )}
+              />
+            </>
+          ) : (
+            <>
               <DefaultCircle
                 className={clsx(
                   `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
@@ -167,18 +65,18 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               />
             </>
           )}
-          <div
-            className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
-          >
-            {iconVerifyProps !== "no-icon" && verifyIcon && (
+          {!!verificationTick && (
+            <div
+              className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
+            >
               <Image
-                src={verifyIcon}
-                alt={"verified icon"}
+                src={verificationTick}
+                alt={"Verified"}
                 width={24}
                 height={24}
               />
-            )}
-          </div>
+            </div>
+          )}
         </Link>
       </div>
 

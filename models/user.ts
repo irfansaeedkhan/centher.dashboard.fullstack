@@ -4,6 +4,7 @@ export interface User {
   display_name: string;
   profile_image: UserImage;
   cover_image: CoverImage;
+  is_verified: boolean;
   createdAt: string;
   website_url: string;
   profile_bio: string;
