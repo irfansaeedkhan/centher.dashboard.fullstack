@@ -7,4 +7,5 @@ export interface IUserWithFollow {
     object_name: string;
   };
   is_followed_by_loggedin_user: boolean;
+  is_verified: boolean;
 }

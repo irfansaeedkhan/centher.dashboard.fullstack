@@ -1,5 +1,5 @@
 import {
-  SUPPORTED_VIDEO_TYPES,
+  SUPPORTED_VIDEO_MIME_TYPES,
   SUPPORTED_IMAGE_TYPES,
   MAX_IMAGE_SIZE,
   MAX_VIDEO_SIZE,
@@ -36,9 +36,7 @@ export const checkValidImageFile = (file_details: File): string => {
 // video type
 export const checkValidVideoFile = (file_details: File): string => {
   //Checking if video file is supported or not
-  if (!SUPPORTED_VIDEO_TYPES.includes(file_details.type)) {
-    //
-
+  if (!SUPPORTED_VIDEO_MIME_TYPES.includes(file_details.type)) {
     return "The file format is not supported";
   }
 
