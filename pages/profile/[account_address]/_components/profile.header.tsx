@@ -37,12 +37,6 @@ import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { AppRoutes } from "@/constants/app.routes";
-import {
-  DefaultCircle,
-  GoldCircle,
-  RainbowCircle,
-  SilverCircle,
-} from "@/assets/svgs";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { ProfileTabsNFT } from "./profile.tabs.nft";
@@ -51,6 +45,7 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
+
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
@@ -93,7 +88,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [verifyIcon, setVerifyIcon] = useState<string>("");
+  const verificationTick = useVerificationTick(user);
 
   const isOwnProfile = useMemo(() => {
     return (
@@ -134,8 +129,6 @@ const ProfileHeader: React.FC<Props> = ({
   useEffect(() => {
     setInitialCoverImage();
   }, [setInitialCoverImage]);
-
-  const verificationTick = useVerificationTick(user);
 
   useEffect(() => {
     const fetchFollow = async () => {
@@ -368,30 +361,6 @@ const ProfileHeader: React.FC<Props> = ({
               className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
               sizes={"256px"}
             />
-            {!!verificationTick ? (
-              <RainbowCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                )}
-              />
-            ) : (
-              <DefaultCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                )}
-              />
-            )}
-
-            {!!verificationTick && (
-              <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                <Image
-                  src={verificationTick}
-                  alt={"Verified"}
-                  width={34}
-                  height={34}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -437,6 +406,16 @@ const ProfileHeader: React.FC<Props> = ({
                 <span className="text-center text-white text-base font-semibold text-ellipsis line-clamp-1">
                   {user.display_name}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">
+                    <Image
+                      src={verificationTick}
+                      alt={"Verified"}
+                      width={26}
+                      height={26}
+                    />
+                  </span>
+                )}
               </h5>
             </div>
           </div>
