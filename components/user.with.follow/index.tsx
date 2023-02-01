@@ -8,7 +8,6 @@ import useUser from "@/hooks/use.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
-import { DefaultCircle, RainbowCircle } from "@/assets/svgs";
 
 import type { IUserWithFollow } from "./types";
 
@@ -55,38 +54,27 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full sm:!h-12 sm:!w-12 h-10 w-10 object-cover border-2 border-background-shade-3 !m-0"
                 sizes={"256px"}
               />
-              {!!verificationTick ? (
-                <RainbowCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                  )}
-                />
-              ) : (
-                <DefaultCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-12 !w-12 object-cover`
-                  )}
-                />
-              )}
+            </div>
+          </Link>
+          <div className="flex flex-col gap-1">
+            <Link
+              href={`/profile/${_result.account_address}`}
+              title={_result.display_name}
+              className="flex items-center"
+            >
+              <span className="fsm:text-base text-sm fsm:font-semibold font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1">
+                {_result.display_name}
+              </span>
               {!!verificationTick && (
-                <div className="verifiedIcon absolute bottom-[-12px] right-[-17px] !h-[34px] !w-[34px] !m-0">
+                <span className="verifiedIcon !h-6 !w-6 ml-0.5 fsm:ml-1">
                   <Image
                     src={verificationTick}
                     alt={"Verified"}
                     width={24}
                     height={24}
                   />
-                </div>
+                </span>
               )}
-            </div>
-          </Link>
-          <div className="flex flex-col gap-1">
-            <Link
-              href={`/profile/${_result.account_address}`}
-              className="fsm:text-base text-sm fsm:font-semibold font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1"
-              title={_result.display_name}
-            >
-              {_result.display_name}
             </Link>
             <div className="fsm:text-sm text-xs text-gray-shade-2">
               {sliceAccountAddress(_result.account_address)}

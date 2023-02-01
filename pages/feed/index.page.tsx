@@ -185,6 +185,7 @@ const Feed: NextPageWithLayout = () => {
           <SinglePostCardSkeleton />
         </>
       )}
+
       {loading === "loaded" && posts.length === 0 && (
         <div>
           <div className="flex justify-center mt-[60px]">

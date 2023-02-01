@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
-import { DefaultCircle, RainbowCircle } from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
@@ -48,39 +47,10 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             height={60}
             sizes={"256px"}
           />
-          {!!verificationTick ? (
-            <>
-              <RainbowCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                )}
-              />
-            </>
-          ) : (
-            <>
-              <DefaultCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                )}
-              />
-            </>
-          )}
-          {!!verificationTick && (
-            <div
-              className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
-            >
-              <Image
-                src={verificationTick}
-                alt={"Verified"}
-                width={24}
-                height={24}
-              />
-            </div>
-          )}
         </Link>
       </div>
 
-      <h3 className={`px-1 py-3`}>
+      <h3 className={`p-2`}>
         <Link
           href={{
             pathname: AppRoutes.profile.account_address,
@@ -88,9 +58,22 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               account_address: user.account_address,
             },
           }}
-          className={`line-clamp-1 text-ellipsis text-white text-sm font-bold`}
+          title={user.display_name}
+          className={`flex items-center justify-center`}
         >
-          {user.display_name}
+          <span className="line-clamp-1 text-ellipsis text-white text-sm font-bold">
+            {user.display_name}
+          </span>
+          {!!verificationTick && (
+            <span className="verifiedIcon !h-6 !w-6 ml-1">
+              <Image
+                src={verificationTick}
+                alt={"Verified"}
+                width={24}
+                height={24}
+              />
+            </span>
+          )}
         </Link>
       </h3>
 

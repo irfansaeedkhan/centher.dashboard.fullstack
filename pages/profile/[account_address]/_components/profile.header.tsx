@@ -37,12 +37,6 @@ import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { AppRoutes } from "@/constants/app.routes";
-import {
-  DefaultCircle,
-  GoldCircle,
-  RainbowCircle,
-  SilverCircle,
-} from "@/assets/svgs";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { ProfileTabsNFT } from "./profile.tabs.nft";
@@ -51,6 +45,7 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
+
 export type CoverImageWithFile = Partial<CoverImage> & {
   blob: File | null;
   newImage: boolean;
@@ -93,7 +88,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const [verifyIcon, setVerifyIcon] = useState<string>("");
+  const verificationTick = useVerificationTick(user);
 
   const isOwnProfile = useMemo(() => {
     return (
@@ -134,8 +129,6 @@ const ProfileHeader: React.FC<Props> = ({
   useEffect(() => {
     setInitialCoverImage();
   }, [setInitialCoverImage]);
-
-  const verificationTick = useVerificationTick(user);
 
   useEffect(() => {
     const fetchFollow = async () => {
@@ -287,10 +280,10 @@ const ProfileHeader: React.FC<Props> = ({
   };
 
   return (
-    <div className={`bg-background-shade-3 rounded-2xl`}>
+    <div className={`bg-background-shade-3 rounded-xl`}>
       <div
         className={clsx(
-          `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
+          `relative rounded-t-xl bg-no-repeat w-full h-[180px] bg-cover`,
           {
             "cursor-move": coverImage.newImage,
           }
@@ -302,7 +295,7 @@ const ProfileHeader: React.FC<Props> = ({
       >
         {isOwnProfile && (
           <>
-            <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-6 fsm:bottom-4">
+            <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-4 fsm:bottom-3">
               <input
                 type="file"
                 ref={coverImageInputRef}
@@ -368,30 +361,6 @@ const ProfileHeader: React.FC<Props> = ({
               className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
               sizes={"256px"}
             />
-            {!!verificationTick ? (
-              <RainbowCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                )}
-              />
-            ) : (
-              <DefaultCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[112px] !w-[112px] object-cover`
-                )}
-              />
-            )}
-
-            {!!verificationTick && (
-              <div className="verifiedIcon absolute bottom-[2px] right-[-4px] !h-[34px] !w-[34px] !m-0">
-                <Image
-                  src={verificationTick}
-                  alt={"Verified"}
-                  width={34}
-                  height={34}
-                />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -432,20 +401,28 @@ const ProfileHeader: React.FC<Props> = ({
               className={`flex flex-col lg:flex-row items-baseline justify-between`}
             >
               <h5
-                className={clsx(
-                  loggedInUser
-                    ? `text-center text-white text-20px font-semibold text-ellipsis line-clamp-1`
-                    : "text-center text-white text-20px font-semibold text-ellipsis line-clamp-1 mt-6"
-                )}
+                className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
-                {user.display_name}
+                <span className="text-center text-white text-base font-semibold text-ellipsis line-clamp-1">
+                  {user.display_name}
+                </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">
+                    <Image
+                      src={verificationTick}
+                      alt={"Verified"}
+                      width={26}
+                      height={26}
+                    />
+                  </span>
+                )}
               </h5>
             </div>
           </div>
 
-          <div className="w-full justify-center flex flex-col items-center">
+          <div className="w-full justify-center flex flex-col items-center mt-1">
             <div className={`flex items-center gap-2 relative`}>
-              <h6 className={`text-white text-14px font-semibold`}>
+              <h6 className={`text-white text-xs font-medium`}>
                 {sliceAccountAddress(user.account_address)}
               </h6>
               <button
@@ -457,6 +434,7 @@ const ProfileHeader: React.FC<Props> = ({
                 <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
               </button>
             </div>
+
             <p className="text-[11px] mt-1 leading-6 font-medium text-gray-shade-7">
               Member since {dayjs(user.createdAt).format("MMM, YYYY")}
             </p>
@@ -464,7 +442,7 @@ const ProfileHeader: React.FC<Props> = ({
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
-                <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-3">
+                <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-2">
                   {loadingState ? (
                     <button
                       className={clsx(
@@ -484,6 +462,7 @@ const ProfileHeader: React.FC<Props> = ({
                   )}
                 </div>
               )}
+
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
@@ -515,9 +494,10 @@ const ProfileHeader: React.FC<Props> = ({
                 </div>
               )}
           </div>
+
           {user.profile_bio && (
             <p
-              className={`text-sm mt-3 text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+              className={`text-xs fsm:text-[13px] mt-2 text-center break-words font-normal tracking-wide text-gray-shade-16 whitespace-pre-wrap max-w-xl mx-auto`}
             >
               {user.profile_bio}
             </p>
@@ -532,7 +512,7 @@ const ProfileHeader: React.FC<Props> = ({
           user.twitter_username ||
           user.website_url ||
           user.youtube_url) && (
-          <div className="w-full justify-center flex mt-2 items-center gap-4">
+          <div className="w-full justify-center flex mt-3 items-center gap-4">
             {user.tiktok_username && (
               <a
                 href={`https://tiktok.com/@${user.tiktok_username}`}
@@ -622,4 +602,4 @@ const ProfileHeader: React.FC<Props> = ({
 export default ProfileHeader;
 
 // styling
-const socialLinks = `text-white text-xl hover:text-brand-primary`;
+const socialLinks = `text-white w-4 h-4 hover:text-brand-primary`;
