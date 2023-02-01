@@ -26,7 +26,7 @@ const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
         className="p-1.5 bg-black/30 rounded-md"
         onClick={() => setIsOpen((prev) => !prev)}
       >
-        <HiOutlineDotsVertical className="w-5 h-5 stroke-white" />
+        <HiOutlineDotsVertical className="w-4 h-4 stroke-white" />
       </button>
 
       {isOpen && (
@@ -37,7 +37,7 @@ const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
               query: { account_address: loggedInUser.account_address },
             }}
             className={clsx(
-              `w-full text-sm text-white flex items-center gap-3 transition hover:bg-background-shade-2 px-5 py-4`
+              `w-full text-[13px] text-white flex items-center gap-3 transition hover:bg-background-shade-2 px-4 py-4`
             )}
           >
             <HiOutlineArchive className="w-[18px] h-[18px]" />

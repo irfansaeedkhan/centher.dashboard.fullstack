@@ -287,10 +287,10 @@ const ProfileHeader: React.FC<Props> = ({
   };
 
   return (
-    <div className={`bg-background-shade-3 rounded-2xl`}>
+    <div className={`bg-background-shade-3 rounded-xl`}>
       <div
         className={clsx(
-          `relative rounded-t-2xl bg-no-repeat w-full h-[180px] bg-cover`,
+          `relative rounded-t-xl bg-no-repeat w-full h-[180px] bg-cover`,
           {
             "cursor-move": coverImage.newImage,
           }
@@ -302,7 +302,7 @@ const ProfileHeader: React.FC<Props> = ({
       >
         {isOwnProfile && (
           <>
-            <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-6 fsm:bottom-4">
+            <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-4 fsm:bottom-3">
               <input
                 type="file"
                 ref={coverImageInputRef}
@@ -432,20 +432,18 @@ const ProfileHeader: React.FC<Props> = ({
               className={`flex flex-col lg:flex-row items-baseline justify-between`}
             >
               <h5
-                className={clsx(
-                  loggedInUser
-                    ? `text-center text-white text-20px font-semibold text-ellipsis line-clamp-1`
-                    : "text-center text-white text-20px font-semibold text-ellipsis line-clamp-1 mt-6"
-                )}
+                className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
-                {user.display_name}
+                <span className="text-center text-white text-base font-semibold text-ellipsis line-clamp-1">
+                  {user.display_name}
+                </span>
               </h5>
             </div>
           </div>
 
-          <div className="w-full justify-center flex flex-col items-center">
+          <div className="w-full justify-center flex flex-col items-center mt-1">
             <div className={`flex items-center gap-2 relative`}>
-              <h6 className={`text-white text-14px font-semibold`}>
+              <h6 className={`text-white text-xs font-medium`}>
                 {sliceAccountAddress(user.account_address)}
               </h6>
               <button
@@ -457,6 +455,7 @@ const ProfileHeader: React.FC<Props> = ({
                 <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
               </button>
             </div>
+
             <p className="text-[11px] mt-1 leading-6 font-medium text-gray-shade-7">
               Member since {dayjs(user.createdAt).format("MMM, YYYY")}
             </p>
@@ -464,7 +463,7 @@ const ProfileHeader: React.FC<Props> = ({
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
-                <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-3">
+                <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-2">
                   {loadingState ? (
                     <button
                       className={clsx(
@@ -484,6 +483,7 @@ const ProfileHeader: React.FC<Props> = ({
                   )}
                 </div>
               )}
+
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
@@ -515,9 +515,10 @@ const ProfileHeader: React.FC<Props> = ({
                 </div>
               )}
           </div>
+
           {user.profile_bio && (
             <p
-              className={`text-sm mt-3 text-center break-words font-normal leading-6 text-gray-shade-16 whitespace-pre-wrap max-w-[776px] mx-auto`}
+              className={`text-xs fsm:text-[13px] mt-2 text-center break-words font-normal tracking-wide text-gray-shade-16 whitespace-pre-wrap max-w-xl mx-auto`}
             >
               {user.profile_bio}
             </p>
@@ -532,7 +533,7 @@ const ProfileHeader: React.FC<Props> = ({
           user.twitter_username ||
           user.website_url ||
           user.youtube_url) && (
-          <div className="w-full justify-center flex mt-2 items-center gap-4">
+          <div className="w-full justify-center flex mt-3 items-center gap-4">
             {user.tiktok_username && (
               <a
                 href={`https://tiktok.com/@${user.tiktok_username}`}
@@ -622,4 +623,4 @@ const ProfileHeader: React.FC<Props> = ({
 export default ProfileHeader;
 
 // styling
-const socialLinks = `text-white text-xl hover:text-brand-primary`;
+const socialLinks = `text-white w-4 h-4 hover:text-brand-primary`;
