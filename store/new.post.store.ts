@@ -31,7 +31,7 @@ export interface NewPostStore {
   editPostFiles?: EditFileWithID[];
   removeEditPostFile: (fileId: string) => void;
 
-  postTextMaxLength: 200;
+  postTextMaxLength: 260;
   postText: string;
   setPostText: (text: string) => void;
 
@@ -99,7 +99,7 @@ export const useNewPostStore = create<NewPostStore>()(
         }));
       },
 
-      postTextMaxLength: 200,
+      postTextMaxLength: 260,
       postText: "",
       setPostText: (text: string) => set({ postText: text }),
 
