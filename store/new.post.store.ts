@@ -143,6 +143,11 @@ export const useNewPostStore = create<NewPostStore>()(
           set({ isPostModalLoading: false });
           customLog("Error in create post: ", ["development"]);
           customLog(error, ["development"]);
+          if (error.response?.data?.message_description) {
+            toast.error(error.response.data.message_description);
+          } else {
+            toast.error("Something went wrong, please try again later");
+          }
         }
       },
 
