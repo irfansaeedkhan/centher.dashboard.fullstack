@@ -17,6 +17,7 @@ import { PostFooter } from "./post.footer";
 import { ShowThread } from "./show.thread";
 import { PostUserImage } from "./post.user.image";
 import { LoggedInModal } from "./logged.in.modal";
+import { FullscreenMediaPreview } from "./fullscreen.media.preview";
 
 export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
 export type Placement =
@@ -65,6 +66,10 @@ export const SinglePostV2: React.FC<Props> = ({
         isOpen: false,
       }));
     },
+  });
+  const [fullscreenPreview, setFullscreenPreview] = useState({
+    isOpen: false,
+    previewIndex: 0,
   });
 
   const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
@@ -187,7 +192,21 @@ export const SinglePostV2: React.FC<Props> = ({
           )}
         >
           {post.media && !!post.media.length && (
-            <PostMedia post={post} postType={postType} placement={placement} />
+            <PostMedia
+              post={post}
+              postType={postType}
+              placement={placement}
+              previewIndex={fullscreenPreview.previewIndex}
+              onClickMedia={(mediaUrl) => {
+                setFullscreenPreview((prev) => ({
+                  ...prev,
+                  isOpen: true,
+                  previewIndex: post.media!.findIndex(
+                    (m) => m.url === mediaUrl
+                  ),
+                }));
+              }}
+            />
           )}
 
           {post.text_content && (
@@ -223,6 +242,21 @@ export const SinglePostV2: React.FC<Props> = ({
               onClickReply();
             }}
           />
+
+          {/*  Fullscreen Lightbox */}
+          {fullscreenPreview.isOpen && post.media && !!post.media.length && (
+            <FullscreenMediaPreview
+              media={post.media!}
+              previewIndex={fullscreenPreview.previewIndex}
+              onClose={(previewIndex) =>
+                setFullscreenPreview((prev) => ({
+                  ...prev,
+                  isOpen: false,
+                  previewIndex,
+                }))
+              }
+            />
+          )}
         </div>
       </div>
 
