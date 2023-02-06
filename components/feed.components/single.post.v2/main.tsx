@@ -17,6 +17,7 @@ import { PostFooter } from "./post.footer";
 import { ShowThread } from "./show.thread";
 import { PostUserImage } from "./post.user.image";
 import { LoggedInModal } from "./logged.in.modal";
+import { FullscreenMediaPreview } from "./fullscreen.media.preview";
 
 export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
 export type Placement =
@@ -65,6 +66,10 @@ export const SinglePostV2: React.FC<Props> = ({
         isOpen: false,
       }));
     },
+  });
+  const [fullscreenPreview, setFullscreenPreview] = useState({
+    isOpen: false,
+    previewIndex: 0,
   });
 
   const [currentPostRef, _currentPostInView, currentPostEntry] = useInView({
@@ -177,9 +182,6 @@ export const SinglePostV2: React.FC<Props> = ({
         <div
           className={clsx(
             `overflow-hidden`,
-            {
-              "mb-2": shouldShowThread,
-            },
             placement === "single-post-page" &&
               (postType === "main" || postType === "reply-w-parent-header")
               ? "col-span-full"
@@ -187,7 +189,21 @@ export const SinglePostV2: React.FC<Props> = ({
           )}
         >
           {post.media && !!post.media.length && (
-            <PostMedia post={post} postType={postType} placement={placement} />
+            <PostMedia
+              post={post}
+              postType={postType}
+              placement={placement}
+              previewIndex={fullscreenPreview.previewIndex}
+              onClickMedia={(mediaUrl) => {
+                setFullscreenPreview((prev) => ({
+                  ...prev,
+                  isOpen: true,
+                  previewIndex: post.media!.findIndex(
+                    (m) => m.url === mediaUrl
+                  ),
+                }));
+              }}
+            />
           )}
 
           {post.text_content && (
@@ -198,6 +214,33 @@ export const SinglePostV2: React.FC<Props> = ({
             />
           )}
 
+          {/*  Fullscreen Lightbox */}
+          {fullscreenPreview.isOpen && post.media && !!post.media.length && (
+            <FullscreenMediaPreview
+              media={post.media!}
+              previewIndex={fullscreenPreview.previewIndex}
+              onClose={(previewIndex) =>
+                setFullscreenPreview((prev) => ({
+                  ...prev,
+                  isOpen: false,
+                  previewIndex,
+                }))
+              }
+            />
+          )}
+        </div>
+
+        <div
+          className={clsx(
+            {
+              "mb-2": shouldShowThread,
+            },
+            placement === "single-post-page" &&
+              (postType === "main" || postType === "reply-w-parent-header")
+              ? "col-span-full"
+              : "col-start-2 col-span-1"
+          )}
+        >
           <PostFooter
             post={post}
             postType={postType}
