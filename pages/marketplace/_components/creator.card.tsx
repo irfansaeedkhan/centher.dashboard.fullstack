@@ -1,5 +1,6 @@
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -34,7 +35,7 @@ const CreatorCard = ({ publicKey }: CreatorCardProps) => {
             }}
             className="text-sm font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1 overflow-hidden"
           >
-            {user?.display_name}
+            {sliceDisplayName(user && user?.display_name)}
           </Link>
           {/* <p className="text-xs text-gray-shade-7">Tradesr</p> */}
         </div>

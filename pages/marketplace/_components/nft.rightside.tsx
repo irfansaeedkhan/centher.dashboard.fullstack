@@ -16,6 +16,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
 import { copyText } from "@/utils/copy.text";
 import { formatAddress } from "@/utils/format.address";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 
@@ -145,7 +146,7 @@ export const NFTRightSideComponent = ({
                 }}
                 className={nameBoxZValue}
               >
-                {user?.display_name}
+                {sliceDisplayName(user && user?.display_name)}
               </Link>
             ) : (
               <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
@@ -176,7 +177,7 @@ export const NFTRightSideComponent = ({
                 }}
                 className={nameBoxZValue}
               >
-                {nftOwner?.display_name}
+                {sliceDisplayName(nftOwner && nftOwner?.display_name)}
               </Link>
             ) : (
               <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>

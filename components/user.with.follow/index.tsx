@@ -8,6 +8,7 @@ import useUser from "@/hooks/use.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import type { IUserWithFollow } from "./types";
 
@@ -63,7 +64,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               className="flex items-center"
             >
               <span className="fsm:text-base text-sm fsm:font-semibold font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1">
-                {_result.display_name}
+                {sliceDisplayName(_result && _result.display_name)}
               </span>
               {!!verificationTick && (
                 <span className="verifiedIcon !h-6 !w-6 ml-0.5 fsm:ml-1">

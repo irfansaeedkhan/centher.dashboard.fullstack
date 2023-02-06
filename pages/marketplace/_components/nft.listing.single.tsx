@@ -5,6 +5,7 @@ import useGetUser from "@/hooks/use.get.user";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 import { useRouter } from "next/router";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface Props {
   item: IListHistory;
@@ -54,7 +55,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
               >
                 {" "}
                 {buyer?.display_name ? (
-                  <span>{buyer?.display_name}</span>
+                  <span>{sliceDisplayName(buyer && buyer?.display_name)}</span>
                 ) : (
                   <div className="rounded-sm !w-[50px] !h-4 bg-gray-shade-3 animate-pulse"></div>
                 )}
@@ -69,7 +70,9 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 }}
               >
                 {seller?.display_name ? (
-                  <span>{seller?.display_name}</span>
+                  <span>
+                    {sliceDisplayName(seller && seller?.display_name)}
+                  </span>
                 ) : (
                   <div className="rounded-sm !w-[50px] !h-4 bg-gray-shade-3 animate-pulse"></div>
                 )}

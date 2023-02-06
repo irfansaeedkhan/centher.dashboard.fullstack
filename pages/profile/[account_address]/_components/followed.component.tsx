@@ -5,6 +5,7 @@ import clsx from "clsx";
 
 import { MutualFollowersData } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface Props {
   mutualFollowersData: MutualFollowersData | null;
@@ -54,7 +55,7 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
                 key={user._id}
                 className="hover:text-brand-primary"
               >
-                {user.display_name}
+                {sliceDisplayName(user && user.display_name)}
                 {index !== mutualFollowersData.users.length - 1 && ", "}
               </Link>
             ))}

@@ -4,6 +4,7 @@ import clsx from "clsx";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostModalContainer } from "./post.modal.container";
 import { FilesPreview } from "./files.preview";
@@ -61,7 +62,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             <h5
               className={`text-14px font-semibold text-white text-ellipsis line-clamp-1`}
             >
-              {user.display_name}
+              {sliceDisplayName(user && user.display_name)}
             </h5>
           </div>
 

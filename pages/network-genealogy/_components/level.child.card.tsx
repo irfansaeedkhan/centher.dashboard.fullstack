@@ -6,6 +6,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
 import useUser from "@/hooks/use.user";
 import { formatAddress } from "@/utils/format.address";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
   const { user } = useGetUser(childData?.user);
@@ -47,7 +48,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
               }
             >
               <h5 className="dark text-white text-12px font-medium flex-shrink-0">
-                {user?.display_name}
+                {sliceDisplayName(user && user?.display_name)}
               </h5>
             </Link>
           ) : (
