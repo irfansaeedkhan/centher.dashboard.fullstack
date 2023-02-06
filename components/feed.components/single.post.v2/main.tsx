@@ -182,9 +182,6 @@ export const SinglePostV2: React.FC<Props> = ({
         <div
           className={clsx(
             `overflow-hidden`,
-            {
-              "mb-2": shouldShowThread,
-            },
             placement === "single-post-page" &&
               (postType === "main" || postType === "reply-w-parent-header")
               ? "col-span-full"
@@ -217,6 +214,33 @@ export const SinglePostV2: React.FC<Props> = ({
             />
           )}
 
+          {/*  Fullscreen Lightbox */}
+          {fullscreenPreview.isOpen && post.media && !!post.media.length && (
+            <FullscreenMediaPreview
+              media={post.media!}
+              previewIndex={fullscreenPreview.previewIndex}
+              onClose={(previewIndex) =>
+                setFullscreenPreview((prev) => ({
+                  ...prev,
+                  isOpen: false,
+                  previewIndex,
+                }))
+              }
+            />
+          )}
+        </div>
+
+        <div
+          className={clsx(
+            {
+              "mb-2": shouldShowThread,
+            },
+            placement === "single-post-page" &&
+              (postType === "main" || postType === "reply-w-parent-header")
+              ? "col-span-full"
+              : "col-start-2 col-span-1"
+          )}
+        >
           <PostFooter
             post={post}
             postType={postType}
@@ -242,21 +266,6 @@ export const SinglePostV2: React.FC<Props> = ({
               onClickReply();
             }}
           />
-
-          {/*  Fullscreen Lightbox */}
-          {fullscreenPreview.isOpen && post.media && !!post.media.length && (
-            <FullscreenMediaPreview
-              media={post.media!}
-              previewIndex={fullscreenPreview.previewIndex}
-              onClose={(previewIndex) =>
-                setFullscreenPreview((prev) => ({
-                  ...prev,
-                  isOpen: false,
-                  previewIndex,
-                }))
-              }
-            />
-          )}
         </div>
       </div>
 
