@@ -11,6 +11,7 @@ import {
   useNotificationsStore,
 } from "@/store/notifications.store";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface SingleNotificationProps {
   notification: Notification;
@@ -41,7 +42,7 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name}{" "}
+        {sliceDisplayName(notification && notification.by.display_name)}{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -57,7 +58,8 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name} started following you.
+        {sliceDisplayName(notification && notification.by.display_name)} started
+        following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -69,7 +71,8 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name} has joined your network.
+        {sliceDisplayName(notification && notification.by.display_name)} has
+        joined your network.
       </Link>
     );
   } else if (notification.type === "centher_purchase_ntr") {
@@ -83,7 +86,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          {notification.by.display_name}
+          {sliceDisplayName(notification && notification.by.display_name)}
         </>
       </Link>
     );
@@ -98,7 +101,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          {notification.by.display_name}
+          {sliceDisplayName(notification && notification.by.display_name)}
         </>
       </Link>
     );
@@ -106,7 +109,7 @@ export const SingleNotification = React.forwardRef<
 
   /**
    * {notification.amount} BUSD network rewards from{" "}
-        {notification.by.display_name}
+        {sliceDisplayName(notification && notification.by.display_name)}
    */
   return (
     <div

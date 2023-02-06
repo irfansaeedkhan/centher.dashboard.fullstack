@@ -7,6 +7,7 @@ import Link from "next/link";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 export interface CollectionCardProps {
   data: Collection;
@@ -66,7 +67,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
         <span
           className={`text-sm text-white font-semibold text-ellipsis line-clamp-1 mt-1`}
         >
-          {user?.display_name}
+          {sliceDisplayName(user && user.display_name)}
         </span>
         <p
           className={`font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`}

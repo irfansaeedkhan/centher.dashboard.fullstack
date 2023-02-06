@@ -8,6 +8,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import { ArchivedPost, CompletedPost, PostUser } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
@@ -79,7 +80,7 @@ export const PostHeader: React.FC<Props> = ({
             }}
             className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
           >
-            {postUser.display_name}
+            {sliceDisplayName(postUser && postUser.display_name)}
           </Link>
 
           {/* Time */}
@@ -112,7 +113,7 @@ export const PostHeader: React.FC<Props> = ({
                 Replying to
               </span>
               <span className="group-hover:text-brand-primary">
-                {post.parent_post?.user.display_name}
+                {sliceDisplayName(post && post?.parent_post?.user.display_name)}
               </span>
             </Link>
           </>

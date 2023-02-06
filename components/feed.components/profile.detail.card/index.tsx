@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
@@ -62,7 +63,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           className={`flex items-center justify-center`}
         >
           <span className="line-clamp-1 text-ellipsis text-white text-sm font-bold">
-            {user.display_name}
+            {sliceDisplayName(user && user.display_name)}
           </span>
           {!!verificationTick && (
             <span className="verifiedIcon !h-6 !w-6 ml-1">

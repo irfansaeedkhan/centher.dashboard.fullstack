@@ -36,6 +36,7 @@ import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
@@ -404,7 +405,7 @@ const ProfileHeader: React.FC<Props> = ({
                 className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
                 <span className="text-center text-white text-base font-semibold text-ellipsis line-clamp-1">
-                  {user.display_name}
+                  {sliceDisplayName(user && user.display_name)}
                 </span>
                 {!!verificationTick && (
                   <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">

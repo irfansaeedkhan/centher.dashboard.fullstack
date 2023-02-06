@@ -8,6 +8,7 @@ import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 const SearchBar = () => {
   const router = useRouter();
@@ -119,7 +120,7 @@ const SearchBar = () => {
                       href={`/profile/${item.account_address}`}
                     >
                       <p className="text-white text-sm font-medium hover:text-brand-primary">
-                        {item.display_name}
+                        {sliceDisplayName(item && item.display_name)}
                       </p>
                     </Link>
                   </div>

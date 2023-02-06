@@ -50,6 +50,8 @@ export const Levels = () => {
     genealogies &&
     genealogies.length > 0 &&
     genealogies.map((level) => level.people).reduce((a, b) => a + b, 0);
+
+  console.log(totalPeople);
   return (
     <div>
       {!!totalPeople ? (
