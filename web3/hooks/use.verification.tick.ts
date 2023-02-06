@@ -29,6 +29,8 @@ export const useVerificationTick = (user?: { is_verified: boolean }) => {
         clearInterval(interval1);
         clearInterval(interval2);
       };
+    } else {
+      setVerificationIcon(null);
     }
   }, [user]);
   return verificationIcon;
