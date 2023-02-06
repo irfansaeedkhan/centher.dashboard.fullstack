@@ -23,6 +23,7 @@ import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import {
   DotsIcon,
   FacebookCircleIcon,
@@ -241,7 +242,7 @@ const Collection: NextPageWithLayout = () => {
                       }}
                       className="text-gray-shade-18 text-14px font-semibold text-ellipsis line-clamp-1 hover:text-brand-primary"
                     >
-                      {user?.display_name}
+                      {sliceDisplayName(user && user?.display_name)}
                     </Link>
                   </div>
                 </div>

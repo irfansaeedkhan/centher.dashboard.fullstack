@@ -54,21 +54,18 @@ export const Levels = () => {
   console.log(totalPeople);
   return (
     <div>
-      {
-        totalPeople === 0 ? null : (
-          <div className="pl-1 pr-2 ">
-            <div className="w-full rounded-t-lg  bg-background-shade-3 px-4 py-3 flex flex-col gap-2  mb-4 max-w-[300px]">
-              <h5 className="text-gray-shade-19 text-14px font-medium">
-                Total Numbers Of People
-              </h5>
-              <h6 className="text-white-shade-1 text-14px font-semibold">
-                {totalPeople ?? "N/A"}
-              </h6>
-            </div>
+      {!!totalPeople ? (
+        <div className="pl-1 pr-2 ">
+          <div className="w-full rounded-t-lg  bg-background-shade-3 px-4 py-3 flex flex-col gap-2  mb-4 max-w-[300px]">
+            <h5 className="text-gray-shade-19 text-14px font-medium">
+              Total Numbers Of People
+            </h5>
+            <h6 className="text-white-shade-1 text-14px font-semibold">
+              {totalPeople ?? "N/A"}
+            </h6>
           </div>
-        )
-        // <div className="w-full rounded-t-lg bg-background-shade-3 mb-4 max-w-[300px] h-16 animate-pulse"></div>
-      }
+        </div>
+      ) : null}
 
       {!!genealogies?.length ? (
         <div className="w-full customScrollbar flex gap-3 pl-1 pr-2 geonologyScroll">

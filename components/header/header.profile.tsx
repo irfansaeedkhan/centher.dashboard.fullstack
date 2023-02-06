@@ -18,6 +18,7 @@ import {
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -79,7 +80,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           <div
             className={`text-ellipsis text-sm text-white font-semibold line-clamp-1`}
           >
-            {loggedInUser?.display_name}
+            {sliceDisplayName(loggedInUser && loggedInUser?.display_name)}
           </div>
           <a
             href={
