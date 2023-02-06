@@ -6,12 +6,6 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
-import {
-  DefaultCircle,
-  GoldCircle,
-  RainbowCircle,
-  SilverCircle,
-} from "@/assets/svgs";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
@@ -23,104 +17,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
-  const [verifyIcon, setVerifyIcon] = useState<string>("");
-  const [strokeColor, setStrokeColor] = useState<string>("none");
-  /* 
-  Stroke colors :   #1B1C22 (rainbow)  #B1B1B1 (silver)  #E2BD3A (gold)
-  verification icon variants
-  Rainbow1  Rainbow2 RainbowLastFrame
-  gold1 gold2 goldLastFrame
-  silver1 silver2 silverLastFrame
-  */
-  const iconVerifyProps = useVerificationTick(user?.account_address);
-
-  useEffect(() => {
-    if (iconVerifyProps === "rainbow") {
-      setStrokeColor("#1B1C22");
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/RainbowLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/Rainbow2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "silver") {
-      setStrokeColor("#B1B1B1");
-
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps == "gold") {
-      setStrokeColor("#E2BD3A");
-
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/gold1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/gold2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/goldLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/gold2.gif");
-      }, 20000);
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    } else if (iconVerifyProps === "no-icon") {
-      const timeout1 = setTimeout(function () {
-        setVerifyIcon("/images/silver1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerifyIcon("/images/silver2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerifyIcon("/images/silverLastFrame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerifyIcon("/images/silver2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
-    }
-  }, [iconVerifyProps, user?.account_address]);
+  const verificationTick = useVerificationTick(user);
 
   return (
     <div
@@ -150,52 +47,10 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             height={60}
             sizes={"256px"}
           />
-          {iconVerifyProps !== "no-icon" && (
-            <>
-              {iconVerifyProps === "rainbow" && (
-                <RainbowCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
-              {iconVerifyProps === "silver" && (
-                <SilverCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
-              {iconVerifyProps === "gold" && (
-                <GoldCircle
-                  className={clsx(
-                    `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                  )}
-                />
-              )}
-              <DefaultCircle
-                className={clsx(
-                  `absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] !h-[60px] !w-[60px] object-cover`
-                )}
-              />
-            </>
-          )}
-          <div
-            className={`verifiedIcon absolute bottom-[-14px] right-[-14px] !h-[34px] !w-[34px] !m-0`}
-          >
-            {iconVerifyProps !== "no-icon" && verifyIcon && (
-              <Image
-                src={verifyIcon}
-                alt={"verified icon"}
-                width={24}
-                height={24}
-              />
-            )}
-          </div>
         </Link>
       </div>
 
-      <h3 className={`px-1 py-3`}>
+      <h3 className={`p-2`}>
         <Link
           href={{
             pathname: AppRoutes.profile.account_address,
@@ -203,9 +58,22 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               account_address: user.account_address,
             },
           }}
-          className={`line-clamp-1 text-ellipsis text-white text-sm font-bold`}
+          title={user.display_name}
+          className={`flex items-center justify-center`}
         >
-          {user.display_name}
+          <span className="line-clamp-1 text-ellipsis text-white text-sm font-bold">
+            {user.display_name}
+          </span>
+          {!!verificationTick && (
+            <span className="verifiedIcon !h-6 !w-6 ml-1">
+              <Image
+                src={verificationTick}
+                alt={"Verified"}
+                width={24}
+                height={24}
+              />
+            </span>
+          )}
         </Link>
       </h3>
 
@@ -213,28 +81,28 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
       >
         <div>
-          <Link href={`/profile/${user.account_address}`}>
+          <div>
             <h4 className={clsx(label, `mb-2`)}>Posts</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.posts_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
         <div>
-          <Link href={`/profile/${user.account_address}/followers`}>
+          <div>
             <h4 className={clsx(label, `mb-2`)}>Followers</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.followers_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
         <div>
-          <Link href={`/profile/${user.account_address}/following`}>
-            <h4 className={clsx(label, `mb-2`)}>Followings</h4>
+          <div>
+            <h4 className={clsx(label, `mb-2`)}>Following</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.following_count ?? "--"}
             </h5>
-          </Link>
+          </div>
         </div>
       </div>
 

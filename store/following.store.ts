@@ -9,21 +9,19 @@ type Following = IUserWithFollow;
 
 export interface FollowingStore {
   loading: LoadingState;
-  accountAddress: string;
 
   offset: number;
   updateOffset: () => void;
 
   following: IUserWithFollow[];
   fetchFollowing: () => Promise<void>;
-  resetFollowing: (accountAddress: string, loading?: LoadingState) => void;
+  resetFollowing: (loading?: LoadingState) => void;
 }
 
 export const useFollowingStore = create<FollowingStore>()(
   devtools(
     (set, get) => ({
       loading: "idle",
-      accountAddress: "",
 
       offset: 0,
       updateOffset: () => set((state) => ({ offset: state.following.length })),
@@ -33,11 +31,10 @@ export const useFollowingStore = create<FollowingStore>()(
         try {
           set({ loading: "loading" });
 
-          const accountAddress = get().accountAddress;
           const offset = get().offset;
           const limit = 10;
 
-          const url = `/api/users/${accountAddress}/following?offset=${offset}&limit=${limit}`;
+          const url = `/api/users/me/following?offset=${offset}&limit=${limit}`;
 
           const { data } = await axiosNodeApi.get(url);
 
@@ -63,9 +60,8 @@ export const useFollowingStore = create<FollowingStore>()(
             console.error(error);
         }
       },
-      resetFollowing: (accountAddress, loading = "idle") => {
+      resetFollowing: (loading = "idle") => {
         set({
-          accountAddress,
           loading,
           following: [],
           offset: 0,

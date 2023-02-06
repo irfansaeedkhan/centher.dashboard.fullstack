@@ -1,33 +1,37 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
-import { getNTRContract } from "../utils/contract.helpers";
 
-export const useVerificationTick = (address?: string) => {
-  const [verificationIcon, setVerificationIcon] = useState("");
+export const useVerificationTick = (user?: { is_verified: boolean }) => {
+  const [verificationIcon, setVerificationIcon] = useState<null | string>(null);
 
   useEffect(() => {
-    if (!address) {
+    if (!user) {
+      setVerificationIcon(null);
       return;
     }
-    (async () => {
-      const contract = getNTRContract();
-      try {
-        const ntrBalance = parseInt(
-          ethers.utils.formatEther(await contract.balanceOf(address))
-        );
-        if (ntrBalance >= 5000 && ntrBalance < 25000) {
-          setVerificationIcon("silver");
-        } else if (ntrBalance >= 25000 && ntrBalance < 100000) {
-          setVerificationIcon("gold");
-        } else if (ntrBalance >= 100000) {
-          setVerificationIcon("rainbow");
-        } else {
-          setVerificationIcon("no-icon");
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [address]);
+
+    if (user.is_verified) {
+      const timeout1 = setTimeout(function () {
+        setVerificationIcon("/images/rainbow-1.gif");
+      }, 3000);
+      const timeout2 = setTimeout(function () {
+        setVerificationIcon("/images/rainbow-2.gif");
+      }, 4600);
+      const interval1 = setInterval(() => {
+        setVerificationIcon("/images/rainbow-last-frame.png");
+      }, 9200);
+      const interval2 = setInterval(() => {
+        setVerificationIcon("/images/rainbow-2.gif");
+      }, 20000);
+
+      return () => {
+        clearTimeout(timeout1);
+        clearTimeout(timeout2);
+        clearInterval(interval1);
+        clearInterval(interval2);
+      };
+    } else {
+      setVerificationIcon(null);
+    }
+  }, [user]);
   return verificationIcon;
 };

@@ -20,7 +20,7 @@ export class NFTUploader {
   }
 
   async uploadNFT(
-    file: ArrayBuffer,
+    file: any,
     nftData: INFTData,
     nameWrapper: safeNameType
   ): Promise<INFTDetails> {
@@ -28,11 +28,9 @@ export class NFTUploader {
       throw new Error("invalid file.");
     }
 
-    let assetBuffer = this.toBuffer(file);
-
     const uploadImageDto = {
       path: this._uploader.makePath(nameWrapper),
-      content: assetBuffer.toString("base64"),
+      content: file.toString("base64"),
     };
 
     const imagePath = await this._uploader.upload(uploadImageDto);

@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
 import dayjs from "dayjs";
@@ -41,8 +40,6 @@ export const PostHeader: React.FC<Props> = ({
     );
   }, [loggedInUser?.account_address, postUser.account_address]);
 
-  const router = useRouter();
-
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
   }, [post.createdAt]);
@@ -53,12 +50,17 @@ export const PostHeader: React.FC<Props> = ({
       postType === "reply-w-parent-header" &&
       post.status !== "archived" &&
       post.parent_post
-        ? post.parent_post.createdAt!
+        ? post.parent_post.createdAt
         : post.createdAt;
 
-    return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
-      ? dayjs(new Date(createdAt)).fromNow()
-      : dayjs(new Date(createdAt)).format("D MMM");
+    try {
+      return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
+        ? dayjs(new Date(createdAt)).fromNow()
+        : dayjs(new Date(createdAt)).format("D MMM");
+    } catch (error) {
+      // There is some issue with dayjs, so we are returning 2s as a fallback
+      return "2s";
+    }
   }, [post, postType]);
 
   return (

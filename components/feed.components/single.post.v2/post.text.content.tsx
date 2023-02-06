@@ -24,10 +24,7 @@ export const PostTextContent: React.FC<Props> = ({
       }}
       className={clsx(
         `whitespace-pre-wrap break-all text-app-post-text text-sm cursor-text`,
-        placement === "single-post-page" &&
-          (postType === "main" || postType === "reply-w-parent-header")
-          ? "font-medium -ml-14 mt-6"
-          : "mt-4"
+        post.media && post.media.length > 0 ? "mt-3" : "mt-2"
       )}
       style={{
         wordBreak: "break-word",

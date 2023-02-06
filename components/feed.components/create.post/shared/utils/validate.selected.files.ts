@@ -6,7 +6,7 @@ import {
   MAX_IMAGE_SIZE,
   MAX_VIDEO_SIZE,
   SUPPORTED_IMAGE_TYPES,
-  SUPPORTED_VIDEO_TYPES,
+  SUPPORTED_VIDEO_MIME_TYPES,
 } from "@/constants/supported.media.type";
 
 // Function will be called when user click on photo or video icon on create post
@@ -73,7 +73,7 @@ export const validateFile = (file: File, fileType: FileType) => {
     fileType === "image"
       ? SUPPORTED_IMAGE_TYPES
       : fileType === "video"
-      ? SUPPORTED_VIDEO_TYPES
+      ? SUPPORTED_VIDEO_MIME_TYPES
       : [];
 
   const maxFileSize =
@@ -86,7 +86,14 @@ export const validateFile = (file: File, fileType: FileType) => {
   // Check if file is not supported
   if (!supportedFileTypes.includes(file.type)) {
     error.code = "app_file_format_not_supported";
-    error.message = "The file format is not supported";
+    if (fileType === "image") {
+      error.message = "The image format is not supported";
+    } else if (fileType === "video") {
+      error.message = "The video format is not supported";
+    } else {
+      error.message = "The file format is not supported";
+    }
+
     throw error;
   }
 

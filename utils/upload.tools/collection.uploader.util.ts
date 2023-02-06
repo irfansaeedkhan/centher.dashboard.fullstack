@@ -4,6 +4,7 @@ import { INFTDetails } from "./interfaces/nft.details.interface";
 import { IUploader } from "./interfaces/file.uploader.interface";
 import { MoralisUploader } from "./uploaders/moralis.upload.util";
 import { ICollectionMetaData } from "./interfaces/collection.metadata.interface";
+import { readFileAsync } from "../file.reader.util";
 
 export class CollectionUploader {
   _uploader: IUploader;
@@ -19,7 +20,7 @@ export class CollectionUploader {
   }
 
   async uploadCollection(
-    file: ArrayBuffer,
+    file: any,
     collectionData: ICollectionData,
     profileImgPath: string
   ): Promise<INFTDetails> {
@@ -27,11 +28,9 @@ export class CollectionUploader {
       throw new Error("invalid file.");
     }
 
-    let assetBuffer = this.toBuffer(file);
-
     const uploadCoverDto = {
       path: this._uploader.makePath(collectionData),
-      content: assetBuffer.toString("base64"),
+      content: file.toString("base64"),
     };
 
     const coverImagePath = await this._uploader.upload(uploadCoverDto);

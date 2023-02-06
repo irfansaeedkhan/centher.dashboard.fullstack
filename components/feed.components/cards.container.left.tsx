@@ -15,14 +15,11 @@ export const CardsContainerLeft = () => {
   const { user: loggedInUser } = useUser();
   const { user } = useGetUserWithPostId(router.query.post_id?.toString());
   const [profileCardUser, setProfileCardUser] = useState<User | null>(null);
-  const [postId, setPostId] = useState<string | undefined>("");
 
   useEffect(() => {
     if (loggedInUser && router.pathname === "/feed") {
       setProfileCardUser(loggedInUser);
     } else if (user && router.pathname === AppRoutes.feed.single_post) {
-      const postId = router.query.post_id?.toString();
-      setPostId(postId);
       setProfileCardUser(user);
     } else {
       setProfileCardUser(null);

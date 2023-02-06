@@ -52,7 +52,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     if (loggedInUser.account_address.toLowerCase() !== account.toLowerCase()) {
       deactivate();
     }
-  }, [deactivate, loggedInUser, account, connectWallet]);
+  }, [deactivate, loggedInUser, account]);
 
   return (
     <div
@@ -144,7 +144,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 "/auth/register?referred_by=" +
                 loggedInUser?.account_address
               }
-              className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
+              className="w-full text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 focus:outline-none border-0 focus:ring-0"
             />
             <FiCopy
               className="stroke-gray-shade-7 hover:stroke-brand-primary ml-2 w-5 h-5"
@@ -160,7 +160,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </div>
         </div>
         <div className="space-y-[6px] mt-4">
-          <h6 className="text-xs text-white">Wallet Address</h6>
+          <h6 className="text-xs text-white">Account Address</h6>
 
           <div className="flex items-center cursor-pointer">
             <input
@@ -169,7 +169,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               id="referral_link"
               readOnly
               value={loggedInUser?.account_address}
-              className="w-full !max-w-[260px] text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 whitespace-nowrap overflow-hidden text-ellipsis focus:outline-none border-0 focus:ring-0"
+              className="w-full text-xs font-medium text-gray-shade-7 rounded-md bg-black-shade-3 py-2 pl-3 focus:outline-none border-0 focus:ring-0"
             />
             <FiCopy
               className="stroke-gray-shade-7 hover:stroke-brand-primary ml-2 w-5 h-5"
