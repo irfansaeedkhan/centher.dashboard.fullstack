@@ -193,7 +193,7 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const createNFT = (values: INFTData) => {
     if (asset === undefined) {
-      toast.error("Choose banner image.");
+      toast.error("Choose file.");
       return;
     }
     // setNFTData(values)
@@ -215,7 +215,11 @@ const CreateNFT: NextPageWithLayout = () => {
           setAssetTab={setAssetTab}
           clearForm={clearForm}
         />
-        <CreateNFTForm createNFT={createNFT} clearForm={clearForm} />
+        <CreateNFTForm
+          createNFT={createNFT}
+          clearForm={clearForm}
+          asset={asset}
+        />
       </div>
 
       {Modal && (

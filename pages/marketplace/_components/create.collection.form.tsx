@@ -72,6 +72,8 @@ const schema = Joi.object({
 interface CreateNFTCollectionFormProps {
   createCollection: any;
   clearForm: boolean;
+  cover: Blob | undefined;
+  profile: Blob | undefined;
 }
 export interface ICollectionData {
   name: string;
@@ -87,6 +89,8 @@ export interface ICollectionData {
 export const CreateNFTCollectionForm = ({
   createCollection,
   clearForm,
+  cover,
+  profile,
 }: CreateNFTCollectionFormProps) => {
   const { handleSubmit, register, formState, reset } = useForm<ICollectionData>(
     {
@@ -313,8 +317,14 @@ export const CreateNFTCollectionForm = ({
         </div>
         <Button
           title={"Create Collection"}
-          variant={formState.isValid ? "v1" : "v2"}
-          disabled={!formState.isValid}
+          variant={
+            formState.isValid && profile != undefined && cover != undefined
+              ? "v1"
+              : "v2"
+          }
+          disabled={
+            !formState.isValid && profile === undefined && cover === undefined
+          }
           onClick={handleSubmit(onSubmit)}
           className="py-4 mt-2"
         />

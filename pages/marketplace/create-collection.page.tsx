@@ -248,6 +248,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         <CreateNFTCollectionForm
           createCollection={createCollection}
           clearForm={clearForm}
+          profile={profile}
+          cover={cover}
         />
       </div>
 

@@ -31,7 +31,7 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
             className={imageDelBtn}
             onClick={() => {
               setShowSecPreivew(false);
-              setAsset(null);
+              setAsset(undefined);
             }}
           >
             <CrossIcon />
@@ -70,7 +70,7 @@ const audioStyling = ctl(`
 w-[90%] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-2xl object-contain
 `);
 const imageDelBtn = ctl(`
-  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:!w-8 [&>*]:!h-8 [&>*]:hover:scale-125 z-30 w-[44px] h-[44px] flex items-center justify-center leading-0 backdrop-blur-lg
+  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
   `);
 const uploadBox = ctl(`
 w-full h-full absolute flex items-center justify-center

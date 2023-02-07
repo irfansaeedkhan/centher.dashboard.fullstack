@@ -79,18 +79,23 @@ export const UploadNFTCollection = ({
               </div>
             )}
           </div>
-          <div className={uploadBtnContainer}>
-            <label htmlFor="collection-profile-image" className={chooseFileBtn}>
-              Choose File
-            </label>
-            <input
-              type="file"
-              id="collection-profile-image"
-              className={chooseFileBtn2}
-              onChange={uploadProfileFile}
-              accept="image/png, image/jpeg, image/webp, image/gif"
-            />
-          </div>
+          {!showProfileImage && (
+            <div className={uploadBtnContainer}>
+              <label
+                htmlFor="collection-profile-image"
+                className={chooseFileBtn}
+              >
+                Choose File
+              </label>
+              <input
+                type="file"
+                id="collection-profile-image"
+                className={chooseFileBtn2}
+                onChange={uploadProfileFile}
+                accept="image/png, image/jpeg, image/webp, image/gif"
+              />
+            </div>
+          )}
         </div>
       </div>
       <div>
@@ -169,7 +174,7 @@ w-full h-full absolute rounded-2xl object-contain
 `);
 
 const coverDelBtn = ctl(`
-  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:!w-8 [&>*]:!h-8 [&>*]:hover:scale-125 z-30 w-[44px] h-[44px] flex items-center justify-center leading-0 backdrop-blur-lg
+  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
   `);
 const uploadBox = ctl(`
 w-full h-full absolute flex items-center justify-center
@@ -198,5 +203,5 @@ const profileStyling = ctl(`
 w-full h-full absolute rounded-full object-contain
 `);
 const profileDelBtn = ctl(`
-  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:!w-8 [&>*]:!h-8 [&>*]:hover:scale-125 z-30 w-[44px] h-[44px] flex items-center justify-center leading-0 backdrop-blur-lg
+  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
   `);

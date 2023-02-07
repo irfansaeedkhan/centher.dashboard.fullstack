@@ -49,6 +49,7 @@ interface FixedPriceFormProps {
   createNFT: any;
   collections: IMyCollection[];
   clearForm: boolean;
+  asset: Blob | undefined;
 }
 interface FormFields {
   NFTName: String;
@@ -63,6 +64,7 @@ const FixedPriceForm = ({
   createNFT,
   collections,
   clearForm,
+  asset,
 }: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
@@ -327,8 +329,8 @@ const FixedPriceForm = ({
       </div>
       <Button
         title={"Create NFT"}
-        variant={formState.isValid ? "v1" : "v2"}
-        disabled={!formState.isValid}
+        variant={formState.isValid && asset !== undefined ? "v1" : "v2"}
+        disabled={!formState.isValid && asset === undefined}
         onClick={handleSubmit(onSubmit)}
         className="py-4 mt-2"
       />
