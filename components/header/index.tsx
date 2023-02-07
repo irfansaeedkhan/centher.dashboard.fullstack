@@ -2,11 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
 
@@ -16,7 +18,11 @@ import SearchBar from "./search";
 
 const Header = () => {
   const { width } = useWindowSize();
+  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
+  const { user: ver_user } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
   const { connectWallet, disconnectWallet, getConnectedAccount } =
     useConnectWallet();
   const [openModal, setOpenModal] = useState(false);
@@ -71,8 +77,12 @@ const Header = () => {
       </Link>
 
       <div className={`flex flex-grow gap-6 items-center justify-end`}>
-        {user && <SearchBar />}
-
+        {/* {user && <SearchBar ver_user={ver_user} />} */}
+        {user && ver_user ? (
+          <SearchBar ver_user={ver_user} />
+        ) : (
+          user && <SearchBar ver_user={user} />
+        )}
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>
             Connect

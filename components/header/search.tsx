@@ -3,19 +3,31 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { useSearchStore } from "@/store/search.store";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
+import useGetUser from "@/hooks/use.get.user";
 import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import Image from "next/image";
+import { User } from "@/models/user";
+import SearchPopupResult from "./search.popup.result";
 
-const SearchBar = () => {
+interface Props {
+  ver_user: User;
+}
+
+const SearchBar: React.FC<Props> = ({ ver_user }) => {
   const router = useRouter();
 
   const { setSearchQuery } = useSearchStore((state) => ({
     setSearchQuery: state.setSearchQuery,
   }));
+  const { user } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
@@ -108,24 +120,14 @@ const SearchBar = () => {
         {openPopup && (
           <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200]">
             <div>
-              {result.map((item: any, i) => {
-                return (
-                  <div key={i} className="p-5 flex gap-2 items-center">
-                    <SearchIcon />
-                    <Link
-                      onClick={() => {
-                        setSearchQueryInput("");
-                        setOpenPopup(false);
-                      }}
-                      href={`/profile/${item.account_address}`}
-                    >
-                      <p className="text-white text-sm font-medium hover:text-brand-primary">
-                        {sliceDisplayName(item && item.display_name)}
-                      </p>
-                    </Link>
-                  </div>
-                );
-              })}
+              {result.map((item: any, i) => (
+                <SearchPopupResult
+                  user={item}
+                  key={item._id}
+                  setOpenPopup={setOpenPopup}
+                  setSearchQueryInput={setSearchQueryInput}
+                />
+              ))}
             </div>
           </div>
         )}
