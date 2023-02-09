@@ -95,15 +95,24 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.notifications,
 
   AppRoutes.referral.network_genealogy,
+
+  // TEST
+  AppRoutes.profile.collections,
+  AppRoutes.profile.purchased,
+  AppRoutes.profile.nfts,
+
+  AppRoutes.marketplace.nft,
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+  AppRoutes.marketplace.explore,
+  AppRoutes.marketplace.all_nfts,
+  AppRoutes.marketplace.all_collections,
+  AppRoutes.marketplace.collection,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
 const _notReadyPages: string[] = [
-  AppRoutes.profile.collections,
-  AppRoutes.profile.purchased,
-  AppRoutes.profile.nfts,
-
   AppRoutes.buy_centher,
   AppRoutes.referral.overview,
   AppRoutes.referral.network_rewards,
@@ -124,14 +133,6 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.users,
   AppRoutes.admin.network_rewards,
   AppRoutes.admin.network_rewards_marketplace,
-
-  AppRoutes.marketplace.nft,
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
-  AppRoutes.marketplace.explore,
-  AppRoutes.marketplace.all_nfts,
-  AppRoutes.marketplace.all_collections,
-  AppRoutes.marketplace.collection,
 
   AppRoutes.referral.liscense,
 ];
