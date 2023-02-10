@@ -122,6 +122,7 @@ export const NonNFTDescription = ({
             </p>
           )}
         </div>
+
         <Button
           title={"Next"}
           variant={listingForm.formState.isValid ? "v1" : "v2"}
@@ -328,7 +329,7 @@ export const NonNFTDescription = ({
               query: {
                 collection: nftData?.collection,
                 nftId: 2,
-              }}} 
+              }}}
           className={footerBtnContainer}
         > */}
         <div className={footerBtnContainer}>
@@ -399,17 +400,7 @@ export const NonNFTDescription = ({
       SuccessFunc(false);
     }
   };
-  // useEffect(() => {
-  //   listingModal();
-  // }, [!listingForm.formState.isValid]);
-  // useEffect(() => {
-  //   auctionModal();
-  // }, [!auctionForm.formState.isValid]);
-  if (listingForm.formState.isValid) {
-    setRenderState(true);
-  } else {
-    setRenderState(false);
-  }
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>

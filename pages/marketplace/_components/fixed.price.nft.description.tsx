@@ -1,8 +1,7 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
-import { ethers } from "ethers";
 import Joi from "joi";
 import { useWeb3React } from "@web3-react/core";
 import { useForm } from "react-hook-form";
@@ -12,18 +11,41 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import {
-  formatAddress,
-  formatBNB2USD,
-  formatEther2Number,
-} from "@/utils/format.address";
+import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import {
   callCancelItemForSale,
   callEditItemForSale,
 } from "@/web3/utils/call.helpers";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+
+interface IModalHandler {
+  visibility: boolean;
+  title?: string;
+  content?: any;
+  [key: string]: any;
+}
+
+enum ModalTemplateType {
+  cancelPrice = "cancelPrice",
+  bidNft = "bidNft",
+  editListing = "editListing",
+  txInProgress = "txInProgress",
+  sucess = "success",
+}
+
+type TemplateCollection = { [key in ModalTemplateType]: IModalHandler };
+
+interface bidForm {
+  bidPrice: number;
+}
+
+interface FixedPriceNFTDescriptionProps {
+  data: INFTDetailData | undefined;
+  reload?: boolean;
+  setReload?: any;
+}
 
 const schema = Joi.object({
   bidPrice: Joi.number().required().label("bidPrice").messages({
@@ -31,273 +53,310 @@ const schema = Joi.object({
     "any.required": `Required Field`,
   }),
 });
-interface FixedPriceNFTDescriptionProps {
-  data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
-}
+
 export const FixedPriceNFTDescription = ({
   data,
   reload,
   setReload,
 }: FixedPriceNFTDescriptionProps) => {
   const { library, account } = useWeb3React();
-  const [Modal, setModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
   const [nftPrice, setNFTPrice] = useState<any>(
     formatEther2Number(data?.listInfo.price)
   );
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
 
   const bnbPrice = useBNBPrice();
 
-  interface bidForm {
-    bidPrice: number;
-  }
   const { handleSubmit, register, setError, formState, reset } =
     useForm<bidForm>({
       mode: "onChange",
       resolver: joiResolver(schema),
     });
 
-  const cancelListingFunc = () => {
-    if (!library) {
-      toast.error("Confirm your Wallet Connection.");
-      return;
+  function dismissModal(): void {
+    modalHandler({ visibility: false, title: "", content: "" });
+  }
+
+  function modalHandler(input: IModalHandler): void {
+    if (input.visibility && !input.title?.length && !input.content?.length) {
+      throw new Error("Invalid modal configuration.");
     }
-    setModalTitle("Cancel listing");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
-          Are you sure you want to cancel your Listing?
-        </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Canceling your listing will unpublish this sale from market and You
-          will be asked to confirm the transaction through your wallet.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={handleCancelListing}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  console.log("NFT PRICE", formatEther2Number(data?.listInfo.price));
-  const bidNFTModalFunc = () => {
-    if (!library) {
-      toast.error("Confirm your Wallet Connection.");
-      return;
+    setModalModel(input);
+  }
+
+  const setupCancelItemPriceModal = () => {
+    try {
+      validateProvider();
+      const modalTemplate = modalTemplateCollection.cancelPrice;
+      modalTemplate.content = modalTemplate.content();
+      setModalModel(modalTemplate);
+    } catch (err: any) {
+      toastError(err);
     }
-    setModalTitle("Change Price");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Blockchain</label>
-          <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
-            <BNBIcon />{" "}
-            <h6 className="text-14px font-semibold text-white">BNB</h6>
-          </div>
-        </div>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Price</label>
-          <div
-            className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
-          >
-            <input
-              type="number"
-              id="bidPrice"
-              //value={nftPrice}
-              autoComplete="off"
-              {...register("bidPrice")}
-              placeholder={nftPrice}
-              className={
-                "w-full h-full !border-0 !ring-0 bg-transparent text-white"
-              }
-              //  onChange={(e) => setNFTPrice(e.target.value)}
-            />
-            <h6 className="text-14px font-semibold text-gray-shade-7">
-              =$0000
-            </h6>
-          </div>
-          {formState.errors.bidPrice && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.bidPrice.message}
-            </p>
-          )}
-        </div>
-        <Button
-          title={"Next"}
-          variant={formState.isValid ? "v1" : "v2"}
-          disabled={!formState.isValid}
-          onClick={handleSubmit(onSubmit)}
-          className="py-4 mt-2"
-        />
-      </div>
-    );
   };
-  const onSubmit = async (form: any) => {
-    setModal(false);
-    editListingFunc(form.bidPrice);
+
+  const setupBidNftModal = () => {
+    try {
+      validateProvider();
+      const modalTemplate = modalTemplateCollection.bidNft;
+      modalTemplate.content = modalTemplate.content();
+      setModalModel(modalTemplate);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-  const editListingFunc = (newPrice: any) => {
-    setModalTitle("Edit listing");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
-          Are you sure you want to edit your Listing Price?
-        </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Listing Price will be changed.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={() => handleEditPrice(newPrice)}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
+
+  const setupEditListingItemPriceModal = (form: any) => {
+    try {
+      dismissModal();
+      const modalTemplate = modalTemplateCollection.editListing;
+      modalTemplate.content = modalTemplate.content(form.bidPrice);
+      setModalModel(modalTemplate);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-  const ProceedFunc = () => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
-          Transaction in progress
-        </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Your transaction is in progress, Please wait.
-        </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
-      </div>
-    );
-    setModal(true);
+
+  const setupWaitingModal = () => {
+    try {
+      const modalTemplate = modalTemplateCollection.txInProgress;
+      modalTemplate.content = modalTemplate.content();
+      setModalModel(modalTemplate);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-  const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px text-white font-semibold">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Congratulations! You have successfully changed{" "}
-            <span className="text-white">{data?.name}</span> NFT price on
-            <b>Centher</b> NFT platform.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Transaction Failed.
-          </p>
-        )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-          {/* </Link> */}
-        </div>
-      </div>
-    );
-    setModal(true);
+
+  const setupSuccessModal = (txStatus: boolean) => {
+    try {
+      const modalTemplate = modalTemplateCollection.success;
+      modalTemplate.content = modalTemplate.content(txStatus);
+      setModalModel(modalTemplate);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
 
   const handleCancelListing = async () => {
-    ProceedFunc();
+    setupWaitingModal();
     const result = await callCancelItemForSale(
       library,
       (data as INFTDetailData).collection,
       (data as INFTDetailData).nftId
     );
-    SuccessFunc(result.success);
+
+    setupSuccessModal(result.success);
   };
+
   const handleEditPrice = async (newPrice: any) => {
-    ProceedFunc();
-    if (library && data) {
-      const result = await callEditItemForSale(
+    let result = { success: false };
+    setupWaitingModal();
+    try {
+      validateProvider();
+      if (!data?.collection || !data?.nftId || !newPrice) {
+        throw new Error(
+          "Something went wrong. please refresh the page or try later."
+        );
+      }
+
+      result = await callEditItemForSale(
         library,
         data.collection,
         data.nftId,
         newPrice
       );
-      SuccessFunc(result.success);
-    } else {
-      SuccessFunc(false);
+    } catch (err) {
+      toastError(err);
     }
+
+    setupSuccessModal(result.success);
   };
 
-  // useEffect(() => {
-  //   bidNFTModalFunc();
-  // }, [!formState.isValid]);
+  const modalTemplateCollection: TemplateCollection = {
+    cancelPrice: {
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-white text-18px font-semibold leading-6">
+            Are you sure you want to cancel your Listing?
+          </h3>
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Canceling your listing will unpublish this sale from market and You
+            will be asked to confirm the transaction through your wallet.
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={handleCancelListing}
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+      title: "Cancel listing",
+      visibility: true,
+    },
+    bidNft: {
+      title: "Change Price",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <div className={fieldWrapper}>
+            <label className={fieldTitle}>Blockchain</label>
+            <div
+              className={`${inputFieldModal} flex items-center gap-3 !ring-0`}
+            >
+              <BNBIcon />{" "}
+              <h6 className="text-14px font-semibold text-white">BNB</h6>
+            </div>
+          </div>
+          <div className={fieldWrapper}>
+            <label className={fieldTitle}>Price</label>
+            <div
+              className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
+            >
+              <input
+                type="number"
+                id="bidPrice"
+                //value={nftPrice}
+                autoComplete="off"
+                {...register("bidPrice")}
+                placeholder={nftPrice}
+                className={
+                  "w-full h-full !border-0 !ring-0 bg-transparent text-white"
+                }
+                //  onChange={(e) => setNFTPrice(e.target.value)}
+              />
+              <h6 className="text-14px font-semibold text-gray-shade-7">
+                =$0000
+              </h6>
+            </div>
+            {formState.errors.bidPrice && (
+              <p className={`text-red-500 ${errMessage}`}>
+                {formState.errors.bidPrice.message}
+              </p>
+            )}
+          </div>
+          <Button
+            title={"Next"}
+            variant={formState.isValid ? "v1" : "v2"}
+            disabled={!formState.isValid}
+            onClick={handleSubmit(setupEditListingItemPriceModal)}
+            className="py-4 mt-2"
+          />
+        </div>
+      ),
+    },
+    editListing: {
+      title: "Edit listing",
+      visibility: true,
+      content: (newPrice: any) => (
+        <div className={modalBodyWrapper}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-white text-18px font-semibold leading-6">
+            Are you sure you want to edit your Listing Price?
+          </h3>
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Listing Price will be changed.
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={() => handleEditPrice(newPrice)}
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+    },
+    txInProgress: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-white text-18px font-semibold leading-6">
+            Transaction in progress
+          </h3>
+          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+    success: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: (status: boolean) => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px text-white font-semibold">
+            {status ? "Success!" : "Failed!"}
+          </h2>
+          {status && (
+            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+              Congratulations! You have successfully changed{" "}
+              <span className="text-white">{data?.name}</span> NFT price on
+              <b>Centher</b> NFT platform.
+            </p>
+          )}
+          {!status && (
+            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+              Transaction Failed.
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Ok"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                dismissModal();
+              }}
+            />
+          </div>
+        </div>
+      ),
+    },
+  };
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Confirm your Wallet Connection.");
+    }
+  }
+
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
 
   return (
     <div className={nftDescriptionContainer}>
@@ -325,32 +384,32 @@ export const FixedPriceNFTDescription = ({
           title={"Cancel Listing"}
           variant="v1"
           className="py-4"
-          onClick={cancelListingFunc}
+          onClick={setupCancelItemPriceModal}
         />
         <Button
           title={"Edit"}
           onClick={() => {
-            bidNFTModalFunc();
-            setModal(true);
+            setupBidNftModal();
           }}
           variant="v4"
           className="py-4"
         />
       </div>
 
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            dismissModal();
           }}
-          title={ModalTitle}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
     </div>
   );
 };
+
 // styling
 const modalBodyWrapper = ctl(`
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center

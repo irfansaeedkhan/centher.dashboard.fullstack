@@ -22,7 +22,6 @@ const NFT: NextPageWithLayout = () => {
     tokenId,
     reload
   );
-
   return (
     <>
       <Head>

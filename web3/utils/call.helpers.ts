@@ -269,12 +269,15 @@ export const callCancelItemForSale = async (
   tokenId: number
 ) => {
   try {
+    if (!library || !collection || !tokenId) throw new Error("Invalid params.");
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.cancelItemForSale(
       collection,
       tokenId
     );
+
     await tx.wait();
+
     return {
       success: true,
       hash: tx.hash,
