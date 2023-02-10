@@ -15,8 +15,9 @@ import { TbBrandTiktok } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
-import { MdOutlineCameraEnhance, MdClose } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import {
+  FiCamera,
   FiCopy,
   FiInstagram,
   FiTwitch,
@@ -311,7 +312,7 @@ const ProfileHeader: React.FC<Props> = ({
                   }}
                   variant="edit-cover"
                 >
-                  <MdOutlineCameraEnhance className="w-4 h-4" />
+                  <FiCamera className="w-4 h-4" />
                   <span className="hidden fmd:inline-block">Edit Cover</span>
                 </CoverUploadButton>
               )}
@@ -332,9 +333,7 @@ const ProfileHeader: React.FC<Props> = ({
                     <CgSpinner
                       className={`group-disabled:block hidden animate-spin w-4 h-4`}
                     />
-                    <MdOutlineCameraEnhance
-                      className={`group-disabled:hidden w-4 h-4`}
-                    />
+                    <FiCamera className={`group-disabled:hidden w-4 h-4`} />
                     <span className="hidden fmd:inline-block">
                       Upload Cover
                     </span>
