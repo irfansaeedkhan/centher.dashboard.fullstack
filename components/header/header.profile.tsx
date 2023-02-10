@@ -120,7 +120,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           className="flex py-2.5 items-center gap-[14px] stroke-[#B7BBCC] hover:stroke-brand-primary text-white hover:text-brand-primary"
         >
           <UserIcon />
-          <p className="text-sm font-medium ">View my profile</p>
+          <p className="text-sm font-medium ">Profile</p>
         </Link>
         <Link
           href={AppRoutes.profile.settings}
