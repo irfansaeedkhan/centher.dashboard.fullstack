@@ -67,13 +67,12 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 {sliceDisplayName(_result && _result.display_name)}
               </span>
               {!!verificationTick && (
-                <span className="verifiedIcon !h-6 !w-6 ml-0.5 fsm:ml-1">
+                <span className="verifiedIcon h-5 w-5 ml-0.5 fsm:ml-1">
                   <Image
                     src={verificationTick}
                     alt={"Verified"}
                     width={20}
                     height={20}
-                    className="inline-block"
                   />
                 </span>
               )}

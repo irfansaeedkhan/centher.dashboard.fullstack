@@ -407,12 +407,12 @@ const ProfileHeader: React.FC<Props> = ({
                   {sliceDisplayName(user && user.display_name)}
                 </span>
                 {!!verificationTick && (
-                  <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">
+                  <span className="verifiedIcon h-[22px] w-[22px] ml-0.5 fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
-                      width={26}
-                      height={26}
+                      width={22}
+                      height={22}
                     />
                   </span>
                 )}

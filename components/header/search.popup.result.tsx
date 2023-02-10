@@ -30,16 +30,16 @@ const SearchPopupResult: React.FC<Props> = ({
         }}
         href={`/profile/${user.account_address}`}
       >
-        <p className="text-white text-sm font-medium hover:text-brand-primary">
+        <span className="text-white text-sm font-medium hover:text-brand-primary">
           {sliceDisplayName(user && user.display_name)}
-        </p>
+        </span>
         {!!verificationTick && (
-          <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">
+          <span className="verifiedIcon w-5 h-5 ml-0.5 fsm:ml-1">
             <Image
               src={verificationTick}
               alt={"Verified"}
-              width={26}
-              height={26}
+              width={20}
+              height={20}
             />
           </span>
         )}
