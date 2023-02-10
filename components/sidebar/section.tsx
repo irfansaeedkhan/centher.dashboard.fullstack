@@ -100,14 +100,7 @@ const sectionWrapper2 = ctl(`
   flex-col
 `);
 
-const sectionLabel = ctl(`
-  font-bold
-  text-[11px] 
-  pl-6
-  pr-4
-  
-  text-gray-shade-11
-`);
+const sectionLabel = `font-semibold text-[11px] pl-6 pr-4 text-gray-shade-11`;
 
 const itemWrapper = ctl(`
   flex 
@@ -115,17 +108,9 @@ const itemWrapper = ctl(`
   items-center
 `);
 
-const itemLabel = ctl(`
-  text-sm
-  font-semibold 
-  text-gray-shade-7 
-`);
+const itemLabel = `text-sm font-medium text-gray-shade-7`;
 
-const itemLabelActive = ctl(`
-  text-sm
-  font-semibold 
-  text-white 
-`);
+const itemLabelActive = `text-sm font-medium text-white`;
 
 const itemIcons = ctl(`stroke-gray-shade-7 stroke-[1.5]`);
 
