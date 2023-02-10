@@ -71,8 +71,9 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                   <Image
                     src={verificationTick}
                     alt={"Verified"}
-                    width={24}
-                    height={24}
+                    width={20}
+                    height={20}
+                    className="inline-block"
                   />
                 </span>
               )}

@@ -54,19 +54,13 @@ const Search: NextPageWithLayout = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center">
       <div className="block md:hidden mb-4 w-full">
-        <div
-          className={`animationTextHeading mb-2 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
-        >
-          Search:
-        </div>
+        <div className={`animationTextHeading mb-2 text-2xl`}>Search</div>
         <Searchbar />
       </div>
       {searchQuery.trim() !== "" && (
         <div className="md:w-[544px] fxs:w-full">
-          <div
-            className={`animationTextHeading mb-8 lg:!text-[34px] md:!text-3xl sm:!text-2xl`}
-          >
-            Search Result:
+          <div className={`animationTextHeading mb-4 text-xl fmd:text-2xl`}>
+            Search Result
           </div>
           <div className="flex flex-col gap-3">
             {searchResults.length > 0 &&

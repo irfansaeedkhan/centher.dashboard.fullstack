@@ -7,6 +7,9 @@ import { axiosNodeApi } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { IUserWithFollow } from ".";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import Image from "next/image";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -17,7 +20,7 @@ const Searchbar = () => {
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState<IUserWithFollow[]>([]);
 
   useEffect(() => {
     if (router.query.q) {
@@ -69,7 +72,7 @@ const Searchbar = () => {
 
   return (
     <form className="relative w-full" onSubmit={submitData}>
-      <div className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary">
+      <div className="flex gap-2 items-center bg-background-shade-3 px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary">
         <input
           type="text"
           placeholder="Search"
@@ -81,25 +84,18 @@ const Searchbar = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200]">
+          <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200] shadow-md">
             <div>
-              {result.map((item: any, i) => {
+              {result.map((item) => {
                 return (
-                  <div key={i} className="p-5 flex gap-2 items-center">
-                    <SearchIcon />
-                    <Link
-                      onClick={() => {
-                        setSearchQueryInput("");
-                        setOpenPopup(false);
-                      }}
-                      href={`/profile/${item.account_address}`}
-                    >
-                      <p className="text-white text-sm font-medium hover:text-brand-primary">
-                        {}
-                        {sliceDisplayName(item && item.display_name)}
-                      </p>
-                    </Link>
-                  </div>
+                  <SearchResultItem
+                    item={item}
+                    key={item._id}
+                    onClick={() => {
+                      setSearchQueryInput("");
+                      setOpenPopup(false);
+                    }}
+                  />
                 );
               })}
             </div>
@@ -111,3 +107,39 @@ const Searchbar = () => {
 };
 
 export default Searchbar;
+
+interface SearchResultItemProps {
+  item: IUserWithFollow;
+  onClick: () => void;
+}
+
+const SearchResultItem: React.FC<SearchResultItemProps> = ({
+  item,
+  onClick,
+}) => {
+  const verificationTick = useVerificationTick(item);
+
+  return (
+    <div className="p-4 flex gap-2 items-center">
+      <SearchIcon />
+      <Link
+        onClick={onClick}
+        href={`/profile/${item.account_address}`}
+        className="text-white text-sm font-medium hover:text-brand-primary"
+      >
+        <span>{sliceDisplayName(item.display_name)}</span>
+        {!!verificationTick && (
+          <span className="verifiedIcon !h-6 !w-6 ml-0.5 fsm:ml-1">
+            <Image
+              src={verificationTick}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="inline-block"
+            />
+          </span>
+        )}
+      </Link>
+    </div>
+  );
+};
