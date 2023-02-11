@@ -1,6 +1,6 @@
 export const hotNFTsQuery = `
   query($first: Int!, $skip: Int!) {
-    nfts(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip) {
+    nfts(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip, where: { price_gt: "0"}) {
       collection
       createTime
       creator
@@ -63,7 +63,9 @@ export const allNFTsQuery = `
     nfts(first: $first, 
         skip: $skip, 
         orderBy: $orderBy,
-        orderDirection: $orderDirection ) {
+        orderDirection: $orderDirection,
+        where: { price_gt: "0"}
+        ) {
       collection
       createTime
       creator
