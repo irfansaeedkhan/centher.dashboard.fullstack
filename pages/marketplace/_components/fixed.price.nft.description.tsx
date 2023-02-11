@@ -20,22 +20,19 @@ import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
-interface IModalHandler {
-  visibility: boolean;
-  title?: string;
-  content?: any;
-  [key: string]: any;
-}
+import {
+  ModalManager,
+  IModalHandler,
+  TemplateCollection,
+} from "../../../utils/modal/";
 
-enum ModalTemplateType {
+enum ModalType {
   cancelPrice = "cancelPrice",
   bidNft = "bidNft",
   editListing = "editListing",
   txInProgress = "txInProgress",
-  sucess = "success",
+  success = "success",
 }
-
-type TemplateCollection = { [key in ModalTemplateType]: IModalHandler };
 
 interface bidForm {
   bidPrice: number;
@@ -77,23 +74,10 @@ export const FixedPriceNFTDescription = ({
       resolver: joiResolver(schema),
     });
 
-  function dismissModal(): void {
-    modalHandler({ visibility: false, title: "", content: "" });
-  }
-
-  function modalHandler(input: IModalHandler): void {
-    if (input.visibility && !input.title?.length && !input.content?.length) {
-      throw new Error("Invalid modal configuration.");
-    }
-    setModalModel(input);
-  }
-
   const setupCancelItemPriceModal = () => {
     try {
       validateProvider();
-      const modalTemplate = modalTemplateCollection.cancelPrice;
-      modalTemplate.content = modalTemplate.content();
-      setModalModel(modalTemplate);
+      modal.createModal(ModalType.cancelPrice);
     } catch (err: any) {
       toastError(err);
     }
@@ -102,9 +86,7 @@ export const FixedPriceNFTDescription = ({
   const setupBidNftModal = () => {
     try {
       validateProvider();
-      const modalTemplate = modalTemplateCollection.bidNft;
-      modalTemplate.content = modalTemplate.content();
-      setModalModel(modalTemplate);
+      modal.createModal(ModalType.bidNft);
     } catch (err: any) {
       toastError(err);
     }
@@ -112,10 +94,8 @@ export const FixedPriceNFTDescription = ({
 
   const setupEditListingItemPriceModal = (form: any) => {
     try {
-      dismissModal();
-      const modalTemplate = modalTemplateCollection.editListing;
-      modalTemplate.content = modalTemplate.content(form.bidPrice);
-      setModalModel(modalTemplate);
+      modal.dismissModal();
+      modal.createModal(ModalType.editListing);
     } catch (err: any) {
       toastError(err);
     }
@@ -123,9 +103,7 @@ export const FixedPriceNFTDescription = ({
 
   const setupWaitingModal = () => {
     try {
-      const modalTemplate = modalTemplateCollection.txInProgress;
-      modalTemplate.content = modalTemplate.content();
-      setModalModel(modalTemplate);
+      modal.createModal(ModalType.txInProgress);
     } catch (err: any) {
       toastError(err);
     }
@@ -133,9 +111,7 @@ export const FixedPriceNFTDescription = ({
 
   const setupSuccessModal = (txStatus: boolean) => {
     try {
-      const modalTemplate = modalTemplateCollection.success;
-      modalTemplate.content = modalTemplate.content(txStatus);
-      setModalModel(modalTemplate);
+      modal.createModal(ModalType.success);
     } catch (err: any) {
       toastError(err);
     }
@@ -194,7 +170,7 @@ export const FixedPriceNFTDescription = ({
               variant="v2"
               className="py-4"
               onClick={() => {
-                dismissModal();
+                modal.dismissModal();
               }}
             />
             <Button
@@ -278,7 +254,7 @@ export const FixedPriceNFTDescription = ({
               variant="v2"
               className="py-4"
               onClick={() => {
-                dismissModal();
+                modal.dismissModal();
               }}
             />
             <Button
@@ -339,7 +315,7 @@ export const FixedPriceNFTDescription = ({
               variant="v4"
               className="py-4"
               onClick={() => {
-                dismissModal();
+                modal.dismissModal();
               }}
             />
           </div>
@@ -347,6 +323,8 @@ export const FixedPriceNFTDescription = ({
       ),
     },
   };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
     if (!library) {
@@ -399,7 +377,7 @@ export const FixedPriceNFTDescription = ({
       {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            dismissModal();
+            modal.dismissModal();
           }}
           title={ModalModel.title as any}
         >
