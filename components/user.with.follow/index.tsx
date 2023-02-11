@@ -42,17 +42,17 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     return (
       <div
         ref={ref}
-        className="p-4 bg-background-shade-3 rounded-lg flex gap-10 items-center justify-between"
+        className="flex items-center justify-between gap-10 rounded-lg bg-background-shade-3 p-4"
       >
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           <Link href={`/profile/${_result.account_address}`}>
-            <div className="relative sm:!h-12 sm:!w-12 h-10 w-10">
+            <div className="relative h-10 w-10 sm:!h-12 sm:!w-12">
               <Image
                 src={_result.profile_image.path}
                 alt=""
                 width={40}
                 height={40}
-                className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full sm:!h-12 sm:!w-12 h-10 w-10 object-cover border-2 border-background-shade-3 !m-0"
+                className="absolute top-[50%] left-[50%] !m-0 h-10 w-10 translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 object-cover sm:!h-12 sm:!w-12"
                 sizes={"256px"}
               />
             </div>
@@ -63,11 +63,11 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               title={_result.display_name}
               className="flex items-center"
             >
-              <span className="fsm:text-base text-sm fsm:font-semibold font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1">
+              <span className="text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary fsm:text-base fsm:font-semibold">
                 {sliceDisplayName(_result && _result.display_name)}
               </span>
               {!!verificationTick && (
-                <span className="verifiedIcon h-5 w-5 ml-0.5 fsm:ml-1">
+                <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
                   <Image
                     src={verificationTick}
                     alt={"Verified"}
@@ -77,7 +77,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 </span>
               )}
             </Link>
-            <div className="fsm:text-sm text-xs text-gray-shade-2">
+            <div className="text-xs text-gray-shade-2 fsm:text-sm">
               {sliceAccountAddress(_result.account_address)}
             </div>
           </div>

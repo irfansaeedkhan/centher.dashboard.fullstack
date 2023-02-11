@@ -37,11 +37,11 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
   }
   return (
     <div className="flex gap-3">
-      <div className="w-2 h-2 rounded-full bg-yellow-theme mt-[3px]"></div>
+      <div className="mt-[3px] h-2 w-2 rounded-full bg-yellow-theme"></div>
       <div className="flex flex-col gap-3">
-        <h5 className="flex gap-2 items-center text-white text-12px font-normal">
+        <h5 className="text-12px flex items-center gap-2 font-normal text-white">
           {prefix} by{" "}
-          <span className="font-semibold cursor-pointer hover:text-brand-primary-dark text-ellipsis line-clamp-1">
+          <span className="cursor-pointer text-ellipsis font-semibold line-clamp-1 hover:text-brand-primary-dark">
             {item.type === "BuyItem" ||
             item.type === "AcceptBid" ||
             item.type === "EndAuction" ? (
@@ -57,7 +57,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {buyer?.display_name ? (
                   <span>{sliceDisplayName(buyer && buyer?.display_name)}</span>
                 ) : (
-                  <div className="rounded-sm !w-[50px] !h-4 bg-gray-shade-3 animate-pulse"></div>
+                  <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>
                 )}
               </Link>
             ) : (
@@ -74,13 +74,13 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                     {sliceDisplayName(seller && seller?.display_name)}
                   </span>
                 ) : (
-                  <div className="rounded-sm !w-[50px] !h-4 bg-gray-shade-3 animate-pulse"></div>
+                  <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>
                 )}
               </Link>
             )}
           </span>
         </h5>
-        <h6 className="text-12px text-gray-shade-2 font-normal">
+        <h6 className="text-12px font-normal text-gray-shade-2">
           {new Date(item.txTime * 1000).toString()}
         </h6>
       </div>

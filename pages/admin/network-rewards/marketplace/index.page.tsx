@@ -16,7 +16,7 @@ const AdminMarketplace: NextPageWithLayout = () => {
 AdminMarketplace.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Metaverse">
-      <div className="w-full max-w-[1136px] mx-auto">
+      <div className="mx-auto w-full max-w-[1136px]">
         <NetworkTabs />
         {page}
       </div>

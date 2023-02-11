@@ -23,7 +23,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
 
   return (
     <div
-      className={clsx(`hidden flg:block max-w-[272px] space-y-3`, className)}
+      className={clsx(`hidden max-w-[272px] space-y-3 flg:block`, className)}
       {...props}
     >
       {user ? (

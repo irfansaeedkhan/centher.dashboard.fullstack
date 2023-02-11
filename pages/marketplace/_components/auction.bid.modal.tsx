@@ -58,7 +58,7 @@ const AuctionBidModal = ({ onSubmit }: any) => {
               value={bidPrice}
               placeholder="0.00"
               className={
-                "w-full h-full !border-0 !ring-0 bg-transparent text-white"
+                "h-full w-full !border-0 bg-transparent text-white !ring-0"
               }
             />
             <h6 className="text-14px font-semibold text-gray-shade-7">
@@ -78,7 +78,7 @@ const AuctionBidModal = ({ onSubmit }: any) => {
           onClick={() => {
             onSubmit(bidPrice);
           }}
-          className="py-4 mt-2"
+          className="mt-2 py-4"
         />
       </div>
     </CustomModal>

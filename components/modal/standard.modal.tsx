@@ -67,43 +67,43 @@ export const StandardModal: React.FC<ModalProps> = ({
 
   return (
     <ModalPortal wrapperId="authorize-modal">
-      <div className="font-monto flex items-center justify-center fixed inset-0 z-[1000] backdrop-filter backdrop-blur-md overflow-x-hidden overflow-y-auto">
-        <div className="w-full max-w-[656px] fsm:max-h-[90%] fsm:mx-2 md:mx-0 fsm:rounded-2xl bg-black-shade-12 text-white overflow-hidden">
+      <div className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto overflow-x-hidden font-monto backdrop-blur-md backdrop-filter">
+        <div className="w-full max-w-[656px] overflow-hidden bg-black-shade-12 text-white fsm:mx-2 fsm:max-h-[90%] fsm:rounded-2xl md:mx-0">
           {/* Header */}
-          <div className="flex justify-between p-4 border-b border-b-gray-shade-border-color">
+          <div className="flex justify-between border-b border-b-gray-shade-border-color p-4">
             <h3 className="font-semibold">{title}</h3>
             <button
               onClick={status === "progress" ? () => {} : onClickClose}
               disabled={status === "progress"}
             >
-              <IoClose className="w-5 h-5" />
+              <IoClose className="h-5 w-5" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="p-4 text-center space-y-4">
+          <div className="space-y-4 p-4 text-center">
             {status === "progress" && (
-              <SpinIcon2 className="inline-block w-16 h-16 animate-spin" />
+              <SpinIcon2 className="inline-block h-16 w-16 animate-spin" />
             )}
             {status === "success" && (
-              <SuccessIcon className="inline-block w-16 h-16" />
+              <SuccessIcon className="inline-block h-16 w-16" />
             )}
             {status === "warning" && (
-              <WarningIcon className="inline-block w-16 h-16" />
+              <WarningIcon className="inline-block h-16 w-16" />
             )}
             {status === "error" && (
-              <DeleteCrossIcon className="inline-block w-16 h-16" />
+              <DeleteCrossIcon className="inline-block h-16 w-16" />
             )}
             {status === "buy-cthr" && (
-              <CentherIconBG className="inline-block w-16 h-16" />
+              <CentherIconBG className="inline-block h-16 w-16" />
             )}
 
             {status === "claim-busd" && (
-              <BUSDIconBG className="inline-block w-16 h-16" />
+              <BUSDIconBG className="inline-block h-16 w-16" />
             )}
 
             {status === "claim-ntr" && (
-              <NTRIconBG className="inline-block w-16 h-16" />
+              <NTRIconBG className="inline-block h-16 w-16" />
             )}
 
             {!!subtitle && (
@@ -115,9 +115,9 @@ export const StandardModal: React.FC<ModalProps> = ({
 
           {/* Action Buttons */}
           {status !== "success" && (
-            <div className="flex mt-2 font-semibold">
+            <div className="mt-2 flex font-semibold">
               <button
-                className="w-full p-4 text-center text-white bg-gray-shade-3"
+                className="w-full bg-gray-shade-3 p-4 text-center text-white"
                 onClick={status === "progress" ? () => {} : onClickClose}
                 disabled={status === "progress"}
               >
@@ -125,7 +125,7 @@ export const StandardModal: React.FC<ModalProps> = ({
               </button>
 
               <button
-                className="w-full p-4 text-center text-black bg-brand-primary"
+                className="w-full bg-brand-primary p-4 text-center text-black"
                 onClick={status === "progress" ? () => {} : onClickConfirm}
                 disabled={status === "progress"}
               >

@@ -42,7 +42,7 @@ export const Sidebar = () => {
 
   return (
     <div
-      className={`w-full h-full py-5 flex flex-col gap-8 justify-between font-monto overflow-y-auto bg-background-shade-1`}
+      className={`flex h-full w-full flex-col justify-between gap-8 overflow-y-auto bg-background-shade-1 py-5 font-monto`}
     >
       <div className={`flex flex-col gap-5`}>
         {SidebarSections.map((section) => {
@@ -51,12 +51,12 @@ export const Sidebar = () => {
       </div>
       {user && (
         <div className="flex flex-col gap-8">
-          <div className={`flex gap-[6px] flex-col px-5`}>
-            <span className={`font-bold text-[11px] text-gray-shade-11`}>
+          <div className={`flex flex-col gap-[6px] px-5`}>
+            <span className={`text-[11px] font-bold text-gray-shade-11`}>
               WILL YOU GET OUT?
             </span>
             <div className={sectionWrapper2}>
-              <div className={`flex gap-2 items-center`}>
+              <div className={`flex items-center gap-2`}>
                 <Logout />
                 <button
                   className={`text-sm font-semibold text-gray-shade-7`}

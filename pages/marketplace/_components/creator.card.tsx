@@ -12,20 +12,20 @@ interface CreatorCardProps {
 const CreatorCard = ({ publicKey }: CreatorCardProps) => {
   const { user } = useGetUser(publicKey);
   return (
-    <div className="flex gap-3 items-center min-w-[172px]">
+    <div className="flex min-w-[172px] items-center gap-3">
       {user ? (
         <Image
           src={user.profile_image.path}
           width={48}
           height={48}
           alt="profile"
-          className="!w-12 !h-12 object-cover rounded-full"
+          className="!h-12 !w-12 rounded-full object-cover"
         />
       ) : (
-        <div className="rounded-full !w-12 !h-12 bg-gray-shade-3 animate-pulse"></div>
+        <div className="!h-12 !w-12 animate-pulse rounded-full bg-gray-shade-3"></div>
       )}
       {user ? (
-        <div className={`flex flex-col gap-[2px] !flex-grow`}>
+        <div className={`flex !flex-grow flex-col gap-[2px]`}>
           <Link
             href={{
               pathname: AppRoutes.profile.nfts,
@@ -33,14 +33,14 @@ const CreatorCard = ({ publicKey }: CreatorCardProps) => {
                 account_address: user?.account_address,
               },
             }}
-            className="text-sm font-medium text-white hover:text-brand-primary text-ellipsis line-clamp-1 overflow-hidden"
+            className="overflow-hidden text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary"
           >
             {sliceDisplayName(user && user?.display_name)}
           </Link>
           {/* <p className="text-xs text-gray-shade-7">Tradesr</p> */}
         </div>
       ) : (
-        <div className="h-[15px] w-[110px] bg-gray-shade-3 rounded-sm animate-pulse"></div>
+        <div className="h-[15px] w-[110px] animate-pulse rounded-sm bg-gray-shade-3"></div>
       )}
     </div>
   );

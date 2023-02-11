@@ -109,17 +109,17 @@ export const RegisterForm: React.FC = () => {
       <form className={wrapper} onSubmit={payFee}>
         {account ? (
           <>
-            <div className="flex md:!flex-col sm:flex-row gap-2 md:!items-start sm:items-center">
-              <span className="!w-12 !h-12">
+            <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
+              <span className="!h-12 !w-12">
                 <MetamaskIcon />
               </span>
-              <div className="flex flex-col flex-grow">
-                <p className="md:text-lg sm:text-base font-semibold text-white md:mt-4">
+              <div className="flex flex-grow flex-col">
+                <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
                   Metamask wallet connected
                 </p>
                 <div className="flex items-center gap-1">
-                  <p className="text-[#6B7280] text-sm">Wallet Address:</p>
-                  <p className="text-white text-sm">
+                  <p className="text-sm text-[#6B7280]">Wallet Address:</p>
+                  <p className="text-sm text-white">
                     {sliceAccountAddress(signupState.account_address)}
                   </p>
                 </div>
@@ -147,7 +147,7 @@ export const RegisterForm: React.FC = () => {
           label={
             <>
               Referred by{" "}
-              <span className="text-[#6B7280] text-xs"> (optional)</span>
+              <span className="text-xs text-[#6B7280]"> (optional)</span>
             </>
           }
           placeholder="Enter referrer account address"
@@ -169,10 +169,10 @@ export const RegisterForm: React.FC = () => {
             onClick={() => setIsChecked(!isChecked)}
           />
 
-          <p className="text-white text-sm">
+          <p className="text-sm text-white">
             I have read and agree to Centher{" "}
             <Link href={AppRoutes.terms}>
-              <span className="font-semibold underline cursor-pointer">
+              <span className="cursor-pointer font-semibold underline">
                 Terms & Condition
               </span>
             </Link>
@@ -209,16 +209,16 @@ export const RegisterForm: React.FC = () => {
             </div>
             <div className={feeModalStatus}>
               {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
-                <h2 className="font-semibold flg:text-lg fmd:text-sm text-xs text-center text-white">
+                <h2 className="text-center text-xs font-semibold text-white fmd:text-sm flg:text-lg">
                   Referred users do not pay registration fees.
                 </h2>
               )}
               {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
-                <h2 className="font-semibold flg:text-lg fmd:text-sm text-xs text-center text-white">
+                <h2 className="text-center text-xs font-semibold text-white fmd:text-sm flg:text-lg">
                   You only pay gas fee.
                 </h2>
               )}
-              <h2 className="font-semibold lg:text-lg sm:text-xs text-center text-white">
+              <h2 className="text-center font-semibold text-white sm:text-xs lg:text-lg">
                 {feeModal.status === "start"
                   ? Number(feeModal.fee) !== 0 && "Pay Registration Fee"
                   : feeModal.status === "progress"

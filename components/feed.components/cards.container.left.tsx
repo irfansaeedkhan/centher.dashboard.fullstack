@@ -31,7 +31,7 @@ export const CardsContainerLeft = () => {
   }, [router, user, loggedInUser]);
 
   return (
-    <div className={`hidden flg:block max-w-[272px] space-y-3`}>
+    <div className={`hidden max-w-[272px] space-y-3 flg:block`}>
       {profileCardUser ? (
         <>
           <ProfileDetailCard user={profileCardUser} />

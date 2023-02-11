@@ -48,19 +48,19 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
         title={modalTitle}
       >
         <div
-          className={`flex flex-col gap-4 w-full px-3 fsm:px-6 py-4 border-b-2 border-gray-shade-3 border-opacity-40`}
+          className={`flex w-full flex-col gap-4 border-b-2 border-gray-shade-3 border-opacity-40 px-3 py-4 fsm:px-6`}
         >
           <div className={`flex items-center gap-3`}>
             <Image
               src={user.profile_image.path}
               width={44}
               height={44}
-              className="rounded-full object-cover w-[44px] h-[44px]"
+              className="h-[44px] w-[44px] rounded-full object-cover"
               alt={user.display_name ?? "profile image"}
               sizes={"256px"}
             />
             <h5
-              className={`text-14px font-semibold text-white text-ellipsis line-clamp-1`}
+              className={`text-14px text-ellipsis font-semibold text-white line-clamp-1`}
             >
               {sliceDisplayName(user && user.display_name)}
             </h5>
@@ -71,7 +71,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
 
             <div className={clsx(`w-full`, hasMedia && "mt-4")}>
               <textarea
-                className={`block w-full text-xs fsm:text-14px rounded-10px leading-6 text-white font-medium bg-background-shade-3 break-words border-none outline-none resize-none focus:ring-0 px-4 py-3.5`}
+                className={`fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
                 cols={12}
                 rows={4}
                 maxLength={postTextMaxLength}

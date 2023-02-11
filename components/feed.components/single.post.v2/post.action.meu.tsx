@@ -38,20 +38,20 @@ export const PostActionMenu: React.FC<Props> = ({
     <>
       <div className="relative" ref={menuRef}>
         <BsThreeDots
-          className="fill-gray-shade-7 w-6 h-6 cursor-pointer"
+          className="h-6 w-6 cursor-pointer fill-gray-shade-7"
           onClick={() => setIsOpen((prev) => !prev)}
         />
 
         {isOpen && (
           <div
             className={clsx(
-              "absolute right-0 z-[500] top-full bg-black-shade-12 rounded-10px overflow-hidden",
+              "absolute right-0 top-full z-[500] overflow-hidden rounded-10px bg-black-shade-12",
               postType === "archived" ? "w-[190px]" : "w-[170px]"
             )}
           >
             {isBefore15Minutes && postType !== "archived" && (
               <MenuButton onClick={onClickEdit}>
-                <FiEdit className="w-[18px] h-[18px]" />
+                <FiEdit className="h-[18px] w-[18px]" />
                 <span>Edit</span>
               </MenuButton>
             )}
@@ -73,14 +73,14 @@ export const PostActionMenu: React.FC<Props> = ({
               className="group"
             >
               {postType !== "archived" ? (
-                <HiOutlineArchive className="w-[18px] h-[18px]" />
+                <HiOutlineArchive className="h-[18px] w-[18px]" />
               ) : (
-                <MdSettingsBackupRestore className="w-[18px] h-[18px]" />
+                <MdSettingsBackupRestore className="h-[18px] w-[18px]" />
               )}
-              <span className="text-left flex-grow">
+              <span className="flex-grow text-left">
                 {postType !== "archived" ? "Archive" : "Restore Post"}
               </span>
-              <CgSpinner className="w-4 h-4 animate-spin hidden group-disabled:block" />
+              <CgSpinner className="hidden h-4 w-4 animate-spin group-disabled:block" />
             </MenuButton>
 
             <MenuButton
@@ -89,7 +89,7 @@ export const PostActionMenu: React.FC<Props> = ({
                 "text-danger": postType === "archived",
               })}
             >
-              <FiTrash2 className="w-[18px] h-[18px]" />
+              <FiTrash2 className="h-[18px] w-[18px]" />
               <span>Delete {postType === "archived" && "Forever"}</span>
             </MenuButton>
           </div>
@@ -115,7 +115,7 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   return (
     <button
       className={clsx(
-        `w-full flex items-center gap-x-2.5 text-white text-sm font-semibold px-5 py-4 hover:bg-background-shade-2`,
+        `flex w-full items-center gap-x-2.5 px-5 py-4 text-sm font-semibold text-white hover:bg-background-shade-2`,
         className
       )}
       {...props}

@@ -75,7 +75,7 @@ const AdminRegistration: NextPageWithLayout = () => {
 AdminRegistration.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Network Rewards">
-      <div className="w-full max-w-[1136px] mx-auto">{page}</div>
+      <div className="mx-auto w-full max-w-[1136px]">{page}</div>
     </AllPagesWrapper>
   );
 };

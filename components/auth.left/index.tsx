@@ -17,7 +17,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
       <section
-        className={`w-1/2 py-11 px-12 gap-10 md:flex flex-col hidden bg-background-shade-1 `}
+        className={`hidden w-1/2 flex-col gap-10 bg-background-shade-1 py-11 px-12 md:flex `}
       >
         <div className={`w-fit`}>
           <Link href={AppRoutes.home}>
@@ -30,7 +30,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
           </Link>
         </div>
         <div
-          className={`flex gap-16 f2xl:px-32 lg:px-20 md:px-10 flex-col items-center`}
+          className={`flex flex-col items-center gap-16 md:px-10 lg:px-20 f2xl:px-32`}
         >
           <div className={`w-fit`}>
             <Image
@@ -40,11 +40,11 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
               height={310}
             />
           </div>
-          <div className={`flex gap-6 flex-col items-center`}>
-            <h1 className={`text-2xl text-white text-center font-semibold`}>
+          <div className={`flex flex-col items-center gap-6`}>
+            <h1 className={`text-center text-2xl font-semibold text-white`}>
               {props.title}
             </h1>
-            <p className={`text-sm text-center font-medium text-gray-shade-4`}>
+            <p className={`text-center text-sm font-medium text-gray-shade-4`}>
               {props.content}
             </p>
           </div>
@@ -55,9 +55,9 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
 
   if (props.variant === "mobile") {
     return (
-      <section className={`mb-5 gap-10 flex flex-col md:hidden`}>
-        <div className={`flex gap-4 flex-col`}>
-          <h1 className={`text-2xl text-white font-semibold`}>{props.title}</h1>
+      <section className={`mb-5 flex flex-col gap-10 md:hidden`}>
+        <div className={`flex flex-col gap-4`}>
+          <h1 className={`text-2xl font-semibold text-white`}>{props.title}</h1>
           <p className={`text-sm font-medium text-gray-shade-4`}>
             {props.content}
           </p>

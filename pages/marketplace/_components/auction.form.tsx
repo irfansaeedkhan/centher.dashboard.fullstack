@@ -302,7 +302,7 @@ const AuctionForm = ({
           Starting price for NFT <span className="text-red-500">*</span>{" "}
         </label>
         <div className="relative">
-          <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
             BNB
           </span>
           <input
@@ -417,7 +417,7 @@ const AuctionForm = ({
         variant={formState.isValid && asset !== undefined ? "v1" : "v2"}
         disabled={!formState.isValid && asset === undefined}
         onClick={handleSubmit(onSubmit)}
-        className="py-4 mt-2"
+        className="mt-2 py-4"
       />
       {propertyModal && (
         <CustomModal
@@ -458,7 +458,7 @@ const AuctionForm = ({
               title={"Save"}
               variant="v1"
               onClick={addNewPropertyFunc}
-              className="py-4 mt-2"
+              className="mt-2 py-4"
             />
           </div>
         </CustomModal>

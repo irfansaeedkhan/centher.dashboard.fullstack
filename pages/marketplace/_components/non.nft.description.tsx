@@ -109,7 +109,7 @@ export const NonNFTDescription = ({
               {...listingForm.register("bidPrice")}
               placeholder="0.00"
               className={
-                "w-full h-full !border-0 !ring-0 bg-transparent text-white"
+                "h-full w-full !border-0 bg-transparent text-white !ring-0"
               }
             />
             <h6 className="text-14px font-semibold text-gray-shade-7">
@@ -128,7 +128,7 @@ export const NonNFTDescription = ({
           variant={listingForm.formState.isValid ? "v1" : "v2"}
           disabled={listingForm.formState.isValid ? false : true}
           onClick={listingForm.handleSubmit(handleListNFT)}
-          className="py-4 mt-2"
+          className="mt-2 py-4"
         />
       </form>
     );
@@ -150,7 +150,7 @@ export const NonNFTDescription = ({
             autoComplete="off"
             {...auctionForm.register("AuctionEndTime")}
             placeholder="Set Auction End Time"
-            className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
+            className="h-full w-full !border-0 bg-transparent text-white !ring-0"
           />
           {auctionForm.formState.errors.AuctionEndTime && (
             <p className={`text-red-500 ${errMessage}`}>
@@ -161,7 +161,7 @@ export const NonNFTDescription = ({
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Starting price for NFT</label>
           <div className="relative">
-            <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+            <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
               BNB
             </span>
             <input
@@ -170,7 +170,7 @@ export const NonNFTDescription = ({
               autoComplete="off"
               {...auctionForm.register("StartingNFTPrice")}
               placeholder="Enter NFT Price"
-              className="w-full h-full !border-0 !ring-0 bg-transparent text-white"
+              className="h-full w-full !border-0 bg-transparent text-white !ring-0"
             />
           </div>
 
@@ -185,7 +185,7 @@ export const NonNFTDescription = ({
           variant={auctionForm.formState.isValid ? "v1" : "v2"}
           disabled={!auctionForm.formState.isValid}
           onClick={auctionForm.handleSubmit(handleAuction)}
-          className="py-4 mt-2"
+          className="mt-2 py-4"
         />
       </form>
     );
@@ -203,10 +203,10 @@ export const NonNFTDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <WarningIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Are you sure you want to cancel your Listing?
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Canceling your listing will unpublish this sale from market and You
           will be asked to confirm the transaction through your wallet.
         </p>
@@ -237,10 +237,10 @@ export const NonNFTDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <WarningIcon className="mx-auto" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Are you sure you want to List your NFT to sell?
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Listing Price will be {listingPrice} BNB.
         </p>
         <div className={footerBtnContainer}>
@@ -271,10 +271,10 @@ export const NonNFTDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -308,11 +308,11 @@ export const NonNFTDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully listed{" "}
             <span className="text-white">{data?.name}</span> NFT on{" "}
             <b>Centher</b>
@@ -320,7 +320,7 @@ export const NonNFTDescription = ({
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
@@ -405,7 +405,7 @@ export const NonNFTDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
             {formatEther2Number(data?.listInfo.price)} BNB
@@ -418,7 +418,7 @@ export const NonNFTDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
           {data?.description}
         </p>
       </div>

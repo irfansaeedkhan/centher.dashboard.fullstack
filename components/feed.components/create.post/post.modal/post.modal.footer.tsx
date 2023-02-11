@@ -20,7 +20,7 @@ const PostModalFooter: React.FC = () => {
   return (
     <div
       className={clsx(
-        `grid grid-rows-[auto_auto] fsm:grid-rows-1 fsm:grid-cols-[1fr_auto_auto_auto] items-center px-3 fsm:px-6 py-3`,
+        `grid grid-rows-[auto_auto] items-center px-3 py-3 fsm:grid-cols-[1fr_auto_auto_auto] fsm:grid-rows-1 fsm:px-6`,
         {
           "grid-cols-[1fr_auto]": modalType !== "edit",
           "grid-cols-[auto_1fr]": modalType === "edit",
@@ -34,7 +34,7 @@ const PostModalFooter: React.FC = () => {
       )}
 
       <div
-        className={clsx("w-7 h-7", {
+        className={clsx("h-7 w-7", {
           "ml-4 fsm:ml-0": modalType !== "edit",
           "mr-4 fsm:mr-0": modalType === "edit",
         })}
@@ -46,12 +46,12 @@ const PostModalFooter: React.FC = () => {
       </div>
 
       <div
-        className={`w-0.5 h-4 bg-gray-shade-3 rounded-xl hidden fsm:block mx-2`}
+        className={`mx-2 hidden h-4 w-0.5 rounded-xl bg-gray-shade-3 fsm:block`}
       ></div>
 
       <button
         className={clsx(
-          `block text-center text-14px font-bold py-2 px-12 rounded-xl bg-brand-primary text-black-shade-3 select-none fsm:col-span-1`,
+          `text-14px block select-none rounded-xl bg-brand-primary py-2 px-12 text-center font-bold text-black-shade-3 fsm:col-span-1`,
           {
             "col-span-full mt-4 fsm:mt-0": modalType !== "edit",
           }
@@ -68,7 +68,7 @@ const PostModalFooter: React.FC = () => {
         }}
       >
         {isPostModalLoading ? (
-          <CgSpinner className="animate-spin w-4 h-4 inline-block" />
+          <CgSpinner className="inline-block h-4 w-4 animate-spin" />
         ) : modalType === "edit" ? (
           "Save"
         ) : (

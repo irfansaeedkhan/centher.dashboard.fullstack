@@ -2,14 +2,14 @@ import React from "react";
 
 const WalletSectionSkeleton = () => {
   return (
-    <div className="w-full flex md:flex-row flex-col gap-6">
-      <div className="w-full max-w-[810px] bg-[#131314] rounded-[14px] h-[198px]">
-        <div className="h-1/2 py-5 px-6 bg-[#131314] rounded-t-[14px] bg-no-repeat bg-cover bg-transparent bg-center space-y-1 flex flex-col justify-center"></div>
-        <div className="h-1/2 py-5 px-6 bg-[#3C3F4A]  animate-pulse rounded-b-[14px] space-y-1 flex flex-col justify-center"></div>
+    <div className="flex w-full flex-col gap-6 md:flex-row">
+      <div className="h-[198px] w-full max-w-[810px] rounded-[14px] bg-[#131314]">
+        <div className="flex h-1/2 flex-col justify-center space-y-1 rounded-t-[14px] bg-[#131314] bg-transparent bg-cover bg-center bg-no-repeat py-5 px-6"></div>
+        <div className="flex h-1/2 animate-pulse flex-col  justify-center space-y-1 rounded-b-[14px] bg-[#3C3F4A] py-5 px-6"></div>
       </div>
-      <div className="md:max-w-[310px] max-w-full w-full md:h-[198px] sm:h-[175px] h-[198px] rounded-[14px] bg-no-repeat bg-cover flex flex-grow bg-transparent py-6 px-5 flex-col justify-between bg-[#131314]">
-        <div className="w-full rounded-[14px] h-[70px] bg-[#3C3F4A]  animate-pulse"></div>
-        <div className="w-full rounded-xl p-2 bg-[#3C3F4A]  animate-pulse  backdrop-blur-md h-[52px] flex items-center justify-between gap-2"></div>
+      <div className="flex h-[198px] w-full max-w-full flex-grow flex-col justify-between rounded-[14px] bg-transparent bg-[#131314] bg-cover bg-no-repeat py-6 px-5 sm:h-[175px] md:h-[198px] md:max-w-[310px]">
+        <div className="h-[70px] w-full animate-pulse rounded-[14px]  bg-[#3C3F4A]"></div>
+        <div className="flex h-[52px] w-full animate-pulse  items-center  justify-between gap-2 rounded-xl bg-[#3C3F4A] p-2 backdrop-blur-md"></div>
       </div>
     </div>
   );

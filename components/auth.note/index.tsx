@@ -10,22 +10,22 @@ export const AuthNote: React.FC<AuthNoteProps> = (props) => {
   return (
     <div
       className={`
-  py-3 
-  px-4 
   flex 
-  border 
   flex-col 
   gap-[6px] 
   rounded-lg 
-  bg-gray-shade-6 
+  border 
   border-gray-shade-5 
+  bg-gray-shade-6 
+  py-3 
+  px-4 
 `}
     >
       <div
         className={`
   text-sm 
-  text-white
-  font-medium 
+  font-medium
+  text-white 
 `}
       >
         Note:
@@ -44,9 +44,9 @@ export const AuthNote: React.FC<AuthNoteProps> = (props) => {
           href={props.link}
           className={`
   text-xs 
-  underline 
+  font-medium 
   text-white 
-  font-medium
+  underline
   hover:text-brand-primary
 `}
         >

@@ -326,7 +326,7 @@ export const CreateNFTCollectionForm = ({
             !formState.isValid && profile === undefined && cover === undefined
           }
           onClick={handleSubmit(onSubmit)}
-          className="py-4 mt-2"
+          className="mt-2 py-4"
         />
       </div>
     </div>

@@ -10,7 +10,7 @@ const BuyNTRDAOPage: NextPageWithLayout = () => {
 
   return (
     <div
-      className={`bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10`}
+      className={`mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto`}
     >
       {!!roundsInfo.length ? (
         <div className={`space-y-5`}>

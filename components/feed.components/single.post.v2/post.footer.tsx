@@ -45,7 +45,7 @@ export const PostFooter: React.FC<Props> = ({
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiMessageCircle className="w-5 h-5" />
+        <FiMessageCircle className="h-5 w-5" />
         <span>{post.replies_count}</span>
       </AnalyticsCount>
       <AnalyticsCount
@@ -60,7 +60,7 @@ export const PostFooter: React.FC<Props> = ({
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiThumbsUp className="w-5 h-5" />
+        <FiThumbsUp className="h-5 w-5" />
         <span className="mt-1">{post.likes_count}</span>
       </AnalyticsCount>
       <AnalyticsCount
@@ -71,7 +71,7 @@ export const PostFooter: React.FC<Props> = ({
         className="relative text-gray-shade-10"
       >
         <IoMdShareAlt
-          className="w-7 h-7 p-1"
+          className="h-7 w-7 p-1"
           onClick={() => setIsShareMenuOpen((prev) => !prev)}
         />
 
@@ -89,7 +89,7 @@ const AnalyticsCount = React.forwardRef<HTMLDivElement, AnalyticsCountProps>(
       <div
         ref={ref}
         className={clsx(
-          "flex items-center gap-x-2 font-medium text-base cursor-pointer",
+          "flex cursor-pointer items-center gap-x-2 text-base font-medium",
           className
         )}
         {...props}

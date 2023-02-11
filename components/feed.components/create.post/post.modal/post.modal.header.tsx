@@ -9,16 +9,16 @@ interface Props {
 const PostModalHeader: React.FC<Props> = ({ title, onClickClose }) => {
   return (
     <div
-      className={`flex items-center p-3 border-b-2 border-gray-shade-3 border-opacity-40`}
+      className={`flex items-center border-b-2 border-gray-shade-3 border-opacity-40 p-3`}
     >
       <h3
-        className={`flex-grow text-white text-base fsm:text-xl text-center font-semibold`}
+        className={`flex-grow text-center text-base font-semibold text-white fsm:text-xl`}
       >
         {title}
       </h3>
 
       <button onClick={onClickClose}>
-        <IoClose className="fill-white w-5 h-5" />
+        <IoClose className="h-5 w-5 fill-white" />
       </button>
     </div>
   );

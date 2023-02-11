@@ -52,13 +52,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
 
   return (
     <div className={nftCardWrapper}>
-      <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
+      <div className="absolute top-0 left-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]">
         {loading !== "loading" && loading !== "idle" ? (
           <div className={ownerDpWrapper}>
             {user?.account_address ? (
               <Link href={`/profile/${user?.account_address}`}>
                 <Image
-                  className="cursor-pointer !w-7 !h-7 rounded-full object-cover"
+                  className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
                   src={user?.profile_image.path ?? imgSrc}
                   alt="profile"
                   height={28}
@@ -76,21 +76,21 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             <div className="flex items-center gap-2">
               {user?.account_address ? (
                 <Link
-                  className="cursor-pointer truncate w-full max-w-[150px] text-white"
+                  className="w-full max-w-[150px] cursor-pointer truncate text-white"
                   href={`/profile/${user?.account_address}`}
                 >
-                  <span className={`text-white text-xs font-medium`}>
+                  <span className={`text-xs font-medium text-white`}>
                     {user?.display_name ?? formatAddress(nftOwner)}
                   </span>
                 </Link>
               ) : (
-                <div className="truncate max-w-[200px] text-white">
-                  <span className={`text-white text-xs font-medium`}>
+                <div className="max-w-[200px] truncate text-white">
+                  <span className={`text-xs font-medium text-white`}>
                     {formatAddress(notRegistered)}
                   </span>
                 </div>
               )}
-              <YellowTick className="w-[12px] h-[12px]" />
+              <YellowTick className="h-[12px] w-[12px]" />
             </div>
           </div>
         ) : (
@@ -115,10 +115,10 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             alt="nft"
             height={222}
             width={293}
-            className="!w-[293px] !h-[222px] object-cover rounded-md"
+            className="!h-[222px] !w-[293px] rounded-md object-cover"
           />
         ) : (
-          <div className="!w-[293px] !h-[222px] rounded-md bg-[#3C3F4A] mt-10 animate-pulse"></div>
+          <div className="mt-10 !h-[222px] !w-[293px] animate-pulse rounded-md bg-[#3C3F4A]"></div>
         )}
       </Link>
       <Link

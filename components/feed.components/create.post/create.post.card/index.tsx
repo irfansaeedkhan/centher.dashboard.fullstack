@@ -18,19 +18,19 @@ export const CreatePostCard: React.FC<Props> = () => {
 
   return (
     <div
-      className={`w-full p-3 fsm:p-4 rounded-10px bg-background-shade-3 flex flex-col gap-4 relative`}
+      className={`relative flex w-full flex-col gap-4 rounded-10px bg-background-shade-3 p-3 fsm:p-4`}
     >
-      <div className={`top w-full flex items-center gap-2 mb-2`}>
+      <div className={`top mb-2 flex w-full items-center gap-2`}>
         <Image
           src={user.profile_image.path}
           width={48}
           height={48}
-          className={`rounded-full object-cover !w-10 !h-10 md:!w-12 md:!h-12`}
+          className={`!h-10 !w-10 rounded-full object-cover md:!h-12 md:!w-12`}
           alt={"icon"}
           sizes={"256px"}
         />
         <button
-          className={`flex-grow text-14px bg-transparent rounded-10px h-10 md:h-12 border-2 border-gray-shade-3 px-6 text-gray-shade-7 font-medium text-left outline-none focus:outline-none`}
+          className={`text-14px h-10 flex-grow rounded-10px border-2 border-gray-shade-3 bg-transparent px-6 text-left font-medium text-gray-shade-7 outline-none focus:outline-none md:h-12`}
           onClick={() => {
             setIsNewPostModalOpen(true);
             openModal({

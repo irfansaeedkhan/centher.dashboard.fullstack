@@ -70,7 +70,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
     <>
       {createPortal(
         <div
-          className="fixed inset-0 bg-black z-[1010]"
+          className="fixed inset-0 z-[1010] bg-black"
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -78,10 +78,10 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
           {/* Close Icon */}
           <div className="absolute top-4 right-4 z-10">
             <button
-              className="p-1 fsm:p-1.5 bg-gray-900/50 hover:bg-gray-900 rounded-full"
+              className="rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:p-1.5"
               onClick={() => onClose(selectedIndex)}
             >
-              <IoClose className="w-4 h-4 fill-white" />
+              <IoClose className="h-4 w-4 fill-white" />
             </button>
           </div>
 
@@ -116,7 +116,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
                       <video
                         key={media.url}
                         src={media.url}
-                        className={`w-full h-full object-contain`}
+                        className={`h-full w-full object-contain`}
                         controls
                         controlsList="nodownload"
                       />
@@ -130,19 +130,19 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
           {/* navigation prev*/}
           {media!.length > 1 && selectedIndex > 0 && (
             <button
-              className="hidden fmd:block absolute left-0 top-1/2 p-1 transform -translate-y-1/2 translate-x-1 fsm:translate-x-2 bg-gray-900/50 hover:bg-gray-900 rounded-full"
+              className="absolute left-0 top-1/2 hidden -translate-y-1/2 translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:translate-x-2 fmd:block"
               onClick={scrollPrev}
             >
-              <MdNavigateBefore className="w-4 h-4 fsm:w-5 fsm:h-5 fill-white" />
+              <MdNavigateBefore className="h-4 w-4 fill-white fsm:h-5 fsm:w-5" />
             </button>
           )}
           {/* navigation next*/}
           {media!.length > 1 && selectedIndex < media!.length - 1 && (
             <button
-              className="hidden fmd:block absolute right-0 top-1/2 p-1 transform -translate-y-1/2 -translate-x-1 fsm:-translate-x-2 bg-gray-900/50 hover:bg-gray-900 rounded-full"
+              className="absolute right-0 top-1/2 hidden -translate-y-1/2 -translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2 fmd:block"
               onClick={scrollNext}
             >
-              <MdNavigateNext className="w-4 h-4 fsm:w-5 fsm:h-5 fill-white" />
+              <MdNavigateNext className="h-4 w-4 fill-white fsm:h-5 fsm:w-5" />
             </button>
           )}
         </div>,

@@ -71,9 +71,9 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
   };
 
   return (
-    <div className="card bg-elevation-1 rounded-xl max-w-[470px] overflow-hidden flex flex-col ">
+    <div className="card flex max-w-[470px] flex-col overflow-hidden rounded-xl bg-elevation-1 ">
       <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
-        <h2 className="cardTitle text-gray-shade-7 text-14px font-semibold">
+        <h2 className="cardTitle text-14px font-semibold text-gray-shade-7">
           Set Referral Rate
         </h2>
       </div>
@@ -86,10 +86,10 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   className="flex items-center justify-between gap-3"
                   key={index}
                 >
-                  <label className="label text-gray-shade-7 text-14px">
+                  <label className="label text-14px text-gray-shade-7">
                     Level {index + 1}
                   </label>
-                  <div className=" flex gap-2 flex-col min-w-[180px]">
+                  <div className=" flex min-w-[180px] flex-col gap-2">
                     <div className="checkbox flex items-center justify-end gap-2">
                       <input
                         id="BUSD"
@@ -98,18 +98,18 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                           handleSetRate(e.target.value, index);
                         }}
                         type="number"
-                        className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                        className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
                       />
-                      <h6 className="text-gray-shade-7 text-14px">%</h6>
+                      <h6 className="text-14px text-gray-shade-7">%</h6>
                     </div>
                   </div>
                 </div>
               );
             })}
 
-          <div className="cardFooter pt-4 pb-7 px-5">
+          <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
               onClick={handleReferralRate}
             >
               {pendingReferralRateTx
@@ -142,24 +142,24 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           </div> */}
 
           <div className="flex items-center justify-between">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Company Address
             </label>
-            <div className=" flex gap-2 flex-col min-w-[50px]">
+            <div className=" flex min-w-[50px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
                   id="BUSD"
                   value={companyAddress}
                   onChange={(e) => setCompanyAddress(e.target.value)}
                   type="text"
-                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[280px]"
+                  className="text-14px  w-full   max-w-[280px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
                 />
               </div>
             </div>
           </div>
-          <div className="cardFooter pt-4 pb-7 px-5">
+          <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
               onClick={handleCompanyAddress}
             >
               {pendingCompanyAddressTx
@@ -169,24 +169,24 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Core Team Address
             </label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
                   id="BUSD"
                   value={coreTeamAddress}
                   onChange={(e) => setCoreTeamAddress(e.target.value)}
                   type="text"
-                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[280px]"
+                  className="text-14px  w-full   max-w-[280px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
                 />
               </div>
             </div>
           </div>
-          <div className="cardFooter pt-4 pb-7 px-5">
+          <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
               onClick={handleCoreTeamAddress}
             >
               {pendingTeamAddressTx

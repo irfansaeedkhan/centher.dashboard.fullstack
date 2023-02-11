@@ -13,10 +13,10 @@ interface Props {
 
 const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
   return (
-    <div className="flex w-full items-center gap-2 mt-3 justify-center">
+    <div className="mt-3 flex w-full items-center justify-center gap-2">
       <div
         className={clsx(
-          `flex relative w-full h-6`,
+          `relative flex h-6 w-full`,
           mutualFollowersData?.users.length === 1 && `max-w-[24px]`,
           mutualFollowersData?.users.length === 2 && `max-w-[36px]`,
           mutualFollowersData?.users.length === 3 && `max-w-[50px]`
@@ -31,7 +31,7 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
               width={24}
               height={24}
               className={clsx(
-                `!w-6 !h-6 rounded-full border-[1.5px] border-elevation-1 absolute`,
+                `absolute !h-6 !w-6 rounded-full border-[1.5px] border-elevation-1`,
                 index === 1 && `left-[0.7rem] z-10`,
                 index === 2 && `left-[1.5rem] z-20`
               )}

@@ -43,7 +43,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
             <div className="accordion-body ">
               <div
                 className={clsx(
-                  "overflow-x-auto relative  shadow-md rounded-2xl ",
+                  "relative overflow-x-auto  rounded-2xl shadow-md ",
                   data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
                 )}
               >
@@ -107,7 +107,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                     </tbody>
                   </table>
                 ) : (
-                  <p className="text-center text-white text-lg">
+                  <p className="text-center text-lg text-white">
                     {" "}
                     No offers yet!
                   </p>

@@ -26,13 +26,13 @@ export const HotNFTs: React.FC = () => {
 
   return (
     <div className={hotNftPageWrapper}>
-      <div className="flex justify-between items-center max-w-[1300px]">
+      <div className="flex max-w-[1300px] items-center justify-between">
         <div className={hotNftAnimation}>Hot NFTs</div>
         <Link
           href={{
             pathname: AppRoutes.marketplace.all_nfts,
           }}
-          className="block py-3 text-white bg-gray-shade-3 w-[172px] min-w-fit px-4 rounded-xl text-center border border-gray-shade-12 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3"
+          className="block w-[172px] min-w-fit cursor-pointer rounded-xl border border-gray-shade-12 bg-gray-shade-3 py-3 px-4 text-center text-white hover:bg-brand-primary hover:text-black-shade-3"
         >
           View All
         </Link>
@@ -46,7 +46,7 @@ export const HotNFTs: React.FC = () => {
         </div>
       )}
       {(loadingHotNFTs === "loading" || loadingHotNFTs === "idle") && (
-        <div className="flex flex-wrap gap-5 items-center">
+        <div className="flex flex-wrap items-center gap-5">
           {/* we are showing 8 skeletons while reloading the page to users */}
           <NftsSkeleton />
           <NftsSkeleton />
@@ -61,10 +61,10 @@ export const HotNFTs: React.FC = () => {
 
       {loadingHotNFTs === "loaded" && hotNFTs.length === 0 && (
         <>
-          <div className="flex justify-center items-center text-white">
+          <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />
           </div>
-          <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+          <div className="flex items-center justify-center text-[16px] font-semibold text-white">
             No HOT NFTs found yet
           </div>
         </>

@@ -40,7 +40,7 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-white text-lg">
+                  <p className="text-center text-lg text-white">
                     {" "}
                     No properties yet!
                   </p>

@@ -8,7 +8,7 @@ export const ContactCard = () => {
   return (
     <div
       className={`
-  flex  items-center  justify-between my-4
+  my-4  flex  items-center justify-between
 `}
     >
       <div
@@ -25,7 +25,7 @@ export const ContactCard = () => {
         <div>
           <h5
             className={`
-  text-14px font-semibold text-white pb-1
+  text-14px pb-1 font-semibold text-white
 `}
           >
             Robert Fox
@@ -41,7 +41,7 @@ export const ContactCard = () => {
       </div>
       <button
         className={`
-  w-[20px] h-[20px] rounded-md bg-gray-shade-3 flex items-center justify-center cursor-pointer
+  flex h-[20px] w-[20px] cursor-pointer items-center justify-center rounded-md bg-gray-shade-3
 `}
       >
         <RightSimpleIcon />

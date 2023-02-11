@@ -4,7 +4,7 @@ import { LevelParentCard } from "./level.parent.card";
 
 export const LevelMainMobile = ({ mobileData, handleCard }: any) => {
   return (
-    <div className="w-full flex flex-col gap-1">
+    <div className="flex w-full flex-col gap-1">
       <LevelParentCard parentData={mobileData} />
       {mobileData?.children?.map((childData: any, index: number) => {
         return (

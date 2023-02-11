@@ -77,7 +77,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
               className={allButtonWrapper}
               onClick={() => setCategoryOpen((prev: any) => !prev)}
             >
-              <span className="text-gray-shade-7 text-sm font-semibold">
+              <span className="text-sm font-semibold text-gray-shade-7">
                 Category
               </span>{" "}
               {categoryOpen ? (
@@ -111,7 +111,7 @@ const AllNFTCollection: NextPageWithLayout = () => {
       )}
 
       {(loading === "loading" || loading === "idle") && (
-        <div className="flex flex-wrap gap-10 items-center">
+        <div className="flex flex-wrap items-center gap-10">
           {/* we are showing 8 skeletons while reloading the page to users */}
           <NftCollectionSkeleton />
           <NftCollectionSkeleton />
@@ -126,10 +126,10 @@ const AllNFTCollection: NextPageWithLayout = () => {
 
       {loading === "loaded" && collections.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[48px]">
+          <div className="mt-[48px] flex justify-center">
             <NftsCollectionEmpty />
           </div>
-          <div className="flex justify-center text-white font-semibold text-xs mt-6">
+          <div className="mt-6 flex justify-center text-xs font-semibold text-white">
             <p>No collection found yet!</p>
           </div>
         </div>

@@ -11,7 +11,7 @@ export const RecentActivitiesCard = () => {
     >
       <h5
         className={`
-  text-14px font-semibold text-white pb-6
+  text-14px pb-6 font-semibold text-white
 `}
       >
         Recent activities

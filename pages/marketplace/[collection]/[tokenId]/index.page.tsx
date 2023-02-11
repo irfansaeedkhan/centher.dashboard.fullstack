@@ -31,7 +31,7 @@ const NFT: NextPageWithLayout = () => {
         <button className={backBtn} onClick={() => router.back()}>
           <ArrowLeftSimpleIcon />
         </button>
-        <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
+        <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
           <NFTLeftSideComponent
             image={data?.image}
             type={data?.type}

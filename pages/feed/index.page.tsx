@@ -188,13 +188,13 @@ const Feed: NextPageWithLayout = () => {
 
       {loading === "loaded" && posts.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[60px]">
+          <div className="mt-[60px] flex justify-center">
             <NoPost />
           </div>
-          <div className="flex justify-center mt-[35px]">
+          <div className="mt-[35px] flex justify-center">
             <p className="text-white">No posts available</p>
           </div>
-          <div className="flex justify-center mt-3">
+          <div className="mt-3 flex justify-center">
             <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>
@@ -203,7 +203,7 @@ const Feed: NextPageWithLayout = () => {
       )}
 
       {loading === "failed" && (
-        <p className="flex justify-center text-gray-shade-7 !mt-12">
+        <p className="!mt-12 flex justify-center text-gray-shade-7">
           Something went wrong!
         </p>
       )}
@@ -216,7 +216,7 @@ const Feed: NextPageWithLayout = () => {
 Feed.getLayout = (page) => {
   return (
     <FeedPagesWrapper>
-      <div className={`w-full mx-auto space-y-3`}>{page}</div>
+      <div className={`mx-auto w-full space-y-3`}>{page}</div>
     </FeedPagesWrapper>
   );
 };

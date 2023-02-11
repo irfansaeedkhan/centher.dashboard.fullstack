@@ -4,8 +4,8 @@ import React from "react";
 
 export const PromotionCard1 = () => {
   return (
-    <div className="w-[272px] h-[348px] rounded-10px overflow-hidden bg-[url(/images/No-counter.png)] bg-no-repeat bg-cover relative p-6 flex flex-col items-center">
-      <div className="absolute bottom-0 z-50 left-0 ">
+    <div className="relative flex h-[348px] w-[272px] flex-col items-center overflow-hidden rounded-10px bg-[url(/images/No-counter.png)] bg-cover bg-no-repeat p-6">
+      <div className="absolute bottom-0 left-0 z-50 ">
         <Flor />
       </div>
       <Image
@@ -13,13 +13,13 @@ export const PromotionCard1 = () => {
         alt=""
         width={220}
         height={30}
-        className="!max-w-[220px] !h-[30px] object-cover"
+        className="!h-[30px] !max-w-[220px] object-cover"
       />
-      <div className="flex flex-col items-center justify-center mt-3 mb-[6px]">
+      <div className="mt-3 mb-[6px] flex flex-col items-center justify-center">
         <h2 className="animationTextHeading !text-[21px] font-extrabold leading-[26px]">
           CENTHER DAO
         </h2>
-        <h2 className="text-white !text-[21px] font-extrabold leading-[26px]">
+        <h2 className="!text-[21px] font-extrabold leading-[26px] text-white">
           LAUNCHPAD
         </h2>
       </div>
@@ -28,7 +28,7 @@ export const PromotionCard1 = () => {
         alt=""
         width={159}
         height={156}
-        className="!w-[159px] !h-[156px] object-cover"
+        className="!h-[156px] !w-[159px] object-cover"
       />
     </div>
   );

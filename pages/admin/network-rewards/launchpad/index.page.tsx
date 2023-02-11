@@ -103,7 +103,7 @@ const AdminNetworkRewards: NextPageWithLayout = () => {
 AdminNetworkRewards.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Network Rewards">
-      <div className="w-full max-w-[1136px] mx-auto">
+      <div className="mx-auto w-full max-w-[1136px]">
         <NetworkTabs />
         {page}
       </div>

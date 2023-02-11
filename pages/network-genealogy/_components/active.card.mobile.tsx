@@ -11,7 +11,7 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
   const { user } = useGetUser(Active?.user);
   return (
     <div
-      className={`bg-background-shade-3 rounded-t-lg w-full relative activeLevelCard`}
+      className={`activeLevelCard relative w-full rounded-t-lg bg-background-shade-3`}
     >
       <button
         className="px-3 py-5"
@@ -42,7 +42,7 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
         </svg>
       </button>
 
-      <div className="flex items-center pb-4 px-3 gap-3 ">
+      <div className="flex items-center gap-3 px-3 pb-4 ">
         {user ? (
           <Image
             src={user.profile_image.path}
@@ -50,10 +50,10 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
             width={36}
             height={36}
             sizes="36px"
-            className="rounded-full object-cover w-9 h-9"
+            className="h-9 w-9 rounded-full object-cover"
           />
         ) : (
-          <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+          <div className="h-12 w-12 flex-shrink-0 animate-pulse rounded-full bg-gray-shade-3"></div>
         )}
 
         <div className="flex flex-col gap-2">
@@ -65,27 +65,27 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
               },
             }}
             className={
-              "whitespace-nowrap overflow-hidden text-ellipsis  text-white "
+              "overflow-hidden text-ellipsis whitespace-nowrap  text-white "
             }
           >
-            <h5 className="dark text-white text-12px font-medium">
+            <h5 className="text-12px dark font-medium text-white">
               {formatAddress(Active?.user)}
             </h5>
           </Link>
 
-          <h6 className="light text-gray-shade-19 text-[10px] font-medium">
+          <h6 className="light text-[10px] font-medium text-gray-shade-19">
             Level {Active?.level}
           </h6>
         </div>
       </div>
       <div
-        className={`flex justify-between gap-2 p-3 border-t border-gray-shade-12/10 `}
+        className={`flex justify-between gap-2 border-t border-gray-shade-12/10 p-3 `}
       >
         <div className="flex flex-col gap-2">
-          <h5 className="light text-gray-shade-19 text-12px font-medium">
+          <h5 className="light text-12px font-medium text-gray-shade-19">
             Generated
           </h5>
-          <h6 className="dark text-white-shade-1 text-14px font-semibold">
+          <h6 className="text-14px dark font-semibold text-white-shade-1">
             {`${Active?.generatedBUSD} BUSD`}
           </h6>
           {/* <h6 className="dark text-white-shade-1 text-14px font-semibold">
@@ -93,16 +93,16 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
           </h6> */}
         </div>
         <div className="flex flex-col items-end gap-2">
-          <h5 className="light text-gray-shade-19 text-12px font-medium">
+          <h5 className="light text-12px font-medium text-gray-shade-19">
             Line
           </h5>
-          <h6 className="dark text-white-shade-1 text-14px font-semibold">
+          <h6 className="text-14px dark font-semibold text-white-shade-1">
             {`${Active?.people} People`}
           </h6>
         </div>
       </div>
       <svg
-        className="absolute left-[50%] translate-x-[-50%] -bottom-[14px] rotate-90 "
+        className="absolute left-[50%] -bottom-[14px] translate-x-[-50%] rotate-90 "
         width="10"
         height="21"
         viewBox="0 0 10 21"

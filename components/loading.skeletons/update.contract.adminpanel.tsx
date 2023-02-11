@@ -3,56 +3,56 @@ import React from "react";
 const UpdateContractAdminPanelSkeleton = () => {
   return (
     <>
-      <div className="w-full max-w-[370px] h-[748px] bg-[#131314] rounded-xl">
-        <div className="flex justify-between p-5 items-center">
-          <div className="w-full max-w-[50px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[20px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
+      <div className="h-[748px] w-full max-w-[370px] rounded-xl bg-[#131314]">
+        <div className="flex items-center justify-between p-5">
+          <div className="h-[20px] w-full max-w-[50px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[20px] w-full max-w-[20px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-5 px-5 items-center">
-          <div className="w-full max-w-[30px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[70px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-5 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[30px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[20px] w-full max-w-[70px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-5 px-5 items-center">
-          <div className="w-full max-w-[30px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[70px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-5 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[30px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[20px] w-full max-w-[70px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-8 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[180px] h-[40px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-8 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[40px] w-full max-w-[180px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-8 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[180px] h-[40px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-8 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[40px] w-full max-w-[180px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-8 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[220px] h-[44px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-8 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[44px] w-full max-w-[220px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-8 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[220px] h-[44px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-8 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[44px] w-full max-w-[220px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="flex justify-between mt-5 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[220px] h-[44px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-5 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[44px] w-full max-w-[220px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
-        <div className="flex justify-between mt-5 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[220px] h-[44px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-5 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[44px] w-full max-w-[220px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
-        <div className="flex justify-between mt-5 px-5 items-center">
-          <div className="w-full max-w-[80px] h-[20px] bg-[#3C3F4A] animate-pulse"></div>
-          <div className="w-full max-w-[220px] h-[44px] bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mt-5 flex items-center justify-between px-5">
+          <div className="h-[20px] w-full max-w-[80px] animate-pulse bg-[#3C3F4A]"></div>
+          <div className="h-[44px] w-full max-w-[220px] animate-pulse bg-[#3C3F4A]"></div>
         </div>
 
-        <div className="w-full max-w-[310px] mt-8 mx-auto h-[44px] rounded-lg bg-[#3C3F4A] animate-pulse"></div>
+        <div className="mx-auto mt-8 h-[44px] w-full max-w-[310px] animate-pulse rounded-lg bg-[#3C3F4A]"></div>
       </div>
     </>
   );

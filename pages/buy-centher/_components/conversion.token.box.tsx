@@ -40,11 +40,11 @@ export const ConversionTokenBox: React.FC<Props> = ({
   return (
     <div className={clsx(inputBox, className)} {...props}>
       <div className={clsx(inputBoxLeft, "relative")}>
-        <div className="flex items-center justify-between flex-grow">
-          <div className="flex items-center flex-grow">
+        <div className="flex flex-grow items-center justify-between">
+          <div className="flex flex-grow items-center">
             {tokenIcon}
             <span
-              className={`ml-2 inline-block text-xs fmd:text-sm text-white font-semibold`}
+              className={`ml-2 inline-block text-xs font-semibold text-white fmd:text-sm`}
             >
               {tokenName}
             </span>
@@ -57,30 +57,30 @@ export const ConversionTokenBox: React.FC<Props> = ({
               className="p-2"
               onClick={() => setIsDropdownOpen((prev) => !prev)}
             >
-              <HiChevronDown className="w-5 h-5 fsm:w-6 fsm:h-6 fill-white" />
+              <HiChevronDown className="h-5 w-5 fill-white fsm:h-6 fsm:w-6" />
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-[calc(100%+6px)] -left-1 w-full bg-popup-0 z-50 rounded-10px text-xs fmd:text-sm text-white font-medium">
+              <div className="absolute top-[calc(100%+6px)] -left-1 z-50 w-full rounded-10px bg-popup-0 text-xs font-medium text-white fmd:text-sm">
                 <div
-                  className="cursor-pointer py-3 px-5 flex items-center border-b border-gray-shade-border-color"
+                  className="flex cursor-pointer items-center border-b border-gray-shade-border-color py-3 px-5"
                   onClick={() => {
                     onChangeSelectedToken("BUSD");
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <BUSDIcon className="w-8 h-8" />
-                  <span className="inline-block ml-3">BUSD</span>
+                  <BUSDIcon className="h-8 w-8" />
+                  <span className="ml-3 inline-block">BUSD</span>
                 </div>
                 <div
-                  className="cursor-pointer py-3 px-5 flex items-center"
+                  className="flex cursor-pointer items-center py-3 px-5"
                   onClick={() => {
                     onChangeSelectedToken("NTR");
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <NTRIcon className="w-8 h-8" />
-                  <span className="inline-block ml-3">NTR</span>
+                  <NTRIcon className="h-8 w-8" />
+                  <span className="ml-3 inline-block">NTR</span>
                 </div>
               </div>
             )}
@@ -90,12 +90,12 @@ export const ConversionTokenBox: React.FC<Props> = ({
       <div className={inputBoxRight}>
         <div>
           <div
-            className={`text-xs fmd:text-sm text-gray-shade-7 font-semibold`}
+            className={`text-xs font-semibold text-gray-shade-7 fmd:text-sm`}
           >
             Balance
           </div>
           <span
-            className={`text-xs fmd:text-sm text-white font-semibold`}
+            className={`text-xs font-semibold text-white fmd:text-sm`}
             title={tokenBalance.toString()}
           >
             {truncateTokenAmount(tokenBalance, 9999999)}

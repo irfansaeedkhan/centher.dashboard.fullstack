@@ -101,6 +101,7 @@ export { default as SettingIcon } from "./setting.icon.svg";
 export { default as DisconnectIcon } from "./wallet.disconnect.svg";
 export { default as ConnectIcon } from "./wallet.connect.svg";
 export { default as Launchpad } from "./launchpad.svg";
+export { default as CloseSmallIcon } from "./close.small.icon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

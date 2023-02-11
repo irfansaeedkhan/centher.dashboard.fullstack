@@ -78,7 +78,7 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: postUser.account_address },
             }}
-            className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
+            className="text-ellipsis text-sm font-semibold text-white line-clamp-1 hover:text-brand-primary"
           >
             {sliceDisplayName(postUser && postUser.display_name)}
           </Link>
@@ -86,7 +86,7 @@ export const PostHeader: React.FC<Props> = ({
           {/* Time */}
           <p
             className={clsx(
-              `text-gray-shade-7 text-xs font-medium`,
+              `text-xs font-medium text-gray-shade-7`,
               postType === "reply" && "ml-3",
               postType !== "reply" && "mt-0.5"
             )}
@@ -107,9 +107,9 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="mt-0.5 inline-block max-w-max text-white font-medium text-xs text-ellipsis line-clamp-1 group"
+              className="group mt-0.5 inline-block max-w-max text-ellipsis text-xs font-medium text-white line-clamp-1"
             >
-              <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
+              <span className="mr-1 inline-block text-xs font-medium text-gray-shade-7">
                 Replying to
               </span>
               <span className="group-hover:text-brand-primary">
@@ -149,7 +149,7 @@ export const PostHeader: React.FC<Props> = ({
               post_id: post.parent_post?._id,
             },
           }}
-          className="min-w-max flex items-center py-1.5 px-3 text-xs text-white bg-black-shade-7 rounded-xl"
+          className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
         >
           View Post
         </Link>

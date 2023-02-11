@@ -56,11 +56,11 @@ export const Levels = () => {
     <div>
       {!!totalPeople ? (
         <div className="pl-1 pr-2 ">
-          <div className="w-full rounded-t-lg  bg-background-shade-3 px-4 py-3 flex flex-col gap-2  mb-4 max-w-[300px]">
-            <h5 className="text-gray-shade-19 text-14px font-medium">
+          <div className="mb-4 flex  w-full max-w-[300px] flex-col gap-2 rounded-t-lg bg-background-shade-3  px-4 py-3">
+            <h5 className="text-14px font-medium text-gray-shade-19">
               Total Numbers Of People
             </h5>
-            <h6 className="text-white-shade-1 text-14px font-semibold">
+            <h6 className="text-14px font-semibold text-white-shade-1">
               {totalPeople ?? "N/A"}
             </h6>
           </div>
@@ -68,7 +68,7 @@ export const Levels = () => {
       ) : null}
 
       {!!genealogies?.length ? (
-        <div className="w-full customScrollbar flex gap-3 pl-1 pr-2 geonologyScroll">
+        <div className="customScrollbar geonologyScroll flex w-full gap-3 pl-1 pr-2">
           {genealogies &&
             genealogies.length > 0 &&
             genealogies.map((parentData: any, index: number) => {

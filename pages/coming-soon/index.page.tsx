@@ -7,18 +7,18 @@ import { AppRoutes } from "@/constants/app.routes";
 
 const ComingSoonPage: NextPageWithLayout = () => {
   return (
-    <div className="h-[calc(100vh-60px-64px)] flex items-center">
-      <div className="w-full flex flex-col gap-8 items-center justify-center">
-        <div className="animationTextHeading lg:!text-[56px] md:!text-[34px] sm:!text-[30px]">
+    <div className="flex h-[calc(100vh-60px-64px)] items-center">
+      <div className="flex w-full flex-col items-center justify-center gap-8">
+        <div className="animationTextHeading sm:!text-[30px] md:!text-[34px] lg:!text-[56px]">
           COMING SOON
         </div>
-        <div className="md:max-w-[534px] sm:max-w-[300px] md:text-base sm:text-sm text-center text-gray-shade-7">
+        <div className="text-center text-gray-shade-7 sm:max-w-[300px] sm:text-sm md:max-w-[534px] md:text-base">
           More interesting things are coming soon to our platform, in the
           meantime you can explore for great things with us.
         </div>
         <Link
           href={AppRoutes.feed.index}
-          className="bg-brand-primary hover:bg-brand-primary-dark py-2 text-center w-[197px] rounded-lg text-black-shade-3 text-sm font-bold"
+          className="w-[197px] rounded-lg bg-brand-primary py-2 text-center text-sm font-bold text-black-shade-3 hover:bg-brand-primary-dark"
         >
           Go to Feed
         </Link>

@@ -157,10 +157,10 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-white text-18px font-semibold leading-6">
+          <h3 className="text-18px font-semibold leading-6 text-white">
             Are you sure you want to cancel your Listing?
           </h3>
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Canceling your listing will unpublish this sale from market and You
             will be asked to confirm the transaction through your wallet.
           </p>
@@ -212,7 +212,7 @@ export const FixedPriceNFTDescription = ({
                 {...register("bidPrice")}
                 placeholder={nftPrice}
                 className={
-                  "w-full h-full !border-0 !ring-0 bg-transparent text-white"
+                  "h-full w-full !border-0 bg-transparent text-white !ring-0"
                 }
                 //  onChange={(e) => setNFTPrice(e.target.value)}
               />
@@ -231,7 +231,7 @@ export const FixedPriceNFTDescription = ({
             variant={formState.isValid ? "v1" : "v2"}
             disabled={!formState.isValid}
             onClick={handleSubmit(setupEditListingItemPriceModal)}
-            className="py-4 mt-2"
+            className="mt-2 py-4"
           />
         </div>
       ),
@@ -242,10 +242,10 @@ export const FixedPriceNFTDescription = ({
       content: (newPrice: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-white text-18px font-semibold leading-6">
+          <h3 className="text-18px font-semibold leading-6 text-white">
             Are you sure you want to edit your Listing Price?
           </h3>
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
@@ -273,10 +273,10 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-white text-18px font-semibold leading-6">
+          <h3 className="text-18px font-semibold leading-6 text-white">
             Transaction in progress
           </h3>
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -294,18 +294,18 @@ export const FixedPriceNFTDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px text-white font-semibold">
+          <h2 className="text-18px font-semibold text-white">
             {status ? "Success!" : "Failed!"}
           </h2>
           {status && (
-            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully changed{" "}
               <span className="text-white">{data?.name}</span> NFT price on
               <b>Centher</b> NFT platform.
             </p>
           )}
           {!status && (
-            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Transaction Failed.
             </p>
           )}
@@ -340,7 +340,7 @@ export const FixedPriceNFTDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
             {formatEther2Number(data?.listInfo.price)} BNB
@@ -353,7 +353,7 @@ export const FixedPriceNFTDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
           {data?.description}
         </p>
       </div>

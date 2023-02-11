@@ -76,7 +76,7 @@ const NFTProfileCollections: NextPageWithLayout = () => {
       )}
 
       {(loading === "loading" || loading === "idle") && (
-        <div className="flex justify-center fsm:justify-start flex-wrap gap-10 items-center">
+        <div className="flex flex-wrap items-center justify-center gap-10 fsm:justify-start">
           <NftProfileCollectionSkeleton />
           <NftProfileCollectionSkeleton />
         </div>
@@ -84,10 +84,10 @@ const NFTProfileCollections: NextPageWithLayout = () => {
 
       {loading === "loaded" && collections?.length === 0 && (
         <>
-          <div className="flex justify-center items-center text-white">
+          <div className="flex items-center justify-center text-white">
             <NftsCollectionEmpty />
           </div>
-          <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+          <div className="flex items-center justify-center text-[16px] font-semibold text-white">
             No collection found yet
           </div>
         </>

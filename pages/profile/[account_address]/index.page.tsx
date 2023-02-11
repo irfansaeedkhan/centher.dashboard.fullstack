@@ -208,13 +208,13 @@ const Profile: NextPageWithLayout = () => {
 
       {loading === "loaded" && posts.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[60px]">
+          <div className="mt-[60px] flex justify-center">
             <NoPost />
           </div>
-          <div className="flex justify-center mt-[35px]">
+          <div className="mt-[35px] flex justify-center">
             <p className="text-white">No posts available</p>
           </div>
-          <div className="flex justify-center mt-3">
+          <div className="mt-3 flex justify-center">
             <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>

@@ -45,10 +45,10 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
-        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
+        <h2 className="text-18px font-semibold text-white">{nftData?.name}</h2>
+        <h3 className="text-14px font-normal text-white">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
         {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
           {nftData?.price} BNB{" "}
@@ -76,10 +76,10 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalContent(
       <div className={modalBodyWrapper2}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -108,11 +108,11 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{nftData?.name}</span> NFT on{" "}
             <b>Centher</b>
@@ -120,7 +120,7 @@ const CreateNFT: NextPageWithLayout = () => {
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
@@ -207,7 +207,7 @@ const CreateNFT: NextPageWithLayout = () => {
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
-      <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
+      <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
           asset={asset}
           setAsset={setAsset}

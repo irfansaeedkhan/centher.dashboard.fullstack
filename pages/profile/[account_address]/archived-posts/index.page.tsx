@@ -74,7 +74,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
 
   return (
     <>
-      <div className="mb-6 bg-gray-shade-9 rounded-md py-[10px] text-[#E7E8EE] text-center text-sm">
+      <div className="mb-6 rounded-md bg-gray-shade-9 py-[10px] text-center text-sm text-[#E7E8EE]">
         Items in your archive are only visible to you.
       </div>
       <div className="space-y-3">
@@ -121,10 +121,10 @@ const ArchivedPosts: NextPageWithLayout = () => {
 
         {loading === "loaded" && posts.length === 0 && (
           <div>
-            <div className="flex justify-center mt-[60px]">
+            <div className="mt-[60px] flex justify-center">
               <ArchiveEmptyIcon />
             </div>
-            <div className="flex justify-center mt-[35px]">
+            <div className="mt-[35px] flex justify-center">
               <p className="text-white">No Archive posts available</p>
             </div>
           </div>
@@ -137,7 +137,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
 ArchivedPosts.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Archived Posts">
-      <div className="max-w-[544px] mx-auto">{page}</div>
+      <div className="mx-auto max-w-[544px]">{page}</div>
     </AllPagesWrapper>
   );
 };

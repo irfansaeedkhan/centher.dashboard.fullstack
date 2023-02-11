@@ -61,11 +61,11 @@ const Notifications: NextPageWithLayout = () => {
     <div className="flex">
       <div
         className={clsx(
-          "flex-grow flex items-center justify-center flex-col space-y-6"
+          "flex flex-grow flex-col items-center justify-center space-y-6"
         )}
       >
         {notifications.length > 0 && (
-          <div className="flex flex-col w-full max-w-[1005px]">
+          <div className="flex w-full max-w-[1005px] flex-col">
             <div className={sectionName}>Notifications</div>
 
             {notifications.map((notification, index) => {
@@ -97,16 +97,16 @@ const Notifications: NextPageWithLayout = () => {
         )}
 
         {(loading === "loading" || loading === "idle") && (
-          <div className="flex flex-col w-full max-w-[1005px]">
+          <div className="flex w-full max-w-[1005px] flex-col">
             <SingleNotificationSkeleton />
           </div>
         )}
         {loading === "loaded" && notifications.length === 0 && (
           <div>
-            <div className="flex justify-center mt-[60px]">
+            <div className="mt-[60px] flex justify-center">
               <NotificationBell />
             </div>
-            <div className="flex justify-center mt-[35px]">
+            <div className="mt-[35px] flex justify-center">
               <p className="text-white">No notifications available</p>
             </div>
           </div>

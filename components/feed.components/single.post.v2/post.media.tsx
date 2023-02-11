@@ -73,7 +73,7 @@ export const PostMedia: React.FC<Props> = ({
       }}
     >
       {/* root node */}
-      <div className="rounded-10px overflow-hidden" ref={emblaRef}>
+      <div className="overflow-hidden rounded-10px" ref={emblaRef}>
         {/* container node */}
         <div className="flex">
           {post.media!.map((media) => {
@@ -87,7 +87,7 @@ export const PostMedia: React.FC<Props> = ({
                   width={544}
                   height={326}
                   sizes="544px"
-                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] object-cover rounded-10px mx-2 break-all`}
+                  className={`mx-2 max-h-[326px] min-h-[200px] flex-[0_0_100%] break-all rounded-10px object-cover lg:max-h-[510px]`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onClickMedia(media.url);
@@ -100,7 +100,7 @@ export const PostMedia: React.FC<Props> = ({
                 <video
                   key={media.url}
                   src={media.url}
-                  className={`flex-[0_0_100%] min-h-[200px] max-h-[326px] lg:max-h-[510px] rounded-xl object-cover mx-2 break-all`}
+                  className={`mx-2 max-h-[326px] min-h-[200px] flex-[0_0_100%] break-all rounded-xl object-cover lg:max-h-[510px]`}
                   controls
                   controlsList="nodownload"
                   onClick={(e) => {
@@ -117,19 +117,19 @@ export const PostMedia: React.FC<Props> = ({
       {/* navigation prev*/}
       {post.media!.length > 1 && selectedIndex > 0 && (
         <button
-          className="absolute left-0 top-1/2 p-1 transform -translate-y-1/2 translate-x-1 fsm:translate-x-2 bg-gray-900/50 hover:bg-gray-900 rounded-full"
+          className="absolute left-0 top-1/2 -translate-y-1/2 translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:translate-x-2"
           onClick={scrollPrev}
         >
-          <MdNavigateBefore className="w-3 h-3 fsm:w-4 fsm:h-4 fill-white" />
+          <MdNavigateBefore className="h-3 w-3 fill-white fsm:h-4 fsm:w-4" />
         </button>
       )}
       {/* navigation next*/}
       {post.media!.length > 1 && selectedIndex < post.media!.length - 1 && (
         <button
-          className="absolute right-0 top-1/2 p-1 transform -translate-y-1/2 -translate-x-1 fsm:-translate-x-2 bg-gray-900/50 hover:bg-gray-900 rounded-full"
+          className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2"
           onClick={scrollNext}
         >
-          <MdNavigateNext className="w-3 h-3 fsm:w-4 fsm:h-4 fill-white" />
+          <MdNavigateNext className="h-3 w-3 fill-white fsm:h-4 fsm:w-4" />
         </button>
       )}
     </div>

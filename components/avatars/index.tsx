@@ -25,16 +25,16 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
     <div
       className={`
   flex 
-  gap-2 
-  items-center
+  items-center 
+  gap-2
 `}
     >
       <Image
         src={`${BACKEND_HTTP_URL}${profileImage}`}
         className={`
-  object-cover
-  rounded-full 
+  rounded-full
   bg-gray-shade-3 
+  object-cover 
 `}
         width={80}
         height={80}
@@ -43,12 +43,12 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
 
       <button
         className={`
+  rounded-lg 
+  bg-brand-primary 
   px-3 
   py-2 
-  font-bold 
-  rounded-lg 
-  text-black
-  bg-brand-primary 
+  font-bold
+  text-black 
 `}
         onClick={() => setAvatarModal(true)}
       >
@@ -63,11 +63,11 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
         <div
           className={`
   flex 
-  gap-4 
   w-full 
-  flex-wrap
-  items-center 
+  flex-wrap 
+  items-center
   justify-center 
+  gap-4 
 `}
         >
           {avatars.map((avatar) => {
@@ -78,9 +78,9 @@ const Avatars: React.FC<AvatarProps> = ({ defaultAvatar, onSelect }) => {
                 alt={avatar.name}
                 className={`
   ${`
-  object-cover
-  rounded-full 
+  rounded-full
   bg-gray-shade-3 
+  object-cover 
 `}
   cursor-pointer
 `}

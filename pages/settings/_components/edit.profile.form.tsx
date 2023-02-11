@@ -72,8 +72,8 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
   };
 
   return (
-    <div className="bg-background-shade-1 rounded-lg py-10 px-5 flex justify-center items-center">
-      <div className="flex flex-col gap-6 max-w-[496px] w-full">
+    <div className="flex items-center justify-center rounded-lg bg-background-shade-1 py-10 px-5">
+      <div className="flex w-full max-w-[496px] flex-col gap-6">
         <ProfilePicture user={props.user} />
 
         <InputField
@@ -238,7 +238,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
 
-        <div className="flex flex-col gap-2 relative">
+        <div className="relative flex flex-col gap-2">
           <label htmlFor="textarea" className={fieldTitle}>
             Profile bio
           </label>
@@ -259,7 +259,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
             className={clsx(inputField)}
           ></textarea>
           {updatedUser.profile_bio.length > 0 && (
-            <div className="w-7 h-7 ml-4 fsm:ml-0 absolute bottom-2 right-2 z-[100]">
+            <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7 fsm:ml-0">
               <PostTextCounter
                 currentLength={updatedUser.profile_bio.length}
                 maxLength={160}

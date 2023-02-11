@@ -211,38 +211,38 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="w-full h-auto bg-elevation-1 rounded-[14px]">
+      <div className="h-auto w-full rounded-[14px] bg-elevation-1">
         <div
           className={clsx(
-            `w-full h-auto fsm:h-[92px]  bg-no-repeat bg-center bg-cover py-5 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4`,
+            `flex h-auto w-full  flex-col justify-between gap-4 rounded-t-[14px] bg-cover bg-center bg-no-repeat py-5 pl-3 pr-3 fsm:h-[92px] fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4`,
             rewardState === "marketplace-rewards"
               ? "bg-[url(/images/liscense1.png)]"
               : "bg-[url(/images/liscense3.png)]"
           )}
         >
-          <div className="text-white fsm:text-sm text-xs space-y-1">
+          <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Total Rewards</p>
             {rewardState === "lunchpad-rewards" ? (
-              <span className="font-semibold flex gap-2 items-center">
+              <span className="flex items-center gap-2 font-semibold">
                 <p>{`${rewardsTotal.busd} (BUSD)`}</p>
-                <span className="border-l border-white/[0.1] h-3" />
+                <span className="h-3 border-l border-white/[0.1]" />
                 <p>{`${rewardsTotal.ntr} (NTR)`}</p>
               </span>
             ) : rewardState === "marketplace-rewards" ? (
-              <p className="font-semibold flex gap-2 items-center">00 (BNB)</p>
+              <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
             ) : null}
           </div>
 
-          <div className="text-white fsm:text-sm text-xs space-y-1">
+          <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Claimable Rewards</p>
             {rewardState === "lunchpad-rewards" ? (
-              <span className="font-semibold flex gap-2 items-center">
+              <span className="flex items-center gap-2 font-semibold">
                 <p>{`${claimableBusd} (BUSD)`}</p>
-                <span className="border-l border-white/[0.1] h-3" />
+                <span className="h-3 border-l border-white/[0.1]" />
                 <p>{`${claimableNtr} (NTR)`}</p>
               </span>
             ) : rewardState === "marketplace-rewards" ? (
-              <p className="font-semibold flex gap-2 items-center">00 (BNB)</p>
+              <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
             ) : null}
           </div>
 
@@ -257,7 +257,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                   : openClaimBUSDModal
               }
               className={clsx(
-                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                `h-10 w-full rounded-xl text-center text-sm font-bold fsm:w-[172px]`,
                 claimableBusd === 0 &&
                   `bg-background-shade-2 text-gray-shade-7`,
                 !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
@@ -277,7 +277,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                   : openClaimNTRModal
               }
               className={clsx(
-                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl`,
+                `h-10 w-full rounded-xl text-center text-sm font-bold fsm:w-[172px]`,
                 claimableNtr === 0 && `bg-background-shade-2 text-gray-shade-7`,
                 !(claimableNtr === 0) && `bg-brand-primary text-black-shade-3`
               )}
@@ -296,7 +296,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                   : openClaimBNBModal
               }
               className={clsx(
-                `fsm:w-[172px] w-full h-10 text-sm font-bold text-center rounded-xl bg-background-shade-2 text-gray-shade-7`
+                `h-10 w-full rounded-xl bg-background-shade-2 text-center text-sm font-bold text-gray-shade-7 fsm:w-[172px]`
               )}
             >
               Claim BNB
@@ -313,7 +313,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             onClickConfirm={modal.onClickConfirm}
           />
         </div>
-        <div className="py-6 flex flex-wrap gap-10 md:pl-10 pl-6">
+        <div className="flex flex-wrap gap-10 py-6 pl-6 md:pl-10">
           {rewardsEachLevel &&
             rewardsEachLevel.map((rewards: RewardsEachAsset, index: number) => {
               return (

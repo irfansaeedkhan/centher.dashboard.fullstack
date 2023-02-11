@@ -54,29 +54,29 @@ const Header = () => {
 
   return (
     <div
-      className={`flex gap-10 px-5 h-[60px] fixed w-full top-0 z-[1000] items-center justify-between border-b-[1.5px] bg-black-shade-9 border-gray-shade-border-color`}
+      className={`fixed top-0 z-[1000] flex h-[60px] w-full items-center justify-between gap-10 border-b-[1.5px] border-gray-shade-border-color bg-black-shade-9 px-5`}
     >
       <Link
         href={AppRoutes.home}
-        className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+        className="flex items-center gap-4 sm:min-w-[22px] md:min-w-[166px]"
       >
         <Image
           src="/images/centher.logo.png"
           alt="Centher Logo"
           width={154}
           height={32}
-          className="md:block hidden"
+          className="hidden md:block"
         />
         <Image
           src="/images/centher.logo.favicon.png"
           alt="Centher Logo"
           width={32}
           height={32}
-          className="md:hidden block"
+          className="block md:hidden"
         />
       </Link>
 
-      <div className={`flex flex-grow gap-6 items-center justify-end`}>
+      <div className={`flex flex-grow items-center justify-end gap-6`}>
         {/* {user && <SearchBar ver_user={ver_user} />} */}
         {user && ver_user ? (
           <SearchBar ver_user={ver_user} />
@@ -104,14 +104,14 @@ const Header = () => {
                 ref={modalOpenerRef}
                 onClick={() => setOpenModal((prev) => !prev)}
                 role="button"
-                className="w-10 h-10 rounded-full"
+                className="h-10 w-10 rounded-full"
               >
                 <Image
                   src={user.profile_image.path}
                   alt="userProfile"
                   width={40}
                   height={40}
-                  className="rounded-full !h-[40px] !w-[40px] object-cover"
+                  className="!h-[40px] !w-[40px] rounded-full object-cover"
                   sizes={"256px"}
                 />
               </div>
@@ -125,7 +125,7 @@ const Header = () => {
             </div>
             <div
               ref={sidebarOpenerRef}
-              className={`flex fxl:hidden cursor-pointer`}
+              className={`flex cursor-pointer fxl:hidden`}
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               {sidebarOpen ? (

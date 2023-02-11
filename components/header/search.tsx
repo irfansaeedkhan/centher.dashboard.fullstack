@@ -100,17 +100,17 @@ const SearchBar: React.FC<Props> = ({ ver_user }) => {
 
   return (
     <form
-      className="relative w-full max-w-[528px] md:block hidden"
+      className="relative hidden w-full max-w-[528px] md:block"
       onSubmit={submitData}
     >
       <div
         ref={ref}
-        className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary"
+        className="flex items-center gap-2 rounded-xl bg-[#1E212B] px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary"
       >
         <input
           type="text"
           placeholder="Search"
-          className="focus:outline-none p-0 focus:ring-0 w-full text-white bg-transparent border-0"
+          className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
           value={searchQueryInput}
           onChange={(e) => handleSearchQueryInput(e)}
         />
@@ -118,7 +118,7 @@ const SearchBar: React.FC<Props> = ({ ver_user }) => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200]">
+          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
             <div>
               {result.map((item: any, i) => (
                 <SearchPopupResult

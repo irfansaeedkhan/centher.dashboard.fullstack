@@ -1,9 +1,7 @@
-// React, Next, NPM Packages
 import React from "react";
 import { FieldError } from "react-hook-form";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
-// App imports
 import { ErrorMessage } from "@/components/error.message";
 
 export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
@@ -47,30 +45,10 @@ export type FieldName =
   | "onlyfans_username"
   | "youtube_url";
 
-const fieldWrapper = ctl(`
-  flex 
-  gap-2
-  flex-col 
-`);
+const fieldWrapper = `flex  gap-2 flex-col`;
 
-const fieldTitle = ctl(`
-  text-sm 
-  text-white
-`);
+const fieldTitle = `text-sm text-white`;
 
-const inputField = ctl(`
-  w-full 
-  py-3 
-  px-5 
-  bg-[#1E1E21] 
-  text-white 
-  rounded-lg
-  border-0
-  focus:outline-none 
-  focus:ring-brand-primary
-`);
+const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-brand-primary text-sm font-medium leading-6`;
 
-const inputFieldError = ctl(`
-  ${inputField}
-  focus:!ring-red-500
-`);
+const inputFieldError = clsx(inputField, `focus:!ring-red-500`);

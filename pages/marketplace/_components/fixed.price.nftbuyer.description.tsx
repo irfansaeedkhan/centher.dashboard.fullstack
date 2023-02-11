@@ -49,17 +49,17 @@ export const FixedPriceNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{data?.name}</h2>
-        <h3 className="text-white text-14px font-normal">
+        <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
+        <h3 className="text-14px font-normal text-white">
           Marketplace Fee {FEE.buyItemFeeForMarketplace}%
         </h3>
-        <h3 className="text-white text-14px font-normal">
+        <h3 className="text-14px font-normal text-white">
           Collection Fee {FEE.buyItemFeeForCreator}%
         </h3>
-        <h3 className="text-white text-14px font-normal">
+        <h3 className="text-14px font-normal text-white">
           Multilevel Fee {FEE.buyItemFeeForMultilevel}%
         </h3>
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
           {formatEther2Number(data?.listInfo.price)} BNB{" "}
@@ -85,10 +85,10 @@ export const FixedPriceNFTBuyerDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -122,11 +122,11 @@ export const FixedPriceNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{data?.name}</span> NFT on{" "}
             <b>Centher</b>
@@ -134,7 +134,7 @@ export const FixedPriceNFTBuyerDescription = ({
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
@@ -177,7 +177,7 @@ export const FixedPriceNFTBuyerDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
             {formatEther2Number(data?.listInfo.price)} BNB
@@ -190,7 +190,7 @@ export const FixedPriceNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
           {data?.description}
         </p>
       </div>

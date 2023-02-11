@@ -56,21 +56,6 @@ export const sidebarData: SidebarData = {
       },
     ],
   },
-  // decentralized_finance: {
-  //   label: "DECENTRALIZED FINANCE",
-  //   items: [
-  //     {
-  //       label: "Liquidity Pool",
-  //       url: AppRoutes.liquidity_pool,
-  //       icon: LiquidityPoolSvg,
-  //     },
-  //     {
-  //       label: "Staking Contract",
-  //       url: AppRoutes.staking_packs,
-  //       icon: StakingContract,
-  //     },
-  //   ],
-  // },
   referral_program: {
     label: "REFERRAL PROGRAM",
     items: [
@@ -95,16 +80,6 @@ export const sidebarData: SidebarData = {
         url: AppRoutes.buy_centher,
         icon: Launchpad,
       },
-      // {
-      //   label: "Profits Dashboard",
-      //   url: AppRoutes.profits_dashboard,
-      //   icon: ProfitsDashboard,
-      // },
-      // {
-      //   label: "Voting Chain",
-      //   url: AppRoutes.voting_chain,
-      //   icon: VotingChain,
-      // },
     ],
   },
 };
@@ -112,7 +87,6 @@ export const sidebarData: SidebarData = {
 export const SidebarSections = [
   sidebarData.social_network,
   sidebarData.nft_marketplace,
-  // sidebarData.decentralized_finance,
   sidebarData.referral_program,
   sidebarData.dao_government,
 ];

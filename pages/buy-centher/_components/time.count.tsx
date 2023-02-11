@@ -59,7 +59,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
 
   return (
     <div>
-      <div className="mb-4 text-xs fsm:text-sm text-brand-primary text-center font-semibold">
+      <div className="mb-4 text-center text-xs font-semibold text-brand-primary fsm:text-sm">
         {roundInfo.status === "not-started" && (
           <>Presale for round {roundInfo.round + 1} starts in</>
         )}
@@ -71,7 +71,7 @@ export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
         )}
       </div>
 
-      <div className="timer flex items-center gap-5 fsm:gap-8 justify-center">
+      <div className="timer flex items-center justify-center gap-5 fsm:gap-8">
         <SingleUnitBox value={days} unit="Days" />
         <SingleUnitBox value={hours} unit="Hours" />
         <SingleUnitBox value={minutes} unit="Minutes" />
@@ -88,13 +88,13 @@ interface SingleUnitBoxProps {
 
 const SingleUnitBox: React.FC<SingleUnitBoxProps> = ({ value, unit }) => {
   return (
-    <div className={"box flex flex-col gap-2 items-center"}>
-      <div className="bg-[#F3F4F7] border-white/25 rounded-xl f2xl:w-[80px] f2xl:h-[80px] w-12 h-12 fsm:w-16 fsm:h-16 flg:w-20 flg:h-20 flex items-center justify-center">
-        <h1 className="text-xl fsm:text-2xl flg:text-[34px] text-black-shade-3 font-semibold">
+    <div className={"box flex flex-col items-center gap-2"}>
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border-white/25 bg-[#F3F4F7] fsm:h-16 fsm:w-16 flg:h-20 flg:w-20 f2xl:h-[80px] f2xl:w-[80px]">
+        <h1 className="text-xl font-semibold text-black-shade-3 fsm:text-2xl flg:text-[34px]">
           {value}
         </h1>
       </div>
-      <p className="text-[10px] fsm:text-sm font-semibold text-gray-shade-7 ">
+      <p className="text-[10px] font-semibold text-gray-shade-7 fsm:text-sm ">
         {unit}
       </p>
     </div>

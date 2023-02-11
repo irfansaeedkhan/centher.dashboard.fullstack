@@ -2,15 +2,15 @@ import React from "react";
 
 const RewardsTableSkeleton = () => {
   return (
-    <div className="w-full flex flex-col gap-8">
-      <div className="w-full flex flex-col bg-[#131314] rounded-[14px]">
-        <div className="w-full h-auto bg-[#131314] rounded-[14px] p-2">
-          <div className="w-full h-[92px]  rounded-[14px] flex  bg-[#3C3F4A]  animate-pulse"></div>
+    <div className="flex w-full flex-col gap-8">
+      <div className="flex w-full flex-col rounded-[14px] bg-[#131314]">
+        <div className="h-auto w-full rounded-[14px] bg-[#131314] p-2">
+          <div className="flex h-[92px]  w-full animate-pulse  rounded-[14px]  bg-[#3C3F4A]"></div>
         </div>
-        <div className="py-6 flex  gap-10 p-2 justify-center">
-          <div className="w-full f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px] bg-[#3C3F4A]  animate-pulse h-[73px] rounded-[14px]"></div>
-          <div className="w-full f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px] bg-[#3C3F4A]  animate-pulse h-[73px] rounded-[14px]"></div>
-          <div className="w-full f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px] bg-[#3C3F4A]  animate-pulse h-[73px] rounded-[14px]"></div>
+        <div className="flex justify-center  gap-10 p-2 py-6">
+          <div className="h-[73px] w-full max-w-[338px] animate-pulse rounded-[14px] bg-[#3C3F4A] fsm:max-w-[232px] fmd:max-w-[200px]  flg:max-w-[285px] fxl:max-w-[288px] f2xl:max-w-[338px]"></div>
+          <div className="h-[73px] w-full max-w-[338px] animate-pulse rounded-[14px] bg-[#3C3F4A] fsm:max-w-[232px] fmd:max-w-[200px]  flg:max-w-[285px] fxl:max-w-[288px] f2xl:max-w-[338px]"></div>
+          <div className="h-[73px] w-full max-w-[338px] animate-pulse rounded-[14px] bg-[#3C3F4A] fsm:max-w-[232px] fmd:max-w-[200px]  flg:max-w-[285px] fxl:max-w-[288px] f2xl:max-w-[338px]"></div>
         </div>
       </div>
     </div>

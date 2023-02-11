@@ -101,7 +101,7 @@ export const NFTRightSideComponent = ({
           <button onClick={togglePopFunc}>
             <ShareBigIcon />
           </button>
-          <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+          <div className={`${toggleList} ${togglePop && "z-50 !block"}`}>
             <button onClick={copyShareUrl} className={toggleListBtn}>
               <LinkIcon className={toggleListIcons} /> Copy link
             </button>
@@ -129,12 +129,12 @@ export const NFTRightSideComponent = ({
               width={48}
               height={48}
               alt="profile"
-              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+              className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+            <div className="h-12 w-12 flex-shrink-0 animate-pulse rounded-full bg-gray-shade-3"></div>
           )}
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
             {user ? (
               <Link
@@ -149,7 +149,7 @@ export const NFTRightSideComponent = ({
                 {sliceDisplayName(user && user?.display_name)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
@@ -160,12 +160,12 @@ export const NFTRightSideComponent = ({
               width={48}
               height={48}
               alt="profile"
-              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+              className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+            <div className="h-12 w-12 flex-shrink-0 animate-pulse rounded-full bg-gray-shade-3"></div>
           )}
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
             {nftOwner ? (
               <Link
@@ -180,12 +180,12 @@ export const NFTRightSideComponent = ({
                 {sliceDisplayName(nftOwner && nftOwner?.display_name)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
         <div className={clsx(`basis-1/4`, nameBox)}>
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
             {data?.collection ? (
               <Link
@@ -200,7 +200,7 @@ export const NFTRightSideComponent = ({
                 {formatAddress(data?.collection)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>

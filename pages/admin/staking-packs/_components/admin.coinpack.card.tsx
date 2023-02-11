@@ -22,11 +22,11 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
       <div className={StackCardTop}>
         <div className="flex items-center gap-2">
           <h3 className={CardTitle}>Staking Pack</h3>
-          <div className="px-2 py-1 rounded-lg bg-[#76E268] bg-opacity-[20%]">
+          <div className="rounded-lg bg-[#76E268] bg-opacity-[20%] px-2 py-1">
             <span className="text-[#76E268]">Active</span>
           </div>
         </div>
-        <div className="max-w-[70px] bg-gray-shade-3 p-2 rounded-lg">
+        <div className="max-w-[70px] rounded-lg bg-gray-shade-3 p-2">
           <DeleteIconBtnCoinPack className="" />
         </div>
         {/* <Button title={""} className="max-w-[70px] bg-gray-shade-3" /> */}

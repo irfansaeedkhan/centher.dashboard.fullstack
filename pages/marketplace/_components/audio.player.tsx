@@ -19,9 +19,9 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
       <audio id="audio">
         <source src={props.src} />
       </audio>
-      <div className="text-white p-6 bg-background-shade-3 rounded-3xl flex flex-col justify-center items-center">
+      <div className="flex flex-col items-center justify-center rounded-3xl bg-background-shade-3 p-6 text-white">
         <Music3DIcon className={clsx(playing && "animate-pulse")} />
-        <div className="flex flex-col my-7">
+        <div className="my-7 flex flex-col">
           <div className="text-lg font-semibold text-brand-primary">
             {props?.srcObject?.name}
           </div>
@@ -39,10 +39,10 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
             </div>
           )}
         </div>
-        <div className="flex gap-2 w-full">
+        <div className="flex w-full gap-2">
           <button
             onClick={() => setPlaying(!playing)}
-            className="h-14 w-14 bg-gray-shade-3 rounded-xl flex items-center justify-center p-4"
+            className="flex h-14 w-14 items-center justify-center rounded-xl bg-gray-shade-3 p-4"
           >
             {playing ? <PauseIcon /> : <PlayIcon />}
           </button>
@@ -53,7 +53,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
               onTimeUpdate={(time: number) => setClickedTime(time)}
             />
           ) : (
-            <div className="h-14 bg-[#1F212B] rounded-xl w-full"></div>
+            <div className="h-14 w-full rounded-xl bg-[#1F212B]"></div>
           )}
         </div>
       </div>

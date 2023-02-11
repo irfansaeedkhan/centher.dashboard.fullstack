@@ -12,14 +12,14 @@ const Rewards: NextPageWithLayout = () => {
   >("lunchpad-rewards");
   return (
     <div>
-      <div className="flex items-center fsm:gap-10 gap-4">
+      <div className="flex items-center gap-4 fsm:gap-10">
         <h3
           onClick={() => setRewardState("lunchpad-rewards")}
           className={clsx(
-            `font-semibold fsm:text-xl cursor-pointer`,
+            `cursor-pointer font-semibold fsm:text-xl`,
             rewardState === "lunchpad-rewards"
-              ? "text-white text-sm"
-              : "text-gray-shade-7 text-xs"
+              ? "text-sm text-white"
+              : "text-xs text-gray-shade-7"
           )}
         >
           Launchpad Rewards
@@ -27,10 +27,10 @@ const Rewards: NextPageWithLayout = () => {
         <h3
           onClick={() => setRewardState("marketplace-rewards")}
           className={clsx(
-            `font-semibold fsm:text-xl cursor-pointer`,
+            `cursor-pointer font-semibold fsm:text-xl`,
             rewardState === "marketplace-rewards"
-              ? "text-white text-sm"
-              : "text-gray-shade-7 text-xs"
+              ? "text-sm text-white"
+              : "text-xs text-gray-shade-7"
           )}
         >
           Marketplace Rewards
@@ -50,7 +50,7 @@ const Rewards: NextPageWithLayout = () => {
 Rewards.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Rewards">
-      <div className="w-full max-w-[1136px] mx-auto">
+      <div className="mx-auto w-full max-w-[1136px]">
         <NetworkTabs />
         {page}
       </div>

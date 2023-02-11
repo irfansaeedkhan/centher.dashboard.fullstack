@@ -120,11 +120,11 @@ export const AuctionNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px text-white font-semibold">
+          <h2 className="text-18px font-semibold text-white">
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully placed bid on{" "}
               <span className="text-white">{data?.name}</span> NFT on{" "}
               <b>Centher</b>
@@ -132,7 +132,7 @@ export const AuctionNFTBuyerDescription = ({
             </p>
           )}
           {!txStatus && (
-            <p className="text-gray-shade-2 text-14px font-normal leading-6">
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Transaction Failed.
             </p>
           )}
@@ -246,10 +246,10 @@ export const AuctionNFTBuyerDescription = ({
     setModalContent(
       <div className={modalBodyWrapper1}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
       </div>
@@ -261,7 +261,7 @@ export const AuctionNFTBuyerDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Minimum Bid</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
           <h5 className={BnBNum}>{formatEther2Number(price)} BNB</h5>
           <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
@@ -271,8 +271,8 @@ export const AuctionNFTBuyerDescription = ({
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} leading-6`}>{data?.description}</p>
 
-        <div className="auctionTimerBox flex flex-row [@media(max-width:600px)]:!flex-col gap-3 rounded-10px relative overflow-hidden border-2 border-gray-shade-3">
-          <div className="iconBox bg-background-shade-2 flex flex-col items-center gap-3 text-center p-6 min-w-[170px]">
+        <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
+          <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
             {/* <AuctionIcon /> */}
             <h4 className="text-14px font-normal text-white">
               Auction ends in
@@ -281,30 +281,30 @@ export const AuctionNFTBuyerDescription = ({
           <div className="flex w-full justify-center p-4">
             <div className="timerBox flex items-center gap-5">
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">{days}</h5>
-                <h6 className="text-gray-shade-7 text-12px font-normal">
+                <h5 className="text-20px font-semibold text-white">{days}</h5>
+                <h6 className="text-12px font-normal text-gray-shade-7">
                   Days
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">{hours}</h5>
-                <h6 className="text-gray-shade-7 text-12px font-normal">
+                <h5 className="text-20px font-semibold text-white">{hours}</h5>
+                <h6 className="text-12px font-normal text-gray-shade-7">
                   Hours
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">
+                <h5 className="text-20px font-semibold text-white">
                   {minutes}
                 </h5>
-                <h6 className="text-gray-shade-7 text-12px font-normal">
+                <h6 className="text-12px font-normal text-gray-shade-7">
                   Minutes
                 </h6>
               </div>
               <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-white text-20px font-semibold">
+                <h5 className="text-20px font-semibold text-white">
                   {seconds}
                 </h5>
-                <h6 className="text-gray-shade-7 text-12px font-normal">
+                <h6 className="text-12px font-normal text-gray-shade-7">
                   Seconds
                 </h6>
               </div>

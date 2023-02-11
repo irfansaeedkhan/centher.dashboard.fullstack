@@ -72,11 +72,11 @@ const Searchbar = () => {
 
   return (
     <form className="relative w-full" onSubmit={submitData}>
-      <div className="flex gap-2 items-center bg-background-shade-3 px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary">
+      <div className="flex items-center gap-2 rounded-xl bg-background-shade-3 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary">
         <input
           type="text"
           placeholder="Search"
-          className="focus:outline-none p-0 focus:ring-0 w-full text-white bg-transparent border-0"
+          className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
           value={searchQueryInput}
           onChange={(e) => handleSearchQueryInput(e)}
         />
@@ -84,7 +84,7 @@ const Searchbar = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200] shadow-md">
+          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md">
             <div>
               {result.map((item) => {
                 return (
@@ -120,16 +120,16 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   const verificationTick = useVerificationTick(item);
 
   return (
-    <div className="p-4 flex gap-2 items-center">
+    <div className="flex items-center gap-2 p-4">
       <SearchIcon />
       <Link
         onClick={onClick}
         href={`/profile/${item.account_address}`}
-        className="text-white text-sm font-medium hover:text-brand-primary flex items-center"
+        className="flex items-center text-sm font-medium text-white hover:text-brand-primary"
       >
         <span>{sliceDisplayName(item.display_name)}</span>
         {!!verificationTick && (
-          <span className="verifiedIcon h-5 w-5 ml-0.5 fsm:ml-1">
+          <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
             <Image
               src={verificationTick}
               alt={"Verified"}

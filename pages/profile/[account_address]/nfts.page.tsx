@@ -65,7 +65,7 @@ const NFTProfile: NextPageWithLayout = () => {
         loadingListedNFTs === "loading" ||
         loadingOwnedNFTs === "idle" ||
         loadingListedNFTs === "idle") && (
-        <div className="flex justify-center flex-wrap gap-10 items-center">
+        <div className="flex flex-wrap items-center justify-center gap-10">
           <NftsSkeleton />
           <NftsSkeleton />
           <NftsSkeleton />
@@ -78,10 +78,10 @@ const NFTProfile: NextPageWithLayout = () => {
         listedNFTs.length === 0 &&
         ownedNFTs.length === 0 && (
           <>
-            <div className="flex justify-center items-center text-white">
+            <div className="flex items-center justify-center text-white">
               <HotNftEmptyIcon />
             </div>
-            <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+            <div className="flex items-center justify-center text-[16px] font-semibold text-white">
               No NFTs found yet
             </div>
           </>

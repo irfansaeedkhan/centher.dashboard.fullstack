@@ -6,20 +6,20 @@ import { AppRoutes } from "@/constants/app.routes";
 const SidebarAuthModal: React.FC = () => {
   return (
     <div
-      className={`w-[218px] min-h-[200px] rounded-[32px] bg-black-shade-10 ml-4 bg-[url('/images/Rectangle.png')] p-6 flex flex-col gap-4`}
+      className={`ml-4 flex min-h-[200px] w-[218px] flex-col gap-4 rounded-[32px] bg-black-shade-10 bg-[url('/images/Rectangle.png')] p-6`}
     >
-      <div className={`text-white font-semibold text-2xl`}>
+      <div className={`text-2xl font-semibold text-white`}>
         Get in to trading
       </div>
       <Link
         href={AppRoutes.auth.register}
-        className={`text-black-shade-7 w-full py-1 bg-brand-primary hover:bg-brand-primary-dark font-semibold rounded-[10px] text-center`}
+        className={`w-full rounded-[10px] bg-brand-primary py-1 text-center font-semibold text-black-shade-7 hover:bg-brand-primary-dark`}
       >
         Register
       </Link>
       <Link
         href={AppRoutes.auth.login}
-        className={`text-gray-shade-7 w-full py-1 bg-black-shade-3 font-semibold rounded-[10px] text-center`}
+        className={`w-full rounded-[10px] bg-black-shade-3 py-1 text-center font-semibold text-gray-shade-7`}
       >
         Connect
       </Link>

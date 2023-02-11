@@ -193,14 +193,14 @@ const Replies: NextPageWithLayout = () => {
 
       {loading === "loaded" && posts.length === 0 && (
         <div>
-          <div className="flex justify-center mt-[48px]">
+          <div className="mt-[48px] flex justify-center">
             <RepliesIcon />
           </div>
-          <div className="flex justify-center text-white font-semibold text-xs mt-6">
+          <div className="mt-6 flex justify-center text-xs font-semibold text-white">
             <p>No Replies!</p>
           </div>
 
-          <div className="flex justify-center text-gray-shade-7 font-normal text-xs mt-2">
+          <div className="mt-2 flex justify-center text-xs font-normal text-gray-shade-7">
             <p>No replies yet. All replies will appear here</p>
           </div>
         </div>

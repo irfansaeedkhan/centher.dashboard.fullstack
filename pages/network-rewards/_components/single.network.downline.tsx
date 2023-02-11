@@ -14,13 +14,13 @@ const SingleNetworkDownline = ({ data }: any) => {
       ? "Fifth Level"
       : "Sixth Level";
   return (
-    <div className="h-[228px] w-full f2xl:w-[364px] f2xl:max-w-[364px] fxl:w-[317px] fxl:max-w-[368px] flg:w-[315px] flg:max-w-[368px] fmd:w-[352px] fsm:w-[256px] flex-grow bg-elevation-1 py-6 rounded-xl">
-      <div className="px-6 pb-4 flex justify-between items-center gap-10 text-sm font-semibold leading-6 border-b border-gray-shade-3">
+    <div className="h-[228px] w-full flex-grow rounded-xl bg-elevation-1 py-6 fsm:w-[256px] fmd:w-[352px] flg:w-[315px] flg:max-w-[368px] fxl:w-[317px] fxl:max-w-[368px] f2xl:w-[364px] f2xl:max-w-[364px]">
+      <div className="flex items-center justify-between gap-10 border-b border-gray-shade-3 px-6 pb-4 text-sm font-semibold leading-6">
         <p className="text-gray-shade-7">{level}</p>
         {/* <p className="text-brand-primary">{`${data.percent}%`}</p> */}
 
         <div
-          className={`rounded-lg w-8 h-8 border-2 flex justify-center items-center
+          className={`flex h-8 w-8 items-center justify-center rounded-lg border-2
           ${data?.level === "01" && "border-[#FEBF32]/60 bg-[#FEBF32]/10"}
           ${data?.level === "02" && "border-[#D35DB9]/60 bg-[#D35DB9]/10"}
           ${data?.level === "03" && "border-[#45F0D1]/60 bg-[#45F0D1]/10"}
@@ -44,19 +44,19 @@ const SingleNetworkDownline = ({ data }: any) => {
         </div>
       </div>
       <div className="mt-2 space-y-3 px-6">
-        <div className="flex justify-between items-center gap-10 text-sm font-semibold text-white leading-6">
+        <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
           <p>{data.people}</p>
           <p>People</p>
         </div>
-        <div className="flex justify-between items-center gap-10 text-sm font-semibold text-white leading-6">
+        <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
           <p>{data.generatedBNB}</p>
           <p>BNB</p>
         </div>
-        <div className="flex justify-between items-center gap-10 text-sm font-semibold text-white leading-6">
+        <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
           <p>{data.generatedBUSD}</p>
           <p>BUSD</p>
         </div>
-        <div className="flex justify-between items-center gap-10 text-sm font-semibold text-white leading-6">
+        <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
           <p>{data.generatedNTR}</p>
           <p>NTR</p>
         </div>

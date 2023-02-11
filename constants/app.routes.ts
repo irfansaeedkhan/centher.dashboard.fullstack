@@ -15,12 +15,18 @@ export const AppRoutes = {
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
-    settings: "/profile/settings",
 
     // Not ready pages
     nfts: "/profile/[account_address]/nfts",
     purchased: "/profile/[account_address]/purchased",
     collections: "/profile/[account_address]/collections",
+  },
+
+  settings: {
+    index: "/settings",
+    profile: "/settings/profile",
+    social_links: "/settings/social-links",
+    privacy: "/settings/privacy",
   },
 
   feed: {

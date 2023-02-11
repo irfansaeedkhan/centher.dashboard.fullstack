@@ -149,8 +149,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
         <div
           ref={emojiPickerContainerRef}
           className={clsx(
-            `absolute top-[170%] fsm:top-[120%] pb-2 -right-6 fsm:right-0 `,
-            showEmojiPicker && "!block z-50"
+            `absolute top-[170%] -right-6 pb-2 fsm:top-[120%] fsm:right-0 `,
+            showEmojiPicker && "z-50 !block"
           )}
         >
           <EmojiPicker

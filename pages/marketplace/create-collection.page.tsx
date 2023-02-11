@@ -51,10 +51,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {collectionData?.name}
         </h2>
-        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createCollectionFee} BNB`}</h3>
+        <h3 className="text-14px font-normal text-white">{`Marketplace fee ${FEE.createCollectionFee} BNB`}</h3>
         {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />
@@ -78,10 +78,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -117,11 +117,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{collectionData?.name}</span>{" "}
             Collection on <b>Centher</b> platform, Click view on profile to view
@@ -129,7 +129,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
@@ -237,7 +237,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create New Collection</h1>
-      <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
+      <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFTCollection
           profile={profile}
           setProfile={setProfile}

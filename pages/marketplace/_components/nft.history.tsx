@@ -212,7 +212,7 @@ export const NFTHistory = ({ prices }: any) => {
                   <select
                     name="days"
                     id="days"
-                    className=" text-white bg-[#1C1F29] rounded-10px"
+                    className=" rounded-10px bg-[#1C1F29] text-white"
                     onChange={changeDuration}
                     value={duration}
                   >
@@ -226,7 +226,7 @@ export const NFTHistory = ({ prices }: any) => {
                 {priceHistory.length > 0 ? (
                   <LineChart data={data} />
                 ) : (
-                  <div className="w-full h-28 flex items-center justify-center">
+                  <div className="flex h-28 w-full items-center justify-center">
                     <h6 className="text-14px font-medium text-yellow-theme">
                       No event has occured yet!
                     </h6>
@@ -234,13 +234,13 @@ export const NFTHistory = ({ prices }: any) => {
                 )}
               </div>
 
-              <div className="w-full flex justify-end p-3">
+              <div className="flex w-full justify-end p-3">
                 {tableDataArray.length > 0 && (
                   <button
                     onClick={() => {
                       setShowModal(true);
                     }}
-                    className="w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
+                    className="flex w-max items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
                   >
                     Details
                   </button>

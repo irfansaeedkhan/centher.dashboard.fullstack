@@ -54,14 +54,14 @@ export const FilesPreview = () => {
             <img
               src={file.src}
               alt={file.original.name}
-              className={`w-full h-full max-h-[480px] object-cover rounded-10px`}
+              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
             />
           );
         } else if (file.original.type.startsWith("video")) {
           media = (
             <video
               src={file.src}
-              className={`w-full h-full max-h-[480px] object-cover rounded-10px`}
+              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
               controls
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
@@ -94,10 +94,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 const CloseButton: React.FC<ButtonProps> = ({ className, ...props }) => {
   return (
     <button
-      className={clsx(`p-1 rounded-md bg-black/40`, className)}
+      className={clsx(`rounded-md bg-black/40 p-1`, className)}
       {...props}
     >
-      <IoClose className="w-4 h-4 fill-white" />
+      <IoClose className="h-4 w-4 fill-white" />
     </button>
   );
 };

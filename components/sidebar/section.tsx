@@ -36,13 +36,13 @@ export const Section: React.FC<SectionProps> = (props) => {
                 router.pathname
                   .replaceAll("-", " ")
                   .includes(item.label.toLowerCase()) && "bg-black-shade-7",
-                "flex justify-between pl-6 pr-4 py-[6px]"
+                "flex justify-between py-[6px] pl-6 pr-4"
               )}
             >
               <div className={itemWrapper}>
                 <item.icon
                   className={clsx(
-                    "w-5 h-5",
+                    "h-5 w-5",
                     item.label2
                       ? router.pathname
                           .replaceAll("-", " ")
@@ -77,7 +77,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                 </Link>
               </div>
               {!!count && props.user && (
-                <span className="bg-brand-primary rounded-lg w-9 h-5 flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
+                <span className="flex h-5 w-9 items-center justify-center rounded-lg bg-brand-primary px-2 py-[2px] text-sm font-semibold text-black-shade-7">
                   {count}
                 </span>
               )}

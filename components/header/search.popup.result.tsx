@@ -20,7 +20,7 @@ const SearchPopupResult: React.FC<Props> = ({
   const verificationTick = useVerificationTick(user);
 
   return (
-    <div className="p-5 flex gap-2 items-center">
+    <div className="flex items-center gap-2 p-5">
       <SearchIcon />
       <Link
         className="flex items-center"
@@ -30,11 +30,11 @@ const SearchPopupResult: React.FC<Props> = ({
         }}
         href={`/profile/${user.account_address}`}
       >
-        <span className="text-white text-sm font-medium hover:text-brand-primary">
+        <span className="text-sm font-medium text-white hover:text-brand-primary">
           {sliceDisplayName(user && user.display_name)}
         </span>
         {!!verificationTick && (
-          <span className="verifiedIcon w-5 h-5 ml-0.5 fsm:ml-1">
+          <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
             <Image
               src={verificationTick}
               alt={"Verified"}

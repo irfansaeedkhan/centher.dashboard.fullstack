@@ -10,7 +10,7 @@ const Liscense: NextPageWithLayout = () => {
 Liscense.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Liscense">
-      <div className="w-full max-w-[1136px] mx-auto">
+      <div className="mx-auto w-full max-w-[1136px]">
         <NetworkTabs />
         {page}
       </div>

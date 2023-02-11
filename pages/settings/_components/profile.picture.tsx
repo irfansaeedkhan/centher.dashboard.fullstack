@@ -39,6 +39,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       object_name: avatar.object_name,
       path: avatar.path,
     });
+    toast.success("Profile image updated successfully");
   };
 
   const handleSelectCustomImage: React.ChangeEventHandler<
@@ -118,59 +119,61 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   };
 
   return (
-    <div className="flex gap-2 items-center">
-      <div className="">
+    <div className="">
+      <div className="flex  items-center gap-2">
         <Image
           src={profileImage.path}
           width={80}
           height={80}
           alt="display-picture"
-          className="rounded-full !h-[80px] object-cover bg-[#ffffff08]"
+          className="!h-[80px] rounded-full bg-[#ffffff08] object-cover"
         />
+
+        <div className={fieldTitle}>
+          <span className="w-fit font-semibold">Set Profile Picture</span>
+          <span className="text-xs font-medium text-gray-shade-14">
+            Upload a photo or choose an avatar
+          </span>
+        </div>
       </div>
-      <div className={fieldTitle}>
-        <button onClick={() => setIsMenuOpen(true)}>
-          Change Profile Image
+      <div className="relative mt-4">
+        <button className={connectButton} onClick={() => setIsMenuOpen(true)}>
+          Choose Image
         </button>
-
         {isMenuOpen && (
-          <>
-            <div className="absolute top-8 left-8">
-              <Polygon />
+          <div
+            ref={ref}
+            className="absolute top-[calc(100%+0.5rem)] flex h-auto w-[380px] flex-col gap-6 rounded-xl bg-black-shade-12 p-6"
+          >
+            {/* Choose Avatar */}
+            <div className="flex cursor-pointer items-center gap-2">
+              <AvatarIcon />
+              <span
+                className="text-sm font-medium text-white hover:text-brand-primary"
+                onClick={() => setProfileModal("avatar")}
+              >
+                Choose Avatar
+              </span>
             </div>
-            <div
-              ref={ref}
-              className="absolute flex flex-col gap-6 w-[380px] h-auto bg-black-shade-12 p-6 top-10 rounded-xl"
-            >
-              {/* Choose Avatar */}
-              <div className="flex gap-2 items-center">
-                <AvatarIcon />
-                <span
-                  className="text-sm font-medium hover:text-brand-primary"
-                  onClick={() => setProfileModal("avatar")}
-                >
-                  Choose Avatar
+
+            {/* Choose Image */}
+            <div className="flex cursor-pointer items-center gap-2 text-white">
+              <UploadIcon />
+              <label className="cursor-pointer">
+                <span className="text-sm font-medium hover:text-brand-primary">
+                  Upload Image
                 </span>
-              </div>
+                <input
+                  type="file"
+                  className="hidden"
+                  accept="image/jpeg,image/png"
+                  onChange={handleSelectCustomImage}
+                />
+              </label>
+            </div>
 
-              {/* Choose Image */}
-              <div className="flex gap-2 items-center">
-                <UploadIcon />
-                <label className="cursor-pointer">
-                  <span className="text-sm font-medium hover:text-brand-primary">
-                    Choose Image
-                  </span>
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/jpeg,image/png"
-                    onChange={handleSelectCustomImage}
-                  />
-                </label>
-              </div>
-
-              {/* Take Selfie */}
-              {/* <div className="flex gap-2 items-center">
+            {/* Take Selfie */}
+            {/* <div className="flex gap-2 items-center">
                 <CameraIcon2 />
                 <span
                   className="text-sm font-medium hover:text-brand-primary"
@@ -180,8 +183,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                 </span>
               </div> */}
 
-              {/* Choose NFT Image */}
-              {/* <div className="flex gap-2 items-center">
+            {/* Choose NFT Image */}
+            {/* <div className="flex gap-2 items-center">
                 <NFTIcon />
                 <span
                   className="text-sm font-medium hover:text-brand-primary"
@@ -190,35 +193,30 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                   Choose NFT
                 </span>
               </div> */}
-            </div>
-          </>
+          </div>
         )}
-
-        <SelfieModal
-          isOpen={profileModal === "selfie"}
-          onClose={() => {
-            setProfileModal(undefined);
-          }}
-        />
-
-        <AvatarModal
-          isOpen={profileModal === "avatar"}
-          onClose={() => {
-            setProfileModal(undefined);
-          }}
-          onAvatarSelect={handleSelectAvatar}
-        />
       </div>
+
+      <SelfieModal
+        isOpen={profileModal === "selfie"}
+        onClose={() => {
+          setProfileModal(undefined);
+        }}
+      />
+
+      <AvatarModal
+        isOpen={profileModal === "avatar"}
+        onClose={() => {
+          setProfileModal(undefined);
+        }}
+        onAvatarSelect={handleSelectAvatar}
+      />
     </div>
   );
 };
 
 export default ProfilePicture;
 
-const fieldTitle = ctl(`
-relative
-  text-sm
-  underline 
-  text-white
-  cursor-pointer
-`);
+const fieldTitle = `relative text-sm flex flex-col text-white`;
+
+const connectButton = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;

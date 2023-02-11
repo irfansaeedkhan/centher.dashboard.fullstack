@@ -45,7 +45,7 @@ export const Explore = React.forwardRef<HTMLDivElement, ExploreProps>(
                 className={allButtonWrapper}
                 onClick={() => setCategoryOpen((prev) => !prev)}
               >
-                <span className="text-gray-shade-7 text-sm font-semibold">
+                <span className="text-sm font-semibold text-gray-shade-7">
                   {category}
                 </span>{" "}
                 {categoryOpen ? (
@@ -67,7 +67,7 @@ export const Explore = React.forwardRef<HTMLDivElement, ExploreProps>(
                 className={allButtonWrapper2}
                 onClick={() => setSortByOpen((prev) => !prev)}
               >
-                <span className="text-gray-shade-7 text-sm font-semibold">
+                <span className="text-sm font-semibold text-gray-shade-7">
                   {sortBy}
                 </span>{" "}
                 {sortByOpen ? (
@@ -102,7 +102,7 @@ export const Explore = React.forwardRef<HTMLDivElement, ExploreProps>(
         )}
 
         {(loading === "loading" || loading === "idle") && (
-          <div className="flex flex-wrap gap-5 items-center">
+          <div className="flex flex-wrap items-center gap-5">
             {/* we are showing 8 skeletons while reloading the page to users */}
             <NftsSkeleton />
             <NftsSkeleton />
@@ -117,10 +117,10 @@ export const Explore = React.forwardRef<HTMLDivElement, ExploreProps>(
 
         {loading === "loaded" && allNFTs.length === 0 && (
           <>
-            <div className="flex justify-center items-center text-white">
+            <div className="flex items-center justify-center text-white">
               <HotNftEmptyIcon />
             </div>
-            <div className="flex justify-center items-center font-semibold text-[16px] text-white">
+            <div className="flex items-center justify-center text-[16px] font-semibold text-white">
               No NFTs found yet
             </div>
           </>

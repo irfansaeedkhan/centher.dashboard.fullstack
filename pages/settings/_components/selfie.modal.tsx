@@ -40,14 +40,14 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
   return (
     <div>
       <ModalWrapper isOpen={isOpen} onClose={onClose} title={"Selfie"}>
-        <div className="w-full flex items-center justify-center">
+        <div className="flex w-full items-center justify-center">
           <Webcam
             ref={webRef}
-            className="borderselfiall mb-4 w-60 h-60 object-cover"
+            className="borderselfiall mb-4 h-60 w-60 object-cover"
           />
         </div>
         <button
-          className="rounded-lg font-semibold  py-3 px-2 text-sm items-center flex w-full justify-center bg-yellow-theme text-black shadow-lg tracking-wide cursor-pointer ease-linear transition-all duration-150"
+          className="flex w-full  cursor-pointer items-center justify-center rounded-lg bg-yellow-theme py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
           onClick={showImage}
         >
           Capture
@@ -72,10 +72,10 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
             />
           )}
         </div>
-        <div className="w-full flex flex-col items-center justify-center mb-4 gap-4">
+        <div className="mb-4 flex w-full flex-col items-center justify-center gap-4">
           <canvas
             ref={previewCanvasRef}
-            className="w-16 h-16 rounded-full object-cover"
+            className="h-16 w-16 rounded-full object-cover"
           />
           <ReactCrop
             crop={crop}
@@ -94,9 +94,9 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
             />
           </ReactCrop>
         </div>
-        <span className="flex items-center w-full gap-4">
+        <span className="flex w-full items-center gap-4">
           <button
-            className="rounded-lg font-semibold  py-3 px-2 text-sm items-center flex w-full justify-center bg-yellow-theme text-black shadow-lg tracking-wide cursor-pointer ease-linear transition-all duration-150"
+            className="flex w-full  cursor-pointer items-center justify-center rounded-lg bg-yellow-theme py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
             onClick={() => {
               setCapture(false);
               setPreviewPicture("");
@@ -106,7 +106,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
             Retake
           </button>
           <button
-            className="rounded-lg font-semibold  py-3 px-2 text-sm items-center flex w-full justify-center bg-yellow-theme text-black shadow-lg tracking-wide cursor-pointer ease-linear transition-all duration-150"
+            className="flex w-full  cursor-pointer items-center justify-center rounded-lg bg-yellow-theme py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
             onClick={async () => {
               const res = await fetch(
                 previewCanvasRef.current?.toDataURL("image/webp") ?? ""

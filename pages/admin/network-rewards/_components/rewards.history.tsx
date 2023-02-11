@@ -28,14 +28,14 @@ const RewardsHistory = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center fsm:gap-10 gap-4">
+      <div className="flex items-center gap-4 fsm:gap-10">
         <h3
           onClick={() => setHistoryState("purchaseBusd")}
           className={clsx(
-            `font-semibold fsm:text-xl cursor-pointer`,
+            `cursor-pointer font-semibold fsm:text-xl`,
             historyState === "purchaseBusd"
-              ? "text-white text-sm"
-              : "text-gray-shade-7 text-xs"
+              ? "text-sm text-white"
+              : "text-xs text-gray-shade-7"
           )}
         >
           Purchase Busd History
@@ -43,10 +43,10 @@ const RewardsHistory = () => {
         <h3
           onClick={() => setHistoryState("purchaseNtr")}
           className={clsx(
-            `font-semibold fsm:text-xl cursor-pointer`,
+            `cursor-pointer font-semibold fsm:text-xl`,
             historyState === "purchaseNtr"
-              ? "text-white text-sm"
-              : "text-gray-shade-7 text-xs"
+              ? "text-sm text-white"
+              : "text-xs text-gray-shade-7"
           )}
         >
           Purchase Ntr History
@@ -54,10 +54,10 @@ const RewardsHistory = () => {
         <h3
           onClick={() => setHistoryState("claim")}
           className={clsx(
-            `font-semibold fsm:text-xl cursor-pointer`,
+            `cursor-pointer font-semibold fsm:text-xl`,
             historyState === "claim"
-              ? "text-white text-sm"
-              : "text-gray-shade-7 text-xs"
+              ? "text-sm text-white"
+              : "text-xs text-gray-shade-7"
           )}
         >
           Claim History

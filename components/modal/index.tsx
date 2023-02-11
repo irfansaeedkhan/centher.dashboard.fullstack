@@ -13,7 +13,7 @@ interface ModalWrapperProps {
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
   return props.isOpen ? (
     <div className={modalWrapper}>
-      <div className={clsx("p-4 relative")}>
+      <div className={clsx("relative p-4")}>
         {/* content */}
         <div className={modalContent}>
           {/* header */}

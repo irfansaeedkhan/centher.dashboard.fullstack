@@ -72,10 +72,10 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
         )}
       </div>
       <div className="previewImageContainer">
-        <h4 className="text-14px font-semibold text-white pb-2">
+        <h4 className="text-14px pb-2 font-semibold text-white">
           Preview image
         </h4>
-        <p className="text-14px font-normal text-[#B7BBCC] leading-6">
+        <p className="text-14px font-normal leading-6 text-[#B7BBCC]">
           Because you’ve included multimedia, you’ll need to provide an image
           (PNG, JPG, or GIF) for the card display of your item.
         </p>

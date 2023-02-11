@@ -87,7 +87,9 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
   AppRoutes.profile.archived_posts,
-  AppRoutes.profile.settings,
+  AppRoutes.settings.index,
+  AppRoutes.settings.profile,
+  AppRoutes.settings.social_links,
 
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
@@ -113,6 +115,8 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
 const _notReadyPages: string[] = [
+  AppRoutes.settings.privacy,
+
   AppRoutes.buy_centher,
   AppRoutes.referral.overview,
   AppRoutes.referral.network_rewards,

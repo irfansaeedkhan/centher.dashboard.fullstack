@@ -52,13 +52,13 @@ const Search: NextPageWithLayout = () => {
   }, [searchQuery, resetSearchResults, fetchSearchResults]);
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
-      <div className="block md:hidden mb-4 w-full">
+    <div className="flex w-full flex-col items-center justify-center">
+      <div className="mb-4 block w-full md:hidden">
         <div className={`animationTextHeading mb-2 text-2xl`}>Search</div>
         <Searchbar />
       </div>
       {searchQuery.trim() !== "" && (
-        <div className="md:w-[544px] fxs:w-full">
+        <div className="fxs:w-full md:w-[544px]">
           <div className={`animationTextHeading mb-4 text-xl fmd:text-2xl`}>
             Search Result
           </div>
@@ -82,17 +82,17 @@ const Search: NextPageWithLayout = () => {
 
             {searchLoadingState === "loaded" && searchResults.length === 0 && (
               <div>
-                <div className="flex justify-center mt-10">
+                <div className="mt-10 flex justify-center">
                   <SearchUserIcon />
                 </div>
-                <div className="flex justify-center mt-8 text-white font-semibold text-xl">
+                <div className="mt-8 flex justify-center text-xl font-semibold text-white">
                   <p>Sorry! No Result Found</p>
                 </div>
               </div>
             )}
 
             {searchLoadingState === "failed" && (
-              <div className="text-brand-primary font-semibold">
+              <div className="font-semibold text-brand-primary">
                 Something went wrong!
               </div>
             )}

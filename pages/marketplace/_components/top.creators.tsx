@@ -27,14 +27,14 @@ const TopCreators = () => {
   };
 
   return (
-    <div className={`flex flex-col gap-8 max-w-[1300px]`}>
+    <div className={`flex max-w-[1300px] flex-col gap-8`}>
       <div
-        className={`animationTextHeading lg:!text-34 md:!text-3xl sm:!text-2xl`}
+        className={`animationTextHeading sm:!text-2xl md:!text-3xl lg:!text-34`}
       >
         Top Creators
       </div>
       <div
-        className={`bg-[url(/images/bg-top-creators.png)] w-full h-[120px] bg-no-repeat bg-cover bg-center rounded-2xl border-2 border-gray-shade-3 flex items-center justify-between px-4`}
+        className={`flex h-[120px] w-full items-center justify-between rounded-2xl border-2 border-gray-shade-3 bg-[url(/images/bg-top-creators.png)] bg-cover bg-center bg-no-repeat px-4`}
       >
         <button onClick={() => scroll(-200)} className={scrollButton}>
           <BsArrowLeftShort />
@@ -46,7 +46,7 @@ const TopCreators = () => {
             "flex w-[calc(100%-132px)] items-center gap-14 !overflow-y-hidden py-8",
             topCreators.length > 0 &&
               loadingTopCreators === "loaded" &&
-              "overflow-x-scroll scrollSetLight2 "
+              "scrollSetLight2 overflow-x-scroll "
           )}
         >
           {topCreators.length > 0 && loadingTopCreators === "loaded" ? (

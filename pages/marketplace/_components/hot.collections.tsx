@@ -81,7 +81,7 @@ export const HotCollections: React.FC = () => {
 
         {(loadingCollections === "loading" ||
           loadingCollections === "idle") && (
-          <div className="flex flex-wrap gap-5 items-center">
+          <div className="flex flex-wrap items-center gap-5">
             <NftCollectionSkeleton />
             <NftCollectionSkeleton />
           </div>
@@ -89,7 +89,7 @@ export const HotCollections: React.FC = () => {
 
         {loadingCollections === "loaded" && hotCollections.length === 0 && (
           <div>
-            <div className="flex justify-center items-center">
+            <div className="flex items-center justify-center">
               <NftsCollectionEmpty />
             </div>
             <div className={noCollectionContainer}>
