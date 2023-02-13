@@ -85,7 +85,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
             });
           }}
         />
-        <div className="flex w-full flex-col gap-6 fmd:flex-row fmd:gap-3">
+        <div className="flex w-full flex-col gap-6 fsm:flex-row fmd:gap-3">
           <div className="w-full">
             <InputField
               id="first_name"
