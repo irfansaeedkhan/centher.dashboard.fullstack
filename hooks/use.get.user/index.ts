@@ -1,17 +1,16 @@
-// React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
 
-// App imports
 import { User } from "@/models/user";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
+import { ZeroAddress } from "@/web3/constants/common";
 
 const useGetUser = (account_address?: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   useEffect(() => {
-    if (account_address) {
+    if (account_address && account_address !== ZeroAddress) {
       setLoading("loading");
       (async () => {
         try {
