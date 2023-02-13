@@ -2,7 +2,6 @@ import { IProperty } from "@/pages/marketplace/_components/create.nft.form";
 import { nftQuery, saleQuery } from "@/subgraph/querys";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
-import useRefresh from "@/web3/hooks/use.refresh";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import axios from "axios";
 import { date } from "joi";
@@ -66,7 +65,6 @@ export const useGetNftData = (
   reload: boolean
 ) => {
   const [nftData, setNftData] = useState<INFTDetailData>();
-  const { fastRefresh } = useRefresh();
 
   useEffect(() => {
     const fetchNFTData = async (collection: string, tokenId: number) => {
@@ -127,6 +125,6 @@ export const useGetNftData = (
     if ((collection as string) && tokenId) {
       fetchNFTData(collection as string, Number(tokenId as string));
     }
-  }, [collection, tokenId, fastRefresh, reload]);
+  }, [collection, tokenId, reload]);
   return nftData;
 };
