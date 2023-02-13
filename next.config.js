@@ -12,6 +12,7 @@ const nextConfig = {
       "ipfs.moralis.io",
       "devapi.centher.io",
       "devstatic.centher.io",
+      "static.centher.io",
       "localhost",
       "centher-development.s3.eu-west-3.amazonaws.com",
       "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
