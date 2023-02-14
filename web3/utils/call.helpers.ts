@@ -277,7 +277,6 @@ export const callCancelItemForSale = async (
     );
 
     await tx.wait();
-
     return {
       success: true,
       hash: tx.hash,

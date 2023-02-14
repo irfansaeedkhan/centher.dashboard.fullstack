@@ -94,8 +94,9 @@ export const FixedPriceNFTDescription = ({
 
   const setupEditListingItemPriceModal = (form: any) => {
     try {
+      console.log(form);
       modal.dismissModal();
-      modal.createModal(ModalType.editListing);
+      modal.createModal(ModalType.editListing, form.bidPrice);
     } catch (err: any) {
       toastError(err);
     }
@@ -111,7 +112,7 @@ export const FixedPriceNFTDescription = ({
 
   const setupSuccessModal = (txStatus: boolean) => {
     try {
-      modal.createModal(ModalType.success);
+      modal.createModal(ModalType.success, txStatus);
     } catch (err: any) {
       toastError(err);
     }
@@ -124,7 +125,6 @@ export const FixedPriceNFTDescription = ({
       (data as INFTDetailData).collection,
       (data as INFTDetailData).nftId
     );
-
     setupSuccessModal(result.success);
   };
 
