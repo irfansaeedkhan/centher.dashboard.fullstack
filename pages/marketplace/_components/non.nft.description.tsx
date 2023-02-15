@@ -1,27 +1,17 @@
 // React, Next, NPM Packages
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
-import Joi from "joi";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import {
-  formatAddress,
-  formatBNB2USD,
-  formatEther2Number,
-} from "@/utils/format.address";
-import { ethers } from "ethers";
+import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import {
   callApproveNFTToMarketplace,
-  callCancelItemForSale,
-  callCreateAuction,
-  callEditItemForSale,
   callListItemForSale,
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
@@ -35,50 +25,35 @@ interface NonNFTDescriptionProps {
   reload?: boolean;
   setReload?: any;
 }
-interface listingFormInterface {
-  bidPrice: number;
-}
-interface auctionFormInterface {
-  AuctionEndTime: Date;
-  StartingNFTPrice: number;
-}
-const ListingModalschema = Joi.object({
-  bidPrice: Joi.number().required().label("bidPrice").messages({
-    "string.empty": `bid Price Required`,
-    "any.required": `Required Field`,
-  }),
-});
-const AuctionModalschema = Joi.object({
-  AuctionEndTime: Joi.string().required().label("AuctionEndTime").messages({
-    "string.empty": `Auction End Time Required`,
-    "any.required": `Required Field`,
-  }),
-  StartingNFTPrice: Joi.number().required().label("StartingNFTPrice").messages({
-    "string.empty": `Starting NFT Price Required`,
-    "any.required": `Required Field`,
-  }),
-});
-export const NonNFTDescription = ({
-  data,
-  reload,
-  setReload,
-}: NonNFTDescriptionProps) => {
+// interface auctionFormInterface {
+//   AuctionEndTime: Date;
+//   StartingNFTPrice: number;
+// }
+
+// const AuctionModalschema = Joi.object({
+//   AuctionEndTime: Joi.string().required().label("AuctionEndTime").messages({
+//     "string.empty": `Auction End Time Required`,
+//     "any.required": `Required Field`,
+//   }),
+//   StartingNFTPrice: Joi.number().required().label("StartingNFTPrice").messages({
+//     "string.empty": `Starting NFT Price Required`,
+//     "any.required": `Required Field`,
+//   }),
+// });
+
+export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
+  const router = useRouter();
   const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
-  const [renderState, setRenderState] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
   const bnbPrice = useBNBPrice();
 
-  const listingForm = useForm<listingFormInterface>({
-    mode: "onChange",
-    resolver: joiResolver(ListingModalschema),
-  });
-  const auctionForm = useForm<auctionFormInterface>({
-    mode: "onChange",
-    resolver: joiResolver(AuctionModalschema),
-  });
+  // const auctionForm = useForm<auctionFormInterface>({
+  //   mode: "onChange",
+  //   resolver: joiResolver(AuctionModalschema),
+  // });
 
   const listingModal = () => {
     setModal(true);
@@ -156,6 +131,7 @@ export const NonNFTDescription = ({
     setModal(false);
     saleWithListing(data.bidPrice);
   };
+
   // const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
   //   setModalTitle("Cancel listing");
   //   setModalContent(
@@ -236,22 +212,6 @@ export const NonNFTDescription = ({
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
@@ -283,26 +243,18 @@ export const NonNFTDescription = ({
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}}
-          className={footerBtnContainer}
-        > */}
         <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
             className="py-4"
             onClick={() => {
+              router.reload();
               setModal(false);
               setModalTitle("");
               setModalContent(null);
             }}
           />
-          {/* </Link> */}
         </div>
       </div>
     );
