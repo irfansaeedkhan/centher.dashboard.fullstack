@@ -6,7 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
+import { useRouter } from "next/router";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -25,11 +26,10 @@ interface FixedPriceNFTBuyerDescriptionProps {
 }
 export const FixedPriceNFTBuyerDescription = ({
   data,
-  reload,
-  setReload,
 }: FixedPriceNFTBuyerDescriptionProps) => {
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { account, library } = useWeb3React();
+  const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
@@ -101,22 +101,6 @@ export const FixedPriceNFTBuyerDescription = ({
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
@@ -148,26 +132,19 @@ export const FixedPriceNFTBuyerDescription = ({
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
+
         <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
             className="py-4"
             onClick={() => {
+              router.reload();
               setModal(false);
               setModalTitle("");
               setModalContent(null);
             }}
           />
-          {/* </Link> */}
         </div>
       </div>
     );
@@ -245,24 +222,6 @@ w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
 `);
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
-`);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
 `);
 const greyBoxContainer = ctl(`
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
