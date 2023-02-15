@@ -137,7 +137,7 @@ export const FixedPriceNFTBuyerDescription = ({
         </h2>
         {txStatus && (
           <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Congratulations! You have successfully buy{" "}
+            Congratulations! You have successfully bought{" "}
             <span className="text-white">{data?.name}</span> NFT on{" "}
             <b>Centher</b>
             platform.
