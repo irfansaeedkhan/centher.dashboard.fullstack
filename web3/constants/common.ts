@@ -43,4 +43,4 @@ export const percent = [6, 4, 2, 2, 2, 2];
 export const SUBGRAPH_URL =
   process.env.NEXT_PUBLIC_APP_ENV === "production"
     ? "https://api.thegraph.com/subgraphs/name/seniorblockchaindev/centher"
-    : "https://api.studio.thegraph.com/query/39184/nethernft_dev/0.0.21";
+    : "https://api.thegraph.com/subgraphs/name/rezahssini/centher-dev-marketplace";
