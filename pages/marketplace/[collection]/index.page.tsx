@@ -301,14 +301,14 @@ const Collection: NextPageWithLayout = () => {
                   setFilter("List");
                 }}
               />
-              <Button
+              {/* <Button
                 title={"Auction"}
                 variant={filter === "Auction" ? "v1" : "v2"}
                 className="py-4"
                 onClick={() => {
                   setFilter("Auction");
                 }}
-              />
+              /> */}
               <select
                 className={inputField}
                 value={orderdir}

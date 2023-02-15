@@ -25,6 +25,7 @@ import {
   IModalHandler,
   TemplateCollection,
 } from "../../../utils/modal/";
+import ChangePriceBidModal from "./change.price.bid.modal";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -34,7 +35,7 @@ enum ModalType {
   success = "success",
 }
 
-interface bidForm {
+export interface bidForm {
   bidPrice: number;
 }
 
@@ -44,22 +45,10 @@ interface FixedPriceNFTDescriptionProps {
   setReload?: any;
 }
 
-const schema = Joi.object({
-  bidPrice: Joi.number().required().label("bidPrice").messages({
-    "string.empty": `bid Price Required`,
-    "any.required": `Required Field`,
-  }),
-});
-
 export const FixedPriceNFTDescription = ({
   data,
-  reload,
-  setReload,
 }: FixedPriceNFTDescriptionProps) => {
   const { library, account } = useWeb3React();
-  const [nftPrice, setNFTPrice] = useState<any>(
-    formatEther2Number(data?.listInfo.price)
-  );
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -67,12 +56,6 @@ export const FixedPriceNFTDescription = ({
   });
 
   const bnbPrice = useBNBPrice();
-
-  const { handleSubmit, register, setError, formState, reset } =
-    useForm<bidForm>({
-      mode: "onChange",
-      resolver: joiResolver(schema),
-    });
 
   const setupCancelItemPriceModal = () => {
     try {
@@ -189,51 +172,10 @@ export const FixedPriceNFTDescription = ({
       title: "Change Price",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper}>
-          <div className={fieldWrapper}>
-            <label className={fieldTitle}>Blockchain</label>
-            <div
-              className={`${inputFieldModal} flex items-center gap-3 !ring-0`}
-            >
-              <BNBIcon />{" "}
-              <h6 className="text-14px font-semibold text-white">BNB</h6>
-            </div>
-          </div>
-          <div className={fieldWrapper}>
-            <label className={fieldTitle}>Price</label>
-            <div
-              className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
-            >
-              <input
-                type="number"
-                id="bidPrice"
-                //value={nftPrice}
-                autoComplete="off"
-                {...register("bidPrice")}
-                placeholder={nftPrice}
-                className={
-                  "h-full w-full !border-0 bg-transparent text-white !ring-0"
-                }
-                //  onChange={(e) => setNFTPrice(e.target.value)}
-              />
-              <h6 className="text-14px font-semibold text-gray-shade-7">
-                =$0000
-              </h6>
-            </div>
-            {formState.errors.bidPrice && (
-              <p className={`text-red-500 ${errMessage}`}>
-                {formState.errors.bidPrice.message}
-              </p>
-            )}
-          </div>
-          <Button
-            title={"Next"}
-            variant={formState.isValid ? "v1" : "v2"}
-            disabled={!formState.isValid}
-            onClick={handleSubmit(setupEditListingItemPriceModal)}
-            className="mt-2 py-4"
-          />
-        </div>
+        <ChangePriceBidModal
+          data={data}
+          setupEditListingItemPriceModal={setupEditListingItemPriceModal}
+        />
       ),
     },
     editListing: {
@@ -414,17 +356,4 @@ text-16px font-bold text-white
 `);
 const ImgStyling = ctl(`
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
-  w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);

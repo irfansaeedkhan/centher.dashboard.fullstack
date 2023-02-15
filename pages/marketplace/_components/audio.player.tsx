@@ -19,7 +19,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
       <audio id="audio">
         <source src={props.src} />
       </audio>
-      <div className="flex flex-col items-center justify-center rounded-3xl bg-background-shade-3 p-6 text-white">
+      <div className="flex flex-col items-center justify-center rounded-2xl bg-background-shade-3 p-6 text-white">
         <Music3DIcon className={clsx(playing && "animate-pulse")} />
         <div className="my-7 flex flex-col">
           <div className="text-lg font-semibold text-brand-primary">

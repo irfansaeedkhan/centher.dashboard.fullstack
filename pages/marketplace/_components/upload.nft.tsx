@@ -1,16 +1,14 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ImageIcon, GifIcon, VideosIcon, AudioIcon } from "@/assets/svgs";
+import { ImageIcon, GifIcon } from "@/assets/svgs";
 
 // same directory Imports
 import ImageNFTUpload from "./image.nft.upload";
 import GifNFTUpload from "./gif.nft.upload";
-import VideoNFTUpload from "./video.nft.upload";
-import AudioNFTUpload from "./audio.nft.upload";
 
 export interface UploadNFTProps {
   asset: Blob | undefined;
@@ -52,7 +50,7 @@ export const UploadNFT = ({
           }}
           className={`${Tab} ${assetTab === "Gif" && activeTab}`}
         />
-        <Button
+        {/* <Button
           title={"Video"}
           variant={assetTab === "Video" ? "v1" : "v2"}
           Icon={<VideosIcon />}
@@ -69,7 +67,7 @@ export const UploadNFT = ({
             setAssetTab("Audio");
           }}
           className={`${Tab} ${assetTab === "Audio" && activeTab}`}
-        />
+        /> */}
       </div>
       {assetTab === "Image" && (
         <ImageNFTUpload
@@ -81,7 +79,7 @@ export const UploadNFT = ({
       {assetTab === "Gif" && (
         <GifNFTUpload asset={asset} setAsset={setAsset} clearForm={clearForm} />
       )}
-      {assetTab === "Video" && (
+      {/* {assetTab === "Video" && (
         <VideoNFTUpload
           asset={asset}
           setAsset={setAsset}
@@ -94,7 +92,7 @@ export const UploadNFT = ({
           setAsset={setAsset}
           clearForm={clearForm}
         />
-      )}
+      )} */}
     </div>
   );
 };

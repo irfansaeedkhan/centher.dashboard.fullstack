@@ -256,9 +256,7 @@ flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 const footerBtnContainer = ctl(`
 mt-3 flex flex-col-reverse fsm:flex-row gap-2 
 `);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
+
 const dashboardContentContainer = ctl(`
  bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
 `);
