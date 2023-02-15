@@ -8,6 +8,7 @@ import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { FEE } from "@/web3/constants/common";
@@ -15,6 +16,7 @@ import { callBuyListedItem } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -31,6 +33,14 @@ export const FixedPriceNFTBuyerDescription = ({
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
+
+  const nftOwnerAddress = useGetNFTOwner(
+    data?.collection,
+    data?.nftId,
+    data?.owner
+  );
+
+  const { user: nftOwner } = useGetUser(nftOwnerAddress);
 
   const bnbPrice = useBNBPrice();
 
@@ -195,18 +205,20 @@ export const FixedPriceNFTBuyerDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center">
-        <Button
-          title={"Buy NFT"}
-          variant="v1"
-          className="py-4"
-          onClick={async () => {
-            if (!loggedInUser) {
-              toast.error("Please login to buy this nft");
-              return;
-            }
-            buyNFTStep1Func();
-          }}
-        />
+        {library && (
+          <Button
+            title={"Buy NFT"}
+            variant="v1"
+            className="py-4"
+            onClick={async () => {
+              if (!loggedInUser) {
+                toast.error("Please login to buy this nft");
+                return;
+              }
+              buyNFTStep1Func();
+            }}
+          />
+        )}
       </div>
       {Modal && (
         <CustomModal
