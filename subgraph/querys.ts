@@ -314,7 +314,7 @@ export const myCollections = `
 
 export const topCreators = `
   query($skip: Int!, $first: Int!) {
-    users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first) {
+    users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first,  where: {createNFTCount_not: 0}) {
       createNFTCount
       createCollectionCount
       publicKey
