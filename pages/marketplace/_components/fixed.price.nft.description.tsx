@@ -1,11 +1,9 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import ctl from "@netlify/classnames-template-literals";
-import Joi from "joi";
 import { useWeb3React } from "@web3-react/core";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
 
 // App imports
 import Button from "@/components/button";
@@ -48,7 +46,8 @@ interface FixedPriceNFTDescriptionProps {
 export const FixedPriceNFTDescription = ({
   data,
 }: FixedPriceNFTDescriptionProps) => {
-  const { library, account } = useWeb3React();
+  const router = useRouter();
+  const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -77,7 +76,6 @@ export const FixedPriceNFTDescription = ({
 
   const setupEditListingItemPriceModal = (form: any) => {
     try {
-      console.log(form);
       modal.dismissModal();
       modal.createModal(ModalType.editListing, form.bidPrice);
     } catch (err: any) {
@@ -257,6 +255,7 @@ export const FixedPriceNFTDescription = ({
               variant="v4"
               className="py-4"
               onClick={() => {
+                router.reload();
                 modal.dismissModal();
               }}
             />
