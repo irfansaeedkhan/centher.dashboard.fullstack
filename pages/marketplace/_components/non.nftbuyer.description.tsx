@@ -220,24 +220,7 @@ w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
 `);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
-`);
+
 const greyBoxContainer = ctl(`
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
 `);

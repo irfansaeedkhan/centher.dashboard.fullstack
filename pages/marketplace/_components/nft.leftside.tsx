@@ -8,6 +8,7 @@ import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
 import AudioPlayer from "./audio.player";
+import clsx from "clsx";
 interface NFTLeftSideComponentProps {
   image: string | undefined;
   type: string | undefined;
@@ -19,15 +20,20 @@ interface NFTLeftSideComponentProps {
 
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
-    <div className={leftSideContainer}>
-      <div className={ImgContainer}>
-        {ImgStyling && (
+    <div className={`w-full max-w-[508px] flex flex-col gap-6`}>
+      <div
+        className={clsx(
+          `bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full`,
+          props.image?.includes("mp3") ? `` : `pb-[100%]`
+        )}
+      >
+        {props.image && (
           <div>
             {props.image?.includes("mp3") ? (
               <AudioPlayer src={props.image} />
             ) : (
               <Image
-                className={ImgStyling}
+                className={`w-full h-full absolute rounded-2xl object-contain`}
                 src={props.image ? props.image : ""}
                 alt="image"
                 height={270}
@@ -46,13 +52,3 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
     </div>
   );
 };
-// styling
-const leftSideContainer = ctl(`
-w-full max-w-[508px] flex flex-col gap-6
-`);
-const ImgContainer = ctl(`
- bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full pb-[100%] 
-`);
-const ImgStyling = ctl(`
-w-full h-full absolute rounded-2xl object-contain
-`);

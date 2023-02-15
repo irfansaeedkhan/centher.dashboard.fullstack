@@ -37,13 +37,13 @@ export const CreateNFTForm = ({
   clearForm,
   asset,
 }: CreateNFTFormProps) => {
-  const [tab, setTab] = useState("Fixed");
+  // const [tab, setTab] = useState("Fixed");
   const { account } = useWeb3React();
   const collections = useGetMyCollections(account);
 
   return (
     <div className={CreateNFTFormContainer}>
-      <div className={tabsBtnContainer}>
+      {/* <div className={tabsBtnContainer}>
         <Button
           title={"Fixed Price"}
           variant={tab === "Fixed" ? "v1" : "v2"}
@@ -60,23 +60,23 @@ export const CreateNFTForm = ({
           }}
           className={`${Tab} ${tab === "Auction" && activeTab}`}
         />
-      </div>
-      {tab === "Fixed" && (
-        <FixedPriceForm
-          createNFT={createNFT}
-          collections={collections}
-          clearForm={clearForm}
-          asset={asset}
-        />
-      )}
-      {tab === "Auction" && (
+      </div> */}
+      {/* {tab === "Fixed" && ( */}
+      <FixedPriceForm
+        createNFT={createNFT}
+        collections={collections}
+        clearForm={clearForm}
+        asset={asset}
+      />
+      {/* )} */}
+      {/* {tab === "Auction" && (
         <AuctionForm
           createNFT={createNFT}
           collections={collections}
           clearForm={clearForm}
           asset={asset}
         />
-      )}
+      )} */}
     </div>
   );
 };

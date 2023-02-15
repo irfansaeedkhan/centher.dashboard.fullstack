@@ -28,6 +28,7 @@ import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import ChangePriceListModal from "./change.price.list.modal";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -86,152 +87,110 @@ export const NonNFTDescription = ({
       return;
     }
     setModalTitle("Listing Item");
-    setModalContent(
-      <form className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Blockchain</label>
-          <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
-            <BNBIcon />{" "}
-            <h6 className="text-14px font-semibold text-white">BNB</h6>
-          </div>
-        </div>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Price</label>
-          <div
-            className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
-          >
-            <input
-              type="number"
-              // value={listingPrice}
-              // onChange={(e: any) => {setListingPrice(e.target.value)}}
-              id="bidPrice"
-              autoComplete="off"
-              {...listingForm.register("bidPrice")}
-              placeholder="0.00"
-              className={
-                "h-full w-full !border-0 bg-transparent text-white !ring-0"
-              }
-            />
-            <h6 className="text-14px font-semibold text-gray-shade-7">
-              =$0000
-            </h6>
-          </div>
-          {listingForm.formState.errors?.bidPrice && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {listingForm.formState.errors.bidPrice.message}
-            </p>
-          )}
-        </div>
-
-        <Button
-          title={"Next"}
-          variant={listingForm.formState.isValid ? "v1" : "v2"}
-          disabled={listingForm.formState.isValid ? false : true}
-          onClick={listingForm.handleSubmit(handleListNFT)}
-          className="mt-2 py-4"
-        />
-      </form>
-    );
+    setModalContent(<ChangePriceListModal handleListNFT={handleListNFT} />);
   };
 
-  const auctionModal = () => {
-    if (!library) {
-      toast.error("Confirm your Wallet Connection.");
-      return;
-    }
-    setModalTitle("Auction");
-    setModalContent(
-      <form className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Set Auction End Time</label>
-          <input
-            type="datetime-local"
-            id="AuctionEndTime"
-            autoComplete="off"
-            {...auctionForm.register("AuctionEndTime")}
-            placeholder="Set Auction End Time"
-            className="h-full w-full !border-0 bg-transparent text-white !ring-0"
-          />
-          {auctionForm.formState.errors.AuctionEndTime && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {auctionForm.formState.errors.AuctionEndTime.message}
-            </p>
-          )}
-        </div>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Starting price for NFT</label>
-          <div className="relative">
-            <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
-              BNB
-            </span>
-            <input
-              type="text"
-              id="StartingNFTPrice"
-              autoComplete="off"
-              {...auctionForm.register("StartingNFTPrice")}
-              placeholder="Enter NFT Price"
-              className="h-full w-full !border-0 bg-transparent text-white !ring-0"
-            />
-          </div>
+  // const auctionModal = () => {
+  //   if (!library) {
+  //     toast.error("Confirm your Wallet Connection.");
+  //     return;
+  //   }
+  //   setModalTitle("Auction");
+  //   setModalContent(
+  //     <form className={modalBodyWrapper}>
+  //       <div className={fieldWrapper}>
+  //         <label className={fieldTitle}>Set Auction End Time</label>
+  //         <input
+  //           type="datetime-local"
+  //           id="AuctionEndTime"
+  //           autoComplete="off"
+  //           {...auctionForm.register("AuctionEndTime")}
+  //           placeholder="Set Auction End Time"
+  //           className="h-full w-full !border-0 bg-transparent text-white !ring-0"
+  //         />
+  //         {auctionForm.formState.errors.AuctionEndTime && (
+  //           <p className={`text-red-500 ${errMessage}`}>
+  //             {auctionForm.formState.errors.AuctionEndTime.message}
+  //           </p>
+  //         )}
+  //       </div>
+  //       <div className={fieldWrapper}>
+  //         <label className={fieldTitle}>Starting price for NFT</label>
+  //         <div className="relative">
+  //           <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
+  //             BNB
+  //           </span>
+  //           <input
+  //             type="text"
+  //             id="StartingNFTPrice"
+  //             autoComplete="off"
+  //             {...auctionForm.register("StartingNFTPrice")}
+  //             placeholder="Enter NFT Price"
+  //             className="h-full w-full !border-0 bg-transparent text-white !ring-0"
+  //           />
+  //         </div>
 
-          {auctionForm.formState.errors.StartingNFTPrice && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {auctionForm.formState.errors.StartingNFTPrice.message}
-            </p>
-          )}
-        </div>
-        <Button
-          title={"Next"}
-          variant={auctionForm.formState.isValid ? "v1" : "v2"}
-          disabled={!auctionForm.formState.isValid}
-          onClick={auctionForm.handleSubmit(handleAuction)}
-          className="mt-2 py-4"
-        />
-      </form>
-    );
-  };
-  const handleAuction = async (data: any) => {
-    setModal(false);
-    saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
-  };
+  //         {auctionForm.formState.errors.StartingNFTPrice && (
+  //           <p className={`text-red-500 ${errMessage}`}>
+  //             {auctionForm.formState.errors.StartingNFTPrice.message}
+  //           </p>
+  //         )}
+  //       </div>
+  //       <Button
+  //         title={"Next"}
+  //         variant={auctionForm.formState.isValid ? "v1" : "v2"}
+  //         disabled={!auctionForm.formState.isValid}
+  //         onClick={auctionForm.handleSubmit(handleAuction)}
+  //         className="mt-2 py-4"
+  //       />
+  //     </form>
+  //   );
+  // };
+
+  // const handleAuction = async (data: any) => {
+  //   setModal(false);
+  //   saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
+  // };
+
   const handleListNFT = async (data: any) => {
     setModal(false);
     saleWithListing(data.bidPrice);
   };
-  const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
-    setModalTitle("Cancel listing");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Are you sure you want to cancel your Listing?
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Canceling your listing will unpublish this sale from market and You
-          will be asked to confirm the transaction through your wallet.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={() => handleAuctionProc(auctionPrice, auctionDate)}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
+  // const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
+  //   setModalTitle("Cancel listing");
+  //   setModalContent(
+  //     <div className={modalBodyWrapper}>
+  //       <WarningIcon className="mx-auto" />
+  //       <h3 className="text-18px font-semibold leading-6 text-white">
+  //         Are you sure you want to cancel your Listing?
+  //       </h3>
+  //       <p className="text-14px font-normal leading-6 text-gray-shade-2">
+  //         Canceling your listing will unpublish this sale from market and You
+  //         will be asked to confirm the transaction through your wallet.
+  //       </p>
+  //       <div className={footerBtnContainer}>
+  //         <Button
+  //           title={"Go back"}
+  //           variant="v2"
+  //           className="py-4"
+  //           onClick={() => {
+  //             setModalTitle("");
+  //             setModalContent(null);
+  //             setModal(false);
+  //           }}
+  //         />
+  //         <Button
+  //           title={"Proceed"}
+  //           onClick={() => handleAuctionProc(auctionPrice, auctionDate)}
+  //           variant="v1"
+  //           className="py-4"
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  //   setModal(true);
+  // };
+
   const saleWithListing = (listingPrice: any) => {
     setModalTitle("Edit listing");
     setModalContent(
@@ -350,23 +309,24 @@ export const NonNFTDescription = ({
     setModal(true);
   };
 
-  const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
-    const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
+  // const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
+  //   const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
 
-    ProceedFunc();
-    if (library && data) {
-      const result = await callCreateAuction(
-        library,
-        data.collection,
-        data.nftId,
-        Number(auctionPrice),
-        endTime
-      );
-      SuccessFunc(result.success);
-    } else {
-      SuccessFunc(false);
-    }
-  };
+  //   ProceedFunc();
+  //   if (library && data) {
+  //     const result = await callCreateAuction(
+  //       library,
+  //       data.collection,
+  //       data.nftId,
+  //       Number(auctionPrice),
+  //       endTime
+  //     );
+  //     SuccessFunc(result.success);
+  //   } else {
+  //     SuccessFunc(false);
+  //   }
+  // };
+
   const isApproved = useGetApprovedForAll(account, data?.collection);
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
@@ -423,7 +383,7 @@ export const NonNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <Button
+        {/* <Button
           title={"Auction"}
           variant="v1"
           className="py-4"
@@ -431,7 +391,7 @@ export const NonNFTDescription = ({
             auctionModal();
             setModal(true);
           }}
-        />
+        /> */}
         <Button
           title={"List"}
           onClick={listingModal}
@@ -479,17 +439,4 @@ text-16px font-bold text-white
 `);
 const ImgStyling = ctl(`
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
-  w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `);
