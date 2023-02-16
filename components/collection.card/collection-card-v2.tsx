@@ -30,7 +30,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
         });
       }}
       className={clsx(
-        `flex w-full max-w-[300px] flex-col rounded-lg border border-gray-shade-3`,
+        `flex w-full max-w-[300px] cursor-pointer flex-col rounded-lg border border-gray-shade-3`,
         className
       )}
     >
@@ -56,17 +56,20 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
       >
         <div className={`text-[15px] font-medium text-white`}>{data.name}</div>
         {data.creator.is_registered ? (
-          <Link
-            href={{
-              pathname: AppRoutes.profile.account_address,
-              query: {
-                account_address: data.creator.account_address,
-              },
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push({
+                pathname: AppRoutes.profile.account_address,
+                query: {
+                  account_address: data.creator.account_address,
+                },
+              });
             }}
             className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
           >
             {sliceDisplayName(data.creator.display_name)}
-          </Link>
+          </span>
         ) : (
           <span
             className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
