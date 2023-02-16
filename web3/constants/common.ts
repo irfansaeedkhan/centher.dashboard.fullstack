@@ -7,7 +7,7 @@ export const BSC_RPC_URLS =
     : ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
 
 // IPFS Platform Url
-export const NEXT_PUBLIC_IPFS_URL = "https://ipfs.moralis.io:2053";
+export const NEXT_PUBLIC_IPFS_URL = "https://ipfs.io";
 // IPFS Host
 export const NEXT_PUBLIC_IPFS_HOST = "infura-ipfs.io";
 // IPFS Project id

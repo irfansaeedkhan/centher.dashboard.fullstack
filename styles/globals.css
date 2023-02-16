@@ -130,38 +130,9 @@
       margin: 0 auto;
     }
   }
-  .otherAppWrapper {
-    max-width: 1418px;
-    margin: 0 auto;
-  }
-  /* media queries */
-  @media only screen and (max-width: 1728px) {
-    .otherAppWrapper {
-      max-width: 1130px;
-    }
-  }
-  @media only screen and (max-width: 1670px) {
-    .otherAppWrapper {
-      max-width: 1130px;
-    }
-  }
   @media only screen and (max-width: 1440px) {
-    .otherAppWrapper {
-      max-width: 842px;
-    }
     .nftCardContainer {
       gap: 20px;
-    }
-  }
-  @media only screen and (max-width: 1152px) {
-    .otherAppWrapper {
-      max-width: 555px;
-    }
-  }
-  @media only screen and (max-width: 617px) {
-    .otherAppWrapper {
-      max-width: 100%;
-      margin: 0 8px;
     }
   }
   .dpImagePreview {
@@ -228,6 +199,7 @@
     backdrop-filter: blur(16px);
     z-index: 99;
   }
+
   .scrollSet,
   .scrollSetLight,
   .scrollSetLight2 {

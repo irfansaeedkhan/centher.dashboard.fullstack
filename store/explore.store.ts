@@ -6,7 +6,11 @@ import axios from "axios";
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { collectionsQuery, hotNFTsQuery, topCreators } from "@/subgraph/querys";
+import {
+  collectionsQuery,
+  hotNFTsQuery,
+  topCreatorsQuery,
+} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
@@ -131,7 +135,7 @@ export const useExploreStore = create<ExploreStore>()(
           });
           let _topCreators: string[] = [];
           const { data: result, error } = await client.query({
-            query: gql(topCreators),
+            query: gql(topCreatorsQuery),
             variables: {
               first: MAX_TOP_CREATORS,
               skip: 0,

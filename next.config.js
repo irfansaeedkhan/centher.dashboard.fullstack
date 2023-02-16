@@ -10,6 +10,7 @@ const nextConfig = {
   images: {
     domains: [
       "ipfs.moralis.io",
+      "ipfs.io",
       "devapi.centher.io",
       "devstatic.centher.io",
       "static.centher.io",

@@ -312,7 +312,7 @@ export const myCollections = `
   }
 `;
 
-export const topCreators = `
+export const topCreatorsQuery = `
   query($skip: Int!, $first: Int!) {
     users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first,  where: {createNFTCount_not: 0}) {
       createNFTCount

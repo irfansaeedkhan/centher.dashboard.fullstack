@@ -1,0 +1,46 @@
+import React from "react";
+import Image from "next/image";
+import Link from "next/link";
+import clsx from "clsx";
+
+import { User } from "@/models/user";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { AppRoutes } from "@/constants/app.routes";
+
+interface CreatorCardProps {
+  data: TopCreatorCardData;
+  className?: string;
+}
+
+const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
+  return (
+    <div className={clsx("flex min-w-max items-center gap-3", className)}>
+      <Image
+        src={data.profile_image.path}
+        width={48}
+        height={48}
+        alt="profile"
+        className="!h-12 !w-12 rounded-full object-cover"
+      />
+      <Link
+        href={{
+          pathname: AppRoutes.profile.nfts,
+          query: {
+            account_address: data.account_address,
+          },
+        }}
+        className="text-sm font-medium text-white  hover:text-brand-primary"
+      >
+        {sliceDisplayName(data.display_name)}
+      </Link>
+    </div>
+  );
+};
+
+export default CreatorCard;
+
+export interface TopCreatorCardData {
+  account_address: User["account_address"];
+  display_name: User["display_name"];
+  profile_image: User["profile_image"];
+}
