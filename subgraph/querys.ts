@@ -294,6 +294,39 @@ export const listedNFTsByAccount = `
   }
 `;
 
+export const createdNFTsByAccount = `
+  query($first: Int!, $skip: Int!, $creator: Bytes!) {
+    nfts(
+      first: $first
+      skip: $skip
+      orderBy: tradingVolumn
+      orderDirection: desc
+      where: {creator: $creator}
+    ) {
+        collection
+        createTime
+        creator
+        id
+        ipfs
+        saleState
+        tokenId
+        price
+        owner
+        listInfo {
+          price
+          bidSize
+        }
+        auctionInfo {
+          endTime
+          highestBidPrice
+          highestBidAddress
+          bidSize
+          startPrice
+        }
+    }
+  }
+`;
+
 export const registeredCollections = `
   query {
     collections {

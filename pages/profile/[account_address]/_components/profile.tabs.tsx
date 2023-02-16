@@ -23,7 +23,7 @@ export const ProfileTabs: React.FC = () => {
       isNFTProfilePage:
         router.pathname === AppRoutes.profile.nfts ||
         router.pathname === AppRoutes.profile.purchased ||
-        router.pathname === AppRoutes.profile.collections,
+        router.pathname === AppRoutes.profile.collection,
     }),
     [router.pathname]
   );

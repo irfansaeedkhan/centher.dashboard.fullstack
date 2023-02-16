@@ -1,28 +1,22 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 
-// App imports
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import {
   callCancelItemForSale,
   callEditItemForSale,
 } from "@/web3/utils/call.helpers";
 import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
-import toast from "react-hot-toast";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
-import {
-  ModalManager,
-  IModalHandler,
-  TemplateCollection,
-} from "../../../utils/modal/";
 import ChangePriceBidModal from "./change.price.bid.modal";
 
 enum ModalType {

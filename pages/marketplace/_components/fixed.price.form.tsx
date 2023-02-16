@@ -36,7 +36,7 @@ const schema = Joi.object({
       "string.empty": `NFTAmount Required`,
       "any.required": `Required Field`,
     }),
-  NFTPrice: Joi.number().required().label("NFT Price").messages({
+  NFTPrice: Joi.number().greater(0).required().label("NFT Price").messages({
     "string.empty": `NFTPrice Required`,
     "any.required": `Required Field`,
   }),
@@ -82,7 +82,7 @@ const FixedPriceForm = ({
         Category: "",
         NFTAmount: null,
         NFTPrice: null,
-        Collection: "",
+        Collection: collections[0].collection,
       },
     });
   // functions to add/remove dynamic properties
@@ -145,6 +145,7 @@ const FixedPriceForm = ({
       setPropertyList([]);
     }
   }, [clearForm, reset]);
+
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
@@ -296,7 +297,12 @@ const FixedPriceForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Properties</label>
+        <label className={fieldTitle}>
+          Properties{"  "}
+          <span className="text-14px  font-normal text-gray-shade-7">
+            (optional)
+          </span>
+        </label>
         <div className={addPropertyBtn}>
           <span>Add new properties</span>
           <button

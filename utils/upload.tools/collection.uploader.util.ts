@@ -40,8 +40,9 @@ export class CollectionUploader {
       profileImgPath
     );
     const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
+
     const uploadMetaDataDto = {
-      path: this._uploader.makePath(collectionData, "josn"),
+      path: this._uploader.makePath(collectionData, "json"),
       content: metaDataBuffered.toString("base64"),
     };
 

@@ -99,7 +99,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.referral.network_genealogy,
 
   // TEST
-  AppRoutes.profile.collections,
+  AppRoutes.profile.collection,
   AppRoutes.profile.purchased,
   AppRoutes.profile.nfts,
 

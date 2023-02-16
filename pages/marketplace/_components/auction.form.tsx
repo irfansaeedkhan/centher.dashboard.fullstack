@@ -41,10 +41,14 @@ const schema = Joi.object({
     "string.empty": `AuctionEndTime Required`,
     "any.required": `Required Field`,
   }),
-  StartingNFTPrice: Joi.number().required().label("NFT Price").messages({
-    "string.empty": `StartingNFTPrice Required`,
-    "any.required": `Required Field`,
-  }),
+  StartingNFTPrice: Joi.number()
+    .greater(0)
+    .required()
+    .label("NFT Price")
+    .messages({
+      "string.empty": `StartingNFTPrice Required`,
+      "any.required": `Required Field`,
+    }),
   Category: Joi.string().required().max(150).label("Category").messages({
     "string.empty": `Category Required`,
     "any.required": `Required Field`,

@@ -23,6 +23,9 @@ const NFTProfile: NextPageWithLayout = () => {
     listedNFTs,
     fetchListedNFTs,
     loadingListedNFTs,
+    createdNfts,
+    fetchCreatedNFTs,
+    loadingCreatedNFTs,
   } = useProfileNFTStore((state) => ({
     ownedNFTs: state.ownedNfts,
     fetchOwnedNFTs: state.fetchOwnedNFTs,
@@ -30,6 +33,9 @@ const NFTProfile: NextPageWithLayout = () => {
     listedNFTs: state.listedNfts,
     fetchListedNFTs: state.fetchListedNFTs,
     loadingListedNFTs: state.loadingListedNFTs,
+    createdNfts: state.createdNfts,
+    fetchCreatedNFTs: state.fetchCreatedNFTs,
+    loadingCreatedNFTs: state.loadingCreatedNFTs,
   }));
   useEffect(() => {
     if (account) {

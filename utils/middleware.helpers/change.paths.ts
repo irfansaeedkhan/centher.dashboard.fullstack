@@ -4,12 +4,17 @@
  * @example changePaths(["/users/[id]"]) => ["/users/:id"]
  */
 export const changePaths = (paths: string[]) => {
-  return paths.map((path) => {
-    let changed = path;
-    while (changed.includes("[")) {
-      changed = changed.replace("[", ":");
-    }
-    changed.replace("]", "");
-    return changed;
-  });
+  if (paths && paths.length > 0) {
+    return paths.map((path) => {
+      let changed = path;
+      while (changed?.includes("[")) {
+        changed = changed?.replace("[", ":");
+      }
+      changed?.replace("]", "");
+      return changed;
+    });
+  } else {
+    console.error("The paths variable is undefined or null.");
+    return [];
+  }
 };

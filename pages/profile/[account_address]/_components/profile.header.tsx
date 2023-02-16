@@ -41,7 +41,7 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
-import { ProfileTabsNFT } from "./profile.tabs.nft";
+// import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
@@ -106,12 +106,13 @@ const ProfileHeader: React.FC<Props> = ({
       isProfilePage:
         router.pathname === AppRoutes.profile.account_address ||
         router.pathname === AppRoutes.profile.following ||
+        router.pathname === AppRoutes.profile.nfts ||
         router.pathname === AppRoutes.profile.followers ||
         router.pathname === AppRoutes.profile.replies,
       isNFTProfilePage:
         router.pathname === AppRoutes.profile.nfts ||
         router.pathname === AppRoutes.profile.purchased ||
-        router.pathname === AppRoutes.profile.collections,
+        router.pathname === AppRoutes.profile.collection,
     }),
     [router.pathname]
   );
@@ -590,12 +591,7 @@ const ProfileHeader: React.FC<Props> = ({
             <FollowedComponent mutualFollowersData={mutualFollowersData} />
           )}
 
-        {currentPageRoute.isProfilePage && (
-          <ProfileTabsSocial account_address={router.query.account_address} />
-        )}
-        {currentPageRoute.isNFTProfilePage && (
-          <ProfileTabsNFT account_address={router.query.account_address} />
-        )}
+        <ProfileTabsSocial account_address={router.query.account_address} />
       </div>
     </div>
   );

@@ -15,11 +15,15 @@ export const AppRoutes = {
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
+    nfts: "/profile/[account_address]/nfts",
+    owned: "/profile/[account_address]/nfts/owned",
+    created: "/profile/[account_address]/nfts/created",
+    collection: "/profile/[account_address]/nfts/collection",
 
     // Not ready pages
-    nfts: "/profile/[account_address]/nfts",
+    // nfts-old: "/profile/[account_address]/nfts",
     purchased: "/profile/[account_address]/purchased",
-    collections: "/profile/[account_address]/collections",
+    // collections-old: "/profile/[account_address]/collections",
   },
 
   settings: {

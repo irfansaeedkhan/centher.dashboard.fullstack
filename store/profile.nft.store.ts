@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { EvmChain } from "@moralisweb3/evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 // App imports
 import { axiosNodeApi } from "@/utils/axios";
@@ -10,6 +10,7 @@ import {
   registeredCollections,
   collectionsByAccount,
   listedNFTsByAccount,
+  createdNFTsByAccount,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
@@ -20,8 +21,15 @@ export interface ProfileNFTStore {
   collections: Collection[] | undefined;
   ownedNfts: NFT[];
   listedNfts: NFT[];
+  createdNfts: NFT[];
   fetchCollections: (account: string) => Promise<void>;
   fetchOwnedNFTs: (account: string) => Promise<void>;
+  fetchCreatedNFTs: (
+    account: string,
+    offset?: number,
+    limit?: number,
+    reload?: boolean
+  ) => Promise<void>;
   fetchListedNFTs: (
     account: string,
     offset?: number,
@@ -30,12 +38,15 @@ export interface ProfileNFTStore {
   ) => Promise<void>;
   ownedOffset: number;
   listedOffset: number;
+  createdOffset: number;
   updateOwnedOffset: () => void;
   updateListedOffset: () => void;
+  updateCreatedOffset: () => void;
   limit: number;
   loadingCollections: LoadingState;
   loadingOwnedNFTs: LoadingState;
   loadingListedNFTs: LoadingState;
+  loadingCreatedNFTs: LoadingState;
 }
 
 export const useProfileNFTStore = create<ProfileNFTStore>()(
@@ -44,12 +55,15 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       collections: [],
       ownedNfts: [],
       listedNfts: [],
+      createdNfts: [],
       listedOffset: 0,
       ownedOffset: 0,
+      createdOffset: 0,
       limit: 20,
       loadingCollections: "idle",
       loadingListedNFTs: "idle",
       loadingOwnedNFTs: "idle",
+      loadingCreatedNFTs: "idle",
       updateListedOffset: () =>
         set((state) => ({
           listedOffset: state.listedNfts.length,
@@ -58,6 +72,11 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       updateOwnedOffset: () =>
         set((state) => ({
           ownedOffset: state.ownedNfts.length,
+        })),
+
+      updateCreatedOffset: () =>
+        set((state) => ({
+          createdOffset: state.createdNfts.length,
         })),
 
       fetchCollections: async (account) => {
@@ -247,6 +266,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
 
             return {
               ownedNfts: _nfts,
+              // ownedNfts: dummyOwnedNFTs,
               loadingOwnedNFTs: "loaded",
             };
           });
@@ -256,7 +276,79 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             console.error(error);
         }
       },
+      fetchCreatedNFTs: async (account, offset, limit, reload) => {
+        try {
+          set({ loadingCreatedNFTs: "loading" });
+          const client = new ApolloClient({
+            uri: SUBGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _nfts: NFT[];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
+            query: gql(createdNFTsByAccount),
+            variables: {
+              first: limit,
+              skip: offset,
+              creator: account,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result) {
+            _nfts = result.nfts.map((item: any) => {
+              let _endTime = 0;
+              if (item.saleState === "Auction") {
+                _endTime = item.auctionInfo.endTime;
+              }
+              return {
+                id: item.id,
+                collection: item.collection,
+                tokenId: item.tokenId,
+                creator: item.creator,
+                createTime: item.createTime,
+                ipfs: item.ipfs,
+                saleState: item.saleState,
+                price: item.price,
+                owner: item.owner,
+                endTime: _endTime,
+              };
+            });
+          }
+
+          set((state) => {
+            return {
+              createdNfts: _nfts,
+              loadingCreatedNFTs: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingCreatedNFTs: "failed" });
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
     }),
     { name: "ProfileNFTStore" }
   )
 );
+
+const dummyOwnedNFTs: NFT[] = [
+  {
+    id: "4353fgdgdg",
+    collection: "0x134ertd4",
+    tokenId: 8790,
+    creator: "halik",
+    createTime: 1629200000000,
+    // ipfs: "https://ipfs.moralis.io:2053/ipfs/QmSxqutiHw4vTkL9aLAve3vFRCxVyydxZL5tWaaXnQFZtf/nether/YEUE2751.JPG",
+    // ipfs/QmasLg9shC2DmF4smP2uTxvGJNVg5v1hQw8zuVAVVYPjZt/nether/newcollection.json
+    ipfs: "ipfs://QmasLg9shC2DmF4smP2uTxvGJNVg5v1hQw8zuVAVVYPjZt/nether/newcollection.json",
+    saleState: "NON",
+    price: 0.1,
+    owner: "halik",
+    endTime: 1669200000000,
+  },
+];

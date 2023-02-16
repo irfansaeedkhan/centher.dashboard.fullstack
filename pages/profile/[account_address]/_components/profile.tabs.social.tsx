@@ -24,24 +24,38 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
           router.pathname === AppRoutes.profile.account_address
             ? "border-b-2 font-medium text-white"
             : "text-gray-shade-7",
-          "cursor-pointer py-2 px-4"
+          "min-w-max cursor-pointer py-2 px-4"
         )}
       >
         Posts
       </Link>
-
+      {loggedInUser &&
+        loggedInUser.account_address === router.query.account_address && (
+          <Link
+            href={`/profile/${account_address}/replies`}
+            className={clsx(
+              router.pathname === AppRoutes.profile.replies
+                ? "border-b-2 font-medium text-white"
+                : "text-gray-shade-7",
+              "min-w-max cursor-pointer py-2 px-4"
+            )}
+          >
+            Replies
+          </Link>
+        )}
       <Link
-        href={`/profile/${account_address}/replies`}
+        href={`/profile/${account_address}/nfts/owned`}
         className={clsx(
-          router.pathname === AppRoutes.profile.replies
+          router.pathname === AppRoutes.profile.owned ||
+            router.pathname === AppRoutes.profile.created ||
+            router.pathname === AppRoutes.profile.collection
             ? "border-b-2 font-medium text-white"
             : "text-gray-shade-7",
-          "cursor-pointer py-2 px-4"
+          "min-w-max cursor-pointer py-2 px-4"
         )}
       >
-        Replies
+        NFTs
       </Link>
-
       {loggedInUser &&
         loggedInUser.account_address === router.query.account_address && (
           <Link
@@ -50,13 +64,12 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
               router.pathname === AppRoutes.profile.followers
                 ? "border-b-2 font-medium text-white"
                 : "text-gray-shade-7",
-              "cursor-pointer py-2 px-4"
+              "min-w-max cursor-pointer py-2 px-4"
             )}
           >
             Followers
           </Link>
         )}
-
       {loggedInUser &&
         loggedInUser.account_address === router.query.account_address && (
           <Link
@@ -65,7 +78,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
               router.pathname === AppRoutes.profile.following
                 ? "border-b-2 font-medium text-white"
                 : "text-gray-shade-7",
-              "cursor-pointer py-2 px-4"
+              "min-w-max cursor-pointer py-2 px-4"
             )}
           >
             Following

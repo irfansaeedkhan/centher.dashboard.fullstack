@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useRefresh from "../hooks/use.refresh";
-import { EvmChain } from "@moralisweb3/evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
 

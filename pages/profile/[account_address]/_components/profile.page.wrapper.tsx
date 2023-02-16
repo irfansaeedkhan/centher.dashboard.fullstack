@@ -12,14 +12,20 @@ import { MutualFollowersData } from "@/models/user";
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
 import { UserNotFound } from "./user.not.found";
-import { ProfileTabs } from "./profile.tabs";
+// import { AppRoutes } from "@/constants/app.routes";
+// import { ProfileTabs } from "./profile.tabs";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
   currentTab: "nft-profile" | "social-profile";
+  messageBox?: boolean;
 }
 
-export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
+export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
+  children,
+  currentTab,
+  messageBox = true,
+}) => {
   const router = useRouter();
 
   const {
@@ -50,7 +56,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
   return (
     <>
       <div className="mx-auto w-full max-w-[1136px]">
-        <ProfileTabs />
+        {/* <ProfileTabs /> */}
 
         <div
           className={clsx(
@@ -78,14 +84,14 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = (props) => {
           <div
             className={clsx(
               `col-span-full row-start-2 fsm:col-span-1 fsm:col-start-2 flg:col-start-3 f2xl:col-start-2`,
-              props.currentTab === "social-profile" && `f2xl:col-span-1`,
-              props.currentTab === "nft-profile" && `f2xl:col-span-full`
+              currentTab === "social-profile" && `f2xl:col-span-1`,
+              currentTab === "nft-profile" && `f2xl:col-span-full`
             )}
           >
-            {props.children}
+            {children}
           </div>
 
-          {props.currentTab === "social-profile" && (
+          {currentTab === "social-profile" && messageBox && (
             <div className={`hidden space-y-3 f2xl:col-start-3 f2xl:block`}>
               <MessagesCard className="sticky top-[84px]" />
             </div>

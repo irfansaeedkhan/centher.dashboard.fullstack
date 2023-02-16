@@ -131,7 +131,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     setModal(false);
     saleWithListing(data.bidPrice);
   };
-
   // const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
   //   setModalTitle("Cancel listing");
   //   setModalContent(
