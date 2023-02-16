@@ -585,7 +585,8 @@ const ProfileHeader: React.FC<Props> = ({
         {!!loggedInUser &&
           loggedInUser?.account_address.toLowerCase() !==
             user.account_address.toLowerCase() &&
-          mutualFollowersData?.users && (
+          mutualFollowersData?.users &&
+          !!mutualFollowersData.users.length && (
             <FollowedComponent mutualFollowersData={mutualFollowersData} />
           )}
 
