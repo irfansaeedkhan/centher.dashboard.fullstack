@@ -89,7 +89,7 @@ export const AuctionNftDescription = ({
 
   const cancelAuctionFunc = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     setModalTitle("Cancel Auction");
@@ -127,7 +127,7 @@ export const AuctionNftDescription = ({
   };
   const endAuctionFunc = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     setModalTitle("Announce Winner");

@@ -219,7 +219,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
 
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     // setCollectionData(values)

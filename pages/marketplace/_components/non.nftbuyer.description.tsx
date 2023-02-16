@@ -33,7 +33,7 @@ export const NonNFTBuyerDescription = ({
 
   const buyNFTStep1Func = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     setModalTitle("Complete Checkout");

@@ -182,7 +182,7 @@ export const AuctionNFTBuyerDescription = ({
   );
   // const bidNFTModalFunc = useCallback(() => {
   //   if (!library) {
-  //     toast.error("Confirm your Wallet Connection.");
+  //     toast.error("Connect your wallet");
   //     return;
   //   }
   //   setModalTitle("Place a bid");
@@ -321,7 +321,7 @@ export const AuctionNFTBuyerDescription = ({
             className="py-4"
             onClick={() => {
               if (!library) {
-                toast.error("Confirm your Wallet Connection.");
+                toast.error("Connect your wallet");
                 return;
               }
               if (library) {

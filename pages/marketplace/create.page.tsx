@@ -198,7 +198,7 @@ const CreateNFT: NextPageWithLayout = () => {
     }
     // setNFTData(values)
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     buyNFTStep1Func(values);

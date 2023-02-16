@@ -46,7 +46,7 @@ export const FixedPriceNFTBuyerDescription = ({
 
   const buyNFTStep1Func = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your Wallet.");
       return;
     }
     setModalTitle("Complete Checkout");

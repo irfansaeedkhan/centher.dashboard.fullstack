@@ -20,103 +20,105 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
   const bnbPrice = useBNBPrice();
   return (
     <div className={NFTOffersContainer}>
-      <div className="accordion" id="accordionExample">
-        <div className="accordion-item bg-transparent ">
-          <h2 className="accordion-header mb-0" id="headingOne">
-            <button
-              className={AccordionButton}
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#OffersComponent"
-              aria-expanded="true"
-              aria-controls="OffersComponent"
-            >
-              Offers
-            </button>
-          </h2>
-          <div
-            id="OffersComponent"
-            className={AccordionCollapse}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body ">
-              <div
-                className={clsx(
-                  "relative overflow-x-auto  rounded-2xl shadow-md ",
-                  data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
-                )}
+      {data?.length ? (
+        <div className="accordion" id="accordionExample">
+          <div className="accordion-item bg-transparent ">
+            <h2 className="accordion-header mb-0" id="headingOne">
+              <button
+                className={AccordionButton}
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#OffersComponent"
+                aria-expanded="true"
+                aria-controls="OffersComponent"
               >
-                {data.length > 0 ? (
-                  <table className={table}>
-                    <thead className={thead}>
-                      <tr>
-                        <th scope="col" className={th}>
-                          Unit Price
-                        </th>
-                        <th scope="col" className={th}>
-                          USD Price
-                        </th>
-                        <th scope="col" className={th}>
-                          Expiration
-                        </th>
-                        <th scope="col" className={th}>
-                          From
-                        </th>
-                        {/* <th scope="col" className={th}>
+                Offers
+              </button>
+            </h2>
+            <div
+              id="OffersComponent"
+              className={AccordionCollapse}
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
+            >
+              <div className="accordion-body ">
+                <div
+                  className={clsx(
+                    "relative overflow-x-auto  rounded-2xl shadow-md ",
+                    data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
+                  )}
+                >
+                  {data.length > 0 ? (
+                    <table className={table}>
+                      <thead className={thead}>
+                        <tr>
+                          <th scope="col" className={th}>
+                            Unit Price
+                          </th>
+                          <th scope="col" className={th}>
+                            USD Price
+                          </th>
+                          <th scope="col" className={th}>
+                            Expiration
+                          </th>
+                          <th scope="col" className={th}>
+                            From
+                          </th>
+                          {/* <th scope="col" className={th}>
                         Action
                       </th> */}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.map((item, index) => {
-                        const current = Date.now() / 1000;
-                        const month = (current - item.txTime) / 86400 / 30;
-                        return (
-                          <tr className={tbodyTR} key={index}>
-                            <td className={`${td} !text-gray-shade-7`}>
-                              {formatEther2Number(item.price)} BNB
-                            </td>
-                            <td className={td}>
-                              ${formatBNB2USD(item.price, bnbPrice)}
-                            </td>
-                            <td className={td}>{month.toFixed(2)} month</td>
-                            <td className={`${td} !text-yellow-theme`}>
-                              <Link
-                                href={{
-                                  pathname: AppRoutes.profile.nfts,
-                                  query: {
-                                    account_address: item.bidder,
-                                  },
-                                }}
-                                className={``}
-                              >
-                                {formatAddress(item.bidder)}
-                              </Link>
-                            </td>
-                            {/* <td className={td}>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {data.map((item, index) => {
+                          const current = Date.now() / 1000;
+                          const month = (current - item.txTime) / 86400 / 30;
+                          return (
+                            <tr className={tbodyTR} key={index}>
+                              <td className={`${td} !text-gray-shade-7`}>
+                                {formatEther2Number(item.price)} BNB
+                              </td>
+                              <td className={td}>
+                                ${formatBNB2USD(item.price, bnbPrice)}
+                              </td>
+                              <td className={td}>{month.toFixed(2)} month</td>
+                              <td className={`${td} !text-yellow-theme`}>
+                                <Link
+                                  href={{
+                                    pathname: AppRoutes.profile.nfts,
+                                    query: {
+                                      account_address: item.bidder,
+                                    },
+                                  }}
+                                  className={``}
+                                >
+                                  {formatAddress(item.bidder)}
+                                </Link>
+                              </td>
+                              {/* <td className={td}>
                           <Button
                             title="Accept"
                             variant="v1"
                             className="max-w-[80px]"
                           />
                         </td> */}
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <p className="text-center text-lg text-white">
-                    {" "}
-                    No offers yet!
-                  </p>
-                )}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p className="text-center text-lg text-white">
+                      {" "}
+                      No offers yet!
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 };

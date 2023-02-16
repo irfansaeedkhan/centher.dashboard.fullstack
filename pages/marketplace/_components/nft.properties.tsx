@@ -10,45 +10,47 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
   return (
     <div className={NFTPropertiesContainer}>
       <div className="accordion" id="accordionExample">
-        <div className="accordion-item bg-transparent ">
-          <h2 className="accordion-header mb-0" id="headingOne">
-            <button
-              className={AccordionButton}
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#propertiesComponent"
-              aria-expanded="true"
-              aria-controls="propertiesComponent"
+        {props.attributes?.length ? (
+          <div className="accordion-item bg-transparent ">
+            <h2 className="accordion-header mb-0" id="headingOne">
+              <button
+                className={AccordionButton}
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#propertiesComponent"
+                aria-expanded="true"
+                aria-controls="propertiesComponent"
+              >
+                Properties
+              </button>
+            </h2>
+            <div
+              id="propertiesComponent"
+              className={AccordionCollapse}
+              aria-labelledby="headingOne"
+              data-bs-parent="#accordionExample"
             >
-              Properties
-            </button>
-          </h2>
-          <div
-            id="propertiesComponent"
-            className={AccordionCollapse}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body p-6">
-              <div className={propetiesListContainer}>
-                {props.attributes?.length ? (
-                  props.attributes.map((attribute, index) => (
-                    <div className={properyCard} key={index}>
-                      <h4 className={PropertyName}>{attribute.Type}</h4>
-                      <h5 className={Type}>{attribute.PropertyName}</h5>
-                      {/* <h6 className={percentage}>100% have this trail</h6> */}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-center text-lg text-white">
-                    {" "}
-                    No properties yet!
-                  </p>
-                )}
+              <div className="accordion-body p-6">
+                <div className={propetiesListContainer}>
+                  {props.attributes?.length ? (
+                    props.attributes.map((attribute, index) => (
+                      <div className={properyCard} key={index}>
+                        <h4 className={PropertyName}>{attribute.Type}</h4>
+                        <h5 className={Type}>{attribute.PropertyName}</h5>
+                        {/* <h6 className={percentage}>100% have this trail</h6> */}
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-center text-lg text-white">
+                      {" "}
+                      No properties yet!
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

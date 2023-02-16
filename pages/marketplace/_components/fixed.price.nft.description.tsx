@@ -263,7 +263,7 @@ export const FixedPriceNFTDescription = ({
 
   function validateProvider(): void {
     if (!library) {
-      throw new Error("Confirm your Wallet Connection.");
+      throw new Error("Connect your wallet");
     }
   }
 

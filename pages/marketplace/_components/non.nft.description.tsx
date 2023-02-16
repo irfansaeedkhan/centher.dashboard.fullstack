@@ -58,7 +58,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   const listingModal = () => {
     setModal(true);
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     setModalTitle("Listing Item");
@@ -67,7 +67,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
 
   // const auctionModal = () => {
   //   if (!library) {
-  //     toast.error("Confirm your Wallet Connection.");
+  //     toast.error("Connect your wallet");
   //     return;
   //   }
   //   setModalTitle("Auction");
