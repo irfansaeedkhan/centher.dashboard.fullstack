@@ -1,5 +1,5 @@
 import Moralis from "moralis";
-
+import { v1 as uuidv1 } from "uuid";
 import { IUploader } from "../interfaces/file.uploader.interface";
 import { safeNameType } from "../interfaces/safe.file.wrapper.interface";
 import { IUploadParam } from "../interfaces/upload.param.interface";
@@ -12,21 +12,19 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
   _moraliseBasePath: string;
   _moralisResponsePathKey: string;
   _instance: uploaderFunc | null = null;
+  _nameLength: number = 32;
 
   constructor(
-    moraliseBasePath: string = "nether",
+    moraliseBasePath: string = "centher",
     moralisResponsePathKey: string = "ipfs"
   ) {
     this._moraliseBasePath = moraliseBasePath;
     this._moralisResponsePathKey = moralisResponsePathKey;
   }
 
-  makePath(nameWrapper: safeNameType, extention?: string): string {
-    if (!nameWrapper?.name?.length) {
-      throw new Error("invalid file name.");
-    }
-
-    return `${this._moraliseBasePath}/${this.toSnakeCase(nameWrapper.name)}${
+  makePath(extention?: string): string {
+    const name = this.generateName();
+    return `${this._moraliseBasePath}/${this.toSnakeCase(name)}${
       extention?.length ? "." + extention : ""
     }`;
   }
@@ -58,6 +56,10 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
       typeof err == "string" ? (err = new Error(err)) : err;
       throw err;
     }
+  }
+
+  generateName() {
+    return uuidv1();
   }
 
   private async initInstance(): Promise<uploaderFunc> {

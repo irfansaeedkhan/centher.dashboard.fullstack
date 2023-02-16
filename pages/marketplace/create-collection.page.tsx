@@ -177,9 +177,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
       const assetBuffer = await readFileAsync(profile);
       const uploadDto = {
-        path: collectionUploader._uploader.makePath(
-          profile as any as { name: string }
-        ),
+        path: collectionUploader._uploader.makePath(),
         content: assetBuffer.toString("base64"),
       };
 

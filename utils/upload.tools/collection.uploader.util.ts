@@ -29,7 +29,7 @@ export class CollectionUploader {
     }
 
     const uploadCoverDto = {
-      path: this._uploader.makePath(collectionData),
+      path: this._uploader.makePath(),
       content: file.toString("base64"),
     };
 
@@ -42,7 +42,7 @@ export class CollectionUploader {
     const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
 
     const uploadMetaDataDto = {
-      path: this._uploader.makePath(collectionData, "json"),
+      path: this._uploader.makePath("json"),
       content: metaDataBuffered.toString("base64"),
     };
 

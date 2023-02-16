@@ -72,6 +72,7 @@
     "socket.io-client": "^4.5.3",
     "swr": "^1.3.0",
     "usehooks-ts": "^2.7.2",
+    "uuid": "^9.0.0",
     "zustand": "^4.3.2"
   },
   "devDependencies": {
@@ -89,6 +90,7 @@
     "@types/react": "18.0.18",
     "@types/react-dom": "18.0.6",
     "@types/react-table": "^7.7.12",
+    "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "cross-env": "^7.0.3",
     "eslint": "^8.23.1",
