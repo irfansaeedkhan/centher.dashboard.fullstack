@@ -82,7 +82,7 @@ const FixedPriceForm = ({
         Category: "",
         NFTAmount: null,
         NFTPrice: null,
-        Collection: collections[0].collection,
+        Collection: "",
       },
     });
   // functions to add/remove dynamic properties
@@ -279,7 +279,9 @@ const FixedPriceForm = ({
             !formState.errors.Collection ? inputField : inputFieldError
           }
         >
-          {/* <option value="">Select</option> */}
+          <option value="" className="!text-gray-shade-7">
+            Select Collection
+          </option>
           {collections.map((collection) => {
             return (
               <option value={collection.collection} key={collection.id}>
@@ -412,18 +414,6 @@ const inputFieldModal = ctl(`
 const inputFieldError = ctl(`
   ${inputField}
    focus:!ring-red-500
-`);
-const serviceFee = ctl(`
-flex justify-between items-center pt-1
-`);
-const serviceFeeTitle = ctl(`
-flex items-center gap-3
-`);
-const serviceFeeName = ctl(`
-text-[#838B8F] text-12px font-normal
-`);
-const serviceFeeNumber = ctl(`
- text-white text-12px font-normal
 `);
 const addPropertyBtn = ctl(`
 flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
