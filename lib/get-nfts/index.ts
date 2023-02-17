@@ -1,32 +1,37 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 
 import { NFT } from "@/models/nft";
-import { hotNFTsQuery } from "@/subgraph/querys";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { AppError } from "@/utils/app-error";
 
-const MAX_HOT_NFTS = 15;
+const client = new ApolloClient({
+  uri: SUBGRAPH_URL,
+  cache: new InMemoryCache(),
+});
 
-export const getHotNFTs = async (): Promise<NFT[]> => {
+export const getNFTs = async ({
+  query,
+  limit = 15,
+  skip = 0,
+}: {
+  query: string;
+  limit?: number;
+  skip?: number;
+}): Promise<NFT[]> => {
   try {
-    const client = new ApolloClient({
-      uri: SUBGRAPH_URL,
-      cache: new InMemoryCache(),
-    });
-
-    let _hotNFTs: NFT[] = [];
+    let nfts: NFT[] = [];
 
     const { data: result, error } = await client.query({
-      query: gql(hotNFTsQuery),
+      query: gql(query),
       variables: {
-        first: MAX_HOT_NFTS,
-        skip: 0,
+        first: limit,
+        skip: skip,
       },
       fetchPolicy: "cache-first",
     });
 
     if (result && !error) {
-      _hotNFTs = result.nfts.map((item: any): NFT => {
+      nfts = result.nfts.map((item: any): NFT => {
         let _endTime = 0;
         if (item.saleState === "Auction") {
           _endTime = item.auctionInfo.endTime;
@@ -44,11 +49,11 @@ export const getHotNFTs = async (): Promise<NFT[]> => {
           endTime: _endTime,
         };
       });
-      return _hotNFTs;
+      return nfts;
     } else {
       throw error;
     }
   } catch (error: any) {
-    throw new AppError(error, "Can not load Hot NFTs", "getHotNFTs");
+    throw new AppError(error, "Can not load NFTs", "getNFTs");
   }
 };

@@ -3,8 +3,9 @@ import { toast } from "react-hot-toast";
 
 import { LoadingState } from "@/models/common";
 import { NFTCardData } from "@/components/nft.card/nft.card.v2";
-import { getHotNFTs } from "@/lib/get-hot-nfts";
+import { getNFTs } from "@/lib/get-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
+import { hotNFTsQuery } from "@/subgraph/querys";
 
 export const useHotNFTs = () => {
   const [state, setState] = useState<{
@@ -19,7 +20,11 @@ export const useHotNFTs = () => {
     (async () => {
       try {
         setState((state) => ({ ...state, loading: "loading" }));
-        const _hotNFTs = await getHotNFTs();
+        const _hotNFTs = await getNFTs({
+          query: hotNFTsQuery,
+          limit: 15,
+          skip: 0,
+        });
 
         const formattedHotNFTsPromises = _hotNFTs.map((item) =>
           getNFTCardData(item)

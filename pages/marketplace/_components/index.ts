@@ -4,4 +4,4 @@ export { CreateNFTCollectionForm } from "./create.collection.form";
 export { UploadNFTCollection } from "./upload.nft.collection";
 export { NFTLeftSideComponent } from "./nft.leftside";
 export { NFTRightSideComponent } from "./nft.rightside";
-export { Explore } from "./explore";
+export { SectionTitle } from "./section-title";

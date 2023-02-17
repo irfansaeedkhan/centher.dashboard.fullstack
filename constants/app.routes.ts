@@ -80,7 +80,7 @@ export const AppRoutes = {
     create_nft: "/marketplace/create",
     create_collection: "/marketplace/create-collection",
     explore: "/marketplace/explore",
-    all_nfts: "/marketplace/all-nfts",
+    nfts: "/marketplace/nfts",
     all_collections: "/marketplace/all-collections",
     collection: "/marketplace/[collection]",
   },

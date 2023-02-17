@@ -1,12 +1,12 @@
 import React from "react";
 import clsx from "clsx";
 
+import { SectionTitle } from "@/pages/marketplace/_components";
 import { CollectionCardV2 } from "@/components/collection.card/collection-card-v2";
 import NFTCollectionSkeleton from "@/components/loading.skeletons/nft.collection.skeleton";
 import { AppRoutes } from "@/constants/app.routes";
 import { NftsCollectionEmpty } from "@/assets/svgs";
 
-import { SectionTitle } from "../section-title";
 import { useHotCollections } from "./use-hot-collections";
 
 export const HotCollections: React.FC = () => {

@@ -2,9 +2,9 @@ import React, { useRef } from "react";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import clsx from "clsx";
 
+import { SectionTitle } from "@/pages/marketplace/_components";
 import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
 
-import { SectionTitle } from "../section-title";
 import { useTopCreators } from "./use-top-creators";
 import CreatorCard from "./creator-card";
 import styles from "./styles.module.css";
@@ -54,14 +54,9 @@ export const TopCreators = () => {
             })
           ) : loading === "loading" || loading === "idle" ? (
             <>
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
-              <TopCreatorsSkeleton />
+              {Array.from({ length: 5 }).map((_, index) => {
+                return <TopCreatorsSkeleton key={index} />;
+              })}
             </>
           ) : null}
         </div>
