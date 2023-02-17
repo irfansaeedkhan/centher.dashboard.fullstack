@@ -174,20 +174,20 @@ export const NFTHistory = ({ prices }: any) => {
             <h2 className="accordion-header mb-0" id="headingOne">
               <button
                 className={AccordionButton}
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#HistoryComponent"
-                aria-expanded="true"
-                aria-controls="HistoryComponent"
+                // type="button"
+                // data-bs-toggle="collapse"
+                // data-bs-target="#HistoryComponent"
+                // aria-expanded="true"
+                // aria-controls="HistoryComponent"
               >
                 History
               </button>
             </h2>
             <div
-              id="HistoryComponent"
-              className={AccordionCollapse}
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
+            // id="HistoryComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
               <div className="accordion-body rounded-10px">
                 <div className={graphContainer}>

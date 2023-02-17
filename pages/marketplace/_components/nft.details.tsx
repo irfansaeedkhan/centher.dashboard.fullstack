@@ -20,20 +20,20 @@ export const NFTDetails = (props: NFTDetailsProps) => {
             <h2 className="accordion-header mb-0" id="headingOne">
               <button
                 className={AccordionButton}
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#detailsComponent"
-                aria-expanded="true"
-                aria-controls="detailsComponent"
+                // type="button"
+                // data-bs-toggle="collapse"
+                // data-bs-target="#detailsComponent"
+                // aria-expanded="true"
+                // aria-controls="detailsComponent"
               >
                 Details
               </button>
             </h2>
             <div
-              id="detailsComponent"
-              className={AccordionCollapse}
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
+            // id="detailsComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
               <div className="accordion-body p-6">
                 <div className={detailsList}>

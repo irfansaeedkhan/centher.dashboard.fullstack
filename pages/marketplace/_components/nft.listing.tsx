@@ -28,10 +28,10 @@ export const NFTListing = ({ data }: NFTListingProps) => {
               </button>
             </h2>
             <div
-              id="listingsComponent"
-              className={AccordionCollapse}
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
+            // id="listingsComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
               <div className="accordion-body p-6">
                 <div className={listingsList}>
