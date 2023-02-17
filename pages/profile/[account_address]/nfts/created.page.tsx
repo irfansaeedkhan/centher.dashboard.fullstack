@@ -24,7 +24,7 @@ const CreatedNFTS: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (account) {
-      fetchCreatedNFTs(account, 10, 10, true);
+      fetchCreatedNFTs(account, 0, 100, true);
     }
   }, [account, fetchCreatedNFTs]);
 
