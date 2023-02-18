@@ -1,10 +1,7 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 
-// App imports
-import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import {
   registeredCollections,
@@ -289,23 +286,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
     { name: "ProfileNFTStore" }
   )
 );
-
-const dummyOwnedNFTs: NFT[] = [
-  {
-    id: "4353fgdgdg",
-    collection: "0x134ertd4",
-    tokenId: 8790,
-    creator: "halik",
-    createTime: 1629200000000,
-    // ipfs: "https://ipfs.moralis.io:2053/ipfs/QmSxqutiHw4vTkL9aLAve3vFRCxVyydxZL5tWaaXnQFZtf/nether/YEUE2751.JPG",
-    // ipfs/QmasLg9shC2DmF4smP2uTxvGJNVg5v1hQw8zuVAVVYPjZt/nether/newcollection.json
-    ipfs: "ipfs://QmasLg9shC2DmF4smP2uTxvGJNVg5v1hQw8zuVAVVYPjZt/nether/newcollection.json",
-    saleState: "NON",
-    price: 0.1,
-    owner: "halik",
-    endTime: 1669200000000,
-  },
-];
 
 const isInList = (nft: any, collections: any[]) => {
   if (!collections) {
