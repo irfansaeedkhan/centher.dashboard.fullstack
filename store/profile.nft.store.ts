@@ -64,7 +64,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       loadingListedNFTs: "idle",
       loadingOwnedNFTs: "idle",
       loadingCreatedNFTs: "idle",
-
       updateListedOffset: () =>
         set((state) => ({
           listedOffset: state.listedNfts.length,
@@ -189,21 +188,34 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             throw new Error("Cannot get wallet NFTs.");
           }
 
+          const client = new ApolloClient({
+            uri: SUBGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+
+          const { data: _collections } = await client.query({
+            query: gql(registeredCollections),
+            variables: {},
+            fetchPolicy: "cache-first",
+          });
+
           if (result.result) {
-            _nfts = result.result.map((item: any) => {
-              return {
-                id: item.tokenHash,
-                collection: item.tokenAddress._value,
-                tokenId: item.tokenId,
-                creator: item.minter_address?._value,
-                createTime: item.blockNumberMinted,
-                ipfs: item.tokenUri,
-                saleState: "NON",
-                price: item.amount,
-                owner: item.ownerOf._value,
-                endTime: 0,
-              };
-            });
+            _nfts = result.result
+              .filter((e) => isInList(e, _collections?.collections))
+              .map((item: any) => {
+                return {
+                  id: item.tokenHash,
+                  collection: item.tokenAddress._value,
+                  tokenId: item.tokenId,
+                  creator: item.minter_address?._value,
+                  createTime: item.blockNumberMinted,
+                  ipfs: item.tokenUri,
+                  saleState: "NON",
+                  price: item.amount,
+                  owner: item.ownerOf._value,
+                  endTime: 0,
+                };
+              });
           }
 
           set((state) => {
@@ -294,3 +306,14 @@ const dummyOwnedNFTs: NFT[] = [
     endTime: 1669200000000,
   },
 ];
+
+const isInList = (nft: any, collections: any[]) => {
+  if (!collections) {
+    return false;
+  }
+
+  const tokenAddress = nft.tokenAddress._value;
+  return !!collections.find(
+    (e) => e.collection.toLowerCase() == tokenAddress.toLowerCase()
+  );
+};

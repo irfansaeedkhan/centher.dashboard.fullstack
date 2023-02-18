@@ -4,12 +4,14 @@ import { NFT } from "@/models/nft";
 import { NFTCardData } from "@/components/nft.card/nft.card.v2";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppError } from "@/utils/app-error";
+import { ZeroAddress } from "@/web3/constants/common";
 
 import { getNFTOwnerData } from "../get-nft-owner-data";
 
 export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
   try {
-    const nftOwnerDataPromise = getNFTOwnerData(nft.owner);
+    const user = nft.owner !== ZeroAddress ? nft.owner : nft.creator;
+    const nftOwnerDataPromise = getNFTOwnerData(user);
     const formattedUrl = formatIPFSUrl(nft.ipfs);
     const metadataPromise = axios.get(formattedUrl);
     const [nftOwnerData, metadata] = await Promise.all([
