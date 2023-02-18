@@ -5,7 +5,7 @@ import { LoadingState } from "@/models/common";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { getCollections } from "@/lib/get-collections";
-import { collectionQuery } from "@/subgraph/querys";
+import { collectionsQuery } from "@/subgraph/querys";
 
 export const useHotCollections = () => {
   const [state, setState] = useState<{
@@ -20,7 +20,7 @@ export const useHotCollections = () => {
     (async () => {
       try {
         const hotCollections = await getCollections({
-          query: collectionQuery,
+          query: collectionsQuery,
           limit: 15,
           skip: 0,
         });
