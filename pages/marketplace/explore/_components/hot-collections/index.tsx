@@ -17,7 +17,7 @@ export const HotCollections: React.FC = () => {
       <SectionTitle
         title={"Collections"}
         showViewAll={true}
-        href={AppRoutes.marketplace.all_collections}
+        href={AppRoutes.marketplace.collections}
       />
 
       <div

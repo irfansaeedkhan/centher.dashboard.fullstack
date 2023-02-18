@@ -36,7 +36,7 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
     <div className={nftCardWrapper}>
       <Link
         href={{
-          pathname: AppRoutes.marketplace.nft,
+          pathname: AppRoutes.marketplace.collection,
           query: {
             collection: data.collection,
           },

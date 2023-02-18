@@ -81,7 +81,7 @@ export const AppRoutes = {
     create_collection: "/marketplace/create-collection",
     explore: "/marketplace/explore",
     nfts: "/marketplace/nfts",
-    all_collections: "/marketplace/all-collections",
+    collections: "/marketplace/collections",
     collection: "/marketplace/[collection]",
   },
 } as const;

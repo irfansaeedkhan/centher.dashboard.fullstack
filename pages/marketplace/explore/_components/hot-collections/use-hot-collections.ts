@@ -3,8 +3,9 @@ import { toast } from "react-hot-toast";
 
 import { LoadingState } from "@/models/common";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
-import { getHotCollections } from "@/lib/get-hot-collections";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
+import { getCollections } from "@/lib/get-collections";
+import { collectionQuery } from "@/subgraph/querys";
 
 export const useHotCollections = () => {
   const [state, setState] = useState<{
@@ -18,7 +19,11 @@ export const useHotCollections = () => {
   useEffect(() => {
     (async () => {
       try {
-        const hotCollections = await getHotCollections();
+        const hotCollections = await getCollections({
+          query: collectionQuery,
+          limit: 15,
+          skip: 0,
+        });
         const hotCollectionsCardDataPromises = hotCollections.map((item) =>
           getCollectionCardData(item)
         );

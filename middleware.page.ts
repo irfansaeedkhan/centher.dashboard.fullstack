@@ -108,7 +108,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.create_collection,
   AppRoutes.marketplace.explore,
   AppRoutes.marketplace.nfts,
-  AppRoutes.marketplace.all_collections,
+  AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);

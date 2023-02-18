@@ -48,10 +48,10 @@ const Collection: NextPageWithLayout = () => {
     return "";
   }, [router.asPath]);
 
-  // Copy nft share url to clipboard
+  // Copy collection url to clipboard
   const copyShareUrl = async () => {
     await copyText(shareUrl);
-    toast.success("NFT link copied!");
+    toast.success("Collection link copied");
   };
 
   const {
@@ -194,19 +194,19 @@ const Collection: NextPageWithLayout = () => {
                       )}
                     >
                       <button onClick={copyShareUrl} className={menuButton}>
-                        <CopyIcon className={icon} /> Copy link
+                        <CopyIcon className={icon} /> Copy Link
                       </button>
 
                       <FacebookShareButton url={shareUrl} className="w-full">
                         <span className={menuButton}>
                           <FacebookCircleIcon className={icon} /> Share on
-                          facebook
+                          Facebook
                         </span>
                       </FacebookShareButton>
 
                       <TwitterShareButton url={shareUrl} className="w-full">
                         <span className={menuButton}>
-                          <TwitterSvg className={icon} /> Share on twitter
+                          <TwitterSvg className={icon} /> Share on Twitter
                         </span>
                       </TwitterShareButton>
                     </div>
