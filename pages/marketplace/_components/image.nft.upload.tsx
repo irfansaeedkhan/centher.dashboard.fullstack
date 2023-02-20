@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -13,6 +14,17 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   // upload image to preview
   const uploadFile = (e: any) => {
     const previewUrl = e.target.files[0];
+    var allowedExtensions = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/svg",
+    ];
+    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
+      toast.error("Invalid file type");
+      return;
+    }
+
     setAsset(previewUrl);
     setShowSecPreivew(true);
   };
@@ -46,7 +58,7 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
       ) : (
         <div className={uploadBox}>
           <div className={uploadBoxContent}>
-            <span className={formatName}>PNG, JPG, GIF</span>
+            <span className={formatName}>PNG, JPG, WEBP, SVG</span>
             <div className={uploadBtnContainer}>
               <label htmlFor="image-nft" className={chooseFileBtn}>
                 Choose File
@@ -56,7 +68,7 @@ const ImageNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
                 id="image-nft"
                 className={chooseFileBtn2}
                 onChange={uploadFile}
-                accept="image/png, image/jpeg, image/webp"
+                accept="image/png, image/jpeg, image/webp, image/svg"
               />
             </div>
           </div>

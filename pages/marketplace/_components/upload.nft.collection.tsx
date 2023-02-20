@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -27,13 +28,35 @@ export const UploadNFTCollection = ({
   );
 
   const uploadCoverFile = (e: any) => {
-    // const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setCover(e.target.files[0]);
+    const previewUrl = e.target.files[0];
+    var allowedExtensions = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/svg",
+      "image/gif",
+    ];
+    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
+      toast.error("Invalid file type");
+      return;
+    }
+    setCover(previewUrl);
     setShowCoverImage(true);
   };
   const uploadProfileFile = (e: any) => {
-    // const previewUrl = URL.createObjectURL(e.target.files[0]);
-    setProfile(e.target.files[0]);
+    const previewUrl = e.target.files[0];
+    var allowedExtensions = [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/svg",
+      "image/gif",
+    ];
+    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
+      toast.error("Invalid file type");
+      return;
+    }
+    setProfile(previewUrl);
     setShowProfileImage(true);
   };
 

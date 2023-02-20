@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -13,6 +14,12 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   // upload image to preview
   const uploadFile = (e: any) => {
     const previewUrl = e.target.files[0];
+    var allowedExtensions = ["image/gif"];
+    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
+      toast.error("Invalid file type");
+      return;
+    }
+
     setAsset(previewUrl);
     setShowSecPreivew(true);
   };
