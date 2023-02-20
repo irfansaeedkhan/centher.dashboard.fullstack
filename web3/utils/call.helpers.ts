@@ -229,7 +229,6 @@ export const callCreateCollection = async (
 export const callCreateNFT = async (
   library: Web3Provider,
   collection: string,
-  category: string,
   tokenUri: string,
   supply: number,
   isAuction: boolean,
@@ -241,7 +240,6 @@ export const callCreateNFT = async (
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.createItems(
       collection,
-      category,
       tokenUri,
       supply,
       isAuction,

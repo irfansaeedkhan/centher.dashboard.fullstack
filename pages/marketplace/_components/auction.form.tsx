@@ -12,7 +12,6 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { categories } from "@/models/nft";
 
 // form validations
 const schema = Joi.object({
@@ -24,19 +23,7 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  // NFTSymbol: Joi.string().required().max(50).label("NFT Symbol").messages({
-  //   "string.empty": `NFTSymbol Required`,
-  //   "any.required": `Required Field`,
-  // }),
-  NFTAmount: Joi.number()
-    .integer()
-    .greater(0)
-    .required()
-    .label("NFT Amount")
-    .messages({
-      "string.empty": `NFTAmount Required`,
-      "any.required": `Required Field`,
-    }),
+
   AuctionEndTime: Joi.date().required().label("Auction End Time").messages({
     "string.empty": `AuctionEndTime Required`,
     "any.required": `Required Field`,
@@ -49,10 +36,6 @@ const schema = Joi.object({
       "string.empty": `StartingNFTPrice Required`,
       "any.required": `Required Field`,
     }),
-  Category: Joi.string().required().max(150).label("Category").messages({
-    "string.empty": `Category Required`,
-    "any.required": `Required Field`,
-  }),
   Collection: Joi.string().required().max(150).label("Collection").messages({
     "string.empty": `Collection Required`,
     "any.required": `Required Field`,
@@ -67,7 +50,6 @@ interface AuctionFormFields {
   NFTAmount: number | null;
   AuctionEndTime: string;
   StartingNFTPrice: number | null;
-  Category: string;
   Collection: string;
 }
 interface AuctionFormProps {
@@ -96,11 +78,9 @@ const AuctionForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
-        // NFTSymbol: "",
-        NFTAmount: null,
+        NFTAmount: 1,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        Category: "",
         Collection: "",
       },
     });
@@ -149,25 +129,11 @@ const AuctionForm = ({
       setAuctionEndTimeErr(false);
     }
 
-    // let finalizedData = {
-    //   NFTName: data.NFTName,
-    //   Description: data.Description,
-    //   NFTSymbol: data.NFTSymbol,
-    //   NFTAmount: data.NFTAmount,
-    //   AuctionEndTime: data.AuctionEndTime,
-    //   StartingNFTPrice: data.StartingNFTPrice,
-    //   Category: data.Category,
-    //   Collection: data.Collection,
-    //   PropertiesList: propertyList,
-    // };
-    // console.log(finalizedData);
-
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
-      supply: data.NFTAmount,
+      supply: 1,
       collection: data.Collection,
-      category: data.Category,
       isAuction: true,
       price: data.StartingNFTPrice,
       period: Math.floor((data.AuctionEndTime - Date.now()) / 1000),
@@ -182,7 +148,6 @@ const AuctionForm = ({
       reset({
         NFTName: "",
         Description: "",
-        Category: "",
         NFTAmount: null,
         AuctionEndTime: "",
         StartingNFTPrice: null,
@@ -254,27 +219,6 @@ const AuctionForm = ({
             </p>
           )}
         </div> */}
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>
-            NFT Amount <span className="text-red-500">*</span>{" "}
-          </label>
-          <input
-            type="number"
-            id="NFTAmount"
-            maxLength={10}
-            autoComplete="off"
-            {...register("NFTAmount")}
-            placeholder="0"
-            className={
-              !formState.errors.NFTAmount ? inputField : inputFieldError
-            }
-          />
-          {formState.errors.NFTAmount && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.NFTAmount.message}
-            </p>
-          )}
-        </div>
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
@@ -332,29 +276,6 @@ const AuctionForm = ({
           </div>
           <span className={serviceFeeNumber}>0.0370 BNB</span>
         </div> */}
-      </div>
-      <div className={fieldWrapper}>
-        <label htmlFor="textarea" className={fieldTitle}>
-          Category <span className="text-red-500">*</span>{" "}
-        </label>
-        <select
-          id="Category"
-          {...register("Category")}
-          className={!formState.errors.Category ? inputField : inputFieldError}
-        >
-          {categories.slice(1, categories.length).map((item, key) => {
-            return (
-              <option value={item === "Select" ? "" : item} key={key}>
-                {item}
-              </option>
-            );
-          })}
-        </select>
-        {formState.errors.Category && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.Category.message}
-          </p>
-        )}
       </div>
       <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>

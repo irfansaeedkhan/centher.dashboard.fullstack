@@ -173,7 +173,6 @@ const CreateNFT: NextPageWithLayout = () => {
       const result = await callCreateNFT(
         library,
         castedNftData.collection,
-        castedNftData.category,
         "ipfs:/" + nftMetadataPath,
         castedNftData.supply,
         castedNftData.isAuction,
