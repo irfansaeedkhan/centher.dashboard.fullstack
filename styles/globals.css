@@ -936,3 +936,6 @@ input[type="radio"]:disabled + label:before {
 input[type="radio"]:disabled + label:after {
   background-color: #ddd;
 }
+.cropper-drag-box.cropper-modal {
+  background: #0d0d0d;
+}
