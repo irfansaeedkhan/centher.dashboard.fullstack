@@ -31,8 +31,12 @@ const ScriptTags = () => {
         />
         <meta property="og:url" content="https://app.centher.io/" />
         <meta property="og:site_name" content="Centher.io" />
-        <meta property="og:image" content="/images/centher.logo.bg.png" />
-        <meta property="og:image:width" content="420" />
+        <meta
+          property="og:image"
+          itemProp="image"
+          content="/images/centher.logo.bg.550.420.png"
+        />
+        <meta property="og:image:width" content="550" />
         <meta property="og:image:height" content="420" />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -41,10 +45,16 @@ const ScriptTags = () => {
           content="Centher.io is worlds best and reliable Web3 token and NFT Marketplace"
         />
         <meta name="twitter:title" content="Centher.io" />
-        <meta name="twitter:image" content="/images/centher.logo.bg.png" />
+        <meta
+          name="twitter:image"
+          content="/images/centher.logo.bg.550.420.png"
+        />
 
         {/* TODO: Shivam - Need google site verification content */}
-        <meta name="google-site-verification" content="Will-Provide-later" />
+        <meta
+          name="google-site-verification"
+          content="cmqFPwe-1bs7Dscw6QxvdWPAQ52MuaUV2RrfhE17oo8"
+        />
 
         <link
           rel="apple-touch-icon"
