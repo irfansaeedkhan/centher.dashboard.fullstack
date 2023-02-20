@@ -1,7 +1,7 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
-
+import { IoClose } from "react-icons/io5";
 interface ModalWrapperProps {
   children: React.ReactNode;
   title: string;
@@ -24,7 +24,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
               onClick={props.onClose}
               type="button"
             >
-              ×
+              <IoClose />
             </button>
           </div>
           {/* BodyWrapper */}
@@ -48,6 +48,7 @@ const modalWrapper = ctl(`
   backdrop-blur-lg
   overflow-x-hidden 
   focus:outline-none 
+  rounded-2xl
 `);
 
 const modalContent = ctl(`
@@ -60,10 +61,11 @@ const modalContent = ctl(`
   lg:w-164 
   md:w-140
   f2xl:w-164 
-  rounded-lg
-  bg-black-shade-3
+  'bg-black-shade-3'
   focus:outline-none 
   border-gray-shade-3
+  bg-black-shade-12
+  rounded-2xl
 `);
 
 const modalHeader = ctl(`
@@ -75,7 +77,7 @@ const modalHeader = ctl(`
 `);
 
 const modalHeaderTitle = ctl(
-  `text-white lg:!text-[34px] md:!text-2xl sm:!text-lg py-1`
+  `text-white fsm:text-2xl py-1 flex-grow text-center text-base font-semibold `
 );
 
 const modalHeaderButton = ctl(`
@@ -83,7 +85,7 @@ const modalHeaderButton = ctl(`
   py-1 
   ml-auto 
   border-0 
-  text-3xl 
+  text-2xl 
   text-white 
   opacity-100 
   float-right 
