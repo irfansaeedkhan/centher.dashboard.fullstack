@@ -264,7 +264,7 @@ const Collection: NextPageWithLayout = () => {
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
                 </div> */}
                   <div className="text-center">
-                    <h4 className={detailsCardTitle}>Total Volum</h4>
+                    <h4 className={detailsCardTitle}>Total Volume</h4>
                     <h5 className={detailsCardValue}>
                       $
                       {info?.tradingVolumn
