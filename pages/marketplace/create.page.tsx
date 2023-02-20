@@ -125,17 +125,30 @@ const CreateNFT: NextPageWithLayout = () => {
           </p>
         )}
         <div className={footerBtnContainer}>
-          <Button
-            title={txStatus ? "Go Back" : "Try Again"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-              setClearForm(true);
-            }}
-          />
+          {txStatus ? (
+            <Button
+              title={"Go Back"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(true);
+              }}
+            />
+          ) : (
+            <Button
+              title={"Try Again"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+              }}
+            />
+          )}
 
           {txStatus && (
             <Button
