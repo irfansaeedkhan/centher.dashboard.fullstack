@@ -139,7 +139,7 @@ export const NFTRightSideComponent = ({
             {user ? (
               <Link
                 href={{
-                  pathname: AppRoutes.profile.nfts,
+                  pathname: AppRoutes.profile.owned,
                   query: {
                     account_address: data?.creator,
                   },
@@ -170,7 +170,7 @@ export const NFTRightSideComponent = ({
             {nftOwner ? (
               <Link
                 href={{
-                  pathname: AppRoutes.profile.nfts,
+                  pathname: AppRoutes.profile.owned,
                   query: {
                     account_address: nftOwnerAddress,
                   },
