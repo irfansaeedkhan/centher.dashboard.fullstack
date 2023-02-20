@@ -42,6 +42,7 @@ export const FixedPriceNFTDescription = ({
   data,
 }: FixedPriceNFTDescriptionProps) => {
   const router = useRouter();
+
   const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -69,10 +70,10 @@ export const FixedPriceNFTDescription = ({
     }
   };
 
-  const setupEditListingItemPriceModal = (form: any) => {
+  const setupEditListingItemPriceModal = (bidPrice: number) => {
     try {
       modal.dismissModal();
-      modal.createModal(ModalType.editListing, form.bidPrice);
+      modal.createModal(ModalType.editListing, bidPrice);
     } catch (err: any) {
       toastError(err);
     }

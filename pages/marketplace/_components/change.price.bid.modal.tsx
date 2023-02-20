@@ -1,13 +1,10 @@
+import React, { useState } from "react";
+
 import { BNBIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
-import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
-import Joi from "joi";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import { bidForm } from "./fixed.price.nft.description";
+import { networkDecimals } from "@/web3/constants/common";
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -21,17 +18,8 @@ const ChangePriceBidModal = ({
   const [nftPrice, setNFTPrice] = useState<any>(
     formatEther2Number(data?.listInfo.price)
   );
-  const schema = Joi.object({
-    bidPrice: Joi.number().required().label("bidPrice").messages({
-      "string.empty": `bid Price Required`,
-      "any.required": `Required Field`,
-    }),
-  });
-  const { handleSubmit, register, setError, formState, reset } =
-    useForm<bidForm>({
-      mode: "onChange",
-      resolver: joiResolver(schema),
-    });
+  const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
+  const [nftPriceError, setNFTPriceError] = useState<any>("");
 
   return (
     <div className={modalBodyWrapper}>
@@ -50,29 +38,57 @@ const ChangePriceBidModal = ({
           <input
             type="text"
             id="bidPrice"
-            // value={nftPrice}
             autoComplete="off"
-            {...register("bidPrice")}
+            onChange={(e) => {
+              setNFTPriceError("");
+              const inputValue = e.target.value;
+              const numberValue = Number(inputValue);
+
+              const pattern = /^\d*\.?\d+$/; // Regular expression to match positive integers and positive floating numbers
+              if (pattern.test(inputValue)) {
+                if (numberValue <= 0) {
+                  setNFTPriceError("NFT Price must be greater than 0");
+                  setChangeNFTPrice(null);
+                }
+                if (numberValue < networkDecimals) {
+                  setNFTPriceError(
+                    "NFT Price must be greater than 0.000000000000000001"
+                  );
+                  setChangeNFTPrice(null);
+                }
+                if (numberValue === nftPrice) {
+                  setNFTPriceError(
+                    "NFT Price must be different from current price"
+                  );
+                  setChangeNFTPrice(null);
+                } else {
+                  setChangeNFTPrice(numberValue);
+                }
+              } else if (e.target.value == "") {
+                setNFTPriceError("Field Required");
+                setChangeNFTPrice(null);
+              } else {
+                setNFTPriceError("NFT Price must be a positive number");
+                setChangeNFTPrice(null);
+              }
+            }}
             placeholder={nftPrice}
             className={
               "h-full w-full !border-0 bg-transparent text-white !ring-0"
             }
-            // onChange={(e) => setNFTPrice(e.target.value)}
           />
           <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6>
         </div>
-        {formState.errors.bidPrice && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.bidPrice.message}
-          </p>
+        {nftPriceError !== "" && (
+          <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
         )}
       </div>
 
       <Button
         title={"Next"}
-        variant={formState.isValid ? "v1" : "v2"}
-        disabled={formState.isValid ? false : true}
-        onClick={handleSubmit(setupEditListingItemPriceModal)}
+        variant={changeNFTPrice === null || nftPriceError ? "v2" : "v1"}
+        disabled={changeNFTPrice === null || nftPriceError ? true : false}
+        onClick={() => setupEditListingItemPriceModal(changeNFTPrice)}
         className="mt-2 py-4"
       />
     </div>
@@ -82,19 +98,19 @@ const ChangePriceBidModal = ({
 export default ChangePriceBidModal;
 
 // styling
-const modalBodyWrapper = ctl(`
+const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
+`;
 
-const errMessage = ctl(`
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
+`;
+const fieldTitle = `
   text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
+`;
+const inputFieldModal = `
   w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
+`;

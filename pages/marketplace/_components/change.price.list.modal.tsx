@@ -1,31 +1,16 @@
+import React, { useState } from "react";
+
 import { BNBIcon } from "@/assets/svgs";
 import Button from "@/components/button";
-import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
-import Joi from "joi";
-import React from "react";
-import { useForm } from "react-hook-form";
+import { networkDecimals } from "@/web3/constants/common";
 
 interface Props {
   handleListNFT: any;
 }
 
-interface listingFormInterface {
-  bidPrice: number;
-}
-
 const ChangePriceListModal: React.FC<Props> = ({ handleListNFT }) => {
-  const ListingModalschema = Joi.object({
-    bidPrice: Joi.number().required().label("bidPrice").messages({
-      "string.empty": `bid Price Required`,
-      "any.required": `Required Field`,
-    }),
-  });
-
-  const listingForm = useForm<listingFormInterface>({
-    mode: "onChange",
-    resolver: joiResolver(ListingModalschema),
-  });
+  const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
+  const [nftPriceError, setNFTPriceError] = useState<any>("");
 
   return (
     <form className={modalBodyWrapper}>
@@ -42,31 +27,52 @@ const ChangePriceListModal: React.FC<Props> = ({ handleListNFT }) => {
           className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
         >
           <input
-            type="number"
-            // value={listingPrice}
-            // onChange={(e: any) => {setListingPrice(e.target.value)}}
+            type="text"
             id="bidPrice"
             autoComplete="off"
-            {...listingForm.register("bidPrice")}
             placeholder="0.00"
             className={
               "h-full w-full !border-0 bg-transparent text-white !ring-0"
             }
+            onChange={(e) => {
+              setNFTPriceError("");
+              const inputValue = e.target.value;
+              const numberValue = Number(inputValue);
+
+              const pattern = /^\d*\.?\d+$/; // Regular expression to match positive integers and positive floating numbers
+              if (pattern.test(inputValue)) {
+                if (numberValue <= 0) {
+                  setNFTPriceError("NFT Price must be greater than 0");
+                  setChangeNFTPrice(null);
+                }
+                if (numberValue < networkDecimals) {
+                  setNFTPriceError(
+                    "NFT Price must be greater than 0.000000000000000001"
+                  );
+                  setChangeNFTPrice(null);
+                }
+                setChangeNFTPrice(numberValue);
+              } else if (e.target.value == "") {
+                setNFTPriceError("Field Required");
+                setChangeNFTPrice(null);
+              } else {
+                setNFTPriceError("NFT Price must be a positive number");
+                setChangeNFTPrice(null);
+              }
+            }}
           />
           <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6>
         </div>
-        {listingForm.formState.errors?.bidPrice && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {listingForm.formState.errors.bidPrice.message}
-          </p>
+        {nftPriceError !== "" && (
+          <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
         )}
       </div>
 
       <Button
         title={"Next"}
-        variant={listingForm.formState.isValid ? "v1" : "v2"}
-        disabled={listingForm.formState.isValid ? false : true}
-        onClick={listingForm.handleSubmit(handleListNFT)}
+        variant={changeNFTPrice === null || nftPriceError ? "v2" : "v1"}
+        disabled={changeNFTPrice === null || nftPriceError ? true : false}
+        onClick={() => handleListNFT(changeNFTPrice)}
         className="mt-2 py-4"
       />
     </form>
@@ -76,19 +82,19 @@ const ChangePriceListModal: React.FC<Props> = ({ handleListNFT }) => {
 export default ChangePriceListModal;
 
 // styling
-const modalBodyWrapper = ctl(`
+const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
+`;
 
-const errMessage = ctl(`
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
+`;
+const fieldTitle = `
   text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
+`;
+const inputFieldModal = `
   w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
+`;

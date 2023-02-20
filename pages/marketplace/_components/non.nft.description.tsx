@@ -127,9 +127,9 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   //   saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
   // };
 
-  const handleListNFT = async (data: any) => {
+  const handleListNFT = async (bidPrice: any) => {
     setModal(false);
-    saleWithListing(data.bidPrice);
+    saleWithListing(bidPrice);
   };
   // const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
   //   setModalTitle("Cancel listing");

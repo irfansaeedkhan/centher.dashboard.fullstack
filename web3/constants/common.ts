@@ -40,6 +40,8 @@ export const FEE = {
 
 export const percent = [6, 4, 2, 2, 2, 2];
 
+export const networkDecimals = 1e-18;
+
 export const SUBGRAPH_URL =
   process.env.NEXT_PUBLIC_APP_ENV === "production"
     ? "https://api.thegraph.com/subgraphs/name/seniorblockchaindev/centher"

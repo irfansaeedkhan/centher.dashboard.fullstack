@@ -184,7 +184,7 @@ export const FixedPriceNFTBuyerDescription = ({
       <div className="buttonContainer flex items-center">
         {library && (
           <Button
-            title={"Buy NFT"}
+            title={"Listed For Sale"}
             variant="v1"
             className="py-4"
             onClick={async () => {
