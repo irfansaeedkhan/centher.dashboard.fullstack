@@ -44,10 +44,11 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
           </Link>
         )}
       <Link
-        href={`/profile/${account_address}/nfts/owned`}
+        href={`/profile/${account_address}/nfts/created`}
         className={clsx(
           router.pathname === AppRoutes.profile.owned ||
             router.pathname === AppRoutes.profile.created ||
+            router.pathname === AppRoutes.profile.listed ||
             router.pathname === AppRoutes.profile.collection
             ? "border-b-2 font-medium text-white"
             : "text-gray-shade-7",

@@ -749,7 +749,7 @@ export const adminUnPauseRegistration = async (library: Web3Provider) => {
   }
 };
 
-function normalizeValue(x: any): string {
+export function normalizeValue(x: any): string {
   if (Math.abs(x) < 1.0) {
     let e = parseInt(x.toString().split("e-")[1]);
     if (e) {

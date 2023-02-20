@@ -17,6 +17,7 @@ export const AppRoutes = {
     archived_posts: "/profile/[account_address]/archived-posts",
     nfts: "/profile/[account_address]/nfts",
     owned: "/profile/[account_address]/nfts/owned",
+    listed: "/profile/[account_address]/nfts/listed",
     created: "/profile/[account_address]/nfts/created",
     collection: "/profile/[account_address]/nfts/collection",
 

@@ -14,6 +14,7 @@ import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import {
   callCancelItemForSale,
   callEditItemForSale,
+  normalizeValue,
 } from "@/web3/utils/call.helpers";
 import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 
@@ -275,11 +276,15 @@ export const FixedPriceNFTDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex items-center  gap-3">
-          <BNBIcon />
-          <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
-          </h5>
+        <div className="flex flex-col items-start gap-3 fsm:flex-row  fsm:items-center">
+          <div className="flex items-center gap-2">
+            <BNBIcon />
+            <h5 className={BnBNum}>
+              {`${normalizeValue(
+                formatEther2Number(data?.listInfo.price)
+              )} BNB`}
+            </h5>
+          </div>
           <h6 className={greyTxt}>
             {" "}
             =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
@@ -336,7 +341,7 @@ w-full flex flex-col gap-5
 `);
 
 const greyBoxContainer = ctl(`
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
+bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6 
 `);
 const greyTxt = ctl(`
 text-14px font-normal text-gray-shade-7

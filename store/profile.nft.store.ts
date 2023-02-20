@@ -8,6 +8,7 @@ import {
   collectionsByAccount,
   listedNFTsByAccount,
   createdNFTsByAccount,
+  listedUserNFTsByAccount,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
@@ -19,6 +20,7 @@ export interface ProfileNFTStore {
   collections: Collection[] | undefined;
   ownedNfts: NFT[];
   listedNfts: NFT[];
+  listedUserNfts: NFT[];
   createdNfts: NFT[];
   fetchCollections: (account: string) => Promise<void>;
   fetchOwnedNFTs: (account: string) => Promise<void>;
@@ -34,16 +36,25 @@ export interface ProfileNFTStore {
     limit?: number,
     reload?: boolean
   ) => Promise<void>;
+  fetchListedUserNFTs: (
+    account: string,
+    offset?: number,
+    limit?: number,
+    reload?: boolean
+  ) => Promise<void>;
   ownedOffset: number;
   listedOffset: number;
+  listedUserOffset: number;
   createdOffset: number;
   updateOwnedOffset: () => void;
   updateListedOffset: () => void;
+  updateListedUserOffset: () => void;
   updateCreatedOffset: () => void;
   limit: number;
   loadingCollections: LoadingState;
   loadingOwnedNFTs: LoadingState;
   loadingListedNFTs: LoadingState;
+  loadingListedUserNFTs: LoadingState;
   loadingCreatedNFTs: LoadingState;
 }
 
@@ -53,16 +64,25 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       collections: [],
       ownedNfts: [],
       listedNfts: [],
+      listedUserNfts: [],
       createdNfts: [],
       listedOffset: 0,
+      listedUserOffset: 0,
       ownedOffset: 0,
       createdOffset: 0,
       limit: 20,
       loadingCollections: "idle",
       loadingListedNFTs: "idle",
+      loadingListedUserNFTs: "idle",
       loadingOwnedNFTs: "idle",
       loadingCreatedNFTs: "idle",
+
       updateListedOffset: () =>
+        set((state) => ({
+          listedOffset: state.listedNfts.length,
+        })),
+
+      updateListedUserOffset: () =>
         set((state) => ({
           listedOffset: state.listedNfts.length,
         })),
@@ -169,6 +189,55 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
+      fetchListedUserNFTs: async (account, offset, limit, reload) => {
+        try {
+          set({ loadingListedUserNFTs: "loading" });
+          const client = new ApolloClient({
+            uri: SUBGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _nfts: NFT[] = [];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
+            query: gql(listedUserNFTsByAccount),
+            variables: {
+              first: limit,
+              skip: offset,
+              owner: account,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result) {
+            _nfts = result.nfts.map((item: any) => {
+              let _endTime = 0;
+              if (item.saleState === "Auction") {
+                _endTime = item.auctionInfo.endTime;
+              }
+
+              return {
+                ...item,
+                endTime: _endTime,
+              };
+            });
+          }
+
+          set((state) => {
+            return {
+              listedUserNfts: _nfts,
+              loadingListedUserNFTs: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingListedUserNFTs: "failed" });
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
       fetchOwnedNFTs: async (account) => {
         try {
           set({ loadingOwnedNFTs: "loading" });
@@ -233,6 +302,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             console.error(error);
         }
       },
+
       fetchCreatedNFTs: async (account, offset, limit, reload) => {
         try {
           set({ loadingCreatedNFTs: "loading" });

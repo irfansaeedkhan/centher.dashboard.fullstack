@@ -17,6 +17,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { readFileAsync } from "@/utils/file.reader.util";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
@@ -51,7 +52,7 @@ const CreateNFT: NextPageWithLayout = () => {
         <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
-          {nftData?.price} BNB{" "}
+          {normalizeValue(nftData?.price)} BNB{" "}
           <span className="text-gray-shade-2 ">
             {" "}
             =${Number((nftData?.price * bnbPrice).toFixed(5))}
@@ -160,7 +161,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
-                router.push(`/profile/${account}/nfts/owned`);
+                router.push(`/profile/${account}/nfts/created`);
               }}
             />
           )}
