@@ -13,6 +13,7 @@ import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
+import { getNativeCollectionAddress } from "@/web3/utils/address.helpers";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
@@ -185,6 +186,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             throw new Error("Cannot get wallet NFTs.");
           }
 
+          const platformNativeCollection = getNativeCollectionAddress();
           const client = new ApolloClient({
             uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
@@ -197,8 +199,12 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           });
 
           if (result.result) {
+            const colctns = _collections?.collections.map(
+              (e: any) => e.collection
+            );
+            colctns.push(platformNativeCollection);
             _nfts = result.result
-              .filter((e) => isInList(e, _collections?.collections))
+              .filter((e) => isInList(e, colctns))
               .map((item: any) => {
                 return {
                   id: item.tokenHash,
@@ -294,6 +300,6 @@ const isInList = (nft: any, collections: any[]) => {
 
   const tokenAddress = nft.tokenAddress._value;
   return !!collections.find(
-    (e) => e.collection.toLowerCase() == tokenAddress.toLowerCase()
+    (e) => e.toLowerCase() == tokenAddress.toLowerCase()
   );
 };
