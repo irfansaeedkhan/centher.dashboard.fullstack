@@ -187,7 +187,7 @@ export const NonNFTBuyerDescription = ({
       </div>
       <div className="buttonContainer flex items-center">
         <Button
-          title={"Listed For Sale"}
+          title={"Buy Now"}
           variant={data?.saleState === "NON" ? "v2" : "v1"}
           className="py-4"
           disabled={data?.saleState === "NON"}

@@ -184,7 +184,7 @@ export const FixedPriceNFTBuyerDescription = ({
       <div className="buttonContainer flex items-center">
         {library && (
           <Button
-            title={"Listed For Sale"}
+            title={"Buy Now"}
             variant="v1"
             className="py-4"
             onClick={async () => {

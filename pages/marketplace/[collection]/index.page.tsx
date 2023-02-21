@@ -294,7 +294,7 @@ const Collection: NextPageWithLayout = () => {
                 }}
               />
               <Button
-                title={"Buy now"}
+                title={"Listed For Sale"}
                 variant={filter === "List" ? "v1" : "v2"}
                 className="py-4"
                 onClick={() => {
