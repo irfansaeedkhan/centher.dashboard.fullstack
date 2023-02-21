@@ -90,6 +90,11 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.index,
   AppRoutes.settings.profile,
   AppRoutes.settings.social_links,
+  AppRoutes.profile.nfts,
+  AppRoutes.profile.owned,
+  AppRoutes.profile.listed,
+  AppRoutes.profile.created,
+  AppRoutes.profile.collection,
 
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
@@ -97,11 +102,6 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.notifications,
 
   AppRoutes.referral.network_genealogy,
-
-  // TEST
-  AppRoutes.profile.collection,
-  AppRoutes.profile.purchased,
-  AppRoutes.profile.nfts,
 
   AppRoutes.marketplace.nft,
   AppRoutes.marketplace.create_nft,
