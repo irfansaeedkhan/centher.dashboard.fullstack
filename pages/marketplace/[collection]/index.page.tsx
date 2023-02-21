@@ -334,11 +334,6 @@ const Collection: NextPageWithLayout = () => {
                 <NftsSkeleton />
                 <NftsSkeleton />
                 <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
               </div>
             )}
 

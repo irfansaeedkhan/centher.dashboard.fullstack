@@ -55,7 +55,11 @@ export const TopCreators = () => {
           ) : loading === "loading" || loading === "idle" ? (
             <>
               {Array.from({ length: 5 }).map((_, index) => {
-                return <TopCreatorsSkeleton key={index} />;
+                return (
+                  <div className="px-10" key={index}>
+                    <TopCreatorsSkeleton />
+                  </div>
+                );
               })}
             </>
           ) : null}
