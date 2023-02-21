@@ -15,6 +15,7 @@ export const AppRoutes = {
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
+
     nfts: "/profile/[account_address]/nfts",
     owned: "/profile/[account_address]/nfts/owned",
     listed: "/profile/[account_address]/nfts/listed",
