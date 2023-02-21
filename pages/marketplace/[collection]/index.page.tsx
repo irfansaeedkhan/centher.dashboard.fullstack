@@ -241,8 +241,9 @@ const Collection: NextPageWithLayout = () => {
                         },
                       }}
                       className="text-14px text-ellipsis font-semibold text-gray-shade-18 line-clamp-1 hover:text-brand-primary"
+                      title={user?.display_name}
                     >
-                      {sliceDisplayName(user && user?.display_name)}
+                      {user && sliceDisplayName(user?.display_name)}
                     </Link>
                   </div>
                 </div>

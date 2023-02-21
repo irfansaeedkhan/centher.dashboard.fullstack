@@ -79,8 +79,9 @@ export const PostHeader: React.FC<Props> = ({
               query: { account_address: postUser.account_address },
             }}
             className="text-ellipsis text-sm font-semibold text-white line-clamp-1 hover:text-brand-primary"
+            title={postUser.display_name}
           >
-            {sliceDisplayName(postUser && postUser.display_name)}
+            {postUser && sliceDisplayName(postUser.display_name)}
           </Link>
 
           {/* Time */}
@@ -112,8 +113,11 @@ export const PostHeader: React.FC<Props> = ({
               <span className="mr-1 inline-block text-xs font-medium text-gray-shade-7">
                 Replying to
               </span>
-              <span className="group-hover:text-brand-primary">
-                {sliceDisplayName(post && post?.parent_post?.user.display_name)}
+              <span
+                className="group-hover:text-brand-primary"
+                title={post?.parent_post?.user.display_name}
+              >
+                {post && sliceDisplayName(post?.parent_post?.user.display_name)}
               </span>
             </Link>
           </>

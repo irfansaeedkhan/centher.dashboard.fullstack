@@ -42,7 +42,7 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification && notification.by.display_name)}{" "}
+        {sliceDisplayName(notification.by.display_name)}{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -58,8 +58,7 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification && notification.by.display_name)} started
-        following you.
+        {sliceDisplayName(notification.by.display_name)} started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -71,8 +70,8 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification && notification.by.display_name)} has
-        joined your network.
+        {sliceDisplayName(notification.by.display_name)} has joined your
+        network.
       </Link>
     );
   } else if (notification.type === "centher_purchase_ntr") {
@@ -86,7 +85,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          {sliceDisplayName(notification && notification.by.display_name)}
+          {sliceDisplayName(notification.by.display_name)}
         </>
       </Link>
     );
@@ -101,16 +100,12 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          {sliceDisplayName(notification && notification.by.display_name)}
+          {sliceDisplayName(notification.by.display_name)}
         </>
       </Link>
     );
   }
 
-  /**
-   * {notification.amount} BUSD network rewards from{" "}
-        {sliceDisplayName(notification && notification.by.display_name)}
-   */
   return (
     <div
       ref={ref}

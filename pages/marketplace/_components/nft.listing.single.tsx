@@ -55,7 +55,9 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
               >
                 {" "}
                 {buyer?.display_name ? (
-                  <span>{sliceDisplayName(buyer && buyer?.display_name)}</span>
+                  <span title={buyer.display_name}>
+                    {sliceDisplayName(buyer.display_name)}
+                  </span>
                 ) : (
                   <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>
                 )}
@@ -70,8 +72,8 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 }}
               >
                 {seller?.display_name ? (
-                  <span>
-                    {sliceDisplayName(seller && seller?.display_name)}
+                  <span title={seller.display_name}>
+                    {sliceDisplayName(seller.display_name)}
                   </span>
                 ) : (
                   <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>

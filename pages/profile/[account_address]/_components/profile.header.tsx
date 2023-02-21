@@ -386,8 +386,11 @@ const ProfileHeader: React.FC<Props> = ({
               <h5
                 className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
-                <span className="text-ellipsis text-center text-base font-semibold text-white line-clamp-1">
-                  {sliceDisplayName(user && user.display_name)}
+                <span
+                  className="text-ellipsis text-center text-base font-semibold text-white line-clamp-1"
+                  title={user.display_name}
+                >
+                  {sliceDisplayName(user.display_name)}
                 </span>
                 {!!verificationTick && (
                   <span className="verifiedIcon ml-0.5 h-[22px] w-[22px] fsm:ml-1">

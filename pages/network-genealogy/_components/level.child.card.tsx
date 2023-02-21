@@ -4,8 +4,6 @@ import React, { useState } from "react";
 
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
-import useUser from "@/hooks/use.user";
-import { formatAddress } from "@/utils/format.address";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
@@ -47,8 +45,11 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
                 "overflow-hidden text-ellipsis whitespace-nowrap  text-white"
               }
             >
-              <h5 className="text-12px dark flex-shrink-0 font-medium text-white">
-                {sliceDisplayName(user && user?.display_name)}
+              <h5
+                className="text-12px dark flex-shrink-0 font-medium text-white"
+                title={user.display_name}
+              >
+                {sliceDisplayName(user.display_name)}
               </h5>
             </Link>
           ) : (

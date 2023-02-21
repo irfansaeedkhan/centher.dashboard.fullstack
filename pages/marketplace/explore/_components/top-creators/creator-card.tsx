@@ -30,6 +30,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
           },
         }}
         className="text-sm font-medium text-white  hover:text-brand-primary"
+        title={data.display_name}
       >
         {sliceDisplayName(data.display_name)}
       </Link>

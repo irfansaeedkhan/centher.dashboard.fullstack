@@ -10,9 +10,8 @@ import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
-import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import Image from "next/image";
 import { User } from "@/models/user";
+
 import SearchPopupResult from "./search.popup.result";
 
 interface Props {

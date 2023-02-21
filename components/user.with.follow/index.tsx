@@ -63,8 +63,11 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               title={_result.display_name}
               className="flex items-center"
             >
-              <span className="text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary fsm:text-base fsm:font-semibold">
-                {sliceDisplayName(_result && _result.display_name)}
+              <span
+                className="text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary fsm:text-base fsm:font-semibold"
+                title={_result.display_name}
+              >
+                {_result && sliceDisplayName(_result.display_name)}
               </span>
               {!!verificationTick && (
                 <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">

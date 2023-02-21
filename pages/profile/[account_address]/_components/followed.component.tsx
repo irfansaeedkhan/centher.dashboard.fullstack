@@ -54,8 +54,9 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
                 }}
                 key={user._id}
                 className="hover:text-brand-primary"
+                title={user.display_name}
               >
-                {sliceDisplayName(user && user.display_name)}
+                {sliceDisplayName(user.display_name)}
                 {index !== mutualFollowersData.users.length - 1 && ", "}
               </Link>
             ))}

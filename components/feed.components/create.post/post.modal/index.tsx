@@ -61,8 +61,9 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             />
             <h5
               className={`text-14px text-ellipsis font-semibold text-white line-clamp-1`}
+              title={user.display_name}
             >
-              {sliceDisplayName(user && user.display_name)}
+              {user && sliceDisplayName(user.display_name)}
             </h5>
           </div>
 

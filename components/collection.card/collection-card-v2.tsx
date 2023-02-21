@@ -66,12 +66,14 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
               });
             }}
             className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
+            title={data.creator.display_name}
           >
             {sliceDisplayName(data.creator.display_name)}
           </span>
         ) : (
           <span
             className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
+            title={data.creator.display_name}
           >
             {sliceDisplayName(data.creator.display_name)}
           </span>

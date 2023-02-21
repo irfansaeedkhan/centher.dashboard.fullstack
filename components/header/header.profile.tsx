@@ -79,8 +79,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <div className={`space-y-1`}>
           <div
             className={`text-ellipsis text-sm font-semibold text-white line-clamp-1`}
+            title={loggedInUser?.display_name}
           >
-            {sliceDisplayName(loggedInUser && loggedInUser?.display_name)}
+            {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
           </div>
           <a
             href={

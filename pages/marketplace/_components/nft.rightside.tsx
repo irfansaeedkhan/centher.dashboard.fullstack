@@ -145,8 +145,9 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={nameBoxZValue}
+                title={user.display_name}
               >
-                {sliceDisplayName(user && user?.display_name)}
+                {sliceDisplayName(user.display_name)}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
@@ -176,8 +177,9 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={nameBoxZValue}
+                title={nftOwner.display_name}
               >
-                {sliceDisplayName(nftOwner && nftOwner?.display_name)}
+                {sliceDisplayName(nftOwner.display_name)}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>

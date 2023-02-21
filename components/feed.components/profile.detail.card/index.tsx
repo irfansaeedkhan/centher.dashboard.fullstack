@@ -62,8 +62,11 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           title={user.display_name}
           className={`flex items-center justify-center`}
         >
-          <span className="text-ellipsis text-sm font-semibold text-white line-clamp-1">
-            {sliceDisplayName(user && user.display_name)}
+          <span
+            className="text-ellipsis text-sm font-semibold text-white line-clamp-1"
+            title={user.display_name}
+          >
+            {user && sliceDisplayName(user.display_name)}
           </span>
           {!!verificationTick && (
             <span className="verifiedIcon ml-1 h-5 w-5">

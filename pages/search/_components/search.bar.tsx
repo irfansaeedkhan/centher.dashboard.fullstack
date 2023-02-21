@@ -127,7 +127,9 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
         href={`/profile/${item.account_address}`}
         className="flex items-center text-sm font-medium text-white hover:text-brand-primary"
       >
-        <span>{sliceDisplayName(item.display_name)}</span>
+        <span title={item.display_name}>
+          {sliceDisplayName(item.display_name)}
+        </span>
         {!!verificationTick && (
           <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
             <Image
