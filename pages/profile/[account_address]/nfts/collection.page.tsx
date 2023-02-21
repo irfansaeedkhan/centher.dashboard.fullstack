@@ -53,7 +53,6 @@ const CollectionNFTS: NextPageWithLayout = () => {
         </div>
       )}
       {loadingCollections === "loaded" &&
-        loadingCollections === "loaded" &&
         collections &&
         collections.length === 0 && (
           <>
