@@ -231,7 +231,7 @@ const Collection: NextPageWithLayout = () => {
               <div className={topDetais}>
                 <div>
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center gap-2">
                     <span className="text-white">Created by</span>
                     <Link
                       href={{
@@ -274,7 +274,7 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className={textContent}>
+              <div className={`mt-6 mb-4`}>
                 <p className={profileDescription}>{metadata?.description}</p>
               </div>
             </div>
