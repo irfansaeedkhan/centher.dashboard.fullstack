@@ -20,10 +20,10 @@ interface NFTLeftSideComponentProps {
 
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
   return (
-    <div className={`w-full max-w-[508px] flex flex-col gap-6`}>
+    <div className={`flex w-full max-w-[508px] flex-col gap-6`}>
       <div
         className={clsx(
-          `bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full`,
+          `relative w-full rounded-2xl border border-gray-shade-3 bg-black-shade-9`,
           props.image?.includes("mp3") ? `` : `pb-[100%]`
         )}
       >
@@ -33,7 +33,7 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
               <AudioPlayer src={props.image} />
             ) : (
               <Image
-                className={`w-full h-full absolute rounded-2xl object-contain`}
+                className={`absolute h-full w-full rounded-2xl object-contain`}
                 src={props.image ? props.image : ""}
                 alt="image"
                 height={270}

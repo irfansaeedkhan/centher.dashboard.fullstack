@@ -77,7 +77,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       >
         <div>
           {user && (
-            <div className={`flex gap-2 items-center my-4 pl-6 xl:hidden`}>
+            <div className={`my-4 flex items-center gap-2 pl-6 xl:hidden`}>
               <CreateNFT />
               <Link
                 href={AppRoutes.marketplace.create_nft}
