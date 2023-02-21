@@ -38,10 +38,8 @@ import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import { AppRoutes } from "@/constants/app.routes";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
-// import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
@@ -100,22 +98,6 @@ const ProfileHeader: React.FC<Props> = ({
         user.account_address.toLowerCase()
     );
   }, [user, loggedInUser]);
-
-  const currentPageRoute = useMemo(
-    () => ({
-      isProfilePage:
-        router.pathname === AppRoutes.profile.account_address ||
-        router.pathname === AppRoutes.profile.following ||
-        router.pathname === AppRoutes.profile.nfts ||
-        router.pathname === AppRoutes.profile.followers ||
-        router.pathname === AppRoutes.profile.replies,
-      isNFTProfilePage:
-        router.pathname === AppRoutes.profile.nfts ||
-        router.pathname === AppRoutes.profile.purchased ||
-        router.pathname === AppRoutes.profile.collection,
-    }),
-    [router.pathname]
-  );
 
   // Set to initial cover image state
   const setInitialCoverImage = useCallback(() => {

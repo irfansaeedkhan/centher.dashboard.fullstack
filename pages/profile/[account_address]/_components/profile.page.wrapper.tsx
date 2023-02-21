@@ -12,8 +12,6 @@ import { MutualFollowersData } from "@/models/user";
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
 import { UserNotFound } from "./user.not.found";
-// import { AppRoutes } from "@/constants/app.routes";
-// import { ProfileTabs } from "./profile.tabs";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -56,8 +54,6 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
   return (
     <>
       <div className="mx-auto w-full max-w-[1136px]">
-        {/* <ProfileTabs /> */}
-
         <div
           className={clsx(
             `grid grid-cols-[1fr_minmax(0,544px)_1fr] grid-rows-[auto_1fr] justify-center gap-4 flg:grid-cols-[1fr_minmax(0,272px)_minmax(0,544px)_1fr] flg:gap-6 f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)]`
