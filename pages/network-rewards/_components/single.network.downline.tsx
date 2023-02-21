@@ -1,3 +1,4 @@
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import React from "react";
 
 const SingleNetworkDownline = ({ data }: any) => {
@@ -49,7 +50,7 @@ const SingleNetworkDownline = ({ data }: any) => {
           <p>People</p>
         </div>
         <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
-          <p>{data.generatedBNB}</p>
+          <p>{`${normalizeValue(Number(data.generatedBNB))}`}</p>
           <p>BNB</p>
         </div>
         <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">

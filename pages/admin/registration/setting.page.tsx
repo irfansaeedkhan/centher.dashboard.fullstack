@@ -10,6 +10,7 @@ import {
   adminChangeRegistrationFees,
   adminPauseRegistration,
   adminUnPauseRegistration,
+  normalizeValue,
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
@@ -101,7 +102,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
               </div>
               <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
-                  {registrationDetail.registrationFees.feeWithReferrer} (BNB)
+                  {`${normalizeValue(
+                    registrationDetail.registrationFees.feeWithReferrer
+                  )} (BNB)`}
                 </p>
               </div>
             </div>
@@ -111,7 +114,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
               </div>
               <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
-                  {registrationDetail.registrationFees.feeWithoutReferrer} (BNB)
+                  {`${normalizeValue(
+                    registrationDetail.registrationFees.feeWithoutReferrer
+                  )} (BNB)`}
                 </p>
               </div>
             </div>

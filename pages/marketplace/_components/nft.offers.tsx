@@ -12,6 +12,7 @@ import {
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { AppRoutes } from "@/constants/app.routes";
 import clsx from "clsx";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 
 interface NFTOffersProps {
   data: IBid[];
@@ -76,7 +77,9 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                           return (
                             <tr className={tbodyTR} key={index}>
                               <td className={`${td} !text-gray-shade-7`}>
-                                {formatEther2Number(item.price)} BNB
+                                {`${normalizeValue(
+                                  formatEther2Number(item.price)
+                                )} BNB`}
                               </td>
                               <td className={td}>
                                 ${formatBNB2USD(item.price, bnbPrice)}

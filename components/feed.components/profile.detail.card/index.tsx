@@ -28,7 +28,10 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       )}
     >
       <div
-        className={`absolute top-0 left-0 h-[84px] w-full bg-[url('/images/profile-header-cover.jpg')] bg-cover bg-center bg-no-repeat`}
+        className={`absolute top-0 left-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
+        style={{
+          backgroundImage: `url(${user?.cover_image.path})`,
+        }}
       ></div>
 
       <div className={`relative mx-auto h-[60px] !w-[60px]`}>

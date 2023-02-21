@@ -8,7 +8,7 @@ import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { callBuyListedItem } from "@/web3/utils/call.helpers";
+import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import toast from "react-hot-toast";
@@ -171,7 +171,7 @@ export const NonNFTBuyerDescription = ({
         <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
+            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}

@@ -10,6 +10,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import { callCreateNFT } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { FEE } from "@/web3/constants/common";
@@ -17,7 +18,6 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { readFileAsync } from "@/utils/file.reader.util";
-import { normalizeValue } from "@/web3/utils/call.helpers";
 
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
@@ -47,7 +47,11 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalContent(
       <div className={modalBodyWrapper2}>
         <h2 className="text-18px font-semibold text-white">{nftData?.name}</h2>
-        <h3 className="text-14px font-normal text-white">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
+        <h3 className="text-14px font-normal text-white">
+          {`Marketplace fee ${normalizeValue(
+            FEE.createItemFeeForMarketplace
+          )} BNB`}
+        </h3>
         {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
         <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>

@@ -11,6 +11,7 @@ import {
   formatEther2Number,
   formatIPFSUrl,
 } from "@/utils/format.address";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
 import { AppRoutes } from "@/constants/app.routes";
 import {
@@ -149,7 +150,9 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
         <div className={`flex items-center justify-between gap-2`}>
           <span className={nftPrice}>
             <BNBIcon />
-            <span>{formatEther2Number(data.price)} BNB</span>
+            <span>
+              {`${normalizeValue(formatEther2Number(data.price))} (BNB)`}
+            </span>
           </span>
         </div>
         {/* ) : (

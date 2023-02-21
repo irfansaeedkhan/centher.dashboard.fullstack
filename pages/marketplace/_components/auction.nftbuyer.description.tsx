@@ -10,7 +10,7 @@ import { ShareBigIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { callBidOnAuction } from "@/web3/utils/call.helpers";
+import { callBidOnAuction, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
@@ -263,7 +263,9 @@ export const AuctionNFTBuyerDescription = ({
         <h4 className={greyTxt}>Minimum Bid</h4>
         <div className="flex items-center  gap-3">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
-          <h5 className={BnBNum}>{formatEther2Number(price)} BNB</h5>
+          <h5 className={BnBNum}>
+            {`${normalizeValue(formatEther2Number(price))} BNB`}
+          </h5>
           <h6 className={greyTxt}> =${formatBNB2USD(price, bnbPrice)}</h6>
         </div>
       </div>

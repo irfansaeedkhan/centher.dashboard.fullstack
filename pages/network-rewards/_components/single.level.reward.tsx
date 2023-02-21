@@ -1,6 +1,7 @@
 import { RewardsEachAsset } from "@/models/referral";
 import React from "react";
 import { formatPriceInUSD } from "@/utils/format.address";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 
 interface SingleLevelRewardPProps {
   rewardState: "lunchpad-rewards" | "marketplace-rewards";
@@ -38,7 +39,7 @@ const SingleLevelReward: React.FC<SingleLevelRewardPProps> = ({
         </>
       ) : rewardState === "marketplace-rewards" ? (
         <div className="mt-4 flex items-center gap-2 text-sm font-semibold">
-          <p className="text-white">{`${rewards.bnb} BNB`}</p>
+          <p className="text-white">{`${normalizeValue(rewards.bnb)} BNB`}</p>
           <p className="text-gray-shade-7">{`($${formatPriceInUSD(
             rewards.bnb,
             bnbPrice

@@ -1,5 +1,8 @@
 import { formatNum2DispNum } from "@/utils/format.address";
-import { adminClaimRegistrationBNB } from "@/web3/utils/call.helpers";
+import {
+  adminClaimRegistrationBNB,
+  normalizeValue,
+} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -43,7 +46,9 @@ const RegistrationRewards = ({
           </div>
           <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">
-              {formatNum2DispNum(claimableBNB + claimedBNB)} (BNB)
+              {`${normalizeValue(
+                formatNum2DispNum(claimableBNB + claimedBNB)
+              )} (BNB)`}
             </p>
           </div>
         </div>
@@ -52,7 +57,9 @@ const RegistrationRewards = ({
             Claimed
           </div>
           <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
-            <p className="text-white">{formatNum2DispNum(claimedBNB)} (BNB)</p>
+            <p className="text-white">
+              {`${normalizeValue(formatNum2DispNum(claimedBNB))} (BNB)`}
+            </p>
           </div>
         </div>
         <div className="w-full min-w-[200px] max-w-[338px]  f2xl:max-w-[338px]">
@@ -61,7 +68,7 @@ const RegistrationRewards = ({
           </div>
           <div className="mt-4 mb-3 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">
-              {formatNum2DispNum(claimableBNB)} (BNB)
+              {`${normalizeValue(formatNum2DispNum(claimableBNB))} (BNB)`}
             </p>
             <button
               // className="text-brand-primary text-12px font-semibold "

@@ -12,7 +12,7 @@ import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { FEE } from "@/web3/constants/common";
-import { callBuyListedItem } from "@/web3/utils/call.helpers";
+import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
@@ -72,7 +72,9 @@ export const FixedPriceNFTBuyerDescription = ({
         <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
-          {formatEther2Number(data?.listInfo.price)} BNB{" "}
+          {`${normalizeValue(
+            formatEther2Number(data?.listInfo.price)
+          )} BNB`}{" "}
           <span className="text-gray-shade-2 ">
             {" "}
             =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
@@ -167,7 +169,7 @@ export const FixedPriceNFTBuyerDescription = ({
         <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
+            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}

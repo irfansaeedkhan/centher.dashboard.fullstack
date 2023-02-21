@@ -13,6 +13,7 @@ import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import {
   callApproveNFTToMarketplace,
   callListItemForSale,
+  normalizeValue,
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
@@ -175,7 +176,9 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           Are you sure you want to List your NFT to sell?
         </h3>
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Listing Price will be {listingPrice} BNB.
+          {`Listing Price will be  ${normalizeValue(
+            Number(listingPrice)
+          )} BNB.`}
         </p>
         <div className={footerBtnContainer}>
           <Button
@@ -319,7 +322,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
         <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
+            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}

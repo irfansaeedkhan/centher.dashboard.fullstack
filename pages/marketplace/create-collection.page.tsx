@@ -7,7 +7,10 @@ import toast from "react-hot-toast";
 
 // App imports
 import { useWeb3React } from "@web3-react/core";
-import { callCreateCollection } from "@/web3/utils/call.helpers";
+import {
+  callCreateCollection,
+  normalizeValue,
+} from "@/web3/utils/call.helpers";
 import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -54,7 +57,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         <h2 className="text-18px font-semibold text-white">
           {collectionData?.name}
         </h2>
-        <h3 className="text-14px font-normal text-white">{`Marketplace fee ${FEE.createCollectionFee} BNB`}</h3>
+        <h3 className="text-14px font-normal text-white">
+          {`Marketplace fee ${normalizeValue(FEE.createCollectionFee)} BNB`}
+        </h3>
         {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
           <BNBIcon />

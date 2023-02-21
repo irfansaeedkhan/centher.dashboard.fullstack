@@ -9,7 +9,11 @@ import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { callCancelAuction, callEndAuction } from "@/web3/utils/call.helpers";
+import {
+  callCancelAuction,
+  callEndAuction,
+  normalizeValue,
+} from "@/web3/utils/call.helpers";
 import {
   formatAddress,
   formatBNB2USD,
@@ -274,7 +278,9 @@ export const AuctionNftDescription = ({
         <div className="flex items-center  gap-3">
           <BNBIcon className="[&>*]:fill-[#E35259]" />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
+            {`${normalizeValue(
+              formatEther2Number(data?.auctionInfo.highestBidPrice)
+            )} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}

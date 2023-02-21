@@ -5,6 +5,7 @@ import { FiCopy } from "react-icons/fi";
 import { formatAddress } from "@/utils/format.address";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();
@@ -36,7 +37,7 @@ const WalletSection = ({ data }: any) => {
           </div>
           <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
             <p>{`${data.busd} (BUSD) ${data.ntr} (NTR)`}</p>
-            <p>{`${data.bnb} (BNB)`}</p>
+            <p> {`${normalizeValue(Number(data.bnb))} (BNB)`}</p>
           </div>
         </div>
       </div>

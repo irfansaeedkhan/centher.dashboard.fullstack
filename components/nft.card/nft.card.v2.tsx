@@ -5,6 +5,7 @@ import Image from "next/image";
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
 import { formatAddress, formatEther2Number } from "@/utils/format.address";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 import { BNBIcon } from "@/assets/svgs";
 
@@ -102,7 +103,9 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
             className={`flex items-center gap-2 text-sm font-medium text-white`}
           >
             <BNBIcon />
-            <span>{formatEther2Number(data.price)} BNB</span>
+            <span>
+              {`${normalizeValue(formatEther2Number(data.price))} BNB`}
+            </span>
           </span>
         </div>
       </div>
