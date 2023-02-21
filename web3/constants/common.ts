@@ -7,7 +7,7 @@ export const BSC_RPC_URLS =
     : ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"];
 
 // Infura IPFS Gateway Url
-export const NEXT_PUBLIC_IPFS_URL = "https://centher-1.infura-ipfs.io";
+export const NEXT_PUBLIC_IPFS_URL = process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL;
 
 export const ZeroAddress = ethers.constants.AddressZero;
 
