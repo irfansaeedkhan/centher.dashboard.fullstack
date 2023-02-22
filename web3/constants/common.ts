@@ -19,9 +19,9 @@ export const SCAN_URL =
 export const DAY = 60 * 5;
 
 export const FEE = {
-  createItemFeeForMarketplace: 0.0001,
+  createItemFeeForMarketplace: 0.0072,
   createItemFeeForCreator: 0.0,
-  createCollectionFee: 0.0001,
+  createCollectionFee: 0.0026,
   buyItemFeeForMarketplace: 1.5,
   buyItemFeeForCreator: 1.5,
   buyItemFeeForMultilevel: 7,
