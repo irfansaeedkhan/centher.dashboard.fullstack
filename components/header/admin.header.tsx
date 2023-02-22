@@ -18,19 +18,19 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
       <div
         className={`
   flex
-  px-5
-  w-full
   h-[60px]
+  w-full
   items-center
   border-b-[1.5px]
-  bg-background-shade-1
   border-gray-shade-border-color
+  bg-background-shade-1
+  px-5
 `}
       >
         <div className={`w-72`}>
           <Link
             href={AppRoutes.home}
-            className="flex items-center gap-4 md:min-w-[166px] sm:min-w-[22px]"
+            className="flex items-center gap-4 sm:min-w-[22px] md:min-w-[166px]"
           >
             <Image
               src="/images/centher.logo.png"
@@ -41,11 +41,11 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
           </Link>
         </div>
         <div
-          className={`flex items-center justify-between w-[calc(100%-288px)]`}
+          className={`flex w-[calc(100%-288px)] items-center justify-between`}
         >
           <div className={`flex items-center gap-6`}>
             <div>
-              <p className={`text-white font-semibold`}>{props.title}</p>
+              <p className={`font-semibold text-white`}>{props.title}</p>
             </div>
           </div>
 
@@ -53,24 +53,24 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
             <Link
               href={props.url}
               className={`
-  px-3 
-  py-2 
-  text-sm 
+  group 
+  flex 
+  cursor-pointer 
+  items-center 
+  gap-2 
   rounded-lg 
-  font-semibold 
   bg-brand-primary 
-  text-black-shade-2 
+  px-3 
+  py-2
+  text-sm
+  font-semibold
+  text-black-shade-2
   hover:bg-gray-shade-3 
   hover:text-brand-primary
-  group
-  flex
-  gap-2
-  items-center 
-  cursor-pointer
 `}
             >
               <PlusIconBtn
-                className={`group-hover:stroke-brand-primary stroke-black`}
+                className={`stroke-black group-hover:stroke-brand-primary`}
               />
               <span>Create New</span>
             </Link>

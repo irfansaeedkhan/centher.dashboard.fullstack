@@ -37,17 +37,17 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
     <ModalPortal wrapperId="post-modal-portal">
       {/* Background */}
       <div
-        className={`font-monto flex justify-center items-center fixed inset-0 z-[1050] backdrop-filter backdrop-blur-lg overflow-y-auto overflow-x-hidden bg-black-shade-12 fsm:bg-transparent`}
+        className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black-shade-12 font-monto backdrop-blur-lg backdrop-filter fsm:bg-transparent`}
       >
         {/* Container */}
         <div
-          className={`flex flex-col w-full max-w-[656px] h-full fsm:h-auto fsm:max-h-[90%] fsm:mx-2 md:mx-0 fsm:rounded-2xl bg-black-shade-12 border border-gray-shade-3 border-opacity-40`}
+          className={`flex h-full w-full max-w-[656px] flex-col border border-gray-shade-3 border-opacity-40 bg-black-shade-12 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-2xl md:mx-0`}
         >
           {/* Header */}
           <PostModalHeader title={title} onClickClose={onClickClose} />
 
           {/* Children Wrapper */}
-          <div className="overflow-auto scrollSet">{children}</div>
+          <div className="scrollSet overflow-auto">{children}</div>
 
           <PostModalFooter />
         </div>

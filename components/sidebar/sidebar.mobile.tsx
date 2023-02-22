@@ -73,11 +73,11 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
       )}
     >
       <div
-        className={`w-[15.5rem] py-5 gap-8 fxl:hidden flex flex-col font-monto justify-between overflow-y-scroll h-[calc(100vh-60px)] bg-background-shade-1`}
+        className={`flex h-[calc(100vh-60px)] w-[15.5rem] flex-col justify-between gap-8 overflow-y-scroll bg-background-shade-1 py-5 font-monto fxl:hidden`}
       >
         <div>
-          {/* {user && (
-            <div className={`flex gap-2 items-center my-4 pl-6 xl:hidden`}>
+          {user && (
+            <div className={`my-4 flex items-center gap-2 pl-6 xl:hidden`}>
               <CreateNFT />
               <Link
                 href={AppRoutes.marketplace.create_nft}
@@ -87,9 +87,9 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
                 Create NFT
               </Link>
             </div>
-          )} */}
+          )}
 
-          <div className={`flex gap-2 items-center my-4 pl-6 md:hidden`}>
+          <div className={`my-4 flex items-center gap-2 pl-6 md:hidden`}>
             <IoSearchSharp className="text-xl text-gray-shade-7" />
             <Link
               href={AppRoutes.search}
@@ -100,7 +100,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
             </Link>
           </div>
 
-          <div className={`flex flex-col gap-6 mt-5`}>
+          <div className={`mt-5 flex flex-col gap-6`}>
             {SidebarSections.map((section) => {
               return (
                 <Section
@@ -116,7 +116,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
         {user && (
           <div className="flex flex-col gap-8">
             <div className={sectionWrapper}>
-              <span className={`font-bold text-[11px] text-gray-shade-8`}>
+              <span className={`text-[11px] font-bold text-gray-shade-8`}>
                 WILL YOU GET OUT?
               </span>
               <div className={sectionWrapper2}>

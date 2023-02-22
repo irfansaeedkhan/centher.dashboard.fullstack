@@ -10,6 +10,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import { callCreateNFT } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { FEE } from "@/web3/constants/common";
@@ -45,13 +46,17 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <h2 className="text-18px text-white font-semibold">{nftData?.name}</h2>
-        <h3 className="text-white text-14px font-normal">{`Marketplace fee ${FEE.createItemFeeForMarketplace} BNB`}</h3>
+        <h2 className="text-18px font-semibold text-white">{nftData?.name}</h2>
+        <h3 className="text-14px font-normal text-white">
+          {`Marketplace fee ${normalizeValue(
+            FEE.createItemFeeForMarketplace
+          )} BNB`}
+        </h3>
         {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
-          {nftData?.price} BNB{" "}
+          {normalizeValue(nftData?.price)} BNB{" "}
           <span className="text-gray-shade-2 ">
             {" "}
             =${Number((nftData?.price * bnbPrice).toFixed(5))}
@@ -76,10 +81,10 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalContent(
       <div className={modalBodyWrapper2}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -108,11 +113,11 @@ const CreateNFT: NextPageWithLayout = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
       <div className={modalBodyWrapper2}>
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{nftData?.name}</span> NFT on{" "}
             <b>Centher</b>
@@ -120,22 +125,35 @@ const CreateNFT: NextPageWithLayout = () => {
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
         <div className={footerBtnContainer}>
-          <Button
-            title={txStatus ? "Go Back" : "Try Again"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-              setClearForm(true);
-            }}
-          />
+          {txStatus ? (
+            <Button
+              title={"Go Back"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+                setClearForm(true);
+              }}
+            />
+          ) : (
+            <Button
+              title={"Try Again"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                setModal(false);
+                setModalTitle("");
+                setModalContent(null);
+              }}
+            />
+          )}
 
           {txStatus && (
             <Button
@@ -147,7 +165,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 setModalTitle("");
                 setModalContent(null);
                 setClearForm(true);
-                router.push(`/profile/${account}/nfts`);
+                router.push(`/profile/${account}/nfts/created`);
               }}
             />
           )}
@@ -173,7 +191,6 @@ const CreateNFT: NextPageWithLayout = () => {
       const result = await callCreateNFT(
         library,
         castedNftData.collection,
-        castedNftData.category,
         "ipfs:/" + nftMetadataPath,
         castedNftData.supply,
         castedNftData.isAuction,
@@ -193,12 +210,12 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const createNFT = (values: INFTData) => {
     if (asset === undefined) {
-      toast.error("Choose banner image.");
+      toast.error("Choose file.");
       return;
     }
     // setNFTData(values)
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     buyNFTStep1Func(values);
@@ -207,7 +224,7 @@ const CreateNFT: NextPageWithLayout = () => {
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
-      <div className="flex gap-9 items-start [@media(max-width:1279px)]:flex-col">
+      <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
           asset={asset}
           setAsset={setAsset}
@@ -215,7 +232,11 @@ const CreateNFT: NextPageWithLayout = () => {
           setAssetTab={setAssetTab}
           clearForm={clearForm}
         />
-        <CreateNFTForm createNFT={createNFT} clearForm={clearForm} />
+        <CreateNFTForm
+          createNFT={createNFT}
+          clearForm={clearForm}
+          asset={asset}
+        />
       </div>
 
       {Modal && (
@@ -252,9 +273,7 @@ flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 const footerBtnContainer = ctl(`
 mt-3 flex flex-col-reverse fsm:flex-row gap-2 
 `);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
+
 const dashboardContentContainer = ctl(`
  bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
 `);

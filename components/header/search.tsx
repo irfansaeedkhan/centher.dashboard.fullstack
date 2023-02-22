@@ -3,18 +3,30 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import { useSearchStore } from "@/store/search.store";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
+import useGetUser from "@/hooks/use.get.user";
 import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
+import { User } from "@/models/user";
 
-const SearchBar = () => {
+import SearchPopupResult from "./search.popup.result";
+
+interface Props {
+  ver_user: User;
+}
+
+const SearchBar: React.FC<Props> = ({ ver_user }) => {
   const router = useRouter();
 
   const { setSearchQuery } = useSearchStore((state) => ({
     setSearchQuery: state.setSearchQuery,
   }));
+  const { user } = useGetUser(
+    router.query.account_address?.toString()?.toLowerCase()
+  );
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
@@ -87,17 +99,17 @@ const SearchBar = () => {
 
   return (
     <form
-      className="relative w-full max-w-[528px] md:block hidden"
+      className="relative hidden w-full max-w-[528px] md:block"
       onSubmit={submitData}
     >
       <div
         ref={ref}
-        className="flex gap-2 items-center bg-[#1E212B] px-3 py-2 rounded-xl focus-within:ring-1 focus-within:ring-brand-primary"
+        className="flex items-center gap-2 rounded-xl bg-[#1E212B] px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary"
       >
         <input
           type="text"
           placeholder="Search"
-          className="focus:outline-none p-0 focus:ring-0 w-full text-white bg-transparent border-0"
+          className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
           value={searchQueryInput}
           onChange={(e) => handleSearchQueryInput(e)}
         />
@@ -105,26 +117,16 @@ const SearchBar = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 max-h-[400px] h-auto w-full bg-background-shade-3 rounded-xl z-[200]">
+          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
             <div>
-              {result.map((item: any, i) => {
-                return (
-                  <div key={i} className="p-5 flex gap-2 items-center">
-                    <SearchIcon />
-                    <Link
-                      onClick={() => {
-                        setSearchQueryInput("");
-                        setOpenPopup(false);
-                      }}
-                      href={`/profile/${item.account_address}`}
-                    >
-                      <p className="text-white text-sm font-medium hover:text-brand-primary">
-                        {item.display_name}
-                      </p>
-                    </Link>
-                  </div>
-                );
-              })}
+              {result.map((item: any, i) => (
+                <SearchPopupResult
+                  user={item}
+                  key={item._id}
+                  setOpenPopup={setOpenPopup}
+                  setSearchQueryInput={setSearchQueryInput}
+                />
+              ))}
             </div>
           </div>
         )}

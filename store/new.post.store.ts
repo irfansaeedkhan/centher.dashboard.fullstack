@@ -11,6 +11,12 @@ import {
   uploadFiles,
 } from "@/utils/create.post";
 
+interface SelectedFile {
+  name: string;
+  type: string;
+  size: number;
+  content: string;
+}
 export interface NewPostStore {
   modalType: ModalType;
   postId: string | null;
@@ -83,6 +89,7 @@ export const useNewPostStore = create<NewPostStore>()(
       setSelectedFiles: (files: FileWithID[]) => set({ selectedFiles: files }),
       addSelectedFiles: (files: FileWithID[]) =>
         set((state) => ({ selectedFiles: [...state.selectedFiles, ...files] })),
+
       removeSelectedFile: (fileId: string) =>
         set((state) => ({
           selectedFiles: state.selectedFiles.filter(

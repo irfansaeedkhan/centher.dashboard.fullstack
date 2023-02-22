@@ -36,13 +36,13 @@ export const Section: React.FC<SectionProps> = (props) => {
                 router.pathname
                   .replaceAll("-", " ")
                   .includes(item.label.toLowerCase()) && "bg-black-shade-7",
-                "flex justify-between pl-6 pr-4 py-[6px]"
+                "flex justify-between py-[6px] pl-6 pr-4"
               )}
             >
               <div className={itemWrapper}>
                 <item.icon
                   className={clsx(
-                    "w-5 h-5",
+                    "h-5 w-5",
                     item.label2
                       ? router.pathname
                           .replaceAll("-", " ")
@@ -77,7 +77,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                 </Link>
               </div>
               {!!count && props.user && (
-                <span className="bg-brand-primary rounded-lg w-9 h-5 flex items-center justify-center px-2 py-[2px] text-sm font-semibold text-black-shade-7">
+                <span className="flex h-5 w-9 items-center justify-center rounded-lg bg-brand-primary px-2 py-[2px] text-sm font-semibold text-black-shade-7">
                   {count}
                 </span>
               )}
@@ -100,14 +100,7 @@ const sectionWrapper2 = ctl(`
   flex-col
 `);
 
-const sectionLabel = ctl(`
-  font-bold
-  text-[11px] 
-  pl-6
-  pr-4
-  
-  text-gray-shade-11
-`);
+const sectionLabel = `font-semibold text-[11px] pl-6 pr-4 text-gray-shade-11`;
 
 const itemWrapper = ctl(`
   flex 
@@ -115,17 +108,9 @@ const itemWrapper = ctl(`
   items-center
 `);
 
-const itemLabel = ctl(`
-  text-sm
-  font-semibold 
-  text-gray-shade-7 
-`);
+const itemLabel = `text-sm font-medium text-gray-shade-7`;
 
-const itemLabelActive = ctl(`
-  text-sm
-  font-semibold 
-  text-white 
-`);
+const itemLabelActive = `text-sm font-medium text-white`;
 
 const itemIcons = ctl(`stroke-gray-shade-7 stroke-[1.5]`);
 

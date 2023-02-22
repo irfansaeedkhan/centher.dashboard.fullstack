@@ -4,12 +4,12 @@ export const DiscoverCard = () => {
   return (
     <div
       className={`
-   w-[272px] max-w-[272px] px-4 pt-4   rounded-10px bg-background-shade-3
+   w-[272px] max-w-[272px] rounded-10px bg-background-shade-3   px-4 pt-4
 `}
     >
       <h5
         className={`
-  text-14px font-semibold text-white pb-4
+  text-14px pb-4 font-semibold text-white
 `}
       >
         Discover

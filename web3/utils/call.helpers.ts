@@ -229,7 +229,6 @@ export const callCreateCollection = async (
 export const callCreateNFT = async (
   library: Web3Provider,
   collection: string,
-  category: string,
   tokenUri: string,
   supply: number,
   isAuction: boolean,
@@ -241,11 +240,10 @@ export const callCreateNFT = async (
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.createItems(
       collection,
-      category,
       tokenUri,
       supply,
       isAuction,
-      ethers.utils.parseEther(price.toString()),
+      ethers.utils.parseEther(normalizeValue(price) + ""),
       period,
       { value: ethers.utils.parseEther(fee.toFixed(10)) }
     );
@@ -256,6 +254,7 @@ export const callCreateNFT = async (
     };
   } catch (error: any) {
     customLog("[Create NFT Error] = ", ["development"]);
+    customLog(error, ["development"]);
     return {
       success: false,
       error: parseErrorMsg(error.message),
@@ -269,11 +268,13 @@ export const callCancelItemForSale = async (
   tokenId: number
 ) => {
   try {
+    if (!library || !collection || !tokenId) throw new Error("Invalid params.");
     const marketplaceContract = getMarketplaceContract(library.getSigner());
     const tx = await marketplaceContract.functions.cancelItemForSale(
       collection,
       tokenId
     );
+
     await tx.wait();
     return {
       success: true,
@@ -299,7 +300,7 @@ export const callEditItemForSale = async (
     const tx = await marketplaceContract.functions.editItemForSale(
       collection,
       tokenId,
-      ethers.utils.parseEther(newPrice.toString())
+      ethers.utils.parseEther(normalizeValue(newPrice) + "")
     );
     await tx.wait();
     return {
@@ -326,7 +327,7 @@ export const callListItemForSale = async (
     const tx = await marketplaceContract.functions.listItemForSale(
       collection,
       tokenId,
-      ethers.utils.parseEther(newPrice.toString())
+      ethers.utils.parseEther(normalizeValue(newPrice) + "")
     );
     await tx.wait();
     return {
@@ -381,7 +382,7 @@ export const callCreateAuction = async (
     const tx = await marketplaceContract.functions.createAuction(
       collection,
       tokenId,
-      ethers.utils.parseEther(startPrice.toString()),
+      ethers.utils.parseEther(normalizeValue(startPrice) + ""),
       period
     );
     await tx.wait();
@@ -409,7 +410,7 @@ export const callBidOnAuction = async (
     const tx = await marketplaceContract.functions.bidOnAuction(
       collection,
       tokenId,
-      { value: ethers.utils.parseEther(price.toString()) }
+      { value: ethers.utils.parseEther(normalizeValue(price) + "") }
     );
     await tx.wait();
     return {
@@ -747,3 +748,21 @@ export const adminUnPauseRegistration = async (library: Web3Provider) => {
     };
   }
 };
+
+export function normalizeValue(x: any): string {
+  if (Math.abs(x) < 1.0) {
+    let e = parseInt(x.toString().split("e-")[1]);
+    if (e) {
+      x *= Math.pow(10, e - 1);
+      x = "0." + new Array(e).join("0") + x.toString().substring(2);
+    }
+  } else {
+    let e = parseInt(x.toString().split("+")[1]);
+    if (e > 20) {
+      e -= 20;
+      x /= Math.pow(10, e);
+      x += new Array(e + 1).join("0");
+    }
+  }
+  return x;
+}

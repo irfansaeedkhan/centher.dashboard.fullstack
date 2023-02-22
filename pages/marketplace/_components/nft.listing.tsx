@@ -10,41 +10,41 @@ interface NFTListingProps {
 }
 
 export const NFTListing = ({ data }: NFTListingProps) => {
-  // console.log("data from nft.listing", data?.[0].buyer);
-
   return (
     <div className={NFTlistingsContainer}>
-      <div className="accordion" id="accordionExample">
-        <div className="accordion-item bg-transparent ">
-          <h2 className="accordion-header mb-0" id="headingOne">
-            <button
-              className={AccordionButton}
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#listingsComponent"
-              aria-expanded="true"
-              aria-controls="listingsComponent"
+      {data?.length ? (
+        <div className="accordion" id="accordionExample">
+          <div className="accordion-item bg-transparent ">
+            <h2 className="accordion-header mb-0" id="headingOne">
+              <button
+                className={AccordionButton}
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#listingsComponent"
+                aria-expanded="true"
+                aria-controls="listingsComponent"
+              >
+                Listing
+              </button>
+            </h2>
+            <div
+            // id="listingsComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
-              Listing
-            </button>
-          </h2>
-          <div
-            id="listingsComponent"
-            className={AccordionCollapse}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body p-6">
-              <div className={listingsList}>
-                {data &&
-                  data.map((item, index) => {
-                    return <NFTListingSingle item={item} key={index} />;
-                  })}
+              <div className="accordion-body p-6">
+                <div className={listingsList}>
+                  {data &&
+                    data.map((item, index) => {
+                      return <NFTListingSingle item={item} key={index} />;
+                    })}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
     </div>
   );
 };

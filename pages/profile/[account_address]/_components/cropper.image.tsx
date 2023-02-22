@@ -47,7 +47,7 @@ const CropperImage: React.FC<CropperProps> = ({
       isOpen={coverImage.preview ? true : false}
     >
       <div>
-        <div className="text-center h-full">
+        <div className="h-full text-center">
           <Cropper
             src={coverImage.preview}
             style={{
@@ -71,9 +71,9 @@ const CropperImage: React.FC<CropperProps> = ({
             ref={cropperRef}
           />
         </div>
-        <div className="mt-3 text-center w-full flex justify-center">
+        <div className="mt-3 flex w-full justify-center text-center">
           <button
-            className="w-fit px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
+            className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
             onClick={onCrop}
           >
             Crop

@@ -20,7 +20,7 @@ export const FeedPagesWrapper: React.FC<Props> = ({
     <AllPagesWrapper pageTitle={pageTitle}>
       <div
         className={clsx(
-          `grid fsm:grid-cols-[minmax(0,544px)] flg:grid-cols-[minmax(0,272px)_minmax(0,544px)] f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] flg:gap-x-8 f2xl:gap-x-6 fsm:w-max mx-auto`,
+          `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,544px)] flg:grid-cols-[minmax(0,272px)_minmax(0,544px)] flg:gap-x-8 f2xl:grid-cols-[minmax(0,272px)_minmax(0,544px)_minmax(0,272px)] f2xl:gap-x-6`,
           className
         )}
         {...props}

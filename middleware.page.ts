@@ -87,7 +87,14 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
   AppRoutes.profile.archived_posts,
-  AppRoutes.profile.settings,
+  AppRoutes.settings.index,
+  AppRoutes.settings.profile,
+  AppRoutes.settings.social_links,
+  AppRoutes.profile.nfts,
+  AppRoutes.profile.owned,
+  AppRoutes.profile.listed,
+  AppRoutes.profile.created,
+  AppRoutes.profile.collection,
 
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
@@ -95,14 +102,20 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.notifications,
 
   AppRoutes.referral.network_genealogy,
+
+  AppRoutes.marketplace.nft,
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+  AppRoutes.marketplace.explore,
+  AppRoutes.marketplace.nfts,
+  AppRoutes.marketplace.collections,
+  AppRoutes.marketplace.collection,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
 // Coming soon pages - redirect to feed page
 const _notReadyPages: string[] = [
-  AppRoutes.profile.collections,
-  AppRoutes.profile.purchased,
-  AppRoutes.profile.nfts,
+  AppRoutes.settings.privacy,
 
   AppRoutes.buy_centher,
   AppRoutes.referral.overview,
@@ -124,14 +137,6 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.users,
   AppRoutes.admin.network_rewards,
   AppRoutes.admin.network_rewards_marketplace,
-
-  AppRoutes.marketplace.nft,
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
-  AppRoutes.marketplace.explore,
-  AppRoutes.marketplace.all_nfts,
-  AppRoutes.marketplace.all_collections,
-  AppRoutes.marketplace.collection,
 
   AppRoutes.referral.liscense,
 ];

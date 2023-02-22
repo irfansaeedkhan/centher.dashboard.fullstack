@@ -23,7 +23,7 @@ export const PostTextContent: React.FC<Props> = ({
         e.stopPropagation();
       }}
       className={clsx(
-        `whitespace-pre-wrap break-all text-app-post-text text-sm cursor-text`,
+        `cursor-text whitespace-pre-wrap break-all text-sm text-app-post-text`,
         post.media && post.media.length > 0 ? "mt-3" : "mt-2"
       )}
       style={{

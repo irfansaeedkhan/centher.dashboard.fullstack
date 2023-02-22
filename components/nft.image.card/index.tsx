@@ -1,0 +1,67 @@
+// React, Next, NPM Packages
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import axios from "axios";
+import ctl from "@netlify/classnames-template-literals";
+
+import { NFT } from "@/models/nft";
+import { formatIPFSUrl } from "@/utils/format.address";
+import { AppRoutes } from "@/constants/app.routes";
+
+export interface NFTCardProps {
+  data: NFT;
+}
+
+export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
+  const [imageUrl, setImageUrl] = useState("");
+
+  useEffect(() => {
+    const fetchMetadata = async (ipfs: string) => {
+      try {
+        const formattedUrl = formatIPFSUrl(ipfs);
+        const metadata = await axios.get(formattedUrl);
+        const imgUrl = formatIPFSUrl(metadata.data.image);
+        setImageUrl(imgUrl);
+      } catch (error) {}
+    };
+    if (data && data.ipfs) {
+      fetchMetadata(data.ipfs);
+    }
+  }, [data]);
+
+  return (
+    <div className={nftCardWrapper}>
+      <Link
+        href={{
+          pathname: AppRoutes.marketplace.nft,
+          query: {
+            collection: data.collection,
+            tokenId: data.tokenId,
+          },
+        }}
+        className={nftImageWrapper}
+      >
+        {imageUrl ? (
+          <Image
+            src={
+              imageUrl.includes("mp3") ? "/images/default-music.png" : imageUrl
+            }
+            alt="nft"
+            height={275}
+            width={275}
+            className="!h-[104px] !w-full rounded-xl object-cover [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"
+          />
+        ) : (
+          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+        )}
+      </Link>
+    </div>
+  );
+};
+
+const nftCardWrapper = ctl(
+  `bg-transparent relative rounded-xl overflow-hidden `
+);
+
+const nftImageWrapper = ctl(`w-full h-full flex justify-center `);

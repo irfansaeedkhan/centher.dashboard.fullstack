@@ -17,55 +17,69 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
   const { user: loggedInUser } = useUser();
 
   return (
-    <div className="flex gap-2 fmd:gap-10 max-w-max mx-auto overflow-auto text-[13px] fsm:text-sm mt-2 fmd:mt-4">
+    <div className="mx-auto mt-2 flex max-w-max gap-2 overflow-auto text-[13px] fsm:text-sm fmd:mt-4 fmd:gap-10">
       <Link
         href={`/profile/${account_address}`}
         className={clsx(
           router.pathname === AppRoutes.profile.account_address
-            ? "border-b-2 text-white font-medium"
+            ? "border-b-2 font-medium text-white"
             : "text-gray-shade-7",
-          "py-2 px-4 cursor-pointer"
+          "min-w-max cursor-pointer py-2 px-4"
         )}
       >
         Posts
       </Link>
-
+      {loggedInUser &&
+        loggedInUser.account_address === router.query.account_address && (
+          <Link
+            href={`/profile/${account_address}/replies`}
+            className={clsx(
+              router.pathname === AppRoutes.profile.replies
+                ? "border-b-2 font-medium text-white"
+                : "text-gray-shade-7",
+              "min-w-max cursor-pointer py-2 px-4"
+            )}
+          >
+            Replies
+          </Link>
+        )}
       <Link
-        href={`/profile/${account_address}/replies`}
+        href={`/profile/${account_address}/nfts/created`}
         className={clsx(
-          router.pathname === AppRoutes.profile.replies
-            ? "border-b-2 text-white font-medium"
+          router.pathname === AppRoutes.profile.owned ||
+            router.pathname === AppRoutes.profile.created ||
+            router.pathname === AppRoutes.profile.listed ||
+            router.pathname === AppRoutes.profile.collection
+            ? "border-b-2 font-medium text-white"
             : "text-gray-shade-7",
-          "py-2 px-4 cursor-pointer"
+          "min-w-max cursor-pointer py-2 px-4"
         )}
       >
-        Replies
+        NFTs
       </Link>
-
       {loggedInUser &&
         loggedInUser.account_address === router.query.account_address && (
           <Link
             href={`/profile/${account_address}/followers`}
             className={clsx(
               router.pathname === AppRoutes.profile.followers
-                ? "border-b-2 text-white font-medium"
+                ? "border-b-2 font-medium text-white"
                 : "text-gray-shade-7",
-              "py-2 px-4 cursor-pointer"
+              "min-w-max cursor-pointer py-2 px-4"
             )}
           >
             Followers
           </Link>
         )}
-
       {loggedInUser &&
         loggedInUser.account_address === router.query.account_address && (
           <Link
             href={`/profile/${account_address}/following`}
             className={clsx(
               router.pathname === AppRoutes.profile.following
-                ? "border-b-2 text-white font-medium"
+                ? "border-b-2 font-medium text-white"
                 : "text-gray-shade-7",
-              "py-2 px-4 cursor-pointer"
+              "min-w-max cursor-pointer py-2 px-4"
             )}
           >
             Following

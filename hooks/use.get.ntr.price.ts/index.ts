@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { EvmChain } from "@moralisweb3/evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
 import { customLog } from "@/utils/custom.log";

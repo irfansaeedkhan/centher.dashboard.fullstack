@@ -1,12 +1,13 @@
 import { myCollections } from "@/subgraph/querys";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
+import { getNativeCollectionAddress } from "@/web3/utils/address.helpers";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import { useEffect, useState } from "react";
 
 const CentherNativeCollection = {
   id: "1",
   name: "CENTHER Native NFT",
-  collection: "0x29791EAdDc3a0E1CFE54f6eC7f24FAbe1Cdc471e",
+  collection: getNativeCollectionAddress(),
 };
 
 export interface IMyCollection {

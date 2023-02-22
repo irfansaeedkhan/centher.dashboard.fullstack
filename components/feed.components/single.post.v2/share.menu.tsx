@@ -40,7 +40,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
   return (
     <div
       className={clsx(
-        `absolute right-0 z-[500] top-full w-[235px] bg-black-shade-12 rounded-10px overflow-hidden`,
+        `absolute right-0 top-full z-[500] w-[235px] overflow-hidden rounded-10px bg-black-shade-12`,
         className
       )}
       {...props}
@@ -48,7 +48,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
       {shareMenuState === "menu-1" && (
         <div>
           <button onClick={copyShareUrl} className={clsx(shareBtnClasses)}>
-            <LinkIcon className={`w-5 h-5`} />
+            <LinkIcon className={`h-5 w-5`} />
             <span>Copy Link</span>
           </button>
           {postType !== "archived" && (
@@ -56,9 +56,9 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
               className={clsx(shareBtnClasses)}
               onClick={() => setShareMenuState("menu-2")}
             >
-              <WorldIcon className={`w-5 h-5`} />
+              <WorldIcon className={`h-5 w-5`} />
               <span className="flex-grow text-left">Share Via...</span>
-              <MdNavigateNext className={`w-6 h-6`} />
+              <MdNavigateNext className={`h-6 w-6`} />
             </button>
           )}
         </div>
@@ -70,7 +70,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             className={clsx(shareBtnClasses, "pl-4")}
             onClick={() => setShareMenuState("menu-1")}
           >
-            <MdNavigateBefore className={`w-6 h-6`} />
+            <MdNavigateBefore className={`h-6 w-6`} />
             <span className="flex-grow text-left">Share Via</span>
           </button>
           <WhatsappShareButton
@@ -78,7 +78,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
           >
-            <BsWhatsapp className={`w-5 h-5`} />
+            <BsWhatsapp className={`h-5 w-5`} />
             <span>WhatsApp</span>
           </WhatsappShareButton>
           <TwitterShareButton
@@ -86,7 +86,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
           >
-            <FiTwitter className={`w-5 h-5`} />
+            <FiTwitter className={`h-5 w-5`} />
             <span>Twitter</span>
           </TwitterShareButton>
         </div>

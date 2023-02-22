@@ -2,15 +2,15 @@ import React from "react";
 
 const NftCollectionSkeleton = () => {
   return (
-    <div className="w-[340px] h-[400px] bg-[#131314] rounded-lg flex flex-col gap-12 ">
+    <div className="flex w-full max-w-[300px] flex-col rounded-lg border border-gray-shade-3">
       <div className="relative flex justify-center">
-        <div className="rounded-t-lg bg-[#3C3F4A] w-[340px] h-[244px] animate-pulse"></div>
-        <div className="rounded-full absolute object-cover h-[64px] w-[64px] z-50 -bottom-[1.8rem] border-2 border-[#3C3F4A] bg-background-shade-3"></div>
+        <div className="h-[180px] w-full animate-pulse rounded-t-lg bg-[#3C3F4A]"></div>
+        <div className="absolute top-full z-50 h-16 w-16 -translate-y-1/2 transform rounded-full border-2 border-gray-shade-3 bg-background-shade-3 object-cover"></div>
       </div>
-      <div className="flex flex-col gap-3 px-4 items-center">
-        <div className="h-[15px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
-        <div className="h-[15px] w-[150px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
-        <div className="h-[25px] w-[250px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+      <div className="mt-10 flex flex-grow flex-col items-center gap-3 px-2 pb-8 fsm:px-4">
+        <div className="h-[15px] w-full max-w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
+        <div className="h-[15px] w-full max-w-[150px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
+        <div className="h-[25px] w-full max-w-[250px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
     </div>
   );

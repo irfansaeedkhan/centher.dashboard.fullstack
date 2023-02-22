@@ -1,6 +1,7 @@
 import { RewardsEachAsset } from "@/models/referral";
 import React from "react";
 import { formatPriceInUSD } from "@/utils/format.address";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 
 interface SingleLevelRewardPProps {
   rewardState: "lunchpad-rewards" | "marketplace-rewards";
@@ -18,27 +19,27 @@ const SingleLevelReward: React.FC<SingleLevelRewardPProps> = ({
   level,
 }) => {
   return (
-    <div className="w-[43%] f2xl:max-w-[338px] fxl:max-w-[288px] flg:max-w-[285px] fmd:max-w-[200px] fsm:max-w-[232px] max-w-[338px]">
+    <div className="w-[43%] max-w-[338px] fsm:max-w-[232px] fmd:max-w-[200px] flg:max-w-[285px] fxl:max-w-[288px] f2xl:max-w-[338px]">
       <div className="text-xs font-semibold text-gray-shade-7">
         {`From Level ${level}`}
       </div>
       {rewardState === "lunchpad-rewards" ? (
         <>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{`${rewards.ntr} NTR`}</p>
             <p className="text-gray-shade-7">{`($${formatPriceInUSD(
               rewards.ntr,
               ntrPrice
             )})`}</p>
           </div>
-          <div className="flex items-center text-sm font-semibold gap-2">
+          <div className="flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{`${rewards.busd} BUSD`}</p>
             <p className="text-gray-shade-7">{`($${rewards.busd})`}</p>
           </div>
         </>
       ) : rewardState === "marketplace-rewards" ? (
-        <div className="mt-4 flex items-center text-sm font-semibold gap-2">
-          <p className="text-white">{`${rewards.bnb} BNB`}</p>
+        <div className="mt-4 flex items-center gap-2 text-sm font-semibold">
+          <p className="text-white">{`${normalizeValue(rewards.bnb)} BNB`}</p>
           <p className="text-gray-shade-7">{`($${formatPriceInUSD(
             rewards.bnb,
             bnbPrice

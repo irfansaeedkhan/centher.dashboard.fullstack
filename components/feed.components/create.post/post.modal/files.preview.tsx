@@ -1,8 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import clsx from "clsx";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoCrop } from "react-icons/io5";
 
 import { useNewPostStore } from "@/store/new.post.store";
+// import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
+
+export type PostImageCropperData = {
+  preview: string;
+  fileID: string;
+};
 
 export const FilesPreview = () => {
   const {
@@ -10,8 +16,13 @@ export const FilesPreview = () => {
     selectedFiles,
     removeSelectedFile,
     editPostFiles,
+    setSelectedFiles,
     removeEditPostFile,
   } = useNewPostStore();
+  const [cropImageSrc, setCropImageSrc] = useState<PostImageCropperData>({
+    preview: "",
+    fileID: "",
+  });
 
   const postFiles = useMemo(() => {
     if (modalType === "edit") {
@@ -54,14 +65,14 @@ export const FilesPreview = () => {
             <img
               src={file.src}
               alt={file.original.name}
-              className={`w-full h-full max-h-[480px] object-cover rounded-10px`}
+              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
             />
           );
         } else if (file.original.type.startsWith("video")) {
           media = (
             <video
               src={file.src}
-              className={`w-full h-full max-h-[480px] object-cover rounded-10px`}
+              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
               controls
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
@@ -81,10 +92,45 @@ export const FilesPreview = () => {
                 }
               }}
             />
+            {/* <CropButton
+              className="absolute top-1 left-1 z-10"
+              onClick={() => {
+                setCropImageSrc({
+                  preview: URL.createObjectURL(
+                    file.original instanceof File
+                      ? file.original
+                      : new Blob([file.original.url])
+                  ),
+                  fileID: file.id,
+                });
+              }}
+            /> */}
             {media}
           </div>
         );
       })}
+
+      {/* <CropperPostMediaImage
+        cropImageSrc={cropImageSrc}
+        onClose={() => {
+          setCropImageSrc({
+            preview: "",
+            fileID: "",
+          });
+        }}
+        onCrop={(croppedImage) => {
+          const croppedSelectedFiles = selectedFiles.map((file) => {
+            if (file.id === cropImageSrc.fileID) {
+              return {
+                ...file,
+                original: croppedImage.original,
+              };
+            }
+            return file;
+          });
+          setSelectedFiles(croppedSelectedFiles);
+        }}
+      /> */}
     </div>
   );
 };
@@ -94,10 +140,21 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 const CloseButton: React.FC<ButtonProps> = ({ className, ...props }) => {
   return (
     <button
-      className={clsx(`p-1 rounded-md bg-black/40`, className)}
+      className={clsx(`rounded-md bg-black/40 p-1`, className)}
       {...props}
     >
-      <IoClose className="w-4 h-4 fill-white" />
+      <IoClose className="h-4 w-4 fill-white" />
     </button>
   );
 };
+
+// const CropButton: React.FC<ButtonProps> = ({ className, ...props }) => {
+//   return (
+//     <button
+//       className={clsx(`rounded-md bg-black/40 p-1`, className)}
+//       {...props}
+//     >
+//       <IoCrop className="h-4 w-4 fill-white" />
+//     </button>
+//   );
+// };

@@ -8,7 +8,7 @@ import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { callBuyListedItem } from "@/web3/utils/call.helpers";
+import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import toast from "react-hot-toast";
@@ -33,7 +33,7 @@ export const NonNFTBuyerDescription = ({
 
   const buyNFTStep1Func = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your wallet");
       return;
     }
     setModalTitle("Complete Checkout");
@@ -46,9 +46,9 @@ export const NonNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">Maradona sport</h2>
-        <h3 className="text-white text-14px font-normal">Gas fee 10%</h3>
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+        <h2 className="text-18px font-semibold text-white">Maradona sport</h2>
+        <h3 className="text-14px font-normal text-white">Gas fee 10%</h3>
+        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
           89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
@@ -70,10 +70,10 @@ export const NonNFTBuyerDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
         {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
@@ -107,11 +107,11 @@ export const NonNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully placed bid on{" "}
             <span className="text-white">{data?.name}</span> NFT on{" "}
             <b>Centher</b>
@@ -119,7 +119,7 @@ export const NonNFTBuyerDescription = ({
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
@@ -168,10 +168,10 @@ export const NonNFTBuyerDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
+            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}
@@ -181,13 +181,13 @@ export const NonNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
           {data?.description}
         </p>
       </div>
       <div className="buttonContainer flex items-center">
         <Button
-          title={"Buy NFT"}
+          title={"Buy Now"}
           variant={data?.saleState === "NON" ? "v2" : "v1"}
           className="py-4"
           disabled={data?.saleState === "NON"}
@@ -220,24 +220,7 @@ w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
 `);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
-`);
+
 const greyBoxContainer = ctl(`
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
 `);

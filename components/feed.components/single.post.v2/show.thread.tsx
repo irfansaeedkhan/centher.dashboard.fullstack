@@ -29,7 +29,7 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
         width={48}
         height={48}
         sizes="24px"
-        className="rounded-full object-cover w-[30px] h-[30px] mx-[9px]"
+        className="mx-[9px] h-[30px] w-[30px] rounded-full object-cover"
       />
 
       <Link
@@ -42,7 +42,7 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
             post_id: post._id,
           },
         }}
-        className="text-xs text-brand-primary font-medium bg-brand-primary/10 rounded-[40px] px-3 py-1.5"
+        className="rounded-[40px] bg-brand-primary/10 px-3 py-1.5 text-xs font-medium text-brand-primary"
       >
         Show Comments
       </Link>

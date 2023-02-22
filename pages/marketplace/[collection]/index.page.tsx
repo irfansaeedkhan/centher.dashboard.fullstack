@@ -23,6 +23,7 @@ import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import {
   DotsIcon,
   FacebookCircleIcon,
@@ -47,10 +48,10 @@ const Collection: NextPageWithLayout = () => {
     return "";
   }, [router.asPath]);
 
-  // Copy nft share url to clipboard
+  // Copy collection url to clipboard
   const copyShareUrl = async () => {
     await copyText(shareUrl);
-    toast.success("NFT link copied!");
+    toast.success("Collection link copied");
   };
 
   const {
@@ -144,19 +145,19 @@ const Collection: NextPageWithLayout = () => {
             >
               <div className={shareBtn}>
                 <div ref={menuRef} className={`relative`}>
-                  <div className="flex justify-center items-center gap-5">
+                  <div className="flex items-center justify-center gap-5">
                     {(metadata?.facebook ||
                       metadata?.twitter ||
                       metadata?.yoursite) && (
-                      <div className="w-[100px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px">
-                        <div className="flex justify-center items-center gap-3">
+                      <div className="flex h-[44px] w-[100px] items-center justify-center rounded-10px !bg-[#17171A]/30">
+                        <div className="flex items-center justify-center gap-3">
                           {metadata.facebook && (
                             <a
                               href={metadata.facebook}
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TiSocialFacebook className="text-white text-lg hover:text-brand-primary" />
+                              <TiSocialFacebook className="text-lg text-white hover:text-brand-primary" />
                             </a>
                           )}
 
@@ -166,7 +167,7 @@ const Collection: NextPageWithLayout = () => {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TiSocialTwitter className="text-white text-lg hover:text-brand-primar" />
+                              <TiSocialTwitter className="hover:text-brand-primar text-lg text-white" />
                             </a>
                           )}
 
@@ -176,7 +177,7 @@ const Collection: NextPageWithLayout = () => {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TbWorld className="text-white text-lg hover:text-brand-primar" />
+                              <TbWorld className="hover:text-brand-primar text-lg text-white" />
                             </a>
                           )}
                         </div>
@@ -184,28 +185,28 @@ const Collection: NextPageWithLayout = () => {
                     )}
 
                     <button className={threeDotsBtn} onClick={toggleMenu}>
-                      <DotsIcon className="[&>*]:stroke-white [&>*]:fill-white" />
+                      <DotsIcon className="[&>*]:fill-white [&>*]:stroke-white" />
                     </button>
                     <div
                       className={clsx(
-                        `absolute right-0 top-10 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[229px]`,
-                        isMenuVisible ? "block z-40" : "hidden"
+                        `absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm`,
+                        isMenuVisible ? "z-40 block" : "hidden"
                       )}
                     >
                       <button onClick={copyShareUrl} className={menuButton}>
-                        <CopyIcon className={icon} /> Copy link
+                        <CopyIcon className={icon} /> Copy Link
                       </button>
 
                       <FacebookShareButton url={shareUrl} className="w-full">
                         <span className={menuButton}>
                           <FacebookCircleIcon className={icon} /> Share on
-                          facebook
+                          Facebook
                         </span>
                       </FacebookShareButton>
 
                       <TwitterShareButton url={shareUrl} className="w-full">
                         <span className={menuButton}>
-                          <TwitterSvg className={icon} /> Share on twitter
+                          <TwitterSvg className={icon} /> Share on Twitter
                         </span>
                       </TwitterShareButton>
                     </div>
@@ -230,7 +231,7 @@ const Collection: NextPageWithLayout = () => {
               <div className={topDetais}>
                 <div>
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center gap-2">
                     <span className="text-white">Created by</span>
                     <Link
                       href={{
@@ -239,9 +240,10 @@ const Collection: NextPageWithLayout = () => {
                           account_address: info?.creator,
                         },
                       }}
-                      className="text-gray-shade-18 text-14px font-semibold text-ellipsis line-clamp-1 hover:text-brand-primary"
+                      className="text-14px text-ellipsis font-semibold text-gray-shade-18 line-clamp-1 hover:text-brand-primary"
+                      title={user?.display_name}
                     >
-                      {user?.display_name}
+                      {user && sliceDisplayName(user?.display_name)}
                     </Link>
                   </div>
                 </div>
@@ -263,7 +265,7 @@ const Collection: NextPageWithLayout = () => {
                   <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
                 </div> */}
                   <div className="text-center">
-                    <h4 className={detailsCardTitle}>Total Volum</h4>
+                    <h4 className={detailsCardTitle}>Total Volume</h4>
                     <h5 className={detailsCardValue}>
                       $
                       {info?.tradingVolumn
@@ -273,7 +275,7 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className={textContent}>
+              <div className={`mt-6 mb-4`}>
                 <p className={profileDescription}>{metadata?.description}</p>
               </div>
             </div>
@@ -293,21 +295,21 @@ const Collection: NextPageWithLayout = () => {
                 }}
               />
               <Button
-                title={"Buy now"}
+                title={"Listed For Sale"}
                 variant={filter === "List" ? "v1" : "v2"}
                 className="py-4"
                 onClick={() => {
                   setFilter("List");
                 }}
               />
-              <Button
+              {/* <Button
                 title={"Auction"}
                 variant={filter === "Auction" ? "v1" : "v2"}
                 className="py-4"
                 onClick={() => {
                   setFilter("Auction");
                 }}
-              />
+              /> */}
               <select
                 className={inputField}
                 value={orderdir}
@@ -328,13 +330,8 @@ const Collection: NextPageWithLayout = () => {
             )}
 
             {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
-              <div className="flex flex-wrap gap-10 items-center">
+              <div className="flex flex-wrap items-center gap-10">
                 {/* we are showing 8 skeletons while reloading the page to users */}
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
                 <NftsSkeleton />
                 <NftsSkeleton />
                 <NftsSkeleton />
@@ -343,10 +340,10 @@ const Collection: NextPageWithLayout = () => {
 
             {loadingNFTs === "loaded" && nfts.length === 0 && (
               <div>
-                <div className="flex justify-center mt-[48px]">
+                <div className="mt-[48px] flex justify-center">
                   <HotNftEmptyIcon />
                 </div>
-                <div className="flex justify-center text-white font-semibold text-xs mt-6">
+                <div className="mt-6 flex justify-center text-xs font-semibold text-white">
                   <p>No Nfts found yet!</p>
                 </div>
               </div>

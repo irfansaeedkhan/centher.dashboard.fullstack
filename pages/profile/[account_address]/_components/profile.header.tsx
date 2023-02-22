@@ -15,8 +15,9 @@ import { TbBrandTiktok } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
-import { MdOutlineCameraEnhance, MdClose } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import {
+  FiCamera,
   FiCopy,
   FiInstagram,
   FiTwitch,
@@ -36,10 +37,9 @@ import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
-import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { ProfileTabsSocial } from "./profile.tabs.social";
-import { ProfileTabsNFT } from "./profile.tabs.nft";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
@@ -98,21 +98,6 @@ const ProfileHeader: React.FC<Props> = ({
         user.account_address.toLowerCase()
     );
   }, [user, loggedInUser]);
-
-  const currentPageRoute = useMemo(
-    () => ({
-      isProfilePage:
-        router.pathname === AppRoutes.profile.account_address ||
-        router.pathname === AppRoutes.profile.following ||
-        router.pathname === AppRoutes.profile.followers ||
-        router.pathname === AppRoutes.profile.replies,
-      isNFTProfilePage:
-        router.pathname === AppRoutes.profile.nfts ||
-        router.pathname === AppRoutes.profile.purchased ||
-        router.pathname === AppRoutes.profile.collections,
-    }),
-    [router.pathname]
-  );
 
   // Set to initial cover image state
   const setInitialCoverImage = useCallback(() => {
@@ -280,10 +265,10 @@ const ProfileHeader: React.FC<Props> = ({
   };
 
   return (
-    <div className={`bg-background-shade-3 rounded-xl`}>
+    <div className={`rounded-xl bg-background-shade-3`}>
       <div
         className={clsx(
-          `relative rounded-t-xl bg-no-repeat w-full h-[180px] bg-cover`,
+          `relative h-[180px] w-full rounded-t-xl bg-cover bg-no-repeat`,
           {
             "cursor-move": coverImage.newImage,
           }
@@ -295,7 +280,7 @@ const ProfileHeader: React.FC<Props> = ({
       >
         {isOwnProfile && (
           <>
-            <div className="flex gap-x-3 items-center absolute right-2 bottom-2 fsm:right-4 fsm:bottom-3">
+            <div className="absolute right-2 bottom-2 flex items-center gap-x-3 fsm:right-4 fsm:bottom-3">
               <input
                 type="file"
                 ref={coverImageInputRef}
@@ -310,17 +295,17 @@ const ProfileHeader: React.FC<Props> = ({
                   }}
                   variant="edit-cover"
                 >
-                  <MdOutlineCameraEnhance className="w-4 h-4" />
+                  <FiCamera className="h-4 w-4" />
                   <span className="hidden fmd:inline-block">Edit Cover</span>
                 </CoverUploadButton>
               )}
               {coverImage.newImage && (
-                <div className="flex fsm:flex-row flex-col fsm:gap-3 gap-2">
+                <div className="flex flex-col gap-2 fsm:flex-row fsm:gap-3">
                   <CoverUploadButton
                     variant="cancel"
                     onClick={setInitialCoverImage}
                   >
-                    <MdClose className="w-4 h-4" />
+                    <MdClose className="h-4 w-4" />
                     <span className="hidden fmd:inline-block">Cancel</span>
                   </CoverUploadButton>
                   <CoverUploadButton
@@ -329,11 +314,9 @@ const ProfileHeader: React.FC<Props> = ({
                     variant="upload-cover"
                   >
                     <CgSpinner
-                      className={`group-disabled:block hidden animate-spin w-4 h-4`}
+                      className={`hidden h-4 w-4 animate-spin group-disabled:block`}
                     />
-                    <MdOutlineCameraEnhance
-                      className={`group-disabled:hidden w-4 h-4`}
-                    />
+                    <FiCamera className={`h-4 w-4 group-disabled:hidden`} />
                     <span className="hidden fmd:inline-block">
                       Upload Cover
                     </span>
@@ -350,7 +333,7 @@ const ProfileHeader: React.FC<Props> = ({
         )}
 
         <div
-          className={`cursor-pointer absolute left-[50%] translate-x-[-50%] -bottom-12 h-[112px] !w-[112px]`}
+          className={`absolute left-[50%] -bottom-12 h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
         >
           <div className="relative h-[112px] !w-[112px]">
             <Image
@@ -358,7 +341,7 @@ const ProfileHeader: React.FC<Props> = ({
               alt={user.display_name}
               width={112}
               height={112}
-              className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] rounded-full !h-[112px] !w-[112px] object-cover border-2 border-background-shade-3 !m-0 bg-black-shade-7"
+              className="absolute top-[50%] left-[50%] !m-0 !h-[112px] !w-[112px] translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
               sizes={"256px"}
             />
           </div>
@@ -369,11 +352,11 @@ const ProfileHeader: React.FC<Props> = ({
         {!!loggedInUser &&
           loggedInUser?.account_address.toLowerCase() !==
             user.account_address.toLowerCase() && (
-            <div className="absolute right-4 w-full max-w-[122px] fmd:block hidden">
+            <div className="absolute right-4 hidden w-full max-w-[122px] fmd:block">
               {loadingState ? (
                 <button
                   className={clsx(
-                    `text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
+                    `text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl py-2 px-2 font-bold`,
                     follow ? "bg-gray-shade-20" : "bg-brand-primary "
                   )}
                 >
@@ -383,7 +366,7 @@ const ProfileHeader: React.FC<Props> = ({
                 <Button
                   title={follow ? "Following" : "Follow"}
                   variant={follow ? "v5" : "v1"}
-                  className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[122px]`}
+                  className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                   onClick={() => followUser(user._id)}
                 />
               )}
@@ -396,23 +379,26 @@ const ProfileHeader: React.FC<Props> = ({
         />
 
         <div className={`!mt-14`}>
-          <div className="w-full justify-center flex">
+          <div className="flex w-full justify-center">
             <div
-              className={`flex flex-col lg:flex-row items-baseline justify-between`}
+              className={`flex flex-col items-baseline justify-between lg:flex-row`}
             >
               <h5
                 className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
-                <span className="text-center text-white text-base font-semibold text-ellipsis line-clamp-1">
-                  {user.display_name}
+                <span
+                  className="text-ellipsis text-center text-base font-semibold text-white line-clamp-1"
+                  title={user.display_name}
+                >
+                  {sliceDisplayName(user.display_name)}
                 </span>
                 {!!verificationTick && (
-                  <span className="verifiedIcon !h-[26px] !w-[26px] ml-0.5 fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 h-[22px] w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
-                      width={26}
-                      height={26}
+                      width={22}
+                      height={22}
                     />
                   </span>
                 )}
@@ -420,9 +406,9 @@ const ProfileHeader: React.FC<Props> = ({
             </div>
           </div>
 
-          <div className="w-full justify-center flex flex-col items-center mt-1">
-            <div className={`flex items-center gap-2 relative`}>
-              <h6 className={`text-white text-xs font-medium`}>
+          <div className="mt-1 flex w-full flex-col items-center justify-center">
+            <div className={`relative flex items-center gap-2`}>
+              <h6 className={`text-xs font-medium text-white`}>
                 {sliceAccountAddress(user.account_address)}
               </h6>
               <button
@@ -431,22 +417,22 @@ const ProfileHeader: React.FC<Props> = ({
                   toast.success("Address copied!");
                 }}
               >
-                <FiCopy className="w-4 h-4 hover:text-brand-primary text-gray-shade-7" />
+                <FiCopy className="h-4 w-4 text-gray-shade-7 hover:text-brand-primary" />
               </button>
             </div>
 
-            <p className="text-[11px] mt-1 leading-6 font-medium text-gray-shade-7">
+            <p className="mt-1 text-[11px] font-medium leading-6 text-gray-shade-7">
               Member since {dayjs(user.createdAt).format("MMM, YYYY")}
             </p>
 
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
-                <div className="max-w-[122px] fmd:hidden flex w-full justify-center mt-2">
+                <div className="mt-2 flex w-full max-w-[122px] justify-center fmd:hidden">
                   {loadingState ? (
                     <button
                       className={clsx(
-                        `!text-14px font-bold py-2 px-2 rounded-xl flex items-center justify-center w-full max-w-[122px] h-[36px]`,
+                        `!text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl py-2 px-2 font-bold`,
                         follow ? "bg-gray-shade-20" : "bg-brand-primary "
                       )}
                     >
@@ -456,7 +442,7 @@ const ProfileHeader: React.FC<Props> = ({
                     <Button
                       title={follow ? "Following" : "Follow"}
                       variant={follow ? "v5" : "v1"}
-                      className={`!px-4 flex items-center justify-center gap-3 w-full max-w-[122px]`}
+                      className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                       onClick={() => followUser(user._id)}
                     />
                   )}
@@ -466,25 +452,25 @@ const ProfileHeader: React.FC<Props> = ({
             {!!loggedInUser &&
               loggedInUser?.account_address.toLowerCase() !==
                 user.account_address.toLowerCase() && (
-                <div className="flex justify-center gap-5 mt-3 flg:hidden">
-                  <div className="text-center space-y-1.5 w-16">
-                    <span className="text-xs font-medium block text-gray-shade-7">
+                <div className="mt-3 flex justify-center gap-5 flg:hidden">
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
                       Post
                     </span>
                     <span className="text-xs font-semibold text-white">
                       {profileCardDetails.posts_count ?? "--"}
                     </span>
                   </div>
-                  <div className="text-center space-y-1.5 w-16">
-                    <span className="text-xs font-medium block text-gray-shade-7">
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
                       Followers
                     </span>
                     <span className="text-xs font-semibold text-white">
                       {profileCardDetails.followers_count ?? "--"}
                     </span>
                   </div>
-                  <div className="text-center space-y-1.5 w-16">
-                    <span className="text-xs font-medium block text-gray-shade-7">
+                  <div className="w-16 space-y-1.5 text-center">
+                    <span className="block text-xs font-medium text-gray-shade-7">
                       Following
                     </span>
                     <span className="text-xs font-semibold text-white">
@@ -497,7 +483,7 @@ const ProfileHeader: React.FC<Props> = ({
 
           {user.profile_bio && (
             <p
-              className={`text-xs fsm:text-[13px] mt-2 text-center break-words font-normal tracking-wide text-gray-shade-16 whitespace-pre-wrap max-w-xl mx-auto`}
+              className={`mx-auto mt-2 max-w-xl whitespace-pre-wrap break-words text-center text-xs font-normal tracking-wide text-gray-shade-16 fsm:text-[13px]`}
             >
               {user.profile_bio}
             </p>
@@ -512,7 +498,7 @@ const ProfileHeader: React.FC<Props> = ({
           user.twitter_username ||
           user.website_url ||
           user.youtube_url) && (
-          <div className="w-full justify-center flex mt-3 items-center gap-4">
+          <div className="mt-3 flex w-full items-center justify-center gap-4">
             {user.tiktok_username && (
               <a
                 href={`https://tiktok.com/@${user.tiktok_username}`}
@@ -585,16 +571,12 @@ const ProfileHeader: React.FC<Props> = ({
         {!!loggedInUser &&
           loggedInUser?.account_address.toLowerCase() !==
             user.account_address.toLowerCase() &&
-          mutualFollowersData?.users && (
+          mutualFollowersData?.users &&
+          !!mutualFollowersData.users.length && (
             <FollowedComponent mutualFollowersData={mutualFollowersData} />
           )}
 
-        {currentPageRoute.isProfilePage && (
-          <ProfileTabsSocial account_address={router.query.account_address} />
-        )}
-        {currentPageRoute.isNFTProfilePage && (
-          <ProfileTabsNFT account_address={router.query.account_address} />
-        )}
+        <ProfileTabsSocial account_address={router.query.account_address} />
       </div>
     </div>
   );

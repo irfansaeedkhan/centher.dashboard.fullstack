@@ -34,7 +34,7 @@ export const PostTextCounter: React.FC<Props> = ({
     <div className={clsx(`relative`, className)}>
       <div
         className={clsx(
-          "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2",
+          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform",
           {
             "text-red-500": thresholdReached,
             "text-brand-primary": !thresholdReached,
@@ -47,7 +47,7 @@ export const PostTextCounter: React.FC<Props> = ({
 
       <svg
         viewBox={`0 0 ${viewBoxSize} ${viewBoxSize}`}
-        className={clsx(`transform -rotate-90`)}
+        className={clsx(`-rotate-90 transform`)}
       >
         <circle
           r={radius}

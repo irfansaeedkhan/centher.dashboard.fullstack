@@ -1,28 +1,42 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import { EvmChain } from "@moralisweb3/evm-utils";
+import { EvmChain } from "@moralisweb3/common-evm-utils";
 
-// App imports
-import { axiosNodeApi } from "@/utils/axios";
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 import {
   registeredCollections,
   collectionsByAccount,
   listedNFTsByAccount,
+  createdNFTsByAccount,
+  listedUserNFTsByAccount,
 } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
 import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
+import { getNativeCollectionAddress } from "@/web3/utils/address.helpers";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
   ownedNfts: NFT[];
   listedNfts: NFT[];
+  listedUserNfts: NFT[];
+  createdNfts: NFT[];
   fetchCollections: (account: string) => Promise<void>;
   fetchOwnedNFTs: (account: string) => Promise<void>;
+  fetchCreatedNFTs: (
+    account: string,
+    offset?: number,
+    limit?: number,
+    reload?: boolean
+  ) => Promise<void>;
   fetchListedNFTs: (
+    account: string,
+    offset?: number,
+    limit?: number,
+    reload?: boolean
+  ) => Promise<void>;
+  fetchListedUserNFTs: (
     account: string,
     offset?: number,
     limit?: number,
@@ -30,12 +44,18 @@ export interface ProfileNFTStore {
   ) => Promise<void>;
   ownedOffset: number;
   listedOffset: number;
+  listedUserOffset: number;
+  createdOffset: number;
   updateOwnedOffset: () => void;
   updateListedOffset: () => void;
+  updateListedUserOffset: () => void;
+  updateCreatedOffset: () => void;
   limit: number;
   loadingCollections: LoadingState;
   loadingOwnedNFTs: LoadingState;
   loadingListedNFTs: LoadingState;
+  loadingListedUserNFTs: LoadingState;
+  loadingCreatedNFTs: LoadingState;
 }
 
 export const useProfileNFTStore = create<ProfileNFTStore>()(
@@ -44,13 +64,25 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       collections: [],
       ownedNfts: [],
       listedNfts: [],
+      listedUserNfts: [],
+      createdNfts: [],
       listedOffset: 0,
+      listedUserOffset: 0,
       ownedOffset: 0,
+      createdOffset: 0,
       limit: 20,
       loadingCollections: "idle",
       loadingListedNFTs: "idle",
+      loadingListedUserNFTs: "idle",
       loadingOwnedNFTs: "idle",
+      loadingCreatedNFTs: "idle",
+
       updateListedOffset: () =>
+        set((state) => ({
+          listedOffset: state.listedNfts.length,
+        })),
+
+      updateListedUserOffset: () =>
         set((state) => ({
           listedOffset: state.listedNfts.length,
         })),
@@ -58,6 +90,11 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       updateOwnedOffset: () =>
         set((state) => ({
           ownedOffset: state.ownedNfts.length,
+        })),
+
+      updateCreatedOffset: () =>
+        set((state) => ({
+          createdOffset: state.createdNfts.length,
         })),
 
       fetchCollections: async (account) => {
@@ -80,20 +117,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             fetchPolicy: "cache-first",
           });
 
-          if (result && !error) {
-            _collections = result.collections.map((item: any) => {
-              return {
-                id: item.id,
-                collection: item.collection,
-                name: item.name,
-                symbol: item.symbol,
-                maxSupply: item.maxSupply,
-                totalSupply: item.totalSupply,
-                creator: item.creator,
-                ipfs: item.ipfs,
-                txTime: item.txTime,
-              };
-            });
+          if (result) {
+            _collections = result.collections;
           }
 
           set((state) => {
@@ -137,16 +162,9 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               if (item.saleState === "Auction") {
                 _endTime = item.auctionInfo.endTime;
               }
+
               return {
-                id: item.id,
-                collection: item.collection,
-                tokenId: item.tokenId,
-                creator: item.creator,
-                createTime: item.createTime,
-                ipfs: item.ipfs,
-                saleState: item.saleState,
-                price: item.price,
-                owner: item.owner,
+                ...item,
                 endTime: _endTime,
               };
             });
@@ -158,20 +176,63 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               (stateNFTs) =>
                 !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
             );
-            // if (reload) {
+
             return {
               listedNfts: _nfts,
               loadingListedNFTs: "loaded",
             };
-            // } else {
-            //   return {
-            //     listedNfts: [..._nfts, ...filteredNFTs],
-            //     loadingListedNFTs: "loaded",
-            //   };
-            // }
           });
         } catch (error) {
           set({ loadingListedNFTs: "failed" });
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
+
+      fetchListedUserNFTs: async (account, offset, limit, reload) => {
+        try {
+          set({ loadingListedUserNFTs: "loading" });
+          const client = new ApolloClient({
+            uri: SUBGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _nfts: NFT[] = [];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
+            query: gql(listedUserNFTsByAccount),
+            variables: {
+              first: limit,
+              skip: offset,
+              owner: account,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result) {
+            _nfts = result.nfts.map((item: any) => {
+              let _endTime = 0;
+              if (item.saleState === "Auction") {
+                _endTime = item.auctionInfo.endTime;
+              }
+
+              return {
+                ...item,
+                endTime: _endTime,
+              };
+            });
+          }
+
+          set((state) => {
+            return {
+              listedUserNfts: _nfts,
+              loadingListedUserNFTs: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingListedUserNFTs: "failed" });
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }
@@ -190,61 +251,46 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 : EvmChain.GOERLI,
           });
 
-          if (!Array.isArray(result?.result)) {
+          if (!result || !Array.isArray(result.result)) {
             throw new Error("Cannot get wallet NFTs.");
           }
 
+          const platformNativeCollection = getNativeCollectionAddress();
           const client = new ApolloClient({
             uri: SUBGRAPH_URL,
             cache: new InMemoryCache(),
           });
-          let _collections: any[] = [];
-          const {
-            data: result1,
-            error,
-            loading,
-          } = await client.query({
+
+          const { data: _collections } = await client.query({
             query: gql(registeredCollections),
             variables: {},
             fetchPolicy: "cache-first",
           });
 
-          if (result1) {
-            _collections = result1.collections.map((item: any) => {
-              return item.collection;
-            });
-          }
-
-          if (result) {
-            const result2 = result?.result.filter((item: any) => {
-              return _collections.includes(item.token_address);
-            });
-            _nfts = result2.map((item: any) => {
-              let ipfs = item.token_uri;
-              if (item.token_uri.split("ipfs").length > 2)
-                ipfs = "ipfs:/" + item.token_uri.split("ipfs")[2];
-              return {
-                id: item.token_hash,
-                collection: item.token_address,
-                tokenId: item.token_id,
-                creator: item.minter_address,
-                createTime: item.block_number_minted,
-                ipfs: item.token_uri,
-                saleState: "NON",
-                price: 0,
-                owner: item.owner_of,
-                endTime: 0,
-              };
-            });
+          if (result.result) {
+            const colctns = _collections?.collections.map(
+              (e: any) => e.collection
+            );
+            colctns.push(platformNativeCollection);
+            _nfts = result.result
+              .filter((e) => isInList(e, colctns))
+              .map((item: any) => {
+                return {
+                  id: item.tokenHash,
+                  collection: item.tokenAddress._value,
+                  tokenId: item.tokenId,
+                  creator: item.minter_address?._value,
+                  createTime: item.blockNumberMinted,
+                  ipfs: item.tokenUri,
+                  saleState: "NON",
+                  price: item.amount,
+                  owner: item.ownerOf._value,
+                  endTime: 0,
+                };
+              });
           }
 
           set((state) => {
-            // Filter out all nfts that are already in the store
-            const filteredNFTs = state.ownedNfts.filter(
-              (stateNFTs) =>
-                !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
-            );
-
             return {
               ownedNfts: _nfts,
               loadingOwnedNFTs: "loaded",
@@ -256,7 +302,74 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             console.error(error);
         }
       },
+
+      fetchCreatedNFTs: async (account, offset, limit, reload) => {
+        try {
+          set({ loadingCreatedNFTs: "loading" });
+          const client = new ApolloClient({
+            uri: SUBGRAPH_URL,
+            cache: new InMemoryCache(),
+          });
+          let _nfts: NFT[];
+          const {
+            data: result,
+            error,
+            loading,
+          } = await client.query({
+            query: gql(createdNFTsByAccount),
+            variables: {
+              first: limit,
+              skip: offset,
+              creator: account,
+            },
+            fetchPolicy: "cache-first",
+          });
+
+          if (result) {
+            _nfts = result.nfts.map((item: any) => {
+              let _endTime = 0;
+              if (item.saleState === "Auction") {
+                _endTime = item.auctionInfo.endTime;
+              }
+              return {
+                id: item.id,
+                collection: item.collection,
+                tokenId: item.tokenId,
+                creator: item.creator,
+                createTime: item.createTime,
+                ipfs: item.ipfs,
+                saleState: item.saleState,
+                price: item.price,
+                owner: item.owner,
+                endTime: _endTime,
+              };
+            });
+          }
+
+          set((state) => {
+            return {
+              createdNfts: _nfts,
+              loadingCreatedNFTs: "loaded",
+            };
+          });
+        } catch (error) {
+          set({ loadingCreatedNFTs: "failed" });
+          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
+            console.error(error);
+        }
+      },
     }),
     { name: "ProfileNFTStore" }
   )
 );
+
+const isInList = (nft: any, collections: any[]) => {
+  if (!collections) {
+    return false;
+  }
+
+  const tokenAddress = nft.tokenAddress._value;
+  return !!collections.find(
+    (e) => e.toLowerCase() == tokenAddress.toLowerCase()
+  );
+};

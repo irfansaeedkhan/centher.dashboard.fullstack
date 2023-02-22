@@ -1,5 +1,8 @@
 import { formatNum2DispNum } from "@/utils/format.address";
-import { adminClaimRegistrationBNB } from "@/web3/utils/call.helpers";
+import {
+  adminClaimRegistrationBNB,
+  normalizeValue,
+} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -30,42 +33,46 @@ const RegistrationRewards = ({
   };
 
   return (
-    <div className="w-full h-auto bg-elevation-1 rounded-[14px] overflow-x-auto">
-      <div className="w-full  bg-no-repeat bg-center bg-cover py-7 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4 bg-[url(/images/patern1.png)] bg-[#2E2B22] min-w-[800px]">
-        <h4 className="text-white font-semibold text-18px">
+    <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
+      <div className="flex  w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
+        <h4 className="text-18px font-semibold text-white">
           Rewards From Registration
         </h4>
       </div>
-      <div className="p-6 flex gap-10 md:pl-10 pl-6 md:pr-10 pr-6">
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px] border-r-2 border-black-shade-7  ">
-          <div className="uppercase text-xs font-semibold text-gray-shade-7">
+      <div className="flex gap-10 p-6 pl-6 pr-6 md:pl-10 md:pr-10">
+        <div className="w-full min-w-[200px] max-w-[338px]  border-r-2 border-black-shade-7 f2xl:max-w-[338px]  ">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Total earnings
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">
-              {formatNum2DispNum(claimableBNB + claimedBNB)} (BNB)
+              {`${normalizeValue(
+                formatNum2DispNum(claimableBNB + claimedBNB)
+              )} (BNB)`}
             </p>
           </div>
         </div>
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px] border-r-2 border-black-shade-7 ">
-          <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+        <div className="w-full min-w-[200px] max-w-[338px]  border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimed
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
-            <p className="text-white">{formatNum2DispNum(claimedBNB)} (BNB)</p>
+          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+            <p className="text-white">
+              {`${normalizeValue(formatNum2DispNum(claimedBNB))} (BNB)`}
+            </p>
           </div>
         </div>
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px]">
-          <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+        <div className="w-full min-w-[200px] max-w-[338px]  f2xl:max-w-[338px]">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimable
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2 justify-between">
+          <div className="mt-4 mb-3 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">
-              {formatNum2DispNum(claimableBNB)} (BNB)
+              {`${normalizeValue(formatNum2DispNum(claimableBNB))} (BNB)`}
             </p>
             <button
               // className="text-brand-primary text-12px font-semibold "
-              className="text-black-shade-3 text-12px font-semibold p-3 w-full bg-yellow-theme rounded-lg max-w-[120px]"
+              className="text-12px w-full max-w-[120px] rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
               onClick={handleClaimBNB}
               disabled={pendingTx}
             >

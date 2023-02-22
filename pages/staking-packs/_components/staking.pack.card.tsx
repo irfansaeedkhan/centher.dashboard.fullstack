@@ -34,19 +34,19 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
       <div className={StackCardContent}>
         {/* <div className=""> */}
         <div className="flex flex-col gap-3">
-          <div className="w-full flex md:gap-10 sm:gap-9 md:justify-start sm:justify-between">
-            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+          <div className="flex w-full sm:justify-between sm:gap-9 md:justify-start md:gap-10">
+            <span className="text-12px w-1/3 leading-[24px] text-gray-shade-7">
               Staking Pack
             </span>
-            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+            <span className="text-12px w-1/3 leading-[24px] text-gray-shade-7">
               Daily Percentage
             </span>
-            <span className="text-12px leading-[24px] text-gray-shade-7 w-1/3">
+            <span className="text-12px w-1/3 leading-[24px] text-gray-shade-7">
               Daily Profit
             </span>
           </div>
-          <div className="w-full flex md:gap-10 sm:gap-9 md:justify-start sm:justify-between">
-            <div className="flex md:flex-row sm:flex-col gap-1 w-1/3">
+          <div className="flex w-full sm:justify-between sm:gap-9 md:justify-start md:gap-10">
+            <div className="flex w-1/3 gap-1 sm:flex-col md:flex-row">
               <span className="text-16px textGradient  font-semibold">
                 500NTR
               </span>
@@ -54,29 +54,29 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
                 ($50)
               </span>
             </div>
-            <span className="text-16px text-white font-semibold w-1/3">
+            <span className="text-16px w-1/3 font-semibold text-white">
               0.15
             </span>
-            <span className="text-16px text-white font-semibold w-1/3">
+            <span className="text-16px w-1/3 font-semibold text-white">
               0,8 NTR
             </span>
           </div>
         </div>
         <div className={StackCardContentWrap}>
-          <div className="w-full gap-10 flex">
-            <div className="flex flex-col w-1/3">
-              <span className="text-12px leading-[24px] text-gray-shade-7 pb-3">
+          <div className="flex w-full gap-10">
+            <div className="flex w-1/3 flex-col">
+              <span className="text-12px pb-3 leading-[24px] text-gray-shade-7">
                 Duration
               </span>
-              <span className="text-16px text-white font-semibold">0.15</span>
+              <span className="text-16px font-semibold text-white">0.15</span>
             </div>
-            <div className="flex flex-col w-1/3 min-w-max">
-              <span className="text-12px leading-[24px] text-gray-shade-7 pb-3">
+            <div className="flex w-1/3 min-w-max flex-col">
+              <span className="text-12px pb-3 leading-[24px] text-gray-shade-7">
                 Claim Lookup
               </span>
-              <span className="text-16px text-white font-semibold">0.15</span>
+              <span className="text-16px font-semibold text-white">0.15</span>
             </div>
-            <div className="flex flex-col w-1/3"></div>
+            <div className="flex w-1/3 flex-col"></div>
           </div>
         </div>
         <Button title={"Buy now"} variant={"v3"} className="py-4" />

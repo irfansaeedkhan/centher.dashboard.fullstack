@@ -10,6 +10,7 @@ import {
   adminChangeRegistrationFees,
   adminPauseRegistration,
   adminUnPauseRegistration,
+  normalizeValue,
 } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
@@ -80,9 +81,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
       <RegistrationTabs />
 
       {!registrationDetail.loading ? (
-        <div className="w-full h-auto bg-elevation-1 rounded-[14px] overflow-x-auto">
-          <div className="w-full bg-no-repeat bg-center bg-cover py-7 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4 bg-[url(/images/patern1.png)] bg-[#2E2B22] min-w-[800px]">
-            <h4 className="text-white font-semibold text-18px">
+        <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
+          <div className="flex w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
+            <h4 className="text-18px font-semibold text-white">
               Current Contract Status
             </h4>
             {/* <button
@@ -94,32 +95,36 @@ const RegistrationSetting: NextPageWithLayout = () => {
             Edit
           </button> */}
           </div>
-          <div className="p-6 flex gap-10 md:pl-10 pl-6 md:pr-10 pr-6">
-            <div className="w-full f2xl:max-w-[338px] min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 ">
-              <div className="uppercase text-xs font-semibold text-gray-shade-7">
+          <div className="flex gap-10 p-6 pl-6 pr-6 md:pl-10 md:pr-10">
+            <div className="w-full min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+              <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (With referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
-                  {registrationDetail.registrationFees.feeWithReferrer} (BNB)
+                  {`${normalizeValue(
+                    registrationDetail.registrationFees.feeWithReferrer
+                  )} (BNB)`}
                 </p>
               </div>
             </div>
-            <div className="w-full f2xl:max-w-[338px] min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 ">
-              <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+            <div className="w-full min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+              <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (Without referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
-                  {registrationDetail.registrationFees.feeWithoutReferrer} (BNB)
+                  {`${normalizeValue(
+                    registrationDetail.registrationFees.feeWithoutReferrer
+                  )} (BNB)`}
                 </p>
               </div>
             </div>
-            <div className="w-full f2xl:max-w-[338px] min-w-[200px] max-w-[338px]">
-              <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+            <div className="w-full min-w-[200px] max-w-[338px] f2xl:max-w-[338px]">
+              <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Status
               </div>
-              <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
                   {registrationDetail.isActive ? "Active" : "Paused"}
                 </p>
@@ -132,20 +137,20 @@ const RegistrationSetting: NextPageWithLayout = () => {
       )}
 
       {!registrationDetail.loading ? (
-        <div className="w-full h-auto bg-elevation-1 rounded-[14px] overflow-x-auto">
-          <div className="w-full bg-no-repeat bg-center bg-cover py-7 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4 bg-[url(/images/patern1.png)] bg-[#2E2B22] min-w-[800px]">
-            <h4 className="text-white font-semibold text-18px">
+        <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
+          <div className="flex w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
+            <h4 className="text-18px font-semibold text-white">
               Update Contract
             </h4>
           </div>
-          <div className="p-6 flex gap-10 md:pl-10 pl-6 md:pr-10 pr-6">
-            <div className="w-full f2xl:max-w-[338px] min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 ">
-              <div className="uppercase text-xs font-semibold text-gray-shade-7">
+          <div className="flex gap-10 p-6 pl-6 pr-6 md:pl-10 md:pr-10">
+            <div className="w-full min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+              <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (With referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <input
-                  className="bg-black-shade-3  text-white border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2"
+                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 py-3 px-4 text-white focus:outline-none focus:ring-brand-primary"
                   type="number"
                   value={updateRegistrationFeeWithReferral}
                   onChange={(e) =>
@@ -154,13 +159,13 @@ const RegistrationSetting: NextPageWithLayout = () => {
                 />
               </div>
             </div>
-            <div className="w-full f2xl:max-w-[338px] min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 ">
-              <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+            <div className="w-full min-w-[200px] max-w-[338px] border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+              <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (Without referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
                 <input
-                  className="bg-black-shade-3  text-white border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2"
+                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 py-3 px-4 text-white focus:outline-none focus:ring-brand-primary"
                   type="number"
                   value={updateRegistrationFeeWithoutReferral}
                   onChange={(e) =>
@@ -175,13 +180,13 @@ const RegistrationSetting: NextPageWithLayout = () => {
             <div className="w-full max-w-[180px]">
               <button
                 onClick={handleChangeFees}
-                className="text-black-shade-3 text-14px font-bold p-3 w-full bg-yellow-theme rounded-xl max-w-[180px] max-h-[50px]"
+                className="text-14px max-h-[50px] w-full max-w-[180px] rounded-xl bg-yellow-theme p-3 font-bold text-black-shade-3"
               >
                 {changeFeeTx ? "Process..." : "Change Fees"}
               </button>
               <button
                 onClick={handleChangeState}
-                className="text-black-shade-3 text-14px font-bold p-3 w-full bg-yellow-theme rounded-xl max-w-[180px] max-h-[50px] mt-5"
+                className="text-14px mt-5 max-h-[50px] w-full max-w-[180px] rounded-xl bg-yellow-theme p-3 font-bold text-black-shade-3"
               >
                 {changeStatusTx
                   ? "Process..."
@@ -213,7 +218,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
 RegistrationSetting.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Network Rewards">
-      <div className="w-full max-w-[1136px] mx-auto">{page}</div>
+      <div className="mx-auto w-full max-w-[1136px]">{page}</div>
     </AllPagesWrapper>
   );
 };

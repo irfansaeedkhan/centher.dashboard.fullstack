@@ -11,25 +11,25 @@ const Terms: NextPage = () => {
         <title>Terms and Conditions</title>
       </Head>
       <Header />
-      <div className="max-w-[826px] mx-auto px-0 py-0 flg:py-6 mt-[60px]">
-        <h3 className="text-white text-base fsm:text-[30px] flg:text-[34px] font-semibold px-4 pt-4 flg:px-0">
+      <div className="mx-auto mt-[60px] max-w-[826px] px-0 py-0 flg:py-6">
+        <h3 className="px-4 pt-4 text-base font-semibold text-white fsm:text-[30px] flg:px-0 flg:text-[34px]">
           Terms and Conditions
         </h3>
 
-        <div className="text-[#888DAA] font-medium text-sm mt-4 px-4 flg:px-0">
+        <div className="mt-4 px-4 text-sm font-medium text-[#888DAA] flg:px-0">
           Last updated on December 01, 2022
         </div>
-        <p className="text-white font-medium text-sm fsm:text-lg mt-6 px-4 flg:px-0">
+        <p className="mt-6 px-4 text-sm font-medium text-white fsm:text-lg flg:px-0">
           By registering and interacting on <strong>Centher</strong> the user
           implicitly declares to be informed about these terms and conditions
           and to be fully aware of the following
         </p>
 
-        <div className="bg-[#1B1C22] rounded-none fmd:rounded-xl max-w-[826px] mt-10">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-10 max-w-[826px] rounded-none bg-[#1B1C22] fmd:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Privacy Policy
           </h3>
-          <p className=" text-white font-normal text-sm mt-4 pb-8 px-4 flg:px-8">
+          <p className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             This platform in its social networking functions is entirely
             decentralized, so we do not hold your data and there is no one who
             can somehow use it. Our advertising is also without data profiling,
@@ -38,11 +38,11 @@ const Terms: NextPage = () => {
           </p>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Risk Awareness
           </h3>
-          <div className="text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className="mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               <strong>Centher</strong> is a De.Fi. platform; therefore, it is
               not governed by any centralized entity, be it a company or a group
@@ -64,11 +64,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Launchpad, fundraising and IDO
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               Anyone can launch their own project through our Launchpad if it
               passes the basic requirements of our selection.
@@ -91,11 +91,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Trading, Staking, Liquidity Pool and Reward Activities
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               On <strong>Centher</strong> all reward and speculative activity is
               subject to risk, by accepting our terms and conditions you agree
@@ -120,11 +120,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             NFT Marketplace
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               <strong>Centher</strong> is a fully decentralized NFT Marketplace
               so by accepting our terms and conditions you agree to release us
@@ -140,11 +140,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Referral Program policy
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               The user declares to take responsibility for his/her own referrals
               and to warn his/her referrals of the risks related to the use of
@@ -162,11 +162,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Severability
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               If any particular term, covenant, or provision of this agreement
               is determined to be invalid or unenforceable, the invalidity or
@@ -177,11 +177,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Entire Agreement
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               This Agreement is the sole and entire agreement between the
               parties relating to the subject matter hereof. This Agreement
@@ -191,11 +191,11 @@ const Terms: NextPage = () => {
           </div>
         </div>
 
-        <div className="bg-[#1B1C22] rounded-none flg:rounded-xl max-w-[826px] mt-6">
-          <h3 className="text-white font-semibold text-sm flg:text-lg px-4 pt-4 flg:px-8">
+        <div className="mt-6 max-w-[826px] rounded-none bg-[#1B1C22] flg:rounded-xl">
+          <h3 className="px-4 pt-4 text-sm font-semibold text-white flg:px-8 flg:text-lg">
             Liability
           </h3>
-          <div className=" text-white font-normal text-sm px-4 mt-4 flg:px-8 pb-8">
+          <div className=" mt-4 px-4 pb-8 text-sm font-normal text-white flg:px-8">
             <p>
               By accepting this agreement and its terms and conditions, you
               agree to release and discharge any other users, developers,

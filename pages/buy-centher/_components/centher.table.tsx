@@ -83,10 +83,10 @@ export const CentherTable: React.FC<CentherTableProps> = ({
 
   return (
     <div
-      className={`overflow-x-auto border border-gray-shade-3 rounded-2xl mt-5`}
+      className={`mt-5 overflow-x-auto rounded-2xl border border-gray-shade-3`}
     >
       <table className={`w-full min-w-[1024px]`}>
-        <thead className={`text-sm text-left text-gray-shade-7 bg-elevation-1`}>
+        <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
           <tr>
             <TableCell element={"th"}>Type</TableCell>
             <TableCell element={"th"}>Purchase Date</TableCell>
@@ -121,7 +121,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block px-4 py-2 rounded font-semibold text-sm`,
+                    `block rounded px-4 py-2 text-sm font-semibold`,
                     contributionInfo.isClaimableForBusd &&
                       `bg-brand-primary text-black-shade-3`,
                     !contributionInfo.isClaimableForBusd &&
@@ -162,7 +162,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
               <TableCell element={"td"}>
                 <button
                   className={clsx(
-                    `block px-4 py-2 rounded font-semibold text-sm`,
+                    `block rounded px-4 py-2 text-sm font-semibold`,
                     contributionInfo.isClaimableForNtr &&
                       `bg-brand-primary text-black-shade-3`,
                     !contributionInfo.isClaimableForNtr &&
@@ -214,7 +214,7 @@ const TableRow: React.FC<TableRowProps> = ({ className, ...props }) => {
   return (
     <tr
       className={clsx(
-        `text-sm text-left text-white border-b last:border-none border-gray-shade-3 odd:bg-black-shade-3 even:bg-black-shade-11`,
+        `border-b border-gray-shade-3 text-left text-sm text-white last:border-none odd:bg-black-shade-3 even:bg-black-shade-11`,
         className
       )}
       {...props}
@@ -235,7 +235,7 @@ const TableCell: React.FC<TableCellProps> = ({
     return (
       <th
         className={clsx(
-          `py-4 flg:py-7 px-5 flg:px-3 font-semibold min-w-[157px]`,
+          `min-w-[157px] py-4 px-5 font-semibold flg:py-7 flg:px-3`,
           className
         )}
         {...props}
@@ -244,7 +244,7 @@ const TableCell: React.FC<TableCellProps> = ({
   }
   return (
     <td
-      className={clsx(`py-2 flg:py-5 px-5 flg:px-3 font-medium`, className)}
+      className={clsx(`py-2 px-5 font-medium flg:py-5 flg:px-3`, className)}
       {...props}
     />
   );

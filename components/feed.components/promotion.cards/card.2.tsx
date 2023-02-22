@@ -11,12 +11,12 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
   return (
     <div
       className={clsx(
-        `w-[272px] h-[348px] rounded-10px overflow-hidden bg-[url(/images/bg-promotion2.png)] bg-no-repeat bg-cover relative p-6 flex flex-col items-center justify-center`,
+        `relative flex h-[348px] w-[272px] flex-col items-center justify-center overflow-hidden rounded-10px bg-[url(/images/bg-promotion2.png)] bg-cover bg-no-repeat p-6`,
         className
       )}
       {...props}
     >
-      <div className={`mb-4 ml-12 relative`}>
+      <div className={`relative mb-4 ml-12`}>
         <span className={`absolute -left-14 top-0`}>
           <RocketShadow />
         </span>
@@ -26,19 +26,19 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
       </div>
       <div>
         <p
-          className={`text-sm font-extrabold leading-[17.07px] text-white text-center`}
+          className={`text-center text-sm font-extrabold leading-[17.07px] text-white`}
         >
           DO YOU WANT TO CREATE YOUR OWN
         </p>
         <p
-          className={`animationTextHeading !text-[22px] leading-[26.82px] font-extrabold text-center`}
+          className={`animationTextHeading text-center !text-[22px] font-extrabold leading-[26.82px]`}
         >
           LAUNCHPAD?
         </p>
       </div>
       <Link
         href={AppRoutes.marketplace.create_nft}
-        className={`mt-4 w-fit px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark `}
+        className={`mt-4 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark `}
       >
         Create Now
       </Link>

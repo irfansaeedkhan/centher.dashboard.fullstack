@@ -8,22 +8,22 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 export const MessagesCard: React.FC<Props> = ({ className, ...props }) => {
   return (
     <div
-      className={clsx(`max-w-[272px] relative select-none`, className)}
+      className={clsx(`relative max-w-[272px] select-none`, className)}
       {...props}
     >
-      <div className="absolute z-50 flex flex-col items-center h-full justify-center">
+      <div className="absolute z-50 flex h-full flex-col items-center justify-center">
         <h2 className="animationTextHeading !text-base">Coming Soon</h2>
-        <p className="text-xs text-white text-center font-medium">
+        <p className="text-center text-xs font-medium text-white">
           Calm Down! We are bringing new expereince for you
         </p>
       </div>
-      <div className={`rounded-10px bg-background-shade-3 blur-sm relative`}>
+      <div className={`relative rounded-10px bg-background-shade-3 blur-sm`}>
         <div className={`p-4`}>
-          <h5 className={`text-14px font-semibold text-white pb-4`}>
+          <h5 className={`text-14px pb-4 font-semibold text-white`}>
             Messages
           </h5>
           <div
-            className={`mb-4 w-full h-[38px] bg-background-shade-2 rounded-10px relative overflow-hidden border-2 border-gray-shade-3  px-3 py-4`}
+            className={`relative mb-4 h-[38px] w-full overflow-hidden rounded-10px border-2 border-gray-shade-3 bg-background-shade-2  px-3 py-4`}
           >
             <div
               className={`absolute top-[50%] left-[14px] translate-y-[-50%]`}
@@ -33,7 +33,7 @@ export const MessagesCard: React.FC<Props> = ({ className, ...props }) => {
             <input
               type="text"
               placeholder="Search by name"
-              className={`focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 absolute top-0 left-0 pl-10 h-full text-12px text-gray-shade-7 font-light`}
+              className={`text-12px absolute top-0 left-0 h-full border-0 bg-transparent pl-10 font-light text-gray-shade-7 outline-0 focus:outline-none focus:ring-0`}
             />
           </div>
           <ContactCard />
@@ -43,9 +43,9 @@ export const MessagesCard: React.FC<Props> = ({ className, ...props }) => {
         </div>
 
         <div
-          className={`text-center cursor-pointer border-t-2 border-gray-shade-3 flex items-center justify-center`}
+          className={`flex cursor-pointer items-center justify-center border-t-2 border-gray-shade-3 text-center`}
         >
-          <button className={`text-14px text-white font-medium p-4`}>
+          <button className={`text-14px p-4 font-medium text-white`}>
             See all Conversations
           </button>
         </div>

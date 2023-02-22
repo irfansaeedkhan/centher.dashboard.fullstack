@@ -2,15 +2,15 @@ import React from "react";
 export const LevelParentCard = ({ parentData }: any) => {
   return (
     <div className="w-full rounded-t-lg  bg-background-shade-3  ">
-      <div className="flex items-center justify-between p-3 pb-5 gap-2">
+      <div className="flex items-center justify-between gap-2 p-3 pb-5">
         <div className="flex flex-col gap-2">
-          <h5 className="text-gray-shade-19 text-12px font-medium">LEVEL</h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">
+          <h5 className="text-12px font-medium text-gray-shade-19">LEVEL</h5>
+          <h6 className="text-14px font-semibold text-white-shade-1">
             {parentData?.level}
           </h6>
         </div>
         <div
-          className={`rounded-lg w-8 h-8 border-2 flex justify-center items-center
+          className={`flex h-8 w-8 items-center justify-center rounded-lg border-2
           ${parentData?.level === "01" && "border-[#FEBF32]/60 bg-[#FEBF32]/10"}
           ${parentData?.level === "02" && "border-[#D35DB9]/60 bg-[#D35DB9]/10"}
           ${parentData?.level === "03" && "border-[#45F0D1]/60 bg-[#45F0D1]/10"}
@@ -33,18 +33,18 @@ export const LevelParentCard = ({ parentData }: any) => {
           </h6>
         </div>
       </div>
-      <div className="flex justify-between gap-2 p-3 pb-4 border-t-2 border-gray-shade-3 bg-background-shade-2">
+      <div className="flex justify-between gap-2 border-t-2 border-gray-shade-3 bg-background-shade-2 p-3 pb-4">
         <div className="flex flex-col gap-2">
-          <h5 className="text-gray-shade-19 text-12px font-medium">People</h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">
+          <h5 className="text-12px font-medium text-gray-shade-19">People</h5>
+          <h6 className="text-14px font-semibold text-white-shade-1">
             {parentData?.people}
           </h6>
         </div>
         <div className="flex flex-col items-end  gap-2">
-          <h5 className=" fsm:max-w-[75px] text-gray-shade-19 text-12px font-medium">
+          <h5 className=" text-12px font-medium text-gray-shade-19 fsm:max-w-[75px]">
             Total BUSD Generated
           </h5>
-          <h6 className="text-white-shade-1 text-14px font-semibold">
+          <h6 className="text-14px font-semibold text-white-shade-1">
             {`${parentData?.generatedBUSD} BUSD`}
           </h6>
           {/* <h6 className="text-white-shade-1 text-14px font-semibold">

@@ -11,6 +11,7 @@ import {
   useNotificationsStore,
 } from "@/store/notifications.store";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface SingleNotificationProps {
   notification: Notification;
@@ -41,7 +42,7 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name}{" "}
+        {sliceDisplayName(notification.by.display_name)}{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -57,7 +58,7 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name} started following you.
+        {sliceDisplayName(notification.by.display_name)} started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -69,7 +70,8 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {notification.by.display_name} has joined your network.
+        {sliceDisplayName(notification.by.display_name)} has joined your
+        network.
       </Link>
     );
   } else if (notification.type === "centher_purchase_ntr") {
@@ -83,7 +85,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          {notification.by.display_name}
+          {sliceDisplayName(notification.by.display_name)}
         </>
       </Link>
     );
@@ -98,21 +100,17 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          {notification.by.display_name}
+          {sliceDisplayName(notification.by.display_name)}
         </>
       </Link>
     );
   }
 
-  /**
-   * {notification.amount} BUSD network rewards from{" "}
-        {notification.by.display_name}
-   */
   return (
     <div
       ref={ref}
       className={clsx(
-        `w-full max-w-[1005px] min-h-[76px] fsm:px-6 px-3 py-4 flex justify-between gap-2`,
+        `flex min-h-[76px] w-full max-w-[1005px] justify-between gap-2 px-3 py-4 fsm:px-6`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,
@@ -134,19 +132,19 @@ export const SingleNotification = React.forwardRef<
             alt="dp"
             width={44}
             height={44}
-            className="rounded-full sm:h-[44px] sm:w-[44px] !h-[40px] !w-[40px] object-cover"
+            className="!h-[40px] !w-[40px] rounded-full object-cover sm:h-[44px] sm:w-[44px]"
           />
         </Link>
         <div className="flex flex-grow flex-col">
           <span>{notificationLink}</span>
-          <p className="fsm:text-sm text-xs text-gray-shade-2 text-end fsm:hidden flex flex-shrink-0">
+          <p className="flex flex-shrink-0 text-end text-xs text-gray-shade-2 fsm:hidden fsm:text-sm">
             {moment(notification.createdAt).format(
               days === "seven" || days === "befor_seven" ? `ll` : `LT`
             )}
           </p>
         </div>
       </div>
-      <p className="fsm:text-sm text-xs text-gray-shade-2 text-end fsm:flex flex-shrink-0 hidden">
+      <p className="hidden flex-shrink-0 text-end text-xs text-gray-shade-2 fsm:flex fsm:text-sm">
         {moment(notification.createdAt).format(
           days === "seven" || days === "befor_seven" ? `ll` : `LT`
         )}

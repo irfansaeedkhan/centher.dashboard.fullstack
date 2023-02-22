@@ -1,35 +1,17 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
-import axios from "axios";
 
-// App imports
-import { axiosNodeApi } from "@/utils/axios";
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { allNFTsByFilterQuery, allNFTsQuery } from "@/subgraph/querys";
+import { getNFTs } from "@/lib/get-nfts";
+import { getNFTCardData } from "@/lib/get-nft-card-data";
+import { AppError } from "@/utils/app-error";
+import { allNFTsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import {
-  Category,
-  Collection,
-  NFT,
-  OrderBy,
-  OrderDirection,
-} from "@/models/nft";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
+import { NFTCardData } from "@/components/nft.card/nft.card.v2";
 
 export interface AllNFTsStore {
-  allNFTs: NFT[];
-  category: Category;
-  sortBy: OrderBy;
-  sortDir: OrderDirection;
-  fetchAllNFTs: (
-    category: Category,
-    sortBy: OrderBy,
-    sortDir: OrderDirection
-  ) => Promise<void>;
+  nfts: NFTCardData[];
+  fetchNFTs: () => Promise<void>;
   updateOffset: () => void;
-  updateCategory: (value: Category) => void;
-  updateSortBy: (value: OrderBy, dir: OrderDirection) => void;
   limit: number;
   offset: number;
   loading: LoadingState;
@@ -38,118 +20,56 @@ export interface AllNFTsStore {
 export const useAllNFTsStore = create<AllNFTsStore>()(
   devtools(
     (set, get) => ({
-      allNFTs: [],
-      category: "all",
-      sortBy: "tradingVolumn",
-      sortDir: "desc",
+      nfts: [],
       offset: 0,
-      limit: 10,
+      limit: 15,
       loading: "idle",
 
       updateOffset: () =>
         set((state) => ({
-          offset: state.allNFTs.length,
+          offset: state.nfts.length,
         })),
 
-      updateCategory: (value) =>
-        set((state) => ({
-          category: value,
-          offset: 0,
-          allNFTs: [],
-        })),
-
-      updateSortBy: (value, dir) =>
-        set((state) => ({
-          sortBy: value,
-          sortDir: dir,
-          offset: 0,
-          allNFTs: [],
-        })),
-
-      fetchAllNFTs: async (category, sortBy, sortDir) => {
+      fetchNFTs: async () => {
         try {
           set({ loading: "loading" });
 
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
+          let _nfts = await getNFTs({
+            query: allNFTsQuery,
+            limit: get().limit,
+            skip: get().offset,
           });
-          let _allNFTs: NFT[] = [];
-          let result;
-          let error;
-          if (category.toLowerCase() === "all") {
-            const { data: result1, error: error1 } = await client.query({
-              query: gql(allNFTsQuery),
-              variables: {
-                first: get().limit,
-                skip: get().offset,
-                orderBy: sortBy,
-                orderDirection: sortDir,
-              },
-              fetchPolicy: "cache-first",
-            });
 
-            result = result1;
-            error = error1;
-          } else {
-            const { data: result2, error: error2 } = await client.query({
-              query: gql(allNFTsByFilterQuery),
-              variables: {
-                first: get().limit,
-                skip: get().offset,
-                category: category.toLowerCase(),
-                orderBy: sortBy,
-                orderDirection: sortDir,
-              },
-              fetchPolicy: "cache-first",
-            });
-            result = result2;
-            error = error2;
-          }
+          const nftCardDataPromises = _nfts.map((nft) => getNFTCardData(nft));
 
-          if (result && !error) {
-            _allNFTs = result.nfts.map((item: any) => {
-              let _endTime = 0;
-              if (item.saleState === "Auction") {
-                _endTime = item.auctionInfo.endTime;
-              }
-              return {
-                id: item.id,
-                collection: item.collection,
-                tokenId: item.tokenId,
-                creator: item.creator,
-                createTime: item.createTime,
-                ipfs: item.ipfs,
-                saleState: item.saleState,
-                price: item.price,
-                owner: item.owner,
-                endTime: _endTime,
-              };
-            });
-          }
+          const nftCardDataResults = (
+            await Promise.allSettled(nftCardDataPromises)
+          ).filter(
+            (nft) => nft.status === "fulfilled"
+          ) as PromiseFulfilledResult<NFTCardData>[];
 
-          set((state) => {
-            // Filter out all nfts that are already in the store
-            const filteredAllNFTs = state.allNFTs.filter(
-              (stateNFTs) =>
-                !_allNFTs.some((nft: NFT) => stateNFTs.id === nft.id)
-            );
+          // Remove nfts that are already in the store
+          const filteredNFTs = nftCardDataResults.filter(
+            (nft) =>
+              !get().nfts.some((stateNFT) => stateNFT.id === nft.value.id)
+          );
 
-            const allNFTsFinal = [...filteredAllNFTs, ..._allNFTs];
-
-            return {
-              ...state,
-              allNFTs: allNFTsFinal,
-              loading: "loaded",
-            };
-          });
-        } catch (error) {
+          set((state) => ({
+            ...state,
+            nfts: [...state.nfts, ...filteredNFTs.map((nft) => nft.value)],
+            loading: "loaded",
+          }));
+        } catch (error: any) {
           set({ loading: "failed" });
-          process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
-            console.error(error);
+          const appError = new AppError(
+            error,
+            "Can not load NFTs",
+            "useAllNFTsStore"
+          );
+          appError.log();
         }
       },
     }),
-    { name: "ExploreStore" }
+    { name: "AllNFTsStore" }
   )
 );

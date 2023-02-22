@@ -29,7 +29,7 @@ export class NFTUploader {
     }
 
     const uploadImageDto = {
-      path: this._uploader.makePath(nameWrapper),
+      path: this._uploader.makePath(),
       content: file.toString("base64"),
     };
 
@@ -37,7 +37,7 @@ export class NFTUploader {
     const metadata = this.createMetaData(nftData, imagePath, nameWrapper);
     const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
     const uploadMetaDataDto = {
-      path: this._uploader.makePath(nameWrapper, "josn"),
+      path: this._uploader.makePath("json"),
       content: metaDataBuffered.toString("base64"),
     };
 

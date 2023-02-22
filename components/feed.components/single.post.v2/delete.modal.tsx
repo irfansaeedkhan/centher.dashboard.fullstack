@@ -25,23 +25,23 @@ export const DeleteModal: React.FC<Props> = ({ isOpen, onClose, onDelete }) => {
   return (
     <ModalPortal wrapperId="post-delete-modal">
       <div
-        className={`font-monto flex justify-center items-center fixed inset-0 z-[1050] backdrop-filter backdrop-blur-lg overflow-y-auto overflow-x-hidden`}
+        className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden font-monto backdrop-blur-lg backdrop-filter`}
       >
-        <div className="bg-popup-0 w-full max-w-[656px] rounded-10px p-4 fmd:p-6 space-y-4 fmd:space-y-6 mx-2">
+        <div className="mx-2 w-full max-w-[656px] space-y-4 rounded-10px bg-popup-0 p-4 fmd:space-y-6 fmd:p-6">
           <header className="flex items-center justify-between text-white">
             <h3 className="text-lg font-semibold">Delete Post</h3>
             <button onClick={onClose}>
-              <IoClose className="w-6 h-6 cursor-pointer" />
+              <IoClose className="h-6 w-6 cursor-pointer" />
             </button>
           </header>
 
           <main className="py-2 fmd:p-4">
             <div className="flex justify-center">
-              <IoCloseCircleOutline className="w-12 h-12 fmd:w-16 fmd:h-16 stroke-danger" />
+              <IoCloseCircleOutline className="h-12 w-12 stroke-danger fmd:h-16 fmd:w-16" />
             </div>
 
-            <div className="space-y-2 text-center mt-4">
-              <h3 className="font-semibold text-lg text-white">
+            <div className="mt-4 space-y-2 text-center">
+              <h3 className="text-lg font-semibold text-white">
                 Are you sure?
               </h3>
               <p className="text-sm text-gray-shade-2">
@@ -49,10 +49,10 @@ export const DeleteModal: React.FC<Props> = ({ isOpen, onClose, onDelete }) => {
               </p>
             </div>
 
-            <div className="flex gap-2 mt-6">
+            <div className="mt-6 flex gap-2">
               <ActionButton
                 onClick={onClose}
-                className="bg-black-shade-7 hover:bg-gray-900 text-gray-shade-10"
+                className="bg-black-shade-7 text-gray-shade-10 hover:bg-gray-900"
               >
                 Cancel
               </ActionButton>
@@ -68,9 +68,9 @@ export const DeleteModal: React.FC<Props> = ({ isOpen, onClose, onDelete }) => {
                   button.disabled = false;
                   onClose();
                 }}
-                className="bg-danger hover:bg-red-900 text-white flex items-center justify-center group"
+                className="group flex items-center justify-center bg-danger text-white hover:bg-red-900"
               >
-                <CgSpinner className="w-5 h-5 animate-spin hidden group-disabled:block" />
+                <CgSpinner className="hidden h-5 w-5 animate-spin group-disabled:block" />
                 <span className="group-disabled:hidden">Delete</span>
               </ActionButton>
             </div>
@@ -91,7 +91,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   return (
     <button
       className={clsx(
-        `px-4 py-2 fmd:py-3 w-full font-bold rounded-lg transition-all`,
+        `w-full rounded-lg px-4 py-2 font-bold transition-all fmd:py-3`,
         className
       )}
       {...props}

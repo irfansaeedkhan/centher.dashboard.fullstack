@@ -6,15 +6,18 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { FEE } from "@/web3/constants/common";
-import { callBuyListedItem } from "@/web3/utils/call.helpers";
+import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
+import useGetUser from "@/hooks/use.get.user";
+import { useRouter } from "next/router";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -23,20 +26,27 @@ interface FixedPriceNFTBuyerDescriptionProps {
 }
 export const FixedPriceNFTBuyerDescription = ({
   data,
-  reload,
-  setReload,
 }: FixedPriceNFTBuyerDescriptionProps) => {
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { account, library } = useWeb3React();
+  const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
+
+  const nftOwnerAddress = useGetNFTOwner(
+    data?.collection,
+    data?.nftId,
+    data?.owner
+  );
+
+  const { user: nftOwner } = useGetUser(nftOwnerAddress);
 
   const bnbPrice = useBNBPrice();
 
   const buyNFTStep1Func = () => {
     if (!library) {
-      toast.error("Confirm your Wallet Connection.");
+      toast.error("Connect your Wallet.");
       return;
     }
     setModalTitle("Complete Checkout");
@@ -49,20 +59,22 @@ export const FixedPriceNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">{data?.name}</h2>
-        <h3 className="text-white text-14px font-normal">
+        <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
+        <h3 className="text-14px font-normal text-white">
           Marketplace Fee {FEE.buyItemFeeForMarketplace}%
         </h3>
-        <h3 className="text-white text-14px font-normal">
+        <h3 className="text-14px font-normal text-white">
           Collection Fee {FEE.buyItemFeeForCreator}%
         </h3>
-        <h3 className="text-white text-14px font-normal">
+        <h3 className="text-14px font-normal text-white">
           Multilevel Fee {FEE.buyItemFeeForMultilevel}%
         </h3>
-        <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
+        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
-          {formatEther2Number(data?.listInfo.price)} BNB{" "}
+          {`${normalizeValue(
+            formatEther2Number(data?.listInfo.price)
+          )} BNB`}{" "}
           <span className="text-gray-shade-2 ">
             {" "}
             =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
@@ -85,28 +97,12 @@ export const FixedPriceNFTBuyerDescription = ({
     setModalContent(
       <div className={modalBodyWrapper}>
         <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-white text-18px font-semibold leading-6">
+        <h3 className="text-18px font-semibold leading-6 text-white">
           Transaction in progress
         </h3>
-        <p className="text-gray-shade-2 text-14px font-normal leading-6">
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
@@ -122,42 +118,35 @@ export const FixedPriceNFTBuyerDescription = ({
           height={64}
           width={64}
         />
-        <h2 className="text-18px text-white font-semibold">
+        <h2 className="text-18px font-semibold text-white">
           {txStatus ? "Success!" : "Failed!"}
         </h2>
         {txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
-            Congratulations! You have successfully created{" "}
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Congratulations! You have successfully bought{" "}
             <span className="text-white">{data?.name}</span> NFT on{" "}
             <b>Centher</b>
             platform.
           </p>
         )}
         {!txStatus && (
-          <p className="text-gray-shade-2 text-14px font-normal leading-6">
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
+
         <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
             variant="v4"
             className="py-4"
             onClick={() => {
+              router.reload();
               setModal(false);
               setModalTitle("");
               setModalContent(null);
             }}
           />
-          {/* </Link> */}
         </div>
       </div>
     );
@@ -177,10 +166,10 @@ export const FixedPriceNFTBuyerDescription = ({
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex gap-3  items-center">
+        <div className="flex items-center  gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
-            {formatEther2Number(data?.listInfo.price)} BNB
+            {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
           </h5>
           <h6 className={greyTxt}>
             {" "}
@@ -190,23 +179,25 @@ export const FixedPriceNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6 whitespace-pre-wrap break-all`}>
+        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
           {data?.description}
         </p>
       </div>
       <div className="buttonContainer flex items-center">
-        <Button
-          title={"Buy NFT"}
-          variant="v1"
-          className="py-4"
-          onClick={async () => {
-            if (!loggedInUser) {
-              toast.error("Please login to buy this nft");
-              return;
-            }
-            buyNFTStep1Func();
-          }}
-        />
+        {library && (
+          <Button
+            title={"Buy Now"}
+            variant="v1"
+            className="py-4"
+            onClick={async () => {
+              if (!loggedInUser) {
+                toast.error("Please login to buy this nft");
+                return;
+              }
+              buyNFTStep1Func();
+            }}
+          />
+        )}
       </div>
       {Modal && (
         <CustomModal
@@ -233,24 +224,6 @@ w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
 `);
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5
-`);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
 `);
 const greyBoxContainer = ctl(`
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6

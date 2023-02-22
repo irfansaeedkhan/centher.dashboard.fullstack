@@ -104,7 +104,7 @@ export const SinglePostV2: React.FC<Props> = ({
     <div
       ref={currentPostRef}
       className={clsx(
-        `w-full max-w-[544px] bg-elevation-1 p-4 rounded-10px cursor-pointer`,
+        `w-full max-w-[544px] cursor-pointer rounded-10px bg-elevation-1 p-4`,
         placement === "single-post-page" &&
           (postType === "main" || postType === "reply-w-parent-header") &&
           post.replies_count > 0 &&
@@ -116,8 +116,8 @@ export const SinglePostV2: React.FC<Props> = ({
       )}
     >
       {postType === "archived" && (
-        <div className="mb-2 flex text-white gap-x-2.5">
-          <HiOutlineArchive className="w-[18px] h-[18px]" />
+        <div className="mb-2 flex gap-x-2.5 text-white">
+          <HiOutlineArchive className="h-[18px] w-[18px]" />
           <span className="text-sm">Archived</span>
         </div>
       )}
@@ -133,7 +133,7 @@ export const SinglePostV2: React.FC<Props> = ({
               />
               <div
                 className={clsx(
-                  `flex-grow pb-5 mb-5 border-b-2 border-b-gray-shade-3`
+                  `mb-5 flex-grow border-b-2 border-b-gray-shade-3 pb-5`
                 )}
               >
                 <PostHeader
@@ -185,7 +185,7 @@ export const SinglePostV2: React.FC<Props> = ({
             placement === "single-post-page" &&
               (postType === "main" || postType === "reply-w-parent-header")
               ? "col-span-full"
-              : "col-start-2 col-span-1"
+              : "col-span-1 col-start-2"
           )}
         >
           {post.media && !!post.media.length && (
@@ -238,7 +238,7 @@ export const SinglePostV2: React.FC<Props> = ({
             placement === "single-post-page" &&
               (postType === "main" || postType === "reply-w-parent-header")
               ? "col-span-full"
-              : "col-start-2 col-span-1"
+              : "col-span-1 col-start-2"
           )}
         >
           <PostFooter

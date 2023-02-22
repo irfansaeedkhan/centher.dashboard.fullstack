@@ -7,6 +7,7 @@ import Link from "next/link";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 export interface CollectionCardProps {
   data: Collection;
@@ -31,49 +32,52 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
     }
   }, [data]);
   return (
-    <Link
-      href={{
-        pathname: AppRoutes.marketplace.collection,
-        query: {
-          collection: data.collection,
-        },
-      }}
-      className={`w-auto border border-gray-shade-3 h-[360px] rounded-lg flex flex-col gap-12 [@media(max-width:650px)]:w-full `}
-    >
-      <div className={`relative flex justify-center`}>
-        {coverImage && (
-          <Image
-            src={coverImage}
-            alt="collection Image"
-            width={340}
-            height={180}
-            className={`rounded-t-lg  h-[180px] object-cover w-full`}
-            // className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
-          />
-        )}
-        {profileImage && (
-          <Image
-            src={profileImage}
-            alt="Logo Image"
-            width={64}
-            height={64}
-            className={`rounded-full absolute object-cover !h-16 -bottom-[1.8rem] z-0`}
-          />
-        )}
-      </div>
-      <div className={`flex flex-col px-4 items-center`}>
-        <div className={`text-base text-white font-bold`}>{data.name}</div>
-        <span
-          className={`text-sm text-white font-semibold text-ellipsis line-clamp-1 mt-1`}
-        >
-          {user?.display_name}
-        </span>
-        <p
-          className={`font-medium text-xs text-gray-shade-14 text-center mt-2 line-clamp-3 whitespace-pre-wrap`}
-        >
-          {description}
-        </p>
-      </div>
-    </Link>
+    <div className="py-1 px-2">
+      <Link
+        href={{
+          pathname: AppRoutes.marketplace.collection,
+          query: {
+            collection: data.collection,
+          },
+        }}
+        className={`flex h-[360px] w-auto flex-col gap-12 rounded-lg border border-gray-shade-3 [@media(max-width:650px)]:w-full `}
+      >
+        <div className={`relative flex justify-center`}>
+          {coverImage && (
+            <Image
+              src={coverImage}
+              alt="collection Image"
+              width={340}
+              height={180}
+              className={`h-[180px]  w-full rounded-t-lg object-cover`}
+              // className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
+            />
+          )}
+          {profileImage && (
+            <Image
+              src={profileImage}
+              alt="Logo Image"
+              width={64}
+              height={64}
+              className={`absolute -bottom-[1.8rem] z-0 !h-16 rounded-full object-cover`}
+            />
+          )}
+        </div>
+        <div className={`flex flex-col items-center px-4`}>
+          <div className={`text-base font-bold text-white`}>{data.name}</div>
+          <span
+            className={`mt-1 text-ellipsis text-sm font-semibold text-white line-clamp-1`}
+            title={user?.display_name}
+          >
+            {user && sliceDisplayName(user.display_name)}
+          </span>
+          <p
+            className={`mt-2 whitespace-pre-wrap text-center text-xs font-medium text-gray-shade-14 line-clamp-3`}
+          >
+            {description}
+          </p>
+        </div>
+      </Link>
+    </div>
   );
 };

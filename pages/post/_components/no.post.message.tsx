@@ -13,7 +13,7 @@ export const NoPostMessage: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `fsm:w-full flg:w-[544px] py-4 rounded-10px bg-background-shade-3 text-white text-center font-medium`,
+        `rounded-10px bg-background-shade-3 py-4 text-center font-medium text-white fsm:w-full flg:w-[544px]`,
         className
       )}
       {...props}

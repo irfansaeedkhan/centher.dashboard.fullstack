@@ -37,7 +37,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
     tokenName: "BUSD",
-    tokenIcon: <BUSDIconBG className="w-10 h-10" />,
+    tokenIcon: <BUSDIconBG className="h-10 w-10" />,
     tokenBalance: 0,
     minContribution: roundInfo.minContributionForBusd,
     maxContribution: roundInfo.maxContributionForBusd,
@@ -50,7 +50,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   const [selectedTokenB, setSelectedTokenB] = useState<SelectedTokenB>({
     tokenName: "CTHR",
-    tokenIcon: <CentherIconBG className="w-10 h-10" />,
+    tokenIcon: <CentherIconBG className="h-10 w-10" />,
     tokenBalance: 0,
     inputValue: roundInfo.minContributionForBusd / roundInfo.priceForBusd,
   });
@@ -239,10 +239,10 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     <div className="relative">
       {roundInfo.status === "active" && (
         <div
-          className={`absolute z-10 top-0 left-0 w-full h-full flex items-center justify-center`}
+          className={`absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center`}
         >
-          <div className={`flex flex-col justify-center items-center gap-10`}>
-            <LockedIcon className="w-[80px] h-[80px]" />
+          <div className={`flex flex-col items-center justify-center gap-10`}>
+            <LockedIcon className="h-[80px] w-[80px]" />
             <h6 className={`text-20px font-semibold text-white`}>
               Wait for the presale to start
             </h6>
@@ -253,12 +253,12 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       <div
         className={clsx(
           roundInfo.status === "active" &&
-            "blur-xl bg-black-shade-3/60 pointer-events-none"
+            "pointer-events-none bg-black-shade-3/60 blur-xl"
         )}
       >
-        <div className={`bg-background-shade-3 rounded-xl`}>
+        <div className={`rounded-xl bg-background-shade-3`}>
           <h1
-            className={`text-sm fsm:text-xl flg:text-2xl text-white text-center font-semibold px-5 py-6 fsm:px-8 fmd:py-8 border-b-2 border-b-gray-shade-3`}
+            className={`border-b-2 border-b-gray-shade-3 px-5 py-6 text-center text-sm font-semibold text-white fsm:px-8 fsm:text-xl fmd:py-8 flg:text-2xl`}
           >
             Please Enter CENTHER amount you&apos;d like to purchase
           </h1>
@@ -274,10 +274,10 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
             {roundInfo.status === "active" && (
               <div
-                className={`pt-8 lg:pt-12 max-w-[442px] mx-auto text-center`}
+                className={`mx-auto max-w-[442px] pt-8 text-center lg:pt-12`}
               >
                 <h6
-                  className={`text-xs fmd:text-sm font-semibold text-gray-shade-7 pb-4`}
+                  className={`pb-4 text-xs font-semibold text-gray-shade-7 fmd:text-sm`}
                 >
                   Minimum Buy:{" "}
                   <span className={`text-white`}>
@@ -314,10 +314,10 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
             {roundInfo.status === "ended" && (
               <div
-                className={`mt-8 lg:mt-12 text-center mx-auto py-2 px-5 bg-[#E6535A]/10 w-fit rounded-xl`}
+                className={`mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 py-2 px-5 text-center lg:mt-12`}
               >
                 <p
-                  className={`text-[#E6535A] text-sm fmd:text-base fsm:text-base font-semibold`}
+                  className={`text-sm font-semibold text-[#E6535A] fsm:text-base fmd:text-base`}
                 >
                   Round {roundInfo.round + 1} is over! Buy another available or
                   wait for the next round.

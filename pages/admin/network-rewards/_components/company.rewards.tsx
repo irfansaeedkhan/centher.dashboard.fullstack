@@ -33,50 +33,50 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
     }
   };
   return (
-    <div className="w-full h-auto bg-elevation-1 rounded-[14px] overflow-x-auto">
-      <div className="w-full  bg-no-repeat bg-center bg-cover py-7 fsm:pl-7 pl-3 fsm:pr-4 pr-3 rounded-t-[14px] flex fsm:flex-row flex-col fsm:items-center justify-between gap-4 bg-[url(/images/patern1.png)] bg-[#2E2B22] min-w-[800px]">
-        <h4 className="text-white font-semibold text-18px">Company Rewards</h4>
+    <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
+      <div className="flex  w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
+        <h4 className="text-18px font-semibold text-white">Company Rewards</h4>
       </div>
-      <div className="p-6 flex gap-10 md:pl-10 pl-6 md:pr-10 pr-6">
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px] border-r-2 border-black-shade-7  ">
-          <div className="uppercase text-xs font-semibold text-gray-shade-7">
+      <div className="flex gap-10 p-6 pl-6 pr-6 md:pl-10 md:pr-10">
+        <div className="w-full min-w-[200px] max-w-[338px]  border-r-2 border-black-shade-7 f2xl:max-w-[338px]  ">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Total earnings
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.totalEarning.busd} (BUSD)</p>
           </div>
-          <div className="flex items-center text-sm font-semibold gap-2">
+          <div className="flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.totalEarning.ntr} (NTR)</p>
           </div>
         </div>
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px] border-r-2 border-black-shade-7 ">
-          <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+        <div className="w-full min-w-[200px] max-w-[338px]  border-r-2 border-black-shade-7 f2xl:max-w-[338px] ">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimed
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2">
+          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimed.busd} (BUSD)</p>
           </div>
-          <div className="flex items-center text-sm font-semibold gap-2">
+          <div className="flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimed.ntr} (NTR)</p>
           </div>
         </div>
-        <div className="w-full f2xl:max-w-[338px] min-w-[200px]  max-w-[338px]">
-          <div className="text-xs font-semibold text-gray-shade-7 uppercase">
+        <div className="w-full min-w-[200px] max-w-[338px]  f2xl:max-w-[338px]">
+          <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimable
           </div>
-          <div className="mt-4 mb-3 flex items-center text-sm font-semibold gap-2 justify-between">
+          <div className="mt-4 mb-3 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimable.busd} (BUSD)</p>
             <button
-              className="text-brand-primary text-12px font-semibold "
+              className="text-12px font-semibold text-brand-primary "
               onClick={handleClaimBusd}
             >
               Claim now
             </button>
           </div>
-          <div className="flex items-center text-sm font-semibold gap-2  justify-between">
+          <div className="flex items-center justify-between gap-2 text-sm  font-semibold">
             <p className="text-white">{data.claimable.ntr} (NTR)</p>
             <button
-              className="text-brand-primary text-12px font-semibold "
+              className="text-12px font-semibold text-brand-primary "
               onClick={handleClaimNtr}
             >
               Claim now

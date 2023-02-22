@@ -15,55 +15,59 @@ export const NFTDetails = (props: NFTDetailsProps) => {
   return (
     <div className={NFTDetailsContainer}>
       <div className="accordion" id="accordionExample">
-        <div className="accordion-item bg-transparent ">
-          <h2 className="accordion-header mb-0" id="headingOne">
-            <button
-              className={AccordionButton}
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#detailsComponent"
-              aria-expanded="true"
-              aria-controls="detailsComponent"
+        {props && (
+          <div className="accordion-item bg-transparent ">
+            <h2 className="accordion-header mb-0" id="headingOne">
+              <button
+                className={AccordionButton}
+                // type="button"
+                // data-bs-toggle="collapse"
+                // data-bs-target="#detailsComponent"
+                // aria-expanded="true"
+                // aria-controls="detailsComponent"
+              >
+                Details
+              </button>
+            </h2>
+            <div
+            // id="detailsComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
-              Details
-            </button>
-          </h2>
-          <div
-            id="detailsComponent"
-            className={AccordionCollapse}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body p-6">
-              <div className={detailsList}>
-                <div className={detailBox}>
-                  <h5 className={title}>NFT ID</h5>
-                  <h6 className={value}>{props.nftId}</h6>
-                </div>
-                <div className={detailBox}>
-                  <h5 className={title}>MINT TRANSACTION</h5>
-                  <a
-                    href={formatTxUrl(props.mintTx)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <h6 className={value}>{formatAddress(props.mintTx)}</h6>
-                  </a>
-                </div>
-                <div className={detailBox}>
-                  <h5 className={title}>CONTRACT ADDRESS</h5>
-                  <a
-                    href={formatAddressUrl(props.collection)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <h6 className={value}>{formatAddress(props.collection)}</h6>
-                  </a>
+              <div className="accordion-body p-6">
+                <div className={detailsList}>
+                  <div className={detailBox}>
+                    <h5 className={title}>NFT ID</h5>
+                    <h6 className={value}>{props.nftId}</h6>
+                  </div>
+                  <div className={detailBox}>
+                    <h5 className={title}>MINT TRANSACTION</h5>
+                    <a
+                      href={formatTxUrl(props.mintTx)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <h6 className={value}>{formatAddress(props.mintTx)}</h6>
+                    </a>
+                  </div>
+                  <div className={detailBox}>
+                    <h5 className={title}>CONTRACT ADDRESS</h5>
+                    <a
+                      href={formatAddressUrl(props.collection)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <h6 className={value}>
+                        {formatAddress(props.collection)}
+                      </h6>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

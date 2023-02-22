@@ -255,7 +255,7 @@ const SinglePostPage: NextPageWithLayout = () => {
 SinglePostPage.getLayout = (page) => {
   return (
     <FeedPagesWrapper>
-      <div className={`w-full mx-auto`}>{page}</div>
+      <div className={`mx-auto w-full`}>{page}</div>
     </FeedPagesWrapper>
   );
 };

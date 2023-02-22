@@ -15,12 +15,29 @@ export const AppRoutes = {
     following: "/profile/[account_address]/following",
     followers: "/profile/[account_address]/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
-    settings: "/profile/settings",
 
-    // Not ready pages
     nfts: "/profile/[account_address]/nfts",
-    purchased: "/profile/[account_address]/purchased",
-    collections: "/profile/[account_address]/collections",
+    owned: "/profile/[account_address]/nfts/owned",
+    listed: "/profile/[account_address]/nfts/listed",
+    created: "/profile/[account_address]/nfts/created",
+    collection: "/profile/[account_address]/nfts/collection",
+  },
+
+  marketplace: {
+    nft: "/marketplace/[collection]/[tokenId]",
+    create_nft: "/marketplace/create",
+    create_collection: "/marketplace/create-collection",
+    explore: "/marketplace/explore",
+    nfts: "/marketplace/nfts",
+    collections: "/marketplace/collections",
+    collection: "/marketplace/[collection]",
+  },
+
+  settings: {
+    index: "/settings",
+    profile: "/settings/profile",
+    social_links: "/settings/social-links",
+    privacy: "/settings/privacy",
   },
 
   feed: {
@@ -63,15 +80,5 @@ export const AppRoutes = {
     registration_setting: "/admin/registration/setting",
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
-  },
-
-  marketplace: {
-    nft: "/marketplace/[collection]/[tokenId]",
-    create_nft: "/marketplace/create",
-    create_collection: "/marketplace/create-collection",
-    explore: "/marketplace/explore",
-    all_nfts: "/marketplace/all-nfts",
-    all_collections: "/marketplace/all-collections",
-    collection: "/marketplace/[collection]",
   },
 } as const;

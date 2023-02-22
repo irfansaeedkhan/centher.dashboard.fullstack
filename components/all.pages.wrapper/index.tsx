@@ -10,6 +10,7 @@ import clsx from "clsx";
 interface AllPagesWrapperProps {
   children: React.ReactNode;
   pageTitle?: string;
+  showSidebar?: boolean;
 }
 
 export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
@@ -30,9 +31,10 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
 
       <div
         className={clsx(
-          `px-2 fsm:px-4 fmd:px-6 py-4 flg:py-6 mt-[60px]`,
+          `mt-[60px] px-2 py-4 fsm:px-4 fmd:px-6 flg:py-6`,
           (props.pageTitle !== "Coming Soon" || loggedInUser) &&
             (props.pageTitle !== "404 Not Found" || loggedInUser) &&
+            props.showSidebar !== false &&
             "fxl:ml-[15.5rem]"
         )}
       >
@@ -41,12 +43,12 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       {props.pageTitle === "Coming Soon" ||
       props.pageTitle === "404 Not Found" ? (
         loggedInUser && (
-          <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
+          <div className="fixed top-[60px] bottom-0 left-0 hidden w-[15.5rem] fxl:block">
             <Sidebar />
           </div>
         )
-      ) : (
-        <div className="hidden fxl:block w-[15.5rem] fixed top-[60px] bottom-0 left-0">
+      ) : props.showSidebar === false ? null : (
+        <div className="fixed top-[60px] bottom-0 left-0 hidden w-[15.5rem] fxl:block">
           <Sidebar />
         </div>
       )}

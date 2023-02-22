@@ -8,6 +8,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import { ArchivedPost, CompletedPost, PostUser } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
@@ -77,15 +78,16 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: postUser.account_address },
             }}
-            className="text-white font-semibold text-sm text-ellipsis line-clamp-1 hover:text-brand-primary"
+            className="text-ellipsis text-sm font-semibold text-white line-clamp-1 hover:text-brand-primary"
+            title={postUser.display_name}
           >
-            {postUser.display_name}
+            {postUser && sliceDisplayName(postUser.display_name)}
           </Link>
 
           {/* Time */}
           <p
             className={clsx(
-              `text-gray-shade-7 text-xs font-medium`,
+              `text-xs font-medium text-gray-shade-7`,
               postType === "reply" && "ml-3",
               postType !== "reply" && "mt-0.5"
             )}
@@ -106,13 +108,16 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="mt-0.5 inline-block max-w-max text-white font-medium text-xs text-ellipsis line-clamp-1 group"
+              className="group mt-0.5 inline-block max-w-max text-ellipsis text-xs font-medium text-white line-clamp-1"
             >
-              <span className="inline-block mr-1 text-gray-shade-7 font-medium text-xs">
+              <span className="mr-1 inline-block text-xs font-medium text-gray-shade-7">
                 Replying to
               </span>
-              <span className="group-hover:text-brand-primary">
-                {post.parent_post?.user.display_name}
+              <span
+                className="group-hover:text-brand-primary"
+                title={post?.parent_post?.user.display_name}
+              >
+                {post && sliceDisplayName(post?.parent_post?.user.display_name)}
               </span>
             </Link>
           </>
@@ -148,7 +153,7 @@ export const PostHeader: React.FC<Props> = ({
               post_id: post.parent_post?._id,
             },
           }}
-          className="min-w-max flex items-center py-1.5 px-3 text-xs text-white bg-black-shade-7 rounded-xl"
+          className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
         >
           View Post
         </Link>

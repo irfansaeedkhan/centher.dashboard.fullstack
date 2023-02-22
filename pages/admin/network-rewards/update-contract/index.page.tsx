@@ -14,7 +14,7 @@ const UpdateContract: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="contractContainer grid grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] gap-4 max-w-auto">
+      <div className="contractContainer max-w-auto grid grid-cols-[repeat(auto-fit,_minmax(320px,_1fr))] gap-4">
         <CommonCard refreshRoundsInfo={refreshRoundsInfo} />
         {!!roundsInfo.length ? (
           roundsInfo.map((round: any) => {
@@ -40,7 +40,7 @@ const UpdateContract: NextPageWithLayout = () => {
 UpdateContract.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Admin Metaverse">
-      <div className="w-full max-w-[1136px] mx-auto">
+      <div className="mx-auto w-full max-w-[1136px]">
         <NetworkTabs />
         {page}
       </div>

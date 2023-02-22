@@ -180,18 +180,18 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
     }
   };
   return (
-    <div className="card bg-elevation-1 rounded-xl max-w-[470px]  overflow-hidden flex flex-col ">
+    <div className="card flex max-w-[470px] flex-col  overflow-hidden rounded-xl bg-elevation-1 ">
       <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
-        <h2 className="cardTitle text-gray-shade-7 text-14px font-semibold">
+        <h2 className="cardTitle text-14px font-semibold text-gray-shade-7">
           Round
         </h2>
-        <h3 className="text-white font-14px font-semibold">{data.round + 1}</h3>
+        <h3 className="font-14px font-semibold text-white">{data.round + 1}</h3>
       </div>
       <div className="cardBody py-6 px-5">
         <div className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">BUSD</label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <label className="label text-14px text-gray-shade-7">BUSD</label>
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
                   id="BUSD"
@@ -203,13 +203,13 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   type="checkbox"
                   className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
                 />
-                <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+                <h6 className="text-14px text-gray-shade-7">Enable</h6>
               </div>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">NTR</label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <label className="label text-14px text-gray-shade-7">NTR</label>
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
                   id="NTR"
@@ -221,17 +221,17 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   type="checkbox"
                   className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
                 />
-                <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+                <h6 className="text-14px text-gray-shade-7">Enable</h6>
               </div>
             </div>
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Start date
             </label>
 
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <input
                 id="StartDate"
                 value={startTime}
@@ -239,50 +239,50 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setStartTime(e.target.value);
                 }}
                 type="datetime-local"
-                className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-12px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                className="text-12px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               End date
             </label>
 
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <input
                 id="EndDate"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 type="datetime-local"
-                className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-12px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                className="text-12px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Lock Duration
             </label>
             <div className="flex items-center justify-center">
-              <div className=" flex gap-2 flex-col min-w-[180px]">
+              <div className=" flex min-w-[180px] flex-col gap-2">
                 <input
                   id="CTHR_BUSD"
                   value={lockMonths}
                   onChange={(e) => setLockMonths(Number(e.target.value))}
                   type="number"
-                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                  className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
                 />
               </div>
-              <label className="label text-gray-shade-7 text-14px">
+              <label className="label text-14px text-gray-shade-7">
                 (Months)
               </label>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               CTHR Price
             </label>
             <div className="flex items-center justify-center">
-              <div className=" flex gap-2 flex-col min-w-[180px]">
+              <div className=" flex min-w-[180px] flex-col gap-2">
                 <input
                   id="CTHR_BUSD"
                   value={enableBusd ? centherPriceForBusd : centherPriceForNtr}
@@ -292,19 +292,19 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                       : setCentherPriceForNtr(Number(e.target.value))
                   }
                   type="number"
-                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                  className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
                 />
               </div>
-              <label className="label text-gray-shade-7 text-14px">
+              <label className="label text-14px text-gray-shade-7">
                 {enableBusd ? "(BUSD)" : "(NTR)"}
               </label>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Max CTHR amount to sell in round {data.round + 1}
             </label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <input
                 id="MaxCTHR"
                 value={maxCentherAmountToSell}
@@ -312,15 +312,15 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setMaxCentherAmountToSell(Number(e.target.value))
                 }
                 type="number"
-                className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Min {enableBusd ? "BUSD" : "NTR"} amount per User to purchase CTHR
             </label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <input
                 id="MinBUSD"
                 value={enableBusd ? minBusdAmountPerUser : minNtrAmountPerUser}
@@ -330,15 +330,15 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMinNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">
+            <label className="label text-14px text-gray-shade-7">
               Max {enableBusd ? "BUSD" : "NTR"} amount per User to purchase CTHR
             </label>
-            <div className=" flex gap-2 flex-col min-w-[180px]">
+            <div className=" flex min-w-[180px] flex-col gap-2">
               <input
                 id="MaxBUSD"
                 value={enableBusd ? maxBusdAmountPerUser : maxNtrAmountPerUser}
@@ -348,15 +348,15 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMaxNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="cardFooter pt-4 pb-7 px-5">
+      <div className="cardFooter px-5 pt-4 pb-7">
         <button
-          className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+          className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
           onClick={handleUpdateContract}
         >
           {pendingTx ? "Updating..." : "Update contract"}

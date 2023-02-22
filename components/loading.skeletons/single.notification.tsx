@@ -3,84 +3,84 @@ import React from "react";
 const SingleNotificationSkeleton = () => {
   return (
     <>
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
 
-      <div className="w-full max-w-[1005px] fsm:gap-10 gap-5 h-[76px] p-6 flex justify-between items-center rounded-t-xl bg-[#131314]">
+      <div className="flex h-[76px] w-full max-w-[1005px] items-center justify-between gap-5 rounded-t-xl bg-[#131314] p-6 fsm:gap-10">
         <div className="flex w-full items-center gap-2">
-          <div className="rounded-full h-[44px] min-w-[44px] object-cover bg-[#3C3F4A] animate-pulse"></div>
-          <div className=" h-[15px] w-full flex-grow max-w-[180px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+          <div className="h-[44px] min-w-[44px] animate-pulse rounded-full bg-[#3C3F4A] object-cover"></div>
+          <div className=" h-[15px] w-full max-w-[180px] flex-grow animate-pulse rounded-sm bg-[#3C3F4A]"></div>
         </div>
-        <div className=" h-[10px] w-[80px] bg-[#3C3F4A] rounded-sm animate-pulse"></div>
+        <div className=" h-[10px] w-[80px] animate-pulse rounded-sm bg-[#3C3F4A]"></div>
       </div>
     </>
   );

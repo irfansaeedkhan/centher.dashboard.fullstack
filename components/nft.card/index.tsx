@@ -1,22 +1,23 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-import ctl from "@netlify/classnames-template-literals";
 
 import { NFT } from "@/models/nft";
-// import useGetUser from "@/hooks/use.get.user";
 import useGetNftOwnerDb from "@/hooks/use.get.nft.owner.db";
+import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import {
   formatAddress,
   formatEther2Number,
   formatIPFSUrl,
 } from "@/utils/format.address";
-import { BNBIcon, YellowTick } from "@/assets/svgs";
-import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
+import { normalizeValue } from "@/web3/utils/call.helpers";
 import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
 import { AppRoutes } from "@/constants/app.routes";
+import {
+  BNBIcon,
+  // YellowTick
+} from "@/assets/svgs";
 
 export interface NFTCardProps {
   data: NFT;
@@ -51,15 +52,17 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   }, [data]);
 
   return (
-    <div className={nftCardWrapper}>
-      <div className="w-full absolute bg-gray-shade-15 top-0 left-0 rounded-t-[10px] px-[18px] py-4 backdrop-blur-[20px]">
-        {loading !== "loading" && loading !== "idle" ? (
+    <div
+      className={`relative max-w-[300px] overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`}
+    >
+      <div className="absolute top-0 left-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]">
+        {loading !== "loading" && loading !== "idle" && user ? (
           <div className={ownerDpWrapper}>
-            {user?.account_address ? (
-              <Link href={`/profile/${user?.account_address}`}>
+            {user.account_address ? (
+              <Link href={`/profile/${user.account_address}`}>
                 <Image
-                  className="cursor-pointer !w-7 !h-7 rounded-full object-cover"
-                  src={user?.profile_image.path ?? imgSrc}
+                  className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
+                  src={user.profile_image.path ?? imgSrc}
                   alt="profile"
                   height={28}
                   width={28}
@@ -67,36 +70,37 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
               </Link>
             ) : (
               <Image
-                src={user?.profile_image.path ?? imgSrc}
-                alt="profile"
+                src={user.profile_image.path ?? imgSrc}
+                alt={user.display_name}
                 height={28}
                 width={28}
               />
             )}
             <div className="flex items-center gap-2">
-              {user?.account_address ? (
+              {user.account_address ? (
                 <Link
-                  className="cursor-pointer truncate w-full max-w-[150px] text-white"
-                  href={`/profile/${user?.account_address}`}
+                  className="w-full max-w-[150px] cursor-pointer truncate text-white"
+                  href={`/profile/${user.account_address}`}
                 >
-                  <span className={`text-white text-xs font-medium`}>
-                    {user?.display_name ?? formatAddress(nftOwner)}
+                  <span className={`text-xs font-medium text-white`}>
+                    {user.display_name ?? formatAddress(nftOwner)}
                   </span>
                 </Link>
               ) : (
-                <div className="truncate max-w-[200px] text-white">
-                  <span className={`text-white text-xs font-medium`}>
+                <div className="max-w-[200px] truncate text-white">
+                  <span className={`text-xs font-medium text-white`}>
                     {formatAddress(notRegistered)}
                   </span>
                 </div>
               )}
-              <YellowTick className="w-[12px] h-[12px]" />
+              {/* <YellowTick className="h-[12px] w-[12px]" /> */}
             </div>
           </div>
         ) : (
           <HotNftsHeaderSkeleton />
         )}
       </div>
+
       <Link
         href={{
           pathname: AppRoutes.marketplace.nft,
@@ -105,7 +109,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             tokenId: data.tokenId,
           },
         }}
-        className={nftImageWrapper}
+        className={`mt-10 block w-full px-2`}
       >
         {imageUrl ? (
           <Image
@@ -115,12 +119,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             alt="nft"
             height={222}
             width={293}
-            className="!w-[293px] !h-[222px] object-cover rounded-md"
+            className="!h-[222px] !w-[293px] rounded-md object-cover"
           />
         ) : (
-          <div className="!w-[293px] !h-[222px] rounded-md bg-[#3C3F4A] mt-10 animate-pulse"></div>
+          <div className="mt-10 !h-[222px] !w-[293px] animate-pulse rounded-md bg-[#3C3F4A]"></div>
         )}
       </Link>
+
       <Link
         href={{
           pathname: AppRoutes.marketplace.nft,
@@ -129,20 +134,25 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             tokenId: data.tokenId,
           },
         }}
-        className={nftDetailWrapper}
+        className={`flex flex-col gap-1 px-2 py-4`}
       >
-        <div className={nftName}>{name}</div>
+        <span className={`font-medium text-white`}>{name}</span>
       </Link>
-      <div className={nftOwnerWrapper}>
+
+      <div
+        className={`flex flex-col gap-2 rounded-b-[10px] border-t border-t-gray-shade-3 bg-background-shade-3 py-5 px-2`}
+      >
         {/* <div className={ownerDpWrapper}>
             <Image src={props.nftOwnerDp} alt="profile" height={28} width={28} />
             <span className={nftOwnerName}>{props.nftOwnerName}</span>
             <YellowTick />
           </div> */}
-        <div className={nftPriceWrapper}>
+        <div className={`flex items-center justify-between gap-2`}>
           <span className={nftPrice}>
             <BNBIcon />
-            <span>{formatEther2Number(data.price)} BNB</span>
+            <span>
+              {`${normalizeValue(formatEther2Number(data.price))} (BNB)`}
+            </span>
           </span>
         </div>
         {/* ) : (
@@ -158,26 +168,6 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   );
 };
 
-const nftCardWrapper = ctl(
-  `[@media(max-width:660px)]:w-[290px] [@media(max-width:767px)]:min-w-[290px] w-[310px] nftCardStyling h-[380px] border border-gray-shade-3 rounded-[10px] flex flex-col bg-transparent relative`
-);
+const nftPrice = `!text-sm !font-medium flex items-center gap-2 text-white`;
 
-const nftImageWrapper = ctl(`w-full flex justify-center px-2 mt-10`);
-
-const textSimple = ctl(`text-gray-shade-7 text-xs font-medium`);
-
-const nftDetailWrapper = ctl(`flex flex-col gap-1 px-2 py-3`);
-
-const nftName = ctl(`font-semibold text-white`);
-
-const nftOwnerWrapper = ctl(
-  `bg-background-shade-3 flex flex-col py-[20px] px-2 gap-2 rounded-b-[10px] mt-2`
-);
-
-const nftPriceWrapper = ctl(`flex justify-between gap-2 items-center`);
-
-const nftPrice = ctl(
-  `!text-sm !font-medium flex items-center gap-2 text-white`
-);
-
-const ownerDpWrapper = ctl(`flex items-center gap-2`);
+const ownerDpWrapper = `flex items-center gap-2`;

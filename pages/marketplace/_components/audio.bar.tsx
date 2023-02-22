@@ -37,16 +37,16 @@ const Bar: React.FC<BarProps> = (props) => {
   }
 
   return (
-    <div className="w-full flex items-center select-none">
+    <div className="flex w-full select-none items-center">
       <div
-        className="h-14 flex-1 rounded-xl flex items-center cursor-pointer bar__progress"
+        className="bar__progress flex h-14 flex-1 cursor-pointer items-center rounded-xl"
         style={{
           background: `linear-gradient(to right, #2a2d3c ${curPercentage}%, #1F212B 0)`,
         }}
         onMouseDown={handleTimeDrag}
       >
         <span
-          className={clsx(`relative w-[2px] bg-white h-[54px]`)}
+          className={clsx(`relative h-[54px] w-[2px] bg-white`)}
           style={{
             left: `${curPercentage}%`,
           }}

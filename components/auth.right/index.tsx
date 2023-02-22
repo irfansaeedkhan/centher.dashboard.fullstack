@@ -7,7 +7,7 @@ interface AuthRightProps {
 export const AuthRight: React.FC<AuthRightProps> = (props) => {
   return (
     <div
-      className={`md:w-1/2 w-full max-h-screen f2xl:px-[113px] bg-black-shade-3 overflow-y-scroll flex justify-center md:py-32 py-10 px-5 lg:px-20`}
+      className={`flex max-h-screen w-full justify-center overflow-y-scroll bg-black-shade-3 py-10 px-5 md:w-1/2 md:py-32 lg:px-20 f2xl:px-[113px]`}
     >
       <div className={`w-[496px] max-w-[496px]`}>{props.children}</div>
     </div>

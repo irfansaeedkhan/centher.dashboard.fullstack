@@ -11,7 +11,7 @@ import { AddIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { categories } from "@/models/nft";
+import { networkDecimals } from "@/web3/constants/common";
 
 // form validations
 const schema = Joi.object({
@@ -23,23 +23,10 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  Category: Joi.string().required().max(150).label("category").messages({
-    "string.empty": `category Required`,
-    "any.required": `Required Field`,
-  }),
-  NFTAmount: Joi.number()
-    .integer()
-    .greater(0)
-    .required()
-    .label("NFT Amount")
-    .messages({
-      "string.empty": `NFTAmount Required`,
-      "any.required": `Required Field`,
-    }),
-  NFTPrice: Joi.number().required().label("NFT Price").messages({
-    "string.empty": `NFTPrice Required`,
-    "any.required": `Required Field`,
-  }),
+  // NFTPrice: Joi.number().greater(0).required().label("NFT Price").messages({
+  //   "string.empty": `NFTPrice Required`,
+  //   "any.required": `Required Field`,
+  // }),
   Collection: Joi.string().required().max(150).label("Collection").messages({
     "string.empty": `Collection Required`,
     "any.required": `Required Field`,
@@ -49,10 +36,10 @@ interface FixedPriceFormProps {
   createNFT: any;
   collections: IMyCollection[];
   clearForm: boolean;
+  asset: Blob | undefined;
 }
 interface FormFields {
   NFTName: String;
-  Category: String;
   Description: String;
   NFTAmount: number | null;
   NFTPrice: number | null;
@@ -63,12 +50,15 @@ const FixedPriceForm = ({
   createNFT,
   collections,
   clearForm,
+  asset,
 }: FixedPriceFormProps) => {
   const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
+  const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
+  const [nftPriceError, setNFTPriceError] = useState<any>("");
 
   const { handleSubmit, register, setError, formState, reset } =
     useForm<FormFields>({
@@ -77,9 +67,7 @@ const FixedPriceForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
-        Category: "",
-        NFTAmount: null,
-        NFTPrice: null,
+        // NFTPrice: null,
         Collection: "",
       },
     });
@@ -120,11 +108,10 @@ const FixedPriceForm = ({
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
-      category: data.Category,
-      supply: data.NFTAmount,
+      supply: 1,
       collection: data.Collection,
       isAuction: false,
-      price: data.NFTPrice,
+      price: changeNFTPrice,
       period: 0,
       properties: propertyList,
     };
@@ -132,17 +119,17 @@ const FixedPriceForm = ({
   };
   useEffect(() => {
     if (clearForm) {
+      setChangeNFTPrice(null);
       reset({
         NFTName: "",
-        Category: "",
         Description: "",
-        NFTAmount: null,
-        NFTPrice: null,
+        NFTAmount: 1,
         Collection: "",
       });
       setPropertyList([]);
     }
   }, [clearForm, reset]);
+
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
@@ -187,61 +174,15 @@ const FixedPriceForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label htmlFor="textarea" className={fieldTitle}>
-          Category <span className="text-red-500">*</span>{" "}
-        </label>
-        <select
-          id="Category"
-          {...register("Category")}
-          className={!formState.errors.Category ? inputField : inputFieldError}
-        >
-          {categories.slice(1, categories.length).map((item, key) => {
-            return (
-              <option value={item === "Select" ? "" : item} key={key}>
-                {item}
-              </option>
-            );
-          })}
-        </select>
-        {formState.errors.Category && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.Category.message}
-          </p>
-        )}
-      </div>
-      <div className="flex gap-3">
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>
-            NFT Amount <span className="text-red-500">*</span>{" "}
-          </label>
-          <input
-            type="number"
-            id="NFTAmount"
-            maxLength={10}
-            autoComplete="off"
-            {...register("NFTAmount")}
-            placeholder="0"
-            className={
-              !formState.errors.NFTAmount ? inputField : inputFieldError
-            }
-          />
-          {formState.errors.NFTAmount && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.NFTAmount.message}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className={fieldWrapper}>
         <label className={fieldTitle}>
           NFT Price <span className="text-red-500">*</span>{" "}
         </label>
 
         <div className="relative">
-          <span className="text-yellow-theme text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
             BNB
           </span>
-          <input
+          {/* <input
             type="number"
             id="NFTPrice"
             autoComplete="off"
@@ -250,12 +191,43 @@ const FixedPriceForm = ({
             className={
               !formState.errors.NFTPrice ? inputField : inputFieldError
             }
+          /> */}
+          <input
+            type="text"
+            id="NFTPrice"
+            autoComplete="off"
+            placeholder="Enter NFT Price"
+            className={nftPriceError === "" ? inputField : inputFieldError}
+            onChange={(e) => {
+              setNFTPriceError("");
+              const inputValue = e.target.value;
+              const numberValue = Number(inputValue);
+
+              const pattern = /^\d*\.?\d+$/; // Regular expression to match positive integers and positive floating numbers
+              if (pattern.test(inputValue)) {
+                if (numberValue <= 0) {
+                  setNFTPriceError("NFT Price must be greater than 0");
+                  setChangeNFTPrice(null);
+                }
+                if (numberValue < networkDecimals) {
+                  setNFTPriceError(
+                    "NFT Price must be greater than 0.000000000000000001"
+                  );
+                  setChangeNFTPrice(null);
+                }
+                setChangeNFTPrice(numberValue);
+              } else if (e.target.value == "") {
+                setNFTPriceError("Field Required");
+                setChangeNFTPrice(null);
+              } else {
+                setNFTPriceError("NFT Price must be a positive number");
+                setChangeNFTPrice(null);
+              }
+            }}
           />
         </div>
-        {formState.errors.NFTPrice && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.NFTPrice.message}
-          </p>
+        {nftPriceError !== "" && (
+          <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
         )}
         {/* <div className={serviceFee}>
           <div className={serviceFeeTitle}>
@@ -276,7 +248,9 @@ const FixedPriceForm = ({
             !formState.errors.Collection ? inputField : inputFieldError
           }
         >
-          {/* <option value="">Select</option> */}
+          <option value="" className="!text-gray-shade-7">
+            Select Collection
+          </option>
           {collections.map((collection) => {
             return (
               <option value={collection.collection} key={collection.id}>
@@ -294,7 +268,12 @@ const FixedPriceForm = ({
         )}
       </div>
       <div className={fieldWrapper}>
-        <label className={fieldTitle}>Properties</label>
+        <label className={fieldTitle}>
+          Properties{"  "}
+          <span className="text-14px  font-normal text-gray-shade-7">
+            (optional)
+          </span>
+        </label>
         <div className={addPropertyBtn}>
           <span>Add new properties</span>
           <button
@@ -325,13 +304,21 @@ const FixedPriceForm = ({
             );
           })}
       </div>
+
       <Button
         title={"Create NFT"}
-        variant={formState.isValid ? "v1" : "v2"}
-        disabled={!formState.isValid}
+        variant={
+          formState.isValid && asset !== undefined && nftPriceError === ""
+            ? "v1"
+            : "v2"
+        }
+        disabled={
+          !formState.isValid && asset === undefined && nftPriceError === ""
+        }
         onClick={handleSubmit(onSubmit)}
-        className="py-4 mt-2"
+        className="mt-2 py-4"
       />
+
       {propertyModal && (
         <CustomModal
           onClose={() => {
@@ -371,7 +358,7 @@ const FixedPriceForm = ({
               title={"Save"}
               variant="v1"
               onClick={addNewPropertyFunc}
-              className="py-4 mt-2"
+              className="mt-2 py-4"
             />
           </div>
         </CustomModal>
@@ -404,18 +391,6 @@ const inputFieldModal = ctl(`
 const inputFieldError = ctl(`
   ${inputField}
    focus:!ring-red-500
-`);
-const serviceFee = ctl(`
-flex justify-between items-center pt-1
-`);
-const serviceFeeTitle = ctl(`
-flex items-center gap-3
-`);
-const serviceFeeName = ctl(`
-text-[#838B8F] text-12px font-normal
-`);
-const serviceFeeNumber = ctl(`
- text-white text-12px font-normal
 `);
 const addPropertyBtn = ctl(`
 flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]

@@ -54,7 +54,7 @@ const UpdateStakingPack: NextPageWithLayout = () => {
             <div className="w-full">
               <label className={formLabel}>Status</label>
               {/* <input type="text" className={formField} /> */}
-              <select className="bg-white bg-opacity-5 block w-full placeholder:text-gray-shade-17 border-0 focus:ring-brand-primary focus:outline-none rounded-[10px] py-3 px-4 mt-2">
+              <select className="mt-2 block w-full rounded-[10px] border-0 bg-white bg-opacity-5 py-3 px-4 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                 <option className="bg-black text-white">Active</option>
                 <option className="bg-black text-white">Disable</option>
               </select>

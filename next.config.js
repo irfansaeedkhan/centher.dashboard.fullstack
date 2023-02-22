@@ -8,15 +8,23 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   images: {
-    domains: [
-      "ipfs.moralis.io",
-      "devapi.centher.io",
-      "devstatic.centher.io",
-      "localhost",
-      "centher-development.s3.eu-west-3.amazonaws.com",
-      "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
-      "s3.eu-west-3.amazonaws.com",
-    ],
+    domains:
+      process.env.APP_ENV === "production"
+        ? [
+            "static.centher.io",
+            "s3.eu-west-3.amazonaws.com",
+            "centher.infura-ipfs.io",
+          ]
+        : [
+            "localhost",
+            "devapi.centher.io",
+            "static.centher.io",
+            "devstatic.centher.io",
+            "s3.eu-west-3.amazonaws.com",
+            "centher-development.s3.eu-west-3.amazonaws.com",
+            "devstatic.centher.io.s3.eu-west-3.amazonaws.com",
+            "centher-staging.infura-ipfs.io",
+          ],
   },
   pageExtensions: ["page.tsx", "page.ts", "api.ts"],
   webpack(config) {

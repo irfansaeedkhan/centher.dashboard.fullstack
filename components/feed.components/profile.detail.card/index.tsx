@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
@@ -22,12 +23,15 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div
       className={clsx(
-        `w-11/12 fsm:w-[272px] pt-12 rounded-10px overflow-hidden text-center bg-background-shade-3 relative`,
+        `relative w-11/12 overflow-hidden rounded-10px bg-background-shade-3 pt-12 text-center fsm:w-[272px]`,
         !!profileCardDetails.posts_views_count && `pb-4`
       )}
     >
       <div
-        className={`absolute top-0 left-0 bg-center bg-cover bg-no-repeat w-full h-[84px] bg-[url('/images/profile-header-cover.jpg')]`}
+        className={`absolute top-0 left-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
+        style={{
+          backgroundImage: `url(${user?.cover_image.path})`,
+        }}
       ></div>
 
       <div className={`relative mx-auto h-[60px] !w-[60px]`}>
@@ -41,7 +45,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         >
           <Image
             src={user.profile_image.path}
-            className={`w-[60px] h-[60px] mx-auto rounded-full cursor-pointer object-cover`}
+            className={`mx-auto h-[60px] w-[60px] cursor-pointer rounded-full object-cover`}
             alt={user.display_name}
             width={60}
             height={60}
@@ -61,16 +65,19 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           title={user.display_name}
           className={`flex items-center justify-center`}
         >
-          <span className="line-clamp-1 text-ellipsis text-white text-sm font-bold">
-            {user.display_name}
+          <span
+            className="text-ellipsis text-sm font-semibold text-white line-clamp-1"
+            title={user.display_name}
+          >
+            {user && sliceDisplayName(user.display_name)}
           </span>
           {!!verificationTick && (
-            <span className="verifiedIcon !h-6 !w-6 ml-1">
+            <span className="verifiedIcon ml-1 h-5 w-5">
               <Image
                 src={verificationTick}
                 alt={"Verified"}
-                width={24}
-                height={24}
+                width={20}
+                height={20}
               />
             </span>
           )}
@@ -78,7 +85,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       </h3>
 
       <div
-        className={`bg-background-shade-2 py-3 px-7 flex items-center justify-center gap-8`}
+        className={`flex items-center justify-center gap-8 bg-background-shade-2 py-3 px-7`}
       >
         <div>
           <div>

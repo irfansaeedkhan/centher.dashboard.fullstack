@@ -21,7 +21,7 @@ export const PostUserImage: React.FC<Props> = ({
         onClick={(e) => {
           e.stopPropagation();
         }}
-        className="w-12 h-12"
+        className="h-12 w-12"
         href={{
           pathname: AppRoutes.profile.account_address,
           query: { account_address: postUser.account_address },
@@ -33,7 +33,7 @@ export const PostUserImage: React.FC<Props> = ({
           width={48}
           height={48}
           sizes="48px"
-          className="rounded-full object-cover w-full h-full"
+          className="h-full w-full rounded-full object-cover"
         />
       </Link>
 

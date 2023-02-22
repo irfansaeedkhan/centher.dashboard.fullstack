@@ -16,6 +16,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
 import { copyText } from "@/utils/copy.text";
 import { formatAddress } from "@/utils/format.address";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 
@@ -100,7 +101,7 @@ export const NFTRightSideComponent = ({
           <button onClick={togglePopFunc}>
             <ShareBigIcon />
           </button>
-          <div className={`${toggleList} ${togglePop && "!block z-50"}`}>
+          <div className={`${toggleList} ${togglePop && "z-50 !block"}`}>
             <button onClick={copyShareUrl} className={toggleListBtn}>
               <LinkIcon className={toggleListIcons} /> Copy link
             </button>
@@ -128,27 +129,28 @@ export const NFTRightSideComponent = ({
               width={48}
               height={48}
               alt="profile"
-              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+              className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+            <div className="h-12 w-12 flex-shrink-0 animate-pulse rounded-full bg-gray-shade-3"></div>
           )}
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Creator</h5>
             {user ? (
               <Link
                 href={{
-                  pathname: AppRoutes.profile.nfts,
+                  pathname: AppRoutes.profile.owned,
                   query: {
                     account_address: data?.creator,
                   },
                 }}
                 className={nameBoxZValue}
+                title={user.display_name}
               >
-                {user?.display_name}
+                {sliceDisplayName(user.display_name)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
@@ -159,32 +161,33 @@ export const NFTRightSideComponent = ({
               width={48}
               height={48}
               alt="profile"
-              className="w-12 h-12 object-cover rounded-full flex-shrink-0"
+              className="h-12 w-12 flex-shrink-0 rounded-full object-cover"
             />
           ) : (
-            <div className="rounded-full w-12 h-12 bg-gray-shade-3 animate-pulse flex-shrink-0"></div>
+            <div className="h-12 w-12 flex-shrink-0 animate-pulse rounded-full bg-gray-shade-3"></div>
           )}
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Owner</h5>
             {nftOwner ? (
               <Link
                 href={{
-                  pathname: AppRoutes.profile.nfts,
+                  pathname: AppRoutes.profile.owned,
                   query: {
                     account_address: nftOwnerAddress,
                   },
                 }}
                 className={nameBoxZValue}
+                title={nftOwner.display_name}
               >
-                {nftOwner?.display_name}
+                {sliceDisplayName(nftOwner.display_name)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
         <div className={clsx(`basis-1/4`, nameBox)}>
-          <div className="flex flex-col gap-1 flex-grow">
+          <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
             {data?.collection ? (
               <Link
@@ -199,7 +202,7 @@ export const NFTRightSideComponent = ({
                 {formatAddress(data?.collection)}
               </Link>
             ) : (
-              <div className="rounded-sm w-full h-4 mt-1 bg-gray-shade-3 animate-pulse"></div>
+              <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
@@ -210,17 +213,17 @@ export const NFTRightSideComponent = ({
       {nftState === "fixedPriceNFTBuyer" && (
         <FixedPriceNFTBuyerDescription data={data} />
       )}
-      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {/* {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
       {nftState === "timeAuctionedNFTBuyer" && (
         <AuctionNFTBuyerDescription data={data} />
-      )}
+      )} */}
       <NFTListing data={data?.listingHistory} />
-      {data?.saleState === "Auction" && (
+      {/* {data?.saleState === "Auction" && (
         <NFTOffers data={data?.auctionInfo.bids} />
-      )}
+      )} */}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
-      <NFTHistory prices={data?.priceHistory} />
+      {/* <NFTHistory prices={data?.priceHistory} /> */}
     </div>
   );
 };

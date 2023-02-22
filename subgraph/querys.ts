@@ -63,7 +63,9 @@ export const allNFTsQuery = `
     nfts(first: $first, 
         skip: $skip, 
         orderBy: $orderBy,
-        orderDirection: $orderDirection ) {
+        orderDirection: $orderDirection,
+        where: { price_gt: "0"}
+        ) {
       collection
       createTime
       creator
@@ -292,6 +294,72 @@ export const listedNFTsByAccount = `
   }
 `;
 
+export const listedUserNFTsByAccount = `
+  query($first: Int!, $skip: Int!, $owner: Bytes!) {
+    nfts(
+      first: $first
+      skip: $skip
+      orderBy: tradingVolumn
+      orderDirection: desc
+      where: {owner: $owner, price_gt: "0"}
+    ) {
+        collection
+        createTime
+        creator
+        id
+        ipfs
+        saleState
+        tokenId
+        price
+        owner
+        listInfo {
+          price
+          bidSize
+        }
+        auctionInfo {
+          endTime
+          highestBidPrice
+          highestBidAddress
+          bidSize
+          startPrice
+        }
+    }
+  }
+`;
+
+export const createdNFTsByAccount = `
+  query($first: Int!, $skip: Int!, $creator: Bytes!) {
+    nfts(
+      first: $first
+      skip: $skip
+      orderBy: tradingVolumn
+      orderDirection: desc
+      where: {creator: $creator}
+    ) {
+        collection
+        createTime
+        creator
+        id
+        ipfs
+        saleState
+        tokenId
+        price
+        owner
+        listInfo {
+          price
+          bidSize
+        }
+        auctionInfo {
+          endTime
+          highestBidPrice
+          highestBidAddress
+          bidSize
+          startPrice
+        }
+    }
+  }
+`;
+
 export const registeredCollections = `
   query {
     collections {
@@ -310,9 +378,9 @@ export const myCollections = `
   }
 `;
 
-export const topCreators = `
+export const topCreatorsQuery = `
   query($skip: Int!, $first: Int!) {
-    users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first) {
+    users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first,  where: {createNFTCount_not: 0}) {
       createNFTCount
       createCollectionCount
       publicKey

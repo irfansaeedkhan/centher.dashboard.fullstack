@@ -1,6 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
 
 // App imports
@@ -13,6 +14,12 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   // upload image to preview
   const uploadFile = (e: any) => {
     const previewUrl = e.target.files[0];
+    var allowedExtensions = ["image/gif"];
+    if (allowedExtensions.indexOf(previewUrl?.type?.toLowerCase()) == -1) {
+      toast.error("Invalid file type");
+      return;
+    }
+
     setAsset(previewUrl);
     setShowSecPreivew(true);
   };
@@ -35,7 +42,7 @@ const GifNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
             className={imageDelBtn}
             onClick={() => {
               setShowSecPreivew(false);
-              setAsset(null);
+              setAsset(undefined);
             }}
           >
             <CrossIcon />
@@ -74,7 +81,7 @@ const imageStyling = ctl(`
 w-full h-full absolute rounded-2xl object-cover
 `);
 const imageDelBtn = ctl(`
-  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:!w-8 [&>*]:!h-8 [&>*]:hover:scale-125 z-30 w-[44px] h-[44px] flex items-center justify-center leading-0 backdrop-blur-lg
+  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
   `);
 const uploadBox = ctl(`
 w-full h-full absolute flex items-center justify-center

@@ -168,88 +168,90 @@ export const NFTHistory = ({ prices }: any) => {
   };
   return (
     <div className={NFTHistoryContainer}>
-      <div className="accordion" id="accordionExample">
-        <div className="accordion-item bg-transparent ">
-          <h2 className="accordion-header mb-0" id="headingOne">
-            <button
-              className={AccordionButton}
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#HistoryComponent"
-              aria-expanded="true"
-              aria-controls="HistoryComponent"
+      {prices?.length ? (
+        <div className="accordion" id="accordionExample">
+          <div className="accordion-item bg-transparent ">
+            <h2 className="accordion-header mb-0" id="headingOne">
+              <button
+                className={AccordionButton}
+                // type="button"
+                // data-bs-toggle="collapse"
+                // data-bs-target="#HistoryComponent"
+                // aria-expanded="true"
+                // aria-controls="HistoryComponent"
+              >
+                History
+              </button>
+            </h2>
+            <div
+            // id="HistoryComponent"
+            // className={AccordionCollapse}
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
             >
-              History
-            </button>
-          </h2>
-          <div
-            id="HistoryComponent"
-            className={AccordionCollapse}
-            aria-labelledby="headingOne"
-            data-bs-parent="#accordionExample"
-          >
-            <div className="accordion-body rounded-10px">
-              <div className={graphContainer}>
-                <div className="top flex  justify-between bg-[#1C1F29] px-6 py-3">
-                  <div className={graphDetailBox}>
-                    <h5 className="text-12px text-white">
-                      {duration} days avg. price
-                    </h5>
-                    <h5 className="text-14px text-yellow-theme">
-                      {" "}
-                      {priceAverage ? priceAverage.toFixed(4) : " No Data"}
-                    </h5>
+              <div className="accordion-body rounded-10px">
+                <div className={graphContainer}>
+                  <div className="top flex  justify-between bg-[#1C1F29] px-6 py-3">
+                    <div className={graphDetailBox}>
+                      <h5 className="text-12px text-white">
+                        {duration} days avg. price
+                      </h5>
+                      <h5 className="text-14px text-yellow-theme">
+                        {" "}
+                        {priceAverage ? priceAverage.toFixed(4) : " No Data"}
+                      </h5>
+                    </div>
+                    <div className={graphDetailBox}>
+                      <h5 className="text-12px text-white">
+                        {duration} days volume
+                      </h5>
+                      <h5 className="text-14px text-[#5F97FF]">
+                        {" "}
+                        {priceVolume ? priceVolume.toFixed(4) : " No Data"}
+                      </h5>
+                    </div>
+                    <select
+                      name="days"
+                      id="days"
+                      className=" rounded-10px bg-[#1C1F29] text-white"
+                      onChange={changeDuration}
+                      value={duration}
+                    >
+                      <option value={7}>Last 7 days</option>
+                      <option value={30}>Last 30 days</option>
+                    </select>
                   </div>
-                  <div className={graphDetailBox}>
-                    <h5 className="text-12px text-white">
-                      {duration} days volume
-                    </h5>
-                    <h5 className="text-14px text-[#5F97FF]">
-                      {" "}
-                      {priceVolume ? priceVolume.toFixed(4) : " No Data"}
-                    </h5>
-                  </div>
-                  <select
-                    name="days"
-                    id="days"
-                    className=" text-white bg-[#1C1F29] rounded-10px"
-                    onChange={changeDuration}
-                    value={duration}
-                  >
-                    <option value={7}>Last 7 days</option>
-                    <option value={30}>Last 30 days</option>
-                  </select>
                 </div>
-              </div>
 
-              <div className="p-6">
-                {priceHistory.length > 0 ? (
-                  <LineChart data={data} />
-                ) : (
-                  <div className="w-full h-28 flex items-center justify-center">
-                    <h6 className="text-14px font-medium text-yellow-theme">
-                      No event has occured yet!
-                    </h6>
-                  </div>
-                )}
-              </div>
+                <div className="p-6">
+                  {priceHistory.length > 0 ? (
+                    <LineChart data={data} />
+                  ) : (
+                    <div className="flex h-28 w-full items-center justify-center">
+                      <h6 className="text-14px font-medium text-yellow-theme">
+                        No event has occured yet!
+                      </h6>
+                    </div>
+                  )}
+                </div>
 
-              <div className="w-full flex justify-end p-3">
-                {tableDataArray.length > 0 && (
-                  <button
-                    onClick={() => {
-                      setShowModal(true);
-                    }}
-                    className="w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark"
-                  >
-                    Details
-                  </button>
-                )}
+                <div className="flex w-full justify-end p-3">
+                  {tableDataArray.length > 0 && (
+                    <button
+                      onClick={() => {
+                        setShowModal(true);
+                      }}
+                      className="flex w-max items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
+                    >
+                      Details
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : null}
       {showModal && (
         <CustomModal onClose={closePostModal} title={"Price List"}>
           <div className={TableContainer}>

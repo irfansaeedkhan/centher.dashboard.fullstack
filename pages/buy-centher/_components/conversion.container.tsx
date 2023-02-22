@@ -38,7 +38,7 @@ export const ConversionContainer: React.FC<Props> = ({
       setSelectedTokenA((prev) => ({
         ...prev,
         tokenName: "BUSD",
-        tokenIcon: <BUSDIconBG className="w-10 h-10" />,
+        tokenIcon: <BUSDIconBG className="h-10 w-10" />,
         minContribution: roundInfo.minContributionForBusd,
         maxContribution: roundInfo.maxContributionForBusd,
         rate: roundInfo.priceForBusd,
@@ -51,7 +51,7 @@ export const ConversionContainer: React.FC<Props> = ({
       setSelectedTokenA((prev) => ({
         ...prev,
         tokenName: "NTR",
-        tokenIcon: <NTRIconBG className="w-10 h-10" />,
+        tokenIcon: <NTRIconBG className="h-10 w-10" />,
         minContribution: roundInfo.minContributionForNtr,
         maxContribution: roundInfo.maxContributionForNtr,
         rate: roundInfo.priceForNtr,
@@ -65,7 +65,7 @@ export const ConversionContainer: React.FC<Props> = ({
 
   return (
     <div
-      className={`flex flex-col flg:flex-row items-center justify-between gap-5`}
+      className={`flex flex-col items-center justify-between gap-5 flg:flex-row`}
     >
       <div className={conversionInputContainer}>
         <ConversionTokenBox
@@ -104,9 +104,9 @@ export const ConversionContainer: React.FC<Props> = ({
           </div>
 
           <div className={inputBoxRight}>
-            <div className={`flex-grow flex justify-center`}>
+            <div className={`flex flex-grow justify-center`}>
               <button
-                className={`cursor-pointer text-xs fmd:text-sm text-yellow-theme font-medium border-2 border-gray-shade-3 bg-gray-shade-9 rounded-2xl px-3 py-1 transition hover:bg-yellow-theme hover:text-black-shade-3 hover:border-0`}
+                className={`cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-yellow-theme transition hover:border-0 hover:bg-yellow-theme hover:text-black-shade-3 fmd:text-sm`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");
@@ -135,7 +135,7 @@ export const ConversionContainer: React.FC<Props> = ({
 
       <div className={conversionInputContainer}>
         <ConversionTokenBox
-          tokenIcon={<CentherIconBG className="w-10 h-10" />}
+          tokenIcon={<CentherIconBG className="h-10 w-10" />}
           tokenName="CTHR"
           tokenBalance={selectedTokenB.tokenBalance}
         />
@@ -164,7 +164,7 @@ const inputClasses = `inputClasses flex-grow w-4/5 focus:outline-none focus:ring
 const ConversionArrowLeft = () => {
   return (
     <div
-      className={`transform rotate-90 flg:rotate-0 cursor-pointer w-16 h-16 fmd:w-20 fmd:h-20 f2xl:w-[100px] f2xl:h-[100px] bg-gray-shade-9 border-2 border-gray-shade-3 flex items-center justify-center transition hover:scale-110 rounded-full`}
+      className={`flex h-16 w-16 rotate-90 transform cursor-pointer items-center justify-center rounded-full border-2 border-gray-shade-3 bg-gray-shade-9 transition hover:scale-110 fmd:h-20 fmd:w-20 flg:rotate-0 f2xl:h-[100px] f2xl:w-[100px]`}
     >
       <LeftArrowIcon />
     </div>

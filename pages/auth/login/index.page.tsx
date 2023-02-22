@@ -28,7 +28,7 @@ Login.getLayout = (page) => {
         content={signupLeftData.content}
       />
       <AuthRight>
-        <div className="w-fit md:hidden flex mb-8">
+        <div className="mb-8 flex w-fit md:hidden">
           <Link href={AppRoutes.home}>
             <Image
               src="/images/centher.logo.png"

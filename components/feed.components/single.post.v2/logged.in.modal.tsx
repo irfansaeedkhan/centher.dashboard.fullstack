@@ -31,9 +31,9 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
     >
       <ModalPortal wrapperId="post-delete-modal">
         <div
-          className={`font-monto flex justify-center items-center fixed inset-0 z-[999] backdrop-filter backdrop-blur-lg overflow-y-auto overflow-x-hidden`}
+          className={`fixed inset-0 z-[999] flex items-center justify-center overflow-y-auto overflow-x-hidden font-monto backdrop-blur-lg backdrop-filter`}
         >
-          <div className="bg-popup-0 w-full max-w-[656px] rounded-10px p-4 fmd:p-6 space-y-4 fmd:space-y-6 mx-2">
+          <div className="mx-2 w-full max-w-[656px] space-y-4 rounded-10px bg-popup-0 p-4 fmd:space-y-6 fmd:p-6">
             <header className="flex items-center justify-between text-white">
               <h3 className="text-lg font-semibold">
                 <Image
@@ -44,13 +44,13 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 />
               </h3>
               <button onClick={onClose}>
-                <IoClose className="w-6 h-6 cursor-pointer" />
+                <IoClose className="h-6 w-6 cursor-pointer" />
               </button>
             </header>
 
             <main className="py-2 fmd:p-4">
-              <div className="space-y-8 text-center mt-4">
-                <h3 className="font-semibold text-2xl text-white">
+              <div className="mt-4 space-y-8 text-center">
+                <h3 className="text-2xl font-semibold text-white">
                   Register or login to <b>Centher</b>
                 </h3>
                 <div>
@@ -58,7 +58,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     <ActionButton
                       //not confirm yet we need to close the modal or not
                       // onClick={onClose}
-                      className="bg-brand-primary mb-6 hover:bg-brand-primary-dark text-black"
+                      className="mb-6 bg-brand-primary text-black hover:bg-brand-primary-dark"
                     >
                       Login
                     </ActionButton>
@@ -68,7 +68,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     <ActionButton
                       //not confirm yet we need to close the modal or not
                       // onClick={onClose}
-                      className="bg-black-shade-7 hover:bg-gray-900 text-gray-shade-10"
+                      className="bg-black-shade-7 text-gray-shade-10 hover:bg-gray-900"
                     >
                       Register
                     </ActionButton>
@@ -93,7 +93,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   return (
     <button
       className={clsx(
-        `px-4 py-2 fmd:py-3 w-full font-bold rounded-lg transition-all`,
+        `w-full rounded-lg px-4 py-2 font-bold transition-all fmd:py-3`,
         className
       )}
       {...props}

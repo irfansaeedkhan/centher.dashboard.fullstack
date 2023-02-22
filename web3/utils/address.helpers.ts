@@ -34,3 +34,6 @@ export const getMarketplaceAddress = () => {
 export const getNTRAddress = () => {
   return getAddress(addresses.ntr);
 };
+export const getNativeCollectionAddress = () => {
+  return getAddress(addresses.nativeCollection);
+};

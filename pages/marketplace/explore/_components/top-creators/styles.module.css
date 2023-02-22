@@ -1,0 +1,12 @@
+.custom-scrollbar {
+  scroll-behavior: smooth;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply rounded-full border-none bg-gray-700 bg-opacity-50;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
