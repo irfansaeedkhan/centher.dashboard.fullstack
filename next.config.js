@@ -11,9 +11,11 @@ const nextConfig = {
     domains:
       process.env.APP_ENV === "production"
         ? [
-            "static.centher.io",
-            "s3.eu-west-3.amazonaws.com",
             "centher.infura-ipfs.io",
+            "api.centher.io",
+            "static.centher.io",
+            "static.centher.io.s3.eu-west-3.amazonaws.com",
+            "s3.eu-west-3.amazonaws.com",
           ]
         : [
             "localhost",
