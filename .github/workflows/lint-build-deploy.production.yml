@@ -39,6 +39,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-multi-buildx
 
+      - name: Create empty .env.production for docker build
+        run: |
+          touch .env.production
+
       - name: Build image to test build
         uses: docker/build-push-action@v4
         with:
