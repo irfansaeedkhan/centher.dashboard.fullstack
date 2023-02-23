@@ -81,7 +81,7 @@ export const EditProfileForm: React.FC<EditProfileFormProps> = (props) => {
           label="Pseudonym"
           placeholder="e.g. Steven Paul"
           value={updatedUser.pseudonym}
-          maxLength={60}
+          maxLength={50}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,

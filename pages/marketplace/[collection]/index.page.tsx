@@ -229,10 +229,12 @@ const Collection: NextPageWithLayout = () => {
             </div>
             <div className={coverDetails}>
               <div className={topDetais}>
-                <div>
+                <div className="w-full">
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white">Created by</span>
+                  <div className="flex-start flex  flex-col gap-2 text-left md:flex-row md:items-center ">
+                    <span className="block w-[96px] text-white md:w-auto">
+                      Created by
+                    </span>
                     <Link
                       href={{
                         pathname: AppRoutes.profile.nfts,
@@ -240,7 +242,11 @@ const Collection: NextPageWithLayout = () => {
                           account_address: info?.creator,
                         },
                       }}
-                      className="text-14px text-ellipsis font-semibold text-gray-shade-18 line-clamp-1 hover:text-brand-primary"
+                      className={`text-14px  font-semibold text-gray-shade-18  hover:text-brand-primary   ${
+                        user?.display_name.includes(" ")
+                          ? "text-ellipsis line-clamp-1"
+                          : "whitespace-no-wrap block  w-[100%] max-w-full overflow-hidden truncate md:w-full"
+                      }`}
                       title={user?.display_name}
                     >
                       {user && sliceDisplayName(user?.display_name)}

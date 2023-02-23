@@ -41,7 +41,13 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
       <div className="flex flex-col gap-3">
         <h5 className="text-12px flex items-center gap-2 font-normal text-white">
           {prefix} by{" "}
-          <span className="cursor-pointer text-ellipsis font-semibold line-clamp-1 hover:text-brand-primary-dark">
+          <span
+            className={`cursor-pointer  font-semibold hover:text-brand-primary-dark  ${
+              buyer?.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block w-[50%]  max-w-full overflow-hidden truncate md:w-[80%]"
+            }`}
+          >
             {item.type === "BuyItem" ||
             item.type === "AcceptBid" ||
             item.type === "EndAuction" ? (
@@ -55,7 +61,14 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
               >
                 {" "}
                 {buyer?.display_name ? (
-                  <span title={buyer.display_name}>
+                  <span
+                    title={buyer.display_name}
+                    className={`    ${
+                      buyer?.display_name.includes(" ")
+                        ? "text-ellipsis line-clamp-1"
+                        : "whitespace-no-wrap block w-[50%] max-w-full overflow-hidden truncate md:w-[80%]"
+                    }`}
+                  >
                     {sliceDisplayName(buyer.display_name)}
                   </span>
                 ) : (
@@ -72,7 +85,14 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 }}
               >
                 {seller?.display_name ? (
-                  <span title={seller.display_name}>
+                  <span
+                    title={seller.display_name}
+                    className={` ${
+                      seller.display_name.includes(" ")
+                        ? "text-ellipsis line-clamp-1"
+                        : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+                    }`}
+                  >
                     {sliceDisplayName(seller.display_name)}
                   </span>
                 ) : (

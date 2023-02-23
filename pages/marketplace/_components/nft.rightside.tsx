@@ -144,7 +144,11 @@ export const NFTRightSideComponent = ({
                     account_address: data?.creator,
                   },
                 }}
-                className={nameBoxZValue}
+                className={`text-14px font-semibold text-white hover:text-brand-primary-dark    ${
+                  user?.display_name.includes(" ")
+                    ? "text-ellipsis line-clamp-1"
+                    : "whitespace-no-wrap block  w-[85%] max-w-full overflow-hidden truncate"
+                }`}
                 title={user.display_name}
               >
                 {sliceDisplayName(user.display_name)}
@@ -176,7 +180,11 @@ export const NFTRightSideComponent = ({
                     account_address: nftOwnerAddress,
                   },
                 }}
-                className={nameBoxZValue}
+                className={`text-14px font-semibold text-white hover:text-brand-primary-dark    ${
+                  nftOwner?.display_name.includes(" ")
+                    ? "text-ellipsis line-clamp-1"
+                    : "whitespace-no-wrap block  w-[70%] max-w-full overflow-hidden truncate"
+                }`}
                 title={nftOwner.display_name}
               >
                 {sliceDisplayName(nftOwner.display_name)}
@@ -197,7 +205,9 @@ export const NFTRightSideComponent = ({
                     collection: data?.collection,
                   },
                 }}
-                className={nameBoxZValue}
+                className={
+                  "text-14px text-ellipsis font-semibold text-white line-clamp-1 hover:text-brand-primary-dark"
+                }
               >
                 {formatAddress(data?.collection)}
               </Link>
@@ -255,9 +265,7 @@ flex items-start gap-3 flex-grow
 const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2
 `);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white hover:text-brand-primary-dark text-ellipsis line-clamp-1
-`);
+
 const desNameContainer = ctl(`
 flex gap-6 [@media(max-width:600px)]:flex-wrap
 `);

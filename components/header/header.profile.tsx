@@ -78,7 +78,11 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         )}
         <div className={`space-y-1`}>
           <div
-            className={`text-ellipsis text-sm font-semibold text-white line-clamp-1`}
+            className={`text-sm font-semibold text-white   ${
+              loggedInUser?.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block  w-[70%] max-w-full overflow-hidden truncate"
+            }`}
             title={loggedInUser?.display_name}
           >
             {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}

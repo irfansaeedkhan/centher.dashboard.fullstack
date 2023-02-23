@@ -78,7 +78,11 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: postUser.account_address },
             }}
-            className="text-ellipsis text-sm font-semibold text-white line-clamp-1 hover:text-brand-primary"
+            className={`max-w-[55vw]  text-sm font-semibold text-white  hover:text-brand-primary ${
+              postUser.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+            }`}
             title={postUser.display_name}
           >
             {postUser && sliceDisplayName(postUser.display_name)}
@@ -114,7 +118,11 @@ export const PostHeader: React.FC<Props> = ({
                 Replying to
               </span>
               <span
-                className="group-hover:text-brand-primary"
+                className={`group-hover:text-brand-primary   ${
+                  post?.parent_post?.user.display_name.includes(" ")
+                    ? "text-ellipsis line-clamp-1"
+                    : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+                }`}
                 title={post?.parent_post?.user.display_name}
               >
                 {post && sliceDisplayName(post?.parent_post?.user.display_name)}

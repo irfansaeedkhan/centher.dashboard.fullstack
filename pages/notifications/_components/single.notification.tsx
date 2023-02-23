@@ -42,7 +42,15 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)}{" "}
+        <span
+          className={`  ${
+            notification.by.display_name.includes(" ")
+              ? "text-ellipsis line-clamp-1"
+              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+          }`}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -58,7 +66,17 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)} started following you.
+        <span
+          title={notification.by.display_name}
+          className={`  ${
+            notification.by.display_name.includes(" ")
+              ? "text-ellipsis line-clamp-1"
+              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+          }`}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
+        started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -70,8 +88,17 @@ export const SingleNotification = React.forwardRef<
         }}
         className="text-sm leading-3 text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)} has joined your
-        network.
+        <span
+          title={notification.by.display_name}
+          className={`  ${
+            notification.by.display_name.includes(" ")
+              ? "text-ellipsis line-clamp-1"
+              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+          }`}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
+        has joined your network.
       </Link>
     );
   } else if (notification.type === "centher_purchase_ntr") {
@@ -85,7 +112,16 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          {sliceDisplayName(notification.by.display_name)}
+          <span
+            title={notification.by.display_name}
+            className={`  ${
+              notification.by.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+            }`}
+          >
+            {sliceDisplayName(notification.by.display_name)}
+          </span>
         </>
       </Link>
     );
@@ -100,7 +136,16 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          {sliceDisplayName(notification.by.display_name)}
+          <span
+            title={notification.by.display_name}
+            className={`  ${
+              notification.by.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+            }`}
+          >
+            {sliceDisplayName(notification.by.display_name)}
+          </span>
         </>
       </Link>
     );

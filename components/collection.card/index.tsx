@@ -66,7 +66,11 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
         <div className={`flex flex-col items-center px-4`}>
           <div className={`text-base font-bold text-white`}>{data.name}</div>
           <span
-            className={`mt-1 text-ellipsis text-sm font-semibold text-white line-clamp-1`}
+            className={` mt-1  text-sm font-semibold text-white   ${
+              user?.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+            }`}
             title={user?.display_name}
           >
             {user && sliceDisplayName(user.display_name)}

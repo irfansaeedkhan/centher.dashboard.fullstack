@@ -64,7 +64,11 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               className="flex items-center"
             >
               <span
-                className="text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary fsm:text-base fsm:font-semibold"
+                className={` text-sm font-medium text-white  hover:text-brand-primary fsm:text-base fsm:font-semibold  ${
+                  _result.display_name.includes(" ")
+                    ? "text-ellipsis line-clamp-1"
+                    : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+                }`}
                 title={_result.display_name}
               >
                 {_result && sliceDisplayName(_result.display_name)}

@@ -387,7 +387,10 @@ const ProfileHeader: React.FC<Props> = ({
                 className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
               >
                 <span
-                  className="text-ellipsis text-center text-base font-semibold text-white line-clamp-1"
+                  className={`  text-center text-base font-semibold text-white  ${
+                    !user.display_name.includes(" ") &&
+                    "inline-block w-[90vw] break-words md:w-full"
+                  }`}
                   title={user.display_name}
                 >
                   {sliceDisplayName(user.display_name)}

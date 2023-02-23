@@ -31,7 +31,11 @@ const SearchPopupResult: React.FC<Props> = ({
         href={`/profile/${user.account_address}`}
       >
         <span
-          className="text-sm font-medium text-white hover:text-brand-primary"
+          className={`text-sm font-medium text-white hover:text-brand-primary  ${
+            user.display_name.includes(" ")
+              ? "text-ellipsis line-clamp-1"
+              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+          }`}
           title={user.display_name}
         >
           {user && sliceDisplayName(user.display_name)}
