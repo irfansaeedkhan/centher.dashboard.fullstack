@@ -5,7 +5,6 @@ import { useInView } from "react-intersection-observer";
 
 // App imports
 import { useMyRepliesStore } from "@/store/my.replies.store";
-import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -23,6 +22,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { RepliesIcon } from "@/assets/svgs";
 
 import { ProfilePageWrapper } from "../_components";
+import useUser from "@/hooks/use.user";
 
 const Replies: NextPageWithLayout = () => {
   // Create User Profile View
@@ -31,9 +31,8 @@ const Replies: NextPageWithLayout = () => {
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
-  const { user } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
+  const { user } = useUser();
+
   const [lastPostRef, _lastPostInView, lastPostEntry] = useInView();
 
   const {
@@ -71,15 +70,25 @@ const Replies: NextPageWithLayout = () => {
   }, [offset, fetchPosts]);
 
   useEffect(() => {
-    if (user?._id) {
-      resetPosts(user?._id, "loading");
+    if (router.query.account_address && user) {
+      if (
+        router.query.account_address.toString().toLowerCase() !==
+        user.account_address.toLowerCase()
+      ) {
+        // Redirect to the profile page if the account address in the URL is not the same as the logged in user's account address
+        router.replace({
+          pathname: AppRoutes.profile.account_address,
+          query: { account_address: router.query.account_address },
+        });
+        return;
+      }
+      resetPosts("loading");
       fetchPosts();
     }
-
     return () => {
-      resetPosts("", "idle");
+      resetPosts("idle");
     };
-  }, [user?._id, resetPosts, fetchPosts]);
+  }, [user, resetPosts, fetchPosts, router]);
 
   const handleAction = async (
     postId: string,
