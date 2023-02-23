@@ -46,6 +46,7 @@ export const categories = [
   "Gaming",
   "Collectibles",
   "E-sport",
+  "Metaverse",
   "Utility",
 ];
 
@@ -59,6 +60,7 @@ export type Category =
   | "gaming"
   | "collectibles"
   | "e-sport"
+  | "metaverse"
   | "utility";
 
 export const sortBy = [
