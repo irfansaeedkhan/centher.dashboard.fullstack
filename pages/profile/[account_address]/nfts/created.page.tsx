@@ -38,7 +38,7 @@ const CreatedNFTS: NextPageWithLayout = () => {
 
   return (
     <>
-      {displayNFTs.length > 0 && (
+      {loadingCreatedNFTs === "loaded" && displayNFTs.length > 0 ? (
         <div
           className={clsx(
             ` grid gap-2  `,
@@ -51,6 +51,10 @@ const CreatedNFTS: NextPageWithLayout = () => {
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
+      ) : (
+        loadingCreatedNFTs === "loading" && (
+          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+        )
       )}
       {loadingCreatedNFTs === "loaded" && createdNfts.length === 0 && (
         <>

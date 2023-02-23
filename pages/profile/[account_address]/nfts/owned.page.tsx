@@ -39,7 +39,7 @@ const OwnedNFTS: NextPageWithLayout = () => {
 
   return (
     <>
-      {displayNFTs.length > 0 && (
+      {loadingOwnedNFTs === "loaded" && displayNFTs.length > 0 ? (
         <div
           className={clsx(
             ` grid gap-2  `,
@@ -52,7 +52,12 @@ const OwnedNFTS: NextPageWithLayout = () => {
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
+      ) : (
+        loadingOwnedNFTs === "loading" && (
+          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+        )
       )}
+
       {loadingOwnedNFTs === "loaded" && ownedNfts.length === 0 && (
         <>
           <div className="flex items-center justify-center text-white">
