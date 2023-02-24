@@ -13,7 +13,7 @@ interface Props {
 
 const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
   return (
-    <div className="mt-3 flex w-full items-center justify-center gap-2">
+    <div className="mt-3 flex w-full items-start justify-center gap-2">
       <div
         className={clsx(
           `relative flex h-6 w-full`,
@@ -42,8 +42,8 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
       {mutualFollowersData &&
         (mutualFollowersData.users.length > 0 ||
           mutualFollowersData.other_users_count > 0) && (
-          <div className="text-xs font-medium text-gray-shade-7">
-            <span>followed by </span>
+          <div className="word-break max-w-xl items-center gap-1 text-xs font-medium text-gray-shade-7">
+            <span className="min-w-max">followed by </span>
             {mutualFollowersData.users.map((user, index) => (
               <Link
                 href={{
@@ -53,11 +53,13 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
                   },
                 }}
                 key={user._id}
-                className={`hover:text-brand-primary ${
-                  user.display_name.includes(" ")
-                    ? "text-ellipsis line-clamp-1"
-                    : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-                }`}
+                className={clsx(
+                  `hover:text-brand-primary fmd:leading-[24px]`,
+                  !user.display_name.includes(" ") &&
+                    user.display_name.length > 20
+                    ? "word-break inline  "
+                    : "word-break inline  "
+                )}
                 title={user.display_name}
               >
                 {sliceDisplayName(user.display_name)}

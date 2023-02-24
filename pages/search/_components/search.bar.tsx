@@ -127,15 +127,15 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
         onClick={onClick}
         href={`/profile/${item.account_address}`}
         className={clsx(
-          ` inline-block  break-words  text-center text-sm font-medium  text-white  hover:text-brand-primary  
-          ${
-            !item.display_name.includes(" ") &&
-            item.display_name.length > 20 &&
-            " w-[68vw] md:w-full "
-          }`
+          `flex items-center text-sm font-medium text-white hover:text-brand-primary`
         )}
       >
-        <span title={item.display_name}>
+        <span
+          title={item.display_name}
+          className={clsx(
+            `block w-full max-w-[252px] overflow-hidden truncate [@media(min-width:400px)]:max-w-[330px] [@media(min-width:500px)]:max-w-[430px] [@media(min-width:600px)]:max-w-[530px] [@media(min-width:700px)]:max-w-[630px]`
+          )}
+        >
           {sliceDisplayName(item.display_name)}
         </span>
         {!!verificationTick && (

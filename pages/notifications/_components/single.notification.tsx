@@ -40,14 +40,15 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.feed.single_post,
           query: { post_id: notification.post._id },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
       >
         <span
-          className={`  ${
-            notification.by.display_name.includes(" ")
-              ? "text-ellipsis line-clamp-1"
-              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-          }`}
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
         >
           {sliceDisplayName(notification.by.display_name)}
         </span>{" "}
@@ -64,15 +65,16 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
       >
         <span
           title={notification.by.display_name}
-          className={`  ${
-            notification.by.display_name.includes(" ")
-              ? "text-ellipsis line-clamp-1"
-              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-          }`}
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
         >
           {sliceDisplayName(notification.by.display_name)}
         </span>{" "}
@@ -86,15 +88,16 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
       >
         <span
           title={notification.by.display_name}
-          className={`  ${
-            notification.by.display_name.includes(" ")
-              ? "text-ellipsis line-clamp-1"
-              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-          }`}
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
         >
           {sliceDisplayName(notification.by.display_name)}
         </span>{" "}
@@ -108,17 +111,18 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
       >
         <>
           {notification.amount} NTR network rewards from{" "}
           <span
             title={notification.by.display_name}
-            className={`  ${
-              notification.by.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-            }`}
+            className={clsx(
+              !notification.by.display_name.includes(" ") &&
+                notification.by.display_name.length > 20
+                ? "break-words"
+                : "overflow-hidden break-words md:w-full"
+            )}
           >
             {sliceDisplayName(notification.by.display_name)}
           </span>
@@ -138,11 +142,11 @@ export const SingleNotification = React.forwardRef<
           {notification.amount} BUSD network rewards from{" "}
           <span
             title={notification.by.display_name}
-            className={`  ${
+            className={clsx(
               notification.by.display_name.includes(" ")
                 ? "text-ellipsis line-clamp-1"
-                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-            }`}
+                : "block w-full max-w-full overflow-hidden  break-words"
+            )}
           >
             {sliceDisplayName(notification.by.display_name)}
           </span>
@@ -155,7 +159,7 @@ export const SingleNotification = React.forwardRef<
     <div
       ref={ref}
       className={clsx(
-        `flex min-h-[76px] w-full max-w-[1005px] justify-between gap-2 px-3 py-4 fsm:px-6`,
+        `flex min-h-[76px] w-full max-w-[1005px] items-start justify-between gap-2 px-3 py-4 fsm:px-6`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,

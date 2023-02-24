@@ -231,8 +231,10 @@ const Collection: NextPageWithLayout = () => {
               <div className={topDetais}>
                 <div className="w-full">
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <div className="flex-start inline   flex-col gap-2 text-left md:flex-row md:items-center ">
-                    <h6 className="inline text-white">Created by</h6>
+                  <div className="flex-start flex gap-1 text-left  md:items-center">
+                    <h6 className="text-14px min-w-max text-white">
+                      Created by
+                    </h6>
                     <Link
                       href={{
                         pathname: AppRoutes.profile.nfts,
@@ -240,11 +242,12 @@ const Collection: NextPageWithLayout = () => {
                           account_address: info?.creator,
                         },
                       }}
-                      className={`text-14px ml-1 block  font-semibold  text-gray-shade-18 hover:text-brand-primary  md:inline   ${
+                      className={clsx(
+                        `text-14px ml-1 block  font-semibold  text-gray-shade-18 hover:text-brand-primary  md:inline`,
                         user?.display_name.includes(" ")
                           ? "text-ellipsis line-clamp-1"
-                          : "whitespace-no-wrap block   w-[68vw] max-w-full overflow-hidden truncate md:w-full"
-                      }`}
+                          : "block w-[68vw] max-w-full overflow-hidden truncate md:w-full"
+                      )}
                       title={user?.display_name}
                     >
                       {user && sliceDisplayName(user?.display_name)}
@@ -425,7 +428,7 @@ const shareBtn = ctl(`
 text-14px absolute right-6 bottom-4
 `);
 const detailsCard = ctl(`
-flex flex-col sm:flex-row w-full items-center justify-center gap-8 sm:w-auto max-w-[578px]  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl px-7 py-4
+min-w-max flex flex-col sm:flex-row w-full items-center justify-center gap-3 fsm:gap-8 sm:w-auto max-w-[578px]  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl px-4 py-2 fsm:px-7 fsm:py-4
 `);
 const detailsCardTitle = ctl(`
 text-12px font-semibold text-gray-shade-7 mb-2

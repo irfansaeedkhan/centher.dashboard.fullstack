@@ -21,7 +21,10 @@ const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
   if (!isOwnProfile || !loggedInUser) return null;
 
   return (
-    <div className="absolute top-2 right-2 z-[100]" ref={menuContainerRef}>
+    <div
+      className="absolute -top-[45px] right-2 z-[100]"
+      ref={menuContainerRef}
+    >
       <button
         className="rounded-md bg-black/30 p-1.5"
         onClick={() => setIsOpen((prev) => !prev)}

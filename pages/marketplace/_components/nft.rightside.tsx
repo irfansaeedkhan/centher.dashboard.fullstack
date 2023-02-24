@@ -121,8 +121,8 @@ export const NFTRightSideComponent = ({
         </div>
       </div>
 
-      <div className={desNameContainer}>
-        <div className={clsx(`basis-[37.7%]`, nameBox)}>
+      <div className={`grid grid-cols-1 gap-6 f2xl:grid-cols-3`}>
+        <div className={clsx(nameBox)}>
           {user ? (
             <Image
               src={user?.profile_image.path}
@@ -144,21 +144,21 @@ export const NFTRightSideComponent = ({
                     account_address: data?.creator,
                   },
                 }}
-                className={`text-14px font-semibold text-white hover:text-brand-primary-dark    ${
-                  user?.display_name.includes(" ")
-                    ? "text-ellipsis line-clamp-1"
-                    : "whitespace-no-wrap block  w-[85%] max-w-full overflow-hidden truncate"
-                }`}
+                className={clsx(
+                  `text-14px font-semibold text-white hover:text-brand-primary-dark`
+                )}
                 title={user.display_name}
               >
-                {sliceDisplayName(user.display_name)}
+                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                  {sliceDisplayName(user.display_name)}
+                </span>
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
-        <div className={clsx(`basis-[37.7%]`, nameBox)}>
+        <div className={clsx(nameBox)}>
           {nftOwner ? (
             <Image
               src={nftOwner?.profile_image.path}
@@ -180,21 +180,19 @@ export const NFTRightSideComponent = ({
                     account_address: nftOwnerAddress,
                   },
                 }}
-                className={`text-14px font-semibold text-white hover:text-brand-primary-dark    ${
-                  nftOwner?.display_name.includes(" ")
-                    ? "text-ellipsis line-clamp-1"
-                    : "whitespace-no-wrap block  w-[70%] max-w-full overflow-hidden truncate"
-                }`}
+                className={`text-14px font-semibold text-white hover:text-brand-primary-dark`}
                 title={nftOwner.display_name}
               >
-                {sliceDisplayName(nftOwner.display_name)}
+                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                  {sliceDisplayName(nftOwner.display_name)}
+                </span>
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
             )}
           </div>
         </div>
-        <div className={clsx(`basis-1/4`, nameBox)}>
+        <div className={clsx(nameBox)}>
           <div className="flex flex-grow flex-col gap-1">
             <h5 className={nameBoxTitle}>Collection</h5>
             {data?.collection ? (
@@ -259,13 +257,7 @@ w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 trans
 const toggleListIcons = ctl(`
 w-[24px] h-[24px] stroke-white
 `);
-const nameBox = ctl(`
-flex items-start gap-3 flex-grow
-`);
+const nameBox = `flex items-start gap-3 flex-grow`;
 const nameBoxTitle = ctl(`
 text-12px font-normal text-gray-shade-2
-`);
-
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
 `);

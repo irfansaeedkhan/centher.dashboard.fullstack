@@ -78,7 +78,7 @@ export const UploadNFTCollection = ({
         <p className={clsx(`mb-3`, description)}>
           This image will also be used for navigation. 350 x 350 recommended.
         </p>
-        <div className={"relative flex flex-col md:items-start items-center"}>
+        <div className={"relative flex flex-col items-center md:items-start"}>
           {/* {showProfileImage && (
             <button
               className={profileDelBtn}

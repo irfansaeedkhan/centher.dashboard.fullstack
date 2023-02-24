@@ -29,11 +29,12 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
             account_address: data.account_address,
           },
         }}
-        className={`text-sm font-medium text-white  hover:text-brand-primary ${
+        className={clsx(
+          `text-sm font-medium text-white  hover:text-brand-primary`,
           data.display_name.includes(" ")
             ? "text-ellipsis line-clamp-1"
-            : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-        }`}
+            : "block w-full max-w-full overflow-hidden truncate"
+        )}
         title={data.display_name}
       >
         {sliceDisplayName(data.display_name)}

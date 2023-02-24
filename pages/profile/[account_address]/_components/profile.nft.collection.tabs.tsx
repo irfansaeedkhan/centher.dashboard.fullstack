@@ -9,7 +9,7 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
   const router = useRouter();
 
   return (
-    <div className="mb-4 flex w-full space-x-2 rounded-2xl bg-black-shade-6 p-1.5 fsm:mb-6 fsm:max-w-[530px]">
+    <div className="mb-4 flex w-full space-x-2 rounded-2xl  bg-black-shade-6 p-1.5 fsm:mb-6 fsm:max-w-[530px] [@media(max-width:370px)]:overflow-auto">
       <Link
         href={`/profile/${router.query.account_address}/nfts/created`}
         className="w-full"

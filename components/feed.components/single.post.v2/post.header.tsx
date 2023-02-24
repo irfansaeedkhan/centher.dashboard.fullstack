@@ -78,14 +78,14 @@ export const PostHeader: React.FC<Props> = ({
               pathname: AppRoutes.profile.account_address,
               query: { account_address: postUser.account_address },
             }}
-            className={`max-w-[55vw]  text-sm font-semibold text-white  hover:text-brand-primary ${
-              postUser.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-            }`}
+            className={clsx(
+              `text-sm font-semibold text-white  hover:text-brand-primary`
+            )}
             title={postUser.display_name}
           >
-            {postUser && sliceDisplayName(postUser.display_name)}
+            <span className="block max-w-[116px] truncate break-words [@media(min-width:400px)]:max-w-[200px] [@media(min-width:500px)]:max-w-[300px] [@media(min-width:600px)]:max-w-[345px]">
+              {postUser && sliceDisplayName(postUser.display_name)}
+            </span>
           </Link>
 
           {/* Time */}
@@ -112,17 +112,16 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="group mt-0.5 inline-block max-w-max text-ellipsis text-xs font-medium text-white line-clamp-1"
+              className="group mt-0.5 flex text-xs font-medium text-white "
             >
-              <span className="mr-1 inline-block text-xs font-medium text-gray-shade-7">
+              <span className="mr-1 min-w-max text-xs font-medium text-gray-shade-7">
                 Replying to
               </span>
               <span
-                className={`group-hover:text-brand-primary   ${
-                  post?.parent_post?.user.display_name.includes(" ")
-                    ? "text-ellipsis line-clamp-1"
-                    : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-                }`}
+                className={clsx(
+                  `group-hover:text-brand-primary`,
+                  `block w-full max-w-[90px] overflow-hidden truncate [@media(min-width:400px)]:max-w-[180px] [@media(min-width:500px)]:max-w-[280px] [@media(min-width:600px)]:max-w-[345px]`
+                )}
                 title={post?.parent_post?.user.display_name}
               >
                 {post && sliceDisplayName(post?.parent_post?.user.display_name)}

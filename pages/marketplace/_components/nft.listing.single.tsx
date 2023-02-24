@@ -40,7 +40,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
       <div className="mt-[3px] h-2 w-2 rounded-full bg-yellow-theme"></div>
       <div className="flex flex-col gap-3">
         <h5 className="text-12px flex items-center gap-2 font-normal text-white">
-          <span className="inline-block w-[80px] fsm:w-auto">{prefix} by </span>
+          <span className="min-w-max">{prefix} by </span>
           <span
             className={`cursor-pointer  font-semibold hover:text-brand-primary-dark  `}
           >
@@ -59,11 +59,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {buyer?.display_name ? (
                   <span
                     title={buyer.display_name}
-                    className={`    ${
-                      buyer?.display_name.includes(" ")
-                        ? "text-ellipsis line-clamp-1"
-                        : "whitespace-no-wrap block w-[50%] max-w-full overflow-hidden truncate md:w-[80%]"
-                    }`}
+                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(buyer.display_name)}
                   </span>
@@ -83,11 +79,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {seller?.display_name ? (
                   <span
                     title={seller.display_name}
-                    className={` ${
-                      seller.display_name.includes(" ")
-                        ? "text-ellipsis line-clamp-1"
-                        : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-                    }`}
+                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(seller.display_name)}
                   </span>

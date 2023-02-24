@@ -60,11 +60,12 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
               sizes={"256px"}
             />
             <h5
-              className={`text-14px font-semibold text-white   ${
+              className={clsx(
+                `text-14px font-semibold text-white`,
                 user.display_name.includes(" ")
                   ? "text-ellipsis line-clamp-1"
-                  : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-              }`}
+                  : "block w-full max-w-full overflow-hidden truncate"
+              )}
               title={user.display_name}
             >
               {user && sliceDisplayName(user.display_name)}

@@ -352,7 +352,7 @@ const ProfileHeader: React.FC<Props> = ({
         {!!loggedInUser &&
           loggedInUser?.account_address.toLowerCase() !==
             user.account_address.toLowerCase() && (
-            <div className="absolute right-4 hidden w-full max-w-[122px] fmd:block">
+            <div className="absolute -top-[45px] right-4 hidden w-full max-w-[122px] fmd:block">
               {loadingState ? (
                 <button
                   className={clsx(
