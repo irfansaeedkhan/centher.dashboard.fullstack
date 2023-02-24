@@ -9,11 +9,10 @@ import { customLog } from "@/utils/custom.log";
 
 export interface RepliesStore {
   loading: LoadingState;
-  userId: string;
 
   posts: CompletedPost[];
   fetchPosts: () => Promise<void>;
-  resetPosts: (userId: string, loading?: LoadingState) => void;
+  resetPosts: (loading?: LoadingState) => void;
 
   removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
@@ -34,7 +33,6 @@ export const useMyRepliesStore = create<RepliesStore>()(
   devtools(
     (set, get) => ({
       loading: "idle",
-      userId: "",
 
       offset: 0,
 
@@ -46,11 +44,10 @@ export const useMyRepliesStore = create<RepliesStore>()(
         try {
           set({ loading: "loading" });
 
-          const userId = get().userId;
           const offset = get().offset;
           const limit = 10;
 
-          const url = `/api/socials/posts/user/replies/${userId}?offset=${offset}&limit=${limit}`;
+          const url = `/api/socials/posts/user/replies?offset=${offset}&limit=${limit}`;
           const { data } = await axiosNodeApi.get(url);
           set((state) => {
             const filteredPosts = state.posts.filter(
@@ -134,10 +131,9 @@ export const useMyRepliesStore = create<RepliesStore>()(
         }));
       },
 
-      resetPosts: (userId, loading = "idle") => {
+      resetPosts: (loading = "idle") => {
         set({
           loading,
-          userId,
           posts: [],
           offset: 0,
         });

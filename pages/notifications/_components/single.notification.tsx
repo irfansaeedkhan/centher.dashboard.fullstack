@@ -40,9 +40,18 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.feed.single_post,
           query: { post_id: notification.post._id },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)}{" "}
+        <span
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -56,9 +65,20 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)} started following you.
+        <span
+          title={notification.by.display_name}
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
+        started following you.
       </Link>
     );
   } else if (notification.type === "new_referral") {
@@ -68,10 +88,20 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
-        {sliceDisplayName(notification.by.display_name)} has joined your
-        network.
+        <span
+          title={notification.by.display_name}
+          className={clsx(
+            !notification.by.display_name.includes(" ") &&
+              notification.by.display_name.length > 20
+              ? "break-words"
+              : "overflow-hidden break-words md:w-full"
+          )}
+        >
+          {sliceDisplayName(notification.by.display_name)}
+        </span>{" "}
+        has joined your network.
       </Link>
     );
   } else if (notification.type === "centher_purchase_ntr") {
@@ -81,11 +111,21 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          {sliceDisplayName(notification.by.display_name)}
+          <span
+            title={notification.by.display_name}
+            className={clsx(
+              !notification.by.display_name.includes(" ") &&
+                notification.by.display_name.length > 20
+                ? "break-words"
+                : "overflow-hidden break-words md:w-full"
+            )}
+          >
+            {sliceDisplayName(notification.by.display_name)}
+          </span>
         </>
       </Link>
     );
@@ -96,11 +136,20 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          {sliceDisplayName(notification.by.display_name)}
+          <span
+            title={notification.by.display_name}
+            className={clsx(
+              notification.by.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : "block w-full max-w-full overflow-hidden  break-words"
+            )}
+          >
+            {sliceDisplayName(notification.by.display_name)}
+          </span>
         </>
       </Link>
     );
@@ -110,7 +159,7 @@ export const SingleNotification = React.forwardRef<
     <div
       ref={ref}
       className={clsx(
-        `flex min-h-[76px] w-full max-w-[1005px] justify-between gap-2 px-3 py-4 fsm:px-6`,
+        `flex min-h-[76px] w-full max-w-[1005px] items-start justify-between gap-2 px-3 py-4 fsm:px-6`,
         notification.status === "unread"
           ? `bg-background-shade-2`
           : `bg-background-shade-3`,

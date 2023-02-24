@@ -65,14 +65,24 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
                 },
               });
             }}
-            className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
+            className={clsx(
+              `mt-2 text-xs font-medium text-white`,
+              data.creator.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : " block w-full max-w-full overflow-hidden truncate"
+            )}
             title={data.creator.display_name}
           >
             {sliceDisplayName(data.creator.display_name)}
           </span>
         ) : (
           <span
-            className={`mt-2 text-ellipsis text-xs font-medium text-white line-clamp-1`}
+            className={clsx(
+              `mt-2 text-xs font-medium text-white`,
+              data.creator.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : " block w-full max-w-full overflow-hidden truncate"
+            )}
             title={data.creator.display_name}
           >
             {sliceDisplayName(data.creator.display_name)}

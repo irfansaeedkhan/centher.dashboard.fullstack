@@ -1,9 +1,11 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import axios from "axios";
-import { formatAddress, formatIPFSUrl } from "@/utils/format.address";
 import Link from "next/link";
+import axios from "axios";
+import clsx from "clsx";
+
+import { formatIPFSUrl } from "@/utils/format.address";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";
 import { AppRoutes } from "@/constants/app.routes";
@@ -66,7 +68,12 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
         <div className={`flex flex-col items-center px-4`}>
           <div className={`text-base font-bold text-white`}>{data.name}</div>
           <span
-            className={`mt-1 text-ellipsis text-sm font-semibold text-white line-clamp-1`}
+            className={clsx(
+              `mt-1 text-sm font-semibold text-white`,
+              user?.display_name.includes(" ")
+                ? "text-ellipsis line-clamp-1"
+                : " block w-full max-w-full overflow-hidden truncate"
+            )}
             title={user?.display_name}
           >
             {user && sliceDisplayName(user.display_name)}

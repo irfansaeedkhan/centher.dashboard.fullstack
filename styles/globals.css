@@ -129,6 +129,9 @@
     .nftCardStyling {
       margin: 0 auto;
     }
+    .nftCardContainer {
+      justify-content: center;
+    }
   }
   @media only screen and (max-width: 1440px) {
     .nftCardContainer {
@@ -530,6 +533,11 @@
   }
 }
 
+@layer utilities {
+  .word-break {
+    word-break: break-word;
+  }
+}
 .filll {
   border: 2px solid linear-gradient(#a9cdff, #72f6d1, #a0ed8d, #fed365, #faa49e) !important;
 }

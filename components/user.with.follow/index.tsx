@@ -42,7 +42,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-between gap-10 rounded-lg bg-background-shade-3 p-4"
+        className="flex items-center justify-between gap-4 rounded-lg bg-background-shade-3 p-4 fsm:gap-10"
       >
         <div className="flex items-center gap-2">
           <Link href={`/profile/${_result.account_address}`}>
@@ -61,21 +61,25 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
             <Link
               href={`/profile/${_result.account_address}`}
               title={_result.display_name}
-              className="flex items-center"
+              className={`flex items-center justify-start`}
             >
               <span
-                className="text-ellipsis text-sm font-medium text-white line-clamp-1 hover:text-brand-primary fsm:text-base fsm:font-semibold"
                 title={_result.display_name}
+                className={clsx(
+                  `inline-block items-center   text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
+                  `block w-full max-w-[82px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[152px] [@media(min-width:500px)]:max-w-[258px]`
+                )}
               >
                 {_result && sliceDisplayName(_result.display_name)}
               </span>
               {!!verificationTick && (
-                <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
+                <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 fsm:ml-1">
                   <Image
                     src={verificationTick}
                     alt={"Verified"}
                     width={20}
                     height={20}
+                    className="mt-[1px]"
                   />
                 </span>
               )}

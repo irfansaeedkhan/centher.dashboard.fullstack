@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -66,7 +66,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           className={`flex items-center justify-center`}
         >
           <span
-            className="text-ellipsis text-sm font-semibold text-white line-clamp-1"
+            className={clsx(
+              `text-sm font-semibold text-white`,
+              !user.display_name.includes(" ") && user.display_name.length > 20
+                ? "block w-full max-w-full overflow-hidden truncate"
+                : "w-fit text-ellipsis line-clamp-1"
+            )}
             title={user.display_name}
           >
             {user && sliceDisplayName(user.display_name)}

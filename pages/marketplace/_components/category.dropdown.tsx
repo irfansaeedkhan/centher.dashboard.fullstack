@@ -32,7 +32,7 @@ const CategoryDropdown: React.FC<Props> = ({
       className="absolute top-14 z-50 w-full rounded-lg bg-black-shade-12"
     >
       <div className="flex flex-col items-start">
-        {categories.map((item: any) => (
+        {categories.map((item) => (
           <button
             className="px-4 py-3 text-sm font-medium text-white"
             key={item}

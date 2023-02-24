@@ -18,20 +18,36 @@ export const SCAN_URL =
 
 export const DAY = 60 * 5;
 
-export const FEE = {
-  createItemFeeForMarketplace: 0.0072,
-  createItemFeeForCreator: 0.0,
-  createCollectionFee: 0.0026,
-  buyItemFeeForMarketplace: 1.5,
-  buyItemFeeForCreator: 1.5,
-  buyItemFeeForMultilevel: 7,
-  level1: 0.7,
-  level2: 1.4,
-  level3: 2.1,
-  level4: 1.4,
-  level5: 0.7,
-  level6: 0.7,
-};
+export const FEE =
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? {
+        createItemFeeForMarketplace: 0.0072,
+        createItemFeeForCreator: 0.0,
+        createCollectionFee: 0.0026,
+        buyItemFeeForMarketplace: 1.5,
+        buyItemFeeForCreator: 1.5,
+        buyItemFeeForMultilevel: 7,
+        level1: 0.7,
+        level2: 1.4,
+        level3: 2.1,
+        level4: 1.4,
+        level5: 0.7,
+        level6: 0.7,
+      }
+    : {
+        createItemFeeForMarketplace: 0.0001,
+        createItemFeeForCreator: 0.0,
+        createCollectionFee: 0.0001,
+        buyItemFeeForMarketplace: 1.5,
+        buyItemFeeForCreator: 1.5,
+        buyItemFeeForMultilevel: 7,
+        level1: 0.7,
+        level2: 1.4,
+        level3: 2.1,
+        level4: 1.4,
+        level5: 0.7,
+        level6: 0.7,
+      };
 
 export const percent = [6, 4, 2, 2, 2, 2];
 

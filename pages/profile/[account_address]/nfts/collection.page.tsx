@@ -38,7 +38,7 @@ const CollectionNFTS: NextPageWithLayout = () => {
 
   return (
     <>
-      {displayNFTs.length > 0 && (
+      {loadingCollections === "loaded" && displayNFTs.length > 0 ? (
         <div
           className={clsx(
             ` grid gap-2  `,
@@ -51,6 +51,10 @@ const CollectionNFTS: NextPageWithLayout = () => {
             <NFTCollectionImageCard data={collection} key={collection.id} />
           ))}
         </div>
+      ) : (
+        loadingCollections === "loading" && (
+          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+        )
       )}
       {loadingCollections === "loaded" &&
         collections &&

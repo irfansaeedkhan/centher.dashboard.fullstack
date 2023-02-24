@@ -44,12 +44,13 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
               className={
                 "overflow-hidden text-ellipsis whitespace-nowrap  text-white"
               }
+              title={user.display_name}
             >
               <h5
-                className="text-12px dark flex-shrink-0 font-medium text-white"
+                className="text-12px dark flex-shrink-0 text-ellipsis whitespace-nowrap font-medium text-white"
                 title={user.display_name}
               >
-                {sliceDisplayName(user.display_name)}
+                {sliceDisplayName(user.display_name, "cropname")}
               </h5>
             </Link>
           ) : (

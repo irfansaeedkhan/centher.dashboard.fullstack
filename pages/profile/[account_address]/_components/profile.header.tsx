@@ -352,7 +352,7 @@ const ProfileHeader: React.FC<Props> = ({
         {!!loggedInUser &&
           loggedInUser?.account_address.toLowerCase() !==
             user.account_address.toLowerCase() && (
-            <div className="absolute right-4 hidden w-full max-w-[122px] fmd:block">
+            <div className="absolute -top-[45px] right-4 hidden w-full max-w-[122px] fmd:block">
               {loadingState ? (
                 <button
                   className={clsx(
@@ -384,21 +384,27 @@ const ProfileHeader: React.FC<Props> = ({
               className={`flex flex-col items-baseline justify-between lg:flex-row`}
             >
               <h5
-                className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
+                className={clsx(
+                  `inline-block items-center   break-words text-center text-base font-semibold text-white  
+                  ${
+                    !user.display_name.includes(" ") &&
+                    user.display_name.length > 20 &&
+                    "inline-block w-[90vw] break-words md:w-full"
+                  }`,
+                  !loggedInUser && `mt-6`
+                )}
               >
-                <span
-                  className="text-ellipsis text-center text-base font-semibold text-white line-clamp-1"
-                  title={user.display_name}
-                >
+                <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
                 {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 h-[22px] w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
                       width={22}
                       height={22}
+                      className="mt-[5px]"
                     />
                   </span>
                 )}
