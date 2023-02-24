@@ -20,33 +20,32 @@ const SearchPopupResult: React.FC<Props> = ({
   const verificationTick = useVerificationTick(user);
 
   return (
-    <div className="flex items-center gap-2 p-5">
-      <SearchIcon />
+    <div className="flex items-start gap-2 p-5">
+      {/* <SearchIcon /> */}
       <Link
-        className="flex items-center"
+        className={` inline-block   break-words text-sm font-medium text-white hover:text-brand-primary
+        ${
+          !user.display_name.includes(" ") &&
+          user.display_name.length > 20 &&
+          "inline-block  w-[68vw] break-words  md:w-full"
+        }`}
         onClick={() => {
           setSearchQueryInput("");
           setOpenPopup(false);
         }}
         href={`/profile/${user.account_address}`}
       >
-        <span
-          className={`text-sm font-medium text-white hover:text-brand-primary  ${
-            user.display_name.includes(" ")
-              ? "text-ellipsis line-clamp-1"
-              : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
-          }`}
-          title={user.display_name}
-        >
+        <span title={user.display_name}>
           {user && sliceDisplayName(user.display_name)}
         </span>
         {!!verificationTick && (
-          <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
+          <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 fsm:ml-1">
             <Image
               src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}
+              className="mt-[4px]"
             />
           </span>
         )}

@@ -67,9 +67,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         >
           <span
             className={` text-sm font-semibold text-white  ${
-              user.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+              !user.display_name.includes(" ") && user.display_name.length > 20
+                ? "whitespace-no-wrap block w-full max-w-full overflow-hidden truncate"
+                : "  w-fit    text-ellipsis line-clamp-1"
             }`}
             title={user.display_name}
           >

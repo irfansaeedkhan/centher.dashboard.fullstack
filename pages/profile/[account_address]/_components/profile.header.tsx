@@ -384,24 +384,27 @@ const ProfileHeader: React.FC<Props> = ({
               className={`flex flex-col items-baseline justify-between lg:flex-row`}
             >
               <h5
-                className={clsx(`flex items-center`, !loggedInUser && `mt-6`)}
-              >
-                <span
-                  className={`  text-center text-base font-semibold text-white  ${
+                className={clsx(
+                  `inline-block items-center   break-words text-center text-base font-semibold text-white  
+                  ${
                     !user.display_name.includes(" ") &&
+                    user.display_name.length > 20 &&
                     "inline-block w-[90vw] break-words md:w-full"
-                  }`}
-                  title={user.display_name}
-                >
+                  }`,
+                  !loggedInUser && `mt-6`
+                )}
+              >
+                <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
                 {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 h-[22px] w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
                       width={22}
                       height={22}
+                      className="mt-[5px]"
                     />
                   </span>
                 )}

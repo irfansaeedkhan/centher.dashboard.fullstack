@@ -129,6 +129,9 @@
     .nftCardStyling {
       margin: 0 auto;
     }
+    .nftCardContainer {
+      justify-content: center;
+    }
   }
   @media only screen and (max-width: 1440px) {
     .nftCardContainer {

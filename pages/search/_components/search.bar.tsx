@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import clsx from "clsx";
 
 import { useSearchStore } from "@/store/search.store";
 import { axiosNodeApi } from "@/utils/axios";
@@ -120,23 +121,31 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   const verificationTick = useVerificationTick(item);
 
   return (
-    <div className="flex items-center gap-2 p-4">
-      <SearchIcon />
+    <div className="flex items-start gap-2 p-4">
+      {/* <SearchIcon /> */}
       <Link
         onClick={onClick}
         href={`/profile/${item.account_address}`}
-        className="flex items-center text-sm font-medium text-white hover:text-brand-primary"
+        className={clsx(
+          ` inline-block  break-words  text-center text-sm font-medium  text-white  hover:text-brand-primary  
+          ${
+            !item.display_name.includes(" ") &&
+            item.display_name.length > 20 &&
+            " w-[68vw] md:w-full "
+          }`
+        )}
       >
         <span title={item.display_name}>
           {sliceDisplayName(item.display_name)}
         </span>
         {!!verificationTick && (
-          <span className="verifiedIcon ml-0.5 h-5 w-5 fsm:ml-1">
+          <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 fsm:ml-1">
             <Image
               src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}
+              className="mt-[4px]"
             />
           </span>
         )}
