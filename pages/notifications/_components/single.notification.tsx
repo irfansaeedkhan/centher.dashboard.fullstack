@@ -40,7 +40,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.feed.single_post,
           query: { post_id: notification.post._id },
         }}
-        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <span
           className={clsx(
@@ -65,7 +65,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <span
           title={notification.by.display_name}
@@ -88,7 +88,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <span
           title={notification.by.display_name}
@@ -111,7 +111,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm leading-3 text-white hover:text-brand-primary md:w-full"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} NTR network rewards from{" "}
@@ -136,7 +136,7 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="text-sm leading-3 text-white hover:text-brand-primary"
+        className="text-sm text-white hover:text-brand-primary"
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
