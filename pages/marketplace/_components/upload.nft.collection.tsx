@@ -6,6 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CrossIcon } from "@/assets/svgs";
+import clsx from "clsx";
 
 interface UploadNFTCollectionProps {
   profile: Blob | undefined;
@@ -74,11 +75,11 @@ export const UploadNFTCollection = ({
         <h4 className={title}>
           Upload Logo Image <span className="text-red-500">*</span>
         </h4>
-        <p className={description}>
+        <p className={clsx(`mb-3`, description)}>
           This image will also be used for navigation. 350 x 350 recommended.
         </p>
-        <div className={imgBox}>
-          {showProfileImage && (
+        <div className={"relative flex flex-col md:items-start items-center"}>
+          {/* {showProfileImage && (
             <button
               className={profileDelBtn}
               onClick={() => {
@@ -88,7 +89,7 @@ export const UploadNFTCollection = ({
             >
               <CrossIcon />
             </button>
-          )}
+          )} */}
           <div className={profileImgContainer}>
             {showProfileImage && (
               <div>
@@ -102,8 +103,30 @@ export const UploadNFTCollection = ({
               </div>
             )}
           </div>
-          {!showProfileImage && (
-            <div className={uploadBtnContainer}>
+          {!showProfileImage ? (
+            <div className={clsx(`mt-5`, uploadBtnContainer)}>
+              <label
+                htmlFor="collection-profile-image"
+                className={chooseFileBtn}
+              >
+                Choose File
+              </label>
+              <input
+                type="file"
+                id="collection-profile-image"
+                className={chooseFileBtn2}
+                onChange={uploadProfileFile}
+                accept="image/png, image/jpeg, image/webp, image/gif"
+              />
+            </div>
+          ) : (
+            <div
+              className={clsx(`mt-5`, uploadBtnContainer)}
+              onClick={() => {
+                setShowProfileImage(false);
+                setProfile(undefined);
+              }}
+            >
               <label
                 htmlFor="collection-profile-image"
                 className={chooseFileBtn}
@@ -223,7 +246,7 @@ const profileImgContainer = ctl(`
  bg-gray-shade-9 relative border border-gray-shade-9 h-[96px] w-[96px] rounded-full 
 `);
 const profileStyling = ctl(`
-w-full h-full absolute rounded-full object-contain
+w-full h-full absolute rounded-full object-cover
 `);
 const profileDelBtn = ctl(`
   absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
