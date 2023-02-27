@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 // App imports
 import Button from "@/components/button";
@@ -15,9 +18,7 @@ import {
   callListItemForSale,
   normalizeValue,
 } from "@/web3/utils/call.helpers";
-import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
-import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import ChangePriceListModal from "./change.price.list.modal";
 
@@ -332,7 +333,9 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
+        <p
+          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
+        >
           {data?.description}
         </p>
       </div>
