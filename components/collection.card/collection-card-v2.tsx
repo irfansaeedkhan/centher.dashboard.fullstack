@@ -66,7 +66,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
               });
             }}
             className={clsx(
-              `mt-2 text-xs font-medium text-white`,
+              `mt-2 text-center text-xs font-medium text-white`,
               data.creator.display_name.includes(" ")
                 ? "text-ellipsis line-clamp-1"
                 : " block w-full max-w-full overflow-hidden truncate"
@@ -78,7 +78,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
         ) : (
           <span
             className={clsx(
-              `mt-2 text-xs font-medium text-white`,
+              `mt-2 text-center text-xs font-medium text-white`,
               data.creator.display_name.includes(" ")
                 ? "text-ellipsis line-clamp-1"
                 : " block w-full max-w-full overflow-hidden truncate"
