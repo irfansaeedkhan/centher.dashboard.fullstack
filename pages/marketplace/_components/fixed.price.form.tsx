@@ -12,6 +12,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { networkDecimals } from "@/web3/constants/common";
+import { IoIosClose } from "react-icons/io";
 
 // form validations
 const schema = Joi.object({
@@ -291,12 +292,12 @@ const FixedPriceForm = ({
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute -top-2 -right-2"
+                  className="absolute top-0 right-0"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  {/* <CrossFullIcon /> */}
+                  <IoIosClose className="text-2xl text-white" />
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>
