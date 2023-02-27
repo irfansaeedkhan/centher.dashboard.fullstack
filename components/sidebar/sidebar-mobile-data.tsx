@@ -8,12 +8,13 @@ import {
   Launchpad,
   NetworkGenealogy,
   NetworkRewards,
+  CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { SidebarData } from "./shared";
 
-export const sidebarData: SidebarData = {
+export const sidebarMobileData: SidebarData = {
   social_network: {
     label: "SOCIAL NETWORK",
     items: [
@@ -49,6 +50,11 @@ export const sidebarData: SidebarData = {
         url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
       },
+      {
+        label: "Create NFT",
+        url: AppRoutes.marketplace.create_nft,
+        icon: CreateNFT,
+      },
     ],
   },
   referral_program: {
@@ -79,9 +85,9 @@ export const sidebarData: SidebarData = {
   },
 };
 
-export const SidebarSections = [
-  sidebarData.social_network,
-  sidebarData.nft_marketplace,
-  sidebarData.referral_program,
-  sidebarData.dao_government,
+export const SidebarMobileSections = [
+  sidebarMobileData.social_network,
+  sidebarMobileData.nft_marketplace,
+  sidebarMobileData.referral_program,
+  sidebarMobileData.dao_government,
 ];
