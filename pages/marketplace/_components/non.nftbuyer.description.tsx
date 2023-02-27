@@ -1,17 +1,18 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
+import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
-import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 
 interface NonNFTBuyerDescriptionProps {
@@ -181,7 +182,9 @@ export const NonNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
+        <p
+          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
+        >
           {data?.description}
         </p>
       </div>

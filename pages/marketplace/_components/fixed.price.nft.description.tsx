@@ -4,6 +4,7 @@ import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
+import clsx from "clsx";
 
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -294,7 +295,9 @@ export const FixedPriceNFTDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
+        <p
+          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
+        >
           {data?.description}
         </p>
       </div>
