@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import clsx from "clsx";
@@ -17,6 +17,8 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
   className,
 }) => {
   const router = useRouter();
+  const [coverImageUrl, setCoverImageUrl] = useState(data.coverImage);
+  const [profileImageUrl, setProfileImageUrl] = useState(data.profileImage);
 
   return (
     <div
@@ -35,18 +37,20 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
     >
       <div className={`relative flex justify-center`}>
         <Image
-          src={data.coverImage}
+          src={coverImageUrl}
           alt={data.name}
           width={340}
           height={180}
           className={`h-[180px] w-full rounded-t-lg object-cover`}
+          onError={() => setCoverImageUrl("/images/placeholder-square.svg")}
         />
         <Image
-          src={data.profileImage}
+          src={profileImageUrl}
           alt={data.name}
           width={64}
           height={64}
           className={`absolute top-full z-0 !h-16 !w-16 -translate-y-1/2 transform rounded-full border-2 border-gray-shade-3 object-cover`}
+          onError={() => setProfileImageUrl("/images/placeholder-square.svg")}
         />
       </div>
 

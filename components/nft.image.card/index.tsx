@@ -51,6 +51,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             height={275}
             width={275}
             className="!h-[104px] !w-full rounded-xl object-cover [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"
+            onError={() => setImageUrl("/images/placeholder-square.svg")}
           />
         ) : (
           <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>

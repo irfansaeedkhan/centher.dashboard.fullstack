@@ -82,16 +82,16 @@ const Collection: NextPageWithLayout = () => {
   const { user } = useGetUser(info?.creator);
   const [metadata, setMetadata] = useState<any>();
   const [orderdir, setOrderDir] = useState("desc");
+  const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [profileImageUrl, setProfileImageUrl] = useState("");
 
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
         const _metadata = await axios.get(formatIPFSUrl(ipfs));
         setMetadata(_metadata.data);
-        // setName(metadata.data.name)
-        // setDescription(metadata.data.description)
-        // setCollection(metadata.data.collection)
-        // setImageUrl(metadata.data.image)
+        setCoverImageUrl(formatIPFSUrl(_metadata.data.coverIPFSHash));
+        setProfileImageUrl(formatIPFSUrl(_metadata.data.profileIPFSHash));
       } catch (error) {}
     };
     if (info && info.ipfs) {
@@ -136,13 +136,20 @@ const Collection: NextPageWithLayout = () => {
         ) : (
           <div className={coverCard}>
             <div
-              className={coverImageContainer}
-              style={{
-                backgroundImage: `url(${formatIPFSUrl(
-                  metadata?.coverIPFSHash
-                )})`,
-              }}
+              className={`relative h-[31vh] w-full rounded-t-2xl border-b border-gray-shade-5`}
             >
+              {metadata && metadata.coverIPFSHash && (
+                <Image
+                  src={coverImageUrl}
+                  alt={metadata.name}
+                  fill
+                  className="rounded-t-2xl object-cover"
+                  onError={() =>
+                    setCoverImageUrl("/images/placeholder-rectangle.svg")
+                  }
+                />
+              )}
+
               <div className={shareBtn}>
                 <div ref={menuRef} className={`relative`}>
                   <div className="flex items-center justify-center gap-5">
@@ -217,12 +224,15 @@ const Collection: NextPageWithLayout = () => {
               {metadata && metadata.profileIPFSHash && (
                 <div className={profileImage}>
                   <Image
-                    src={formatIPFSUrl(metadata?.profileIPFSHash)}
+                    src={profileImageUrl}
                     alt={"profile image"}
                     width={112}
                     height={112}
                     className={collectionProfileImage}
                     sizes={"512px"}
+                    onError={() =>
+                      setProfileImageUrl("/images/placeholder-square.svg")
+                    }
                   />
                 </div>
               )}
@@ -380,9 +390,6 @@ flex flex-col gap-5
 `);
 const coverCard = ctl(`
 bg-background-shade-3 rounded-xl
-`);
-const coverImageContainer = ctl(`
-coverImageContainer relative rounded-2xl bg-center bg-cover bg-no-repeat w-full h-[31vh] bg-[url('/images/coverImage.png')]
 `);
 const profileImage = ctl(`
 cursor-pointer absolute left-6 -bottom-12
