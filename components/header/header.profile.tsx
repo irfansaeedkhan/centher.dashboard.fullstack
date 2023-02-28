@@ -8,6 +8,10 @@ import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import {
+  BLOCKCHAIN_EXPLORER,
+  BLOCKCHAIN_EXPLORE_URL,
+} from "@/web3/constants/common";
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
@@ -90,12 +94,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             </span>
           </div>
           <a
-            href={
-              process.env.NEXT_PUBLIC_APP_ENV === "production"
-                ? "https://bscscan.com/address/" + loggedInUser?.account_address
-                : "https://goerli.etherscan.io/address/" +
-                  loggedInUser?.account_address
-            }
+            href={`${BLOCKCHAIN_EXPLORE_URL}/address/${loggedInUser?.account_address}`}
             target={"_blank"}
             rel="noreferrer"
             title="View on Explorer"
@@ -104,10 +103,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             <span
               className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
             >
-              View on{" "}
-              {process.env.NEXT_PUBLIC_APP_ENV === "production"
-                ? "BSCScan"
-                : "EtherScan"}
+              View on {BLOCKCHAIN_EXPLORER}
             </span>
             <FiArrowUpRight
               className={`cursor-pointer text-sm group-hover:text-brand-primary`}

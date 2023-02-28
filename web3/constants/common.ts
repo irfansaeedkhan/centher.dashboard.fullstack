@@ -11,10 +11,13 @@ export const NEXT_PUBLIC_IPFS_URL = process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL;
 
 export const ZeroAddress = ethers.constants.AddressZero;
 
-export const SCAN_URL =
+export const BLOCKCHAIN_EXPLORE_URL =
   process.env.NEXT_PUBLIC_APP_ENV === "production"
-    ? "https://bscscan.com/address/"
-    : "https://goerli.etherscan.io/";
+    ? "https://bscscan.com"
+    : "https://goerli.etherscan.io";
+
+export const BLOCKCHAIN_EXPLORER =
+  process.env.NEXT_PUBLIC_APP_ENV === "production" ? "BSCScan" : "Etherscan";
 
 export const DAY = 60 * 5;
 
