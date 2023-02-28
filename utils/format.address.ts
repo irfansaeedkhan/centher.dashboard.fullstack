@@ -1,5 +1,9 @@
 import { ethers } from "ethers";
-import { NEXT_PUBLIC_IPFS_URL, SCAN_URL } from "@/web3/constants/common";
+
+import {
+  NEXT_PUBLIC_IPFS_URL,
+  BLOCKCHAIN_EXPLORE_URL,
+} from "@/web3/constants/common";
 
 export const formatAddress = (address: string | undefined) => {
   return address && address.length >= 6
@@ -47,15 +51,15 @@ export const formatIPFSUrl = (hash: string | undefined) => {
 };
 
 export const formatTxUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL;
+  if (hash === undefined) return BLOCKCHAIN_EXPLORE_URL;
   else {
-    return `${SCAN_URL}tx/${hash}`;
+    return `${BLOCKCHAIN_EXPLORE_URL}/tx/${hash}`;
   }
 };
 
 export const formatAddressUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL;
+  if (hash === undefined) return BLOCKCHAIN_EXPLORE_URL;
   else {
-    return `${SCAN_URL}address/${hash}`;
+    return `${BLOCKCHAIN_EXPLORE_URL}/address/${hash}`;
   }
 };
