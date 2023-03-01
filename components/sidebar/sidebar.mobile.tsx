@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import React, { RefObject, useRef } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
@@ -16,7 +15,7 @@ import { AppRoutes } from "@/constants/app.routes";
 // Current directory imports
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
-import { SidebarMobileSections } from "./sidebar-mobile-data";
+import { SidebarSections } from "./sidebar.data";
 
 interface SidebarMobileProps {
   sidebarOpen: boolean;
@@ -30,7 +29,6 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   sidebarOpen,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -87,7 +85,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
             </Link>
           </div>
           <div className={`flex flex-col gap-6`}>
-            {SidebarMobileSections.map((section) => {
+            {SidebarSections.map((section) => {
               return (
                 <Section
                   key={section.label}

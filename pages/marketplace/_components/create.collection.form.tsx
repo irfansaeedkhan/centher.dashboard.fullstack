@@ -11,6 +11,7 @@ import { FiTwitter } from "react-icons/fi";
 import Button from "@/components/button";
 import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
 import { categories } from "@/models/nft";
+import CustomDropdown from "./custom.dropdown";
 
 // form validations
 const schema = Joi.object({
@@ -26,10 +27,10 @@ const schema = Joi.object({
     "string.empty": `description Required`,
     "any.required": `Required Field`,
   }),
-  category: Joi.string().required().max(150).label("category").messages({
-    "string.empty": `category Required`,
-    "any.required": `Required Field`,
-  }),
+  // category: Joi.string().required().max(150).label("category").messages({
+  //   "string.empty": `category Required`,
+  //   "any.required": `Required Field`,
+  // }),
   url: Joi.string().allow("").optional().max(50).label("url").messages({
     "string.empty": `url Required`,
     "any.required": `Required Field`,
@@ -92,6 +93,14 @@ export const CreateNFTCollectionForm = ({
   cover,
   profile,
 }: CreateNFTCollectionFormProps) => {
+  const [selectedOption, setSelectedOption] = useState("");
+  const [categoryError, setCategoryError] = useState(true);
+
+  const handleSelectOption = (value: string) => {
+    setSelectedOption(value);
+    setCategoryError(false);
+  };
+
   const { handleSubmit, register, formState, reset } = useForm<ICollectionData>(
     {
       mode: "onChange",
@@ -100,7 +109,6 @@ export const CreateNFTCollectionForm = ({
         name: "",
         symbol: "",
         description: "",
-        category: "",
         url: "",
         yoursite: "",
         facebook: "",
@@ -110,17 +118,21 @@ export const CreateNFTCollectionForm = ({
   );
 
   const onSubmit = async (data: any) => {
+    if (selectedOption) {
+      setCategoryError(false);
+    }
     const collectionData = {
       name: data.name,
       symbol: data.symbol,
       totalsupply: ethers.constants.MaxUint256,
       description: data.description,
-      category: data.category,
+      category: selectedOption,
       url: data.url,
       yoursite: data.yoursite,
       facebook: data.facebook,
       twitter: data.twitter,
     };
+
     createCollection(collectionData);
   };
   useEffect(() => {
@@ -129,12 +141,12 @@ export const CreateNFTCollectionForm = ({
         name: "",
         symbol: "",
         description: "",
-        category: "",
         url: "",
         yoursite: "",
         facebook: "",
         twitter: "",
       });
+      setSelectedOption("");
     }
   }, [clearForm, reset]);
 
@@ -205,7 +217,20 @@ export const CreateNFTCollectionForm = ({
             </p>
           )}
         </div>
-        <div className={fieldWrapper}>
+        <div className={"z-50 flex w-full flex-col gap-2"}>
+          <label htmlFor="category" className={fieldTitle}>
+            Category <span className="text-red-500">*</span>
+          </label>
+          <CustomDropdown
+            options={categories.slice(1, categories.length).map((item) => ({
+              value: item === "Select" ? "" : item,
+              label: item,
+            }))}
+            selectedValue={selectedOption}
+            onSelect={handleSelectOption}
+          />
+        </div>
+        {/* <div className={fieldWrapper}>
           <label htmlFor="textarea" className={fieldTitle}>
             Category <span className="text-red-500">*</span>
           </label>
@@ -229,7 +254,7 @@ export const CreateNFTCollectionForm = ({
               {formState.errors.category.message}
             </p>
           )}
-        </div>
+        </div> */}
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
             URL <span className="text-gray-shade-17"> (optional)</span>
@@ -318,12 +343,18 @@ export const CreateNFTCollectionForm = ({
         <Button
           title={"Create Collection"}
           variant={
-            formState.isValid && profile != undefined && cover != undefined
+            formState.isValid &&
+            profile != undefined &&
+            cover != undefined &&
+            categoryError === false
               ? "v1"
               : "v2"
           }
           disabled={
-            !formState.isValid && profile === undefined && cover === undefined
+            !formState.isValid &&
+            profile === undefined &&
+            cover === undefined &&
+            categoryError
           }
           onClick={handleSubmit(onSubmit)}
           className="mt-2 py-4"

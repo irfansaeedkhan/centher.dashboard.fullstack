@@ -29,21 +29,14 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
     nftOwner.toLowerCase()
   );
-  const [collection, setCollection] = useState("");
-  const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
-  const [type, setType] = useState("");
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
         const formattedUrl = formatIPFSUrl(ipfs);
         const metadata = await axios.get(formattedUrl);
         setName(metadata.data.name);
-        setDescription(metadata.data.description);
-        setCollection(metadata.data.collection);
-        const imgUrl = formatIPFSUrl(metadata.data.image);
-        setImageUrl(imgUrl);
-        setType(metadata.data.type);
+        setImageUrl(formatIPFSUrl(metadata.data.image));
       } catch (error) {}
     };
     if (data && data.ipfs) {
@@ -120,6 +113,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             height={222}
             width={293}
             className="!h-[222px] !w-[293px] rounded-md object-cover"
+            onError={() => setImageUrl("/images/placeholder-square.svg")}
           />
         ) : (
           <div className="mt-10 !h-[222px] !w-[293px] animate-pulse rounded-md bg-[#3C3F4A]"></div>

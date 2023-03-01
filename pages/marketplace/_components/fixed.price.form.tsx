@@ -9,6 +9,7 @@ import Joi from "joi";
 import Button from "@/components/button";
 import { AddIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import CustomDropdown from "./custom.dropdown";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { networkDecimals } from "@/web3/constants/common";
@@ -28,10 +29,10 @@ const schema = Joi.object({
   //   "string.empty": `NFTPrice Required`,
   //   "any.required": `Required Field`,
   // }),
-  Collection: Joi.string().required().max(150).label("Collection").messages({
-    "string.empty": `Collection Required`,
-    "any.required": `Required Field`,
-  }),
+  // Collection: Joi.string().required().max(150).label("Collection").messages({
+  //   "string.empty": `Collection Required`,
+  //   "any.required": `Required Field`,
+  // }),
 });
 interface FixedPriceFormProps {
   createNFT: any;
@@ -59,7 +60,15 @@ const FixedPriceForm = ({
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
   const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
-  const [nftPriceError, setNFTPriceError] = useState<any>("");
+  const [nftPriceError, setNFTPriceError] = useState<any>(" ");
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [selectedOption, setSelectedOption] = useState(
+    collections[0].collection
+  );
+  const handleOptionSelect = (value: string) => {
+    setSelectedOption(value);
+    setCollectionErrorMsg("");
+  };
 
   const { handleSubmit, register, setError, formState, reset } =
     useForm<FormFields>({
@@ -69,7 +78,7 @@ const FixedPriceForm = ({
         NFTName: "",
         Description: "",
         // NFTPrice: null,
-        Collection: "",
+        // Collection: "",
       },
     });
   // functions to add/remove dynamic properties
@@ -106,11 +115,19 @@ const FixedPriceForm = ({
 
   // handle submit data
   const onSubmit = async (data: any) => {
+    if (!selectedOption) {
+      setCollectionErrorMsg("Field Required");
+      return;
+    }
+    if (!changeNFTPrice) {
+      setNFTPriceError("Field Required");
+      return;
+    }
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
       supply: 1,
-      collection: data.Collection,
+      collection: selectedOption,
       isAuction: false,
       price: changeNFTPrice,
       period: 0,
@@ -125,8 +142,8 @@ const FixedPriceForm = ({
         NFTName: "",
         Description: "",
         NFTAmount: 1,
-        Collection: "",
       });
+      setSelectedOption("");
       setPropertyList([]);
     }
   }, [clearForm, reset]);
@@ -238,35 +255,19 @@ const FixedPriceForm = ({
           <span className={serviceFeeNumber}>0.0370 BNB</span>
         </div> */}
       </div>
-      <div className={fieldWrapper}>
+      <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
           Collection <span className="text-red-500">*</span>{" "}
         </label>
-        <select
-          id="Collection"
-          {...register("Collection")}
-          className={
-            !formState.errors.Collection ? inputField : inputFieldError
-          }
-        >
-          <option value="" className="!text-gray-shade-7">
-            Select Collection
-          </option>
-          {collections.map((collection) => {
-            return (
-              <option value={collection.collection} key={collection.id}>
-                {`${collection.name}  (${formatAddress(
-                  collection.collection
-                )})`}
-              </option>
-            );
-          })}
-        </select>
-        {formState.errors.Collection && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.Collection.message}
-          </p>
-        )}
+        <CustomDropdown
+          options={collections.map((collection) => ({
+            value: collection.collection,
+            label: `${collection.name} ${formatAddress(collection.collection)}`,
+          }))}
+          selectedValue={selectedOption}
+          onSelect={handleOptionSelect}
+          error={collectionErrorMsg}
+        />
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
@@ -309,13 +310,14 @@ const FixedPriceForm = ({
       <Button
         title={"Create NFT"}
         variant={
-          formState.isValid && asset !== undefined && nftPriceError === ""
+          formState.isValid &&
+          asset !== undefined &&
+          nftPriceError === "" &&
+          collectionErrorMsg == ""
             ? "v1"
             : "v2"
         }
-        disabled={
-          !formState.isValid && asset === undefined && nftPriceError === ""
-        }
+        disabled={!formState.isValid && asset === undefined}
         onClick={handleSubmit(onSubmit)}
         className="mt-2 py-4"
       />

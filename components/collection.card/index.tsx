@@ -52,7 +52,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
               width={340}
               height={180}
               className={`h-[180px]  w-full rounded-t-lg object-cover`}
-              // className={`rounded-t-lg w-[340px] [@media(max-width:390px)]:w-[290px] h-[180px] object-cover`}
+              onError={() => setCoverImage("/images/placeholder-square.svg")}
             />
           )}
           {profileImage && (
@@ -62,6 +62,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
               width={64}
               height={64}
               className={`absolute -bottom-[1.8rem] z-0 !h-16 rounded-full object-cover`}
+              onError={() => setProfileImage("/images/placeholder-square.svg")}
             />
           )}
         </div>

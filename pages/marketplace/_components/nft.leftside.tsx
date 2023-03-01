@@ -1,14 +1,11 @@
-// React, Next, NPM Packages
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
-// Same directory imports
 import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
 import AudioPlayer from "./audio.player";
-import clsx from "clsx";
 interface NFTLeftSideComponentProps {
   image: string | undefined;
   type: string | undefined;
@@ -19,6 +16,12 @@ interface NFTLeftSideComponentProps {
 }
 
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
+  const [imageUrl, setImageUrl] = useState(props.image);
+
+  useEffect(() => {
+    setImageUrl(props.image);
+  }, [props.image]);
+
   return (
     <div className={`flex w-full max-w-[508px] flex-col gap-6`}>
       <div
@@ -27,17 +30,18 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
           props.image?.includes("mp3") ? `` : `pb-[100%]`
         )}
       >
-        {props.image && (
+        {props.image && imageUrl && (
           <div>
-            {props.image?.includes("mp3") ? (
+            {props.image.includes("mp3") ? (
               <AudioPlayer src={props.image} />
             ) : (
               <Image
                 className={`absolute h-full w-full rounded-2xl object-contain`}
-                src={props.image ? props.image : ""}
+                src={imageUrl}
                 alt="image"
                 height={270}
                 width={270}
+                onError={() => setImageUrl("/images/placeholder-square.svg")}
               />
             )}
           </div>
