@@ -10,6 +10,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import { TwitterShareButton, FacebookShareButton } from "react-share";
 import { useInView } from "react-intersection-observer";
 import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
+import { RiShareForwardLine } from "react-icons/ri";
 import { TbWorld } from "react-icons/tb";
 
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -37,6 +38,7 @@ const Collection: NextPageWithLayout = () => {
   const router = useRouter();
   const collection = router.query.collection;
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isMobileMenuVisible, setIsMobileMenuVisible] = useState(false);
   const [filterInView, setFilter] = useState<Filter>("All");
   const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -122,9 +124,15 @@ const Collection: NextPageWithLayout = () => {
     }
   }, [collection, fetchCollectionInfo]);
 
-  useOnClickOutside(menuRef, () => setIsMenuVisible(false));
+  useOnClickOutside(menuRef, () => {
+    setIsMenuVisible(false);
+    setIsMobileMenuVisible(false);
+  });
   const toggleMenu = async () => {
     setIsMenuVisible((prev) => !prev);
+  };
+  const toggleMobileMenu = async () => {
+    setIsMobileMenuVisible((prev) => !prev);
   };
 
   return (
@@ -156,7 +164,7 @@ const Collection: NextPageWithLayout = () => {
                     {(metadata?.facebook ||
                       metadata?.twitter ||
                       metadata?.yoursite) && (
-                      <div className="flex h-[44px] w-[100px] items-center justify-center rounded-10px !bg-[#17171A]/30">
+                      <div className="hidden h-[44px] w-[100px] items-center justify-center rounded-10px !bg-[#17171A]/30 fsm:flex">
                         <div className="flex items-center justify-center gap-3">
                           {metadata.facebook && (
                             <a
@@ -174,7 +182,7 @@ const Collection: NextPageWithLayout = () => {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TiSocialTwitter className="hover:text-brand-primar text-lg text-white" />
+                              <TiSocialTwitter className=" text-lg text-white hover:text-brand-primary" />
                             </a>
                           )}
 
@@ -184,15 +192,24 @@ const Collection: NextPageWithLayout = () => {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TbWorld className="hover:text-brand-primar text-lg text-white" />
+                              <TbWorld className="text-lg text-white hover:text-brand-primary" />
                             </a>
                           )}
                         </div>
                       </div>
                     )}
 
-                    <button className={threeDotsBtn} onClick={toggleMenu}>
-                      <DotsIcon className="[&>*]:fill-white [&>*]:stroke-white" />
+                    <button
+                      className={clsx(`hidden fsm:flex`, threeDotsBtn)}
+                      onClick={toggleMenu}
+                    >
+                      <RiShareForwardLine className="h-[17px] w-[20px]   [&>*]:fill-white [&>*]:stroke-white" />
+                    </button>
+                    <button
+                      className={clsx(`flex fsm:hidden`, threeDotsBtn)}
+                      onClick={toggleMobileMenu}
+                    >
+                      <DotsIcon className=" [&>*]:fill-white [&>*]:stroke-white" />
                     </button>
                     <div
                       className={clsx(
@@ -200,6 +217,61 @@ const Collection: NextPageWithLayout = () => {
                         isMenuVisible ? "z-40 block" : "hidden"
                       )}
                     >
+                      <button onClick={copyShareUrl} className={menuButton}>
+                        <CopyIcon className={icon} /> Copy Link
+                      </button>
+
+                      <FacebookShareButton url={shareUrl} className="w-full">
+                        <span className={menuButton}>
+                          <FacebookCircleIcon className={icon} /> Share on
+                          Facebook
+                        </span>
+                      </FacebookShareButton>
+
+                      <TwitterShareButton url={shareUrl} className="w-full">
+                        <span className={menuButton}>
+                          <TwitterSvg className={icon} /> Share on Twitter
+                        </span>
+                      </TwitterShareButton>
+                    </div>
+                    <div
+                      className={clsx(
+                        `absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm`,
+                        isMobileMenuVisible ? "z-40 block" : "hidden"
+                      )}
+                    >
+                      {metadata?.facebook && (
+                        <a
+                          href={metadata.facebook}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={menuButton}
+                        >
+                          <TiSocialFacebook className={icon} /> Facebook Link
+                        </a>
+                      )}
+                      {metadata?.twitter && (
+                        <a
+                          href={metadata.twitter}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={menuButton}
+                        >
+                          <TiSocialTwitter className={icon} /> Twitter Link
+                        </a>
+                      )}
+                      {metadata?.yoursite && (
+                        <a
+                          href={metadata.yoursite}
+                          target="_blank"
+                          rel="noreferrer"
+                          className={menuButton}
+                        >
+                          <TbWorld className={`h-[24px] w-[24px]`} /> Website
+                          Link
+                        </a>
+                      )}
+
                       <button onClick={copyShareUrl} className={menuButton}>
                         <CopyIcon className={icon} /> Copy Link
                       </button>
@@ -241,7 +313,7 @@ const Collection: NextPageWithLayout = () => {
               <div className={topDetais}>
                 <div className="w-full">
                   <h5 className={collectionName}>{metadata?.name}</h5>
-                  <div className="flex-start flex gap-1 text-left  md:items-center">
+                  <div className="lg:flex-start mt-1 flex justify-center gap-1 text-left md:items-center lg:justify-start">
                     <h6 className="text-14px min-w-max text-white">
                       Created by
                     </h6>
@@ -253,7 +325,7 @@ const Collection: NextPageWithLayout = () => {
                         },
                       }}
                       className={clsx(
-                        `text-14px ml-1 block  font-semibold  text-gray-shade-18 hover:text-brand-primary  md:inline`,
+                        `text-14px ml-1 block  max-w-fit  font-semibold text-gray-shade-18  hover:text-brand-primary md:inline`,
                         user?.display_name.includes(" ")
                           ? "text-ellipsis line-clamp-1"
                           : "block w-[68vw] max-w-full overflow-hidden truncate md:w-full"
@@ -303,23 +375,24 @@ const Collection: NextPageWithLayout = () => {
           <div className={tabsContainer}>
             <div className={title}>NFTS</div>
             <div className={buttonList}>
-              <Button
-                title={"All"}
-                variant={filter === "All" ? "v1" : "v2"}
-                className="py-4"
-                onClick={() => {
-                  setFilter("All");
-                }}
-              />
-              <Button
-                title={"Listed For Sale"}
-                variant={filter === "List" ? "v1" : "v2"}
-                className="py-4"
-                onClick={() => {
-                  setFilter("List");
-                }}
-              />
-              {/* <Button
+              <div className="flex w-full max-w-[640px] flex-row  items-center justify-center gap-3 fsm:justify-end fsm:gap-5">
+                <Button
+                  title={"All"}
+                  variant={filter === "All" ? "v1" : "v2"}
+                  className="py-2 px-4  fsm:max-w-fit fsm:py-4"
+                  onClick={() => {
+                    setFilter("All");
+                  }}
+                />
+                <Button
+                  title={"Listed For Sale"}
+                  variant={filter === "List" ? "v1" : "v2"}
+                  className="py-2 px-4 fsm:max-w-fit fsm:py-4"
+                  onClick={() => {
+                    setFilter("List");
+                  }}
+                />
+                {/* <Button
                 title={"Auction"}
                 variant={filter === "Auction" ? "v1" : "v2"}
                 className="py-4"
@@ -327,6 +400,7 @@ const Collection: NextPageWithLayout = () => {
                   setFilter("Auction");
                 }}
               /> */}
+              </div>
               <select
                 className={inputField}
                 value={orderdir}
@@ -383,7 +457,7 @@ const dashboardContentContainer = ctl(`
   bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10
 `);
 const title = ctl(`
-  textGradient leading-[42px]  animationTextHeading lg:text-[34px] sm:text-2xl 
+  textGradient leading-[42px] animationTextHeading lg:text-[24px] sm:text-xl
 `);
 const MainContentContainer = ctl(`
 flex flex-col gap-5
@@ -392,13 +466,13 @@ const coverCard = ctl(`
 bg-background-shade-3 rounded-xl
 `);
 const profileImage = ctl(`
-cursor-pointer absolute left-6 -bottom-12
+ h-[112px] !w-[112px] cursor-pointer absolute translate-x-[-50%] left-[50%] lg:left-6 lg:translate-x-[0] -bottom-12
 `);
 const coverDetails = ctl(`
-mt-8 lg:mt-10 px-7 pt-7 pb-2
+mt-8 lg:mt-6 px-7 pt-7 pb-2
 `);
 const topDetais = ctl(`
- flex flex-col lg:flex-row gap-5 items-baseline justify-between
+ flex flex-col items-center justify-center text-center lg:text-left lg:flex-row gap-5 lg:items-baseline lg:justify-between
 `);
 const collectionName = ctl(`
 text-white text-20px font-semibold
@@ -407,10 +481,10 @@ const textContent = ctl(`
 mt-6
 `);
 const profileDescription = ctl(`
-text-16px font-normal leading-6 text-gray-shade-16
+text-14px font-normal leading-6 text-gray-shade-16
 `);
 const collectionProfileImage = ctl(`
-rounded-xl h-[112px] w-[112px] object-cover border-2 border-background-shade-3
+ h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7 
 `);
 const menuButton = ctl(
   `w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`
@@ -421,21 +495,25 @@ w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px
 
 const inputField = ctl(`
   w-full 
-  py-3 
-  px-5 
+  
+  fsm:py-3 
+  fsm:px-10 
   bg-black-shade-7 
   text-white 
   rounded-lg
   border-0
   focus:outline-none 
   focus:ring-brand-primary
+  fsm:max-w-max
 `);
-const nftCardWrapper = ctl(``);
+const nftCardWrapper = ctl(
+  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)]  fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
+);
 const shareBtn = ctl(`
 text-14px absolute right-6 bottom-4
 `);
 const detailsCard = ctl(`
-min-w-max flex flex-col sm:flex-row w-full items-center justify-center gap-3 fsm:gap-8 sm:w-auto max-w-[578px]  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl px-4 py-2 fsm:px-7 fsm:py-4
+min-w-max flex flex-row flex-wrap w-full items-center justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit
 `);
 const detailsCardTitle = ctl(`
 text-12px font-semibold text-gray-shade-7 mb-2
@@ -444,8 +522,8 @@ const detailsCardValue = ctl(`
 text-14px font-semibold text-white
 `);
 const tabsContainer = ctl(`
-flex gap-5 flex-col sm:flex-row justify-between items-center
+flex gap-5 flex-col fsm:flex-row justify-between items-center
 `);
 const buttonList = ctl(`
-w-full max-w-[640px] flex flex-col sm:flex-row items-center gap-5
+w-full max-w-[640px] flex justify-center flex-col fsm:flex-row items-center gap-3 fsm:gap-5 fsm:justify-end
 `);
