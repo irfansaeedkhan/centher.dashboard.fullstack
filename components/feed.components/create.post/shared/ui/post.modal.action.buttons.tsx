@@ -18,6 +18,8 @@ import {
   FileType,
   validateSelectedFiles,
 } from "../utils/validate.selected.files";
+import { FiCamera } from "react-icons/fi";
+import CameraModal from "./camera.modal";
 
 interface Props {
   placement: "in-modal" | "create-post-card";
@@ -29,6 +31,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
   onClickActionButton,
 }) => {
   const { setPostText, postText } = useNewPostStore();
+  const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
   const belowMobile = useMediaQuery("(max-width: 560px)");
@@ -95,6 +98,24 @@ export const PostModalActionButtons: React.FC<Props> = ({
           onChange={(e) => handleSelectFiles(e, "image")}
         />
       </label>
+      <label
+        className={clsx(
+          `select-none`,
+          buttonVariants({ color: "green", placement })
+        )}
+        onClick={() => {
+          setShowCameraModal(true);
+          onClickActionButton && onClickActionButton();
+        }}
+      >
+        <FiCamera
+          className={clsx(
+            placement === "in-modal" && iconClassesInModal,
+            placement === "create-post-card" && iconClassesCreatePostCard
+          )}
+        />
+        Camera
+      </label>
 
       <label
         className={clsx(
@@ -122,7 +143,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
 
       <label
         className={clsx(
-          `select-none`,
+          `mr-2 hidden select-none flg:flex`,
           buttonVariants({ color: "green", placement })
         )}
         onClick={
@@ -162,6 +183,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
             theme={Theme.AUTO}
           />
         </div>
+      )}
+      {showCameraModal && (
+        <CameraModal onClose={() => setShowCameraModal(false)} />
       )}
     </div>
   );

@@ -35,7 +35,7 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
       original: file,
     });
     onClose();
-  }, [cropperRef, cropImageSrc, onClose]);
+  }, [cropperRef, cropImageSrc, onClose, onCrop]);
 
   return cropImageSrc.preview ? (
     <ModalWrapper
