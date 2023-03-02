@@ -6,9 +6,9 @@ export type SidebarData = {
     label: string;
     items: {
       label: string;
-      label2?: string;
       url: string;
       icon: React.FC<IconProps>;
+      activeList: string[];
       countType?: CountType;
     }[];
   };
