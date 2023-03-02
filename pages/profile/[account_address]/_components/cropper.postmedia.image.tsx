@@ -1,11 +1,10 @@
-import React, { useCallback, useRef, useState } from "react";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
-
-import { ModalWrapper } from "@/components/modal";
+import React, { useCallback, useRef } from "react";
+import { CropperRef, Cropper } from "react-advanced-cropper";
+import "react-advanced-cropper/dist/style.css";
 
 import { PostImageCropperData } from "@/components/feed.components/create.post/post.modal/files.preview";
 import { FileWithID } from "@/store/new.post.store";
+import { PostCropModalContainer } from "@/components/feed.components/create.post/post.modal/post.crop.modal";
 
 interface CropperProps {
   cropImageSrc: PostImageCropperData;
@@ -18,67 +17,50 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
   onClose,
   onCrop,
 }) => {
-  const cropperRef = useRef<HTMLImageElement>(null);
+  const cropperRef = useRef<CropperRef>(null);
 
-  const handleCrop = useCallback(async () => {
-    const imageElement: any = cropperRef?.current;
-    const cropper: any = imageElement?.cropper;
-
-    const croppedCanvas = cropper.getCroppedCanvas();
-
-    const file: File = await dataUrlToFile(
-      croppedCanvas.toDataURL(),
-      "cropped-image.png"
-    );
-    onCrop({
-      id: cropImageSrc.fileID,
-      original: file,
-    });
-    onClose();
-  }, [cropperRef, cropImageSrc, onClose, onCrop]);
-
+  const cropImageFunc = useCallback(async () => {
+    if (cropperRef.current) {
+      const file: File = await dataUrlToFile(
+        cropperRef.current.getCanvas()?.toDataURL() as string,
+        "cropped-image.png"
+      );
+      onCrop({
+        id: cropImageSrc.fileID,
+        original: file,
+      });
+      onClose();
+    }
+  }, [cropperRef, cropImageSrc, onClose]);
   return cropImageSrc.preview ? (
-    <ModalWrapper
+    <PostCropModalContainer
       title="Crop"
-      onClose={onClose}
+      onClickClose={onClose}
       isOpen={cropImageSrc.preview ? true : false}
     >
       <div>
-        <div className="h-full bg-black-shade-12 text-center">
+        <div className=" bg-black-shade-12 text-center">
           <Cropper
             src={cropImageSrc.preview}
-            style={{
-              height: 500,
-              width: "100%",
-              objectFit: "cover",
-              display: "flex",
-              justifyContent: "center",
-              backgroundColor: "#0d0d0d",
-            }}
-            viewMode={1}
-            movable={false}
-            zoomable={false}
-            scalable={false}
-            initialAspectRatio={4 / 3}
-            aspectRatio={4 / 3}
-            cropBoxResizable={false}
-            minContainerHeight={180}
-            minCropBoxHeight={180}
-            background={false}
-            guides={false}
+            className={"cropper"}
+            // stencilProps={{
+            //   movable: true,
+            //   resizable: true,
+            // aspectRatio: 9/6,
+            // }}
             ref={cropperRef}
           />
         </div>
         <div className="mt-3 flex w-full justify-center text-center">
           <button
-            className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark "
-            onClick={handleCrop}
+            className="mb-3 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
+            onClick={cropImageFunc}
           >
             Crop
           </button>
         </div>
       </div>
-    </ModalWrapper>
+    </PostCropModalContainer>
   ) : null;
 };
 

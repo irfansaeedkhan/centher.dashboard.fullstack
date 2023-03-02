@@ -3,7 +3,7 @@ import clsx from "clsx";
 import { IoClose, IoCrop } from "react-icons/io5";
 
 import { useNewPostStore } from "@/store/new.post.store";
-// import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
+import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
 
 export type PostImageCropperData = {
   preview: string;
@@ -92,7 +92,7 @@ export const FilesPreview = () => {
                 }
               }}
             />
-            {/* <CropButton
+            <CropButton
               className="absolute top-1 left-1 z-10"
               onClick={() => {
                 setCropImageSrc({
@@ -104,13 +104,13 @@ export const FilesPreview = () => {
                   fileID: file.id,
                 });
               }}
-            /> */}
+            />
             {media}
           </div>
         );
       })}
 
-      {/* <CropperPostMediaImage
+      <CropperPostMediaImage
         cropImageSrc={cropImageSrc}
         onClose={() => {
           setCropImageSrc({
@@ -130,7 +130,7 @@ export const FilesPreview = () => {
           });
           setSelectedFiles(croppedSelectedFiles);
         }}
-      /> */}
+      />
     </div>
   );
 };
@@ -148,13 +148,13 @@ const CloseButton: React.FC<ButtonProps> = ({ className, ...props }) => {
   );
 };
 
-// const CropButton: React.FC<ButtonProps> = ({ className, ...props }) => {
-//   return (
-//     <button
-//       className={clsx(`rounded-md bg-black/40 p-1`, className)}
-//       {...props}
-//     >
-//       <IoCrop className="h-4 w-4 fill-white" />
-//     </button>
-//   );
-// };
+const CropButton: React.FC<ButtonProps> = ({ className, ...props }) => {
+  return (
+    <button
+      className={clsx(`rounded-md bg-black/40 p-1`, className)}
+      {...props}
+    >
+      <IoCrop className="h-4 w-4 fill-white" />
+    </button>
+  );
+};
