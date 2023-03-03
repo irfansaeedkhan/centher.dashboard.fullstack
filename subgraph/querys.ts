@@ -59,7 +59,7 @@ export const collectionsByCategoryQuery = `
 `;
 
 export const allNFTsQuery = `
-  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDireNFTS_BY_CATEGORYction: OrderDirection) {
+  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
     nfts(first: $first, 
         skip: $skip, 
         orderBy: $orderBy,
