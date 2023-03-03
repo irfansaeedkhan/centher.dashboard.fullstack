@@ -12,8 +12,8 @@ export const AppRoutes = {
     // Authenticated Pages
     account_address: "/profile/[account_address]",
     replies: "/profile/[account_address]/replies",
-    following: "/profile/[account_address]/following",
-    followers: "/profile/[account_address]/followers",
+    following: "/profile/[account_address]/community/following",
+    followers: "/profile/[account_address]/community/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
 
     nfts: "/profile/[account_address]/nfts",

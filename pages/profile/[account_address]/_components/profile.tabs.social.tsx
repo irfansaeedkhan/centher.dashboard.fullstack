@@ -60,29 +60,16 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({
       {loggedInUser &&
         loggedInUser.account_address === router.query.account_address && (
           <Link
-            href={`/profile/${account_address}/followers`}
+            href={`/profile/${account_address}/community/followers`}
             className={clsx(
-              router.pathname === AppRoutes.profile.followers
+              router.pathname === AppRoutes.profile.followers ||
+                router.pathname === AppRoutes.profile.following
                 ? "border-b-2 font-medium text-white"
                 : "text-gray-shade-7",
               "min-w-max cursor-pointer py-2 px-4"
             )}
           >
-            Followers
-          </Link>
-        )}
-      {loggedInUser &&
-        loggedInUser.account_address === router.query.account_address && (
-          <Link
-            href={`/profile/${account_address}/following`}
-            className={clsx(
-              router.pathname === AppRoutes.profile.following
-                ? "border-b-2 font-medium text-white"
-                : "text-gray-shade-7",
-              "min-w-max cursor-pointer py-2 px-4"
-            )}
-          >
-            Following
+            Community
           </Link>
         )}
     </div>
