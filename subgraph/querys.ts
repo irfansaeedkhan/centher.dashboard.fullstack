@@ -59,7 +59,7 @@ export const collectionsByCategoryQuery = `
 `;
 
 export const allNFTsQuery = `
-  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDirection: OrderDirection) {
+  query($first: Int!, $skip: Int!, $orderBy: NFT_orderBy, $orderDireNFTS_BY_CATEGORYction: OrderDirection) {
     nfts(first: $first, 
         skip: $skip, 
         orderBy: $orderBy,
@@ -383,33 +383,6 @@ export const topCreatorsQuery = `
     users(orderBy: createNFTCount, orderDirection: desc, skip: $skip, first: $first,  where: {createNFTCount_not: 0}) {
       createNFTCount
       createCollectionCount
-      publicKey
-    }
-  }
-`;
-
-export const genealogyBaseDataQuery = `
-  query MyQuery($publicKey: Bytes!) {
-    users(where: {publicKey: $publicKey}) {
-      userInfo {
-        people
-        earningNTRFromInICO
-        earningFromInMarketplace
-        earningBUSDFromInICO
-      }
-    }
-  }
-`;
-
-export const referrerQuery = `
-  query MyQuery($referrer: Bytes!) {
-    users(where: {referrer: $referrer}) {
-      userInfo {
-        people
-        earningNTRFromInICO
-        earningFromInMarketplace
-        earningBUSDFromInICO
-      }
       publicKey
     }
   }
