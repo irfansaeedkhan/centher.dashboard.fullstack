@@ -17,7 +17,7 @@ export const CameraCustomModal: React.FC<CustomModalProps> = (props) => {
     >
       {/*content*/}
       <div
-        className={`relative mx-3 flex w-full flex-col rounded-2xl border border-gray-shade-3 bg-black-shade-3 pb-5 focus:outline-none fsm:w-[550px]`}
+        className={`relative mx-3 flex w-full flex-col rounded-2xl border border-gray-shade-3 bg-black-shade-12 pb-5 focus:outline-none fsm:w-[550px]`}
       >
         {/*header*/}
         <div
@@ -37,7 +37,9 @@ export const CameraCustomModal: React.FC<CustomModalProps> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-full overflow-y-auto`}>{props.children}</div>
+        <div className={`max-h-full overflow-y-auto bg-black`}>
+          {props.children}
+        </div>
       </div>
     </div>
   );

@@ -3,11 +3,11 @@ import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
-  variant?: "v1" | "v2" | "v3" | "v4" | "v5" | "v6" | "v7" | "v8";
+  variant?: "v1" | "v2" | "v3" | "v4" | "v5" | "v6" | "v7" | "v8" | "v9";
   Icon?: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({
+const NewButton: React.FC<ButtonProps> = ({
   title,
   variant = "v1",
   className,
@@ -25,7 +25,9 @@ const Button: React.FC<ButtonProps> = ({
         variant === "v6" && "bg-black-shade-6 text-gray-shade-7",
         variant === "v7" && "border border-danger bg-transparent text-danger",
         variant === "v8" && "bg-black-shade-3 text-gray-shade-7",
-        `flex w-full items-center justify-center gap-3 rounded-xl py-2 px-2 text-sm font-bold`,
+        variant === "v9" &&
+          "border border-brand-primary bg-transparent text-brand-primary",
+        `flex h-11 w-full items-center justify-center gap-3 rounded-lg py-[10px] px-2 text-sm font-semibold`,
         className && className
       )}
       {...props}
@@ -36,4 +38,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default NewButton;
