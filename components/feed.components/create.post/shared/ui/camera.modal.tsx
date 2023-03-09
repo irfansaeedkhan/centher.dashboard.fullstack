@@ -159,15 +159,17 @@ const CameraModal = ({ onClose }: Props) => {
             onClick={() => saveSelectedFile(fileData)}
           />
         ) : (
-          <NewButton
-            title={"Capture"}
-            variant="v1"
-            className="max-w-full hover:bg-brand-primary-dark"
-            onClick={(e) => {
-              e.preventDefault();
-              capture();
-            }}
-          />
+          !isRecording && (
+            <NewButton
+              title={"Capture"}
+              variant="v1"
+              className="max-w-full hover:bg-brand-primary-dark"
+              onClick={(e) => {
+                e.preventDefault();
+                capture();
+              }}
+            />
+          )
         )}
         {videoUrl ? (
           <NewButton
