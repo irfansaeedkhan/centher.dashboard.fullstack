@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
+import clsx from "clsx";
 
+import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -19,7 +21,7 @@ const ButtonsText = {
   update_profile: "Save Changes",
 };
 
-export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
+export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
   const [isLoading, setisLoading] = useState<LoadingState>("idle");
@@ -68,75 +70,37 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
   return (
     <div className="flex items-center justify-center">
       <div className="flex w-full flex-col gap-6">
-        <ProfilePicture user={props.user} />
-
-        <InputField
-          id="pseudonym"
-          label="Pseudonym"
-          placeholder="e.g. Steven Paul"
-          value={updatedUser.pseudonym}
-          maxLength={50}
-          onChange={(e) => {
-            setUpdatedUser({
-              ...updatedUser,
-              pseudonym: e.target.value,
-            });
-          }}
-        />
-        <div className="flex w-full flex-col gap-6 fsm:flex-row fmd:gap-3">
-          <div className="w-full">
-            <InputField
-              id="first_name"
-              label="First Name"
-              placeholder="e.g. Steven"
-              value={updatedUser.first_name}
-              onChange={(e) => {
-                setUpdatedUser({
-                  ...updatedUser,
-                  first_name: e.target.value,
-                });
-              }}
-            />
-          </div>
-          <div className="w-full">
-            <InputField
-              id="last_name"
-              label="Last Name"
-              placeholder="e.g. Paul"
-              value={updatedUser.last_name}
-              onChange={(e) => {
-                setUpdatedUser({
-                  ...updatedUser,
-                  last_name: e.target.value,
-                });
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className={`text-sm text-white`}>Display Name Field</label>
-          <select
+        <div className="relative flex flex-col gap-2">
+          <label htmlFor="textarea" className={fieldTitle}>
+            Profile bio
+          </label>
+          <textarea
             onChange={(e) => {
               setUpdatedUser({
                 ...updatedUser,
-                display_name_field: e.target
-                  .value as LoggedInUser["display_name_field"],
+                profile_bio: e.target.value,
               });
             }}
-            value={updatedUser.display_name_field}
-            className={`w-full rounded-lg border-0 bg-[#1E1E21] py-3 px-5 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
-          >
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
-          </select>
+            value={updatedUser.profile_bio}
+            placeholder="Enter Your bio!"
+            name=""
+            id=""
+            cols={30}
+            rows={5}
+            maxLength={160}
+            className={clsx(inputField)}
+          ></textarea>
+          {updatedUser.profile_bio.length > 0 && (
+            <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7 fsm:ml-0">
+              <PostTextCounter
+                currentLength={updatedUser.profile_bio.length}
+                maxLength={160}
+              />
+            </div>
+          )}
         </div>
 
-        <button
-          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
-          onClick={updateProfile}
-        >
+        <button className={connectButton} onClick={updateProfile}>
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />
           ) : (
@@ -147,3 +111,9 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
     </div>
   );
 };
+
+const connectButton = `mt-2 py-2 px-3 text-sm flex w-[128px] h-9 font-semibold rounded-lg justify-center items-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
+
+const fieldTitle = `text-sm text-white`;
+
+const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-brand-primary text-sm font-medium leading-6`;

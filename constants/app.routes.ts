@@ -35,6 +35,7 @@ export const AppRoutes = {
 
   settings: {
     index: "/settings",
+    about: "/settings/about",
     profile: "/settings/profile",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
