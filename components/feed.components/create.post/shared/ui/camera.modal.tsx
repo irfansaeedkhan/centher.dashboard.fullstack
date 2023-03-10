@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
 import { nanoid } from "nanoid";
@@ -7,12 +7,7 @@ import NewButton from "@/components/button/new.button";
 import { CameraCustomModal } from "@/components/modal/camera-modal";
 import { useNewPostStore } from "@/store/new.post.store";
 import { toast } from "react-hot-toast";
-
-const videoConstraints = {
-  width: 540,
-  height: 480,
-  facingMode: "user",
-};
+import { MdOutlineCameraswitch } from "react-icons/md";
 
 interface Props {
   onClose: () => void;
@@ -20,13 +15,30 @@ interface Props {
 
 const CameraModal = ({ onClose }: Props) => {
   const { addSelectedFiles, closeModal } = useNewPostStore();
+  const [cameraSource, setCameraSource] = useState<"user" | "environment">(
+    "user"
+  );
   const [isRecording, setIsRecording] = useState(false);
   const [picture, setPicture] = useState<string | null>(null);
   const [fileData, setFileData] = useState<any>(null);
   const [recordingTime, setRecordingTime] = useState<number>(0);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [startnStop, setStartnStop] = useState<MediaRecorder | null>(null);
+  const [hasBackCamera, setHasBackCamera] = useState(false);
   const webcamRef = useRef<Webcam | null>(null);
+
+  useEffect(() => {
+    const getAvailableInputs = async () => {
+      const videoInputs = await navigator.mediaDevices.enumerateDevices();
+      const backCamera = videoInputs.find(
+        (device) =>
+          device.kind === "videoinput" && device.label.includes("back")
+      );
+      setHasBackCamera(!!backCamera);
+    };
+
+    getAvailableInputs();
+  }, []);
 
   const handleResetClick = useCallback(() => {
     setVideoUrl(null);
@@ -118,6 +130,16 @@ const CameraModal = ({ onClose }: Props) => {
     [addSelectedFiles, onClose, handleResetClick]
   );
 
+  const switchCamera = () => {
+    setCameraSource(cameraSource === "user" ? "environment" : "user");
+  };
+
+  const videoConstraints = {
+    width: 540,
+    height: 480,
+    facingMode: cameraSource,
+  };
+
   return (
     <CameraCustomModal
       onClose={() => {
@@ -131,6 +153,14 @@ const CameraModal = ({ onClose }: Props) => {
           <>
             {isRecording && (
               <div className="absolute text-white">{recordingTime}</div>
+            )}
+            {hasBackCamera && (
+              <button
+                onClick={switchCamera}
+                className="absolute top-4 right-4 z-[100] flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-lg bg-black/5 backdrop-filter"
+              >
+                <MdOutlineCameraswitch className="h-5 w-5 text-white" />
+              </button>
             )}
             <Webcam
               audio={false}
