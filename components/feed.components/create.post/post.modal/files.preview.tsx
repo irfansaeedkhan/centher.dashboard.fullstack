@@ -92,19 +92,22 @@ export const FilesPreview = () => {
                 }
               }}
             />
-            <CropButton
-              className="absolute top-1 left-1 z-10"
-              onClick={() => {
-                setCropImageSrc({
-                  preview: URL.createObjectURL(
-                    file.original instanceof File
-                      ? file.original
-                      : new Blob([file.original.url])
-                  ),
-                  fileID: file.id,
-                });
-              }}
-            />
+            {file.original.type.startsWith("image") && (
+              <CropButton
+                className="absolute top-1 left-1 z-10"
+                onClick={() => {
+                  setCropImageSrc({
+                    preview: URL.createObjectURL(
+                      file.original instanceof File
+                        ? file.original
+                        : new Blob([file.original.url])
+                    ),
+                    fileID: file.id,
+                  });
+                }}
+              />
+            )}
+
             {media}
           </div>
         );
