@@ -42,7 +42,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-between gap-4 rounded-lg bg-background-shade-3 p-4 fsm:gap-10"
+        className="flex items-center justify-between gap-4  border-b border-gray-shade-3 bg-background-shade-3 p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 fsm:gap-10"
       >
         <div className="flex items-center gap-2">
           <Link href={`/profile/${_result.account_address}`}>
