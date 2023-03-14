@@ -6,7 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import Button from "@/components/button";
+import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
@@ -143,19 +143,17 @@ export const FixedPriceNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={handleCancelListing}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -186,19 +184,17 @@ export const FixedPriceNFTDescription = ({
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={() => handleEditPrice(newPrice)}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -247,10 +243,9 @@ export const FixedPriceNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Ok"}
               variant="v4"
-              className="py-4"
               onClick={() => {
                 router.reload();
                 modal.dismissModal();
@@ -302,13 +297,13 @@ export const FixedPriceNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <Button
+        <NewButton
           title={"Cancel Listing"}
           variant="v1"
           className="py-4"
           onClick={setupCancelItemPriceModal}
         />
-        <Button
+        <NewButton
           title={"Edit"}
           onClick={() => {
             setupBidNftModal();
