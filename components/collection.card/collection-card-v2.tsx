@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
+import useGetUser from "@/hooks/use.get.user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 export interface CollectionCardProps {
   data: CollectionCardData;
@@ -19,7 +21,8 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
   const router = useRouter();
   const [coverImageUrl, setCoverImageUrl] = useState(data.coverImage);
   const [profileImageUrl, setProfileImageUrl] = useState(data.profileImage);
-
+  const { user } = useGetUser(data.creator.account_address);
+  const verificationTick = useVerificationTick(user);
   return (
     <div
       onClick={() => {
@@ -70,26 +73,44 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
               });
             }}
             className={clsx(
-              `mt-2 text-center text-xs font-medium text-white`,
-              data.creator.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : " block w-full max-w-full overflow-hidden truncate"
+              `mt-2 flex items-center text-center text-xs font-medium text-white`
             )}
             title={data.creator.display_name}
           >
-            {sliceDisplayName(data.creator.display_name)}
+            <span className="block max-w-[238px] truncate break-words">
+              {sliceDisplayName(data.creator.display_name)}
+            </span>
+            {!!verificationTick && (
+              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                <Image
+                  src={"/images/rainbow-last-frame.png"}
+                  alt={"Verified"}
+                  width={20}
+                  height={20}
+                />
+              </span>
+            )}
           </span>
         ) : (
           <span
             className={clsx(
-              `mt-2 text-center text-xs font-medium text-white`,
-              data.creator.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : " block w-full max-w-full overflow-hidden truncate"
+              `mt-2 flex items-center text-center text-xs font-medium text-white`
             )}
             title={data.creator.display_name}
           >
-            {sliceDisplayName(data.creator.display_name)}
+            <span className="block max-w-[238px] truncate break-words">
+              {sliceDisplayName(data.creator.display_name)}
+            </span>
+            {!!verificationTick && (
+              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                <Image
+                  src={"/images/rainbow-last-frame.png"}
+                  alt={"Verified"}
+                  width={20}
+                  height={20}
+                />
+              </span>
+            )}
           </span>
         )}
         <p

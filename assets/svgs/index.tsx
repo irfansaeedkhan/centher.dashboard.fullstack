@@ -2,6 +2,7 @@
 import CentherIconImgBg from "./centher.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
+import VerifiedIconImg from "./verifiedmark.png";
 
 export interface IconProps {
   className?: string;
@@ -139,6 +140,19 @@ export const NTRIcon: React.FC<IconProps> = (props) => {
       sizes="256px"
       width={40}
       height={40}
+    />
+  );
+};
+
+export const VerifiedIcon: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={VerifiedIconImg.src}
+      alt="Verified Icon"
+      sizes="256px"
+      width={24}
+      height={24}
     />
   );
 };

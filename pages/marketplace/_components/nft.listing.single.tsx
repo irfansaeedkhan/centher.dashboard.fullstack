@@ -59,7 +59,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {buyer?.display_name ? (
                   <span
                     title={buyer.display_name}
-                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
+                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(buyer.display_name)}
                   </span>
@@ -79,7 +79,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {seller?.display_name ? (
                   <span
                     title={seller.display_name}
-                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
+                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(seller.display_name)}
                   </span>
