@@ -12,7 +12,7 @@ import {
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { AppRoutes } from "@/constants/app.routes";
 import clsx from "clsx";
-import { normalizeValue } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface NFTOffersProps {
   data: IBid[];

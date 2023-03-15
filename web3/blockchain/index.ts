@@ -1,34 +1,77 @@
-import { Collection, NFT } from "@/models/nft";
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
-import { IListHistory } from "@/hooks/use.get.nft.data.ts";
-import { TopCreator } from "@/models/top-creator";
-import {
-  ClaimHistory,
-  Genealogy,
-  PurchaseHistory,
-  ReferralReward,
-  RegistrationHistory,
-} from "@/models/referral";
+import { ethers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
+import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
+import { SmartContractProvider } from "./providers/smart.contract.provider";
+import { SmartContractName } from "./enum/smart.contract.name.enum";
+import { logger } from "./helpers/alert.helper";
+import { getSigner } from "./helpers/provider.helper";
+import { normalizeValue } from "./helpers/math.helper";
+import { AddressFactory } from "./providers/address.provider";
+import { BlockchainConfig } from "./config";
 
-export class BlockchainCalls {
-  static async getAllCollections(): Promise<Collection[]> {
+export class BlockchainRead {
+  static async getReferrers(
+    account: string | null | undefined,
+    level: string
+  ): Promise<UserReferrer[]> {
+    const variables = {
+      referrer: account,
+      level: Number(level),
+    };
+
     const { data, error } = await ApolloProvider.query(
-      QueryNames.ALL_COLLECTIONS
+      QueryNames.GENEALOGY_AT_LEVEL,
+      variables
     );
 
     if (error) {
       throw error;
     }
 
-    return data.collections as Collection[];
+    if (!data.genealogies?.length) {
+      return [];
+    }
+
+    return data.genealogies.map((item: any, index: number) => {
+      const people = item.user.people.reduce(
+        (partialSum: any, a: any) => partialSum + a,
+        0
+      );
+      return {
+        id: index + 1,
+        address: item.user.publicKey,
+        level: level,
+        generatedBUSD: item.user.generatedBUSD[0],
+        generatedNTR: item.user.generatedNTR[0],
+        people: people,
+      };
+    });
+  }
+
+  static async getAllCollections(first: number, skip: number): Promise<any[]> {
+    const variables = {
+      first,
+      skip,
+    };
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.ALL_COLLECTIONS,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data.collections;
   }
 
   static async getAccountCreatedNfts(
     account: string,
     first: number,
     skip: number
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -44,10 +87,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
-  static async getHotNFT(first: number, skip: number): Promise<NFT[]> {
+  static async getHotNFT(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -61,14 +104,14 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
   static async getCollectionsByCategory(
     first: number,
     skip: number,
     category: string
-  ): Promise<Collection[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -83,10 +126,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.collections as Collection[];
+    return data.collections;
   }
 
-  static async getAllNfts(first: number, skip: number): Promise<NFT[]> {
+  static async getAllNfts(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -100,14 +143,14 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
   static async getNftsByCategory(
     first: number,
     skip: number,
     category: string
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -122,10 +165,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
-  static async getNft(collection: string, tokenId: number): Promise<NFT> {
+  static async getNft(collection: string, tokenId: number): Promise<any> {
     const variables = {
       collection,
       tokenId,
@@ -139,13 +182,13 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts[0] as NFT;
+    return data.nfts[0];
   }
 
   static async getSaleHistory(
     collection: string,
     tokenId: number
-  ): Promise<IListHistory[]> {
+  ): Promise<any[]> {
     const variables = {
       collection,
       tokenId,
@@ -159,10 +202,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.marketplaceSaleHistories as IListHistory[];
+    return data.marketplaceSaleHistories;
   }
 
-  static async getCollection(collection: string): Promise<Collection> {
+  static async getCollection(collection: string): Promise<any> {
     const variables = {
       collection,
     };
@@ -175,7 +218,7 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.collections[0] as Collection;
+    return data.collections[0];
   }
 
   static async getCollectionNfts(
@@ -183,7 +226,7 @@ export class BlockchainCalls {
     orderDirection: string,
     first: number,
     skip: number
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       collection,
       orderDirection,
@@ -199,16 +242,16 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
-  static async NFT_BY_SALE_STATE(
+  static async getNftsBySaleState(
     collection: string,
     orderDirection: string,
     saleState: string,
     first: number,
     skip: number
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       collection,
       orderDirection,
@@ -225,10 +268,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
-  static async getAccountCollections(creator: string): Promise<Collection[]> {
+  static async getAccountCollections(creator: string): Promise<any[]> {
     const variables = {
       creator,
     };
@@ -241,14 +284,14 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.collections as Collection[];
+    return data.collections;
   }
 
   static async getAccountListedNfts(
     first: number,
     skip: number,
     owner: string
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -263,14 +306,14 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
   static async getUserListedNfts(
     first: number,
     skip: number,
     owner: string
-  ): Promise<NFT[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -285,10 +328,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.nfts as NFT[];
+    return data.nfts;
   }
 
-  static async getRegisteredCollections(): Promise<Collection[]> {
+  static async getRegisteredCollections(): Promise<any[]> {
     const { data, error } = await ApolloProvider.query(
       QueryNames.REGISTERED_COLLECTION
     );
@@ -297,15 +340,15 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.collections as Collection[];
+    return data.collections;
   }
 
-  static async getCollectionByAccount(creator: string): Promise<Collection[]> {
+  static async getCollectionByAccount(creator: string): Promise<any[]> {
     const variables = {
       creator,
     };
     const { data, error } = await ApolloProvider.query(
-      QueryNames.COLLECTIONS_BY_ACCOUNT,
+      QueryNames.ACCOUNT_COLLECTION,
       variables
     );
 
@@ -313,13 +356,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.collections as Collection[];
+    return data.collections;
   }
 
-  static async getTopCreator(
-    first: number,
-    skip: number
-  ): Promise<TopCreator[]> {
+  static async getTopCreator(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -333,10 +373,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.users as TopCreator[];
+    return data.users;
   }
 
-  static async getGenealogy(referrer: string): Promise<Genealogy[]> {
+  static async getGenealogy(referrer: string): Promise<any[]> {
     const variables = {
       referrer,
     };
@@ -349,13 +389,10 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.genealogies as Genealogy[];
+    return data.genealogies;
   }
 
-  static async getGenealogyAt(
-    referrer: string,
-    level: number
-  ): Promise<Genealogy[]> {
+  static async getGenealogyAt(referrer: string, level: number): Promise<any[]> {
     const variables = {
       referrer,
       level,
@@ -369,14 +406,14 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.genealogies as Genealogy[];
+    return data.genealogies;
   }
 
   static async getReferralRewardInPresale(
     first: number,
     skip: number,
     referrer: string
-  ): Promise<ReferralReward[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -391,7 +428,7 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.presaleGenealogyHistories as ReferralReward[];
+    return data.presaleGenealogyHistories;
   }
 
   static async getReferrerClaimInPresale(referrer: string): Promise<any> {
@@ -410,10 +447,7 @@ export class BlockchainCalls {
     return data.presaleGenalogyClaimHistories;
   }
 
-  static async purchaseInBUSD(
-    first: number,
-    skip: number
-  ): Promise<PurchaseHistory[]> {
+  static async purchaseInBUSD(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -427,7 +461,7 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.presalePurchaseWithBusdHistories as PurchaseHistory[];
+    return data.presalePurchaseWithBusdHistories;
   }
 
   static async purchaseInNTR(first: number, skip: number): Promise<any> {
@@ -444,13 +478,13 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.presalePurchaseWithNtrHistories as PurchaseHistory[];
+    return data.presalePurchaseWithNtrHistories;
   }
 
   static async getCentherClaimHistory(
     first: number,
     skip: number
-  ): Promise<ClaimHistory[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -464,13 +498,13 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.presaleCentherClaimHistories as ClaimHistory[];
+    return data.presaleCentherClaimHistories;
   }
 
   static async getRegistrationHistory(
     first: number,
     skip: number
-  ): Promise<RegistrationHistory[]> {
+  ): Promise<any[]> {
     const variables = {
       first,
       skip,
@@ -484,6 +518,880 @@ export class BlockchainCalls {
       throw error;
     }
 
-    return data.users as RegistrationHistory[];
+    return data.users;
+  }
+}
+export class BlockchainWrite {
+  static async adminUnPauseRegistration(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+      //static call
+      await registrationContract.callStatic.unPause();
+      //actual call
+      const tx = await registrationContract.functions.unPause();
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminUnPauseRegistration");
+      throw error;
+    }
+  }
+
+  static async adminPauseRegistration(library: Web3Provider): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+      //static call
+      await registrationContract.callStatic.pause();
+      //actual call
+      const tx = await registrationContract.functions.pause();
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminPauseRegistration");
+      throw error;
+    }
+  }
+
+  static async adminChangeRegistrationFees(
+    library: Web3Provider,
+    feeWithReferralLink: number,
+    feeWithoutReferralLink: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+
+      const feeWithReferralLinkBN = ethers.utils.parseEther(
+        feeWithReferralLink + ""
+      );
+      const feeWithoutReferralLinkBN = ethers.utils.parseEther(
+        feeWithoutReferralLink + ""
+      );
+
+      await registrationContract.callStatic.changeFees(
+        feeWithoutReferralLinkBN,
+        feeWithReferralLinkBN
+      );
+
+      const tx = await registrationContract.functions.changeFees(
+        feeWithoutReferralLinkBN,
+        feeWithReferralLinkBN
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeRegistrationFees");
+      throw error;
+    }
+  }
+
+  static async adminChangeReferralRate(
+    library: Web3Provider,
+    rates: number[]
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.setReferralRate(rates);
+      const tx = await presaleContract.functions.setReferralRate(rates);
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeReferralRate");
+      throw error;
+    }
+  }
+
+  static async adminChangeCompanyAddress(
+    library: Web3Provider,
+    newAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.changeCompanyAddress(newAddress);
+      const tx = await presaleContract.functions.changeCompanyAddress(
+        newAddress
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeCompanyAddress");
+      throw error;
+    }
+  }
+
+  static async adminChangeCoreTeamAddress(
+    library: Web3Provider,
+    newAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.changeCoreTeamAddress(newAddress);
+      const tx = await presaleContract.functions.changeCoreTeamAddress(
+        newAddress
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeCoreTeamAddress");
+      throw error;
+    }
+  }
+
+  static async adminClaimRegistrationBNB(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+      await registrationContract.callStatic.withdraw();
+      const tx = await registrationContract.functions.withdraw();
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminClaimRegistrationBNB");
+      throw error;
+    }
+  }
+
+  static async adminCallUpdateRoundInfo(
+    library: Web3Provider,
+    roundIndex: number,
+    startTime: number,
+    endTime: number,
+    lockMonths: number,
+    centherPriceForBusd: number,
+    centherPriceForNtr: number,
+    maxCentherAmountToSell: number,
+    minBusdAmountPerUser: number,
+    maxBusdAmountPerUser: number,
+    minNtrAmountPerUser: number,
+    maxNtrAmountPerUser: number,
+    enableBusd: boolean
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let tx;
+      if (enableBusd) {
+        await presaleContract.callStatic.setRoundInfoForBusd(
+          roundIndex,
+          centherPriceForBusd * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell + ""),
+          ethers.utils.parseEther(minBusdAmountPerUser + ""),
+          ethers.utils.parseEther(maxBusdAmountPerUser + "")
+        );
+
+        tx = await presaleContract.functions.setRoundInfoForBusd(
+          roundIndex,
+          centherPriceForBusd * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minBusdAmountPerUser.toString()),
+          ethers.utils.parseEther(maxBusdAmountPerUser.toString())
+        );
+      } else {
+        await presaleContract.callStatic.setRoundInfoForNtr(
+          roundIndex,
+          centherPriceForNtr * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+        );
+
+        tx = await presaleContract.functions.setRoundInfoForNtr(
+          roundIndex,
+          centherPriceForNtr * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+        );
+      }
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallUpdateRoundInfo");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimNtrForCoreTeam(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawNtrForCoreTeam();
+
+      const tx = await presaleContract.functions.withdrawNtrForCoreTeam();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimNtrForCoreTeam");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimBusdForCoreTeam(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawBusdForCoreTeam();
+
+      const tx = await presaleContract.functions.withdrawBusdForCoreTeam();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimBusdForCoreTeam");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimNtrForCompany(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawNtr();
+
+      const tx = await presaleContract.functions.withdrawNtr();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimNtrForCompany");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimBusdForCompany(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawBUSD();
+
+      const tx = await presaleContract.functions.withdrawBUSD();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimBusdForCompany");
+      throw error;
+    }
+  }
+
+  static async callCancelAuction(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      await marketplaceContract.callStatic.cancelAuction(collection, tokenId);
+
+      const tx = await marketplaceContract.functions.cancelAuction(
+        collection,
+        tokenId
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callCancelAuction");
+      throw error;
+    }
+  }
+
+  static async callEndAuction(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      await marketplaceContract.callStatic.endAuction(collection, tokenId);
+
+      const tx = await marketplaceContract.functions.endAuction(
+        collection,
+        tokenId
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "");
+      throw error;
+    }
+  }
+
+  static async callBidOnAuction(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    price: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(price) + ""
+      );
+
+      await marketplaceContract.callStatic.bidOnAuction(collection, tokenId, {
+        value: normalizedValue,
+      });
+
+      const tx = await marketplaceContract.functions.bidOnAuction(
+        collection,
+        tokenId,
+        { value: normalizedValue }
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callBidOnAuction");
+      throw error;
+    }
+  }
+
+  static async callCreateAuction(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    startPrice: number,
+    period: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(startPrice) + ""
+      );
+
+      await marketplaceContract.callStatic.createAuction(
+        collection,
+        tokenId,
+        normalizedValue,
+        period
+      );
+
+      const tx = await marketplaceContract.functions.createAuction(
+        collection,
+        tokenId,
+        normalizedValue,
+        period
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callCreateAuction");
+      throw error;
+    }
+  }
+
+  static async callBuyListedItem(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    price: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(price) + ""
+      );
+
+      await marketplaceContract.callStatic.buyForListedItem(
+        collection,
+        tokenId,
+        { value: normalizedValue }
+      );
+
+      const tx = await marketplaceContract.functions.buyForListedItem(
+        collection,
+        tokenId,
+        { value: normalizedValue }
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callBuyListedItem");
+      throw error;
+    }
+  }
+
+  static async callListItemForSale(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    newPrice: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(newPrice) + ""
+      );
+
+      await marketplaceContract.callStatic.listItemForSale(
+        collection,
+        tokenId,
+        normalizedValue
+      );
+
+      const tx = await marketplaceContract.functions.listItemForSale(
+        collection,
+        tokenId,
+        normalizedValue
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callListItemForSale");
+      throw error;
+    }
+  }
+
+  static async callEditItemForSale(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    newPrice: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(newPrice) + ""
+      );
+
+      await marketplaceContract.callStatic.editItemForSale(
+        collection,
+        tokenId,
+        normalizedValue
+      );
+
+      const tx = await marketplaceContract.functions.editItemForSale(
+        collection,
+        tokenId,
+        normalizedValue
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callEditItemForSale");
+      throw error;
+    }
+  }
+
+  static async callCancelItemForSale(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      await marketplaceContract.callStatic.cancelItemForSale(
+        collection,
+        tokenId
+      );
+
+      const tx = await marketplaceContract.functions.cancelItemForSale(
+        collection,
+        tokenId
+      );
+
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callCancelItemForSale");
+      throw error;
+    }
+  }
+
+  static async callCreateNFT(
+    library: Web3Provider,
+    collection: string,
+    tokenUri: string,
+    supply: number,
+    isAuction: boolean,
+    price: number,
+    period: number,
+    fee: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const normalizedValue = ethers.utils.parseEther(
+        normalizeValue(price) + ""
+      );
+      const castedFee = ethers.utils.parseEther(fee.toFixed(10));
+
+      await marketplaceContract.callStatic.createItems(
+        collection,
+        tokenUri,
+        supply,
+        isAuction,
+        normalizedValue,
+        period,
+        { value: castedFee }
+      );
+      const tx = await marketplaceContract.functions.createItems(
+        collection,
+        tokenUri,
+        supply,
+        isAuction,
+        normalizedValue,
+        period,
+        { value: castedFee }
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callCreateNFT");
+      throw error;
+    }
+  }
+
+  static async callCreateCollection(
+    library: Web3Provider,
+    name: string,
+    symbol: string,
+    category: string,
+    uri: string,
+    maxsupply: number | null,
+    fee: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      const castedFee = ethers.utils.parseEther(fee.toString());
+      await marketplaceContract.callStatic.createCollection(
+        name,
+        symbol,
+        category,
+        uri,
+        maxsupply,
+        { value: castedFee }
+      );
+
+      const tx = await marketplaceContract.functions.createCollection(
+        name,
+        symbol,
+        category,
+        uri,
+        maxsupply,
+        { value: castedFee }
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callCreateCollection");
+      throw error;
+    }
+  }
+
+  static async callApproveNFTToMarketplace(
+    library: Web3Provider,
+    collection: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const nftContract = SmartContractProvider.getNFTContract(
+        collection,
+        signer
+      );
+
+      const operator = AddressFactory.getContractAddress(
+        SmartContractName.MARKETPALCE
+      );
+
+      await nftContract.callStatic.setApprovalForAll(operator, true);
+
+      const tx = await nftContract.functions.setApprovalForAll(operator, true);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callApproveNFTToMarketplace");
+      throw error;
+    }
+  }
+
+  static async callClaimNTRForReferral(library: Web3Provider): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefRewardNTR();
+
+      const tx = await presaleContract.functions.claimRefRewardNTR();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callClaimNTRForReferral");
+      throw error;
+    }
+  }
+
+  static async callClaimBUSDForReferral(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefRewardBUSD();
+
+      const tx = await presaleContract.functions.claimRefRewardBUSD();
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callClaimBUSDForReferral");
+      throw error;
+    }
+  }
+
+  static async claimNtrTokens(
+    library: Web3Provider,
+    round: number,
+    claimFrom: ClaimCentherFrom
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let claimFunction;
+      if (claimFrom === "BUSD") {
+        await presaleContract.callStatic.claimTokensFromBusd(round);
+        claimFunction = presaleContract.functions.claimTokensFromBusd;
+      } else if (claimFrom === "NTR") {
+        await presaleContract.callStatic.claimTokensFromNtr(round);
+        claimFunction = presaleContract.functions.claimTokensFromNtr;
+      } else {
+        throw new Error("Can not claim tokens");
+      }
+
+      const tx = await claimFunction(round);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimNtrTokens");
+      throw error;
+    }
+  }
+
+  static async buyCenther(
+    tokenName: TokenName,
+    amount: number,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let tokenPurchase;
+      const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+      if (tokenName === "BUSD") {
+        await presaleContract.callStatic.tokenPurchaseWithBUSD(purchaseAmount);
+        tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
+      } else if (tokenName === "NTR") {
+        await presaleContract.callStatic.tokenPurchaseWithNtr(purchaseAmount);
+        tokenPurchase = presaleContract.functions.tokenPurchaseWithNtr;
+      }
+
+      if (!tokenPurchase) {
+        throw new Error("Token cannot be purchased");
+      }
+
+      const tx = await tokenPurchase(purchaseAmount);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "buyCenther");
+      throw error;
+    }
+  }
+
+  static async getTokenApproval(
+    tokenName: TokenName,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleAddress = AddressFactory.getContractAddress(
+        SmartContractName.PRESALE
+      );
+
+      let tokenContractName;
+      if (tokenName == "BUSD") {
+        tokenContractName = SmartContractName.BUSD;
+      } else if (tokenName == "NTR") {
+        tokenContractName = SmartContractName.NTR;
+      } else {
+        tokenContractName = SmartContractName.CENTHER_TOKEN;
+      }
+
+      if (!tokenContractName) {
+        throw new Error("Token contract not found");
+      }
+
+      const tokenContract = SmartContractProvider.getContract(
+        tokenContractName,
+        signer
+      );
+
+      const amount = ethers.utils.parseUnits(
+        BlockchainConfig.maxSupply.toString()
+      );
+
+      await tokenContract.callStatic.approve(presaleAddress, amount);
+      const tx = await tokenContract.functions.approve(presaleAddress, amount);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "getTokenApproval");
+      throw error;
+    }
   }
 }

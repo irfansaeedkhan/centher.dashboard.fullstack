@@ -1,9 +1,5 @@
+import { BlockchainWrite } from "@/web3/blockchain";
 import { useGetReferralRate } from "@/web3/hooks/use.get.referral.rates";
-import {
-  adminChangeCompanyAddress,
-  adminChangeCoreTeamAddress,
-  adminChangeReferralRate,
-} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -31,11 +27,11 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
   const handleReferralRate = async () => {
     setPendingReferralRateTx(true);
-    const result = await adminChangeReferralRate(library, rates);
-    setPendingReferralRateTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeReferralRate(library, rates);
+      setPendingReferralRateTx(false);
       toast.success("Changed Referral Percentage Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
     }
   };
@@ -44,22 +40,22 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
   const handleCoreTeamAddress = async () => {
     setPendingTeamAddressTx(true);
-    const result = await adminChangeCompanyAddress(library, coreTeamAddress);
-    setPendingTeamAddressTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeCompanyAddress(library, coreTeamAddress);
+      setPendingTeamAddressTx(false);
       toast.success("Changed Core Team Address Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
     }
   };
 
   const handleCompanyAddress = async () => {
     setPendingCompanyAddressTx(true);
-    const result = await adminChangeCoreTeamAddress(library, companyAddress);
-    setPendingCompanyAddressTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeCoreTeamAddress(library, companyAddress);
+      setPendingCompanyAddressTx(false);
       toast.success("Changed Company Address Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
     }
   };

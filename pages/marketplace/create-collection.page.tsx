@@ -7,21 +7,19 @@ import toast from "react-hot-toast";
 
 // App imports
 import { useWeb3React } from "@web3-react/core";
-import {
-  callCreateCollection,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
 import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { FEE } from "@/web3/constants/common";
 import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
 
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 const collectionsRemoteBasePath = "ipfs:/";
 
@@ -58,7 +56,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           {collectionData?.name}
         </h2>
         <h3 className="text-14px font-normal text-white">
-          {`Marketplace fee ${normalizeValue(FEE.createCollectionFee)} BNB`}
+          {`Marketplace fee ${normalizeValue(
+            BlockchainConfig.fee.createCollectionFee
+          )} BNB`}
         </h3>
         {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
           <span>Price:</span>
@@ -193,17 +193,19 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionData,
         profilePath
       );
+
       const { name, symbol, category, totalsupply } = collectionData;
-      const result = await callCreateCollection(
+
+      await BlockchainWrite.callCreateCollection(
         library,
         name,
         symbol,
         category,
         collectionsRemoteBasePath + collectionMetaDataPath,
         totalsupply,
-        FEE.createCollectionFee
+        BlockchainConfig.fee.createCollectionFee
       );
-      collectionCreated = result.success;
+      collectionCreated = true;
     } catch (error) {
       console.error(error);
       toast.error(
@@ -213,6 +215,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       buyNFTSuccessFunc(collectionCreated, collectionData);
     }
   };
+
   const createCollection = (values: ICollectionData) => {
     if (profile === undefined) {
       toast.error("Choose profile image.");

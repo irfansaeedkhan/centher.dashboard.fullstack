@@ -1,7 +1,7 @@
 import { RewardsEachAsset } from "@/models/referral";
 import React from "react";
 import { formatPriceInUSD } from "@/utils/format.address";
-import { normalizeValue } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface SingleLevelRewardPProps {
   rewardState: "lunchpad-rewards" | "marketplace-rewards";

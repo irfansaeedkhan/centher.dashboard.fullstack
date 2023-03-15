@@ -10,17 +10,14 @@ import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
-  callCancelAuction,
-  callEndAuction,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
-import {
   formatAddress,
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -254,21 +251,26 @@ export const AuctionNftDescription = ({
 
   const handleEndAuction = async () => {
     ProceedFunc();
-    const result = await callEndAuction(
+    const result = await BlockchainWrite.callEndAuction(
       library,
       (data as INFTDetailData).collection,
       (data as INFTDetailData).nftId
     );
-    SuccessFunc(result.success);
+    SuccessFunc(!!result);
   };
   const handleCancelAuction = async () => {
-    ProceedFunc();
-    const result = await callCancelAuction(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId
-    );
-    SuccessFunc(result.success);
+    try {
+      ProceedFunc();
+      const result = await BlockchainWrite.callCancelAuction(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+      SuccessFunc(!!result);
+    } catch (error) {
+      toast.error("Something went wrong, please try again later");
+      SuccessFunc(false);
+    }
   };
 
   return (

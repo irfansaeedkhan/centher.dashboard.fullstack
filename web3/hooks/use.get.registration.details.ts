@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { getRegistrationContract } from "../utils/contract.helpers";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
 
 export const useGetRegistrationDetail = (reload: boolean) => {
   const [registrationFees, setRegistrationFees] = useState({
@@ -10,7 +11,9 @@ export const useGetRegistrationDetail = (reload: boolean) => {
   const [isActive, setIsActive] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    const registrationContract = getRegistrationContract();
+    const registrationContract = SmartContractProvider.getContract(
+      SmartContractName.REGISTRATION
+    );
     const fetchRegistrationDetail = async () => {
       setLoading(true);
       const _feeWithoutReferrer =

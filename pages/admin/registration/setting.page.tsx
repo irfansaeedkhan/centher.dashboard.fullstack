@@ -6,14 +6,11 @@ import RewardsTableSkeleton from "@/components/loading.skeletons/admin.network.r
 
 import RegistrationTabs from "./_components/registration.tabs";
 import { useGetRegistrationDetail } from "@/web3/hooks/use.get.registration.details";
-import {
-  adminChangeRegistrationFees,
-  adminPauseRegistration,
-  adminUnPauseRegistration,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
+
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 const RegistrationSetting: NextPageWithLayout = () => {
   const { library } = useWeb3React();
@@ -35,34 +32,33 @@ const RegistrationSetting: NextPageWithLayout = () => {
 
   const handleChangeFees = async () => {
     setChangeFeeTx(true);
-    const result = await adminChangeRegistrationFees(
-      library,
-      updateRegistrationFeeWithReferral,
-      updateRegistrationFeeWithoutReferral
-    );
-    setChangeFeeTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeRegistrationFees(
+        library,
+        updateRegistrationFeeWithReferral,
+        updateRegistrationFeeWithoutReferral
+      );
+      setChangeFeeTx(false);
       toast.success("Changed Registration Fee Successfully");
       setReload(!reload);
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong.");
     }
   };
 
   const handleChangeState = async () => {
     setChangeStatusTx(true);
-    let result;
-    if (registrationDetail.isActive) {
-      result = await adminPauseRegistration(library);
-    } else {
-      result = await adminUnPauseRegistration(library);
-    }
+    try {
+      if (registrationDetail.isActive) {
+        await BlockchainWrite.adminPauseRegistration(library);
+      } else {
+        await BlockchainWrite.adminUnPauseRegistration(library);
+      }
 
-    setChangeStatusTx(false);
-    if (result.success) {
+      setChangeStatusTx(false);
       toast.success("Changed Registration Statue Successfully");
       setReload(!reload);
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong.");
     }
   };

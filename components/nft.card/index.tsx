@@ -11,13 +11,13 @@ import {
   formatEther2Number,
   formatIPFSUrl,
 } from "@/utils/format.address";
-import { normalizeValue } from "@/web3/utils/call.helpers";
 import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
 import { AppRoutes } from "@/constants/app.routes";
 import {
   BNBIcon,
   // YellowTick
 } from "@/assets/svgs";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 export interface NFTCardProps {
   data: NFT;

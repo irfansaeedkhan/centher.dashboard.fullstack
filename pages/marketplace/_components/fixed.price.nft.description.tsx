@@ -11,14 +11,11 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import {
-  callCancelItemForSale,
-  callEditItemForSale,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
 import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 
 import ChangePriceBidModal from "./change.price.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -97,16 +94,21 @@ export const FixedPriceNFTDescription = ({
 
   const handleCancelListing = async () => {
     setupWaitingModal();
-    const result = await callCancelItemForSale(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId
-    );
-    setupSuccessModal(result.success);
+    try {
+      const result = await BlockchainWrite.callCancelItemForSale(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+      setupSuccessModal(!!result);
+    } catch (error) {
+      toast.error("something went wrong, please try again later");
+      setupSuccessModal(false);
+    }
   };
 
   const handleEditPrice = async (newPrice: any) => {
-    let result = { success: false };
+    let result;
     setupWaitingModal();
     try {
       validateProvider();
@@ -116,7 +118,7 @@ export const FixedPriceNFTDescription = ({
         );
       }
 
-      result = await callEditItemForSale(
+      result = await BlockchainWrite.callEditItemForSale(
         library,
         data.collection,
         data.nftId,
@@ -126,7 +128,7 @@ export const FixedPriceNFTDescription = ({
       toastError(err);
     }
 
-    setupSuccessModal(result.success);
+    setupSuccessModal(!!result);
   };
 
   const modalTemplateCollection: TemplateCollection = {

@@ -1,5 +1,5 @@
+import { BlockchainConfig } from "@/web3/blockchain/config";
 import { ethers } from "ethers";
-import { NEXT_PUBLIC_IPFS_URL, SCAN_URL } from "@/web3/constants/common";
 
 export const formatAddress = (address: string | undefined) => {
   return address && address.length >= 6
@@ -34,12 +34,14 @@ export const formatIPFSUrl = (hash: string | undefined) => {
   if (hash === undefined) return "";
   else if (hash.substring(0, 7) === "ipfs://") {
     if (hash.length >= 53)
-      return NEXT_PUBLIC_IPFS_URL + "/ipfs/" + hash.substring(7, hash.length);
+      return (
+        BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(7, hash.length)
+      );
     else return hash;
   } else {
     const splitHash = hash.split("/Qm");
     if (splitHash.length >= 2) {
-      return NEXT_PUBLIC_IPFS_URL + "/ipfs/Qm" + splitHash[1];
+      return BlockchainConfig.ipfsUrl + "/ipfs/Qm" + splitHash[1];
     } else {
       return hash;
     }
@@ -47,15 +49,15 @@ export const formatIPFSUrl = (hash: string | undefined) => {
 };
 
 export const formatTxUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL;
+  if (hash === undefined) return BlockchainConfig.scannerUrl;
   else {
-    return `${SCAN_URL}tx/${hash}`;
+    return `${BlockchainConfig.scannerUrl}tx/${hash}`;
   }
 };
 
 export const formatAddressUrl = (hash: string | undefined) => {
-  if (hash === undefined) return SCAN_URL;
+  if (hash === undefined) return BlockchainConfig.scannerUrl;
   else {
-    return `${SCAN_URL}address/${hash}`;
+    return `${BlockchainConfig.scannerUrl}address/${hash}`;
   }
 };

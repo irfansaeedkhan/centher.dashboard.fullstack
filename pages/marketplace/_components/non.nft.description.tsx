@@ -10,16 +10,13 @@ import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import {
-  callApproveNFTToMarketplace,
-  callListItemForSale,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import ChangePriceListModal from "./change.price.list.modal";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -285,30 +282,33 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
     if (library && data) {
-      if (!isApproved) {
-        const approveResult = await callApproveNFTToMarketplace(
-          library,
-          data.collection
-        );
-        if (approveResult.success) {
-          const result = await callListItemForSale(
-            library,
-            data.collection,
-            data.nftId,
-            listingPrice
-          );
-          SuccessFunc(result.success);
-        } else {
-          SuccessFunc(false);
+      try {
+        if (!isApproved) {
+          try {
+            const approveResult =
+              await BlockchainWrite.callApproveNFTToMarketplace(
+                library,
+                data.collection
+              );
+
+            if (!approveResult?.length) {
+              throw new Error("something went wrong");
+            }
+          } catch (error) {
+            throw error;
+          }
         }
-      } else {
-        const result = await callListItemForSale(
+
+        const result = await BlockchainWrite.callListItemForSale(
           library,
           data.collection,
           data.nftId,
           listingPrice
         );
-        SuccessFunc(result.success);
+        SuccessFunc(!!result);
+      } catch (error) {
+        toast.error("some went wrong, please try again later");
+        SuccessFunc(false);
       }
     } else {
       SuccessFunc(false);

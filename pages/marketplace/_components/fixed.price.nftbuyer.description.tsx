@@ -11,13 +11,14 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { FEE } from "@/web3/constants/common";
-import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useRouter } from "next/router";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -61,13 +62,13 @@ export const FixedPriceNFTBuyerDescription = ({
         />
         <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
         <h3 className="text-14px font-normal text-white">
-          Marketplace Fee {FEE.buyItemFeeForMarketplace}%
+          Marketplace Fee {BlockchainConfig.fee.buyItemFeeForMarketplace}%
         </h3>
         <h3 className="text-14px font-normal text-white">
-          Collection Fee {FEE.buyItemFeeForCreator}%
+          Collection Fee {BlockchainConfig.fee.buyItemFeeForCreator}%
         </h3>
         <h3 className="text-14px font-normal text-white">
-          Multilevel Fee {FEE.buyItemFeeForMultilevel}%
+          Multilevel Fee {BlockchainConfig.fee.buyItemFeeForMultilevel}%
         </h3>
         <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
@@ -153,14 +154,19 @@ export const FixedPriceNFTBuyerDescription = ({
     setModal(true);
   };
   const handleBuyNFT = async () => {
-    buyNFTStep2Func();
-    const result = await callBuyListedItem(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId,
-      (data as INFTDetailData).listInfo.price
-    );
-    SuccessFunc(result.success);
+    try {
+      buyNFTStep2Func();
+      const result = await BlockchainWrite.callBuyListedItem(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId,
+        (data as INFTDetailData).listInfo.price
+      );
+      SuccessFunc(!!result);
+    } catch (error) {
+      toast.error("something went wrong, please try again later.");
+      SuccessFunc(false);
+    }
   };
   return (
     <div className={nftDescriptionContainer}>

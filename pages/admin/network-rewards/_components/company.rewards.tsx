@@ -1,7 +1,4 @@
-import {
-  adminCallClaimBusdForCompany,
-  adminCallClaimNtrForCompany,
-} from "@/web3/utils/call.helpers";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import toast from "react-hot-toast";
@@ -13,25 +10,27 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
       toast.error("Nothing to Claim!");
       return;
     }
-    const result = await adminCallClaimBusdForCompany(library);
-    if (result.success) {
-      setReload(!reload);
-    } else {
+    let result;
+    try {
+      result = await BlockchainWrite.adminCallClaimBusdForCompany(library);
+    } catch (error) {
       toast.error("Something Went Wrong!");
     }
   };
+
   const handleClaimNtr = async () => {
     if (data.claimable.ntr <= 0) {
       toast.error("Nothing to Claim!");
       return;
     }
-    const result = await adminCallClaimNtrForCompany(library);
-    if (result.success) {
-      setReload(!reload);
-    } else {
+    let result;
+    try {
+      result = await BlockchainWrite.adminCallClaimNtrForCompany(library);
+    } catch (error) {
       toast.error("Something Went Wrong!");
     }
   };
+
   return (
     <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
       <div className="flex  w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">

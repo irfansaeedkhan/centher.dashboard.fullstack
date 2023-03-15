@@ -8,11 +8,12 @@ import Button from "@/components/button";
 import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { callBuyListedItem, normalizeValue } from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -151,15 +152,18 @@ export const NonNFTBuyerDescription = ({
 
   const handleBuyNFT = async () => {
     ProceedFunc();
-    if (library && data) {
-      const result = await callBuyListedItem(
+
+    try {
+      if (!library || !data) throw new Error("invalid dependencies");
+      const result = await BlockchainWrite.callBuyListedItem(
         library,
         data.collection,
         data.nftId,
         data.listInfo.price
       );
-      SuccessFunc(result.success);
-    } else {
+      SuccessFunc(!!result);
+    } catch (error) {
+      toast.error("something went wrong, please try again later");
       SuccessFunc(false);
     }
   };

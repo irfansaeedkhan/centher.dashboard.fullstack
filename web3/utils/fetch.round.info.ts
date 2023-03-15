@@ -5,7 +5,8 @@ import useRefresh from "../hooks/use.refresh";
 import presaleABI from "../abis/presale.json";
 
 import { multicall } from "./multi.call";
-import { getPresaleAddress } from "./address.helpers";
+import { AddressFactory } from "../blockchain/providers/address.provider";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
 
 interface RoundInfo {
   price: number;
@@ -20,7 +21,9 @@ interface RoundInfo {
 
 export const fetchRoundData = async () => {
   const calls = [];
-  const presaleAddress = getPresaleAddress();
+  const presaleAddress = AddressFactory.getContractAddress(
+    SmartContractName.PRESALE
+  );
   for (let i = 0; i < 3; i++) {
     const callData = {
       address: presaleAddress,
