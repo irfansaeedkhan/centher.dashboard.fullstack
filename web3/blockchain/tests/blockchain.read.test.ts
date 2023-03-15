@@ -1102,7 +1102,7 @@ describe("BlockchainRead", () => {
     const spy = jest.spyOn(ApolloProvider, "query");
 
     await BlockchainRead.getCollectionByAccount("test");
-    expect(spy).toBeCalledWith(QueryNames.COLLECTIONS_BY_ACCOUNT, {
+    expect(spy).toBeCalledWith(QueryNames.ACCOUNT_COLLECTION, {
       creator: "test",
     });
   });
