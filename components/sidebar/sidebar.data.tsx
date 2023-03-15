@@ -6,13 +6,9 @@ import {
   Explore,
   Notification,
   Launchpad,
-  // ProfitsDashboard,
-  // VotingChain,
-  // Multilevel,
   NetworkGenealogy,
-  // LiquidityPoolSvg,
   NetworkRewards,
-  // StakingContract,
+  CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -53,6 +49,12 @@ export const sidebarData: SidebarData = {
         label: "Create Collection",
         url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
+      },
+      {
+        label: "Create NFT",
+        label2: "marketplace/create",
+        url: AppRoutes.marketplace.create_nft,
+        icon: CreateNFT,
       },
     ],
   },

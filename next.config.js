@@ -9,7 +9,7 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains:
-      process.env.APP_ENV === "production"
+      process.env.NEXT_PUBLIC_APP_ENV === "production"
         ? [
             "centher.infura-ipfs.io",
             "api.centher.io",

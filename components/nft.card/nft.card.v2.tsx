@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -14,6 +14,8 @@ export interface NFTCardProps {
 }
 
 export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
+  const [imageUrl, setImageUrl] = useState(data.imageUrl);
+
   return (
     <div
       className={`relative flex max-w-[300px] flex-col overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`}
@@ -72,11 +74,12 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
         className={`mt-10 block w-full px-2`}
       >
         <Image
-          src={data.imageUrl}
+          src={imageUrl}
           alt={data.name}
           height={222}
           width={293}
           className="!h-[222px] !w-[293px] rounded-md object-cover"
+          onError={() => setImageUrl("/images/placeholder-square.svg")}
         />
       </Link>
 

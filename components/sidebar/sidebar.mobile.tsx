@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import React, { RefObject, useRef } from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
@@ -10,13 +9,13 @@ import { IoSearchSharp } from "react-icons/io5";
 // App imports
 import useUser from "@/hooks/use.user";
 import { axiosNodeApi } from "@/utils/axios";
-import { CreateNFT, Logout } from "@/assets/svgs";
+import { Logout } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 // Current directory imports
-import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
+import { SidebarSections } from "./sidebar.data";
 
 interface SidebarMobileProps {
   sidebarOpen: boolean;
@@ -30,7 +29,6 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   sidebarOpen,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
 
   const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -76,20 +74,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
         className={`flex h-[calc(100vh-60px)] w-[15.5rem] flex-col justify-between gap-8 overflow-y-scroll bg-background-shade-1 py-5 font-monto fxl:hidden`}
       >
         <div>
-          {user && (
-            <div className={`my-4 flex items-center gap-2 pl-6 xl:hidden`}>
-              <CreateNFT />
-              <Link
-                href={AppRoutes.marketplace.create_nft}
-                className={`text-sm font-semibold text-gray-shade-7`}
-                onClick={onClose}
-              >
-                Create NFT
-              </Link>
-            </div>
-          )}
-
-          <div className={`my-4 flex items-center gap-2 pl-6 md:hidden`}>
+          <div className={`mb-4 flex items-center gap-2 pl-6 md:hidden`}>
             <IoSearchSharp className="text-xl text-gray-shade-7" />
             <Link
               href={AppRoutes.search}
@@ -99,8 +84,7 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
               Search
             </Link>
           </div>
-
-          <div className={`mt-5 flex flex-col gap-6`}>
+          <div className={`flex flex-col gap-6`}>
             {SidebarSections.map((section) => {
               return (
                 <Section
@@ -145,5 +129,3 @@ const sectionWrapper = `flex gap-6 flex-col px-5`;
 const sectionWrapper2 = `flex gap-6 flex-col`;
 
 const itemWrapper = `flex gap-2 items-center`;
-
-const connectButton = `px-6 py-2 mx-5 w-fit flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;

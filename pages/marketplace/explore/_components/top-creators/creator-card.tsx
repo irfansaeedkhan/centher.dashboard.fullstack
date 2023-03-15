@@ -19,8 +19,8 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         src={data.profile_image.path}
         width={48}
         height={48}
-        alt="profile"
-        className="!h-12 !w-12 rounded-full object-cover"
+        alt={data.display_name}
+        className="!h-12 !w-12 flex-shrink-0 rounded-full object-cover"
       />
       <Link
         href={{

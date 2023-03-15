@@ -1,8 +1,10 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 // App imports
 import Button from "@/components/button";
@@ -15,7 +17,6 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
-import { useRouter } from "next/router";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -185,7 +186,9 @@ export const FixedPriceNFTBuyerDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} whitespace-pre-wrap break-all leading-6`}>
+        <p
+          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
+        >
           {data?.description}
         </p>
       </div>
