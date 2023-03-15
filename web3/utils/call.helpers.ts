@@ -5,9 +5,9 @@ import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { getMarketplaceAddress, getPresaleAddress } from "./address.helpers";
 import {
   getBusdContract,
+  getDxcContract,
   getMarketplaceContract,
   getNTRContract,
-  getNtrdaoContract,
   getPresaleContract,
   getRegistrationContract,
   getStandardNFTContract,
@@ -17,7 +17,7 @@ import { delay, isEmpty } from "./utility";
 
 const MAX_SUPPLY = BigNumber.from("260000");
 
-export type TokenName = "BUSD" | "NTR" | "CTHR";
+export type TokenName = "BUSD" | "NTR" | "CTHR" | "DXC";
 
 export const getTokenContract = (
   tokenName: TokenName,
@@ -28,7 +28,7 @@ export const getTokenContract = (
   } else if (tokenName === "NTR") {
     return getNTRContract(library);
   } else if (tokenName === "CTHR") {
-    return getNtrdaoContract(library);
+    return getDxcContract(library);
   }
 };
 

@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import {
   getBusdContract,
+  getDxcContract,
   getNTRContract,
-  getNtrdaoContract,
+  // getNtrdaoContract,
 } from "../utils/contract.helpers";
 
 export const useGetNtrBalance = (address: string | null | undefined) => {
@@ -36,7 +37,8 @@ export const useGetNtrDaoBalance = (address: string | null | undefined) => {
       return;
     }
     (async () => {
-      const contract = getNtrdaoContract();
+      // const contract = getNtrdaoContract();
+      const contract = getDxcContract();
       try {
         const ntrdaoBalance = ethers.utils.formatUnits(
           await contract.balanceOf(address),

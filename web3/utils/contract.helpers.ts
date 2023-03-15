@@ -10,10 +10,12 @@ import {
   getRouterAddress,
   getMarketplaceAddress,
   getNTRAddress,
+  getDxcAddress,
 } from "./address.helpers";
 
 // ABI
 import centherAbi from "../abis/centher.json";
+import dxcAbi from "../abis/dxc.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
 import registrationAbi from "../abis/registration.json";
@@ -83,4 +85,8 @@ export const getBusdContract = (signer?: SignerOrProvider) => {
 
 export const getNTRContract = (signer?: SignerOrProvider) => {
   return getContract(ntrAbi, getNTRAddress(), signer);
+};
+
+export const getDxcContract = (signer?: SignerOrProvider) => {
+  return getContract(dxcAbi, getDxcAddress(), signer);
 };

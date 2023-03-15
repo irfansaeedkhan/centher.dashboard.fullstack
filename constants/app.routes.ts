@@ -52,7 +52,8 @@ export const AppRoutes = {
   search: "/search",
   coming_soon: "/coming-soon",
   notifications: "/notifications",
-  buy_centher: "/buy-centher",
+  launchpad: "/launchpad/[token_address]/[round]",
+
   referral: {
     network_genealogy: "/network-genealogy",
     network_rewards: "/network-rewards/rewards",

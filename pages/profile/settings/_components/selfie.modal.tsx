@@ -47,7 +47,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
           />
         </div>
         <button
-          className="bg-yellow-theme flex w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
+          className="bg-yellow-theme flex  w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
           onClick={showImage}
         >
           Capture
@@ -96,7 +96,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
         </div>
         <span className="flex w-full items-center gap-4">
           <button
-            className="bg-yellow-theme flex w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
+            className="bg-yellow-theme flex  w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
             onClick={() => {
               setCapture(false);
               setPreviewPicture("");
@@ -106,7 +106,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
             Retake
           </button>
           <button
-            className="bg-yellow-theme flex w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
+            className="bg-yellow-theme flex  w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
             onClick={async () => {
               const res = await fetch(
                 previewCanvasRef.current?.toDataURL("image/webp") ?? ""

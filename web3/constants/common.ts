@@ -19,7 +19,8 @@ export const BLOCKCHAIN_EXPLORE_URL =
 export const BLOCKCHAIN_EXPLORER =
   process.env.NEXT_PUBLIC_APP_ENV === "production" ? "BSCScan" : "Etherscan";
 
-export const DAY = 60 * 5;
+export const DAY = 60 * 60 * 24;
+export const MONTH = 60 * 5; // DAY * 30;
 
 export const FEE =
   process.env.NEXT_PUBLIC_APP_ENV === "production"

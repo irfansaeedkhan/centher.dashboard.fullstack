@@ -48,6 +48,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
             },
             fetchPolicy: "cache-first",
           });
+
           if (!loading) {
             if (result && !error) {
               _genealogies = [];

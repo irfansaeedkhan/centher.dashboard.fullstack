@@ -10,6 +10,7 @@ import {
   LeftArrowIcon,
   CentherIconBG,
   NTRIconBG,
+  DXCIconBG,
 } from "@/assets/svgs";
 
 import { SelectedTokenA, SelectedTokenB } from "./types";
@@ -81,7 +82,7 @@ export const ConversionContainer: React.FC<Props> = ({
             <input
               className={inputClasses}
               type="number"
-              placeholder={selectedTokenA.inputMinValue.toFixed(2)}
+              placeholder={selectedTokenA.inputMinValue?.toFixed(2)}
               value={selectedTokenA.inputValue}
               onChange={(e) => {
                 const value =
@@ -106,7 +107,7 @@ export const ConversionContainer: React.FC<Props> = ({
           <div className={inputBoxRight}>
             <div className={`flex flex-grow justify-center`}>
               <button
-                className={`cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-yellow-theme transition hover:border-0 hover:bg-yellow-theme hover:text-black-shade-3 fmd:text-sm`}
+                className={`text-yellow-theme hover:bg-yellow-theme cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium transition hover:border-0 hover:text-black-shade-3 fmd:text-sm`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");
@@ -135,7 +136,7 @@ export const ConversionContainer: React.FC<Props> = ({
 
       <div className={conversionInputContainer}>
         <ConversionTokenBox
-          tokenIcon={<CentherIconBG className="h-10 w-10" />}
+          tokenIcon={<DXCIconBG className="h-10 w-10" />}
           tokenName="CTHR"
           tokenBalance={selectedTokenB.tokenBalance}
         />

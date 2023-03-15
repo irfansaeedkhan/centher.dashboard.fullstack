@@ -228,7 +228,7 @@ export const NFTHistory = ({ prices }: any) => {
                     <LineChart data={data} />
                   ) : (
                     <div className="flex h-28 w-full items-center justify-center">
-                      <h6 className="text-14px font-medium text-yellow-theme">
+                      <h6 className="text-14px text-yellow-theme font-medium">
                         No event has occured yet!
                       </h6>
                     </div>

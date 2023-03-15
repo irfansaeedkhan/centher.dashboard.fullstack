@@ -72,7 +72,7 @@ const RegistrationRewards = ({
             </p>
             <button
               // className="text-brand-primary text-12px font-semibold "
-              className="text-12px w-full max-w-[120px] rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
+              className="text-12px bg-yellow-theme w-full max-w-[120px] rounded-lg p-3 font-semibold text-black-shade-3"
               onClick={handleClaimBNB}
               disabled={pendingTx}
             >

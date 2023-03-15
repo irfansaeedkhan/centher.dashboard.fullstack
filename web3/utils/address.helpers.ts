@@ -37,3 +37,7 @@ export const getNTRAddress = () => {
 export const getNativeCollectionAddress = () => {
   return getAddress(addresses.nativeCollection);
 };
+
+export const getDxcAddress = () => {
+  return getAddress(addresses.dxc);
+};
