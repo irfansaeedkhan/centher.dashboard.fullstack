@@ -15,6 +15,10 @@ export type SmartContractNameWithERC721 = ERC721Name | SmartContractName;
 export type SmartContractAbisHolder = Record<SmartContractNameWithERC721, any>;
 export type TokenName = "BUSD" | "NTR" | "CTHR" | "DXC";
 export type ClaimCentherFrom = "BUSD" | "NTR";
+export interface Explorer {
+  name: string;
+  url: string;
+}
 export interface UserReferrer {
   id: number;
   address: string;
@@ -48,7 +52,7 @@ export type IBlockchainConfig = {
   networkDecimals: number;
   percent: number[];
   fee: Fee;
-  scannerUrl: string;
+  scanner: Explorer;
   ipfsUrl: string;
   subgraphUrl: string;
 };

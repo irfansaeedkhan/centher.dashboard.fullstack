@@ -126,10 +126,16 @@ export const BlockchainConfig: IBlockchainConfig = {
           level5: 0.7,
           level6: 0.7,
         },
-  scannerUrl:
-    process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://bscscan.com/address/"
-      : "https://goerli.etherscan.io/",
+  scanner: {
+    name:
+      process.env.NEXT_PUBLIC_APP_ENV === "production"
+        ? "BSCScan"
+        : "Etherscan",
+    url:
+      process.env.NEXT_PUBLIC_APP_ENV === "production"
+        ? "https://bscscan.com/address/"
+        : "https://goerli.etherscan.io/",
+  },
   ipfsUrl:
     process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL ||
     "https://centher-staging.infura-ipfs.io",
