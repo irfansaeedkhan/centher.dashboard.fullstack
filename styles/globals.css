@@ -84,6 +84,17 @@
   .text-12px {
     @apply text-xs;
   }
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  input[type="datetime-local"]::-moz-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  input[type="datetime-local"]::-ms-clear {
+    filter: invert(1);
+  }
   .nftCardContainer {
     display: flex;
     flex-wrap: wrap;

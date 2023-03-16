@@ -129,8 +129,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
             <span className="text-white">{collectionData?.name}</span>{" "}
-            Collection on <b>Centher</b> platform, Click view on profile to view
-            your collection.
+            Collection on <b> Centher </b> platform, Click view on profile to
+            view your collection.
           </p>
         )}
         {!txStatus && (
