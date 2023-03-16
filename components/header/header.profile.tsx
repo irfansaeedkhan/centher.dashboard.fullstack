@@ -9,10 +9,7 @@ import clsx from "clsx";
 
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import {
-  BLOCKCHAIN_EXPLORER,
-  BLOCKCHAIN_EXPLORE_URL,
-} from "@/web3/constants/common";
+
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
@@ -24,6 +21,7 @@ import {
   SettingIcon,
   UserIcon,
 } from "@/assets/svgs";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -107,7 +105,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             )}
           </div>
           <a
-            href={`${BLOCKCHAIN_EXPLORE_URL}/address/${loggedInUser?.account_address}`}
+            href={`${BlockchainConfig.scanner.url}/address/${loggedInUser?.account_address}`}
             target={"_blank"}
             rel="noreferrer"
             title="View on Explorer"
@@ -116,7 +114,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             <span
               className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
             >
-              View on {BLOCKCHAIN_EXPLORER}
+              View on {BlockchainConfig.scanner.name}
             </span>
             <FiArrowUpRight
               className={`cursor-pointer text-sm group-hover:text-brand-primary`}

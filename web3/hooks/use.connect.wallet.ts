@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";

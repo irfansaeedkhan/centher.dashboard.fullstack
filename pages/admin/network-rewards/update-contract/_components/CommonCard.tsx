@@ -3,11 +3,7 @@ import { toast } from "react-hot-toast";
 import { useWeb3React } from "@web3-react/core";
 
 import { useGetReferralRate } from "@/web3/hooks/use.get.referral.rates";
-import {
-  adminChangeCompanyAddress,
-  adminChangeCoreTeamAddress,
-  adminChangeReferralRate,
-} from "@/web3/utils/call.helpers";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 export const CommonCard = ({ refreshRoundsInfo }: any) => {
   const { library } = useWeb3React();
@@ -32,12 +28,13 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
   const handleReferralRate = async () => {
     setPendingReferralRateTx(true);
-    const result = await adminChangeReferralRate(library, rates);
-    setPendingReferralRateTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeReferralRate(library, rates);
       toast.success("Changed Referral Percentage Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
+    } finally {
+      setPendingReferralRateTx(false);
     }
   };
 
@@ -45,23 +42,25 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
   const handleCoreTeamAddress = async () => {
     setPendingTeamAddressTx(true);
-    const result = await adminChangeCompanyAddress(library, coreTeamAddress);
-    setPendingTeamAddressTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeCompanyAddress(library, coreTeamAddress);
       toast.success("Changed Core Team Address Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
+    } finally {
+      setPendingTeamAddressTx(false);
     }
   };
 
   const handleCompanyAddress = async () => {
     setPendingCompanyAddressTx(true);
-    const result = await adminChangeCoreTeamAddress(library, companyAddress);
-    setPendingCompanyAddressTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminChangeCoreTeamAddress(library, companyAddress);
       toast.success("Changed Company Address Successfully");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
+    } finally {
+      setPendingCompanyAddressTx(false);
     }
   };
 

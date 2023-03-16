@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import {
-  getBusdContract,
-  getDxcContract,
-  getNTRContract,
-  // getNtrdaoContract,
-} from "../utils/contract.helpers";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
 
 export const useGetNtrBalance = (address: string | null | undefined) => {
   const [balance, setBalance] = useState(0);
@@ -15,7 +11,7 @@ export const useGetNtrBalance = (address: string | null | undefined) => {
       return;
     }
     (async () => {
-      const contract = getNTRContract();
+      const contract = SmartContractProvider.getContract(SmartContractName.NTR);
       try {
         const ntrBalance = ethers.utils.formatEther(
           await contract.balanceOf(address)
@@ -37,8 +33,7 @@ export const useGetNtrDaoBalance = (address: string | null | undefined) => {
       return;
     }
     (async () => {
-      // const contract = getNtrdaoContract();
-      const contract = getDxcContract();
+      const contract = SmartContractProvider.getContract(SmartContractName.DXC);
       try {
         const ntrdaoBalance = ethers.utils.formatUnits(
           await contract.balanceOf(address),
@@ -61,7 +56,9 @@ export const useGetBusdBalance = (address: string | null | undefined) => {
       return;
     }
     (async () => {
-      const contract = getBusdContract();
+      const contract = SmartContractProvider.getContract(
+        SmartContractName.BUSD
+      );
       try {
         const busdBalance = ethers.utils.formatEther(
           await contract.balanceOf(address)

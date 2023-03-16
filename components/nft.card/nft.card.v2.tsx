@@ -5,9 +5,9 @@ import Image from "next/image";
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
 import { formatAddress, formatEther2Number } from "@/utils/format.address";
-import { normalizeValue } from "@/web3/utils/call.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 import { BNBIcon } from "@/assets/svgs";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import useGetUser from "@/hooks/use.get.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 

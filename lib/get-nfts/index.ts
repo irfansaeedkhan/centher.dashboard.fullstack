@@ -1,37 +1,19 @@
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-
 import { NFT } from "@/models/nft";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { AppError } from "@/utils/app-error";
-
-const client = new ApolloClient({
-  uri: SUBGRAPH_URL,
-  cache: new InMemoryCache(),
-});
+import { BlockchainRead } from "@/web3/blockchain";
 
 export const getNFTs = async ({
-  query,
   limit = 15,
   skip = 0,
 }: {
-  query: string;
   limit?: number;
   skip?: number;
 }): Promise<NFT[]> => {
   try {
     let nfts: NFT[] = [];
-
-    const { data: result, error } = await client.query({
-      query: gql(query),
-      variables: {
-        first: limit,
-        skip: skip,
-      },
-      fetchPolicy: "cache-first",
-    });
-
-    if (result && !error) {
-      nfts = result.nfts.map((item: any): NFT => {
+    const result = await BlockchainRead.getHotNFT(limit, skip);
+    if (result?.length) {
+      nfts = result.map((item: any): NFT => {
         let _endTime = 0;
         if (item.saleState === "Auction") {
           _endTime = item.auctionInfo.endTime;
@@ -51,7 +33,7 @@ export const getNFTs = async ({
       });
       return nfts;
     } else {
-      throw error;
+      return [];
     }
   } catch (error: any) {
     throw new AppError(error, "Can not load NFTs", "getNFTs");

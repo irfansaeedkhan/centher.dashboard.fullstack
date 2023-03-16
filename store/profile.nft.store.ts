@@ -2,19 +2,12 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
 
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  registeredCollections,
-  collectionsByAccount,
-  listedNFTsByAccount,
-  createdNFTsByAccount,
-  listedUserNFTsByAccount,
-} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { Collection, NFT } from "@/models/nft";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
-import { getNativeCollectionAddress } from "@/web3/utils/address.helpers";
+import { BlockchainRead } from "@/web3/blockchain";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
@@ -100,27 +93,9 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       fetchCollections: async (account) => {
         try {
           set({ loadingCollections: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-          let _collections: Collection[];
-          const {
-            data: result,
-            error,
-            loading,
-          } = await client.query({
-            query: gql(collectionsByAccount),
-            variables: {
-              creator: account,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result) {
-            _collections = result.collections;
-          }
-
+          let _collections = await BlockchainRead.getCollectionByAccount(
+            account
+          );
           set((state) => {
             return {
               collections: _collections,
@@ -134,30 +109,19 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchListedNFTs: async (account, offset, limit, reload) => {
+      fetchListedNFTs: async (account, offset = 0, limit = 20, reload) => {
         try {
           set({ loadingListedNFTs: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-          let _nfts: NFT[] = [];
-          const {
-            data: result,
-            error,
-            loading,
-          } = await client.query({
-            query: gql(listedNFTsByAccount),
-            variables: {
-              first: limit,
-              skip: offset,
-              owner: account,
-            },
-            fetchPolicy: "cache-first",
-          });
 
-          if (result) {
-            _nfts = result.nfts.map((item: any) => {
+          let _nfts: NFT[] = [];
+
+          const result = await BlockchainRead.getAccountListedNfts(
+            limit,
+            offset,
+            account
+          );
+          if (result?.length) {
+            _nfts = result.map((item: any) => {
               let _endTime = 0;
               if (item.saleState === "Auction") {
                 _endTime = item.auctionInfo.endTime;
@@ -189,30 +153,20 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchListedUserNFTs: async (account, offset, limit, reload) => {
+      fetchListedUserNFTs: async (account, offset = 0, limit = 20, reload) => {
         try {
           set({ loadingListedUserNFTs: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-          let _nfts: NFT[] = [];
-          const {
-            data: result,
-            error,
-            loading,
-          } = await client.query({
-            query: gql(listedUserNFTsByAccount),
-            variables: {
-              first: limit,
-              skip: offset,
-              owner: account,
-            },
-            fetchPolicy: "cache-first",
-          });
 
-          if (result) {
-            _nfts = result.nfts.map((item: any) => {
+          let _nfts: NFT[] = [];
+
+          const result = await BlockchainRead.getUserListedNfts(
+            limit,
+            offset,
+            account
+          );
+
+          if (result?.length) {
+            _nfts = result.map((item: any) => {
               let _endTime = 0;
               if (item.saleState === "Auction") {
                 _endTime = item.auctionInfo.endTime;
@@ -255,22 +209,13 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             throw new Error("Cannot get wallet NFTs.");
           }
 
-          const platformNativeCollection = getNativeCollectionAddress();
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-
-          const { data: _collections } = await client.query({
-            query: gql(registeredCollections),
-            variables: {},
-            fetchPolicy: "cache-first",
-          });
+          const platformNativeCollection = AddressFactory.getContractAddress(
+            SmartContractName.NATIVE_COLLECTION
+          );
+          const _collections = await BlockchainRead.getRegisteredCollections();
 
           if (result.result) {
-            const colctns = _collections?.collections.map(
-              (e: any) => e.collection
-            );
+            const colctns = _collections?.map((e: any) => e.collection);
             colctns.push(platformNativeCollection);
             _nfts = result.result
               .filter((e) => isInList(e, colctns))
@@ -303,30 +248,17 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
         }
       },
 
-      fetchCreatedNFTs: async (account, offset, limit, reload) => {
+      fetchCreatedNFTs: async (account, offset = 0, limit = 20, reload) => {
         try {
           set({ loadingCreatedNFTs: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
           let _nfts: NFT[];
-          const {
-            data: result,
-            error,
-            loading,
-          } = await client.query({
-            query: gql(createdNFTsByAccount),
-            variables: {
-              first: limit,
-              skip: offset,
-              creator: account,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result) {
-            _nfts = result.nfts.map((item: any) => {
+          const result = await BlockchainRead.getAccountCreatedNfts(
+            account,
+            limit,
+            offset
+          );
+          if (result?.length) {
+            _nfts = result.map((item: any) => {
               let _endTime = 0;
               if (item.saleState === "Auction") {
                 _endTime = item.auctionInfo.endTime;

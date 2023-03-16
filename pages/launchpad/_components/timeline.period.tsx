@@ -3,13 +3,14 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
 import { ModalState, StandardModal } from "@/components/modal/standard.modal";
-import { ClaimCentherFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 import { DAY, MONTH } from "@/web3/constants/common";
 
 import Timeline from "./timeline";
 import TimelineFinal from "./timeline.final";
 import TimelineTotal from "./timeline.total";
+import { ClaimCentherFrom } from "@/web3/blockchain/types";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -43,24 +44,15 @@ const TimelinePeriod: React.FC<Props> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      const result = await claimNtrTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimNtrTokens(library, roundInfo.round, claimFrom);
       refetchContributionInfo();
-      if (result.success) {
-        setModal((prev) => ({
-          ...prev,
-          status: "success",
-          subtitle: `Successfully Claimed DXC!`,
-          bodyText: `You claimed DXC. Please check your balance.`,
-          onClickConfirm: () => {},
-        }));
-      } else {
-        toast.error("Claim Transaction Failed");
-        setModal((prev) => ({
-          ...prev,
-          status: "error",
-          confirmButtonText: "Try Again",
-        }));
-      }
+      setModal((prev) => ({
+        ...prev,
+        status: "success",
+        subtitle: `Successfully Claimed DXC!`,
+        bodyText: `You claimed DXC. Please check your balance.`,
+        onClickConfirm: () => {},
+      }));
     } catch (error) {
       toast.error("Claim Transaction Failed");
       setModal((prev) => ({

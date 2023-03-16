@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 
 import { formatNum2DispNum } from "@/utils/format.address";
-import { ClaimCentherFrom } from "@/web3/utils/call.helpers";
 import { getUTCNow } from "@/web3/utils/utils";
+import { ClaimCentherFrom } from "@/web3/blockchain/types";
 
 interface TimelineProps {
   index: number;
