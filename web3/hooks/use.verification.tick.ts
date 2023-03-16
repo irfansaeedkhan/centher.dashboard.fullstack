@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export const useVerificationTick = (user?: { is_verified: boolean }) => {
+export const useVerificationTick = (user?: { is_verified: boolean } | null) => {
   const [verificationIcon, setVerificationIcon] = useState<null | string>(null);
 
   useEffect(() => {

@@ -57,6 +57,22 @@
 }
 
 @layer components {
+  /* pages conditional media queries for display name */
+  /* notification page */
+  .notifcation-page-displayname {
+    max-width: calc(100vw - 100px);
+  }
+  @media screen and (min-width: 560px) {
+    .notifcation-page-displayname {
+      max-width: 60vw;
+    }
+  }
+  @media screen and (min-width: 1000px) {
+    .notifcation-page-displayname {
+      max-width: 730px;
+    }
+  }
+
   .carousel.carousel-slider {
     border-radius: 12px !important;
   }

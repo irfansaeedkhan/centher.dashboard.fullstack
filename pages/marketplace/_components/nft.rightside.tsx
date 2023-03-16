@@ -29,6 +29,7 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -67,6 +68,8 @@ export const NFTRightSideComponent = ({
     data?.owner
   );
   const { user: nftOwner } = useGetUser(nftOwnerAddress);
+  const verificationTick = useVerificationTick(user);
+  const verificationOwnerTick = useVerificationTick(nftOwner);
   useEffect(() => {
     if (data) {
       if (
@@ -145,13 +148,23 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={clsx(
-                  `text-14px font-semibold text-white hover:text-brand-primary-dark`
+                  `text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
                 )}
                 title={user.display_name}
               >
-                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                <span className="block truncate break-words">
                   {sliceDisplayName(user.display_name)}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
@@ -180,12 +193,22 @@ export const NFTRightSideComponent = ({
                     account_address: nftOwnerAddress,
                   },
                 }}
-                className={`text-14px font-semibold text-white hover:text-brand-primary-dark`}
+                className={`text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
                 title={nftOwner.display_name}
               >
-                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                <span className="block truncate break-words ">
                   {sliceDisplayName(nftOwner.display_name)}
                 </span>
+                {!!verificationOwnerTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
@@ -240,7 +263,7 @@ const rightSideContainer = ctl(`
 w-full flex flex-col gap-6
 `);
 const titleContainer = ctl(`
-flex items-center justify-between 
+flex items-end fmd:items-center justify-between 
 `);
 const title = ctl(`
 textGradient  font-semibold leading-[42px]  animationTextHeading text-34px

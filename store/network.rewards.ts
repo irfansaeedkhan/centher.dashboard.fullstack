@@ -3,11 +3,6 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 // App imports
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  referralRewardsInPresaleQuery,
-  referrerClaimPresaleQuery,
-} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import {
   ReferralClaim,
@@ -15,7 +10,7 @@ import {
   RewardsEachAsset,
 } from "@/models/referral";
 import { ethers } from "ethers";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
+import { BlockchainRead } from "@/web3/blockchain";
 
 export interface NetworkRewards {
   rewardsInLaunchpad: ReferralReward[];
@@ -51,36 +46,25 @@ export const useNetworkRewards = create<NetworkRewards>()(
       fetchReferralRewardsInLaunchpad: async (referrer) => {
         try {
           set({ loading: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
           let _rewardsInLaunchpad: ReferralReward[] = [];
+          const result = await BlockchainRead.getReferralRewardInPresale(
+            get().limit,
+            get().offset,
+            referrer
+          );
 
-          const { data: result, error: error } = await client.query({
-            query: gql(referralRewardsInPresaleQuery),
-            variables: {
-              first: get().limit,
-              skip: get().offset,
-              referrer: referrer,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result && !error) {
-            _rewardsInLaunchpad = result.presaleGenealogyHistories.map(
-              (item: any) => {
-                return {
-                  id: item.id,
-                  createdAt: item.createdAt,
-                  user: item.user,
-                  level: item.level,
-                  round: item.round,
-                  isBusd: item.isBusd,
-                  amount: Number(ethers.utils.formatEther(item.amount)),
-                };
-              }
-            );
+          if (result?.length) {
+            _rewardsInLaunchpad = result.map((item: any) => {
+              return {
+                id: item.id,
+                createdAt: item.createdAt,
+                user: item.user,
+                level: item.level,
+                round: item.round,
+                isBusd: item.isBusd,
+                amount: Number(ethers.utils.formatEther(item.amount)),
+              };
+            });
           }
 
           set((state) => {
@@ -143,21 +127,12 @@ export const useNetworkRewards = create<NetworkRewards>()(
       },
       fetchReferralClaimsInLaunchpad: async (referrer) => {
         try {
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
-
-          const { data: result, error: error } = await client.query({
-            query: gql(referrerClaimPresaleQuery),
-            variables: {
-              referrer: referrer,
-            },
-            fetchPolicy: "cache-first",
-          });
+          const result = await BlockchainRead.getReferrerClaimInPresale(
+            referrer
+          );
           let _claimsInLaunchpad: ReferralClaim = { busd: [], ntr: [] };
-          if (result && !error) {
-            _claimsInLaunchpad.busd = result.presaleGenalogyClaimHistories
+          if (result?.length) {
+            _claimsInLaunchpad.busd = result
               .filter((item: any) => item.isBusd)
               .map((item1: any) => {
                 return {

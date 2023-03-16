@@ -1,7 +1,4 @@
-import {
-  adminCallClaimBusdForCoreTeam,
-  adminCallClaimNtrForCoreTeam,
-} from "@/web3/utils/call.helpers";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { useWeb3React } from "@web3-react/core";
 import React from "react";
 import { toast } from "react-hot-toast";
@@ -13,10 +10,10 @@ const TeamRewards = ({ data, reload, setReload }: any) => {
       toast.error("Nothing to Claim!");
       return;
     }
-    const result = await adminCallClaimBusdForCoreTeam(library);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminCallClaimBusdForCoreTeam(library);
       setReload(!reload);
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong!");
     }
   };
@@ -25,10 +22,10 @@ const TeamRewards = ({ data, reload, setReload }: any) => {
       toast.error("Nothing to Claim!");
       return;
     }
-    const result = await adminCallClaimNtrForCoreTeam(library);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminCallClaimNtrForCoreTeam(library);
       setReload(!reload);
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong!");
     }
   };

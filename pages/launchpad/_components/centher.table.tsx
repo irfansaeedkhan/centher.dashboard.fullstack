@@ -3,10 +3,11 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { ClaimCentherFrom, claimNtrTokens } from "@/web3/utils/call.helpers";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 
 import { StandardModal, ModalProps } from "@/components/modal/standard.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { ClaimCentherFrom } from "@/web3/blockchain/types";
 
 interface CentherTableProps {
   roundInfo: RoundInfo;
@@ -40,24 +41,15 @@ export const CentherTable: React.FC<CentherTableProps> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      const result = await claimNtrTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimNtrTokens(library, roundInfo.round, claimFrom);
       refetchContributionInfo();
-      if (result.success) {
-        setModal((prev) => ({
-          ...prev,
-          status: "success",
-          subtitle: `Successfully Claimed CTHR!`,
-          bodyText: `You claimed CTHR. Please check your balance.`,
-          onClickConfirm: () => {},
-        }));
-      } else {
-        toast.error("Claim Transaction Failed");
-        setModal((prev) => ({
-          ...prev,
-          status: "error",
-          confirmButtonText: "Try Again",
-        }));
-      }
+      setModal((prev) => ({
+        ...prev,
+        status: "success",
+        subtitle: `Successfully Claimed CTHR!`,
+        bodyText: `You claimed CTHR. Please check your balance.`,
+        onClickConfirm: () => {},
+      }));
     } catch (error) {
       toast.error("Claim Transaction Failed");
       setModal((prev) => ({

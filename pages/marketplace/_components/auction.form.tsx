@@ -267,7 +267,7 @@ const AuctionForm = ({
           Starting price for NFT <span className="text-red-500">*</span>{" "}
         </label>
         <div className="relative">
-          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
+          <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
             BNB
           </span>
           <input

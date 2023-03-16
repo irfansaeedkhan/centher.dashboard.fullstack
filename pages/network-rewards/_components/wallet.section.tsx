@@ -5,7 +5,7 @@ import { FiCopy } from "react-icons/fi";
 import { formatAddress } from "@/utils/format.address";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
-import { normalizeValue } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();

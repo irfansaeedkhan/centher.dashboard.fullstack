@@ -17,14 +17,18 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useGetUser from "@/hooks/use.get.user";
+import { AppRoutes } from "@/constants/app.routes";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
+import { copyText } from "@/utils/copy.text";
+import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
-import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
-import { copyText } from "@/utils/copy.text";
-import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+
 import {
   DotsIcon,
   FacebookCircleIcon,
@@ -32,7 +36,6 @@ import {
   TwitterSvg,
   HotNftEmptyIcon,
 } from "@/assets/svgs";
-import { AppRoutes } from "@/constants/app.routes";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -86,7 +89,7 @@ const Collection: NextPageWithLayout = () => {
   const [orderdir, setOrderDir] = useState("desc");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
-
+  const verificationTick = useVerificationTick(user);
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -325,14 +328,23 @@ const Collection: NextPageWithLayout = () => {
                         },
                       }}
                       className={clsx(
-                        `text-14px ml-1 block  max-w-fit  font-semibold text-gray-shade-18  hover:text-brand-primary md:inline`,
-                        user?.display_name.includes(" ")
-                          ? "text-ellipsis line-clamp-1"
-                          : "block w-[68vw] max-w-full overflow-hidden truncate md:w-full"
+                        `text-14px ml-1 flex max-w-[calc(100vw-140px)] items-center font-semibold  text-gray-shade-18 hover:text-brand-primary`
                       )}
                       title={user?.display_name}
                     >
-                      {user && sliceDisplayName(user?.display_name)}
+                      <span className="block truncate break-words">
+                        {user && sliceDisplayName(user?.display_name)}
+                      </span>
+                      {!!verificationTick && (
+                        <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                          <Image
+                            src={"/images/rainbow-last-frame.png"}
+                            alt={"Verified"}
+                            width={20}
+                            height={20}
+                          />
+                        </span>
+                      )}
                     </Link>
                   </div>
                 </div>

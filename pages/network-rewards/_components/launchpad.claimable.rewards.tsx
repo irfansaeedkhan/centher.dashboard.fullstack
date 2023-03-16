@@ -10,18 +10,15 @@ import { ReferralClaimItem, RewardsEachAsset } from "@/models/referral";
 import { formatAddress } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useNTRPrice } from "@/hooks/use.get.ntr.price.ts";
-import {
-  callClaimBUSDForReferral,
-  callClaimNTRForReferral,
-} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { ModalState, StandardModal } from "@/components/modal/standard.modal";
 import { RoundState, RoundStatus } from "@/web3/constants/types";
 import { getRoundState } from "@/web3/hooks/use.contracts.functions";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 export interface ClaimableRewardsProps {
-  rewardState: "lunchpad-rewards" | "marketplace-rewards";
+  rewardState: "launchpad-rewards" | "marketplace-rewards";
 }
 
 const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
@@ -126,9 +123,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         status: "progress",
       }));
 
-      const result = await callClaimNTRForReferral(library);
+      const result = await BlockchainWrite.callClaimNTRForReferral(library);
 
-      if (result.success) {
+      if (result?.length) {
         setModal((prev) => ({
           ...prev,
           subtitle: "Claim Successful",
@@ -181,9 +178,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         status: "progress",
       }));
 
-      const result = await callClaimBUSDForReferral(library);
+      const result = await BlockchainWrite.callClaimBUSDForReferral(library);
 
-      if (result.success) {
+      if (result?.length) {
         setModal((prev) => ({
           ...prev,
           subtitle: "Claim Successful",
@@ -222,11 +219,11 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         >
           <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Total Rewards</p>
-            {rewardState === "lunchpad-rewards" ? (
+            {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
-                <p>{`${rewardsTotal.busd} (BUSD)`}</p>
-                <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${rewardsTotal.ntr} (NTR)`}</p>
+                <p>{`${rewardsTotal.busd} BUSD`}</p>
+                {/* <span className="h-3 border-l border-white/[0.1]" />
+                <p>{`${rewardsTotal.ntr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
@@ -235,18 +232,18 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
           <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Claimable Rewards</p>
-            {rewardState === "lunchpad-rewards" ? (
+            {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
-                <p>{`${claimableBusd} (BUSD)`}</p>
-                <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${claimableNtr} (NTR)`}</p>
+                <p>{`${claimableBusd} BUSD`}</p>
+                {/* <span className="h-3 border-l border-white/[0.1]" />
+                <p>{`${claimableNtr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
             ) : null}
           </div>
 
-          {rewardState === "lunchpad-rewards" && (
+          {rewardState === "launchpad-rewards" && (
             <button
               disabled={claimableBusd === 0}
               onClick={
@@ -263,10 +260,10 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                 !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
               )}
             >
-              Claim BSUD
+              Claim BUSD
             </button>
           )}
-          {rewardState === "lunchpad-rewards" && (
+          {/* {rewardState === "launchpad-rewards" && (
             <button
               disabled={claimableNtr === 0}
               onClick={
@@ -284,7 +281,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             >
               Claim NTR
             </button>
-          )}
+          )} */}
           {rewardState === "marketplace-rewards" && (
             <button
               disabled={true}
@@ -331,7 +328,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
       </div>
       {/* table */}
       <div>
-        {rewardState === "lunchpad-rewards" && (
+        {rewardState === "launchpad-rewards" && (
           <div className={TableContainer}>
             <h3 className={TableTitle}>LAUNCHPAD REWARDS</h3>
             <table className={table}>

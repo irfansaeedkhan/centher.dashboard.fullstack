@@ -31,8 +31,8 @@ export interface RoundInfo {
 export interface ContributionInfo {
   contributedBusdAmount: number;
   contributedNtrAmount: number;
-  purchaseTimeForBusd: string;
-  purchaseTimeForNtr: string;
+  purchaseTimeForBusd: number;
+  purchaseTimeForNtr: number;
   claimedTokenAmountForBusd: number;
   claimedTokenAmountForNtr: number;
   totalClaimableTokenAmountForBusd: number;

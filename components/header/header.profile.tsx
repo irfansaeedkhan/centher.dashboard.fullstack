@@ -8,20 +8,20 @@ import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import {
-  BLOCKCHAIN_EXPLORER,
-  BLOCKCHAIN_EXPLORE_URL,
-} from "@/web3/constants/common";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+
 import {
   ConnectIcon,
   DisconnectIcon,
   SettingIcon,
   UserIcon,
 } from "@/assets/svgs";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -59,6 +59,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     }
   }, [deactivate, loggedInUser, account]);
 
+  const verificationTick = useVerificationTick(loggedInUser);
   return (
     <div
       ref={ref}
@@ -82,19 +83,29 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         )}
         <div className={`space-y-1`}>
           <div
-            className="text-sm font-semibold text-white"
+            className="flex max-w-[215px] items-center  text-sm font-semibold text-white"
             title={loggedInUser?.display_name}
           >
             <span
               className={clsx(
-                ` block w-full max-w-[215px] overflow-hidden truncate`
+                ` block w-full max-w-full overflow-hidden truncate`
               )}
             >
               {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
             </span>
+            {!!verificationTick && (
+              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                <Image
+                  src={"/images/rainbow-last-frame.png"}
+                  alt={"Verified"}
+                  width={20}
+                  height={20}
+                />
+              </span>
+            )}
           </div>
           <a
-            href={`${BLOCKCHAIN_EXPLORE_URL}/address/${loggedInUser?.account_address}`}
+            href={`${BlockchainConfig.scanner.url}/address/${loggedInUser?.account_address}`}
             target={"_blank"}
             rel="noreferrer"
             title="View on Explorer"
@@ -103,7 +114,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             <span
               className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
             >
-              View on {BLOCKCHAIN_EXPLORER}
+              View on {BlockchainConfig.scanner.name}
             </span>
             <FiArrowUpRight
               className={`cursor-pointer text-sm group-hover:text-brand-primary`}

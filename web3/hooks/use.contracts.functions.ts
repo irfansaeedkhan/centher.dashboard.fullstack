@@ -4,16 +4,7 @@ import { Web3Provider } from "@ethersproject/providers";
 import dayjs from "dayjs";
 
 import { customLog } from "@/utils/custom.log";
-
-import {
-  getMarketplaceAddress,
-  getPresaleAddress,
-} from "../utils/address.helpers";
-import {
-  getPresaleContract,
-  getStandardNFTContract,
-} from "../utils/contract.helpers";
-import { getTokenContract, TokenName } from "../utils/call.helpers";
+import { TokenName } from "../blockchain/types";
 import {
   ContributionInfo,
   RoundInfo,
@@ -22,19 +13,28 @@ import {
   RoundStatus,
 } from "../constants/types";
 import { ZeroAddress } from "../constants/common";
+import { AddressFactory } from "../blockchain/providers/address.provider";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
 
 export const useGetRoundsInfo = () => {
   const [roundsInfo, setRoundsInfo] = useState<RoundInfo[]>([]);
-  const presaleContract = useMemo(() => getPresaleContract(), []);
+  const presaleContract = useMemo(
+    () => SmartContractProvider.getContract(SmartContractName.PRESALE),
+    []
+  );
 
   const fetchRoundsInfo = useCallback(async () => {
     try {
       const roundState = await getRoundState();
-
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
         const roundStatus = getRoundStatus(roundState, i);
+        console.log(
+          "sniper: roundInfo: ",
+          ethers.utils.formatEther(roundInfo["minContributionForBusd"])
+        );
 
         const _roundInfo: RoundInfo = {
           round: i as RoundNumber,
@@ -46,7 +46,7 @@ export const useGetRoundsInfo = () => {
           startTime: roundInfo["startTime"].toNumber(),
           endTime: roundInfo["endTime"].toNumber(),
           maxCentherAmountToSell: Number(
-            ethers.utils.formatEther(roundInfo["maxCentherAmountToSell"])
+            ethers.utils.formatEther(roundInfo["maxDexaAmountToSell"])
           ),
           busdEnabled: roundInfo["busdEnabled"],
           ntrEnabled: roundInfo["ntrEnabled"],
@@ -85,7 +85,9 @@ export const useGetRoundsInfo = () => {
 };
 
 export const getRoundState = async () => {
-  const presaleContract = getPresaleContract();
+  const presaleContract = SmartContractProvider.getContract(
+    SmartContractName.PRESALE
+  );
   return (await presaleContract.getRound()) as RoundState;
 };
 
@@ -132,13 +134,16 @@ export const useGetContributionInfo = (
 ) => {
   const [contributionInfo, setPurchasedInfo] =
     useState<ContributionInfo | null>(null);
-  const presaleContract = useMemo(() => getPresaleContract(), []);
+  const presaleContract = useMemo(
+    () => SmartContractProvider.getContract(SmartContractName.PRESALE),
+    []
+  );
 
   const fetchContributionInfo = useCallback(
     async (account: string) => {
       const contributionInfoRes = await presaleContract.getContribute(
         account,
-        roundInfo.round
+        roundInfo?.round
       );
 
       const claimedTokenAmountForBusd = Number(
@@ -194,20 +199,12 @@ export const useGetContributionInfo = (
         ),
         purchaseTimeForBusd:
           contributionInfoRes["purchaseTimeForBusd"].toNumber() === 0
-            ? "0"
-            : dayjs(
-                new Date(
-                  contributionInfoRes["purchaseTimeForBusd"].toNumber() * 1000
-                )
-              ).format("DD-MM-YYYY"),
+            ? 0
+            : Number(contributionInfoRes["purchaseTimeForBusd"]),
         purchaseTimeForNtr:
           contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
-            ? "0"
-            : dayjs(
-                new Date(
-                  contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
-                )
-              ).format("DD-MM-YYYY"),
+            ? 0
+            : Number(contributionInfoRes["purchaseTimeForBusd"]),
         claimedTokenAmountForBusd,
         claimedTokenAmountForNtr,
         totalClaimableTokenAmountForBusd,
@@ -236,7 +233,7 @@ export const useGetContributionInfo = (
   );
 
   useEffect(() => {
-    if (account) fetchContributionInfo(account);
+    if (account && roundInfo) fetchContributionInfo(account);
   }, [account, fetchContributionInfo]);
 
   const refreshContributionInfo = useCallback(async () => {
@@ -262,7 +259,10 @@ export const getTokenBalance = async (
   account: string,
   library: Web3Provider
 ) => {
-  const tokenContract = getTokenContract(tokenName, library);
+  const tokenContract = SmartContractProvider.getTokenContract(
+    tokenName,
+    library
+  );
   if (!tokenContract) return 0;
 
   const balance = Number(
@@ -279,12 +279,17 @@ export const getTokenAllowance = async (
   account: string,
   library: Web3Provider
 ) => {
-  const tokenContract = getTokenContract(tokenName, library);
+  const tokenContract = SmartContractProvider.getTokenContract(
+    tokenName,
+    library
+  );
   if (!tokenContract) return 0;
-
+  const presaleContractAddress = AddressFactory.getContractAddress(
+    SmartContractName.PRESALE
+  );
   const allowance = Number(
     ethers.utils.formatUnits(
-      await tokenContract.allowance(account, getPresaleAddress())
+      await tokenContract.allowance(account, presaleContractAddress)
     )
   );
   return allowance;
@@ -295,11 +300,13 @@ export const useGetApprovedForAll = (
   collection: string | undefined
 ) => {
   const [approve, setApprove] = useState(false);
-  const marketplaceAddress = getMarketplaceAddress();
+  const marketplaceAddress = AddressFactory.getContractAddress(
+    SmartContractName.MARKETPALCE
+  );
 
   useEffect(() => {
     const fetchReferrers = async (account: string, collection: string) => {
-      const nftContract = getStandardNFTContract(null, collection);
+      const nftContract = SmartContractProvider.getNFTContract(collection);
       const _approve = await nftContract.isApprovedForAll(
         account,
         marketplaceAddress
@@ -328,7 +335,7 @@ export const useGetNFTOwner = (
       ownerOfListed: string
     ) => {
       if (ownerOfListed === ZeroAddress) {
-        const nftContract = getStandardNFTContract(null, collection);
+        const nftContract = SmartContractProvider.getNFTContract(collection);
         const _owner = await nftContract.ownerOf(tokenId);
         setOwner(_owner);
       } else {

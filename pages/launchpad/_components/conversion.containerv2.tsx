@@ -3,18 +3,19 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { TokenName } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
 import {
   BUSDIconBG,
   LeftArrowIcon,
   CentherIconBG,
   NTRIconBG,
+  DXCIconBG,
 } from "@/assets/svgs";
 
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionTokenBox } from "./conversion.token.box";
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
+import { TokenName } from "@/web3/blockchain/types";
 
 interface Props {
   selectedTokenA: SelectedTokenA;
@@ -24,7 +25,7 @@ interface Props {
   roundInfo: RoundInfo;
 }
 
-export const ConversionContainer: React.FC<Props> = ({
+export const ConversionContainerV2: React.FC<Props> = ({
   selectedTokenA,
   setSelectedTokenA,
   selectedTokenB,
@@ -81,8 +82,8 @@ export const ConversionContainer: React.FC<Props> = ({
             <input
               className={inputClasses}
               type="number"
-              placeholder={selectedTokenA.inputMinValue.toFixed(2)}
-              value={selectedTokenA.inputValue}
+              placeholder={selectedTokenA.inputMinValue?.toFixed(2)}
+              value={selectedTokenA?.inputValue}
               onChange={(e) => {
                 const value =
                   e.target.value === ""
@@ -98,15 +99,15 @@ export const ConversionContainer: React.FC<Props> = ({
                   inputValue: (value === "" ? 0 : value) / selectedTokenA.rate,
                 }));
               }}
-              min={selectedTokenA.inputMinValue}
-              max={selectedTokenA.inputMaxValue}
+              min={selectedTokenA?.inputMinValue}
+              max={selectedTokenA?.inputMaxValue}
             />
           </div>
 
           <div className={inputBoxRight}>
             <div className={`flex flex-grow justify-center`}>
               <button
-                className={`cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-yellow-theme transition hover:border-0 hover:bg-yellow-theme hover:text-black-shade-3 fmd:text-sm`}
+                className={`text-yellow-theme hover:bg-yellow-theme cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-gray-shade-7 transition hover:border-0 hover:text-white fmd:text-sm`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");
@@ -135,8 +136,8 @@ export const ConversionContainer: React.FC<Props> = ({
 
       <div className={conversionInputContainer}>
         <ConversionTokenBox
-          tokenIcon={<CentherIconBG className="h-10 w-10" />}
-          tokenName="CTHR"
+          tokenIcon={<DXCIconBG className="h-10 w-10" />}
+          tokenName="DXC"
           tokenBalance={selectedTokenB.tokenBalance}
         />
 

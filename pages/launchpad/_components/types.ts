@@ -1,4 +1,4 @@
-import { TokenName } from "@/web3/utils/call.helpers";
+import { TokenName } from "@/web3/blockchain/types";
 
 export interface SelectedTokenA {
   tokenName: TokenName;

@@ -10,6 +10,7 @@ import {
   WarningIcon,
   BUSDIconBG,
   NTRIconBG,
+  DXCIconBG,
 } from "@/assets/svgs";
 
 export interface ModalState {
@@ -95,7 +96,7 @@ export const StandardModal: React.FC<ModalProps> = ({
               <DeleteCrossIcon className="inline-block h-16 w-16" />
             )}
             {status === "buy-cthr" && (
-              <CentherIconBG className="inline-block h-16 w-16" />
+              <DXCIconBG className="inline-block h-16 w-16" />
             )}
 
             {status === "claim-busd" && (

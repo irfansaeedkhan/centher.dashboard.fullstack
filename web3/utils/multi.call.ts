@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { getMulticallContract } from "./contract.helpers";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
 
 export interface Call {
   address: string; // Address of the contract
@@ -15,7 +16,7 @@ export const multicall = async <T = any>(
   abi: any[],
   calls: Call[]
 ): Promise<T> => {
-  const multi = getMulticallContract();
+  const multi = SmartContractProvider.getContract(SmartContractName.MULTICALL);
   const itf = new ethers.utils.Interface(abi);
 
   const calldata = calls.map((call) => ({

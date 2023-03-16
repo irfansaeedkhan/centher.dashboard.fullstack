@@ -4,7 +4,7 @@ import { BNBIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
-import { networkDecimals } from "@/web3/constants/common";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -50,7 +50,7 @@ const ChangePriceBidModal = ({
                   setNFTPriceError("NFT Price must be greater than 0");
                   setChangeNFTPrice(null);
                 }
-                if (numberValue < networkDecimals) {
+                if (numberValue < BlockchainConfig.networkDecimals) {
                   setNFTPriceError(
                     "NFT Price must be greater than 0.000000000000000001"
                   );

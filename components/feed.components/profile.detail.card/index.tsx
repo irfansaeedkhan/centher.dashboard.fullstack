@@ -77,7 +77,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             {user && sliceDisplayName(user.display_name)}
           </span>
           {!!verificationTick && (
-            <span className="verifiedIcon ml-1 h-5 w-5">
+            <span className="verifiedIcon ml-1 h-5 w-5  min-w-[1.25rem]">
               <Image
                 src={verificationTick}
                 alt={"Verified"}

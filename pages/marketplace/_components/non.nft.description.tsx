@@ -13,15 +13,17 @@ import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import {
-  callApproveNFTToMarketplace,
-  callCreateAuction,
-  callListItemForSale,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
+// import {
+//   callApproveNFTToMarketplace,
+//   callCreateAuction,
+//   callListItemForSale,
+// } from "@/web3/utils/call.helpers";
+// import callCreateAuction from "@/web3/blockchain/";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import ChangePriceListModal from "./change.price.list.modal";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
 import NewButton from "@/components/button/new.button";
 import Joi, { string } from "joi";
 import { useForm } from "react-hook-form";
@@ -99,7 +101,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Starting price for NFT</label>
           <div className="relative h-[48px]  !bg-black-shade-2">
-            <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
+            <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
               BNB
             </span>
             <input
@@ -274,14 +276,23 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
 
     ProceedFunc();
     if (library && data) {
-      const result = await callCreateAuction(
-        library,
-        data.collection,
-        data.nftId,
-        Number(auctionPrice),
-        endTime
-      );
-      SuccessFunc(result.success);
+      let success = true;
+      try {
+        const result = await BlockchainWrite.callCreateAuction(
+          library,
+          data.collection,
+          data.nftId,
+          Number(auctionPrice),
+          endTime
+        );
+        if (!result?.length) {
+          success = false;
+        }
+      } catch (err) {
+        success = false;
+      } finally {
+        SuccessFunc(success);
+      }
     } else {
       SuccessFunc(false);
     }
@@ -291,30 +302,33 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
     if (library && data) {
-      if (!isApproved) {
-        const approveResult = await callApproveNFTToMarketplace(
-          library,
-          data.collection
-        );
-        if (approveResult.success) {
-          const result = await callListItemForSale(
-            library,
-            data.collection,
-            data.nftId,
-            listingPrice
-          );
-          SuccessFunc(result.success);
-        } else {
-          SuccessFunc(false);
+      try {
+        if (!isApproved) {
+          try {
+            const approveResult =
+              await BlockchainWrite.callApproveNFTToMarketplace(
+                library,
+                data.collection
+              );
+
+            if (!approveResult?.length) {
+              throw new Error("something went wrong");
+            }
+          } catch (error) {
+            throw error;
+          }
         }
-      } else {
-        const result = await callListItemForSale(
+
+        const result = await BlockchainWrite.callListItemForSale(
           library,
           data.collection,
           data.nftId,
           listingPrice
         );
-        SuccessFunc(result.success);
+        SuccessFunc(!!result);
+      } catch (error) {
+        toast.error("some went wrong, please try again later");
+        SuccessFunc(false);
       }
     } else {
       SuccessFunc(false);

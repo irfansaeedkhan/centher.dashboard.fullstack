@@ -3,12 +3,6 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 // App imports
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  claimCentherHistory,
-  purchaseWithBusdHistory,
-  purchaseWithNtrHistory,
-} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import {
   ClaimHistory,
@@ -17,8 +11,9 @@ import {
   Rewards,
 } from "@/models/referral";
 import { ethers } from "ethers";
-import { getPresaleContract } from "@/web3/utils/contract.helpers";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
+import { BlockchainRead } from "@/web3/blockchain";
+import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 export interface NetworkRewards {
   coreTeamRewards: Rewards;
@@ -66,48 +61,36 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
       fetchPurchaseWithBusdHistoryInLaunchpad: async () => {
         try {
           set({ loadingPurchaseWithBusdHistory: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
           let _purchaseWithBusdHistory: PurchaseHistory[] = [];
-
-          const { data: result, error: error } = await client.query({
-            query: gql(purchaseWithBusdHistory),
-            variables: {
-              first: 1000,
-              skip: 0,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result && !error) {
-            _purchaseWithBusdHistory =
-              result.presalePurchaseWithBusdHistories.map((item: any) => {
-                const date = new Date(item.createdAt * 1000);
-                const paidAmount = Number(
-                  ethers.utils.formatEther(item.busdAmount.toString())
-                );
-                const company = Number(
-                  ethers.utils.formatEther(item.busdAmountForOwner.toString())
-                );
-                const coreTeam = paidAmount / 10;
-                const referralNetwork = paidAmount - company - coreTeam;
-                return {
-                  date: `${date.getDate()}-${
-                    date.getMonth() + 1
-                  }-${date.getFullYear()}`,
-                  publicKey: item.publicKey,
-                  paidAmount: paidAmount,
-                  round: Number(item.roundIndex) + 1,
-                  coreTeam: coreTeam,
-                  referralNetwork: referralNetwork,
-                  company: company,
-                };
-              });
+          const result = await BlockchainRead.purchaseInBUSD(1000, 0);
+          if (result?.length) {
+            _purchaseWithBusdHistory = result.map((item: any) => {
+              const date = new Date(item.createdAt * 1000);
+              const paidAmount = Number(
+                ethers.utils.formatEther(item.busdAmount.toString())
+              );
+              const company = Number(
+                ethers.utils.formatEther(item.busdAmountForOwner.toString())
+              );
+              const coreTeam = paidAmount / 10;
+              const referralNetwork = paidAmount - company - coreTeam;
+              return {
+                date: `${date.getDate()}-${
+                  date.getMonth() + 1
+                }-${date.getFullYear()}`,
+                publicKey: item.publicKey,
+                paidAmount: paidAmount,
+                round: Number(item.roundIndex) + 1,
+                coreTeam: coreTeam,
+                referralNetwork: referralNetwork,
+                company: company,
+              };
+            });
           }
 
-          const presaleContract = getPresaleContract();
+          const presaleContract = SmartContractProvider.getContract(
+            SmartContractName.PRESALE
+          );
           const claimableBusdCompanyRaw =
             await presaleContract.busdAmountForOwner();
           const claimableBusdCompany = Number(
@@ -122,12 +105,18 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           set((state) => {
             let company = state.companyRewards;
             let coreTeam = state.coreTeamRewards;
-            const busdCompany = _purchaseWithBusdHistory
-              .map((item: any) => item.company)
-              .reduce((prev: any, next: any) => prev + next);
-            const busdCoreTeam = _purchaseWithBusdHistory
-              .map((item: any) => item.coreTeam)
-              .reduce((prev: any, next: any) => prev + next);
+            const busdCompany =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.company)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
+            const busdCoreTeam =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.coreTeam)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
             company.totalEarning.busd = busdCompany;
             company.claimable.busd = claimableBusdCompany;
             company.claimed.busd = busdCompany - claimableBusdCompany;
@@ -137,9 +126,12 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
 
             let overview = state.overview;
             overview.totalBusdContributors = _purchaseWithBusdHistory.length;
-            overview.totalRaisingBusd = _purchaseWithBusdHistory
-              .map((item: any) => item.paidAmount)
-              .reduce((prev: any, next: any) => prev + next);
+            overview.totalRaisingBusd =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.paidAmount)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
             return {
               ...state,
               overview: overview,
@@ -159,48 +151,36 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
       fetchPurchaseWithNtrHistoryInLaunchpad: async () => {
         try {
           set({ loadingPurchaseWithNtrHistory: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
           let _purchaseWithNtrHistory: PurchaseHistory[] = [];
-
-          const { data: result, error: error } = await client.query({
-            query: gql(purchaseWithNtrHistory),
-            variables: {
-              first: 1000,
-              skip: 0,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result && !error) {
-            _purchaseWithNtrHistory =
-              result.presalePurchaseWithNtrHistories.map((item: any) => {
-                const date = new Date(item.createdAt * 1000);
-                const paidAmount = Number(
-                  ethers.utils.formatEther(item.ntrAmount.toString())
-                );
-                const company = Number(
-                  ethers.utils.formatEther(item.ntrAmountForOwner.toString())
-                );
-                const coreTeam = paidAmount / 10;
-                const referralNetwork = paidAmount - company - coreTeam;
-                return {
-                  date: `${date.getDate()}-${
-                    date.getMonth() + 1
-                  }-${date.getFullYear()}`,
-                  publicKey: item.publicKey,
-                  paidAmount: paidAmount,
-                  round: Number(item.roundIndex) + 1,
-                  coreTeam: coreTeam,
-                  referralNetwork: referralNetwork,
-                  company: company,
-                };
-              });
+          const result = await BlockchainRead.purchaseInNTR(1000, 0);
+          if (result?.length) {
+            _purchaseWithNtrHistory = result.map((item: any) => {
+              const date = new Date(item.createdAt * 1000);
+              const paidAmount = Number(
+                ethers.utils.formatEther(item.ntrAmount.toString())
+              );
+              const company = Number(
+                ethers.utils.formatEther(item.ntrAmountForOwner.toString())
+              );
+              const coreTeam = paidAmount / 10;
+              const referralNetwork = paidAmount - company - coreTeam;
+              return {
+                date: `${date.getDate()}-${
+                  date.getMonth() + 1
+                }-${date.getFullYear()}`,
+                publicKey: item.publicKey,
+                paidAmount: paidAmount,
+                round: Number(item.roundIndex) + 1,
+                coreTeam: coreTeam,
+                referralNetwork: referralNetwork,
+                company: company,
+              };
+            });
           }
 
-          const presaleContract = getPresaleContract();
+          const presaleContract = SmartContractProvider.getContract(
+            SmartContractName.PRESALE
+          );
           const claimableNtrCompanyRaw =
             await presaleContract.ntrAmountForOwner();
           const claimableNtrCompany = Number(
@@ -262,40 +242,27 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
       fetchClaimHistoryInLaunchpad: async () => {
         try {
           set({ loadingClaimHistory: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
+
           let _claimHistory: ClaimHistory[] = [];
+          const result = await BlockchainRead.getCentherClaimHistory(1000, 0);
 
-          const { data: result, error: error } = await client.query({
-            query: gql(claimCentherHistory),
-            variables: {
-              first: 1000,
-              skip: 0,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result && !error) {
-            _claimHistory = result.presaleCentherClaimHistories.map(
-              (item: any) => {
-                const date = new Date(item.createdAt * 1000);
-                const paidAmount = 0; //Number(ethers.utils.formatEther(item.busdAmount.toString()))
-                const claimAmount = Number(
-                  ethers.utils.formatEther(item.centherAmount.toString())
-                );
-                return {
-                  date: `${date.getDate()}-${
-                    date.getMonth() + 1
-                  }-${date.getFullYear()}`,
-                  publicKey: item.publicKey,
-                  paidAmount: paidAmount,
-                  round: Number(item.roundIndex) + 1,
-                  claimAmount: claimAmount,
-                };
-              }
-            );
+          if (result?.length) {
+            _claimHistory = result.map((item: any) => {
+              const date = new Date(item.createdAt * 1000);
+              const paidAmount = 0; //Number(ethers.utils.formatEther(item.busdAmount.toString()))
+              const claimAmount = Number(
+                ethers.utils.formatEther(item.centherAmount.toString())
+              );
+              return {
+                date: `${date.getDate()}-${
+                  date.getMonth() + 1
+                }-${date.getFullYear()}`,
+                publicKey: item.publicKey,
+                paidAmount: paidAmount,
+                round: Number(item.roundIndex) + 1,
+                claimAmount: claimAmount,
+              };
+            });
           }
 
           set((state) => {

@@ -10,13 +10,14 @@ import { ShareBigIcon, BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { callBidOnAuction, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
@@ -167,14 +168,18 @@ export const AuctionNFTBuyerDescription = ({
       setBidModal(false);
       ProceedFunc();
       if (library && data) {
-        const result = await callBidOnAuction(
-          library,
-          data.collection,
-          data.nftId,
-          bidPriceVal
-        );
-
-        SuccessFunc(result.success);
+        try {
+          const result = await BlockchainWrite.callBidOnAuction(
+            library,
+            data.collection,
+            data.nftId,
+            bidPriceVal
+          );
+          SuccessFunc(!!result);
+        } catch (error) {
+          toast.error("something went wrong, please try again later");
+          SuccessFunc(false);
+        }
       } else {
         SuccessFunc(false);
       }
