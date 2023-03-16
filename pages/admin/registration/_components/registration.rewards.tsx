@@ -22,11 +22,12 @@ const RegistrationRewards = ({
     setPendingTx(true);
     try {
       await BlockchainWrite.adminClaimRegistrationBNB(library);
-      setPendingTx(false);
       setReload(!reload);
       toast.success("Claimed Successfully!");
     } catch (error) {
       toast.error("Something Went Wrong!");
+    } finally {
+      setPendingTx(false);
     }
   };
 

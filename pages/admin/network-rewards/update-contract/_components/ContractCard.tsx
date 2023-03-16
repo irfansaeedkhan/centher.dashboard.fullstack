@@ -153,7 +153,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
     }
     setPendingTx(true);
     try {
-      const result = await BlockchainWrite.adminCallUpdateRoundInfo(
+      await BlockchainWrite.adminCallUpdateRoundInfo(
         library,
         data.round,
         _startTime,
@@ -168,11 +168,13 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
         maxNtrAmountPerUser,
         enableBusd
       );
-      setPendingTx(false);
+
       refreshRoundsInfo();
       toast.success("Updated Successfully.");
     } catch (error) {
       toast.error("Something went wrong! Confirm values you inputted.");
+    } finally {
+      setPendingTx(false);
     }
   };
   return (

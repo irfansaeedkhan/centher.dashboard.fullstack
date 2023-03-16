@@ -38,11 +38,12 @@ const RegistrationSetting: NextPageWithLayout = () => {
         updateRegistrationFeeWithReferral,
         updateRegistrationFeeWithoutReferral
       );
-      setChangeFeeTx(false);
       toast.success("Changed Registration Fee Successfully");
       setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong.");
+    } finally {
+      setChangeFeeTx(false);
     }
   };
 
@@ -55,11 +56,12 @@ const RegistrationSetting: NextPageWithLayout = () => {
         await BlockchainWrite.adminUnPauseRegistration(library);
       }
 
-      setChangeStatusTx(false);
       toast.success("Changed Registration Statue Successfully");
       setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong.");
+    } finally {
+      setChangeStatusTx(false);
     }
   };
 

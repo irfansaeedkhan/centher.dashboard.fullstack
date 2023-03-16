@@ -13,6 +13,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
     let result;
     try {
       result = await BlockchainWrite.adminCallClaimBusdForCompany(library);
+      setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong!");
     }
@@ -26,6 +27,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
     let result;
     try {
       result = await BlockchainWrite.adminCallClaimNtrForCompany(library);
+      setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong!");
     }
