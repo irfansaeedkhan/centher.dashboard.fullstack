@@ -107,6 +107,8 @@ export { default as Launchpad } from "./launchpad.svg";
 export { default as CloseSmallIcon } from "./close.small.icon.svg";
 export { default as MetamaskIcon2 } from "./metamask.icon2.svg";
 export { default as AuctionIcon } from "./auctionicon.svg";
+export { default as LockIcon } from "./lock.svg";
+export { default as MoonIcon } from "./moonicon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
