@@ -9,7 +9,7 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
   const router = useRouter();
 
   return (
-    <div className="mb-4 flex w-full space-x-2 rounded-2xl  bg-black-shade-6 p-1.5 fsm:mb-6 fsm:max-w-[530px] [@media(max-width:370px)]:overflow-auto">
+    <div className="mb-4 flex w-full space-x-2 rounded-2xl p-1.5 fsm:mb-6 fsm:max-w-[530px] [@media(max-width:370px)]:overflow-auto">
       <Link
         href={`/profile/${router.query.account_address}/nfts/created`}
         className="w-full"
@@ -17,9 +17,9 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
         <Button
           title={"Created"}
           variant={`${
-            router.pathname === AppRoutes.profile.created ? "v1" : "v6"
+            router.pathname === AppRoutes.profile.created ? "v1" : "v8"
           }`}
-          className="fsm:px-8 fsm:py-3"
+          className="fsm:px-6 fsm:py-2"
         />
       </Link>
       <Link
@@ -29,9 +29,9 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
         <Button
           title={"Owned"}
           variant={`${
-            router.pathname === AppRoutes.profile.owned ? "v1" : "v6"
+            router.pathname === AppRoutes.profile.owned ? "v1" : "v8"
           }`}
-          className="fsm:px-8 fsm:py-3"
+          className="fsm:px-6 fsm:py-2"
         />
       </Link>
       <Link
@@ -41,9 +41,9 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
         <Button
           title={"Listed"}
           variant={`${
-            router.pathname === AppRoutes.profile.listed ? "v1" : "v6"
+            router.pathname === AppRoutes.profile.listed ? "v1" : "v8"
           }`}
-          className="fsm:px-8 fsm:py-3"
+          className="fsm:px-6 fsm:py-2"
         />
       </Link>
       <Link
@@ -53,9 +53,9 @@ export const ProfileNFTCollectionTabs: React.FC = ({}) => {
         <Button
           title={"Collections"}
           variant={`${
-            router.pathname === AppRoutes.profile.collection ? "v1" : "v6"
+            router.pathname === AppRoutes.profile.collection ? "v1" : "v8"
           }`}
-          className="fsm:px-8 fsm:py-3"
+          className="fsm:px-6 fsm:py-2"
         />
       </Link>
     </div>

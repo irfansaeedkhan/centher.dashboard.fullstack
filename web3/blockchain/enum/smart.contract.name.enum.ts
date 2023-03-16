@@ -9,4 +9,5 @@ export enum SmartContractName {
   BUSD = "BUSD",
   NTR = "NTR",
   NATIVE_COLLECTION = "NATIVE_COLLECTION",
+  DXC = "DXC",
 }

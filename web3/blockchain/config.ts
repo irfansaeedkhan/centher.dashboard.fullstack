@@ -1,6 +1,7 @@
 import { Networks } from "./enum/networks.enum";
 import { IBlockchainConfig } from "./types";
 
+import dxcAbi from "../abis/dxc.json";
 import centherAbi from "../abis/centher.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
@@ -10,6 +11,7 @@ import busdAbi from "../abis/erc20.json";
 import ntrAbi from "../abis/ntr.json";
 import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
+
 import { BigNumber } from "ethers";
 
 export const BlockchainConfig: IBlockchainConfig = {
@@ -31,7 +33,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     PRESALE: {
       // Presale Contract Address
       56: "0x0000000000000000000000000000000000000000",
-      5: "0x1e9fbdD56D6299925136776df09e659D90E8b437",
+      5: "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
     },
     MARKETPALCE: {
       // Presale Contract Address
@@ -63,6 +65,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       56: "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
       5: "0x546EF9a07044500B00D1079a89A1e3Bd8Bc8B696",
     },
+    DXC: {
+      56: "0x0000000000000000000000000000000000000000",
+      5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
+    },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -84,6 +90,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     NTR: ntrAbi,
     NATIVE_COLLECTION: {},
     ERC721: ERC721Abi,
+    DXC: dxcAbi,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),

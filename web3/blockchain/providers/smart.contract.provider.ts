@@ -58,7 +58,7 @@ export class SmartContractProvider {
     } else if (tokenName == "NTR") {
       tokenContractName = SmartContractName.NTR;
     } else {
-      tokenContractName = SmartContractName.CENTHER_TOKEN;
+      tokenContractName = SmartContractName.DXC;
     }
 
     if (!tokenContractName) {

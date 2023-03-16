@@ -33,9 +33,7 @@ export const useGetNtrDaoBalance = (address: string | null | undefined) => {
       return;
     }
     (async () => {
-      const contract = SmartContractProvider.getContract(
-        SmartContractName.CENTHER_TOKEN
-      );
+      const contract = SmartContractProvider.getContract(SmartContractName.DXC);
       try {
         const ntrdaoBalance = ethers.utils.formatUnits(
           await contract.balanceOf(address),

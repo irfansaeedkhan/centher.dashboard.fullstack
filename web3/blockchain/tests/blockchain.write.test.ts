@@ -53,7 +53,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminUnPauseRegistration(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.REGISTRATION, {});
   });
@@ -73,7 +73,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminUnPauseRegistration(
       signer as any
     );
@@ -97,7 +99,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminUnPauseRegistration(
         signer as any
@@ -124,7 +128,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminPauseRegistration(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.REGISTRATION, {});
   });
@@ -144,7 +148,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminPauseRegistration(signer as any);
     expect(result).toEqual(model.pause().hash);
   });
@@ -166,7 +172,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminPauseRegistration(
         signer as any
@@ -196,7 +204,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminChangeRegistrationFees(signer as any, 0.1, 0.1);
     expect(spy).toBeCalledWith(SmartContractName.REGISTRATION, {});
   });
@@ -216,7 +224,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminChangeRegistrationFees(
       signer as any,
       0.1,
@@ -240,7 +250,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "changeFees");
     await BlockchainWrite.adminChangeRegistrationFees(signer as any, 1, 1);
     const num = ethers.utils.parseEther("1");
@@ -264,7 +276,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminChangeRegistrationFees(
         signer as any,
@@ -293,7 +307,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminChangeReferralRate(signer as any, [1]);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -313,7 +327,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminChangeReferralRate(
       signer as any,
       [1]
@@ -336,7 +352,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "setReferralRate");
     await BlockchainWrite.adminChangeReferralRate(signer as any, [1]);
     expect(spy).toBeCalledWith([1]);
@@ -359,7 +377,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminChangeReferralRate(
         signer as any,
@@ -387,7 +407,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminChangeCompanyAddress(
       signer as any,
       "test_address"
@@ -410,7 +430,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminChangeCompanyAddress(
       signer as any,
       "test_address"
@@ -433,7 +455,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "changeCompanyAddress");
     await BlockchainWrite.adminChangeCompanyAddress(
       signer as any,
@@ -459,7 +483,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminChangeCompanyAddress(
         signer as any,
@@ -487,7 +513,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminChangeCoreTeamAddress(
       signer as any,
       "test_address"
@@ -510,7 +536,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminChangeCoreTeamAddress(
       signer as any,
       "test_address"
@@ -533,7 +561,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "changeCoreTeamAddress");
     await BlockchainWrite.adminChangeCoreTeamAddress(
       signer as any,
@@ -559,7 +589,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminChangeCoreTeamAddress(
         signer as any,
@@ -587,7 +619,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminClaimRegistrationBNB(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.REGISTRATION, {});
   });
@@ -607,7 +639,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminClaimRegistrationBNB(
       signer as any
     );
@@ -631,7 +665,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminClaimRegistrationBNB(
         signer as any
@@ -682,7 +718,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminCallUpdateRoundInfo(
       signer as any,
       1,
@@ -740,7 +776,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallUpdateRoundInfo(
       signer as any,
       1,
@@ -800,7 +838,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallUpdateRoundInfo(
       signer as any,
       1,
@@ -860,7 +900,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "setRoundInfoForBusd");
     const spyTwo = jest.spyOn(model, "setRoundInfoForNtr");
     await BlockchainWrite.adminCallUpdateRoundInfo(
@@ -930,7 +972,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "setRoundInfoForNtr");
     const spyTwo = jest.spyOn(model, "setRoundInfoForBusd");
     await BlockchainWrite.adminCallUpdateRoundInfo(
@@ -1004,7 +1048,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       await BlockchainWrite.adminCallUpdateRoundInfo(
         signer as any,
@@ -1069,7 +1115,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       await BlockchainWrite.adminCallUpdateRoundInfo(
         signer as any,
@@ -1108,7 +1156,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminCallClaimNtrForCoreTeam(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1128,7 +1176,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallClaimNtrForCoreTeam(
       signer as any
     );
@@ -1152,7 +1202,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminCallClaimNtrForCoreTeam(
         signer as any
@@ -1179,7 +1231,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminCallClaimBusdForCoreTeam(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1199,7 +1251,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallClaimBusdForCoreTeam(
       signer as any
     );
@@ -1223,7 +1277,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminCallClaimBusdForCoreTeam(
         signer as any
@@ -1250,7 +1306,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminCallClaimNtrForCompany(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1270,7 +1326,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallClaimNtrForCompany(
       signer as any
     );
@@ -1294,7 +1352,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminCallClaimNtrForCompany(
         signer as any
@@ -1321,7 +1381,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.adminCallClaimBusdForCompany(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1341,7 +1401,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.adminCallClaimBusdForCompany(
       signer as any
     );
@@ -1365,7 +1427,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.adminCallClaimBusdForCompany(
         signer as any
@@ -1392,7 +1456,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callCancelAuction(signer as any, "test_address", 1);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1412,7 +1476,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callCancelAuction(
       signer as any,
       "test_address",
@@ -1436,7 +1502,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "cancelAuction");
     await BlockchainWrite.callCancelAuction(signer as any, "test_address", 1);
     expect(spy).toBeCalledWith("test_address", 1);
@@ -1459,7 +1527,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callCancelAuction(
         signer as any,
@@ -1488,7 +1558,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callEndAuction(signer as any, "test_address", 1);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1508,7 +1578,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callEndAuction(
       signer as any,
       "test_address",
@@ -1532,7 +1604,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "endAuction");
     await BlockchainWrite.callEndAuction(signer as any, "test_address", 1);
     expect(spy).toBeCalledWith("test_address", 1);
@@ -1555,7 +1629,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callEndAuction(
         signer as any,
@@ -1588,7 +1664,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callBidOnAuction(signer as any, "test_address", 1, 1);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -1612,7 +1688,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callBidOnAuction(
       signer as any,
       "test_address",
@@ -1643,7 +1721,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "bidOnAuction");
     await BlockchainWrite.callBidOnAuction(signer as any, "test_address", 1, 1);
     const normalizedValue = ethers.utils.parseEther(normalizeValue(1) + "");
@@ -1671,7 +1751,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callBidOnAuction(
         signer as any,
@@ -1706,7 +1788,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callCreateAuction(
       signer as any,
       "test_address",
@@ -1737,7 +1819,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callCreateAuction(
       signer as any,
       "test_address",
@@ -1768,7 +1852,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "createAuction");
     await BlockchainWrite.callCreateAuction(
       signer as any,
@@ -1803,7 +1889,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callCreateAuction(
         signer as any,
@@ -1838,7 +1926,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callBuyListedItem(
       signer as any,
       "test_address",
@@ -1867,7 +1955,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callBuyListedItem(
       signer as any,
       "test_address",
@@ -1898,7 +1988,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "buyForListedItem");
     await BlockchainWrite.callBuyListedItem(
       signer as any,
@@ -1931,7 +2023,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callBuyListedItem(
         signer as any,
@@ -1966,7 +2060,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callListItemForSale(
       signer as any,
       "test_address",
@@ -1995,7 +2089,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callListItemForSale(
       signer as any,
       "test_address",
@@ -2024,7 +2120,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "listItemForSale");
     await BlockchainWrite.callListItemForSale(
       signer as any,
@@ -2057,7 +2155,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callListItemForSale(
         signer as any,
@@ -2091,7 +2191,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callEditItemForSale(
       signer as any,
       "test_address",
@@ -2120,7 +2220,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callEditItemForSale(
       signer as any,
       "test_address",
@@ -2149,7 +2251,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "editItemForSale");
     await BlockchainWrite.callEditItemForSale(
       signer as any,
@@ -2182,7 +2286,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callEditItemForSale(
         signer as any,
@@ -2212,7 +2318,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callCancelItemForSale(
       signer as any,
       "test_address",
@@ -2236,7 +2342,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callCancelItemForSale(
       signer as any,
       "test_address",
@@ -2260,7 +2368,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "cancelItemForSale");
     await BlockchainWrite.callCancelItemForSale(
       signer as any,
@@ -2287,7 +2397,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
         signer as any,
@@ -2324,7 +2436,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callCreateNFT(
       signer as any,
       "test",
@@ -2361,7 +2473,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callCreateNFT(
       signer as any,
       "test",
@@ -2400,7 +2514,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "createItems");
     await BlockchainWrite.callCreateNFT(
       signer as any,
@@ -2445,7 +2561,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callCreateNFT(
         signer as any,
@@ -2486,7 +2604,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callCreateCollection(
       signer as any,
       "test",
@@ -2521,7 +2639,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callCreateCollection(
       signer as any,
       "test",
@@ -2558,7 +2678,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "createCollection");
     await BlockchainWrite.callCreateCollection(
       signer as any,
@@ -2602,7 +2724,7 @@ describe("BlockchainWrite", () => {
 
     jest
       .spyOn(SmartContractProvider, "getNFTContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callCreateCollection(
         signer as any,
@@ -2639,7 +2761,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getNFTContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callApproveNFTToMarketplace(
       signer as any,
       "test_address"
@@ -2668,7 +2790,7 @@ describe("BlockchainWrite", () => {
 
     jest
       .spyOn(SmartContractProvider, "getNFTContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callApproveNFTToMarketplace(
       signer as any,
       "test_address"
@@ -2697,7 +2819,7 @@ describe("BlockchainWrite", () => {
 
     jest
       .spyOn(SmartContractProvider, "getNFTContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "setApprovalForAll");
     await BlockchainWrite.callApproveNFTToMarketplace(
       signer as any,
@@ -2728,7 +2850,9 @@ describe("BlockchainWrite", () => {
       .spyOn(AddressFactory, "getContractAddress")
       .mockReturnValue("test-contract-address");
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callApproveNFTToMarketplace(
         signer as any,
@@ -2758,7 +2882,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callClaimNTRForReferral(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -2778,7 +2902,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callClaimNTRForReferral(signer as any);
     expect(result).toEqual(model.claimRefRewardNTR().hash);
   });
@@ -2800,7 +2926,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callClaimNTRForReferral(
         signer as any
@@ -2827,7 +2955,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.callClaimBUSDForReferral(signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -2847,7 +2975,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.callClaimBUSDForReferral(
       signer as any
     );
@@ -2871,7 +3001,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.callClaimBUSDForReferral(
         signer as any
@@ -2904,7 +3036,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.claimNtrTokens(signer as any, 1, "BUSD");
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -2930,7 +3062,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.claimNtrTokens(
       signer as any,
       1,
@@ -2960,7 +3094,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "claimTokensFromBusd");
     await BlockchainWrite.claimNtrTokens(signer as any, 1, "BUSD");
     expect(spy).toBeCalledWith(1);
@@ -2991,7 +3127,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.claimNtrTokens(
         signer as any,
@@ -3026,7 +3164,7 @@ describe("BlockchainWrite", () => {
 
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .mockReturnValue(contract as any);
     await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
@@ -3052,7 +3190,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
     expect(result).toEqual(model.tokenPurchaseWithBUSD(1).hash);
   });
@@ -3078,7 +3218,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "tokenPurchaseWithBUSD");
     const amount = 1;
     const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
@@ -3107,7 +3249,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "tokenPurchaseWithNtr");
     const amount = 1;
     await BlockchainWrite.buyCenther("NTR", amount, signer as any);
@@ -3140,7 +3284,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
     } catch (error: any) {
@@ -3173,7 +3319,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.buyCenther("NTR", 1, signer as any);
     } catch (error: any) {
@@ -3197,10 +3345,10 @@ describe("BlockchainWrite", () => {
     };
 
     const spy = jest
-      .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .spyOn(SmartContractProvider, "getTokenContract")
+      .mockReturnValue(contract as any);
     await BlockchainWrite.getTokenApproval("BUSD", signer as any);
-    expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
+    expect(spy).toBeCalledWith("BUSD", {});
   });
 
   it('should call "getTokenApproval" and call smart contract provider with params', async () => {
@@ -3219,8 +3367,8 @@ describe("BlockchainWrite", () => {
     };
 
     const spy = jest
-      .spyOn(SmartContractProvider, "getContract")
-      .mockReturnValue(contract);
+      .spyOn(SmartContractProvider, "getTokenContract")
+      .mockReturnValue(contract as any);
     try {
       await BlockchainWrite.getTokenApproval("ETH" as any, signer as any);
     } catch (error: any) {
@@ -3243,7 +3391,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getTokenContract")
+      .mockReturnValue(contract as any);
     const result = await BlockchainWrite.getTokenApproval(
       "BUSD",
       signer as any
@@ -3270,7 +3420,9 @@ describe("BlockchainWrite", () => {
       BlockchainConfig.maxSupply.toString()
     );
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getTokenContract")
+      .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "approve");
     await BlockchainWrite.getTokenApproval("BUSD", signer as any);
     expect(spy).toBeCalledWith("test-contract-address", amount);
@@ -3293,7 +3445,9 @@ describe("BlockchainWrite", () => {
       functions: model,
     };
 
-    jest.spyOn(SmartContractProvider, "getContract").mockReturnValue(contract);
+    jest
+      .spyOn(SmartContractProvider, "getTokenContract")
+      .mockReturnValue(contract as any);
     try {
       const result = await BlockchainWrite.getTokenApproval(
         "BUSD",

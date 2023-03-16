@@ -8,6 +8,8 @@ import { formatAddress, formatEther2Number } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { BNBIcon } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import useGetUser from "@/hooks/use.get.user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 export interface NFTCardProps {
   data: NFTCardData;
@@ -15,7 +17,8 @@ export interface NFTCardProps {
 
 export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
-
+  const { user } = useGetUser(data.owner.account_address);
+  const verificationTick = useVerificationTick(user);
   return (
     <div
       className={`relative flex max-w-[300px] flex-col overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`}
@@ -41,22 +44,46 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
               width={28}
             />
           )}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center ">
             {data.owner.is_registered ? (
               <Link
-                className="w-full max-w-[150px] cursor-pointer truncate text-white"
+                className="flex w-full  cursor-pointer items-center  text-white"
                 href={`/profile/${data.owner.account_address}`}
               >
-                <span className={`text-xs font-medium text-white`}>
+                <span
+                  className={`max-w-[150px] truncate text-xs font-medium text-white`}
+                >
                   {data.owner.display_name ??
                     formatAddress(data.owner.account_address)}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </Link>
             ) : (
-              <div className="max-w-[200px] truncate text-white">
-                <span className={`text-xs font-medium text-white`}>
+              <div className="flex items-center text-white">
+                <span
+                  className={`max-w-[200px] truncate text-xs font-medium text-white`}
+                >
                   {formatAddress(data.owner.account_address)}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </div>
             )}
           </div>

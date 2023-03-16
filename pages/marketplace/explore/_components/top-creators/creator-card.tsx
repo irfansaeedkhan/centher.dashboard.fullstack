@@ -6,6 +6,8 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
+import useGetUser from "@/hooks/use.get.user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface CreatorCardProps {
   data: TopCreatorCardData;
@@ -13,6 +15,9 @@ interface CreatorCardProps {
 }
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
+  const { user } = useGetUser(data.account_address);
+  const verificationTick = useVerificationTick(user);
+
   return (
     <div className={clsx("flex min-w-max items-center gap-3", className)}>
       <Image
@@ -30,7 +35,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
           },
         }}
         className={clsx(
-          `text-sm font-medium text-white  hover:text-brand-primary`,
+          `!flex items-center text-sm  font-medium text-white hover:text-brand-primary`,
           data.display_name.includes(" ")
             ? "text-ellipsis line-clamp-1"
             : "block w-full max-w-full overflow-hidden truncate"
@@ -38,6 +43,16 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         title={data.display_name}
       >
         {sliceDisplayName(data.display_name)}
+        {!!verificationTick && (
+          <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+            <Image
+              src={"/images/rainbow-last-frame.png"}
+              alt={"Verified"}
+              width={20}
+              height={20}
+            />
+          </span>
+        )}
       </Link>
     </div>
   );

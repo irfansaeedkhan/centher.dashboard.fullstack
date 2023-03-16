@@ -105,12 +105,18 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
           set((state) => {
             let company = state.companyRewards;
             let coreTeam = state.coreTeamRewards;
-            const busdCompany = _purchaseWithBusdHistory
-              .map((item: any) => item.company)
-              .reduce((prev: any, next: any) => prev + next);
-            const busdCoreTeam = _purchaseWithBusdHistory
-              .map((item: any) => item.coreTeam)
-              .reduce((prev: any, next: any) => prev + next);
+            const busdCompany =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.company)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
+            const busdCoreTeam =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.coreTeam)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
             company.totalEarning.busd = busdCompany;
             company.claimable.busd = claimableBusdCompany;
             company.claimed.busd = busdCompany - claimableBusdCompany;
@@ -120,9 +126,12 @@ export const useAdminLaunchpadRewards = create<NetworkRewards>()(
 
             let overview = state.overview;
             overview.totalBusdContributors = _purchaseWithBusdHistory.length;
-            overview.totalRaisingBusd = _purchaseWithBusdHistory
-              .map((item: any) => item.paidAmount)
-              .reduce((prev: any, next: any) => prev + next);
+            overview.totalRaisingBusd =
+              _purchaseWithBusdHistory.length > 0
+                ? _purchaseWithBusdHistory
+                    .map((item: any) => item.paidAmount)
+                    .reduce((prev: any, next: any) => prev + next)
+                : 0;
             return {
               ...state,
               overview: overview,

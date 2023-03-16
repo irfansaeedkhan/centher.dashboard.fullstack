@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
+import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
@@ -7,8 +8,8 @@ import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
 
 // App imports
-import Button from "@/components/button";
-import { BNBIcon, LoaderIcon } from "@/assets/svgs";
+import NewButton from "@/components/button/new.button";
+import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -20,6 +21,8 @@ import useGetUser from "@/hooks/use.get.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -31,8 +34,10 @@ export const FixedPriceNFTBuyerDescription = ({
 }: FixedPriceNFTBuyerDescriptionProps) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { library } = useWeb3React();
+  const { connectWallet } = useConnectWallet();
+  const { library, deactivate } = useWeb3React();
   const [Modal, setModal] = useState(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
@@ -83,12 +88,7 @@ export const FixedPriceNFTBuyerDescription = ({
           </span>
         </h6>
         <div className={footerBtnContainer}>
-          <Button
-            title={"Checkout"}
-            variant="v1"
-            className="py-4"
-            onClick={handleBuyNFT}
-          />
+          <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
         </div>
       </div>
     );
@@ -138,10 +138,9 @@ export const FixedPriceNFTBuyerDescription = ({
         )}
 
         <div className={footerBtnContainer}>
-          <Button
+          <NewButton
             title={"Ok"}
             variant="v4"
-            className="py-4"
             onClick={() => {
               router.reload();
               setModal(false);
@@ -193,17 +192,24 @@ export const FixedPriceNFTBuyerDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center">
-        {library && (
-          <Button
+        {library ? (
+          <NewButton
             title={"Buy Now"}
             variant="v1"
-            className="py-4"
             onClick={async () => {
               if (!loggedInUser) {
                 toast.error("Please login to buy this nft");
                 return;
               }
               buyNFTStep1Func();
+            }}
+          />
+        ) : (
+          <NewButton
+            title={"Connect Wallet"}
+            variant="v9"
+            onClick={() => {
+              setConnectWalletModal(true);
             }}
           />
         )}
@@ -217,6 +223,51 @@ export const FixedPriceNFTBuyerDescription = ({
         >
           {ModalContent}
         </CustomModal>
+      )}
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!loggedInUser) {
+                    toast.error("Please login to buy this nft");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (
+                    loggedInUser.account_address.toLowerCase() !==
+                    _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
       )}
     </div>
   );

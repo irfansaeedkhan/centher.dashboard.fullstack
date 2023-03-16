@@ -2,6 +2,8 @@
 import CentherIconImgBg from "./centher.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
+import DXCIconImg from "./dexa-logo.png";
+import VerifiedIconImg from "./verifiedmark.png";
 
 export interface IconProps {
   className?: string;
@@ -100,8 +102,10 @@ export { default as UserIcon } from "./user.icon.svg";
 export { default as SettingIcon } from "./setting.icon.svg";
 export { default as DisconnectIcon } from "./wallet.disconnect.svg";
 export { default as ConnectIcon } from "./wallet.connect.svg";
+export { default as SnakeArrow } from "./snake.arrow.svg";
 export { default as Launchpad } from "./launchpad.svg";
 export { default as CloseSmallIcon } from "./close.small.icon.svg";
+export { default as MetamaskIcon2 } from "./metamask.icon2.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
@@ -109,6 +113,19 @@ export const CentherIconBG: React.FC<IconProps> = (props) => {
       className={props.className}
       src={CentherIconImgBg.src}
       alt="Centher Icon BG"
+      sizes="256px"
+      width={40}
+      height={40}
+    />
+  );
+};
+
+export const DXCIconBG: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={DXCIconImg.src}
+      alt="DXC Icon BG"
       sizes="256px"
       width={40}
       height={40}
@@ -138,6 +155,19 @@ export const NTRIcon: React.FC<IconProps> = (props) => {
       sizes="256px"
       width={40}
       height={40}
+    />
+  );
+};
+
+export const VerifiedIcon: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={VerifiedIconImg.src}
+      alt="Verified Icon"
+      sizes="256px"
+      width={24}
+      height={24}
     />
   );
 };

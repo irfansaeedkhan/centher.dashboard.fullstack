@@ -176,13 +176,13 @@ const RegistrationSetting: NextPageWithLayout = () => {
             <div className="w-full max-w-[180px]">
               <button
                 onClick={handleChangeFees}
-                className="text-14px max-h-[50px] w-full max-w-[180px] rounded-xl bg-yellow-theme p-3 font-bold text-black-shade-3"
+                className="text-14px bg-yellow-theme max-h-[50px] w-full max-w-[180px] rounded-xl p-3 font-bold text-black-shade-3"
               >
                 {changeFeeTx ? "Process..." : "Change Fees"}
               </button>
               <button
                 onClick={handleChangeState}
-                className="text-14px mt-5 max-h-[50px] w-full max-w-[180px] rounded-xl bg-yellow-theme p-3 font-bold text-black-shade-3"
+                className="text-14px bg-yellow-theme mt-5 max-h-[50px] w-full max-w-[180px] rounded-xl p-3 font-bold text-black-shade-3"
               >
                 {changeStatusTx
                   ? "Process..."

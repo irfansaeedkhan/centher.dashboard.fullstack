@@ -1,8 +1,9 @@
-import { BlockchainWrite } from "@/web3/blockchain";
-import { useGetReferralRate } from "@/web3/hooks/use.get.referral.rates";
-import { useWeb3React } from "@web3-react/core";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import { useWeb3React } from "@web3-react/core";
+
+import { useGetReferralRate } from "@/web3/hooks/use.get.referral.rates";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 export const CommonCard = ({ refreshRoundsInfo }: any) => {
   const { library } = useWeb3React();
@@ -85,7 +86,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   <label className="label text-14px text-gray-shade-7">
                     Level {index + 1}
                   </label>
-                  <div className=" flex min-w-[180px] flex-col gap-2">
+                  <div className="flex min-w-[180px] flex-col gap-2">
                     <div className="checkbox flex items-center justify-end gap-2">
                       <input
                         id="BUSD"
@@ -94,7 +95,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                           handleSetRate(e.target.value, index);
                         }}
                         type="number"
-                        className="text-14px  w-full   max-w-[180px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
+                        className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
                       />
                       <h6 className="text-14px text-gray-shade-7">%</h6>
                     </div>
@@ -105,7 +106,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
           <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
+              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleReferralRate}
             >
               {pendingReferralRateTx
@@ -130,7 +131,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           </div>
           <div className="cardFooter pt-4 pb-7 px-5">
             <button
-              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-brand-primary rounded-lg"
               onClick={handleTeamPercentage}
             >
               {pendingTx ? "Updating..." : "Change Core Team Percentage"}
@@ -148,14 +149,14 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={companyAddress}
                   onChange={(e) => setCompanyAddress(e.target.value)}
                   type="text"
-                  className="text-14px  w-full   max-w-[280px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
           <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
+              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleCompanyAddress}
             >
               {pendingCompanyAddressTx
@@ -168,21 +169,21 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
             <label className="label text-14px text-gray-shade-7">
               Core Team Address
             </label>
-            <div className=" flex min-w-[180px] flex-col gap-2">
+            <div className="flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
                   id="BUSD"
                   value={coreTeamAddress}
                   onChange={(e) => setCoreTeamAddress(e.target.value)}
                   type="text"
-                  className="text-14px  w-full   max-w-[280px] rounded-md  border-0   !bg-black-shade-3 py-3  px-3 font-semibold   text-white focus:outline-none focus:ring-yellow-theme"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
           <div className="cardFooter px-5 pt-4 pb-7">
             <button
-              className="text-14px w-full rounded-lg bg-yellow-theme p-3 font-semibold text-black-shade-3"
+              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleCoreTeamAddress}
             >
               {pendingTeamAddressTx

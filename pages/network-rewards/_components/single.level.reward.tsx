@@ -4,7 +4,7 @@ import { formatPriceInUSD } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface SingleLevelRewardPProps {
-  rewardState: "lunchpad-rewards" | "marketplace-rewards";
+  rewardState: "launchpad-rewards" | "marketplace-rewards";
   rewards: RewardsEachAsset;
   bnbPrice: number;
   ntrPrice: number;
@@ -23,18 +23,18 @@ const SingleLevelReward: React.FC<SingleLevelRewardPProps> = ({
       <div className="text-xs font-semibold text-gray-shade-7">
         {`From Level ${level}`}
       </div>
-      {rewardState === "lunchpad-rewards" ? (
+      {rewardState === "launchpad-rewards" ? (
         <>
-          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+          {/* <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{`${rewards.ntr} NTR`}</p>
             <p className="text-gray-shade-7">{`($${formatPriceInUSD(
               rewards.ntr,
               ntrPrice
             )})`}</p>
-          </div>
+          </div> */}
           <div className="flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{`${rewards.busd} BUSD`}</p>
-            <p className="text-gray-shade-7">{`($${rewards.busd})`}</p>
+            {/* <p className="text-gray-shade-7">{`($${rewards.busd})`}</p> */}
           </div>
         </>
       ) : rewardState === "marketplace-rewards" ? (

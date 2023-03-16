@@ -64,8 +64,9 @@ module.exports = {
           primary: "#FEBF32",
           "primary-dark": "#DA9C24",
         },
-        yellow: {
+        "yellow-shade": {
           theme: "#FEBF32",
+          1: "#FED365",
         },
         red: {
           theme: "#E35259",

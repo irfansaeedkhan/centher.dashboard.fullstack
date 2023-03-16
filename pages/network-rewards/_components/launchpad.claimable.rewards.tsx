@@ -18,7 +18,7 @@ import { getRoundState } from "@/web3/hooks/use.contracts.functions";
 import { BlockchainWrite } from "@/web3/blockchain";
 
 export interface ClaimableRewardsProps {
-  rewardState: "lunchpad-rewards" | "marketplace-rewards";
+  rewardState: "launchpad-rewards" | "marketplace-rewards";
 }
 
 const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
@@ -219,11 +219,11 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         >
           <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Total Rewards</p>
-            {rewardState === "lunchpad-rewards" ? (
+            {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
-                <p>{`${rewardsTotal.busd} (BUSD)`}</p>
-                <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${rewardsTotal.ntr} (NTR)`}</p>
+                <p>{`${rewardsTotal.busd} BUSD`}</p>
+                {/* <span className="h-3 border-l border-white/[0.1]" />
+                <p>{`${rewardsTotal.ntr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
@@ -232,18 +232,18 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
           <div className="space-y-1 text-xs text-white fsm:text-sm">
             <p className="">Claimable Rewards</p>
-            {rewardState === "lunchpad-rewards" ? (
+            {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
-                <p>{`${claimableBusd} (BUSD)`}</p>
-                <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${claimableNtr} (NTR)`}</p>
+                <p>{`${claimableBusd} BUSD`}</p>
+                {/* <span className="h-3 border-l border-white/[0.1]" />
+                <p>{`${claimableNtr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
             ) : null}
           </div>
 
-          {rewardState === "lunchpad-rewards" && (
+          {rewardState === "launchpad-rewards" && (
             <button
               disabled={claimableBusd === 0}
               onClick={
@@ -260,10 +260,10 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                 !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
               )}
             >
-              Claim BSUD
+              Claim BUSD
             </button>
           )}
-          {rewardState === "lunchpad-rewards" && (
+          {/* {rewardState === "launchpad-rewards" && (
             <button
               disabled={claimableNtr === 0}
               onClick={
@@ -281,7 +281,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             >
               Claim NTR
             </button>
-          )}
+          )} */}
           {rewardState === "marketplace-rewards" && (
             <button
               disabled={true}
@@ -328,7 +328,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
       </div>
       {/* table */}
       <div>
-        {rewardState === "lunchpad-rewards" && (
+        {rewardState === "launchpad-rewards" && (
           <div className={TableContainer}>
             <h3 className={TableTitle}>LAUNCHPAD REWARDS</h3>
             <table className={table}>

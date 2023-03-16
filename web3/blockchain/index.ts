@@ -1362,21 +1362,8 @@ export class BlockchainWrite {
         SmartContractName.PRESALE
       );
 
-      let tokenContractName;
-      if (tokenName == "BUSD") {
-        tokenContractName = SmartContractName.BUSD;
-      } else if (tokenName == "NTR") {
-        tokenContractName = SmartContractName.NTR;
-      } else {
-        tokenContractName = SmartContractName.CENTHER_TOKEN;
-      }
-
-      if (!tokenContractName) {
-        throw new Error("Token contract not found");
-      }
-
-      const tokenContract = SmartContractProvider.getContract(
-        tokenContractName,
+      const tokenContract = SmartContractProvider.getTokenContract(
+        tokenName,
         signer
       );
 

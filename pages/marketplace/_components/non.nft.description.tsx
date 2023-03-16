@@ -18,6 +18,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import ChangePriceListModal from "./change.price.list.modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
+import NewButton from "@/components/button/new.button";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -349,12 +350,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
             setModal(true);
           }}
         /> */}
-        <Button
-          title={"List"}
-          onClick={listingModal}
-          variant="v4"
-          className="py-4"
-        />
+        <NewButton title={"List"} onClick={listingModal} variant="v4" />
       </div>
 
       {Modal && (

@@ -385,8 +385,7 @@ const ProfileHeader: React.FC<Props> = ({
             >
               <h5
                 className={clsx(
-                  `inline-block items-center   break-words text-center text-base font-semibold text-white  
-                  ${
+                  `inline-block items-center break-words text-center text-base font-semibold text-white ${
                     !user.display_name.includes(" ") &&
                     user.display_name.length > 20 &&
                     "inline-block w-[90vw] break-words md:w-full"
@@ -398,7 +397,7 @@ const ProfileHeader: React.FC<Props> = ({
                   {sliceDisplayName(user.display_name)}
                 </span>
                 {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px]  fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
@@ -455,36 +454,34 @@ const ProfileHeader: React.FC<Props> = ({
                 </div>
               )}
 
-            {!!loggedInUser &&
-              loggedInUser?.account_address.toLowerCase() !==
-                user.account_address.toLowerCase() && (
-                <div className="mt-3 flex justify-center gap-5 flg:hidden">
-                  <div className="w-16 space-y-1.5 text-center">
-                    <span className="block text-xs font-medium text-gray-shade-7">
-                      Post
-                    </span>
-                    <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.posts_count ?? "--"}
-                    </span>
-                  </div>
-                  <div className="w-16 space-y-1.5 text-center">
-                    <span className="block text-xs font-medium text-gray-shade-7">
-                      Followers
-                    </span>
-                    <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.followers_count ?? "--"}
-                    </span>
-                  </div>
-                  <div className="w-16 space-y-1.5 text-center">
-                    <span className="block text-xs font-medium text-gray-shade-7">
-                      Following
-                    </span>
-                    <span className="text-xs font-semibold text-white">
-                      {profileCardDetails.following_count ?? "--"}
-                    </span>
-                  </div>
+            {!!loggedInUser && (
+              <div className="mt-3 flex justify-center gap-5 flg:hidden">
+                <div className="w-16 space-y-1.5 text-center">
+                  <span className="block text-xs font-medium text-gray-shade-7">
+                    Post
+                  </span>
+                  <span className="text-xs font-semibold text-white">
+                    {profileCardDetails.posts_count ?? "--"}
+                  </span>
                 </div>
-              )}
+                <div className="w-16 space-y-1.5 text-center">
+                  <span className="block text-xs font-medium text-gray-shade-7">
+                    Followers
+                  </span>
+                  <span className="text-xs font-semibold text-white">
+                    {profileCardDetails.followers_count ?? "--"}
+                  </span>
+                </div>
+                <div className="w-16 space-y-1.5 text-center">
+                  <span className="block text-xs font-medium text-gray-shade-7">
+                    Following
+                  </span>
+                  <span className="text-xs font-semibold text-white">
+                    {profileCardDetails.following_count ?? "--"}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {user.profile_bio && (

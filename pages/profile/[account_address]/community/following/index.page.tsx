@@ -2,37 +2,35 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
-import { useFollowersStore } from "@/store/followers.store";
+import { useFollowingStore } from "@/store/following.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import UserWithFollow from "@/components/user.with.follow";
+import SearchUserSkeleton from "@/components/loading.skeletons/search.user";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { FollowerIcon } from "@/assets/svgs";
 
-import { ProfilePageWrapper } from "../_components";
+import ProfileCommunityLayout from "@/layouts/profile.community.layout";
 
-const Followers: NextPageWithLayout = () => {
+const Following: NextPageWithLayout = () => {
   const router = useRouter();
   const { user } = useUser();
 
   const {
-    followersLoading,
+    followingLoading,
     offset,
     updateOffset,
-    followers,
-    fetchFollowers,
-    resetFollowers,
-  } = useFollowersStore((state) => ({
-    followersLoading: state.loading,
+    following,
+    fetchFollowing,
+    resetFollowing,
+  } = useFollowingStore((state) => ({
+    followingLoading: state.loading,
     offset: state.offset,
     updateOffset: state.updateOffset,
-    followers: state.followers,
-    fetchFollowers: state.fetchFollowers,
-    resetFollowers: state.resetFollowers,
+    following: state.following,
+    fetchFollowing: state.fetchFollowing,
+    resetFollowing: state.resetFollowing,
   }));
-
   const { ref: lastUserRef, entry: lastUserEntry } = useInView();
 
   useEffect(() => {
@@ -43,9 +41,9 @@ const Followers: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (offset > 0) {
-      fetchFollowers();
+      fetchFollowing();
     }
-  }, [fetchFollowers, offset]);
+  }, [fetchFollowing, offset]);
 
   useEffect(() => {
     if (router.query.account_address && user) {
@@ -61,25 +59,25 @@ const Followers: NextPageWithLayout = () => {
         return;
       }
 
-      resetFollowers("loading");
-      fetchFollowers();
+      resetFollowing("loading");
+      fetchFollowing();
     }
 
     return () => {
-      resetFollowers("idle");
+      resetFollowing("idle");
     };
   }, [
     router.query.account_address,
-    resetFollowers,
-    fetchFollowers,
-    router,
+    resetFollowing,
+    fetchFollowing,
     user,
+    router,
   ]);
 
   return (
     <>
-      {followers.map((user) => {
-        if (user._id === followers[followers.length - 1]._id) {
+      {following.map((user) => {
+        if (user._id === following[following.length - 1]._id) {
           return (
             <UserWithFollow key={user._id} result={user} ref={lastUserRef} />
           );
@@ -87,22 +85,22 @@ const Followers: NextPageWithLayout = () => {
         return <UserWithFollow key={user._id} result={user} />;
       })}
 
-      {(followersLoading === "loading" || followersLoading === "idle") && (
+      {(followingLoading === "loading" || followingLoading === "idle") && (
         <SearchUserSkeleton />
       )}
 
-      {followersLoading === "loaded" && followers.length === 0 && (
+      {followingLoading === "loaded" && following.length === 0 && (
         <div>
           <div className="mt-[48px] flex justify-center">
             <FollowerIcon />
           </div>
           <div className="mt-6 flex justify-center text-xs font-semibold text-white">
-            <p>No followers yet!</p>
+            <p>Not following anyone yet!</p>
           </div>
         </div>
       )}
 
-      {followersLoading === "failed" && (
+      {followingLoading === "failed" && (
         <div className="flex justify-center">
           <p className="text-gray-500">Something went wrong!</p>
         </div>
@@ -111,14 +109,10 @@ const Followers: NextPageWithLayout = () => {
   );
 };
 
-Followers.getLayout = (page) => {
-  return (
-    <AllPagesWrapper pageTitle="Followers">
-      <ProfilePageWrapper currentTab="social-profile">
-        <div className="space-y-3">{page}</div>
-      </ProfilePageWrapper>
-    </AllPagesWrapper>
-  );
-};
+Following.getLayout = (page) => (
+  <ProfileCommunityLayout>
+    <div>{page}</div>
+  </ProfileCommunityLayout>
+);
 
-export default Followers;
+export default Following;

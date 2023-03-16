@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-import clsx from "clsx";
 
-import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -117,7 +115,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className={fieldTitle}>Display Name Field</label>
+          <label className={`text-sm text-white`}>Display Name Field</label>
           <select
             onChange={(e) => {
               setUpdatedUser({
@@ -127,7 +125,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
               });
             }}
             value={updatedUser.display_name_field}
-            className={inputField}
+            className={`w-full rounded-lg border-0 bg-[#1E1E21] py-3 px-5 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
           >
             <option value="pseudonym">Pseudonym</option>
             <option value="real_name">Real Name</option>
@@ -135,50 +133,10 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
           </select>
         </div>
 
-        <InputField
-          id="website_url"
-          label="Website URL"
-          placeholder="e.g. https://stevenpaul.com"
-          value={updatedUser.website_url}
-          onChange={(e) => {
-            setUpdatedUser({
-              ...updatedUser,
-              website_url: e.target.value,
-            });
-          }}
-        />
-
-        <div className="relative flex flex-col gap-2">
-          <label htmlFor="textarea" className={fieldTitle}>
-            Profile bio
-          </label>
-          <textarea
-            onChange={(e) => {
-              setUpdatedUser({
-                ...updatedUser,
-                profile_bio: e.target.value,
-              });
-            }}
-            value={updatedUser.profile_bio}
-            placeholder="Enter Your bio!"
-            name=""
-            id=""
-            cols={30}
-            rows={5}
-            maxLength={160}
-            className={clsx(inputField)}
-          ></textarea>
-          {updatedUser.profile_bio.length > 0 && (
-            <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7 fsm:ml-0">
-              <PostTextCounter
-                currentLength={updatedUser.profile_bio.length}
-                maxLength={160}
-              />
-            </div>
-          )}
-        </div>
-
-        <button className={connectButton} onClick={updateProfile}>
+        <button
+          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
+          onClick={updateProfile}
+        >
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />
           ) : (
@@ -189,9 +147,3 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
     </div>
   );
 };
-
-const connectButton = `mt-2 py-2 px-3 text-sm flex w-fit font-semibold rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
-
-const fieldTitle = `text-sm text-white`;
-
-const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-brand-primary text-sm font-medium leading-6`;

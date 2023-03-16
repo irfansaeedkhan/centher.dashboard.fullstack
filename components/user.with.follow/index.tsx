@@ -42,7 +42,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-between gap-4 rounded-lg bg-background-shade-3 p-4 fsm:gap-10"
+        className="flex items-center justify-between gap-4  border-b border-gray-shade-3 bg-background-shade-3 p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 fsm:gap-10"
       >
         <div className="flex items-center gap-2">
           <Link href={`/profile/${_result.account_address}`}>
@@ -73,13 +73,12 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 {_result && sliceDisplayName(_result.display_name)}
               </span>
               {!!verificationTick && (
-                <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 fsm:ml-1">
+                <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem] fsm:ml-1">
                   <Image
-                    src={verificationTick}
+                    src={"/images/rainbow-last-frame.png"}
                     alt={"Verified"}
                     width={20}
                     height={20}
-                    className="mt-[1px]"
                   />
                 </span>
               )}

@@ -27,11 +27,14 @@ export const useGetRoundsInfo = () => {
   const fetchRoundsInfo = useCallback(async () => {
     try {
       const roundState = await getRoundState();
-
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
         const roundStatus = getRoundStatus(roundState, i);
+        console.log(
+          "sniper: roundInfo: ",
+          ethers.utils.formatEther(roundInfo["minContributionForBusd"])
+        );
 
         const _roundInfo: RoundInfo = {
           round: i as RoundNumber,
@@ -43,7 +46,7 @@ export const useGetRoundsInfo = () => {
           startTime: roundInfo["startTime"].toNumber(),
           endTime: roundInfo["endTime"].toNumber(),
           maxCentherAmountToSell: Number(
-            ethers.utils.formatEther(roundInfo["maxCentherAmountToSell"])
+            ethers.utils.formatEther(roundInfo["maxDexaAmountToSell"])
           ),
           busdEnabled: roundInfo["busdEnabled"],
           ntrEnabled: roundInfo["ntrEnabled"],
@@ -140,7 +143,7 @@ export const useGetContributionInfo = (
     async (account: string) => {
       const contributionInfoRes = await presaleContract.getContribute(
         account,
-        roundInfo.round
+        roundInfo?.round
       );
 
       const claimedTokenAmountForBusd = Number(
@@ -196,20 +199,12 @@ export const useGetContributionInfo = (
         ),
         purchaseTimeForBusd:
           contributionInfoRes["purchaseTimeForBusd"].toNumber() === 0
-            ? "0"
-            : dayjs(
-                new Date(
-                  contributionInfoRes["purchaseTimeForBusd"].toNumber() * 1000
-                )
-              ).format("DD-MM-YYYY"),
+            ? 0
+            : Number(contributionInfoRes["purchaseTimeForBusd"]),
         purchaseTimeForNtr:
           contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
-            ? "0"
-            : dayjs(
-                new Date(
-                  contributionInfoRes["purchaseTimeForNtr"].toNumber() * 1000
-                )
-              ).format("DD-MM-YYYY"),
+            ? 0
+            : Number(contributionInfoRes["purchaseTimeForBusd"]),
         claimedTokenAmountForBusd,
         claimedTokenAmountForNtr,
         totalClaimableTokenAmountForBusd,
@@ -238,7 +233,7 @@ export const useGetContributionInfo = (
   );
 
   useEffect(() => {
-    if (account) fetchContributionInfo(account);
+    if (account && roundInfo) fetchContributionInfo(account);
   }, [account, fetchContributionInfo]);
 
   const refreshContributionInfo = useCallback(async () => {
