@@ -38,7 +38,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     MARKETPALCE: {
       // Presale Contract Address
       56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
-      5: "0x310F273eb0C50E134a69BeC59f0dF50B038c503F",
+      5: "0x3F625d143CBDe71812cee43FC10f058Db2e11b55",
     },
     MULTICALL: {
       // Multicall Contract Address
@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-v1-1"
-      : "https://api.studio.thegraph.com/query/39184/nethernft_dev/0.0.21",
+      : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.31",
 };
 
 //TODO=> Implement configuration validator function
