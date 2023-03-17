@@ -376,10 +376,17 @@ export class BlockchainRead {
     return data.users;
   }
 
-  static async getGenealogy(referrer: string): Promise<any[]> {
+  static async getGenealogy(
+    referrer: string,
+    first: number,
+    skip: number
+  ): Promise<any[]> {
     const variables = {
       referrer,
+      skip,
+      first,
     };
+
     const { data, error } = await ApolloProvider.query(
       QueryNames.GENEALOGY,
       variables

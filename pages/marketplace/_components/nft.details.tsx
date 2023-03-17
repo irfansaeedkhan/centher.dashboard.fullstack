@@ -16,7 +16,7 @@ export const NFTDetails = (props: NFTDetailsProps) => {
     <div className={NFTDetailsContainer}>
       <div className="accordion" id="accordionExample">
         {props && (
-          <div className="accordion-item bg-transparent ">
+          <div className="accordion-item ">
             <h2 className="accordion-header mb-0" id="headingOne">
               <button
                 className={AccordionButton}
@@ -35,7 +35,7 @@ export const NFTDetails = (props: NFTDetailsProps) => {
             // aria-labelledby="headingOne"
             // data-bs-parent="#accordionExample"
             >
-              <div className="accordion-body p-6">
+              <div className="accordion-body rounded-10px bg-background-shade-3 p-6">
                 <div className={detailsList}>
                   <div className={detailBox}>
                     <h5 className={title}>NFT ID</h5>
@@ -77,7 +77,7 @@ const NFTDetailsContainer = ctl(`
 w-full 
 `);
 const AccordionButton = ctl(`
-accordion-button relative flex items-center w-full py-4 px-5 text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
+accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
 `);
 const AccordionCollapse = ctl(`
 accordion-collapse collapse show bg-background-shade-3 rounded-10px

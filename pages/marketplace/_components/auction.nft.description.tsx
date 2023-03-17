@@ -6,7 +6,13 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import {
+  ShareBigIcon,
+  BNBIcon,
+  WarningIcon,
+  LoaderIcon,
+  AuctionIcon,
+} from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -213,9 +219,59 @@ export const AuctionNftDescription = ({
         {txStatus && (
           <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
-            <span className="text-white">{data?.name}</span> NFT on{" "}
-            <b>Centher</b>
-            platform.
+            <span className="text-white">{data?.name} </span> NFT on{" "}
+            <b> Centher </b> platform.
+          </p>
+        )}
+        {!txStatus && (
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Transaction Failed.
+          </p>
+        )}
+        {/* <Link href={{
+              pathname: AppRoutes.marketplace.nft,
+              query: {
+                collection: nftData?.collection,
+                nftId: 2,
+              }}} 
+          className={footerBtnContainer}
+        > */}
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Ok"}
+            variant="v4"
+            className="py-4"
+            onClick={() => {
+              setModal(false);
+              setModalTitle("");
+              setModalContent(null);
+            }}
+          />
+          {/* </Link> */}
+        </div>
+      </div>
+    );
+    setModal(true);
+  };
+  const SuccessCancelAucFunc = (txStatus: boolean) => {
+    setModalTitle("Auction Cancelled");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <Image
+          className={ImgStyling}
+          src={data ? data.image : ""}
+          alt="image"
+          height={64}
+          width={64}
+        />
+        <h2 className="text-18px font-semibold text-white">
+          {txStatus ? "Success!" : "Failed!"}
+        </h2>
+        {txStatus && (
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Congratulations! You have successfully cancelled auction of{" "}
+            <span className="text-white">{data?.name} </span> NFT on{" "}
+            <b> Centher </b> platform.
           </p>
         )}
         {!txStatus && (
@@ -296,7 +352,7 @@ export const AuctionNftDescription = ({
 
         <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
           <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
-            {/* <AuctionIcon /> */}
+            <AuctionIcon />
             <h4 className="text-14px font-normal text-white">
               Auction ends in
             </h4>
