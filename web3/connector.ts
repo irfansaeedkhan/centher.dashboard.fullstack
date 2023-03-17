@@ -1,7 +1,6 @@
 import { InjectedConnector } from "@web3-react/injected-connector";
-
-import { CHAIN } from "./constants/common";
+import { BlockchainConfig } from "./blockchain/config";
 
 export const injectedConnector = new InjectedConnector({
-  supportedChainIds: [CHAIN],
+  supportedChainIds: [BlockchainConfig.network],
 });

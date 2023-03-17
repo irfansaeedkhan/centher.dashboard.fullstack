@@ -1,8 +1,6 @@
 import { formatNum2DispNum } from "@/utils/format.address";
-import {
-  adminClaimRegistrationBNB,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
@@ -22,13 +20,14 @@ const RegistrationRewards = ({
     }
 
     setPendingTx(true);
-    const result = await adminClaimRegistrationBNB(library);
-    setPendingTx(false);
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminClaimRegistrationBNB(library);
       setReload(!reload);
       toast.success("Claimed Successfully!");
-    } else {
+    } catch (error) {
       toast.error("Something Went Wrong!");
+    } finally {
+      setPendingTx(false);
     }
   };
 

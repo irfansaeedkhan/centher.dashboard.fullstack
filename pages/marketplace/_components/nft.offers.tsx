@@ -12,7 +12,7 @@ import {
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { AppRoutes } from "@/constants/app.routes";
 import clsx from "clsx";
-import { normalizeValue } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface NFTOffersProps {
   data: IBid[];
@@ -23,30 +23,31 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
     <div className={NFTOffersContainer}>
       {data?.length ? (
         <div className="accordion" id="accordionExample">
-          <div className="accordion-item bg-transparent ">
+          <div className="accordion-item ">
             <h2 className="accordion-header mb-0" id="headingOne">
               <button
                 className={AccordionButton}
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#OffersComponent"
-                aria-expanded="true"
-                aria-controls="OffersComponent"
+                // type="button"
+                // data-bs-toggle="collapse"
+                // data-bs-target="#OffersComponent"
+                // aria-expanded="true"
+                // aria-controls="OffersComponent"
               >
                 Offers
               </button>
             </h2>
             <div
-              id="OffersComponent"
-              className={AccordionCollapse}
-              aria-labelledby="headingOne"
-              data-bs-parent="#accordionExample"
+            // id="OffersComponent"
+            // aria-labelledby="headingOne"
+            // data-bs-parent="#accordionExample"
+            // className={AccordionCollapse}
             >
-              <div className="accordion-body ">
+              <div className="accordion-body rounded-10px bg-transparent">
                 <div
                   className={clsx(
                     "relative overflow-x-auto  rounded-2xl shadow-md ",
-                    data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
+                    // data.length > 0 ? "mt-8 lg:mt-12" : " mt-5 lg:mt-8"
+                    data.length > 0 ? "" : " mt-5 lg:mt-8"
                   )}
                 >
                   {data.length > 0 ? (
@@ -130,7 +131,7 @@ const NFTOffersContainer = ctl(`
 w-full 
 `);
 const AccordionButton = ctl(`
-accordion-button relative flex items-center w-full py-4 px-5 text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
+accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
 `);
 const AccordionCollapse = ctl(`
 accordion-collapse collapse show 

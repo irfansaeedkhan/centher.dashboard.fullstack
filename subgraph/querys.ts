@@ -388,47 +388,20 @@ export const topCreatorsQuery = `
   }
 `;
 
-export const genealogyBaseDataQuery = `
-  query MyQuery($publicKey: Bytes!) {
-    users(where: {publicKey: $publicKey}) {
-      userInfo {
-        people
-        earningNTRFromInICO
-        earningFromInMarketplace
-        earningBUSDFromInICO
-      }
-    }
-  }
-`;
-
-export const referrerQuery = `
-  query MyQuery($referrer: Bytes!) {
-    users(where: {referrer: $referrer}) {
-      userInfo {
-        people
-        earningNTRFromInICO
-        earningFromInMarketplace
-        earningBUSDFromInICO
-      }
-      publicKey
-    }
-  }
-`;
-
 export const genealogyQuery = `
-  query MyQuery($referrer: Bytes) {
-    genealogies(where: {referrer: $referrer}) {
-      user {
-        generatedBUSD
-        generatedNTR
-        publicKey
-        people
-        generatedBNB
-      }
-      createdAt
-      level
+query MyQuery($referrer: Bytes, $first: Int = 10, $skip: Int = 10) {
+  genealogies(where: {referrer: $referrer}, skip: $skip, first: $first) {
+    user {
+      generatedBUSD
+      generatedNTR
+      publicKey
+      people
+      generatedBNB
     }
+    createdAt
+    level
   }
+}
 `;
 
 export const genealogyAtLevelQuery = `

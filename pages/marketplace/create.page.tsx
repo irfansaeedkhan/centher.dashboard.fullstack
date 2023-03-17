@@ -9,11 +9,8 @@ import ctl from "@netlify/classnames-template-literals";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
-import { callCreateNFT } from "@/web3/utils/call.helpers";
-import { normalizeValue } from "@/web3/utils/call.helpers";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
-import { FEE } from "@/web3/constants/common";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
@@ -22,6 +19,9 @@ import { readFileAsync } from "@/utils/file.reader.util";
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -49,7 +49,7 @@ const CreateNFT: NextPageWithLayout = () => {
         <h2 className="text-18px font-semibold text-white">{nftData?.name}</h2>
         <h3 className="text-14px font-normal text-white">
           {`Marketplace fee ${normalizeValue(
-            FEE.createItemFeeForMarketplace
+            BlockchainConfig.fee.createItemFeeForMarketplace
           )} BNB`}
         </h3>
         {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
@@ -119,9 +119,9 @@ const CreateNFT: NextPageWithLayout = () => {
         {txStatus && (
           <p className="text-14px font-normal leading-6 text-gray-shade-2">
             Congratulations! You have successfully created{" "}
-            <span className="text-white">{nftData?.name}</span> NFT on{" "}
-            <b>Centher</b>
-            NFT platform, Click view on profile to view your NFT.
+            <span className="text-white">{nftData?.name} </span> NFT on{" "}
+            <b> Centher </b> NFT platform, Click view on profile to view your
+            NFT.
           </p>
         )}
         {!txStatus && (
@@ -188,7 +188,7 @@ const CreateNFT: NextPageWithLayout = () => {
         asset as any as safeNameType
       );
 
-      const result = await callCreateNFT(
+      const result = await BlockchainWrite.callCreateNFT(
         library,
         castedNftData.collection,
         "ipfs:/" + nftMetadataPath,
@@ -196,12 +196,12 @@ const CreateNFT: NextPageWithLayout = () => {
         castedNftData.isAuction,
         castedNftData.price,
         castedNftData.period,
-        (FEE.createItemFeeForCreator + FEE.createItemFeeForMarketplace) *
+        (BlockchainConfig.fee.createItemFeeForCreator +
+          BlockchainConfig.fee.createItemFeeForMarketplace) *
           castedNftData.supply
       );
-      nfdCreated = result.success;
+      nfdCreated = !!result;
     } catch (error) {
-      console.error(error);
       toast.error("Something went wrong while create a nft. Please try again.");
     } finally {
       buyNFTSuccessFunc(nfdCreated, nftData);

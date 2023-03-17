@@ -10,7 +10,6 @@ import {
   useGetContributionInfo,
 } from "@/web3/hooks/use.contracts.functions";
 import Button from "@/components/button";
-import { buyCenther, getTokenApproval } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
 import {
@@ -24,6 +23,7 @@ import { SelectedTokenA, SelectedTokenB } from "./types";
 import { CentherTable } from "./centher.table";
 import { ConversionContainerV2 } from "./conversion.containerv2";
 import TimelinePeriod from "./timeline.period";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -171,15 +171,16 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
       ...prev,
       status: "progress",
     }));
-    const tx = await getTokenApproval(selectedTokenA.tokenName, library);
-    if (tx.success) {
+
+    try {
+      await BlockchainWrite.getTokenApproval(selectedTokenA.tokenName, library);
       toast.success("Authorization successful");
       setModal((prev) => ({
         ...prev,
         isOpen: false,
       }));
       checkSelectedTokenAllowance();
-    } else {
+    } catch (error) {
       toast.error("Token authorization failed");
       setModal((prev) => ({
         ...prev,
@@ -225,30 +226,21 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
         status: "progress",
       }));
 
-      const result = await buyCenther(
+      await BlockchainWrite.buyCenther(
         selectedTokenA.tokenName,
         selectedTokenA.inputValue,
         library
       );
 
-      if (result.success) {
-        refreshContributionInfo();
-        refreshRoundsInfo();
-        setModal((prev) => ({
-          ...prev,
-          title: "Success",
-          subtitle: "Purchase Successful",
-          bodyText: `You have bought DXC. DXC will be locked for ${roundInfo?.lockMonths} months. You can claim when unlocked.`,
-          status: "success",
-        }));
-      } else {
-        toast.error("Purchase Transaction Failed");
-        setModal((prev) => ({
-          ...prev,
-          status: "error",
-          confirmButtonText: "Try Again",
-        }));
-      }
+      refreshContributionInfo();
+      refreshRoundsInfo();
+      setModal((prev) => ({
+        ...prev,
+        title: "Success",
+        subtitle: "Purchase Successful",
+        bodyText: `You have bought DXC. DXC will be locked for ${roundInfo?.lockMonths} months. You can claim when unlocked.`,
+        status: "success",
+      }));
     } catch (error) {
       toast.error("Purchase Transaction Failed");
       setModal((prev) => ({

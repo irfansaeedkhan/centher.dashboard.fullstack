@@ -3,7 +3,6 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import { TokenName } from "@/web3/utils/call.helpers";
 import { RoundInfo } from "@/web3/constants/types";
 import {
   BUSDIconBG,
@@ -16,6 +15,7 @@ import {
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionTokenBox } from "./conversion.token.box";
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
+import { TokenName } from "@/web3/blockchain/types";
 
 interface Props {
   selectedTokenA: SelectedTokenA;

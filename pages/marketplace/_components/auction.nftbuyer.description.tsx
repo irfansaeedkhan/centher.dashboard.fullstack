@@ -6,17 +6,18 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
+import { ShareBigIcon, BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { callBidOnAuction, normalizeValue } from "@/web3/utils/call.helpers";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
@@ -28,7 +29,7 @@ export const AuctionNFTBuyerDescription = ({
   setReload,
 }: AuctionNFTBuyerDescriptionProps) => {
   const [Modal, setModal] = useState(false);
-  const [BidModal, setBidModalModal] = useState(false);
+  const [BidModal, setBidModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
 
@@ -126,8 +127,8 @@ export const AuctionNFTBuyerDescription = ({
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully placed bid on{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
-              <b>Centher</b>
+              <span className="text-white">{data?.name} </span> NFT on{" "}
+              <b> Centher </b>
               platform.
             </p>
           )}
@@ -164,16 +165,21 @@ export const AuctionNFTBuyerDescription = ({
         toast.error("Insufficient BNB Balance in your wallet.");
         return;
       }
-      setModal(false);
+      setBidModal(false);
       ProceedFunc();
       if (library && data) {
-        const result = await callBidOnAuction(
-          library,
-          data.collection,
-          data.nftId,
-          bidPriceVal
-        );
-        SuccessFunc(result.success);
+        try {
+          const result = await BlockchainWrite.callBidOnAuction(
+            library,
+            data.collection,
+            data.nftId,
+            bidPriceVal
+          );
+          SuccessFunc(!!result);
+        } catch (error) {
+          toast.error("something went wrong, please try again later");
+          SuccessFunc(false);
+        }
       } else {
         SuccessFunc(false);
       }
@@ -275,7 +281,7 @@ export const AuctionNFTBuyerDescription = ({
 
         <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
           <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
-            {/* <AuctionIcon /> */}
+            <AuctionIcon />
             <h4 className="text-14px font-normal text-white">
               Auction ends in
             </h4>
@@ -328,7 +334,7 @@ export const AuctionNFTBuyerDescription = ({
               }
               if (library) {
                 // bidNFTModalFunc();
-                setBidModalModal(true);
+                setBidModal(true);
                 // setModal(true);
               }
             }}
@@ -346,7 +352,14 @@ export const AuctionNFTBuyerDescription = ({
           {ModalContent}
         </CustomModal>
       )}
-      {BidModal && <AuctionBidModal onSubmit={onSubmit} />}
+      {BidModal && (
+        <AuctionBidModal
+          onSubmit={onSubmit}
+          onClose={() => {
+            setBidModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };

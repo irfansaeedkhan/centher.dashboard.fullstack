@@ -64,7 +64,7 @@ const CollectionNFTS: NextPageWithLayout = () => {
               <HotNftEmptyIcon />
             </div>
             <div className="flex items-center justify-center text-[16px] font-semibold text-white">
-              No NFTs found yet
+              No Collections found yet
             </div>
           </>
         )}

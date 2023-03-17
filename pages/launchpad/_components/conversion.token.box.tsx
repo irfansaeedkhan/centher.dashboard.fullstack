@@ -3,7 +3,6 @@ import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 import { HiChevronDown } from "react-icons/hi";
 
-import { TokenName } from "@/web3/utils/call.helpers";
 import { BUSDIcon, NTRIcon } from "@/assets/svgs";
 
 import {
@@ -12,6 +11,7 @@ import {
   inputBoxRight,
   truncateTokenAmount,
 } from "./shared";
+import { TokenName } from "@/web3/blockchain/types";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   tokenName: TokenName;

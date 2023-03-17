@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { getPresaleContract } from "../utils/contract.helpers";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
 
 export const useGetClaimableNtrForReferral = (
   account: string | undefined,
@@ -11,8 +12,10 @@ export const useGetClaimableNtrForReferral = (
   useEffect(() => {
     const fetchClaimable = async (account: string) => {
       try {
-        const presale = getPresaleContract();
-        const _claimable = await presale.refRewardByNTR(account);
+        const presaleContract = SmartContractProvider.getContract(
+          SmartContractName.PRESALE
+        );
+        const _claimable = await presaleContract.refRewardByNTR(account);
         setClaimable(Number(ethers.utils.formatEther(_claimable.toString())));
       } catch (error) {
         console.error(error);

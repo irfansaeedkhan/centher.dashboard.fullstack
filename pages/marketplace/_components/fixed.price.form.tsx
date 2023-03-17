@@ -12,8 +12,8 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import CustomDropdown from "./custom.dropdown";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { networkDecimals } from "@/web3/constants/common";
 import { IoIosClose } from "react-icons/io";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 // form validations
 const schema = Joi.object({
@@ -227,7 +227,7 @@ const FixedPriceForm = ({
                   setNFTPriceError("NFT Price must be greater than 0");
                   setChangeNFTPrice(null);
                 }
-                if (numberValue < networkDecimals) {
+                if (numberValue < BlockchainConfig.networkDecimals) {
                   setNFTPriceError(
                     "NFT Price must be greater than 0.000000000000000001"
                   );

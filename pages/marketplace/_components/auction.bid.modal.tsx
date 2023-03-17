@@ -7,9 +7,8 @@ import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 
-const AuctionBidModal = ({ onSubmit }: any) => {
-  const [Modal, setModal] = useState(false);
-  const [bidPrice, setBidPrice] = useState<any>(null);
+const AuctionBidModal = ({ onSubmit, onClose }: any) => {
+  const [bidPrice, setBidPrice] = useState<string>("");
   const [bidPriceErr, setBidPriceErr] = useState(true);
   // const bidNFTModalFunc = useCallback(() => {
 
@@ -24,12 +23,7 @@ const AuctionBidModal = ({ onSubmit }: any) => {
     }
   };
   return (
-    <CustomModal
-      onClose={() => {
-        setModal(false);
-      }}
-      title={"Place a bid"}
-    >
+    <CustomModal onClose={onClose} title={"Place a bid"}>
       <div className={modalBodyWrapper}>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Blockchain</label>

@@ -10,15 +10,12 @@ import { ReferralClaimItem, RewardsEachAsset } from "@/models/referral";
 import { formatAddress } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useNTRPrice } from "@/hooks/use.get.ntr.price.ts";
-import {
-  callClaimBUSDForReferral,
-  callClaimNTRForReferral,
-} from "@/web3/utils/call.helpers";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { ModalState, StandardModal } from "@/components/modal/standard.modal";
 import { RoundState, RoundStatus } from "@/web3/constants/types";
 import { getRoundState } from "@/web3/hooks/use.contracts.functions";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 export interface ClaimableRewardsProps {
   rewardState: "launchpad-rewards" | "marketplace-rewards";
@@ -126,9 +123,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         status: "progress",
       }));
 
-      const result = await callClaimNTRForReferral(library);
+      const result = await BlockchainWrite.callClaimNTRForReferral(library);
 
-      if (result.success) {
+      if (result?.length) {
         setModal((prev) => ({
           ...prev,
           subtitle: "Claim Successful",
@@ -181,9 +178,9 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
         status: "progress",
       }));
 
-      const result = await callClaimBUSDForReferral(library);
+      const result = await BlockchainWrite.callClaimBUSDForReferral(library);
 
-      if (result.success) {
+      if (result?.length) {
         setModal((prev) => ({
           ...prev,
           subtitle: "Claim Successful",

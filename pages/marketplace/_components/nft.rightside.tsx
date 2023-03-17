@@ -244,14 +244,14 @@ export const NFTRightSideComponent = ({
       {nftState === "fixedPriceNFTBuyer" && (
         <FixedPriceNFTBuyerDescription data={data} />
       )}
-      {/* {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
       {nftState === "timeAuctionedNFTBuyer" && (
         <AuctionNFTBuyerDescription data={data} />
-      )} */}
+      )}
       <NFTListing data={data?.listingHistory} />
-      {/* {data?.saleState === "Auction" && (
+      {data?.saleState === "Auction" && (
         <NFTOffers data={data?.auctionInfo.bids} />
-      )} */}
+      )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
       {/* <NFTHistory prices={data?.priceHistory} /> */}

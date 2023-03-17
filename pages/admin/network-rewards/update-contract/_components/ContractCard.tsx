@@ -3,7 +3,7 @@ import Joi from "joi";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 
-import { adminCallUpdateRoundInfo } from "@/web3/utils/call.helpers";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 // form validations
 const schema = Joi.object({
@@ -152,28 +152,29 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
       }
     }
     setPendingTx(true);
-    const result = await adminCallUpdateRoundInfo(
-      library,
-      data.round,
-      _startTime,
-      _endTime,
-      lockMonths,
-      centherPriceForBusd,
-      centherPriceForNtr,
-      maxCentherAmountToSell,
-      minBusdAmountPerUser,
-      maxBusdAmountPerUser,
-      minNtrAmountPerUser,
-      maxNtrAmountPerUser,
-      enableBusd,
-      enableNtr
-    );
-    setPendingTx(false);
-    refreshRoundsInfo();
-    if (result.success) {
+    try {
+      await BlockchainWrite.adminCallUpdateRoundInfo(
+        library,
+        data.round,
+        _startTime,
+        _endTime,
+        lockMonths,
+        centherPriceForBusd,
+        centherPriceForNtr,
+        maxCentherAmountToSell,
+        minBusdAmountPerUser,
+        maxBusdAmountPerUser,
+        minNtrAmountPerUser,
+        maxNtrAmountPerUser,
+        enableBusd
+      );
+
+      refreshRoundsInfo();
       toast.success("Updated Successfully.");
-    } else {
+    } catch (error) {
       toast.error("Something went wrong! Confirm values you inputted.");
+    } finally {
+      setPendingTx(false);
     }
   };
   return (

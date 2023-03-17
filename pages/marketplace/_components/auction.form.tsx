@@ -13,6 +13,8 @@ import { AddIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 
+import CustomDropdown from "./custom.dropdown";
+
 // form validations
 const schema = Joi.object({
   NFTName: Joi.string().required().max(150).label("NFT Name").messages({
@@ -36,10 +38,10 @@ const schema = Joi.object({
       "string.empty": `StartingNFTPrice Required`,
       "any.required": `Required Field`,
     }),
-  Collection: Joi.string().required().max(150).label("Collection").messages({
-    "string.empty": `Collection Required`,
-    "any.required": `Required Field`,
-  }),
+  // Collection: Joi.string().required().max(150).label("Collection").messages({
+  //   "string.empty": `Collection Required`,
+  //   "any.required": `Required Field`,
+  // }),
 });
 
 // schema.validate({ AuctionEndTime: 1994 });
@@ -47,10 +49,10 @@ interface AuctionFormFields {
   NFTName: string;
   Description: string;
   // NFTSymbol: string;
-  NFTAmount: number | null;
+  // NFTAmount: number | null;
   AuctionEndTime: string;
   StartingNFTPrice: number | null;
-  Collection: string;
+  // Collection: string;
 }
 interface AuctionFormProps {
   createNFT: any;
@@ -70,6 +72,15 @@ const AuctionForm = ({
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [selectedOption, setSelectedOption] = useState(
+    collections[0].collection
+  );
+
+  const handleOptionSelect = (value: string) => {
+    setSelectedOption(value);
+    setCollectionErrorMsg("");
+  };
 
   const { handleSubmit, register, setError, formState, reset } =
     useForm<AuctionFormFields>({
@@ -78,10 +89,10 @@ const AuctionForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
-        NFTAmount: 1,
+        // NFTAmount: 1,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        Collection: "",
+        // Collection: "",
       },
     });
 
@@ -122,6 +133,10 @@ const AuctionForm = ({
   // schema.validate({ AuctionEndTime: 1994 });
   // handle submit
   const onSubmit = async (data: any) => {
+    if (!selectedOption) {
+      setCollectionErrorMsg("Field Required");
+      return;
+    }
     if (moment(data.AuctionEndTime) <= moment()) {
       setAuctionEndTimeErr(true);
       return;
@@ -133,7 +148,7 @@ const AuctionForm = ({
       name: data.NFTName,
       description: data.Description,
       supply: 1,
-      collection: data.Collection,
+      collection: selectedOption,
       isAuction: true,
       price: data.StartingNFTPrice,
       period: Math.floor((data.AuctionEndTime - Date.now()) / 1000),
@@ -148,15 +163,17 @@ const AuctionForm = ({
       reset({
         NFTName: "",
         Description: "",
-        NFTAmount: null,
+        // NFTAmount: null,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        Collection: "",
+        // Collection: "",
         // PropertiesList: "",
       });
+      setSelectedOption("");
       setPropertyList([]);
     }
   }, [clearForm, reset]);
+
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
@@ -277,7 +294,21 @@ const AuctionForm = ({
           <span className={serviceFeeNumber}>0.0370 BNB</span>
         </div> */}
       </div>
-      <div className={fieldWrapper}>
+      <div className={"z-50 flex w-full flex-col gap-2"}>
+        <label htmlFor="textarea" className={fieldTitle}>
+          Collection <span className="text-red-500">*</span>{" "}
+        </label>
+        <CustomDropdown
+          options={collections.map((collection) => ({
+            value: collection.collection,
+            label: `${collection.name} ${formatAddress(collection.collection)}`,
+          }))}
+          selectedValue={selectedOption}
+          onSelect={handleOptionSelect}
+          error={collectionErrorMsg}
+        />
+      </div>
+      {/* <div className={fieldWrapper}>
         <label htmlFor="textarea" className={fieldTitle}>
           Collection <span className="text-red-500">*</span>{" "}
         </label>
@@ -304,7 +335,7 @@ const AuctionForm = ({
             {formState.errors.Collection.message}
           </p>
         )}
-      </div>
+      </div> */}
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Properties</label>
         <div className={addPropertyBtn}>
@@ -339,7 +370,11 @@ const AuctionForm = ({
       </div>
       <Button
         title={"Create NFT"}
-        variant={formState.isValid && asset !== undefined ? "v1" : "v2"}
+        variant={
+          formState.isValid && asset !== undefined && collectionErrorMsg == ""
+            ? "v1"
+            : "v2"
+        }
         disabled={!formState.isValid && asset === undefined}
         onClick={handleSubmit(onSubmit)}
         className="mt-2 py-4"
