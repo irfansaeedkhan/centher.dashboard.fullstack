@@ -33,7 +33,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
           let _genealogies: Genealogy[];
           let _rewardsTotal: RewardsTotal;
 
-          const result = await BlockchainRead.getGenealogy(account);
+          const result = await BlockchainRead.getGenealogy(account, 1000, 0);
           _genealogies = [];
           if (result) {
             _rewardsTotal = { people: 0, busd: 0, bnb: 0, ntr: 0 };
