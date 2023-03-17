@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-v1-1"
-      : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.31",
+      : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.32",
 };
 
 //TODO=> Implement configuration validator function
