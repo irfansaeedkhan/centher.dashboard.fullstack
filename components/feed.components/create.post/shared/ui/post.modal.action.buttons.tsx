@@ -71,8 +71,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
         {
           "justify-between": placement === "create-post-card",
         },
-        placement === "in-modal" &&
-          `justify-between fsm:justify-start fsm:gap-x-9`
+        placement === "in-modal" && `gap-3 fsm:justify-start fsm:gap-7`
       )}
     >
       <label
@@ -191,8 +190,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
   );
 };
 
-const iconClassesInModal = `w-4 h-4 fsm:w-6 fsm:h-6`;
-const iconClassesCreatePostCard = `w-6 h-6`;
+const iconClassesInModal = `w-5 h-5`;
+const iconClassesCreatePostCard = `w-5 h-5`;
 
 const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
   variants: {
@@ -203,7 +202,7 @@ const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
     },
     placement: {
       "create-post-card": "gap-3 text-14px",
-      "in-modal": "gap-2 fsm:gap-3 text-xs fsm:text-14px",
+      "in-modal": "gap-2 text-[13px]",
     },
   },
   defaultVariants: {

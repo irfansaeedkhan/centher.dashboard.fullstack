@@ -8,6 +8,7 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostModalContainer } from "./post.modal.container";
 import { FilesPreview } from "./files.preview";
+import PostPreview from "./post.preview";
 
 interface Props {
   modalTitle: string;
@@ -23,6 +24,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
     postText,
     setPostText,
     postTextMaxLength,
+    postThreadMedia,
   } = useNewPostStore();
 
   const hasMedia = useMemo(() => {
@@ -73,6 +75,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           </div>
 
           <div>
+            <PostPreview postThreadMedia={postThreadMedia} />
             <FilesPreview />
 
             <div className={clsx(`w-full`, hasMedia && "mt-4")}>

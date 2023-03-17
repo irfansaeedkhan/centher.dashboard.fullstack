@@ -13,6 +13,7 @@ const PostModalFooter: React.FC = () => {
     postText,
     postTextMaxLength,
     createPost,
+    createThread,
     modalType,
     editPost,
   } = useNewPostStore();
@@ -32,26 +33,33 @@ const PostModalFooter: React.FC = () => {
       ) : (
         <div className="hidden fsm:block" />
       )}
+      <div className="flex items-center">
+        <div
+          className={clsx("h-7 w-7", {
+            "ml-4 fsm:ml-0": modalType !== "edit",
+            "mr-4 fsm:mr-0": modalType === "edit",
+          })}
+        >
+          <PostTextCounter
+            currentLength={postText.length}
+            maxLength={postTextMaxLength}
+          />
+        </div>
 
-      <div
-        className={clsx("h-7 w-7", {
-          "ml-4 fsm:ml-0": modalType !== "edit",
-          "mr-4 fsm:mr-0": modalType === "edit",
-        })}
-      >
-        <PostTextCounter
-          currentLength={postText.length}
-          maxLength={postTextMaxLength}
-        />
+        <div
+          className={`mx-2 block h-4 w-0.5 rounded-xl bg-gray-shade-3`}
+        ></div>
+
+        <button
+          onClick={() => createThread()}
+          className="flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg text-brand-primary fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
+        >
+          +
+        </button>
       </div>
-
-      <div
-        className={`mx-2 hidden h-4 w-0.5 rounded-xl bg-gray-shade-3 fsm:block`}
-      ></div>
-
       <button
         className={clsx(
-          `text-14px block select-none rounded-xl bg-brand-primary py-2 px-12 text-center font-bold text-black-shade-3 fsm:col-span-1`,
+          `text-14px block select-none rounded-xl bg-brand-primary py-2 px-8 text-center font-bold text-black-shade-3 fsm:col-span-1`,
           {
             "col-span-full mt-4 fsm:mt-0": modalType !== "edit",
           }

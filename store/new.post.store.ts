@@ -10,6 +10,7 @@ import {
   getNewPostAndUpdateState,
   uploadFiles,
 } from "@/utils/create.post";
+import { initial } from "lodash";
 
 interface SelectedFile {
   name: string;
@@ -42,6 +43,12 @@ export interface NewPostStore {
   setPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
+  postThreadMedia: {
+    post_files_detail: any;
+    post_text: string;
+    reply_post_id?: string | null;
+  }[];
+  createThread: () => Promise<void>;
   editPost: () => Promise<void>;
 
   onCloseModal: () => void;
@@ -53,7 +60,7 @@ export const useNewPostStore = create<NewPostStore>()(
       modalType: null,
       postId: null,
       parentPostId: null,
-
+      postThreadMedia: [],
       isModalOpen: false,
       openModal: (options) => {
         // Hide scroll bar
@@ -110,18 +117,49 @@ export const useNewPostStore = create<NewPostStore>()(
       postText: "",
       setPostText: (text: string) => set({ postText: text }),
 
-      createPost: async () => {
+      createThread: async () => {
         try {
           const { postText, selectedFiles, parentPostId } = get();
-
           if (postText.trim() === "" && selectedFiles.length < 1) {
             toast.error("Please add some text or a photo/video");
             return;
           }
-
           if (selectedFiles.length > 5) {
             toast.error("You can only upload a maximum of 5 photos/videos");
             return;
+          }
+          // set({ isPostModalLoading: true });
+          const filesChunksData = createFilesChunks(selectedFiles);
+          // add files to postThreadMedia
+          get().postThreadMedia.push({
+            post_files_detail: filesChunksData,
+            post_text: postText,
+            reply_post_id: parentPostId,
+          });
+          // set postText, selectedFiles, parentPostId to initial state
+          set({ postText: "", selectedFiles: [], parentPostId: null });
+          const postThreadMedia = get().postThreadMedia;
+          console.log(postThreadMedia);
+        } catch (error: any) {
+          console.log(error);
+        }
+      },
+
+      createPost: async () => {
+        try {
+          const postThreadMedia = get().postThreadMedia;
+          console.log(postThreadMedia);
+          const { postText, selectedFiles, parentPostId } = get();
+          if (!postThreadMedia) {
+            if (postText.trim() === "" && selectedFiles.length < 1) {
+              toast.error("Please add some text or a photo/video");
+              return;
+            }
+
+            if (selectedFiles.length > 5) {
+              toast.error("You can only upload a maximum of 5 photos/videos");
+              return;
+            }
           }
 
           set({ isPostModalLoading: true });
@@ -130,11 +168,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           const { data } = await axiosNodeApi.post(
             `/api/socials/posts/signedurl`,
-            {
-              post_files_detail: filesChunksData,
-              post_text: postText,
-              reply_post_id: parentPostId,
-            }
+            postThreadMedia
           );
 
           // If no file media that means only text was available in post
