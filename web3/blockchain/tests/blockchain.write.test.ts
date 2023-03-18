@@ -2491,10 +2491,14 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1
+      1,
+      0,
+      ZeroAddress
     );
     expect(result).toEqual(
-      model.createItems("test_address", "", 1, true, "", 1, { value: "" }).hash
+      model.createItems("test_address", "", 1, true, "", 1, 0, ZeroAddress, {
+        value: "",
+      }).hash
     );
   });
 
@@ -2535,14 +2539,26 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1
+      1,
+      0,
+      ZeroAddress
     );
     const normalizedValue = ethers.utils.parseEther(normalizeValue(1) + "");
     const fee = 1;
     const castedFee = ethers.utils.parseEther(fee.toFixed(10));
-    expect(spy).toBeCalledWith("test", "test", 1, true, normalizedValue, 1, {
-      value: castedFee,
-    });
+    expect(spy).toBeCalledWith(
+      "test",
+      "test",
+      1,
+      true,
+      normalizedValue,
+      1,
+      0,
+      ZeroAddress,
+      {
+        value: castedFee,
+      }
+    );
   });
 
   it('should call "callCreateNFT" and throw error', async () => {
@@ -2584,7 +2600,9 @@ describe("BlockchainWrite", () => {
         true,
         1,
         1,
-        1
+        1,
+        0,
+        ZeroAddress
       );
     } catch (error: any) {
       expect(error.message).toEqual("test_error");

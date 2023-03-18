@@ -4,7 +4,11 @@ import Image from "next/image";
 
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
-import { formatAddress, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatEther2Number,
+  formatIPFSUrl,
+} from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { BNBIcon } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -247,7 +251,7 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
               {/* head */}
               <div className="flex flex-col items-center gap-4 fsm:flex-row">
                 <Image
-                  src={"/images/locknft.png"}
+                  src={formatIPFSUrl(data.imageUrl)}
                   alt={"locknft"}
                   height={120}
                   width={120}

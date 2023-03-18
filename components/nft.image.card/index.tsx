@@ -170,7 +170,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <Image
-                src={"/images/locknft.png"}
+                src={imageUrl}
                 alt={"locknft"}
                 height={120}
                 width={120}
