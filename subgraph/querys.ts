@@ -10,6 +10,7 @@ export const hotNFTsQuery = `
       tokenId
       price
       owner
+      unlock
       listInfo {
         price
         bidSize
@@ -133,6 +134,7 @@ export const nftQuery = `
       tokenId
       price
       owner
+      unlock
       auctionInfo {
         bidSize
         endTime
@@ -199,6 +201,7 @@ export const nftsQuery = `
       tokenId
       price
       owner
+      unlock
       listInfo {
         price
         bidSize
@@ -226,6 +229,7 @@ export const nftsBySaleStateQuery = `
       tokenId
       price
       owner
+      unlock
       listInfo {
         price
         bidSize
@@ -345,6 +349,7 @@ export const createdNFTsByAccount = `
         tokenId
         price
         owner
+        unlock
         listInfo {
           price
           bidSize

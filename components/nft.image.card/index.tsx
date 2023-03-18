@@ -11,6 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { LockIcon, MoonIcon } from "@/assets/svgs";
 import clsx from "clsx";
 import { LockedNftModal } from "../modal/locked.nft.modal";
+import { getUTCNow } from "@/web3/utils/utils";
 
 export interface NFTCardProps {
   data: NFT;
@@ -18,21 +19,62 @@ export interface NFTCardProps {
 
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState("");
-  const [locked, setLocked] = useState(true);
+  const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
   const [showLockedDetails, setShowLockedDetails] = useState<boolean>();
+  const [name, setName] = useState();
+  const [description, setDescription] = useState();
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
         const formattedUrl = formatIPFSUrl(ipfs);
-        const metadata = await axios.get(formattedUrl);
-        const imgUrl = formatIPFSUrl(metadata.data.image);
+        const _metadata = await axios.get(formattedUrl);
+        const imgUrl = formatIPFSUrl(_metadata.data.image);
         setImageUrl(imgUrl);
+        setName(_metadata.data.name);
+        setDescription(_metadata.data.description);
       } catch (error) {}
     };
     if (data && data.ipfs) {
       fetchMetadata(data.ipfs);
     }
   }, [data]);
+
+  const [days, setDays] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    let timeRemaining = Number(data.unlock) * 1000 - getUTCNow();
+    if (timeRemaining <= 0) return;
+
+    const interval = setInterval(() => {
+      if (timeRemaining > 1000) {
+        timeRemaining -= 1000;
+        setCountdownFor(timeRemaining);
+      }
+
+      if (timeRemaining <= 1000) {
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [data]);
+
+  const setCountdownFor = (deadline: number) => {
+    const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
+    const _hours = Math.floor((deadline / (1000 * 60 * 60)) % 24);
+    const _minutes = Math.floor((deadline / 1000 / 60) % 60);
+    const _seconds = Math.floor((deadline / 1000) % 60);
+
+    setDays(_days <= 0 ? 0 : _days);
+    setHours(_hours <= 0 ? 0 : _hours);
+    setMinutes(_minutes <= 0 ? 0 : _minutes);
+    setSeconds(_seconds <= 0 ? 0 : _seconds);
+  };
 
   return (
     <div
@@ -91,7 +133,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <MoonIcon className=" hidden scale-75 fmd:block" />
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
-                    77
+                    {days}
                   </span>
                   <span className="text-[8px] font-medium text-white">
                     DAYS
@@ -99,7 +141,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </div>
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
-                    22
+                    {hours}
                   </span>
                   <span className="text-[8px] font-medium text-white">
                     HOURS
@@ -107,7 +149,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </div>
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
-                    24
+                    {minutes}
                   </span>
                   <span className="text-[8px] font-medium text-white">MIN</span>
                 </div>
@@ -136,9 +178,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               />
               <div className="max-w-[274px]">
                 <div className="flex w-full items-center  gap-4 p-3">
-                  <h5 className="text-18px font-semibold text-white">
-                    A man free always smoke cigrets
-                  </h5>
+                  <h5 className="text-18px font-semibold text-white">{name}</h5>
                   <Image
                     src={"/images/lockicon.png"}
                     alt={"lockicon"}
@@ -154,7 +194,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     <MoonIcon className="h-9 w-9" />
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        77
+                        {days}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         DAYS
@@ -162,7 +202,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </div>
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        22
+                        {hours}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         HOURS
@@ -170,7 +210,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </div>
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        24
+                        {minutes}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         MIN
@@ -187,9 +227,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Collection Description
                 </h5>
                 <h6 className="text-14px font-semibold text-white">
-                  Maradona sport&quot; version of Paracelsus. It is a tribute to
-                  the great Alchemist Paracelsus as Bismuth is one of the
-                  minerals with which the Philosopher&quot;s Stone can be made.
+                  {description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -197,7 +235,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Collection Address
                 </h5>
                 <h6 className="text-14px font-semibold text-white">
-                  0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028
+                  {data.collection}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -205,7 +243,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   Token ID
                 </h5>
                 <h6 className="text-14px font-semibold text-white">
-                  887737623758521793849282245
+                  {data.tokenId}
                 </h6>
               </div>
             </div>

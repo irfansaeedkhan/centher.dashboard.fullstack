@@ -231,6 +231,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                   price: item.amount,
                   owner: item.ownerOf._value,
                   endTime: 0,
+                  unlock: item.unlock,
                 };
               });
           }
@@ -274,6 +275,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 price: item.price,
                 owner: item.owner,
                 endTime: _endTime,
+                unlock: item.unlock,
               };
             });
           }

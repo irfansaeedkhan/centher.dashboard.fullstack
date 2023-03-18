@@ -56,6 +56,7 @@ export const useExploreStore = create<ExploreStore>()(
                 price: item.price,
                 owner: item.owner,
                 endTime: _endTime,
+                unlock: item.unlock,
               };
             });
           }

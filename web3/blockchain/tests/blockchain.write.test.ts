@@ -6,6 +6,7 @@ import { ethers } from "ethers";
 import { normalizeValue } from "../helpers/math.helper";
 import { AddressFactory } from "../providers/address.provider";
 import { BlockchainConfig } from "../config";
+import { ZeroAddress } from "@/web3/constants/common";
 
 jest.mock("../providers/smart.contract.provider");
 jest.mock("../providers/address.provider");
@@ -2420,6 +2421,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
+        unlock: number = 0,
+        receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2445,7 +2448,9 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1
+      1,
+      0,
+      ZeroAddress
     );
     expect(spy).toBeCalledWith(SmartContractName.MARKETPALCE, {});
   });
@@ -2459,6 +2464,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
+        unlock: number = 0,
+        receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2500,6 +2507,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
+        unlock: number = 0,
+        receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2545,6 +2554,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
+        unlock: number = 0,
+        receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
