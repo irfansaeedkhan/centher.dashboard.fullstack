@@ -835,9 +835,7 @@
       { "internalType": "uint32", "name": "supply", "type": "uint32" },
       { "internalType": "bool", "name": "isAuction", "type": "bool" },
       { "internalType": "uint256", "name": "price", "type": "uint256" },
-      { "internalType": "uint256", "name": "period", "type": "uint256" },
-      { "internalType": "uint256", "name": "lockPeriod", "type": "uint256" },
-      { "internalType": "address", "name": "receiver", "type": "address" }
+      { "internalType": "uint256", "name": "period", "type": "uint256" }
     ],
     "name": "createItems",
     "outputs": [],
