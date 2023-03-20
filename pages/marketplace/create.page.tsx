@@ -3,26 +3,24 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
+import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { readFileAsync } from "@/utils/file.reader.util";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { BlockchainConfig } from "@/web3/blockchain/config";
-import { ZeroAddress } from "@/web3/constants/common";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -39,8 +37,6 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const bnbPrice = useBNBPrice();
 
-  // const [nftData, setNFTData] = useState<INFTData>()
-
   const { account, library } = useWeb3React();
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
@@ -53,7 +49,6 @@ const CreateNFT: NextPageWithLayout = () => {
             BlockchainConfig.fee.createItemFeeForMarketplace
           )} BNB`}
         </h3>
-        {/* <h3 className="text-white text-14px font-normal">{`Collection fee ${FEE.createItemFeeForCreator} BNB`}</h3> */}
         <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
           <span>Price:</span>
           <BNBIcon />
@@ -88,22 +83,6 @@ const CreateNFT: NextPageWithLayout = () => {
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
@@ -268,19 +247,8 @@ CreateNFT.getLayout = (page: any) => {
 export default CreateNFT;
 
 // styling
-const modalBodyWrapper2 = ctl(`
-flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-mt-3 flex flex-col-reverse fsm:flex-row gap-2 
-`);
-
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start 
-`);
+const modalBodyWrapper2 = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const footerBtnContainer = `mt-3 flex flex-col-reverse fsm:flex-row gap-2`;
+const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
+const title = `textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`;
+const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;

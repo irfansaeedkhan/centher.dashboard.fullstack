@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
+
 import {
   formatAddress,
   formatAddressUrl,
@@ -13,30 +13,16 @@ interface NFTDetailsProps {
 }
 export const NFTDetails = (props: NFTDetailsProps) => {
   return (
-    <div className={NFTDetailsContainer}>
+    <div className={`w-full`}>
       <div className="accordion" id="accordionExample">
         {props && (
           <div className="accordion-item ">
             <h2 className="accordion-header mb-0" id="headingOne">
-              <button
-                className={AccordionButton}
-                // type="button"
-                // data-bs-toggle="collapse"
-                // data-bs-target="#detailsComponent"
-                // aria-expanded="true"
-                // aria-controls="detailsComponent"
-              >
-                Details
-              </button>
+              <button className={AccordionButton}>Details</button>
             </h2>
-            <div
-            // id="detailsComponent"
-            // className={AccordionCollapse}
-            // aria-labelledby="headingOne"
-            // data-bs-parent="#accordionExample"
-            >
+            <div>
               <div className="accordion-body rounded-10px bg-background-shade-3 p-6">
-                <div className={detailsList}>
+                <div className={`flex flex-col gap-5`}>
                   <div className={detailBox}>
                     <h5 className={title}>NFT ID</h5>
                     <h6 className={value}>{props.nftId}</h6>
@@ -73,24 +59,11 @@ export const NFTDetails = (props: NFTDetailsProps) => {
   );
 };
 // styling
-const NFTDetailsContainer = ctl(`
-w-full 
-`);
-const AccordionButton = ctl(`
+
+const AccordionButton = `
 accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
-`);
-const AccordionCollapse = ctl(`
-accordion-collapse collapse show bg-background-shade-3 rounded-10px
-`);
-const detailBox = ctl(`
-flex flex-col gap-2
-`);
-const title = ctl(`
-text-gray-shade-2 text-12px font-normal
-`);
-const value = ctl(`
-text-14px text-white font-semibold
-`);
-const detailsList = ctl(`
-flex flex-col gap-5
-`);
+`;
+
+const detailBox = `flex flex-col gap-2`;
+const title = `text-gray-shade-2 text-12px font-normal`;
+const value = `text-14px text-white font-semibold`;

@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
+import { IoClose } from "react-icons/io5";
 import { useEventListener } from "usehooks-ts";
 
 import { ModalPortal } from "@/components/modal/modal.portal";
-
-import { IoClose } from "react-icons/io5";
 
 interface CustomModalProps {
   children: React.ReactNode;

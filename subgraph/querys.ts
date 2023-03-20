@@ -394,19 +394,19 @@ export const topCreatorsQuery = `
 `;
 
 export const genealogyQuery = `
-  query MyQuery($referrer: Bytes) {
-    genealogies(where: {referrer: $referrer}) {
-      user {
-        generatedBUSD
-        generatedNTR
-        publicKey
-        people
-        generatedBNB
-      }
-      createdAt
-      level
+query MyQuery($referrer: Bytes, $first: Int = 10, $skip: Int = 10) {
+  genealogies(where: {referrer: $referrer}, skip: $skip, first: $first) {
+    user {
+      generatedBUSD
+      generatedNTR
+      publicKey
+      people
+      generatedBNB
     }
+    createdAt
+    level
   }
+}
 `;
 
 export const genealogyAtLevelQuery = `
