@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-import ctl from "@netlify/classnames-template-literals";
 
 import { Collection } from "@/models/nft";
 import { formatIPFSUrl } from "@/utils/format.address";
@@ -32,7 +31,9 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className={nftCardWrapper}>
+    <div
+      className={`relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`}
+    >
       <Link
         href={{
           pathname: AppRoutes.marketplace.collection,
@@ -40,7 +41,7 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
             collection: data.collection,
           },
         }}
-        className={nftImageWrapper}
+        className={`flex h-full w-full justify-center`}
       >
         {imageUrl ? (
           <Image
@@ -60,9 +61,3 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
     </div>
   );
 };
-
-const nftCardWrapper = ctl(
-  `bg-transparent relative rounded-xl overflow-hidden h-0 pb-[100%]`
-);
-
-const nftImageWrapper = ctl(`w-full h-full flex justify-center `);
