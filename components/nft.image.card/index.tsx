@@ -88,7 +88,9 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
         className={clsx(
           `relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`
         )}
-        onClick={onClickOpen}
+        onClick={() => {
+          locked && onClickOpen();
+        }}
       >
         <Link
           href={{
@@ -123,7 +125,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             <div
               className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-[6px]">
                 <LockIcon className="w-[28%]" />
                 LOCKED
               </div>
@@ -131,9 +133,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`text-12px absolute bottom-4 left-[50%] hidden h-[42px] w-[94%] translate-x-[-50%] items-center justify-center rounded-xl bg-black/20 text-white backdrop-blur-[20px] fsm:flex f2xl:w-[174px]`}
+              className={`text-12px absolute bottom-2 left-[50%] hidden h-[23%] w-[94%] translate-x-[-50%] items-center justify-center rounded-xl bg-black/20 text-white backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex w-full items-center justify-evenly">
+                <span className="text-10px hidden max-w-[100px] font-medium text-white f2xl:block">
+                  Time remaining to unlock
+                </span>
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
                     {days}
@@ -189,32 +194,34 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-18px text-center font-semibold text-white fmd:text-left">
                   {name}
                 </h5>
-                <div
-                  className={`text-12px lockedBackground mt-2 mb-2 flex w-full items-center justify-evenly gap-5 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-4 py-2 text-white fsm:m-0 fmd:mb-0 fmd:text-left`}
-                >
-                  <div className="flex flex-col items-center ">
-                    <span className="text-[14px] font-semibold text-white">
-                      {days}
-                    </span>
-                    <span className="text-[10px] font-medium text-white">
-                      DAYS
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center ">
-                    <span className="text-[14px] font-semibold text-white">
-                      {hours}
-                    </span>
-                    <span className="text-[10px] font-medium text-white">
-                      HOURS
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center ">
-                    <span className="text-[14px] font-semibold text-white">
-                      {minutes}
-                    </span>
-                    <span className="text-[10px] font-medium text-white">
-                      MIN
-                    </span>
+                <div className="my-2 h-[47px]  w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat fmd:mt-0">
+                  <div
+                    className={`text-12px bg-[rgba(20, 20, 22, 0.08)]  flex h-full w-full items-center justify-evenly gap-5 px-4 py-2 text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left `}
+                  >
+                    <div className="flex flex-col items-center ">
+                      <span className="text-[14px] font-semibold text-white">
+                        {days}
+                      </span>
+                      <span className="text-[10px] font-medium text-white">
+                        DAYS
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center ">
+                      <span className="text-[14px] font-semibold text-white">
+                        {hours}
+                      </span>
+                      <span className="text-[10px] font-medium text-white">
+                        HOURS
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center ">
+                      <span className="text-[14px] font-semibold text-white">
+                        {minutes}
+                      </span>
+                      <span className="text-[10px] font-medium text-white">
+                        MIN
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
