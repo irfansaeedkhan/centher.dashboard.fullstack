@@ -22,6 +22,7 @@ import { UploadNFT, CreateNFTForm } from "./_components";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { ZeroAddress } from "@/web3/constants/common";
 
 const nftRemoteBasePath = "ipfs:/";
 

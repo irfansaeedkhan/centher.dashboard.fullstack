@@ -8,7 +8,6 @@ import ctl from "@netlify/classnames-template-literals";
 import { Collection } from "@/models/nft";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-
 export interface NFTCardProps {
   data: Collection;
 }
@@ -51,11 +50,11 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
             alt="nft"
             height={275}
             width={275}
-            className="!h-[104px] !w-full rounded-xl object-cover [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"
+            className="absolute inset-0 h-full w-full rounded-xl object-cover"
             onError={() => setImageUrl("/images/placeholder-square.svg")}
           />
         ) : (
-          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+          <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
         )}
       </Link>
     </div>
@@ -63,7 +62,7 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
 };
 
 const nftCardWrapper = ctl(
-  `bg-transparent relative rounded-xl overflow-hidden `
+  `bg-transparent relative rounded-xl overflow-hidden h-0 pb-[100%]`
 );
 
 const nftImageWrapper = ctl(`w-full h-full flex justify-center `);

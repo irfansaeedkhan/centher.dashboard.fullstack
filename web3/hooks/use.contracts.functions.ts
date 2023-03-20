@@ -31,10 +31,6 @@ export const useGetRoundsInfo = () => {
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
         const roundStatus = getRoundStatus(roundState, i);
-        console.log(
-          "sniper: roundInfo: ",
-          ethers.utils.formatEther(roundInfo["minContributionForBusd"])
-        );
 
         const _roundInfo: RoundInfo = {
           round: i as RoundNumber,

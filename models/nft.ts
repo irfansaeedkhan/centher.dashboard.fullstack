@@ -9,6 +9,7 @@ export interface NFT {
   price: number;
   owner: string;
   endTime: number;
+  unlock: number;
 }
 
 export interface Collection {

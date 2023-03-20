@@ -29,6 +29,7 @@ export const getNFTs = async ({
           price: item.price,
           owner: item.owner,
           endTime: _endTime,
+          unlock: item.unlock,
         };
       });
       return nfts;
