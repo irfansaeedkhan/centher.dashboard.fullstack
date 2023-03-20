@@ -156,6 +156,7 @@ export const FixedPriceNFTBuyerDescription = ({
   const handleBuyNFT = async () => {
     try {
       buyNFTStep2Func();
+
       const result = await BlockchainWrite.callBuyListedItem(
         library,
         (data as INFTDetailData).collection,

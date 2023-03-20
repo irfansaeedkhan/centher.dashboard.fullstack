@@ -377,10 +377,17 @@ export class BlockchainRead {
     return data.users;
   }
 
-  static async getGenealogy(referrer: string): Promise<any[]> {
+  static async getGenealogy(
+    referrer: string,
+    first: number,
+    skip: number
+  ): Promise<any[]> {
     const variables = {
       referrer,
+      skip,
+      first,
     };
+
     const { data, error } = await ApolloProvider.query(
       QueryNames.GENEALOGY,
       variables
@@ -994,20 +1001,16 @@ export class BlockchainWrite {
         signer
       );
 
-      const normalizedValue = ethers.utils.parseEther(
-        normalizeValue(price) + ""
-      );
-
       await marketplaceContract.callStatic.buyForListedItem(
         collection,
         tokenId,
-        { value: normalizedValue }
+        { value: price }
       );
 
       const tx = await marketplaceContract.functions.buyForListedItem(
         collection,
         tokenId,
-        { value: normalizedValue }
+        { value: price }
       );
       await tx.wait();
 

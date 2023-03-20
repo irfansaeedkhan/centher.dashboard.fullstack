@@ -304,18 +304,14 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     if (library && data) {
       try {
         if (!isApproved) {
-          try {
-            const approveResult =
-              await BlockchainWrite.callApproveNFTToMarketplace(
-                library,
-                data.collection
-              );
+          const approveResult =
+            await BlockchainWrite.callApproveNFTToMarketplace(
+              library,
+              data.collection
+            );
 
-            if (!approveResult?.length) {
-              throw new Error("something went wrong");
-            }
-          } catch (error) {
-            throw error;
+          if (!approveResult?.length) {
+            throw new Error("something went wrong");
           }
         }
 

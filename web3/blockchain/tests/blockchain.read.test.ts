@@ -1166,7 +1166,7 @@ describe("BlockchainRead", () => {
       .fn()
       .mockResolvedValue({ error: "error checking worked" });
     try {
-      await BlockchainRead.getGenealogy("test");
+      await BlockchainRead.getGenealogy("test", 10, 0);
     } catch (err) {
       expect(err).toBe("error checking worked");
     }
@@ -1190,7 +1190,7 @@ describe("BlockchainRead", () => {
         genealogies: data,
       },
     });
-    const result = await BlockchainRead.getGenealogy("test");
+    const result = await BlockchainRead.getGenealogy("test", 10, 0);
     expect(result).toEqual(data);
   });
 
@@ -1216,9 +1216,11 @@ describe("BlockchainRead", () => {
 
     const spy = jest.spyOn(ApolloProvider, "query");
 
-    await BlockchainRead.getGenealogy("test");
+    await BlockchainRead.getGenealogy("test", 10, 0);
     expect(spy).toBeCalledWith(QueryNames.GENEALOGY, {
       referrer: "test",
+      first: 10,
+      skip: 0,
     });
   });
 
