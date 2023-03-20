@@ -1,18 +1,20 @@
 import React from "react";
 
+import { INewPost } from "@/store/new.post.store";
+
 interface Props {
-  posts: any;
+  posts: INewPost[];
 }
 
 const PostPreview = ({ posts }: Props) => {
   return (
     <div className="mb-3 space-y-3">
-      {posts?.map((media: any, index: number) => (
+      {posts.slice(0, -1).map((post) => (
         <div
-          key={index}
+          key={post.uuid}
           className="rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
         >
-          {media.post_text}
+          {post.post_text}
         </div>
       ))}
     </div>

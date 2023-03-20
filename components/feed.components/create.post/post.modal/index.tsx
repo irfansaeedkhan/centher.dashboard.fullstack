@@ -21,7 +21,6 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
     editPostFiles,
     closeModal,
     isModalOpen,
-    postText,
     setPostText,
     postTextMaxLength,
     posts,
@@ -85,7 +84,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
                 rows={4}
                 maxLength={postTextMaxLength}
                 placeholder="Type here"
-                value={postText}
+                value={posts.at(-1)?.post_text}
                 onChange={(e) => setPostText(e.target.value)}
               ></textarea>
             </div>

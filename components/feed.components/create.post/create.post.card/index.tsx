@@ -20,7 +20,7 @@ export const CreatePostCard: React.FC<Props> = () => {
     <div
       className={`relative flex w-full flex-col gap-4 rounded-10px bg-background-shade-3 p-3 fsm:p-4`}
     >
-      <div className={`top mb-2 flex w-full items-center gap-2`}>
+      <div className={`mb-2 flex w-full items-center gap-2`}>
         <Image
           src={user.profile_image.path}
           width={48}

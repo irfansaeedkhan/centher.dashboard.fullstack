@@ -10,12 +10,12 @@ import { PostTextCounter } from "./post.text.counter";
 const PostModalFooter: React.FC = () => {
   const {
     isPostModalLoading,
-    postText,
     postTextMaxLength,
     createPost,
-    createThread,
+    addNewPost,
     modalType,
     editPost,
+    posts,
   } = useNewPostStore();
 
   return (
@@ -41,7 +41,7 @@ const PostModalFooter: React.FC = () => {
           })}
         >
           <PostTextCounter
-            currentLength={postText.length}
+            currentLength={posts.at(-1)!.post_text.length}
             maxLength={postTextMaxLength}
           />
         </div>
@@ -51,7 +51,7 @@ const PostModalFooter: React.FC = () => {
         ></div>
 
         <button
-          onClick={() => createThread()}
+          onClick={() => addNewPost()}
           className="flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg text-brand-primary fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
         >
           +

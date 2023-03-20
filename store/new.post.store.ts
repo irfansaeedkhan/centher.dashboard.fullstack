@@ -10,8 +10,7 @@ import {
   getNewPostAndUpdateState,
   uploadFiles,
 } from "@/utils/create.post";
-import { v1 as uuid } from "uuid";
-import { initial } from "lodash";
+import { v4 as uuid } from "uuid";
 
 interface SelectedFile {
   name: string;
@@ -21,8 +20,8 @@ interface SelectedFile {
 }
 export interface NewPostStore {
   modalType: ModalType;
-  postId: string | null;
-  parentPostId: string | null;
+  postId: string | null; // Used for editing post
+  parentPostId: string | null; // Used for replying to a post
 
   isModalOpen: boolean;
   openModal: (options: OpenModalOptions) => void;
@@ -40,17 +39,13 @@ export interface NewPostStore {
   removeEditPostFile: (fileId: string) => void;
 
   postTextMaxLength: 260;
-  postText: string;
+  // postText: string;
   setPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
-  posts: {
-    media?: FileWithID[];
-    post_text: string;
-    uuid: string;
-    media_count: number;
-  }[];
-  createThread: () => Promise<void>;
+  posts: INewPost[];
+  addNewPost: () => Promise<void>;
+
   editPost: () => Promise<void>;
 
   onCloseModal: () => void;
@@ -64,11 +59,36 @@ export const useNewPostStore = create<NewPostStore>()(
       parentPostId: null,
       posts: [],
       isModalOpen: false,
+      postTextMaxLength: 260,
+
       openModal: (options) => {
         // Hide scroll bar
         document.body.style.overflow = "hidden";
-        set({ isModalOpen: true, ...options });
+        if (
+          options.modalType === "new-post" ||
+          options.modalType === "reply" ||
+          options.modalType === "reply-of-reply"
+        ) {
+          set({
+            isModalOpen: true,
+            posts: [
+              {
+                uuid: uuid(),
+                post_text: "",
+                media: [],
+              },
+            ],
+            ...options,
+          });
+        } else {
+          // TODO: handle "edit"
+          set({
+            isModalOpen: true,
+            ...options,
+          });
+        }
       },
+
       closeModal: () => {
         // Show scroll bar
         document.body.style.overflow = "auto";
@@ -79,7 +99,6 @@ export const useNewPostStore = create<NewPostStore>()(
           isModalOpen: false,
           selectedFiles: [],
           isPostModalLoading: false,
-          postText: "",
           editPostFiles: undefined,
           posts: [],
         });
@@ -116,52 +135,92 @@ export const useNewPostStore = create<NewPostStore>()(
         }));
       },
 
-      postTextMaxLength: 260,
-      postText: "",
-      setPostText: (text: string) => set({ postText: text }),
+      setPostText: (text: string) => {
+        set({
+          posts: get().posts.map((post, index) =>
+            index === get().posts.length - 1
+              ? {
+                  ...post,
+                  post_text: text,
+                }
+              : post
+          ),
+        });
+      },
 
-      createThread: async () => {
-        try {
-          const { postText, selectedFiles, parentPostId } = get();
-          if (selectedFiles.length < 1) {
-            console.log("No files");
-            get().posts.push({
-              uuid: uuid(),
-              post_text: postText,
-              media_count: 0,
-            });
-          }
-          set({ postText: "", selectedFiles: [], parentPostId: null });
-        } catch (error: any) {
-          console.log(error);
+      addNewPost: async () => {
+        // Check if the last post is empty
+        if (
+          get().posts.at(-1)?.post_text.trim() === "" &&
+          get().posts.at(-1)?.media.length === 0
+        ) {
+          return;
         }
+
+        const posts = [
+          ...get().posts,
+          {
+            uuid: uuid(),
+            post_text: "",
+            media: [],
+          },
+        ];
+
+        set({ posts });
       },
 
       createPost: async () => {
         try {
-          let postArray = get().posts;
+          // Exclude the last post if it is empty
+          let postArray = [...get().posts];
 
-          const { postText, selectedFiles, parentPostId } = get();
-          if (selectedFiles.length < 1) {
-            if (postText.trim() === "" && !postArray) {
-              toast.error("Please add some text or a photo/video");
-              return;
-            }
-            if (!postArray || postText.trim() !== "") {
-              get().posts.push({
-                uuid: uuid(),
-                post_text: postText,
-                media_count: 0,
-              });
-              set({ postText: "", selectedFiles: [], parentPostId: null });
-            }
-            postArray = get().posts;
+          if (
+            get().posts.at(-1)?.post_text.trim() === "" &&
+            get().posts.at(-1)?.media.length === 0
+          ) {
+            postArray = get().posts.slice(0, -1);
+          }
+
+          // Every post should have either post_text or media
+          if (
+            postArray.every(
+              (post) => post.post_text.trim() === "" && post.media.length === 0
+            )
+          ) {
+            toast.error("Post should have either text or media");
+            return;
+          }
+
+          // Check if any post has greater than 5 media
+          if (postArray.some((post) => post.media.length > 5)) {
+            toast.error("Post should have maximum 5 media");
+            return;
+          }
+
+          // Check if the post text is more than 260 characters
+          if (
+            postArray.some(
+              (post) => post.post_text.trim().length > get().postTextMaxLength
+            )
+          ) {
+            toast.error(
+              `Post text should not be more than ${
+                get().postTextMaxLength
+              } characters`
+            );
+            return;
           }
 
           set({ isPostModalLoading: true });
+
           await axiosNodeApi.post(`/api/socials/posts/v2`, {
-            posts: postArray,
+            posts: postArray.map((post) => ({
+              uuid: post.uuid,
+              post_text: post.post_text,
+              media_count: post.media.length,
+            })),
           });
+
           get().closeModal();
         } catch (error: any) {
           set({ isPostModalLoading: false });
@@ -177,29 +236,30 @@ export const useNewPostStore = create<NewPostStore>()(
 
       editPost: async () => {
         try {
-          const { postText, editPostFiles, postId } = get();
+          // TODO: Handle edit post
+          // const { postText, editPostFiles, postId } = get();
 
-          if (
-            postText.trim() === "" &&
-            (!editPostFiles ||
-              editPostFiles.filter((f) => f.isDeleted).length ===
-                editPostFiles.length)
-          ) {
-            toast.error("You can not make the post empty");
-            return;
-          }
+          // if (
+          //   postText.trim() === "" &&
+          //   (!editPostFiles ||
+          //     editPostFiles.filter((f) => f.isDeleted).length ===
+          //       editPostFiles.length)
+          // ) {
+          //   toast.error("You can not make the post empty");
+          //   return;
+          // }
 
-          set({ isPostModalLoading: true });
+          // set({ isPostModalLoading: true });
 
-          await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
-            text: postText,
-            deleted_media: editPostFiles
-              ?.filter((file) => file.isDeleted)
-              .map((file) => file.original.url),
-          });
+          // await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
+          //   text: postText,
+          //   deleted_media: editPostFiles
+          //     ?.filter((file) => file.isDeleted)
+          //     .map((file) => file.original.url),
+          // });
 
-          // If no file media that means only text was available in post
-          await getNewPostAndUpdateState(postId!);
+          // // If no file media that means only text was available in post
+          // await getNewPostAndUpdateState(postId!);
           get().closeModal();
           return;
         } catch (error: any) {
@@ -212,6 +272,12 @@ export const useNewPostStore = create<NewPostStore>()(
     { name: "NewPostStore" }
   )
 );
+
+export interface INewPost {
+  uuid: string;
+  post_text: string;
+  media: FileWithID[];
+}
 
 export interface FileWithID {
   original: File;
