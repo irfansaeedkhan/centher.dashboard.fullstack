@@ -143,15 +143,18 @@ export const useNewPostStore = create<NewPostStore>()(
 
           const { postText, selectedFiles, parentPostId } = get();
           if (selectedFiles.length < 1) {
-            if (postText.trim() === "") {
+            if (postText.trim() === "" && !postArray) {
               toast.error("Please add some text or a photo/video");
               return;
             }
-            get().posts.push({
-              uuid: uuid(),
-              post_text: postText,
-              media_count: 0,
-            });
+            if (!postArray || postText.trim() !== "") {
+              get().posts.push({
+                uuid: uuid(),
+                post_text: postText,
+                media_count: 0,
+              });
+              set({ postText: "", selectedFiles: [], parentPostId: null });
+            }
             postArray = get().posts;
           }
 
