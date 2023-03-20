@@ -2421,8 +2421,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
-        unlock: number = 0,
-        receiver: string = ZeroAddress,
+        // unlock: number = 0,
+        // receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2448,9 +2448,9 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1,
-      0,
-      ZeroAddress
+      1
+      // 0,
+      // ZeroAddress
     );
     expect(spy).toBeCalledWith(SmartContractName.MARKETPALCE, {});
   });
@@ -2464,8 +2464,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
-        unlock: number = 0,
-        receiver: string = ZeroAddress,
+        // unlock: number = 0,
+        // receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2491,12 +2491,12 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1,
-      0,
-      ZeroAddress
+      1
+      // 0,
+      // ZeroAddress
     );
     expect(result).toEqual(
-      model.createItems("test_address", "", 1, true, "", 1, 0, ZeroAddress, {
+      model.createItems("test_address", "", 1, true, "", 1, {
         value: "",
       }).hash
     );
@@ -2511,8 +2511,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
-        unlock: number = 0,
-        receiver: string = ZeroAddress,
+        // unlock: number = 0,
+        // receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2539,9 +2539,9 @@ describe("BlockchainWrite", () => {
       true,
       1,
       1,
-      1,
-      0,
-      ZeroAddress
+      1
+      // 0,
+      // ZeroAddress
     );
     const normalizedValue = ethers.utils.parseEther(normalizeValue(1) + "");
     const fee = 1;
@@ -2553,8 +2553,8 @@ describe("BlockchainWrite", () => {
       true,
       normalizedValue,
       1,
-      0,
-      ZeroAddress,
+      // 0,
+      // ZeroAddress,
       {
         value: castedFee,
       }
@@ -2570,8 +2570,8 @@ describe("BlockchainWrite", () => {
         isAuction: boolean,
         price: string,
         period: number,
-        unlock: number = 0,
-        receiver: string = ZeroAddress,
+        // unlock: number = 0,
+        // receiver: string = ZeroAddress,
         { value: string }
       ) => {
         return {
@@ -2600,9 +2600,9 @@ describe("BlockchainWrite", () => {
         true,
         1,
         1,
-        1,
-        0,
-        ZeroAddress
+        1
+        // 0,
+        // ZeroAddress
       );
     } catch (error: any) {
       expect(error.message).toEqual("test_error");
