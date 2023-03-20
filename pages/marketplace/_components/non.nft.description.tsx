@@ -13,12 +13,6 @@ import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-// import {
-//   callApproveNFTToMarketplace,
-//   callCreateAuction,
-//   callListItemForSale,
-// } from "@/web3/utils/call.helpers";
-// import callCreateAuction from "@/web3/blockchain/";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import ChangePriceListModal from "./change.price.list.modal";
@@ -304,18 +298,14 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     if (library && data) {
       try {
         if (!isApproved) {
-          try {
-            const approveResult =
-              await BlockchainWrite.callApproveNFTToMarketplace(
-                library,
-                data.collection
-              );
+          const approveResult =
+            await BlockchainWrite.callApproveNFTToMarketplace(
+              library,
+              data.collection
+            );
 
-            if (!approveResult?.length) {
-              throw new Error("something went wrong");
-            }
-          } catch (error) {
-            throw error;
+          if (!approveResult?.length) {
+            throw new Error("something went wrong");
           }
         }
 

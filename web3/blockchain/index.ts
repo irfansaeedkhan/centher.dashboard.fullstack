@@ -1000,20 +1000,16 @@ export class BlockchainWrite {
         signer
       );
 
-      const normalizedValue = ethers.utils.parseEther(
-        normalizeValue(price) + ""
-      );
-
       await marketplaceContract.callStatic.buyForListedItem(
         collection,
         tokenId,
-        { value: normalizedValue }
+        { value: price }
       );
 
       const tx = await marketplaceContract.functions.buyForListedItem(
         collection,
         tokenId,
-        { value: normalizedValue }
+        { value: price }
       );
       await tx.wait();
 

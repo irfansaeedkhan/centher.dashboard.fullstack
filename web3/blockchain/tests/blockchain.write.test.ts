@@ -1969,7 +1969,7 @@ describe("BlockchainWrite", () => {
     );
   });
 
-  it('should call "callBuyListedItem" and call contract with params"', async () => {
+  it('should call "callBuyListedItem" and call contract with params', async () => {
     const model = {
       buyForListedItem: (
         collection: string,
@@ -1998,8 +1998,8 @@ describe("BlockchainWrite", () => {
       1,
       1
     );
-    const normalizedValue = ethers.utils.parseEther(normalizeValue(1) + "");
-    expect(spy).toBeCalledWith("test_address", 1, { value: normalizedValue });
+
+    expect(spy).toBeCalledWith("test_address", 1, { value: 1 });
   });
 
   it('should call "callBuyListedItem" and throw error', async () => {
