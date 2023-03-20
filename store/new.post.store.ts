@@ -10,6 +10,7 @@ import {
   getNewPostAndUpdateState,
   uploadFiles,
 } from "@/utils/create.post";
+import { v1 as uuid } from "uuid";
 import { initial } from "lodash";
 
 interface SelectedFile {
@@ -43,10 +44,11 @@ export interface NewPostStore {
   setPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
-  postThreadMedia: {
-    post_files_detail: any;
+  posts: {
+    media?: FileWithID[];
     post_text: string;
-    reply_post_id?: string | null;
+    uuid: string;
+    media_count: number;
   }[];
   createThread: () => Promise<void>;
   editPost: () => Promise<void>;
@@ -60,7 +62,7 @@ export const useNewPostStore = create<NewPostStore>()(
       modalType: null,
       postId: null,
       parentPostId: null,
-      postThreadMedia: [],
+      posts: [],
       isModalOpen: false,
       openModal: (options) => {
         // Hide scroll bar
@@ -79,6 +81,7 @@ export const useNewPostStore = create<NewPostStore>()(
           isPostModalLoading: false,
           postText: "",
           editPostFiles: undefined,
+          posts: [],
         });
         if (get().onCloseModal) {
           get().onCloseModal();
@@ -120,26 +123,15 @@ export const useNewPostStore = create<NewPostStore>()(
       createThread: async () => {
         try {
           const { postText, selectedFiles, parentPostId } = get();
-          if (postText.trim() === "" && selectedFiles.length < 1) {
-            toast.error("Please add some text or a photo/video");
-            return;
+          if (selectedFiles.length < 1) {
+            console.log("No files");
+            get().posts.push({
+              uuid: uuid(),
+              post_text: postText,
+              media_count: 0,
+            });
           }
-          if (selectedFiles.length > 5) {
-            toast.error("You can only upload a maximum of 5 photos/videos");
-            return;
-          }
-          // set({ isPostModalLoading: true });
-          const filesChunksData = createFilesChunks(selectedFiles);
-          // add files to postThreadMedia
-          get().postThreadMedia.push({
-            post_files_detail: filesChunksData,
-            post_text: postText,
-            reply_post_id: parentPostId,
-          });
-          // set postText, selectedFiles, parentPostId to initial state
           set({ postText: "", selectedFiles: [], parentPostId: null });
-          const postThreadMedia = get().postThreadMedia;
-          console.log(postThreadMedia);
         } catch (error: any) {
           console.log(error);
         }
@@ -147,39 +139,27 @@ export const useNewPostStore = create<NewPostStore>()(
 
       createPost: async () => {
         try {
-          const postThreadMedia = get().postThreadMedia;
-          console.log(postThreadMedia);
+          let postArray = get().posts;
+
           const { postText, selectedFiles, parentPostId } = get();
-          if (!postThreadMedia) {
-            if (postText.trim() === "" && selectedFiles.length < 1) {
+          if (selectedFiles.length < 1) {
+            if (postText.trim() === "") {
               toast.error("Please add some text or a photo/video");
               return;
             }
-
-            if (selectedFiles.length > 5) {
-              toast.error("You can only upload a maximum of 5 photos/videos");
-              return;
-            }
+            get().posts.push({
+              uuid: uuid(),
+              post_text: postText,
+              media_count: 0,
+            });
+            postArray = get().posts;
           }
 
           set({ isPostModalLoading: true });
-
-          const filesChunksData = createFilesChunks(selectedFiles);
-
-          const { data } = await axiosNodeApi.post(
-            `/api/socials/posts/signedurl`,
-            postThreadMedia
-          );
-
-          // If no file media that means only text was available in post
-          if (filesChunksData.length === 0) {
-            await getNewPostAndUpdateState(data.post_id);
-            get().closeModal();
-            return;
-          }
-
-          // Starting uploading the files
-          await uploadFiles(filesChunksData, 0, data.post_url, data.post_id);
+          await axiosNodeApi.post(`/api/socials/posts/v2`, {
+            posts: postArray,
+          });
+          get().closeModal();
         } catch (error: any) {
           set({ isPostModalLoading: false });
           customLog("Error in create post: ", ["development"]);

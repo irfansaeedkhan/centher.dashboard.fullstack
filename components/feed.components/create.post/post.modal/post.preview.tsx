@@ -1,14 +1,13 @@
 import React from "react";
 
 interface Props {
-  postThreadMedia: any;
+  posts: any;
 }
 
-const PostPreview = ({ postThreadMedia }: Props) => {
-  console.log("comp", postThreadMedia);
+const PostPreview = ({ posts }: Props) => {
   return (
     <div className="mb-3 space-y-3">
-      {postThreadMedia?.map((media: any, index: number) => (
+      {posts?.map((media: any, index: number) => (
         <div
           key={index}
           className="rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"

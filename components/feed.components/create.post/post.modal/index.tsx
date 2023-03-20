@@ -24,7 +24,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
     postText,
     setPostText,
     postTextMaxLength,
-    postThreadMedia,
+    posts,
   } = useNewPostStore();
 
   const hasMedia = useMemo(() => {
@@ -75,7 +75,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           </div>
 
           <div>
-            <PostPreview postThreadMedia={postThreadMedia} />
+            <PostPreview posts={posts} />
             <FilesPreview />
 
             <div className={clsx(`w-full`, hasMedia && "mt-4")}>
