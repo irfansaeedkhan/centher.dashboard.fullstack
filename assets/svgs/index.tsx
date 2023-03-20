@@ -109,6 +109,7 @@ export { default as MetamaskIcon2 } from "./metamask.icon2.svg";
 export { default as AuctionIcon } from "./auctionicon.svg";
 export { default as LockIcon } from "./lock.svg";
 export { default as MoonIcon } from "./moonicon.svg";
+export { default as LockVector } from "./lockvector.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

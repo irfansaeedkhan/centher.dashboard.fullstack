@@ -53,7 +53,7 @@ export const LockedNftModal: React.FC<CustomModalProps> = ({
             </h3>
 
             <button onClick={onClickClose}>
-              <IoClose className="h-5 w-5 fill-white" />
+              <IoClose className="ioCLose h-5 w-5 fill-white" />
             </button>
           </div>
 

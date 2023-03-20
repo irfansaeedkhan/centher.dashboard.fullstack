@@ -4,14 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 import { NFT } from "@/models/nft";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { LockIcon, MoonIcon } from "@/assets/svgs";
-import clsx from "clsx";
-import { LockedNftModal } from "../modal/locked.nft.modal";
+import { LockIcon, LockVector, MoonIcon } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
+import { LockedNftModal } from "../modal/locked.nft.modal";
 
 export interface NFTCardProps {
   data: NFT;
@@ -20,7 +20,8 @@ export interface NFTCardProps {
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState("");
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-  const [showLockedDetails, setShowLockedDetails] = useState<boolean>();
+
+  const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   useEffect(() => {
@@ -75,19 +76,19 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
     setMinutes(_minutes <= 0 ? 0 : _minutes);
     setSeconds(_seconds <= 0 ? 0 : _seconds);
   };
-
+  const onClickClose = () => {
+    setShowLockedDetails(false);
+  };
+  const onClickOpen = () => {
+    setShowLockedDetails(true);
+  };
   return (
-    <div
-      className={`cursor-pointer`}
-      onClick={() => {
-        locked && setShowLockedDetails(true);
-      }}
-    >
+    <div className={`cursor-pointer`}>
       <div
         className={clsx(
-          `relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`,
-          locked && "pointer-events-none"
+          `relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`
         )}
+        onClick={onClickOpen}
       >
         <Link
           href={{
@@ -97,7 +98,10 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               tokenId: data.tokenId,
             },
           }}
-          className={nftImageWrapper}
+          className={clsx(
+            `flex h-full w-full justify-center`,
+            locked && "pointer-events-none"
+          )}
         >
           {imageUrl ? (
             <Image
@@ -117,20 +121,19 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-4 right-4 flex h-[24px] w-[74px] items-center justify-center  rounded-md bg-white/20 text-[10px] text-white backdrop-blur-lg`}
+              className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex items-center gap-1">
-                <LockIcon className="h-[16px] w-[16px]" />
+                <LockIcon className="w-[28%]" />
                 LOCKED
               </div>
             </div>
           )}
           {locked && (
             <div
-              className={`text-12px absolute bottom-4 left-[50%] flex h-[42px] w-[94%] translate-x-[-50%] items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-lg f2xl:w-[174px]`}
+              className={`text-12px absolute bottom-4 left-[50%] hidden h-[42px] w-[94%] translate-x-[-50%] items-center justify-center rounded-xl bg-black/20 text-white backdrop-blur-[20px] fsm:flex f2xl:w-[174px]`}
             >
-              <div className="flex items-center gap-3">
-                <MoonIcon className=" hidden scale-75 fmd:block" />
+              <div className="flex w-full items-center justify-evenly">
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
                     {days}
@@ -156,15 +159,21 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               </div>
             </div>
           )}
+          {locked && (
+            <div
+              className={`absolute top-[50%] left-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
+              text-white backdrop-blur-[20px] fsm:hidden`}
+            >
+              <LockVector />
+            </div>
+          )}
         </Link>
       </div>
       {showLockedDetails && (
         <LockedNftModal
           title="Lock NFT Details"
           isOpen={showLockedDetails}
-          onClickClose={() => {
-            setShowLockedDetails(false);
-          }}
+          onClickClose={onClickClose}
         >
           <div className="p-5 fmd:p-10">
             {/* head */}
@@ -176,46 +185,36 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 width={120}
                 className="h-[120px] w-[120px] rounded-xl object-cover"
               />
-              <div className="max-w-[274px]">
-                <div className="flex w-full items-center  gap-4 p-3">
-                  <h5 className="text-18px font-semibold text-white">{name}</h5>
-                  <Image
-                    src={"/images/lockicon.png"}
-                    alt={"lockicon"}
-                    height={40}
-                    width={32}
-                    className="h-[32px] w-[40px]"
-                  />
-                </div>
+              <div className="flex w-full max-w-[240px] flex-col gap-2 fmd:gap-4">
+                <h5 className="text-18px text-center font-semibold text-white fmd:text-left">
+                  {name}
+                </h5>
                 <div
-                  className={`text-12px mt-2 mb-4 flex h-[42px] w-full items-center justify-center rounded-xl text-white fsm:m-0`}
+                  className={`text-12px lockedBackground mt-2 mb-2 flex w-full items-center justify-evenly gap-5 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-4 py-2 text-white fsm:m-0 fmd:mb-0 fmd:text-left`}
                 >
-                  <div className="mt-[2px] flex w-full items-center justify-between gap-3 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-4 py-2">
-                    <MoonIcon className="h-9 w-9" />
-                    <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
-                        {days}
-                      </span>
-                      <span className="text-[10px] font-medium text-white">
-                        DAYS
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
-                        {hours}
-                      </span>
-                      <span className="text-[10px] font-medium text-white">
-                        HOURS
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
-                        {minutes}
-                      </span>
-                      <span className="text-[10px] font-medium text-white">
-                        MIN
-                      </span>
-                    </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {days}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      DAYS
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {hours}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      HOURS
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {minutes}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      MIN
+                    </span>
                   </div>
                 </div>
               </div>
@@ -234,7 +233,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px font-semibold text-white">
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
                   {data.collection}
                 </h6>
               </div>
@@ -242,7 +241,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Token ID
                 </h5>
-                <h6 className="text-14px font-semibold text-white">
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
                   {data.tokenId}
                 </h6>
               </div>

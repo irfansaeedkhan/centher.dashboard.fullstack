@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import clsx from "clsx";
 
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
@@ -14,18 +15,16 @@ import { BNBIcon } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import useGetUser from "@/hooks/use.get.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { LockIcon, MoonIcon } from "@/assets/svgs";
-import { LockedNftModal } from "../modal/locked.nft.modal";
-import clsx from "clsx";
+import { LockIcon } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
+import { LockedNftModal } from "../modal/locked.nft.modal";
 export interface NFTCardProps {
   data: NFTCardData;
 }
 
 export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
-  // const [locked, setLocked] = useState(true);
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-  const [showLockedDetails, setShowLockedDetails] = useState<boolean>();
+  const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
   const { user } = useGetUser(data.owner.account_address);
   const verificationTick = useVerificationTick(user);
@@ -66,21 +65,26 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
     setMinutes(_minutes <= 0 ? 0 : _minutes);
     setSeconds(_seconds <= 0 ? 0 : _seconds);
   };
-
+  const onClickClose = () => {
+    setShowLockedDetails(false);
+  };
+  const onClickOpen = () => {
+    setShowLockedDetails(true);
+  };
   return (
-    <div
-      className={clsx(`cursor-pointer`)}
-      onClick={() => {
-        locked && setShowLockedDetails(true);
-      }}
-    >
+    <div className={`cursor-pointer`}>
       <div
         className={clsx(
-          `relative flex max-w-[300px] flex-col overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`,
-          locked && "pointer-events-none"
+          `relative flex max-w-[300px] flex-col overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`
         )}
+        onClick={onClickOpen}
       >
-        <div className="absolute top-0 left-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]">
+        <div
+          className={clsx(
+            `absolute top-0 left-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]`,
+            locked && "pointer-events-none"
+          )}
+        >
           <div className={`flex items-center gap-2`}>
             {data.owner.is_registered ? (
               <Link href={`/profile/${data.owner.account_address}`}>
@@ -155,7 +159,10 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
               tokenId: data.tokenId,
             },
           }}
-          className={` mt-10 block w-full px-2`}
+          className={clsx(
+            ` mt-10 block w-full px-2`,
+            locked && "pointer-events-none"
+          )}
         >
           <Image
             src={imageUrl}
@@ -167,20 +174,19 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
           />
           {locked && (
             <div
-              className={`absolute top-[70px] right-5 flex h-[24px] w-[74px] items-center justify-center  rounded-md bg-white/20 text-[10px] text-white backdrop-blur-lg`}
+              className={`absolute top-[70px] right-5 flex h-[24px] w-[77px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
             >
               <div className="flex items-center gap-1">
-                <LockIcon className="h-[16px] w-[16px]" />
+                <LockIcon className="w-[28%]" />
                 LOCKED
               </div>
             </div>
           )}
           {locked && (
             <div
-              className={`text-12px absolute top-[55%] left-[50%] flex h-[42px]  w-[174px] translate-x-[-50%] items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-lg`}
+              className={`text-12px absolute top-[55%] left-[50%] flex h-[42px]  w-[174px] translate-x-[-50%] items-center justify-center rounded-xl bg-black/20 text-white backdrop-blur-[20px]`}
             >
-              <div className="flex items-center gap-3">
-                <MoonIcon className="scale-75" />
+              <div className="flex w-full items-center justify-evenly">
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">
                     {days}
@@ -239,101 +245,86 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
             </span>
           </div>
         </div>
-        {showLockedDetails && (
-          <LockedNftModal
-            title="Lock NFT Details"
-            isOpen={showLockedDetails}
-            onClickClose={() => {
-              setShowLockedDetails(false);
-            }}
-          >
-            <div className="p-5 fmd:p-10">
-              {/* head */}
-              <div className="flex flex-col items-center gap-4 fsm:flex-row">
-                <Image
-                  src={formatIPFSUrl(data.imageUrl)}
-                  alt={"locknft"}
-                  height={120}
-                  width={120}
-                  className="h-[120px] w-[120px] rounded-xl object-cover"
-                />
-                <div className="max-w-[274px]">
-                  <div className="flex w-full items-center  gap-4 p-3">
-                    <h5 className="text-18px font-semibold text-white">
-                      {data.name}
-                    </h5>
-                    <Image
-                      src={"/images/lockicon.png"}
-                      alt={"lockicon"}
-                      height={40}
-                      width={32}
-                      className="h-[32px] w-[40px]"
-                    />
+      </div>
+      {showLockedDetails && (
+        <LockedNftModal
+          title="Lock NFT Details"
+          isOpen={showLockedDetails}
+          onClickClose={onClickClose}
+        >
+          <div className="p-5 fmd:p-10">
+            {/* head */}
+            <div className="flex flex-col items-center gap-4 fsm:flex-row">
+              <Image
+                src={formatIPFSUrl(data.imageUrl)}
+                alt={"locknft"}
+                height={120}
+                width={120}
+                className="h-[120px] w-[120px] rounded-xl object-cover"
+              />
+              <div className="flex w-full max-w-[240px] flex-col gap-2 fmd:gap-4">
+                <h5 className="text-18px text-center font-semibold text-white fmd:text-left">
+                  {data.name}
+                </h5>
+
+                <div className="text-12px lockedBackground mt-2 mb-2 flex w-full items-center justify-evenly gap-5 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-4 py-2 text-white fsm:m-0 fmd:mb-0 fmd:text-left">
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {days}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      DAYS
+                    </span>
                   </div>
-                  <div
-                    className={`text-12px mt-2 mb-4 flex h-[42px] w-full items-center justify-center rounded-xl text-white fsm:m-0`}
-                  >
-                    <div className="mt-[2px] flex w-full items-center justify-between gap-3 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-4 py-2">
-                      <MoonIcon className="h-9 w-9" />
-                      <div className="flex flex-col items-center ">
-                        <span className="text-[14px] font-semibold text-white">
-                          {days}
-                        </span>
-                        <span className="text-[10px] font-medium text-white">
-                          DAYS
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center ">
-                        <span className="text-[14px] font-semibold text-white">
-                          {hours}
-                        </span>
-                        <span className="text-[10px] font-medium text-white">
-                          HOURS
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center ">
-                        <span className="text-[14px] font-semibold text-white">
-                          {minutes}
-                        </span>
-                        <span className="text-[10px] font-medium text-white">
-                          MIN
-                        </span>
-                      </div>
-                    </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {hours}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      HOURS
+                    </span>
                   </div>
-                </div>
-              </div>
-              {/* description */}
-              <div className="mt-4 flex flex-col gap-6 fmd:mt-6">
-                <div className="flex flex-col gap-2">
-                  <h5 className="text-14px font-normal text-gray-shade-18">
-                    Collection Description
-                  </h5>
-                  <h6 className="text-14px font-semibold text-white">
-                    {data.description}
-                  </h6>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h5 className="text-14px font-normal text-gray-shade-18">
-                    Collection Address
-                  </h5>
-                  <h6 className="text-14px font-semibold text-white">
-                    {data.collection}
-                  </h6>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <h5 className="text-14px font-normal text-gray-shade-18">
-                    Token ID
-                  </h5>
-                  <h6 className="text-14px font-semibold text-white">
-                    {data.tokenId}
-                  </h6>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[14px] font-semibold text-white">
+                      {minutes}
+                    </span>
+                    <span className="text-[10px] font-medium text-white">
+                      MIN
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </LockedNftModal>
-        )}
-      </div>
+            {/* description */}
+            <div className="mt-4 flex flex-col gap-6 fmd:mt-6">
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Collection Description
+                </h5>
+                <h6 className="text-14px font-semibold text-white">
+                  {data.description}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Collection Address
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                  {data.collection}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Token ID
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                  {data.tokenId}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </LockedNftModal>
+      )}
     </div>
   );
 };
