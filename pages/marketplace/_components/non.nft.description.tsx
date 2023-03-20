@@ -13,6 +13,7 @@ import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 // import {
 //   callApproveNFTToMarketplace,
 //   callCreateAuction,
@@ -28,6 +29,7 @@ import NewButton from "@/components/button/new.button";
 import Joi, { string } from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import CreateNFTAuctionModal from "./create.nft.auction.modal";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -50,19 +52,23 @@ const AuctionModalschema = Joi.object({
   }),
 });
 
+enum ModalType {
+  auctionModal = "auctionModal",
+}
+
 export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   const router = useRouter();
   const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalContent, setModalContent] = useState<any>();
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
 
   const bnbPrice = useBNBPrice();
-
-  const auctionForm = useForm<auctionFormInterface>({
-    mode: "onChange",
-    resolver: joiResolver(AuctionModalschema),
-  });
 
   const listingModal = () => {
     setModal(true);
@@ -74,68 +80,14 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     setModalContent(<ChangePriceListModal handleListNFT={handleListNFT} />);
   };
 
-  const auctionModal = () => {
-    if (!library) {
-      toast.error("Connect your wallet");
-      return;
-    }
-    setModalTitle("Auction");
-    setModalContent(
-      <form className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Set Auction End Time</label>
-          <input
-            type="datetime-local"
-            id="AuctionEndTime"
-            autoComplete="off"
-            {...auctionForm.register("AuctionEndTime")}
-            placeholder="Set Auction End Time"
-            className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-2 text-white !ring-0"
-          />
-          {auctionForm.formState.errors.AuctionEndTime && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {auctionForm.formState.errors.AuctionEndTime.message}
-            </p>
-          )}
-        </div>
-        <div className={fieldWrapper}>
-          <label className={fieldTitle}>Starting price for NFT</label>
-          <div className="relative h-[48px]  !bg-black-shade-2">
-            <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
-              BNB
-            </span>
-            <input
-              type="text"
-              id="StartingNFTPrice"
-              autoComplete="off"
-              {...auctionForm.register("StartingNFTPrice")}
-              placeholder="Enter NFT Price"
-              className="h-full w-full !border-0 bg-transparent text-white !ring-0"
-            />
-          </div>
-
-          {auctionForm.formState.errors.StartingNFTPrice && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {auctionForm.formState.errors.StartingNFTPrice.message}
-            </p>
-          )}
-        </div>
-        <Button
-          title={"Next"}
-          variant={auctionForm.formState.isValid ? "v1" : "v2"}
-          disabled={!auctionForm.formState.isValid}
-          onClick={auctionForm.handleSubmit(handleAuction)}
-          className="mt-2 py-4"
-        />
-      </form>
-    );
-  };
-
   const handleAuction = async (data: any) => {
-    setModal(false);
-    saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
+    try {
+      modal.dismissModal();
+      saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-
   const handleListNFT = async (bidPrice: any) => {
     setModal(false);
     saleWithListing(bidPrice);
@@ -174,7 +126,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     );
     setModal(true);
   };
-
   const saleWithListing = (listingPrice: any) => {
     setModalTitle("Edit listing");
     setModalContent(
@@ -210,7 +161,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     );
     setModal(true);
   };
-
   const ProceedFunc = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -270,7 +220,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     );
     setModal(true);
   };
-
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
     const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
 
@@ -331,6 +280,34 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     }
   };
 
+  const setupAuctionModal = () => {
+    try {
+      validateProvider();
+      modal.createModal(ModalType.auctionModal);
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
+
+  const modalTemplateCollection: TemplateCollection = {
+    auctionModal: {
+      title: "Auction",
+      visibility: true,
+      content: () => <CreateNFTAuctionModal handleAuction={handleAuction} />,
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -359,8 +336,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           title={"Auction"}
           variant="v1"
           onClick={() => {
-            auctionModal();
-            setModal(true);
+            setupAuctionModal();
           }}
         />
         <NewButton title={"List"} onClick={listingModal} variant="v4" />
@@ -374,6 +350,17 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           title={ModalTitle}
         >
           {ModalContent}
+        </CustomModal>
+      )}
+
+      {ModalModel.visibility && (
+        <CustomModal
+          onClose={() => {
+            modal.dismissModal();
+          }}
+          title={ModalModel.title as any}
+        >
+          {ModalModel.content}
         </CustomModal>
       )}
     </div>
