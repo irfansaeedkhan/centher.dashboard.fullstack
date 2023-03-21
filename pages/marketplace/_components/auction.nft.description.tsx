@@ -1,18 +1,11 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import {
-  ShareBigIcon,
-  BNBIcon,
-  WarningIcon,
-  LoaderIcon,
-  AuctionIcon,
-} from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -30,11 +23,7 @@ interface AuctionNftDescriptionProps {
   reload?: boolean;
   setReload?: any;
 }
-export const AuctionNftDescription = ({
-  data,
-  reload,
-  setReload,
-}: AuctionNftDescriptionProps) => {
+export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
   const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
@@ -132,6 +121,7 @@ export const AuctionNftDescription = ({
     );
     setModal(true);
   };
+
   const endAuctionFunc = () => {
     if (!library) {
       toast.error("Connect your wallet");
@@ -171,6 +161,7 @@ export const AuctionNftDescription = ({
     );
     setModal(true);
   };
+
   const ProceedFunc = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -182,26 +173,11 @@ export const AuctionNftDescription = ({
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
   };
+
   const SuccessFunc = (txStatus: boolean) => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -228,65 +204,6 @@ export const AuctionNftDescription = ({
             Transaction Failed.
           </p>
         )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-          {/* </Link> */}
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const SuccessCancelAucFunc = (txStatus: boolean) => {
-    setModalTitle("Auction Cancelled");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Congratulations! You have successfully cancelled auction of{" "}
-            <span className="text-white">{data?.name} </span> NFT on{" "}
-            <b> Centher </b> platform.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Transaction Failed.
-          </p>
-        )}
-        {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
         <div className={footerBtnContainer}>
           <Button
             title={"Ok"}
@@ -314,6 +231,7 @@ export const AuctionNftDescription = ({
     );
     SuccessFunc(!!result);
   };
+
   const handleCancelAuction = async () => {
     try {
       ProceedFunc();
@@ -433,47 +351,11 @@ export const AuctionNftDescription = ({
   );
 };
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-flex items-center gap-4
-`);
-
-const nftDescriptionContainer = ctl(`
-w-full flex flex-col gap-5
-`);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
-`);
-const greyBoxContainer = ctl(`
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`);
-const greyTxt = ctl(`
-text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
-text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
-text-16px font-bold text-white
-`);
-
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
+const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const footerBtnContainer = `flex items-center gap-4`;
+const nftDescriptionContainer = `w-full flex flex-col gap-5`;
+const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
+const greyTxt = `text-14px font-normal text-gray-shade-7`;
+const desTitle = `text-14px font-semibold text-white`;
+const BnBNum = `text-16px font-bold text-white`;
+const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;

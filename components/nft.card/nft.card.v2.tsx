@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 
+import useGetUser from "@/hooks/use.get.user";
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
 import {
@@ -11,12 +12,11 @@ import {
   formatIPFSUrl,
 } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { BNBIcon } from "@/assets/svgs";
+import { BNBIcon, LockIcon } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import useGetUser from "@/hooks/use.get.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { LockIcon } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
+
 import { LockedNftModal } from "../modal/locked.nft.modal";
 export interface NFTCardProps {
   data: NFTCardData;
@@ -32,7 +32,6 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     let timeRemaining = Number(data.unlock) * 1000 - getUTCNow();
@@ -58,12 +57,10 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
     const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
     const _hours = Math.floor((deadline / (1000 * 60 * 60)) % 24);
     const _minutes = Math.floor((deadline / 1000 / 60) % 60);
-    const _seconds = Math.floor((deadline / 1000) % 60);
 
     setDays(_days <= 0 ? 0 : _days);
     setHours(_hours <= 0 ? 0 : _hours);
     setMinutes(_minutes <= 0 ? 0 : _minutes);
-    setSeconds(_seconds <= 0 ? 0 : _seconds);
   };
   const onClickClose = () => {
     setShowLockedDetails(false);

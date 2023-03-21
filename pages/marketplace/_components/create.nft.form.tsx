@@ -1,16 +1,14 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
-import { useAllCollectionsStore } from "@/store/all.collections.store";
+import { useWeb3React } from "@web3-react/core";
+import { useGetMyCollections } from "@/hooks/use.get.my.collections";
 
 // same directory Imports
 import FixedPriceForm from "./fixed.price.form";
 import AuctionForm from "./auction.form";
-import { useGetMyCollections } from "@/hooks/use.get.my.collections";
-import { useWeb3React } from "@web3-react/core";
 
 export interface CreateNFTFormProps {
   createNFT: any;
@@ -41,8 +39,10 @@ export const CreateNFTForm = ({
   const collections = useGetMyCollections(account);
 
   return (
-    <div className={CreateNFTFormContainer}>
-      <div className={tabsBtnContainer}>
+    <div
+      className={`relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 py-8 px-6`}
+    >
+      <div className={`flex w-full max-w-[290px] gap-4`}>
         <Button
           title={"Fixed Price"}
           variant={tab === "Fixed" ? "v1" : "v2"}
@@ -80,15 +80,6 @@ export const CreateNFTForm = ({
   );
 };
 // styling
-const CreateNFTFormContainer = ctl(`
- bg-black-shade-9 rounded-2xl relative w-full border   border-gray-shade-3 py-8 px-6 flex flex-col gap-6
-`);
-const tabsBtnContainer = ctl(`
-w-full max-w-[290px] flex gap-4
-`);
-const Tab = ctl(`
-w-full py-3 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
-`);
-const activeTab = ctl(`
- text-black-shade-3 [&>*>*]:stroke-black-shade-3
-`);
+
+const Tab = `w-full py-3 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3`;
+const activeTab = `text-black-shade-3 [&>*>*]:stroke-black-shade-3`;

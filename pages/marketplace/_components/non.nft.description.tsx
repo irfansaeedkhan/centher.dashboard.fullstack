@@ -4,31 +4,23 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
+import Joi from "joi";
 
 // App imports
 import Button from "@/components/button";
-import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
+import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-// import {
-//   callApproveNFTToMarketplace,
-//   callCreateAuction,
-//   callListItemForSale,
-// } from "@/web3/utils/call.helpers";
-// import callCreateAuction from "@/web3/blockchain/";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import ChangePriceListModal from "./change.price.list.modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
-import NewButton from "@/components/button/new.button";
-import Joi, { string } from "joi";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
+
+import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
 
 interface NonNFTDescriptionProps {
@@ -36,21 +28,6 @@ interface NonNFTDescriptionProps {
   reload?: boolean;
   setReload?: any;
 }
-interface auctionFormInterface {
-  AuctionEndTime: Date;
-  StartingNFTPrice: number;
-}
-
-const AuctionModalschema = Joi.object({
-  AuctionEndTime: Joi.string().required().label("AuctionEndTime").messages({
-    "string.empty": `Auction End Time Required`,
-    "any.required": `Required Field`,
-  }),
-  StartingNFTPrice: Joi.number().required().label("StartingNFTPrice").messages({
-    "string.empty": `Starting NFT Price Required`,
-    "any.required": `Required Field`,
-  }),
-});
 
 enum ModalType {
   auctionModal = "auctionModal",
@@ -367,44 +344,14 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
   );
 };
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-flex items-center gap-4
-`);
-
-const nftDescriptionContainer = ctl(`
-w-full flex flex-col gap-5
-`);
-
-const greyBoxContainer = ctl(`
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`);
-const greyTxt = ctl(`
-text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
-text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
-text-16px font-bold text-white
-`);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-const formContainer = ctl(`
- flex flex-col gap-4
-`);
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
-const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
-`);
+const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const footerBtnContainer = `flex items-center gap-4`;
+const nftDescriptionContainer = `w-full flex flex-col gap-5`;
+const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
+const greyTxt = `text-14px font-normal text-gray-shade-7`;
+const desTitle = `text-14px font-semibold text-white`;
+const BnBNum = `text-16px font-bold text-white`;
+const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;
+const errMessage = `pb-2 text-12px font-medium`;
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+const fieldTitle = `text-14px  font-normal text-white`;
