@@ -7,6 +7,7 @@ export interface BasePost {
   liked_by_loggedin_user: boolean;
   replies_count: number;
   likes_count: number;
+  is_thread: boolean;
   createdAt: string;
 }
 
