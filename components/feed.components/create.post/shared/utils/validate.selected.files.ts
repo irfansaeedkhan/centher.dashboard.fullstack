@@ -35,10 +35,7 @@ export const validateSelectedFiles = (
     const { selectedFiles, addSelectedFiles } = useNewPostStore.getState();
 
     // Convert to array
-    const files = Array.from(event.target.files ?? []).map((file) => ({
-      original: file,
-      id: nanoid(),
-    }));
+    const files = Array.from(event.target.files ?? []);
 
     // Only add files in store if there are less than 5 files
     if (selectedFiles.length < 5 && files.length + selectedFiles.length <= 5) {

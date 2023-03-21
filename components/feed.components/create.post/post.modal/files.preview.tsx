@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import { IoClose, IoCrop } from "react-icons/io5";
 
-import { useNewPostStore } from "@/store/new.post.store";
+import { INewPost, useNewPostStore } from "@/store/new.post.store";
 import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
 
 export type PostImageCropperData = {
@@ -10,10 +10,13 @@ export type PostImageCropperData = {
   fileID: string;
 };
 
-export const FilesPreview = () => {
+interface Props {
+  post: INewPost;
+}
+
+export const FilesPreview: React.FC<Props> = ({ post }) => {
   const {
     modalType,
-    selectedFiles,
     removeSelectedFile,
     editPostFiles,
     setSelectedFiles,
@@ -26,6 +29,7 @@ export const FilesPreview = () => {
 
   const postFiles = useMemo(() => {
     if (modalType === "edit") {
+      // TODO: Handle edit post files
       return editPostFiles
         ? editPostFiles
             .filter((f) => !f.isDeleted)
@@ -41,14 +45,15 @@ export const FilesPreview = () => {
             })
         : [];
     } else {
-      return selectedFiles.map((file) => {
+      // TODO: Handle post files
+      return post.media.map((file) => {
         return {
           ...file,
           src: URL.createObjectURL(file.original),
         };
       });
     }
-  }, [selectedFiles, modalType, editPostFiles]);
+  }, [post, modalType, editPostFiles]);
 
   return (
     <div
@@ -81,14 +86,14 @@ export const FilesPreview = () => {
         }
 
         return (
-          <div key={file.id} className={`relative`}>
+          <div key={file.uuid} className={`relative`}>
             <CloseButton
               className="absolute top-1 right-1 z-10"
               onClick={() => {
                 if (modalType === "edit") {
-                  removeEditPostFile(file.id);
+                  removeEditPostFile(file.uuid);
                 } else {
-                  removeSelectedFile(file.id);
+                  removeSelectedFile(file.uuid);
                 }
               }}
             />
@@ -102,7 +107,7 @@ export const FilesPreview = () => {
                         ? file.original
                         : new Blob([file.original.url])
                     ),
-                    fileID: file.id,
+                    fileID: file.uuid,
                   });
                 }}
               />
@@ -122,8 +127,8 @@ export const FilesPreview = () => {
           });
         }}
         onCrop={(croppedImage) => {
-          const croppedSelectedFiles = selectedFiles.map((file) => {
-            if (file.id === cropImageSrc.fileID) {
+          const croppedSelectedFiles = post.media.map((file) => {
+            if (file.uuid === cropImageSrc.fileID) {
               return {
                 ...file,
                 original: croppedImage.original,

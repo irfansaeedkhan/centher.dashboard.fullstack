@@ -31,11 +31,11 @@ export interface NewPostStore {
   setisPostModalLoading: (isLoading: boolean) => void;
 
   selectedFiles: FileWithID[];
-  setSelectedFiles: (files: FileWithID[]) => void;
-  addSelectedFiles: (files: FileWithID[]) => void;
-  removeSelectedFile: (fileId: string) => void;
+  setSelectedFiles: (files: MediaFile[]) => void;
+  addSelectedFiles: (files: File[]) => void;
+  removeSelectedFile: (fileUuid: string) => void;
 
-  editPostFiles?: EditFileWithID[];
+  editPostFiles?: EditMediaFile[];
   removeEditPostFile: (fileId: string) => void;
 
   postTextMaxLength: 260;
@@ -115,22 +115,57 @@ export const useNewPostStore = create<NewPostStore>()(
         set({ isPostModalLoading: isLoading }),
 
       selectedFiles: [],
-      setSelectedFiles: (files: FileWithID[]) => set({ selectedFiles: files }),
-      addSelectedFiles: (files: FileWithID[]) =>
-        set((state) => ({ selectedFiles: [...state.selectedFiles, ...files] })),
-
-      removeSelectedFile: (fileId: string) =>
-        set((state) => ({
-          selectedFiles: state.selectedFiles.filter(
-            (file) => file.id !== fileId
+      setSelectedFiles: (files: MediaFile[]) => {
+        set({
+          posts: get().posts.map((post, index) =>
+            index === get().posts.length - 1
+              ? {
+                  ...post,
+                  media: files,
+                }
+              : post
           ),
-        })),
+        });
+      },
+      addSelectedFiles: (files: File[]) =>
+        set((state) => {
+          const mediaFiles: MediaFile[] = files.map((file, i) => ({
+            uuid: uuid(),
+            post_uuid: state.posts.at(-1)!.uuid,
+            original: file,
+            index: i,
+          }));
+
+          // Add files to the last post
+          const posts = state.posts.map((post, index) =>
+            index === state.posts.length - 1
+              ? {
+                  ...post,
+                  media: [...post.media, ...mediaFiles],
+                }
+              : post
+          );
+          return { posts };
+        }),
+
+      removeSelectedFile: (fileId: string) => {
+        set((state) => ({
+          posts: state.posts.map((post, index) =>
+            index === state.posts.length - 1
+              ? {
+                  ...post,
+                  media: post.media.filter((file) => file.uuid !== fileId),
+                }
+              : post
+          ),
+        }));
+      },
 
       editPostFiles: undefined,
       removeEditPostFile: (fileId: string) => {
         set((state) => ({
           editPostFiles: state.editPostFiles?.map((file) =>
-            file.id === fileId ? { ...file, isDeleted: true } : file
+            file.uuid === fileId ? { ...file, isDeleted: true } : file
           ),
         }));
       },
@@ -213,13 +248,17 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          await axiosNodeApi.post(`/api/socials/posts/v2`, {
+          const response = await axiosNodeApi.post(`/api/socials/posts/v2`, {
             posts: postArray.map((post) => ({
               uuid: post.uuid,
               post_text: post.post_text,
               media_count: post.media.length,
             })),
           });
+
+          console.log("response.data", response.data);
+
+          // Upload media
 
           get().closeModal();
         } catch (error: any) {
@@ -276,7 +315,7 @@ export const useNewPostStore = create<NewPostStore>()(
 export interface INewPost {
   uuid: string;
   post_text: string;
-  media: FileWithID[];
+  media: MediaFile[];
 }
 
 export interface FileWithID {
@@ -284,9 +323,17 @@ export interface FileWithID {
   id: string;
 }
 
-export type EditFileWithID = {
+export interface MediaFile {
+  uuid: string;
+  post_uuid: string;
+  original: File;
+  index: number;
+}
+
+export type EditMediaFile = {
   original: PostMedia;
-  id: string;
+  uuid: string;
+  post_uuid: string;
   isDeleted: boolean;
 };
 
@@ -313,7 +360,7 @@ interface OpenModalOptionsReplyOfReply extends OpenModalOptionsBase {
 interface OpenModalOptionsEdit extends OpenModalOptionsBase {
   modalType: "edit";
   postId: string;
-  editPostFiles?: EditFileWithID[];
+  editPostFiles?: EditMediaFile[];
   postText?: string;
 }
 

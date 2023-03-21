@@ -17,7 +17,6 @@ interface Props {
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const {
-    selectedFiles,
     editPostFiles,
     closeModal,
     isModalOpen,
@@ -26,12 +25,16 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
     posts,
   } = useNewPostStore();
 
+  const lastPost = useMemo(() => {
+    return posts.at(-1);
+  }, [posts]);
+
   const hasMedia = useMemo(() => {
     return (
-      !!selectedFiles.length ||
+      !!lastPost?.media.length ||
       !!editPostFiles?.filter((f) => !f.isDeleted).length
     );
-  }, [selectedFiles, editPostFiles]);
+  }, [editPostFiles, lastPost]);
 
   if (!user) {
     return null;
@@ -74,20 +77,27 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           </div>
 
           <div>
-            <PostPreview posts={posts} />
-            <FilesPreview />
+            {posts.slice(0, -1).map((post, index) => (
+              <PostPreview key={index} post={post} />
+            ))}
 
-            <div className={clsx(`w-full`, hasMedia && "mt-4")}>
-              <textarea
-                className={`fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
-                cols={12}
-                rows={4}
-                maxLength={postTextMaxLength}
-                placeholder="Type here"
-                value={posts.at(-1)?.post_text}
-                onChange={(e) => setPostText(e.target.value)}
-              ></textarea>
-            </div>
+            {lastPost && (
+              <>
+                <FilesPreview post={lastPost} />
+
+                <div className={clsx(`w-full`, hasMedia && "mt-4")}>
+                  <textarea
+                    className={`fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
+                    cols={12}
+                    rows={4}
+                    maxLength={postTextMaxLength}
+                    placeholder="Type here"
+                    value={lastPost.post_text}
+                    onChange={(e) => setPostText(e.target.value)}
+                  ></textarea>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </PostModalContainer>

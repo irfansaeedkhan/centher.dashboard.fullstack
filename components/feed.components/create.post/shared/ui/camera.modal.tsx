@@ -118,12 +118,7 @@ const CameraModal = ({ onClose }: Props) => {
 
   const saveSelectedFile = useCallback(
     (file: File) => {
-      addSelectedFiles([
-        {
-          id: nanoid(),
-          original: file,
-        },
-      ]);
+      addSelectedFiles([file]);
       handleResetClick();
       onClose();
     },
