@@ -249,7 +249,6 @@ export const FixedPriceNFTDescription = ({
               title={"Ok"}
               variant="v4"
               onClick={() => {
-                router.reload();
                 modal.dismissModal();
               }}
             />

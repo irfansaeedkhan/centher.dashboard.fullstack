@@ -13,7 +13,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
-
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 import { ICollectionData } from "./_components/create.collection.form";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -21,13 +21,18 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 
 const collectionsRemoteBasePath = "ipfs:/";
+enum ModalType {
+  buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
+  buyNFTSuccessFuncModal = "buyNFTSuccessFuncModal",
+  proceedFuncModal = "proceedFuncModal",
+}
 
 const CreateNFTCollection: NextPageWithLayout = () => {
-  const [Modal, setModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalDisable, setModalDisable] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
@@ -38,116 +43,29 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
   // creating modals
   const buyNFTStep1Func = (collectionData: any) => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={URL.createObjectURL(profile as Blob)}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">
-          {collectionData?.name}
-        </h2>
-        <h3 className="text-14px font-normal text-white">
-          {`Marketplace fee ${normalizeValue(
-            BlockchainConfig.fee.createCollectionFee
-          )} BNB`}
-        </h3>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Checkout"}
-            variant="v1"
-            className="py-4"
-            onClick={() => handleCreateCollection(collectionData)}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-  const buyNFTStep2Func = () => {
-    setModalTitle("Complete Checkout");
-    setModalDisable("yes");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Transaction in progress
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your transaction is in progress, Please wait.
-        </p>
-      </div>
-    );
-    setModal(true);
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.buyNFTStep1FuncModal, collectionData);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
-    setClearForm(false);
-    setModalTitle("Complete Checkout");
-    setModalDisable("");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={URL.createObjectURL(profile as Blob)}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Congratulations! You have successfully created{" "}
-            <span className="text-white">{collectionData?.name}</span>{" "}
-            Collection on <b> Centher </b> platform, Click view on profile to
-            view your collection.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Transaction Failed.
-          </p>
-        )}
-        <div className={footerBtnContainer}>
-          <Button
-            title={txStatus ? "Go Back" : "Try Again"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalDisable("");
-              setModalContent(null);
-              setClearForm(true);
-            }}
-          />
-
-          {txStatus && (
-            <Button
-              title={"View on Profile"}
-              variant="v1"
-              className="py-4"
-              onClick={() => {
-                setModal(false);
-                setModalTitle("");
-                setModalContent(null);
-                setClearForm(true);
-                router.push(`/profile/${account}/nfts/collection`);
-              }}
-            />
-          )}
-        </div>
-      </div>
-    );
-    setModal(true);
+    try {
+      validateProvider();
+      setClearForm(false);
+      modal.dismissModal();
+      modal.createModal(ModalType.buyNFTSuccessFuncModal, {
+        txStatus,
+        collectionData,
+      });
+    } catch (err: any) {
+      toastError(err);
+    }
   };
   const handleCreateCollection = async (collectionData: any) => {
-    buyNFTStep2Func();
+    ProceedFunc();
     let collectionCreated = false;
     try {
       collectionData = collectionData as ICollectionData;
@@ -183,14 +101,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       collectionCreated = true;
     } catch (error) {
       console.error(error);
-      toast.error(
-        "Something went wrong while create a collection. Please try again."
-      );
+      toastError(error);
     } finally {
       buyNFTSuccessFunc(collectionCreated, collectionData);
     }
   };
-
   const createCollection = (values: ICollectionData) => {
     if (profile === undefined) {
       toast.error("Choose profile image.");
@@ -209,6 +124,129 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     buyNFTStep1Func(values);
   };
 
+  const ProceedFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.proceedFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
+  const modalTemplateCollection: TemplateCollection = {
+    buyNFTStep1FuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: (collectionData: any) => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={URL.createObjectURL(profile as Blob)}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {collectionData?.name}
+          </h2>
+          <h3 className="text-14px font-normal text-white">
+            {`Marketplace fee ${normalizeValue(
+              BlockchainConfig.fee.createCollectionFee
+            )} BNB`}
+          </h3>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Checkout"}
+              variant="v1"
+              className="py-4"
+              onClick={() => handleCreateCollection(collectionData)}
+            />
+          </div>
+        </div>
+      ),
+    },
+    buyNFTSuccessFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: ({ txStatus, collectionData }: any) => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={URL.createObjectURL(profile as Blob)}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Congratulations! You have successfully created{" "}
+              <span className="text-white">{collectionData?.name}</span>{" "}
+              Collection on <b> Centher </b> platform, Click view on profile to
+              view your collection.
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            <Button
+              title={txStatus ? "Go Back" : "Try Again"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+                setClearForm(true);
+              }}
+            />
+
+            {txStatus && (
+              <Button
+                title={"View on Profile"}
+                variant="v1"
+                className="py-4"
+                onClick={() => {
+                  modal.dismissModal();
+                  setClearForm(true);
+                  router.push(`/profile/${account}/nfts/collection`);
+                }}
+              />
+            )}
+          </div>
+        </div>
+      ),
+    },
+    proceedFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create New Collection</h1>
@@ -228,15 +266,14 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         />
       </div>
 
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            modal.dismissModal();
           }}
-          title={ModalTitle}
-          disable={ModalDisable}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
     </div>

@@ -14,6 +14,7 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
@@ -22,14 +23,20 @@ interface AuctionNFTBuyerDescriptionProps {
   reload?: boolean;
   setReload?: any;
 }
+
+enum ModalType {
+  proceedFuncModal = "proceedFuncModal",
+  successFuncModal = "successFuncModal",
+}
 export const AuctionNFTBuyerDescription = ({
   data,
 }: AuctionNFTBuyerDescriptionProps) => {
-  const [Modal, setModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const { library, account } = useWeb3React();
 
   const bnbBalance = useGetBNBBalance(account);
@@ -94,49 +101,25 @@ export const AuctionNFTBuyerDescription = ({
 
   const SuccessFunc = useCallback(
     (txStatus: boolean) => {
-      setModalTitle("Complete Checkout");
-      setModalContent(
-        <div className={modalBodyWrapper1}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="text-18px font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
-          {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully placed bid on{" "}
-              <span className="text-white">{data?.name} </span> NFT on{" "}
-              <b> Centher </b>
-              platform.
-            </p>
-          )}
-          {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
-            </p>
-          )}
-          <Button
-            title={"Ok"}
-            variant="v1"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      );
-      setModal(true);
+      try {
+        validateProvider();
+        modal.dismissModal();
+        modal.createModal(ModalType.successFuncModal, txStatus);
+      } catch (err: any) {
+        toastError(err);
+      }
     },
     [data]
   );
-
+  const ProceedFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.proceedFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
   const onSubmit = useCallback(
     async (bidPriceVal: any) => {
       if (Number(bidPriceVal) <= formatEther2Number(price)) {
@@ -170,23 +153,73 @@ export const AuctionNFTBuyerDescription = ({
     },
     [SuccessFunc, bnbBalance, data, library, price]
   );
-
-  const ProceedFunc = () => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper1}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Transaction in progress
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your transaction is in progress, Please wait.
-        </p>
-      </div>
-    );
-    setModal(true);
+  const modalTemplateCollection: TemplateCollection = {
+    proceedFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper1}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+    successFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: (txStatus: any) => (
+        <div className={modalBodyWrapper1}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Congratulations! You have successfully placed bid on{" "}
+              <span className="text-white">{data?.name} </span> NFT on{" "}
+              <b> Centher </b>
+              platform.
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+          <Button
+            title={"Ok"}
+            variant="v1"
+            className="py-4"
+            onClick={() => {
+              modal.dismissModal();
+            }}
+          />
+        </div>
+      ),
+    },
   };
 
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -264,14 +297,14 @@ export const AuctionNFTBuyerDescription = ({
         )}
       </div>
 
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            modal.dismissModal();
           }}
-          title={ModalTitle}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
       {BidModal && (

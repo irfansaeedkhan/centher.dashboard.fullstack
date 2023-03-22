@@ -1,9 +1,8 @@
 import React from "react";
-import Joi, { string } from "joi";
+import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
-import clsx from "clsx";
 
 import Button from "@/components/button";
 
@@ -19,16 +18,21 @@ const CreateNFTAuctionModal = ({
   }
 
   const AuctionModalschema = Joi.object({
-    AuctionEndTime: Joi.string().required().label("AuctionEndTime").messages({
-      "string.empty": `Auction End Time Required`,
-      "any.required": `Required Field`,
-    }),
+    AuctionEndTime: Joi.date()
+      .required()
+      .greater("now")
+      .label("AuctionEndTime")
+      .messages({
+        "string.empty": `Auction End Time Required`,
+        "any.required": `Required Field`,
+      }),
     StartingNFTPrice: Joi.number()
       .required()
+      .min(0.000000000000000001)
       .label("StartingNFTPrice")
       .messages({
-        "string.empty": `Starting NFT Price Required`,
         "any.required": `Required Field`,
+        "date.greater": `Auction End Time must be greater than the current time`,
       }),
   });
 
@@ -38,7 +42,11 @@ const CreateNFTAuctionModal = ({
   });
 
   const handleAuctionData = (data: auctionFormInterface) => {
-    handleAuction(data);
+    let finalData = {
+      StartingNFTPrice: data.StartingNFTPrice,
+      AuctionEndTime: data.AuctionEndTime.toString(),
+    };
+    handleAuction(finalData);
   };
   return (
     <form className={modalBodyWrapper}>
@@ -97,32 +105,6 @@ export default CreateNFTAuctionModal;
 const modalBodyWrapper = ctl(`
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 `);
-const footerBtnContainer = ctl(`
-flex items-center gap-4
-`);
-
-const nftDescriptionContainer = ctl(`
-w-full flex flex-col gap-5
-`);
-
-const greyBoxContainer = ctl(`
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`);
-const greyTxt = ctl(`
-text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
-text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
-text-16px font-bold text-white
-`);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-const formContainer = ctl(`
- flex flex-col gap-4
-`);
 const errMessage = ctl(`
 pb-2 text-12px font-medium
 `);
@@ -131,7 +113,4 @@ const fieldWrapper = ctl(`
 `);
 const fieldTitle = ctl(`
   text-14px  font-normal text-white
-`);
-const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
 `);

@@ -23,12 +23,21 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import Button from "@/components/button";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
   setReload?: any;
 }
+
+enum ModalType {
+  buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
+  proceedFuncModal = "proceedFuncModal",
+  successFuncModal = "successFuncModal",
+}
+
 export const FixedPriceNFTBuyerDescription = ({
   data,
 }: FixedPriceNFTBuyerDescriptionProps) => {
@@ -38,9 +47,11 @@ export const FixedPriceNFTBuyerDescription = ({
   const { library, deactivate } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const nftOwnerAddress = useGetNFTOwner(
     data?.collection,
     data?.nftId,
@@ -52,111 +63,35 @@ export const FixedPriceNFTBuyerDescription = ({
   const bnbPrice = useBNBPrice();
 
   const buyNFTStep1Func = () => {
-    if (!library) {
-      toast.error("Connect your Wallet.");
-      return;
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.buyNFTStep1FuncModal);
+    } catch (err: any) {
+      toastError(err);
     }
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
-        <h3 className="text-14px font-normal text-white">
-          Marketplace Fee {BlockchainConfig.fee.buyItemFeeForMarketplace}%
-        </h3>
-        <h3 className="text-14px font-normal text-white">
-          Collection Fee {BlockchainConfig.fee.buyItemFeeForCreator}%
-        </h3>
-        <h3 className="text-14px font-normal text-white">
-          Multilevel Fee {BlockchainConfig.fee.buyItemFeeForMultilevel}%
-        </h3>
-        <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
-          <span>Price:</span>
-          <BNBIcon />
-          {`${normalizeValue(
-            formatEther2Number(data?.listInfo.price)
-          )} BNB`}{" "}
-          <span className="text-gray-shade-2 ">
-            {" "}
-            =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
-          </span>
-        </h6>
-        <div className={footerBtnContainer}>
-          <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
-        </div>
-      </div>
-    );
-    setModal(true);
   };
-  const buyNFTStep2Func = () => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Transaction in progress
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your transaction is in progress, Please wait.
-        </p>
-      </div>
-    );
-    setModal(true);
+  const ProceedFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.proceedFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Congratulations! You have successfully bought{" "}
-            <span className="text-white">{data?.name}</span> NFT on{" "}
-            <b>Centher</b>
-            platform.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Transaction Failed.
-          </p>
-        )}
-
-        <div className={footerBtnContainer}>
-          <NewButton
-            title={"Ok"}
-            variant="v4"
-            onClick={() => {
-              router.reload();
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.successFuncModal, txStatus);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
   const handleBuyNFT = async () => {
     try {
-      buyNFTStep2Func();
-
+      ProceedFunc();
       const result = await BlockchainWrite.callBuyListedItem(
         library,
         (data as INFTDetailData).collection,
@@ -165,10 +100,119 @@ export const FixedPriceNFTBuyerDescription = ({
       );
       SuccessFunc(!!result);
     } catch (error) {
-      toast.error("something went wrong, please try again later.");
+      toastError(error);
       SuccessFunc(false);
     }
   };
+
+  const modalTemplateCollection: TemplateCollection = {
+    buyNFTStep1FuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
+          <h3 className="text-14px font-normal text-white">
+            Marketplace Fee {BlockchainConfig.fee.buyItemFeeForMarketplace}%
+          </h3>
+          <h3 className="text-14px font-normal text-white">
+            Collection Fee {BlockchainConfig.fee.buyItemFeeForCreator}%
+          </h3>
+          <h3 className="text-14px font-normal text-white">
+            Multilevel Fee {BlockchainConfig.fee.buyItemFeeForMultilevel}%
+          </h3>
+          <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
+            <span>Price:</span>
+            <BNBIcon />
+            {`${normalizeValue(
+              formatEther2Number(data?.listInfo.price)
+            )} BNB`}{" "}
+            <span className="text-gray-shade-2 ">
+              {" "}
+              =${formatBNB2USD(data?.listInfo.price, bnbPrice)}
+            </span>
+          </h6>
+          <div className={footerBtnContainer}>
+            <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
+          </div>
+        </div>
+      ),
+    },
+    proceedFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+    successFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: (txStatus: any) => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Congratulations! You have successfully bought{" "}
+              <span className="text-white">{data?.name}</span> NFT on{" "}
+              <b>Centher</b>
+              platform.
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+
+          <div className={footerBtnContainer}>
+            <NewButton
+              title={"Ok"}
+              variant="v4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+          </div>
+        </div>
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -215,14 +259,14 @@ export const FixedPriceNFTBuyerDescription = ({
           />
         )}
       </div>
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            modal.dismissModal();
           }}
-          title={ModalTitle}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
       {connectWalletModal && (

@@ -17,18 +17,28 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
   reload?: boolean;
   setReload?: any;
 }
+
+enum ModalType {
+  cancelAuctionFuncModal = "cancelAuctionFuncModal",
+  proceedFuncModal = "proceedFuncModal",
+  successFuncModal = "successFuncModal",
+  endAuctionFuncModal = "endAuctionFuncModal",
+}
+
 export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
   const { library } = useWeb3React();
-  const [Modal, setModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const [end, setEnd] = useState(true);
   const [days, setDays] = useState<number>(0);
   const [hours, setHours] = useState<number>(0);
@@ -84,154 +94,54 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
   }, [data]);
 
   const cancelAuctionFunc = () => {
-    if (!library) {
-      toast.error("Connect your wallet");
-      return;
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.cancelAuctionFuncModal);
+    } catch (err: any) {
+      toastError(err);
     }
-    setModalTitle("Cancel Auction");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Are you sure you want to cancel your Auction?
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Canceling your auction will unpublish this sale from market and You
-          will be asked to confirm the transaction through your wallet.
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={handleCancelAuction}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
   };
-
   const endAuctionFunc = () => {
-    if (!library) {
-      toast.error("Connect your wallet");
-      return;
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.endAuctionFuncModal);
+    } catch (err: any) {
+      toastError(err);
     }
-    setModalTitle("Announce Winner");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Click Proceed to announce winner of your NFT!
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your NFT will go to{" "}
-          {formatAddress(data?.auctionInfo.highestBidAddress)} and you will
-          receive {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={handleEndAuction}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
   };
-
   const ProceedFunc = () => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Transaction in progress
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your transaction is in progress, Please wait.
-        </p>
-      </div>
-    );
-    setModal(true);
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.proceedFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-
   const SuccessFunc = (txStatus: boolean) => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <Image
-          className={ImgStyling}
-          src={data ? data.image : ""}
-          alt="image"
-          height={64}
-          width={64}
-        />
-        <h2 className="text-18px font-semibold text-white">
-          {txStatus ? "Success!" : "Failed!"}
-        </h2>
-        {txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Congratulations! You have successfully created{" "}
-            <span className="text-white">{data?.name} </span> NFT on{" "}
-            <b> Centher </b> platform.
-          </p>
-        )}
-        {!txStatus && (
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Transaction Failed.
-          </p>
-        )}
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Ok"}
-            variant="v4"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-          {/* </Link> */}
-        </div>
-      </div>
-    );
-    setModal(true);
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.successFuncModal, txStatus);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-
   const handleEndAuction = async () => {
     ProceedFunc();
-    const result = await BlockchainWrite.callEndAuction(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId
-    );
-    SuccessFunc(!!result);
+    try {
+      const result = await BlockchainWrite.callEndAuction(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+      SuccessFunc(!!result);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
-
   const handleCancelAuction = async () => {
     try {
       ProceedFunc();
@@ -242,11 +152,145 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
       );
       SuccessFunc(!!result);
     } catch (error) {
-      toast.error("Something went wrong, please try again later");
+      toastError(error);
       SuccessFunc(false);
     }
   };
 
+  const modalTemplateCollection: TemplateCollection = {
+    cancelAuctionFuncModal: {
+      title: "Cancel Auction",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Are you sure you want to cancel your Auction?
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Canceling your auction will unpublish this sale from market and You
+            will be asked to confirm the transaction through your wallet.
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={handleCancelAuction}
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+    },
+    proceedFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+    successFuncModal: {
+      title: "Checkout",
+      visibility: true,
+      content: (txStatus: boolean) => (
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Congratulations! You have successfully created{" "}
+              <span className="text-white">{data?.name} </span> NFT on{" "}
+              <b> Centher </b> platform.
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Ok"}
+              variant="v4"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            {/* </Link> */}
+          </div>
+        </div>
+      ),
+    },
+    endAuctionFuncModal: {
+      title: "Announce Winner",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Click Proceed to announce winner of your NFT!
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your NFT will go to{" "}
+            {formatAddress(data?.auctionInfo.highestBidAddress)} and you will
+            receive {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={handleEndAuction}
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -337,14 +381,14 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
             />
           ))}
       </div>
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            modal.dismissModal();
           }}
-          title={ModalTitle}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
     </div>
