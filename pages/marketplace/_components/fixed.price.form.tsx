@@ -59,15 +59,21 @@ const FixedPriceForm = ({
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
-  const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
-  const [nftPriceError, setNFTPriceError] = useState<any>(" ");
-  const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [changeNFTPrice, setChangeNFTPrice] = useState<number | undefined>(
+    undefined
+  );
+  const [nftPriceError, setNFTPriceError] = useState<string | undefined>(
+    undefined
+  );
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<
+    string | undefined
+  >(undefined);
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
-    setCollectionErrorMsg("");
+    setCollectionErrorMsg(undefined);
   };
 
   const { handleSubmit, register, setError, formState, reset } =
@@ -137,17 +143,42 @@ const FixedPriceForm = ({
   };
   useEffect(() => {
     if (clearForm) {
-      setChangeNFTPrice(null);
+      setChangeNFTPrice(undefined);
+      setCollectionErrorMsg(undefined);
+      setNFTPriceError(undefined);
       reset({
         NFTName: "",
         Description: "",
-        NFTAmount: 1,
       });
-      setSelectedOption("");
+      setSelectedOption(collections[0].collection);
       setPropertyList([]);
     }
-  }, [clearForm, reset]);
 
+    console.log(
+      "form state isValid:",
+      // get formState errors
+      formState.isValid,
+
+      "nftPriceError:",
+      nftPriceError,
+      "collectionErrorMsg",
+      collectionErrorMsg,
+      "changeNFTPrice",
+      changeNFTPrice
+    );
+  }, [clearForm, reset]);
+  console.log(
+    "form state isValid:",
+    // get formState errors
+    formState.isValid,
+
+    "nftPriceError:",
+    nftPriceError,
+    "collectionErrorMsg",
+    collectionErrorMsg,
+    "changeNFTPrice",
+    changeNFTPrice
+  );
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
@@ -211,13 +242,14 @@ const FixedPriceForm = ({
             }
           /> */}
           <input
-            type="text"
+            type="number"
+            value={changeNFTPrice === undefined ? "" : changeNFTPrice}
             id="NFTPrice"
             autoComplete="off"
             placeholder="Enter NFT Price"
             className={nftPriceError === "" ? inputField : inputFieldError}
             onChange={(e) => {
-              setNFTPriceError("");
+              setNFTPriceError(undefined);
               const inputValue = e.target.value;
               const numberValue = Number(inputValue);
 
@@ -225,21 +257,21 @@ const FixedPriceForm = ({
               if (pattern.test(inputValue)) {
                 if (numberValue <= 0) {
                   setNFTPriceError("NFT Price must be greater than 0");
-                  setChangeNFTPrice(null);
+                  setChangeNFTPrice(undefined);
                 }
                 if (numberValue < BlockchainConfig.networkDecimals) {
                   setNFTPriceError(
                     "NFT Price must be greater than 0.000000000000000001"
                   );
-                  setChangeNFTPrice(null);
+                  setChangeNFTPrice(undefined);
                 }
                 setChangeNFTPrice(numberValue);
               } else if (e.target.value == "") {
                 setNFTPriceError("Field Required");
-                setChangeNFTPrice(null);
+                setChangeNFTPrice(undefined);
               } else {
                 setNFTPriceError("NFT Price must be a positive number");
-                setChangeNFTPrice(null);
+                setChangeNFTPrice(undefined);
               }
             }}
           />
@@ -312,8 +344,9 @@ const FixedPriceForm = ({
         variant={
           formState.isValid &&
           asset !== undefined &&
-          nftPriceError === "" &&
-          collectionErrorMsg == ""
+          nftPriceError === undefined &&
+          collectionErrorMsg == undefined &&
+          changeNFTPrice !== undefined
             ? "v1"
             : "v2"
         }
