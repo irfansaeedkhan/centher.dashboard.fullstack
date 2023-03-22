@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
 
@@ -16,7 +16,12 @@ const PostModalFooter: React.FC = () => {
     modalType,
     editPost,
     posts,
+    getLastPost,
   } = useNewPostStore();
+
+  const lastPost = getLastPost();
+
+  if (!lastPost) return null;
 
   return (
     <div
@@ -41,7 +46,7 @@ const PostModalFooter: React.FC = () => {
           })}
         >
           <PostTextCounter
-            currentLength={posts.at(-1)!.post_text.length}
+            currentLength={lastPost.post_text.length}
             maxLength={postTextMaxLength}
           />
         </div>

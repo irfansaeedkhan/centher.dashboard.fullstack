@@ -32,13 +32,19 @@ export const validateSelectedFiles = (
       validateFile(event.target.files[i], fileType);
     }
 
-    const { selectedFiles, addSelectedFiles } = useNewPostStore.getState();
+    const { addSelectedFiles, getLastPost } = useNewPostStore.getState();
+
+    const lastPost = getLastPost();
 
     // Convert to array
     const files = Array.from(event.target.files ?? []);
 
     // Only add files in store if there are less than 5 files
-    if (selectedFiles.length < 5 && files.length + selectedFiles.length <= 5) {
+    if (
+      lastPost &&
+      lastPost.media.length < 5 &&
+      files.length + lastPost.media.length <= 5
+    ) {
       addSelectedFiles(files);
     } else {
       const error: SelectFileError = {

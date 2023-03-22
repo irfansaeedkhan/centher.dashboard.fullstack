@@ -8,6 +8,7 @@ import EmojiPicker, {
   EmojiStyle,
   Theme,
 } from "emoji-picker-react";
+import { FiCamera } from "react-icons/fi";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
@@ -18,7 +19,6 @@ import {
   FileType,
   validateSelectedFiles,
 } from "../utils/validate.selected.files";
-import { FiCamera } from "react-icons/fi";
 import CameraModal from "./camera.modal";
 
 interface Props {
@@ -30,7 +30,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { setPostText, postText } = useNewPostStore();
+  const { appendPostText, getLastPost, addNewPost } = useNewPostStore();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
 
   // Append emoji to post text
   const onEmojiClick = (emojiObject: EmojiClickData, _event: MouseEvent) => {
-    setPostText(postText + emojiObject.emoji);
+    appendPostText(emojiObject.emoji);
   };
 
   const handleSelectFiles = (
@@ -50,6 +50,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
     fileType: FileType
   ) => {
     try {
+      if (!getLastPost()) {
+        addNewPost();
+      }
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
       // Call the callback function if any
@@ -105,6 +108,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
         onClick={() => {
           setShowCameraModal(true);
           onClickActionButton && onClickActionButton();
+          if (!getLastPost()) {
+            addNewPost();
+          }
         }}
       >
         <FiCamera
@@ -145,16 +151,15 @@ export const PostModalActionButtons: React.FC<Props> = ({
           `mr-2 hidden select-none flg:flex`,
           buttonVariants({ color: "green", placement })
         )}
-        onClick={
-          placement === "create-post-card"
-            ? () => {
-                onClickActionButton && onClickActionButton();
-              }
-            : () => {
-                setShowEmojiPicker((prev) => !prev);
-                onClickActionButton && onClickActionButton();
-              }
-        }
+        onClick={() => {
+          if (placement === "in-modal") {
+            setShowEmojiPicker((prev) => !prev);
+          }
+          onClickActionButton && onClickActionButton();
+          if (!getLastPost()) {
+            addNewPost();
+          }
+        }}
       >
         <EmojiIcon
           className={clsx(

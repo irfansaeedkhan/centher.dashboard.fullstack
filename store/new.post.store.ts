@@ -40,16 +40,18 @@ export interface NewPostStore {
   removeEditPostFile: (fileId: string) => void;
 
   postTextMaxLength: 260;
-  // postText: string;
   setPostText: (text: string) => void;
+  appendPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
   posts: INewPost[];
-  addNewPost: () => Promise<void>;
+  addNewPost: () => void;
 
   editPost: () => Promise<void>;
 
   onCloseModal: () => void;
+
+  getLastPost: () => INewPost | undefined;
 }
 
 export const useNewPostStore = create<NewPostStore>()(
@@ -65,11 +67,7 @@ export const useNewPostStore = create<NewPostStore>()(
       openModal: (options) => {
         // Hide scroll bar
         document.body.style.overflow = "hidden";
-        if (
-          options.modalType === "new-post" ||
-          options.modalType === "reply" ||
-          options.modalType === "reply-of-reply"
-        ) {
+        if (options.shouldAddNewPost) {
           set({
             isModalOpen: true,
             posts: [
@@ -82,7 +80,6 @@ export const useNewPostStore = create<NewPostStore>()(
             ...options,
           });
         } else {
-          // TODO: handle "edit"
           set({
             isModalOpen: true,
             ...options,
@@ -110,6 +107,8 @@ export const useNewPostStore = create<NewPostStore>()(
       },
 
       onCloseModal: () => {},
+
+      getLastPost: () => get().posts.at(-1),
 
       isPostModalLoading: false,
       setisPostModalLoading: (isLoading) =>
@@ -184,7 +183,20 @@ export const useNewPostStore = create<NewPostStore>()(
         });
       },
 
-      addNewPost: async () => {
+      appendPostText: (text: string) => {
+        set({
+          posts: get().posts.map((post, index) =>
+            index === get().posts.length - 1
+              ? {
+                  ...post,
+                  post_text: post.post_text + text,
+                }
+              : post
+          ),
+        });
+      },
+
+      addNewPost: () => {
         // Check if the last post is empty
         if (
           get().posts.at(-1)?.post_text.trim() === "" &&
@@ -392,6 +404,7 @@ type ModalType = null | "new-post" | "reply" | "reply-of-reply" | "edit";
 
 interface OpenModalOptionsBase {
   onCloseModal?: () => void;
+  shouldAddNewPost: boolean;
 }
 
 interface OpenModalOptionsCreate extends OpenModalOptionsBase {

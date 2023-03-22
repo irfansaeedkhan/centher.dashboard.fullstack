@@ -36,6 +36,7 @@ export const CreatePostCard: React.FC<Props> = () => {
             openModal({
               modalType: "new-post",
               onCloseModal: () => setIsNewPostModalOpen(false),
+              shouldAddNewPost: true,
             });
           }}
         >
@@ -50,6 +51,7 @@ export const CreatePostCard: React.FC<Props> = () => {
           openModal({
             modalType: "new-post",
             onCloseModal: () => setIsNewPostModalOpen(false),
+            shouldAddNewPost: false,
           });
         }}
       />
