@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 import { PostMedia } from "@/models/post";
@@ -256,9 +257,59 @@ export const useNewPostStore = create<NewPostStore>()(
             })),
           });
 
-          console.log("response.data", response.data);
+          if (response.data.shouldUploadMedia) {
+            const mediaList = postArray.flatMap((post) =>
+              post.media.map((media) => ({
+                post_uuid: post.uuid,
+                media: {
+                  uuid: media.uuid,
+                  type: media.original.type,
+                  name: media.original.name,
+                  size: media.original.size,
+                },
+                index: media.index,
+              }))
+            );
 
-          // Upload media
+            const {
+              data: { presignedUrls },
+            } = await axiosNodeApi.post(
+              `/api/socials/posts/v2/media/presigned-urls`,
+              {
+                media_list: mediaList,
+              }
+            );
+
+            const mediaUploadPromises = presignedUrls.map(
+              (presignedUrl: any) => {
+                const fields = presignedUrl.media.presigned_data.fields;
+                const url = presignedUrl.media.presigned_data.url;
+
+                const formData = new FormData();
+                Object.keys(fields).forEach((key) => {
+                  formData.append(key, fields[key]);
+                });
+                // Actual file has to be appended last.
+                const file = postArray
+                  .find((post) => post.uuid === presignedUrl.post_uuid)
+                  ?.media.find((media) => {
+                    return media.uuid === presignedUrl.media.uuid;
+                  })?.original;
+
+                if (!file) return;
+
+                formData.append("file", file);
+
+                return axios.post(url, formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                });
+              }
+            );
+
+            await Promise.all(mediaUploadPromises);
+          }
 
           get().closeModal();
         } catch (error: any) {
