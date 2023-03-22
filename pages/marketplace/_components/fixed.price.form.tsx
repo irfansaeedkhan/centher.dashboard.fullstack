@@ -153,32 +153,8 @@ const FixedPriceForm = ({
       setSelectedOption(collections[0].collection);
       setPropertyList([]);
     }
-
-    console.log(
-      "form state isValid:",
-      // get formState errors
-      formState.isValid,
-
-      "nftPriceError:",
-      nftPriceError,
-      "collectionErrorMsg",
-      collectionErrorMsg,
-      "changeNFTPrice",
-      changeNFTPrice
-    );
   }, [clearForm, reset]);
-  console.log(
-    "form state isValid:",
-    // get formState errors
-    formState.isValid,
 
-    "nftPriceError:",
-    nftPriceError,
-    "collectionErrorMsg",
-    collectionErrorMsg,
-    "changeNFTPrice",
-    changeNFTPrice
-  );
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
