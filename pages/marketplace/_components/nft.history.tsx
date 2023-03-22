@@ -173,7 +173,7 @@ export const NFTHistory = ({ prices }: any) => {
                       <h5 className="text-12px text-white">
                         {duration} days avg. price
                       </h5>
-                      <h5 className="text-14px text-yellow-theme">
+                      <h5 className="text-14px text-brand-primary">
                         {" "}
                         {priceAverage ? priceAverage.toFixed(4) : " No Data"}
                       </h5>
@@ -205,7 +205,7 @@ export const NFTHistory = ({ prices }: any) => {
                     <LineChart data={data} />
                   ) : (
                     <div className="flex h-28 w-full items-center justify-center">
-                      <h6 className="text-14px text-yellow-theme font-medium">
+                      <h6 className="text-14px font-medium text-brand-primary">
                         No event has occured yet!
                       </h6>
                     </div>

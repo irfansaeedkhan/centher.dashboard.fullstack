@@ -69,7 +69,7 @@ const CreateNFTAuctionModal = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Starting price for NFT</label>
         <div className="relative h-[48px]  !bg-black-shade-2">
-          <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
           <input
