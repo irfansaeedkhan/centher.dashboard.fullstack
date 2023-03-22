@@ -183,7 +183,7 @@ export const NonNFTDescription = ({
     saleWithAuction: {
       title: "Cancel listing",
       visibility: true,
-      content: ({ auctionPrice, auctionDate }: any) => (
+      content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
           <h3 className="text-18px font-semibold leading-6 text-white">
@@ -204,7 +204,9 @@ export const NonNFTDescription = ({
             />
             <Button
               title={"Proceed"}
-              onClick={() => handleAuctionProc(auctionPrice, auctionDate)}
+              onClick={() =>
+                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+              }
               variant="v1"
               className="py-4"
             />

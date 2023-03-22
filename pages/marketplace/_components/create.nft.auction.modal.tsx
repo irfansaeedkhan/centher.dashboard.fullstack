@@ -48,6 +48,7 @@ const CreateNFTAuctionModal = ({
     };
     handleAuction(finalData);
   };
+
   return (
     <form className={modalBodyWrapper}>
       <div className={fieldWrapper}>
