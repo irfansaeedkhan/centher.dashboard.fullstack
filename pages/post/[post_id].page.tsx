@@ -132,6 +132,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                   modalType: "reply",
                   parentPostId: post._id,
                   onCloseModal: () => setIsReplyModalOpen(false),
+                  shouldAddNewPost: true,
                 });
               }}
               onClickArchive={() => handleAction(post._id, "main", archivePost)}
@@ -179,6 +180,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                         modalType: "reply-of-reply",
                         parentPostId: reply._id,
                         onCloseModal: () => setIsReplyModalOpen(false),
+                        shouldAddNewPost: true,
                       });
                     }}
                     onClickArchive={() =>
@@ -221,6 +223,7 @@ const SinglePostPage: NextPageWithLayout = () => {
                       modalType: "reply-of-reply",
                       parentPostId: reply._id,
                       onCloseModal: () => setIsReplyModalOpen(false),
+                      shouldAddNewPost: true,
                     });
                   }}
                   onClickArchive={() =>

@@ -150,6 +150,7 @@ const Profile: NextPageWithLayout = () => {
                     modalType: "reply",
                     parentPostId: post._id,
                     onCloseModal: () => setIsReplyModalOpen(false),
+                    shouldAddNewPost: true,
                   });
                 }}
                 onClickArchive={() => handleAction(post._id, archivePost)}
@@ -188,6 +189,7 @@ const Profile: NextPageWithLayout = () => {
                   modalType: "reply",
                   parentPostId: post._id,
                   onCloseModal: () => setIsReplyModalOpen(false),
+                  shouldAddNewPost: true,
                 });
               }}
               onClickArchive={() => handleAction(post._id, archivePost)}

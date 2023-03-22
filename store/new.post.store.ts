@@ -262,6 +262,7 @@ export const useNewPostStore = create<NewPostStore>()(
           set({ isPostModalLoading: true });
 
           const response = await axiosNodeApi.post(`/api/socials/posts/v2`, {
+            replying_to: get().parentPostId,
             posts: postArray.map((post) => ({
               uuid: post.uuid,
               post_text: post.post_text,
