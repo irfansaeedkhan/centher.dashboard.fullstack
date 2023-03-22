@@ -19,8 +19,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 enum ModalType {
   buyNFTStep1FuncModal = "buyNFTStep1FuncModal",
@@ -30,8 +29,7 @@ enum ModalType {
 
 export const NonNFTBuyerDescription = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: NonNFTBuyerDescriptionProps) => {
   const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -52,6 +50,7 @@ export const NonNFTBuyerDescription = ({
   };
   const handleBuyNFT = async () => {
     ProceedFunc();
+    let success = false;
     try {
       if (!library || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
@@ -60,10 +59,16 @@ export const NonNFTBuyerDescription = ({
         data.nftId,
         data.listInfo.price
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toastError(error);
       SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
   const ProceedFunc = () => {

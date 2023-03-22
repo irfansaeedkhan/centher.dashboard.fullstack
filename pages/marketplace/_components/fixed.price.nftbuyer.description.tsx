@@ -28,8 +28,7 @@ import Button from "@/components/button";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 enum ModalType {
@@ -40,6 +39,7 @@ enum ModalType {
 
 export const FixedPriceNFTBuyerDescription = ({
   data,
+  setNftData,
 }: FixedPriceNFTBuyerDescriptionProps) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
@@ -90,6 +90,7 @@ export const FixedPriceNFTBuyerDescription = ({
     }
   };
   const handleBuyNFT = async () => {
+    let success = false;
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callBuyListedItem(
@@ -98,10 +99,16 @@ export const FixedPriceNFTBuyerDescription = ({
         (data as INFTDetailData).nftId,
         (data as INFTDetailData).listInfo.price
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toastError(error);
       SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
 

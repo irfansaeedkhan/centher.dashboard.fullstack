@@ -520,10 +520,14 @@ describe("BlockchainRead", () => {
     const spy = jest.spyOn(ApolloProvider, "query");
 
     await BlockchainRead.getNft("test", 1);
-    expect(spy).toBeCalledWith(QueryNames.NFT, {
-      collection: "test",
-      tokenId: 1,
-    });
+    expect(spy).toBeCalledWith(
+      QueryNames.NFT,
+      {
+        collection: "test",
+        tokenId: 1,
+      },
+      true
+    );
   });
 
   it('should call "getSaleHistory" and throw error', async () => {

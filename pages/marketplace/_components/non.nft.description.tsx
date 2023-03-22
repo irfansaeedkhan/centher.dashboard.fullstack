@@ -24,8 +24,7 @@ import CreateNFTAuctionModal from "./create.nft.auction.modal";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 enum ModalType {
@@ -37,7 +36,10 @@ enum ModalType {
   saleWithListingModal = "saleWithListingModal",
 }
 
-export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
+export const NonNFTDescription = ({
+  data,
+  setNftData,
+}: NonNFTDescriptionProps) => {
   const { library, account } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -132,9 +134,10 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
     validateProvider();
     ProceedFunc();
-    if (library && data) {
-      let success = true;
-      try {
+
+    let success = false;
+    try {
+      if (library && data) {
         const result = await BlockchainWrite.callCreateAuction(
           library,
           data.collection,
@@ -142,17 +145,15 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           Number(auctionPrice),
           endTime
         );
-        if (!result?.length) {
-          success = false;
+        if (result?.length) {
+          setNftData();
+          success = true;
         }
-      } catch (err) {
-        toastError(err);
-        success = false;
-      } finally {
-        SuccessFunc(success);
       }
-    } else {
-      SuccessFunc(false);
+    } catch (err) {
+      success = false;
+    } finally {
+      SuccessFunc(success);
     }
   };
   const ProceedFunc = () => {

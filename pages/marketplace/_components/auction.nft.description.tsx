@@ -21,8 +21,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 enum ModalType {
@@ -32,7 +31,10 @@ enum ModalType {
   endAuctionFuncModal = "endAuctionFuncModal",
 }
 
-export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
+export const AuctionNftDescription = ({
+  data,
+  setNftData,
+}: AuctionNftDescriptionProps) => {
   const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -131,6 +133,7 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
   };
   const handleEndAuction = async () => {
     ProceedFunc();
+    let success = false;
     try {
       const result = await BlockchainWrite.callEndAuction(
         library,
@@ -138,11 +141,13 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
         (data as INFTDetailData).nftId
       );
       SuccessFunc(!!result);
+      setNftData();
     } catch (err: any) {
       toastError(err);
     }
   };
   const handleCancelAuction = async () => {
+    let success = false;
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callCancelAuction(
@@ -150,10 +155,16 @@ export const AuctionNftDescription = ({ data }: AuctionNftDescriptionProps) => {
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toastError(error);
       SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
 

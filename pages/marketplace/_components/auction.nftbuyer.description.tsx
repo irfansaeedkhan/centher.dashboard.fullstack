@@ -20,8 +20,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import AuctionBidModal from "./auction.bid.modal";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 enum ModalType {
@@ -30,6 +29,7 @@ enum ModalType {
 }
 export const AuctionNFTBuyerDescription = ({
   data,
+  setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
   const [BidModal, setBidModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -134,21 +134,25 @@ export const AuctionNFTBuyerDescription = ({
       }
       setBidModal(false);
       ProceedFunc();
-      if (library && data) {
-        try {
+      let success = false;
+      try {
+        if (library && data) {
           const result = await BlockchainWrite.callBidOnAuction(
             library,
             data.collection,
             data.nftId,
             bidPriceVal
           );
-          SuccessFunc(!!result);
-        } catch (error) {
-          toast.error("something went wrong, please try again later");
-          SuccessFunc(false);
+
+          if (result?.length) {
+            setNftData();
+            success = true;
+          }
         }
-      } else {
-        SuccessFunc(false);
+      } catch (error) {
+        toast.error("something went wrong, please try again later.");
+      } finally {
+        SuccessFunc(success);
       }
     },
     [SuccessFunc, bnbBalance, data, library, price]
