@@ -2,8 +2,6 @@
 import React from "react";
 import ctl from "@netlify/classnames-template-literals";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
-import { formatAddress } from "@/utils/format.address";
-import useGetUser from "@/hooks/use.get.user";
 import { NFTListingSingle } from "./nft.listing.single";
 interface NFTListingProps {
   data: IListHistory[] | undefined;

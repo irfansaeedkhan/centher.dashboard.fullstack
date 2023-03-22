@@ -18,13 +18,11 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 export const NonNFTBuyerDescription = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: NonNFTBuyerDescriptionProps) => {
   const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
@@ -67,6 +65,7 @@ export const NonNFTBuyerDescription = ({
     );
     setModal(true);
   };
+
   const ProceedFunc = () => {
     setModalTitle("Complete checkout");
     setModalContent(
@@ -98,6 +97,7 @@ export const NonNFTBuyerDescription = ({
     );
     setModal(true);
   };
+
   const SuccessFunc = (txStatus: boolean) => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -153,7 +153,7 @@ export const NonNFTBuyerDescription = ({
 
   const handleBuyNFT = async () => {
     ProceedFunc();
-
+    let success = false;
     try {
       if (!library || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
@@ -162,10 +162,15 @@ export const NonNFTBuyerDescription = ({
         data.nftId,
         data.listInfo.price
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toast.error("something went wrong, please try again later");
-      SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
 

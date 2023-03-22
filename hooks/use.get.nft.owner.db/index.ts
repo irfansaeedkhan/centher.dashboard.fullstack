@@ -25,7 +25,6 @@ const useGetNftOwnerDb = (account_address?: string) => {
           setUser(data.user as User);
           setLoading("loaded");
         } catch (error) {
-          console.log(error);
           setNotRegistered(account_address);
           setImgSrc("/images/a1.png");
           setUser(null);

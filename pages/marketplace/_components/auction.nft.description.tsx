@@ -27,13 +27,11 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 export const AuctionNftDescription = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: AuctionNftDescriptionProps) => {
   const { library } = useWeb3React();
   const [Modal, setModal] = useState(false);
@@ -307,14 +305,26 @@ export const AuctionNftDescription = ({
 
   const handleEndAuction = async () => {
     ProceedFunc();
-    const result = await BlockchainWrite.callEndAuction(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId
-    );
-    SuccessFunc(!!result);
+    let success = false;
+    try {
+      const result = await BlockchainWrite.callEndAuction(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
+    } catch (error) {
+      toast.error("something went wrong, please try again later.");
+    } finally {
+      SuccessFunc(success);
+    }
   };
   const handleCancelAuction = async () => {
+    let success = false;
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callCancelAuction(
@@ -322,10 +332,15 @@ export const AuctionNftDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toast.error("Something went wrong, please try again later");
-      SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
 
