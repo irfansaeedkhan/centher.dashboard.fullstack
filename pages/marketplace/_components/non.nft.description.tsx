@@ -24,8 +24,7 @@ import NewButton from "@/components/button/new.button";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 interface auctionFormInterface {
   AuctionEndTime: Date;
@@ -43,7 +42,10 @@ const AuctionModalschema = Joi.object({
   }),
 });
 
-export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
+export const NonNFTDescription = ({
+  data,
+  setNftData,
+}: NonNFTDescriptionProps) => {
   const router = useRouter();
   const { library, account } = useWeb3React();
   const [Modal, setModal] = useState(false);
@@ -65,6 +67,47 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     }
     setModalTitle("Listing Item");
     setModalContent(<ChangePriceListModal handleListNFT={handleListNFT} />);
+  };
+
+  const handleListNFT = async (bidPrice: any) => {
+    setModal(false);
+    saleWithListing(bidPrice);
+  };
+
+  const saleWithListing = (listingPrice: any) => {
+    setModalTitle("Edit listing");
+    setModalContent(
+      <div className={modalBodyWrapper}>
+        <WarningIcon className="mx-auto" />
+        <h3 className="text-18px font-semibold leading-6 text-white">
+          Are you sure you want to List your NFT to sell?
+        </h3>
+        <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          {`Listing Price will be  ${normalizeValue(
+            Number(listingPrice)
+          )} BNB.`}
+        </p>
+        <div className={footerBtnContainer}>
+          <Button
+            title={"Go back"}
+            variant="v2"
+            className="py-4"
+            onClick={() => {
+              setModalTitle("");
+              setModalContent(null);
+              setModal(false);
+            }}
+          />
+          <Button
+            title={"Proceed"}
+            onClick={() => handleListing(listingPrice)}
+            variant="v1"
+            className="py-4"
+          />
+        </div>
+      </div>
+    );
+    setModal(true);
   };
 
   const auctionModal = () => {
@@ -129,10 +172,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     saleWithAuction(data.StartingNFTPrice, data.AuctionEndTime);
   };
 
-  const handleListNFT = async (bidPrice: any) => {
-    setModal(false);
-    saleWithListing(bidPrice);
-  };
   const saleWithAuction = (auctionPrice: any, auctionDate: any) => {
     setModalTitle("Cancel listing");
     setModalContent(
@@ -168,42 +207,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     setModal(true);
   };
 
-  const saleWithListing = (listingPrice: any) => {
-    setModalTitle("Edit listing");
-    setModalContent(
-      <div className={modalBodyWrapper}>
-        <WarningIcon className="mx-auto" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Are you sure you want to List your NFT to sell?
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          {`Listing Price will be  ${normalizeValue(
-            Number(listingPrice)
-          )} BNB.`}
-        </p>
-        <div className={footerBtnContainer}>
-          <Button
-            title={"Go back"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModalTitle("");
-              setModalContent(null);
-              setModal(false);
-            }}
-          />
-          <Button
-            title={"Proceed"}
-            onClick={() => handleListing(listingPrice)}
-            variant="v1"
-            className="py-4"
-          />
-        </div>
-      </div>
-    );
-    setModal(true);
-  };
-
   const ProceedFunc = () => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -219,6 +222,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     );
     setModal(true);
   };
+
   const SuccessFunc = (txStatus: boolean) => {
     setModalTitle("Complete Checkout");
     setModalContent(
@@ -252,7 +256,6 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
             variant="v4"
             className="py-4"
             onClick={() => {
-              router.reload();
               setModal(false);
               setModalTitle("");
               setModalContent(null);
@@ -268,9 +271,10 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
     const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
 
     ProceedFunc();
-    if (library && data) {
-      let success = true;
-      try {
+
+    let success = false;
+    try {
+      if (library && data) {
         const result = await BlockchainWrite.callCreateAuction(
           library,
           data.collection,
@@ -278,24 +282,25 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           Number(auctionPrice),
           endTime
         );
-        if (!result?.length) {
-          success = false;
+        if (result?.length) {
+          setNftData();
+          success = true;
         }
-      } catch (err) {
-        success = false;
-      } finally {
-        SuccessFunc(success);
       }
-    } else {
-      SuccessFunc(false);
+    } catch (err) {
+      success = false;
+    } finally {
+      SuccessFunc(success);
     }
   };
 
   const isApproved = useGetApprovedForAll(account, data?.collection);
+
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
-    if (library && data) {
-      try {
+    let success = false;
+    try {
+      if (library && data) {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
@@ -304,7 +309,7 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
             );
 
           if (!approveResult?.length) {
-            throw new Error("something went wrong");
+            throw new Error();
           }
         }
 
@@ -314,13 +319,16 @@ export const NonNFTDescription = ({ data }: NonNFTDescriptionProps) => {
           data.nftId,
           listingPrice
         );
-        SuccessFunc(!!result);
-      } catch (error) {
-        toast.error("some went wrong, please try again later");
-        SuccessFunc(false);
+
+        if (result.length) {
+          setNftData();
+          success = true;
+        } else throw new Error();
       }
-    } else {
-      SuccessFunc(false);
+    } catch (error) {
+      toast.error("some went wrong, please try again later");
+    } finally {
+      SuccessFunc(success);
     }
   };
 

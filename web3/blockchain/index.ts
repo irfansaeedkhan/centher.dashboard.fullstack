@@ -169,14 +169,19 @@ export class BlockchainRead {
     return data.nfts;
   }
 
-  static async getNft(collection: string, tokenId: number): Promise<any> {
+  static async getNft(
+    collection: string,
+    tokenId: number,
+    useCache = true
+  ): Promise<any> {
     const variables = {
       collection,
       tokenId,
     };
     const { data, error } = await ApolloProvider.query(
       QueryNames.NFT,
-      variables
+      variables,
+      useCache
     );
 
     if (error) {

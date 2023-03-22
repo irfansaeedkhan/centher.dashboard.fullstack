@@ -6,8 +6,6 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -17,13 +15,15 @@ import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 export const AuctionNFTBuyerDescription = ({
   data,
+  setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
   const [Modal, setModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
@@ -151,21 +151,25 @@ export const AuctionNFTBuyerDescription = ({
       }
       setBidModal(false);
       ProceedFunc();
-      if (library && data) {
-        try {
+      let success = false;
+      try {
+        if (library && data) {
           const result = await BlockchainWrite.callBidOnAuction(
             library,
             data.collection,
             data.nftId,
             bidPriceVal
           );
-          SuccessFunc(!!result);
-        } catch (error) {
-          toast.error("something went wrong, please try again later");
-          SuccessFunc(false);
+
+          if (result?.length) {
+            setNftData();
+            success = true;
+          }
         }
-      } else {
-        SuccessFunc(false);
+      } catch (error) {
+        toast.error("something went wrong, please try again later.");
+      } finally {
+        SuccessFunc(success);
       }
     },
     [SuccessFunc, bnbBalance, data, library, price]

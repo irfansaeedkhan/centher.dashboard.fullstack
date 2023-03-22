@@ -26,11 +26,11 @@ import { CustomNewModal } from "@/components/modal/custom.new.modal";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 export const FixedPriceNFTBuyerDescription = ({
   data,
+  setNftData,
 }: FixedPriceNFTBuyerDescriptionProps) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
@@ -142,7 +142,6 @@ export const FixedPriceNFTBuyerDescription = ({
             title={"Ok"}
             variant="v4"
             onClick={() => {
-              router.reload();
               setModal(false);
               setModalTitle("");
               setModalContent(null);
@@ -154,6 +153,7 @@ export const FixedPriceNFTBuyerDescription = ({
     setModal(true);
   };
   const handleBuyNFT = async () => {
+    let success = false;
     try {
       buyNFTStep2Func();
 
@@ -163,10 +163,15 @@ export const FixedPriceNFTBuyerDescription = ({
         (data as INFTDetailData).nftId,
         (data as INFTDetailData).listInfo.price
       );
-      SuccessFunc(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toast.error("something went wrong, please try again later.");
-      SuccessFunc(false);
+    } finally {
+      SuccessFunc(success);
     }
   };
   return (

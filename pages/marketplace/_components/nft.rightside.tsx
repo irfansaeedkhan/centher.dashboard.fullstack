@@ -31,10 +31,12 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
-  reload: boolean;
-  setReload: any;
+  setNftData: () => void;
 }
-export const NFTRightSideComponent = ({ data }: NFTRightSideComponentProps) => {
+export const NFTRightSideComponent = ({
+  data,
+  setNftData,
+}: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
   const router = useRouter();
@@ -232,15 +234,23 @@ export const NFTRightSideComponent = ({ data }: NFTRightSideComponentProps) => {
           </div>
         </div>
       </div>
-      {nftState === "nonNFT" && <NonNFTDescription data={data} />}
-      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data} />}
-      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data} />}
-      {nftState === "fixedPriceNFTBuyer" && (
-        <FixedPriceNFTBuyerDescription data={data} />
+      {nftState === "nonNFT" && (
+        <NonNFTDescription data={data} setNftData={setNftData} />
       )}
-      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {nftState === "nonNFTBuyer" && (
+        <NonNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFT" && (
+        <FixedPriceNFTDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFTBuyer" && (
+        <FixedPriceNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "timeAuctionedNFT" && (
+        <AuctionNftDescription data={data} setNftData={setNftData} />
+      )}
       {nftState === "timeAuctionedNFTBuyer" && (
-        <AuctionNFTBuyerDescription data={data} />
+        <AuctionNFTBuyerDescription data={data} setNftData={setNftData} />
       )}
       <NFTListing data={data?.listingHistory} />
       {data?.saleState === "Auction" && (

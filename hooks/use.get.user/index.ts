@@ -20,7 +20,6 @@ const useGetUser = (account_address?: string) => {
           setUser(data.user as User);
           setLoading("loaded");
         } catch (error) {
-          console.log(error);
           setUser(null);
           setLoading("failed");
         }

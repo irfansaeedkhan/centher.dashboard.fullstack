@@ -197,7 +197,7 @@ const FixedPriceForm = ({
         </label>
 
         <div className="relative">
-          <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
           {/* <input
@@ -408,7 +408,7 @@ const properyCard = ctl(`
 border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
 `);
 const PropertyName = ctl(`
-text-12px font-medium text-yellow-theme
+text-12px font-medium text-brand-primary
 `);
 const Type = ctl(`
 text-14px font-semibold text-white
