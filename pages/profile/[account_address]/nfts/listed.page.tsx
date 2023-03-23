@@ -9,6 +9,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { NFTImageCard } from "@/components/nft.image.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
+import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 
 const ListedNFTS: NextPageWithLayout = () => {
   const router = useRouter();
@@ -32,25 +33,25 @@ const ListedNFTS: NextPageWithLayout = () => {
   const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
 
   useEffect(() => {
-    if (loadingListedNFTs === "loaded") {
+    if (loadingListedNFTs == LoadingStatus.loaded) {
       setDisplayNFTs([...listedNFTs]);
     }
   }, [loadingListedNFTs, listedNFTs]);
 
   return (
     <>
-      {loadingListedNFTs === "loaded" && displayNFTs.length > 0 ? (
+      {loadingListedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
           {displayNFTs.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
       ) : (
-        loadingListedNFTs === "loading" && (
+        loadingListedNFTs == LoadingStatus.loading && (
           <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
         )
       )}
-      {loadingListedNFTs === "loaded" && listedNFTs.length === 0 && (
+      {loadingListedNFTs == LoadingStatus.loaded && !listedNFTs?.length && (
         <>
           <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />

@@ -95,7 +95,9 @@ const CreateNFT: NextPageWithLayout = () => {
       );
       nfdCreated = !!result;
     } catch (error) {
-      toastError(error);
+      toastError(
+        `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
+      );
     } finally {
       buyNFTSuccessFunc(nfdCreated, nftData);
     }
@@ -103,14 +105,11 @@ const CreateNFT: NextPageWithLayout = () => {
 
   const createNFT = (values: INFTData) => {
     if (asset === undefined) {
-      toast.error("Choose file.");
+      toastError("Choose file.");
       return;
     }
-    // setNFTData(values)
-    if (!library) {
-      toast.error("Connect your wallet");
-      return;
-    }
+
+    validateProvider();
     buyNFTStep1Func(values);
   };
 
@@ -123,6 +122,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError(err);
     }
   };
+
   const modalTemplateCollection: TemplateCollection = {
     buyNFTStep1FuncModal: {
       title: "Complete Checkout",

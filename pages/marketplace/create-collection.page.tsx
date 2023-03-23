@@ -100,24 +100,25 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       );
       collectionCreated = true;
     } catch (error) {
-      console.error(error);
-      toastError(error);
+      toastError(
+        `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
+      );
     } finally {
       buyNFTSuccessFunc(collectionCreated, collectionData);
     }
   };
   const createCollection = (values: ICollectionData) => {
     if (profile === undefined) {
-      toast.error("Choose profile image.");
+      toastError("Choose profile image.");
       return;
     }
     if (cover === undefined) {
-      toast.error("Choose banner image.");
+      toastError("Choose banner image.");
       return;
     }
 
     if (!library) {
-      toast.error("Connect your wallet");
+      toastError("Connect your wallet");
       return;
     }
     // setCollectionData(values)
