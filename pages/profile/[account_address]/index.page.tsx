@@ -137,7 +137,8 @@ const Profile: NextPageWithLayout = () => {
                 post={post}
                 postType={"main"}
                 placement="profile-posts-page"
-                shouldShowThread={post.replies_count > 0}
+                shouldShowThread={post.is_thread}
+                shouldShowComments={post.replies_count > 0}
                 onClickLike={async () => {
                   await likePostAPI(
                     post._id,
@@ -176,7 +177,8 @@ const Profile: NextPageWithLayout = () => {
               post={post}
               postType={"main"}
               placement="profile-posts-page"
-              shouldShowThread={post.replies_count > 0}
+              shouldShowThread={post.is_thread}
+              shouldShowComments={post.replies_count > 0}
               onClickLike={async () => {
                 await likePostAPI(
                   post._id,

@@ -7,13 +7,9 @@ import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   postUser: PostUser;
-  shouldShowConnectLines: boolean;
 }
 
-export const PostUserImage: React.FC<Props> = ({
-  postUser,
-  shouldShowConnectLines,
-}) => {
+export const PostUserImage: React.FC<Props> = ({ postUser }) => {
   return (
     <div className="flex flex-col items-center">
       {/* Image with link to user profile */}
@@ -36,11 +32,6 @@ export const PostUserImage: React.FC<Props> = ({
           className="h-full w-full rounded-full object-cover"
         />
       </Link>
-
-      {/* Vertical Line */}
-      {/* {shouldShowConnectLines && (
-        <div className="flex-grow border-l-2 border-gray-shade-3" />
-      )} */}
     </div>
   );
 };

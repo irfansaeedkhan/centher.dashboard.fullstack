@@ -132,7 +132,8 @@ const Replies: NextPageWithLayout = () => {
                 post={post}
                 postType={"reply-w-parent-header"}
                 placement="profile-replies-page"
-                shouldShowThread={post.replies_count > 0}
+                shouldShowThread={post.is_thread}
+                shouldShowComments={post.replies_count > 0}
                 onClickLike={async () => {
                   await likePostAPI(
                     post._id,
@@ -171,7 +172,8 @@ const Replies: NextPageWithLayout = () => {
               post={post}
               postType={"reply-w-parent-header"}
               placement="profile-replies-page"
-              shouldShowThread={post.replies_count > 0}
+              shouldShowThread={post.is_thread}
+              shouldShowComments={post.replies_count > 0}
               onClickLike={async () => {
                 await likePostAPI(
                   post._id,

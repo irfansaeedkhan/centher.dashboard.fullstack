@@ -32,6 +32,7 @@ interface Props {
   postType: PostType;
   placement: Placement;
   shouldShowThread?: boolean;
+  shouldShowComments?: boolean;
   className?: string;
   onPostInViewport?: () => Promise<void>;
   onClickReply?: () => void;
@@ -47,6 +48,7 @@ export const SinglePostV2: React.FC<Props> = ({
   postType,
   placement,
   shouldShowThread = false,
+  shouldShowComments = false,
   className,
   onPostInViewport = async () => {},
   onClickReply = () => {},
@@ -127,10 +129,7 @@ export const SinglePostV2: React.FC<Props> = ({
           post.status !== "archived" &&
           post.parent_post && (
             <>
-              <PostUserImage
-                postUser={post.parent_post.user}
-                shouldShowConnectLines={true}
-              />
+              <PostUserImage postUser={post.parent_post.user} />
               <div
                 className={clsx(
                   `mb-5 flex-grow border-b-2 border-b-gray-shade-3 pb-5`
@@ -150,10 +149,7 @@ export const SinglePostV2: React.FC<Props> = ({
             </>
           )}
 
-        <PostUserImage
-          postUser={post.user}
-          shouldShowConnectLines={shouldShowThread}
-        />
+        <PostUserImage postUser={post.user} />
 
         <PostHeader
           post={post}
@@ -178,6 +174,11 @@ export const SinglePostV2: React.FC<Props> = ({
             });
           }}
         />
+
+        {/* Vertical Line */}
+        {shouldShowThread && (
+          <div className="row-start-2 row-end-4 w-0.5 justify-self-center bg-gray-shade-3" />
+        )}
 
         <div
           className={clsx(
@@ -233,7 +234,7 @@ export const SinglePostV2: React.FC<Props> = ({
         <div
           className={clsx(
             {
-              "mb-2": shouldShowThread,
+              "mb-2": shouldShowThread || shouldShowComments,
             },
             placement === "single-post-page" &&
               (postType === "main" || postType === "reply-w-parent-header")
@@ -269,7 +270,11 @@ export const SinglePostV2: React.FC<Props> = ({
         </div>
       </div>
 
-      {shouldShowThread && <ShowThread post={post} />}
+      <ShowThread
+        post={post}
+        shouldShowThread={shouldShowThread}
+        shouldShowComments={shouldShowComments}
+      />
 
       {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
 

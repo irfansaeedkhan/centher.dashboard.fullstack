@@ -8,10 +8,18 @@ import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
+  shouldShowThread: boolean;
+  shouldShowComments: boolean;
 }
 
-export const ShowThread: React.FC<Props> = ({ post }) => {
+export const ShowThread: React.FC<Props> = ({
+  post,
+  shouldShowThread,
+  shouldShowComments,
+}) => {
   const router = useRouter();
+
+  if (!shouldShowThread && !shouldShowComments) return null;
 
   return (
     <div className="flex items-center">
@@ -44,7 +52,11 @@ export const ShowThread: React.FC<Props> = ({ post }) => {
         }}
         className="rounded-[40px] bg-brand-primary/10 px-3 py-1.5 text-xs font-medium text-brand-primary"
       >
-        Show Comments
+        {shouldShowThread
+          ? "Show Thread"
+          : shouldShowComments
+          ? "Show Comments"
+          : null}
       </Link>
     </div>
   );

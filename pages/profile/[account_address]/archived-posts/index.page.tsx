@@ -86,7 +86,6 @@ const ArchivedPosts: NextPageWithLayout = () => {
                   post={post}
                   postType={"archived"}
                   placement="profile-archived-page"
-                  shouldShowThread={false}
                   onClickRestore={() =>
                     handleRestoreAction(post._id, !!post.parent_post_id)
                   }
@@ -102,7 +101,6 @@ const ArchivedPosts: NextPageWithLayout = () => {
               post={post}
               postType={"archived"}
               placement="profile-archived-page"
-              shouldShowThread={false}
               onClickRestore={() =>
                 handleRestoreAction(post._id, !!post.parent_post_id)
               }
