@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
 import { useEffect, useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
 import moment from "moment";
 
 // App import
@@ -8,10 +7,6 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { LineChart } from "@/components/charts";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
-
-interface NFTHistoryProps {
-  prices: IListHistory[] | undefined;
-}
 interface PriceHistory {
   price: number;
   txTime: number;
@@ -37,7 +32,6 @@ export const NFTHistory = ({ prices }: any) => {
 
   // global labels to set dynamic data
   const [labels, setLabels] = useState<string[]>([]);
-  const [priceList, setPriceList] = useState<number[]>([]);
   const [priceAverageList, setPriceAverageList] = useState<number[]>([]);
   const [priceAverage, setPriceAverage] = useState<number>();
   const [priceVolume, setPriceVolume] = useState<number>();
@@ -67,9 +61,6 @@ export const NFTHistory = ({ prices }: any) => {
         _labels.push(moment().subtract(i, "days").format("DD MMM"));
       }
       setLabels(_labels);
-
-      // using momentjs to get current date and previous dates
-      // const currentTime = moment().format("YYYY-MM-DD");
 
       const nthDays = moment().subtract(duration, "days").format("YYYY-MM-DD");
 
@@ -121,7 +112,7 @@ export const NFTHistory = ({ prices }: any) => {
           );
         }
       });
-      setPriceList(_priceList);
+
       // getting average prices per day
       _priceListForGraph?.map((priceArray) => {
         const _priceArrAverage =
@@ -167,36 +158,22 @@ export const NFTHistory = ({ prices }: any) => {
     setDuration((prev) => e.target.value);
   };
   return (
-    <div className={NFTHistoryContainer}>
+    <div className={`w-full`}>
       {prices?.length ? (
         <div className="accordion" id="accordionExample">
           <div className="accordion-item ">
             <h2 className="accordion-header mb-0" id="headingOne">
-              <button
-                className={AccordionButton}
-                // type="button"
-                // data-bs-toggle="collapse"
-                // data-bs-target="#HistoryComponent"
-                // aria-expanded="true"
-                // aria-controls="HistoryComponent"
-              >
-                History
-              </button>
+              <button className={AccordionButton}>History</button>
             </h2>
-            <div
-            // id="HistoryComponent"
-            // className={AccordionCollapse}
-            // aria-labelledby="headingOne"
-            // data-bs-parent="#accordionExample"
-            >
+            <div>
               <div className="accordion-body rounded-10px bg-background-shade-3">
-                <div className={graphContainer}>
+                <div className={`overflow-x-auto`}>
                   <div className="top flex  justify-between bg-[#1C1F29] px-6 py-3">
                     <div className={graphDetailBox}>
                       <h5 className="text-12px text-white">
                         {duration} days avg. price
                       </h5>
-                      <h5 className="text-14px text-yellow-theme">
+                      <h5 className="text-14px text-brand-primary">
                         {" "}
                         {priceAverage ? priceAverage.toFixed(4) : " No Data"}
                       </h5>
@@ -228,7 +205,7 @@ export const NFTHistory = ({ prices }: any) => {
                     <LineChart data={data} />
                   ) : (
                     <div className="flex h-28 w-full items-center justify-center">
-                      <h6 className="text-14px text-yellow-theme font-medium">
+                      <h6 className="text-14px font-medium text-brand-primary">
                         No event has occured yet!
                       </h6>
                     </div>
@@ -254,9 +231,13 @@ export const NFTHistory = ({ prices }: any) => {
       ) : null}
       {showModal && (
         <CustomModal onClose={closePostModal} title={"Price List"}>
-          <div className={TableContainer}>
-            <table className={table}>
-              <thead className={thead}>
+          <div className={`relative overflow-x-auto rounded-2xl shadow-md`}>
+            <table
+              className={`w-full overflow-hidden rounded-2xl border-2 border-gray-shade-3 bg-black-shade-4 text-left text-sm text-gray-500`}
+            >
+              <thead
+                className={`text-14px bg-background-shade-3 uppercase text-gray-shade-7`}
+              >
                 <tr>
                   <th scope="col" className={th}>
                     Dates
@@ -269,7 +250,10 @@ export const NFTHistory = ({ prices }: any) => {
               <tbody>
                 {tableDataArray?.map((item: any, index: any) => {
                   return (
-                    <tr className={tbodyTR} key={index}>
+                    <tr
+                      className={`border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11`}
+                      key={index}
+                    >
                       <td className={td}>{Object.keys(item)}</td>
                       <td className={td}>
                         {Object.values(item).map(
@@ -288,36 +272,8 @@ export const NFTHistory = ({ prices }: any) => {
   );
 };
 // styling
-const NFTHistoryContainer = ctl(`
-w-full 
-`);
-const AccordionButton = ctl(`
-accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
-`);
-const AccordionCollapse = ctl(`
-accordion-collapse collapse show bg-[#1B1C22] border-2 rounded-10px  border-gray-shade-3
-`);
-const graphContainer = ctl(`
-overflow-x-auto  
-`);
-const graphDetailBox = ctl(`
-flex flex-col gap-2
-`);
-const TableContainer = ctl(` 
-overflow-x-auto relative  shadow-md rounded-2xl
-`);
-const table = ctl(` 
-overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-black-shade-4
-`);
-const thead = ctl(` 
-text-14px text-gray-shade-7 uppercase bg-background-shade-3 
-`);
-const th = ctl(` 
-py-4 lg:py-7 px-5 lg:px-3
-`);
-const tbodyTR = ctl(` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`);
-const td = ctl(` 
-text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium
-`);
+
+const AccordionButton = `accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3`;
+const graphDetailBox = `flex flex-col gap-2`;
+const th = `py-4 lg:py-7 px-5 lg:px-3`;
+const td = `text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium`;

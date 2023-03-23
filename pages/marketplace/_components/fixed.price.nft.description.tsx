@@ -32,12 +32,12 @@ export interface bidForm {
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 export const FixedPriceNFTDescription = ({
   data,
+  setNftData,
 }: FixedPriceNFTDescriptionProps) => {
   const router = useRouter();
 
@@ -95,22 +95,29 @@ export const FixedPriceNFTDescription = ({
 
   const handleCancelListing = async () => {
     setupWaitingModal();
+    let success = false;
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
         library,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      setupSuccessModal(!!result);
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (error) {
       toast.error("something went wrong, please try again later");
-      setupSuccessModal(false);
+    } finally {
+      setupSuccessModal(success);
     }
   };
 
   const handleEditPrice = async (newPrice: any) => {
     let result;
     setupWaitingModal();
+    let success = false;
     try {
       validateProvider();
       if (!data?.collection || !data?.nftId || !newPrice) {
@@ -125,11 +132,16 @@ export const FixedPriceNFTDescription = ({
         data.nftId,
         newPrice
       );
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (err) {
       toastError(err);
+    } finally {
+      setupSuccessModal(success);
     }
-
-    setupSuccessModal(!!result);
   };
 
   const modalTemplateCollection: TemplateCollection = {
@@ -234,9 +246,9 @@ export const FixedPriceNFTDescription = ({
           </h2>
           {status && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully changed{" "}
-              <span className="text-white">{data?.name}</span> NFT price on
-              <b>Centher</b> NFT platform.
+              Congratulations! You have successfully unlisted your NFT{" "}
+              <span className="text-white">{data?.name}</span> on
+              <b> Centher </b> NFT platform.
             </p>
           )}
           {!status && (
@@ -249,7 +261,6 @@ export const FixedPriceNFTDescription = ({
               title={"Ok"}
               variant="v4"
               onClick={() => {
-                router.reload();
                 modal.dismissModal();
               }}
             />

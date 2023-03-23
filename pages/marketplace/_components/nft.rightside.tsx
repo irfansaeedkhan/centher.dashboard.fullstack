@@ -1,15 +1,14 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
+import { SiWhatsapp } from "react-icons/si";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
-import { SiWhatsapp } from "react-icons/si";
-import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import toast from "react-hot-toast";
-import clsx from "clsx";
-import ctl from "@netlify/classnames-template-literals";
 
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -22,7 +21,6 @@ import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
-import { NFTHistory } from "./nft.history";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
@@ -30,16 +28,15 @@ import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.descriptio
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
-  reload: boolean;
-  setReload: any;
+  setNftData: () => void;
 }
 export const NFTRightSideComponent = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
@@ -100,7 +97,7 @@ export const NFTRightSideComponent = ({
     <div className={rightSideContainer}>
       <div className={titleContainer}>
         <h1 className={title}>{data?.name}</h1>
-        <div ref={toggleContainerRef} className={toggleContainer}>
+        <div ref={toggleContainerRef} className={`relative`}>
           <button onClick={togglePopFunc}>
             <ShareBigIcon />
           </button>
@@ -238,15 +235,23 @@ export const NFTRightSideComponent = ({
           </div>
         </div>
       </div>
-      {nftState === "nonNFT" && <NonNFTDescription data={data} />}
-      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data} />}
-      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data} />}
-      {nftState === "fixedPriceNFTBuyer" && (
-        <FixedPriceNFTBuyerDescription data={data} />
+      {nftState === "nonNFT" && (
+        <NonNFTDescription data={data} setNftData={setNftData} />
       )}
-      {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {nftState === "nonNFTBuyer" && (
+        <NonNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFT" && (
+        <FixedPriceNFTDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFTBuyer" && (
+        <FixedPriceNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "timeAuctionedNFT" && (
+        <AuctionNftDescription data={data} setNftData={setNftData} />
+      )}
       {nftState === "timeAuctionedNFTBuyer" && (
-        <AuctionNFTBuyerDescription data={data} />
+        <AuctionNFTBuyerDescription data={data} setNftData={setNftData} />
       )}
       <NFTListing data={data?.listingHistory} />
       {data?.saleState === "Auction" && (
@@ -259,28 +264,11 @@ export const NFTRightSideComponent = ({
   );
 };
 // styling
-const rightSideContainer = ctl(`
-w-full flex flex-col gap-6
-`);
-const titleContainer = ctl(`
-flex items-end fmd:items-center justify-between 
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const toggleContainer = ctl(`
-relative
-`);
-const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]
-`);
-const toggleListBtn = ctl(`
-w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
-`);
-const toggleListIcons = ctl(`
-w-[24px] h-[24px] stroke-white
-`);
+const rightSideContainer = `w-full flex flex-col gap-6`;
+const titleContainer = `flex items-end fmd:items-center justify-between `;
+const title = `textGradient  font-semibold leading-[42px]  animationTextHeading text-34px`;
+const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
+const toggleListBtn = `w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
+const toggleListIcons = `w-[24px] h-[24px] stroke-white`;
 const nameBox = `flex items-start gap-3 flex-grow`;
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
+const nameBoxTitle = `text-12px font-normal text-gray-shade-2`;

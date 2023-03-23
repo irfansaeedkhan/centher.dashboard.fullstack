@@ -21,7 +21,8 @@ export class ApolloProvider {
   }
   static async query(
     queryName: QueryNames,
-    variables?: any
+    variables?: any,
+    cacheFirst = true
   ): Promise<ApolloQueryResult<any>> {
     const query = QueryFactory.getQuery(queryName);
     if (!query) {
@@ -33,7 +34,7 @@ export class ApolloProvider {
     const result = await this._instance.query({
       query: gql(query),
       variables,
-      fetchPolicy: "cache-first",
+      fetchPolicy: cacheFirst ? "cache-first" : "no-cache",
     });
 
     return result;

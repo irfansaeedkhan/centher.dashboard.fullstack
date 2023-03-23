@@ -1,18 +1,18 @@
 // React, Next, NPM Packages
 import React, { useState, useEffect, useCallback } from "react";
-import ctl from "@netlify/classnames-template-literals";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { ShareBigIcon, BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
@@ -20,19 +20,23 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
+}
+
+enum ModalType {
+  proceedFuncModal = "proceedFuncModal",
+  successFuncModal = "successFuncModal",
 }
 export const AuctionNFTBuyerDescription = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
-  const [Modal, setModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
-  const [ModalTitle, setModalTitle] = useState("");
-  const [ModalContent, setModalContent] = useState<any>();
-
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const { library, account } = useWeb3React();
 
   const bnbBalance = useGetBNBBalance(account);
@@ -47,8 +51,6 @@ export const AuctionNFTBuyerDescription = ({
   const [hours, setHours] = useState<number>(0);
   const [minutes, setMinutes] = useState<number>(0);
   const [seconds, setSeconds] = useState<number>(0);
-  // const [bidPrice, setBidPrice] = useState<any>(null);
-  // const [bidPriceErr, setBidPriceErr] = useState(true);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
 
@@ -96,23 +98,85 @@ export const AuctionNFTBuyerDescription = ({
       clearInterval(updateTime);
     };
   }, [data]);
-  interface bidForm {
-    bidPrice: number;
-  }
-  // const handleBidValue = (e: any) => {
-  //   setBidPrice(e.target.value);
-
-  //   if (!!e.target.value) {
-  //     setBidPriceErr(false);
-  //   } else {
-  //     setBidPriceErr(true);
-  //   }
-  // };
 
   const SuccessFunc = useCallback(
     (txStatus: boolean) => {
-      setModalTitle("Complete Checkout");
-      setModalContent(
+      try {
+        validateProvider();
+        modal.dismissModal();
+        modal.createModal(ModalType.successFuncModal, txStatus);
+      } catch (err: any) {
+        toastError(err);
+      }
+    },
+    [data]
+  );
+  const ProceedFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.proceedFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
+  const onSubmit = useCallback(
+    async (bidPriceVal: any) => {
+      if (Number(bidPriceVal) <= formatEther2Number(price)) {
+        toast.error(
+          `Bid price must be greater than ${formatEther2Number(price)}.`
+        );
+        return;
+      }
+      if (bnbBalance < Number(bidPriceVal)) {
+        toast.error("Insufficient BNB Balance in your wallet.");
+        return;
+      }
+      setBidModal(false);
+      ProceedFunc();
+      let success = false;
+      try {
+        if (library && data) {
+          const result = await BlockchainWrite.callBidOnAuction(
+            library,
+            data.collection,
+            data.nftId,
+            bidPriceVal
+          );
+
+          if (result?.length) {
+            setNftData();
+            success = true;
+          }
+        }
+      } catch (error) {
+        toast.error("something went wrong, please try again later.");
+      } finally {
+        SuccessFunc(success);
+      }
+    },
+    [SuccessFunc, bnbBalance, data, library, price]
+  );
+  const modalTemplateCollection: TemplateCollection = {
+    proceedFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper1}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
+    successFuncModal: {
+      title: "Complete Checkout",
+      visibility: true,
+      content: (txStatus: any) => (
         <div className={modalBodyWrapper1}>
           <Image
             className={ImgStyling}
@@ -142,127 +206,24 @@ export const AuctionNFTBuyerDescription = ({
             variant="v1"
             className="py-4"
             onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
+              modal.dismissModal();
             }}
           />
         </div>
-      );
-      setModal(true);
+      ),
     },
-    [data]
-  );
-  const onSubmit = useCallback(
-    async (bidPriceVal: any) => {
-      if (Number(bidPriceVal) <= formatEther2Number(price)) {
-        toast.error(
-          `Bid price must be greater than ${formatEther2Number(price)}.`
-        );
-        return;
-      }
-      if (bnbBalance < Number(bidPriceVal)) {
-        toast.error("Insufficient BNB Balance in your wallet.");
-        return;
-      }
-      setBidModal(false);
-      ProceedFunc();
-      if (library && data) {
-        try {
-          const result = await BlockchainWrite.callBidOnAuction(
-            library,
-            data.collection,
-            data.nftId,
-            bidPriceVal
-          );
-          SuccessFunc(!!result);
-        } catch (error) {
-          toast.error("something went wrong, please try again later");
-          SuccessFunc(false);
-        }
-      } else {
-        SuccessFunc(false);
-      }
-    },
-    [SuccessFunc, bnbBalance, data, library, price]
-  );
-  // const bidNFTModalFunc = useCallback(() => {
-  //   if (!library) {
-  //     toast.error("Connect your wallet");
-  //     return;
-  //   }
-  //   setModalTitle("Place a bid");
-  //   setModalContent(
-  //     <div className={modalBodyWrapper}>
-  //       <div className={fieldWrapper}>
-  //         <label className={fieldTitle}>Blockchain</label>
-  //         <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
-  //           <BNBIcon />{" "}
-  //           <h6 className="text-14px font-semibold text-white">BNB</h6>
-  //         </div>
-  //       </div>
-  //       <div className={fieldWrapper}>
-  //         <label className={fieldTitle}>Price</label>
-  //         <div
-  //           className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
-  //         >
-  //           <input
-  //             type="text"
-  //             onKeyPress={(event) => {
-  //               if (!/[0-9.]/.test(event.key)) {
-  //                 event.preventDefault();
-  //               }
-  //             }}
-  //             pattern="[0-9.]*"
-  //             id="bidPrice"
-  //             autoComplete="off"
-  //             name="bidPrice"
-  //             onChange={handleBidValue}
-  //             value={bidPrice}
-  //             placeholder="0.00"
-  //             className={
-  //               "w-full h-full !border-0 !ring-0 bg-transparent text-white"
-  //             }
-  //           />
-  //           <h6 className="text-14px font-semibold text-gray-shade-7">
-  //             =$0000
-  //           </h6>
-  //         </div>
-  //         {bidPriceErr && (
-  //           <p className={`text-red-500 ${errMessage}`}>
-  //             Kindly fill the form using numbers
-  //           </p>
-  //         )}
-  //       </div>
-  //       <Button
-  //         title={"Place bid "}
-  //         variant={bidPriceErr ? "v2" : "v1"}
-  //         disabled={bidPriceErr}
-  //         onClick={() => {
-  //           onSubmit(bidPrice);
-  //         }}
-  //         className="py-4 mt-2"
-  //       />
-  //     </div>
-  //   );
-  // }, [bidPrice, bidPriceErr, library, onSubmit]);
-
-  const ProceedFunc = () => {
-    setModalTitle("Complete Checkout");
-    setModalContent(
-      <div className={modalBodyWrapper1}>
-        <LoaderIcon className="mx-auto animate-spin" />
-        <h3 className="text-18px font-semibold leading-6 text-white">
-          Transaction in progress
-        </h3>
-        <p className="text-14px font-normal leading-6 text-gray-shade-2">
-          Your transaction is in progress, Please wait.
-        </p>
-      </div>
-    );
-    setModal(true);
   };
 
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  function validateProvider(): void {
+    if (!library) {
+      throw new Error("Connect your wallet");
+    }
+  }
+  function toastError(err: any): void {
+    toast.error(err?.message ? err.message : err);
+  }
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -333,23 +294,21 @@ export const AuctionNFTBuyerDescription = ({
                 return;
               }
               if (library) {
-                // bidNFTModalFunc();
                 setBidModal(true);
-                // setModal(true);
               }
             }}
           />
         )}
       </div>
 
-      {Modal && (
+      {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
-            setModal(false);
+            modal.dismissModal();
           }}
-          title={ModalTitle}
+          title={ModalModel.title as any}
         >
-          {ModalContent}
+          {ModalModel.content}
         </CustomModal>
       )}
       {BidModal && (
@@ -364,62 +323,10 @@ export const AuctionNFTBuyerDescription = ({
   );
 };
 // styling
-const modalBodyWrapper1 = ctl(`
-flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 items-center
-`);
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 
-`);
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
-  w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-const nftDescriptionContainer = ctl(`
-w-full flex flex-col gap-5
-`);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const desNameContainer = ctl(`
-flex gap-6 [@media(max-width:600px)]:flex-wrap
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const nameBox = ctl(`
-flex items-start gap-3
-`);
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
-const nameBoxZValue = ctl(`
-text-14px font-semibold text-white
-`);
-const greyBoxContainer = ctl(`
-bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`);
-const greyTxt = ctl(`
-text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
-text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
-text-16px font-bold text-white
-`);
-
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-
-const footerBtnContainer = ctl(`
-flex items-center gap-4
-`);
+const modalBodyWrapper1 = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 items-center`;
+const nftDescriptionContainer = `w-full flex flex-col gap-5`;
+const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
+const greyTxt = `text-14px font-normal text-gray-shade-7`;
+const desTitle = `text-14px font-semibold text-white`;
+const BnBNum = `text-16px font-bold text-white`;
+const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;

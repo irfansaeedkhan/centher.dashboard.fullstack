@@ -3,12 +3,10 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-import ctl from "@netlify/classnames-template-literals";
 
 import { Collection } from "@/models/nft";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-
 export interface NFTCardProps {
   data: Collection;
 }
@@ -33,7 +31,9 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
   }, [data]);
 
   return (
-    <div className={nftCardWrapper}>
+    <div
+      className={`relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`}
+    >
       <Link
         href={{
           pathname: AppRoutes.marketplace.collection,
@@ -41,7 +41,7 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
             collection: data.collection,
           },
         }}
-        className={nftImageWrapper}
+        className={`flex h-full w-full justify-center`}
       >
         {imageUrl ? (
           <Image
@@ -51,19 +51,13 @@ export const NFTCollectionImageCard: React.FC<NFTCardProps> = ({ data }) => {
             alt="nft"
             height={275}
             width={275}
-            className="!h-[104px] !w-full rounded-xl object-cover [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"
+            className="absolute inset-0 h-full w-full rounded-xl object-cover"
             onError={() => setImageUrl("/images/placeholder-square.svg")}
           />
         ) : (
-          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
+          <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
         )}
       </Link>
     </div>
   );
 };
-
-const nftCardWrapper = ctl(
-  `bg-transparent relative rounded-xl overflow-hidden `
-);
-
-const nftImageWrapper = ctl(`w-full h-full flex justify-center `);

@@ -7,25 +7,34 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NFTLeftSideComponent, NFTRightSideComponent } from "../../_components";
 import { ArrowLeftSimpleIcon } from "@/assets/svgs";
 import { useRouter } from "next/router";
-import { INFTDetailData, useGetNftData } from "@/hooks/use.get.nft.data.ts";
-import { useState } from "react";
+import { fetchNft, INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 const NFT: NextPageWithLayout = () => {
-  const [reload, setReload] = useState(false);
   const router = useRouter();
   const collection = router.query.collection;
   const tokenId = router.query.tokenId;
+  const [nftData, setNftDatas] = useState<INFTDetailData>();
+  const [reload, setReload] = useState<boolean>(false);
 
-  const data: INFTDetailData | undefined = useGetNftData(
-    collection,
-    tokenId,
-    reload
-  );
+  useEffect(() => {
+    async function fetchNFTData(collection: string, tokenId: number) {
+      const result = await fetchNft(collection, tokenId);
+      setNftDatas(result as any);
+    }
+
+    if ((collection as string) && tokenId) {
+      fetchNFTData(collection as string, Number(tokenId as string));
+    }
+  }, [collection, reload, tokenId]);
+  const setNftData = () => {
+    setReload(!reload);
+  };
   return (
     <>
       <Head>
-        <title>{data?.name}</title>
+        <title>{nftData?.name}</title>
       </Head>
       <div className="w-full pb-16">
         <button className={backBtn} onClick={() => router.back()}>
@@ -33,18 +42,14 @@ const NFT: NextPageWithLayout = () => {
         </button>
         <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
           <NFTLeftSideComponent
-            image={data?.image}
-            type={data?.type}
-            nftId={data?.nftId}
-            mintTx={data?.mintTx}
-            collection={data?.collection}
-            attributes={data?.attributes}
+            image={nftData?.image}
+            type={nftData?.type}
+            nftId={nftData?.nftId}
+            mintTx={nftData?.mintTx}
+            collection={nftData?.collection}
+            attributes={nftData?.attributes}
           />
-          <NFTRightSideComponent
-            data={data}
-            reload={reload}
-            setReload={setReload}
-          />
+          <NFTRightSideComponent data={nftData} setNftData={setNftData} />
         </div>
       </div>
     </>

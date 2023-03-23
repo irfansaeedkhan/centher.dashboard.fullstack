@@ -1,6 +1,6 @@
 // React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
+
 import { IProperty } from "./create.nft.form";
 
 interface NFTPropertiesProps {
@@ -8,36 +8,30 @@ interface NFTPropertiesProps {
 }
 export const NFTProperties = (props: NFTPropertiesProps) => {
   return (
-    <div className={NFTPropertiesContainer}>
+    <div className={`w-full`}>
       <div className="accordion" id="accordionExample">
         {props.attributes?.length ? (
           <div className="accordion-item ">
             <h2 className="accordion-header mb-0" id="headingOne">
-              <button
-                className={AccordionButton}
-                // type="button"
-                // data-bs-toggle="collapse"
-                // data-bs-target="#propertiesComponent"
-                // aria-expanded="true"
-                // aria-controls="propertiesComponent"
-              >
-                Properties
-              </button>
+              <button className={AccordionButton}>Properties</button>
             </h2>
-            <div
-            // id="propertiesComponent"
-            // className={AccordionCollapse}
-            // aria-labelledby="headingOne"
-            // data-bs-parent="#accordionExample"
-            >
+            <div>
               <div className="accordion-body rounded-10px bg-background-shade-3 p-6">
-                <div className={propetiesListContainer}>
+                <div className={`flex flex-wrap gap-[2%]`}>
                   {props.attributes?.length ? (
                     props.attributes.map((attribute, index) => (
-                      <div className={properyCard} key={index}>
-                        <h4 className={PropertyName}>{attribute.Type}</h4>
-                        <h5 className={Type}>{attribute.PropertyName}</h5>
-                        {/* <h6 className={percentage}>100% have this trail</h6> */}
+                      <div
+                        className={`border-yellow-theme relative mb-[2%] flex w-full flex-col items-center justify-center  gap-3 rounded-10px border bg-background-shade-2 py-4 lg:max-w-[32%]`}
+                        key={index}
+                      >
+                        <h4
+                          className={`text-12px font-medium text-brand-primary`}
+                        >
+                          {attribute.Type}
+                        </h4>
+                        <h5 className={`text-14px font-semibold text-white`}>
+                          {attribute.PropertyName}
+                        </h5>
                       </div>
                     ))
                   ) : (
@@ -56,27 +50,7 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
   );
 };
 // styling
-const NFTPropertiesContainer = ctl(`
-w-full 
-`);
-const AccordionButton = ctl(`
+
+const AccordionButton = `
 accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
-`);
-const AccordionCollapse = ctl(`
-accordion-collapse collapse show bg-background-shade-3 rounded-10px
-`);
-const propetiesListContainer = ctl(`
-flex flex-wrap gap-[2%]
-`);
-const properyCard = ctl(`
-border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-4  gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
-`);
-const PropertyName = ctl(`
-text-12px font-medium text-yellow-theme
-`);
-const Type = ctl(`
-text-14px font-semibold text-white
-`);
-const percentage = ctl(`
-text-12px font-medium text-gray-shade-7
-`);
+`;

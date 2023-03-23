@@ -59,15 +59,21 @@ const FixedPriceForm = ({
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
-  const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
-  const [nftPriceError, setNFTPriceError] = useState<any>(" ");
-  const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [changeNFTPrice, setChangeNFTPrice] = useState<number | undefined>(
+    undefined
+  );
+  const [nftPriceError, setNFTPriceError] = useState<string | undefined>(
+    undefined
+  );
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<
+    string | undefined
+  >(undefined);
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
-    setCollectionErrorMsg("");
+    setCollectionErrorMsg(undefined);
   };
 
   const { handleSubmit, register, setError, formState, reset } =
@@ -137,13 +143,14 @@ const FixedPriceForm = ({
   };
   useEffect(() => {
     if (clearForm) {
-      setChangeNFTPrice(null);
+      setChangeNFTPrice(undefined);
+      setCollectionErrorMsg(undefined);
+      setNFTPriceError(undefined);
       reset({
         NFTName: "",
         Description: "",
-        NFTAmount: 1,
       });
-      setSelectedOption("");
+      setSelectedOption(collections[0].collection);
       setPropertyList([]);
     }
   }, [clearForm, reset]);
@@ -197,7 +204,7 @@ const FixedPriceForm = ({
         </label>
 
         <div className="relative">
-          <span className="text-14px text-yellow-theme absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
           {/* <input
@@ -211,13 +218,14 @@ const FixedPriceForm = ({
             }
           /> */}
           <input
-            type="text"
+            type="number"
+            value={changeNFTPrice === undefined ? "" : changeNFTPrice}
             id="NFTPrice"
             autoComplete="off"
             placeholder="Enter NFT Price"
             className={nftPriceError === "" ? inputField : inputFieldError}
             onChange={(e) => {
-              setNFTPriceError("");
+              setNFTPriceError(undefined);
               const inputValue = e.target.value;
               const numberValue = Number(inputValue);
 
@@ -225,21 +233,21 @@ const FixedPriceForm = ({
               if (pattern.test(inputValue)) {
                 if (numberValue <= 0) {
                   setNFTPriceError("NFT Price must be greater than 0");
-                  setChangeNFTPrice(null);
+                  setChangeNFTPrice(undefined);
                 }
                 if (numberValue < BlockchainConfig.networkDecimals) {
                   setNFTPriceError(
                     "NFT Price must be greater than 0.000000000000000001"
                   );
-                  setChangeNFTPrice(null);
+                  setChangeNFTPrice(undefined);
                 }
                 setChangeNFTPrice(numberValue);
               } else if (e.target.value == "") {
                 setNFTPriceError("Field Required");
-                setChangeNFTPrice(null);
+                setChangeNFTPrice(undefined);
               } else {
                 setNFTPriceError("NFT Price must be a positive number");
-                setChangeNFTPrice(null);
+                setChangeNFTPrice(undefined);
               }
             }}
           />
@@ -312,8 +320,9 @@ const FixedPriceForm = ({
         variant={
           formState.isValid &&
           asset !== undefined &&
-          nftPriceError === "" &&
-          collectionErrorMsg == ""
+          nftPriceError === undefined &&
+          collectionErrorMsg == undefined &&
+          changeNFTPrice !== undefined
             ? "v1"
             : "v2"
         }
@@ -408,7 +417,7 @@ const properyCard = ctl(`
 border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
 `);
 const PropertyName = ctl(`
-text-12px font-medium text-yellow-theme
+text-12px font-medium text-brand-primary
 `);
 const Type = ctl(`
 text-14px font-semibold text-white
