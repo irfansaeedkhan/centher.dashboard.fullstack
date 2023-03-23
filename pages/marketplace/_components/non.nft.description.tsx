@@ -248,7 +248,7 @@ export const NonNFTDescription = ({
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully listed{" "}
               <span className="text-white">{data?.name}</span> NFT on{" "}
-              <b>Centher</b>
+              <b>Centher </b>
               platform.
             </p>
           )}

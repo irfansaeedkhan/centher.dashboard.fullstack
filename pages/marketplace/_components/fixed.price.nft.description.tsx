@@ -246,9 +246,9 @@ export const FixedPriceNFTDescription = ({
           </h2>
           {status && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully changed{" "}
-              <span className="text-white">{data?.name}</span> NFT price on
-              <b>Centher</b> NFT platform.
+              Congratulations! You have successfully unlisted your NFT{" "}
+              <span className="text-white">{data?.name}</span> on
+              <b> Centher </b> NFT platform.
             </p>
           )}
           {!status && (
