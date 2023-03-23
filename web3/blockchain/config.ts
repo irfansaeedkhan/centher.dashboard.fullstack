@@ -141,7 +141,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-v1-1"
+      ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-marketplace"
       : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.32",
 };
 
