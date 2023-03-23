@@ -252,7 +252,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       fetchCreatedNFTs: async (account, offset = 0, limit = 20, reload) => {
         try {
           set({ loadingCreatedNFTs: "loading" });
-          let _nfts: NFT[];
+          let _nfts: NFT[] = [];
           const result = await BlockchainRead.getAccountCreatedNfts(
             account,
             limit,
