@@ -24,6 +24,7 @@ export interface NFTCardProps {
 
 export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
+
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
   const { user } = useGetUser(data.owner.account_address);
@@ -192,9 +193,14 @@ export const NFTCardV2: React.FC<NFTCardProps> = ({ data }) => {
                 tokenId: data.tokenId,
               },
             }}
-            className={`flex flex-col gap-1 px-2 py-4`}
+            className={clsx(
+              `flex flex-col gap-1 px-2 py-4`,
+              locked && "pointer-events-none"
+            )}
           >
-            <span className={`text-sm font-medium text-white`}>
+            <span
+              className={`truncate break-words text-sm font-medium text-white`}
+            >
               {data.name}
             </span>
           </Link>
