@@ -107,7 +107,7 @@ export const ConversionContainer: React.FC<Props> = ({
           <div className={inputBoxRight}>
             <div className={`flex flex-grow justify-center`}>
               <button
-                className={`text-yellow-theme hover:bg-yellow-theme cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium transition hover:border-0 hover:text-black-shade-3 fmd:text-sm`}
+                className={`hover:bg-yellow-theme cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-brand-primary transition hover:border-0 hover:text-black-shade-3 fmd:text-sm`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");

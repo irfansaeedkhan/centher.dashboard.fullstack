@@ -101,7 +101,6 @@ export default ChangePriceBidModal;
 const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
 `;
-
 const errMessage = `
 pb-2 text-12px font-medium
 `;

@@ -25,7 +25,7 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
                         key={index}
                       >
                         <h4
-                          className={`text-12px text-yellow-theme font-medium`}
+                          className={`text-12px font-medium text-brand-primary`}
                         >
                           {attribute.Type}
                         </h4>

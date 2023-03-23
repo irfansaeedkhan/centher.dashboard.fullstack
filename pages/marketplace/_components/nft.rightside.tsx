@@ -28,6 +28,7 @@ import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.descriptio
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
