@@ -36,7 +36,7 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
               <AudioPlayer src={props.image} />
             ) : (
               <Image
-                className={`absolute h-full w-full rounded-2xl object-contain`}
+                className={`absolute h-full w-full rounded-2xl object-cover`}
                 src={imageUrl}
                 alt="image"
                 height={270}

@@ -1,17 +1,18 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Joi, { string } from "joi";
+import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
 import moment from "moment";
 
 // App imports
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { AddIcon, LoaderIcon, BNBIcon } from "@/assets/svgs";
+import { AddIcon } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
+
+import CustomDropdown from "./custom.dropdown";
 
 // form validations
 const schema = Joi.object({
@@ -36,21 +37,14 @@ const schema = Joi.object({
       "string.empty": `StartingNFTPrice Required`,
       "any.required": `Required Field`,
     }),
-  Collection: Joi.string().required().max(150).label("Collection").messages({
-    "string.empty": `Collection Required`,
-    "any.required": `Required Field`,
-  }),
 });
 
 // schema.validate({ AuctionEndTime: 1994 });
 interface AuctionFormFields {
   NFTName: string;
   Description: string;
-  // NFTSymbol: string;
-  NFTAmount: number | null;
   AuctionEndTime: string;
   StartingNFTPrice: number | null;
-  Collection: string;
 }
 interface AuctionFormProps {
   createNFT: any;
@@ -64,24 +58,30 @@ const AuctionForm = ({
   clearForm,
   asset,
 }: AuctionFormProps) => {
-  const [loadingState, setLoadingState] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<any>("");
+  const [selectedOption, setSelectedOption] = useState(
+    collections[0].collection
+  );
 
-  const { handleSubmit, register, setError, formState, reset } =
+  const handleOptionSelect = (value: string) => {
+    setSelectedOption(value);
+    setCollectionErrorMsg("");
+  };
+
+  const { handleSubmit, register, formState, reset } =
     useForm<AuctionFormFields>({
       mode: "onChange",
       resolver: joiResolver(schema),
       defaultValues: {
         NFTName: "",
         Description: "",
-        NFTAmount: 1,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        Collection: "",
       },
     });
 
@@ -117,11 +117,11 @@ const AuctionForm = ({
     );
   };
 
-  const timeNow = moment().format("LLLL");
-  // moment(post.createdAt).add(15, "minutes");
-  // schema.validate({ AuctionEndTime: 1994 });
-  // handle submit
   const onSubmit = async (data: any) => {
+    if (!selectedOption) {
+      setCollectionErrorMsg("Field Required");
+      return;
+    }
     if (moment(data.AuctionEndTime) <= moment()) {
       setAuctionEndTimeErr(true);
       return;
@@ -133,7 +133,7 @@ const AuctionForm = ({
       name: data.NFTName,
       description: data.Description,
       supply: 1,
-      collection: data.Collection,
+      collection: selectedOption,
       isAuction: true,
       price: data.StartingNFTPrice,
       period: Math.floor((data.AuctionEndTime - Date.now()) / 1000),
@@ -148,15 +148,14 @@ const AuctionForm = ({
       reset({
         NFTName: "",
         Description: "",
-        NFTAmount: null,
         AuctionEndTime: "",
         StartingNFTPrice: null,
-        Collection: "",
-        // PropertiesList: "",
       });
+      setSelectedOption("");
       setPropertyList([]);
     }
   }, [clearForm, reset]);
+
   return (
     <div className={formContainer}>
       <div className={fieldWrapper}>
@@ -200,26 +199,6 @@ const AuctionForm = ({
           </p>
         )}
       </div>
-      <div className="flex gap-3">
-        {/* <div className={fieldWrapper}>
-          <label className={fieldTitle}>NFT Symbol</label>
-          <input
-            type="text"
-            id="NFTSymbol"
-            autoComplete="off"
-            {...register("NFTSymbol")}
-            placeholder="Enter NFT symbol"
-            className={
-              !formState.errors.NFTSymbol ? inputField : inputFieldError
-            }
-          />
-          {formState.errors.NFTSymbol && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.NFTSymbol.message}
-            </p>
-          )}
-        </div> */}
-      </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
           Set Auction End Time <span className="text-red-500">*</span>{" "}
@@ -250,7 +229,7 @@ const AuctionForm = ({
           Starting price for NFT <span className="text-red-500">*</span>{" "}
         </label>
         <div className="relative">
-          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-yellow-theme">
+          <span className="text-14px  absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
           <input
@@ -269,41 +248,20 @@ const AuctionForm = ({
             {formState.errors.StartingNFTPrice.message}
           </p>
         )}
-        {/* <div className={serviceFee}>
-          <div className={serviceFeeTitle}>
-            <span className={serviceFeeName}>Service fee</span>
-            <QuestionIcon />
-          </div>
-          <span className={serviceFeeNumber}>0.0370 BNB</span>
-        </div> */}
       </div>
-      <div className={fieldWrapper}>
+      <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
           Collection <span className="text-red-500">*</span>{" "}
         </label>
-        <select
-          id="Collection"
-          {...register("Collection")}
-          className={
-            !formState.errors.Collection ? inputField : inputFieldError
-          }
-        >
-          <option value="">Select</option>
-          {collections.map((collection) => {
-            return (
-              <option value={collection.collection} key={collection.id}>
-                {`${collection.name}  (${formatAddress(
-                  collection.collection
-                )})`}
-              </option>
-            );
-          })}
-        </select>
-        {formState.errors.Collection && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {formState.errors.Collection.message}
-          </p>
-        )}
+        <CustomDropdown
+          options={collections.map((collection) => ({
+            value: collection.collection,
+            label: `${collection.name} ${formatAddress(collection.collection)}`,
+          }))}
+          selectedValue={selectedOption}
+          onSelect={handleOptionSelect}
+          error={collectionErrorMsg}
+        />
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Properties</label>
@@ -339,7 +297,11 @@ const AuctionForm = ({
       </div>
       <Button
         title={"Create NFT"}
-        variant={formState.isValid && asset !== undefined ? "v1" : "v2"}
+        variant={
+          formState.isValid && asset !== undefined && collectionErrorMsg == ""
+            ? "v1"
+            : "v2"
+        }
         disabled={!formState.isValid && asset === undefined}
         onClick={handleSubmit(onSubmit)}
         className="mt-2 py-4"
@@ -394,43 +356,43 @@ const AuctionForm = ({
 
 export default AuctionForm;
 
-const formContainer = ctl(`
+const formContainer = `
  flex flex-col gap-4
-`);
-const errMessage = ctl(`
+`;
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
+`;
+const fieldTitle = `
   text-14px  font-normal text-white
-`);
-const inputField = ctl(`
+`;
+const inputField = `
   w-full py-3 px-5  !bg-black-shade-3  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
-`);
-const inputFieldError = ctl(`
+`;
+const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
-`);
-const addPropertyBtn = ctl(`
+`;
+const addPropertyBtn = `
 flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
-`);
-const modalBodyWrapper = ctl(`
+`;
+const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5
-`);
-const propetiesListContainer = ctl(`
+`;
+const propetiesListContainer = `
 flex flex-wrap gap-[2%]
-`);
-const properyCard = ctl(`
+`;
+const properyCard = `
 border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
-`);
-const PropertyName = ctl(`
-text-12px font-medium text-yellow-theme
-`);
-const Type = ctl(`
+`;
+const PropertyName = `
+text-12px font-medium text-brand-primary
+`;
+const Type = `
 text-14px font-semibold text-white
-`);
-const inputFieldModal = ctl(`
+`;
+const inputFieldModal = `
   w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
+`;

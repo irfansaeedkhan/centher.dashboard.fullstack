@@ -8,16 +8,16 @@ import NetworkTabs from "../_components/network.tabs";
 
 const Rewards: NextPageWithLayout = () => {
   const [rewardState, setRewardState] = useState<
-    "lunchpad-rewards" | "marketplace-rewards"
-  >("lunchpad-rewards");
+    "launchpad-rewards" | "marketplace-rewards"
+  >("launchpad-rewards");
   return (
     <div>
       <div className="flex items-center gap-4 fsm:gap-10">
         <h3
-          onClick={() => setRewardState("lunchpad-rewards")}
+          onClick={() => setRewardState("launchpad-rewards")}
           className={clsx(
             `cursor-pointer font-semibold fsm:text-xl`,
-            rewardState === "lunchpad-rewards"
+            rewardState === "launchpad-rewards"
               ? "text-sm text-white"
               : "text-xs text-gray-shade-7"
           )}

@@ -1,14 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { ArchivedPost, CompletedPost, PostUser } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import useGetUser from "@/hooks/use.get.user";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
@@ -34,6 +37,19 @@ export const PostHeader: React.FC<Props> = ({
   onClickArchive,
   onClickRestore,
 }) => {
+  const [postOwnerAddress, setPostOwnerAddress] = useState("");
+  useEffect(() => {
+    if (
+      postType === "reply" &&
+      post.status !== "archived" &&
+      post?.parent_post?.user?.account_address
+    ) {
+      setPostOwnerAddress(post?.parent_post.user?.account_address);
+    }
+  }, [post]);
+  const { user } = useGetUser(postUser.account_address);
+  const { user: postOwner } = useGetUser(postOwnerAddress);
+
   const isPostOwner = useMemo(() => {
     return (
       loggedInUser?.account_address.toLowerCase() ===
@@ -64,6 +80,9 @@ export const PostHeader: React.FC<Props> = ({
     }
   }, [post, postType]);
 
+  const verificationTick = useVerificationTick(user);
+  const verificationTickPostOwner = useVerificationTick(postOwner);
+
   return (
     <div className="flex justify-between">
       {/* Left Side */}
@@ -79,13 +98,27 @@ export const PostHeader: React.FC<Props> = ({
               query: { account_address: postUser.account_address },
             }}
             className={clsx(
-              `text-sm font-semibold text-white  hover:text-brand-primary`
+              `flex items-center text-sm  font-semibold text-white hover:text-brand-primary`
             )}
             title={postUser.display_name}
           >
-            <span className="block max-w-[116px] truncate break-words [@media(min-width:400px)]:max-w-[200px] [@media(min-width:500px)]:max-w-[300px] [@media(min-width:600px)]:max-w-[345px]">
+            <span
+              className={clsx(
+                `block max-w-[116px] truncate break-words [@media(min-width:400px)]:max-w-[200px] [@media(min-width:500px)]:max-w-[300px] [@media(min-width:600px)]:max-w-[345px]`
+              )}
+            >
               {postUser && sliceDisplayName(postUser.display_name)}
             </span>
+            {!!verificationTick && (
+              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                <Image
+                  src={"/images/rainbow-last-frame.png"}
+                  alt={"Verified"}
+                  width={20}
+                  height={20}
+                />
+              </span>
+            )}
           </Link>
 
           {/* Time */}
@@ -112,7 +145,7 @@ export const PostHeader: React.FC<Props> = ({
                   account_address: post.parent_post?.user.account_address,
                 },
               }}
-              className="group mt-0.5 flex text-xs font-medium text-white "
+              className="group mt-0.5 flex items-center text-xs font-medium text-white "
             >
               <span className="mr-1 min-w-max text-xs font-medium text-gray-shade-7">
                 Replying to
@@ -120,12 +153,22 @@ export const PostHeader: React.FC<Props> = ({
               <span
                 className={clsx(
                   `group-hover:text-brand-primary`,
-                  `block w-full max-w-[90px] overflow-hidden truncate [@media(min-width:400px)]:max-w-[180px] [@media(min-width:500px)]:max-w-[280px] [@media(min-width:600px)]:max-w-[345px]`
+                  `block w-full max-w-[75px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[180px] [@media(min-width:500px)]:max-w-[280px] [@media(min-width:600px)]:max-w-[315px]`
                 )}
                 title={post?.parent_post?.user.display_name}
               >
                 {post && sliceDisplayName(post?.parent_post?.user.display_name)}
               </span>
+              {!!verificationTickPostOwner && (
+                <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                  <Image
+                    src={"/images/rainbow-last-frame.png"}
+                    alt={"Verified"}
+                    width={20}
+                    height={20}
+                  />
+                </span>
+              )}
             </Link>
           </>
         )}

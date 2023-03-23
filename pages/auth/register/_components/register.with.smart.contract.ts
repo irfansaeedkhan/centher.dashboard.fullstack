@@ -1,9 +1,9 @@
 import { BigNumber, ethers } from "ethers";
 import { TransactionResponse, Web3Provider } from "@ethersproject/providers";
 
-import { getRegistrationContract } from "@/web3/utils/contract.helpers";
-
 import { SignupState } from "./form.fields.data";
+import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 export const registerWithSmartContract = async (
   library: Web3Provider,
@@ -19,7 +19,10 @@ export const registerWithSmartContract = async (
     // Get the signer and account address from the library
     const signer = library.getSigner();
     const address = await signer.getAddress();
-    const registrationContract = getRegistrationContract(signer);
+    const registrationContract = SmartContractProvider.getContract(
+      SmartContractName.REGISTRATION,
+      signer
+    );
 
     // Check if the connected account address is the same as the user's registered account address
     if (address.toLowerCase() !== signupData.account_address.toLowerCase()) {
@@ -146,7 +149,10 @@ export const getRegistrationFee = async (
   signupData: SignupState
 ) => {
   const signer = library.getSigner();
-  const registrationContract = getRegistrationContract(signer);
+  const registrationContract = SmartContractProvider.getContract(
+    SmartContractName.REGISTRATION,
+    signer
+  );
 
   let registrationFee: BigNumber;
 

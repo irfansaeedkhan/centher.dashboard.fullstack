@@ -5,9 +5,11 @@ import React, { useState } from "react";
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
   const { user } = useGetUser(childData?.user);
+  const verificationTick = useVerificationTick(user);
   // const [activeCard, setActiveCard] = useState(false);
   return (
     <div
@@ -42,7 +44,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
                 },
               }}
               className={
-                "overflow-hidden text-ellipsis whitespace-nowrap  text-white"
+                "flex items-center overflow-hidden text-ellipsis whitespace-nowrap  text-white"
               }
               title={user.display_name}
             >
@@ -52,6 +54,16 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
               >
                 {sliceDisplayName(user.display_name, "cropname")}
               </h5>
+              {verificationTick && (
+                <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                  <Image
+                    src={"/images/rainbow-last-frame.png"}
+                    alt={"Verified"}
+                    width={20}
+                    height={20}
+                  />
+                </span>
+              )}
             </Link>
           ) : (
             <div className="h-4 max-w-[180px] animate-pulse rounded-sm bg-gray-shade-3"></div>

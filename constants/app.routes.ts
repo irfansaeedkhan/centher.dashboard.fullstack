@@ -12,8 +12,8 @@ export const AppRoutes = {
     // Authenticated Pages
     account_address: "/profile/[account_address]",
     replies: "/profile/[account_address]/replies",
-    following: "/profile/[account_address]/following",
-    followers: "/profile/[account_address]/followers",
+    following: "/profile/[account_address]/community/following",
+    followers: "/profile/[account_address]/community/followers",
     archived_posts: "/profile/[account_address]/archived-posts",
 
     nfts: "/profile/[account_address]/nfts",
@@ -35,6 +35,7 @@ export const AppRoutes = {
 
   settings: {
     index: "/settings",
+    about: "/settings/about",
     profile: "/settings/profile",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
@@ -51,7 +52,8 @@ export const AppRoutes = {
   search: "/search",
   coming_soon: "/coming-soon",
   notifications: "/notifications",
-  buy_centher: "/buy-centher",
+  launchpad: "/launchpad/[token_address]/[round]",
+
   referral: {
     network_genealogy: "/network-genealogy",
     network_rewards: "/network-rewards/rewards",

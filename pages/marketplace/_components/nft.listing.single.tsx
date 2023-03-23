@@ -37,7 +37,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
   }
   return (
     <div className="flex gap-3">
-      <div className="mt-[3px] h-2 w-2 rounded-full bg-yellow-theme"></div>
+      <div className="bg-yellow-theme mt-[3px] h-2 w-2 rounded-full"></div>
       <div className="flex flex-col gap-3">
         <h5 className="text-12px flex items-center gap-2 font-normal text-white">
           <span className="min-w-max">{prefix} by </span>
@@ -59,7 +59,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {buyer?.display_name ? (
                   <span
                     title={buyer.display_name}
-                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
+                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(buyer.display_name)}
                   </span>
@@ -79,7 +79,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 {seller?.display_name ? (
                   <span
                     title={seller.display_name}
-                    className={`block w-full max-w-[165px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[240px] [@media(min-width:500px)]:max-w-[345px]`}
+                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
                   >
                     {sliceDisplayName(seller.display_name)}
                   </span>

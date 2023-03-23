@@ -1,10 +1,7 @@
 import { IProperty } from "@/pages/marketplace/_components/create.nft.form";
-import { nftQuery, saleQuery } from "@/subgraph/querys";
 import { formatIPFSUrl } from "@/utils/format.address";
-import { SUBGRAPH_URL } from "@/web3/constants/common";
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+import { BlockchainRead } from "@/web3/blockchain";
 import axios from "axios";
-import { date } from "joi";
 import { useEffect, useState } from "react";
 
 export interface IListHistory {
@@ -59,72 +56,70 @@ export interface INFTDetailData {
   listingHistory: IListHistory[];
   priceHistory: IListHistory[];
 }
+
 export const useGetNftData = (
   collection: string | string[] | undefined,
-  tokenId: string | string[] | undefined,
-  reload: boolean
+  tokenId: string | string[] | undefined
 ) => {
   const [nftData, setNftData] = useState<INFTDetailData>();
-
+  const fetchNFTData = async (collection: string, tokenId: number) => {
+    const result = await fetchNft(collection, tokenId);
+    setNftData(result as INFTDetailData);
+  };
   useEffect(() => {
-    const fetchNFTData = async (collection: string, tokenId: number) => {
-      const client = new ApolloClient({
-        uri: SUBGRAPH_URL,
-        cache: new InMemoryCache(),
-      });
-      const { data: nftResult } = await client.query({
-        query: gql(nftQuery),
-        variables: {
-          collection: collection,
-          tokenId: tokenId,
-        },
-        fetchPolicy: "cache-first",
-      });
-
-      const { data: listResult } = await client.query({
-        query: gql(saleQuery),
-        variables: {
-          collection: collection,
-          tokenId: tokenId,
-        },
-        fetchPolicy: "cache-first",
-      });
-      const _priceHistories = listResult.marketplaceSaleHistories.filter(
-        (item: any) => {
-          return (
-            item.type === "BuyItem" ||
-            item.type === "AcceptBid" ||
-            item.type === "EndAuction"
-          );
-        }
-      );
-      if (nftResult.nfts && nftResult.nfts.length > 0) {
-        const metadata = await axios.get(formatIPFSUrl(nftResult.nfts[0].ipfs));
-        const _nftData: INFTDetailData = {
-          name: metadata.data.name,
-          image: formatIPFSUrl(metadata.data.image),
-          nftId: nftResult.nfts[0].tokenId,
-          type: metadata.data.type,
-          mintTx: nftResult.nfts[0].mintHash,
-          collection: nftResult.nfts[0].collection,
-          attributes: metadata.data.attributes,
-          creator: nftResult.nfts[0].creator,
-          owner: nftResult.nfts[0].owner,
-          collectionName: metadata.data.collectionName,
-          saleState: nftResult.nfts[0].saleState,
-          description: metadata.data.description,
-          listInfo: nftResult.nfts[0].listInfo,
-          auctionInfo: nftResult.nfts[0].auctionInfo,
-          listingHistory: listResult.marketplaceSaleHistories,
-          priceHistory: _priceHistories,
-        };
-        setNftData(_nftData);
-      }
-    };
-
     if ((collection as string) && tokenId) {
       fetchNFTData(collection as string, Number(tokenId as string));
     }
-  }, [collection, tokenId, reload]);
-  return nftData;
+  }, [collection, tokenId]);
+  return { nftData, setNftData };
 };
+
+export async function fetchNft(
+  collection: string,
+  tokenId: number
+): Promise<INFTDetailData | null> {
+  if (!collection?.length || !tokenId) {
+    throw new Error("invalid params");
+  }
+
+  const nftResult = await BlockchainRead.getNft(
+    String(collection),
+    Number(tokenId),
+    false
+  );
+
+  const listResult = await BlockchainRead.getSaleHistory(
+    String(collection),
+    Number(tokenId)
+  );
+
+  const _priceHistories = listResult.filter((item: any) => {
+    return (
+      item.type === "BuyItem" ||
+      item.type === "AcceptBid" ||
+      item.type === "EndAuction"
+    );
+  });
+  if (nftResult) {
+    const metadata = await axios.get(formatIPFSUrl(nftResult.ipfs));
+    const _nftData: INFTDetailData = {
+      name: metadata.data.name,
+      image: formatIPFSUrl(metadata.data.image),
+      nftId: nftResult.tokenId,
+      type: metadata.data.type,
+      mintTx: nftResult.mintHash,
+      collection: nftResult.collection,
+      attributes: metadata.data.attributes,
+      creator: nftResult.creator,
+      owner: nftResult.owner,
+      collectionName: metadata.data.collectionName,
+      saleState: nftResult.saleState,
+      description: metadata.data.description,
+      listInfo: nftResult.listInfo,
+      auctionInfo: nftResult.auctionInfo,
+      listingHistory: listResult,
+      priceHistory: _priceHistories,
+    };
+    return _nftData;
+  } else return null;
+}

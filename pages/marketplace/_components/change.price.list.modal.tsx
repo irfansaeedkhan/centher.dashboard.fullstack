@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { BNBIcon } from "@/assets/svgs";
 import Button from "@/components/button";
-import { networkDecimals } from "@/web3/constants/common";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface Props {
   handleListNFT: any;
@@ -45,7 +45,7 @@ const ChangePriceListModal: React.FC<Props> = ({ handleListNFT }) => {
                   setNFTPriceError("NFT Price must be greater than 0");
                   setChangeNFTPrice(null);
                 }
-                if (numberValue < networkDecimals) {
+                if (numberValue < BlockchainConfig.networkDecimals) {
                   setNFTPriceError(
                     "NFT Price must be greater than 0.000000000000000001"
                   );

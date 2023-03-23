@@ -72,6 +72,19 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
     <div className="flex items-center justify-center">
       <div className="flex w-full flex-col gap-6">
         <InputField
+          id="website_url"
+          label="Website URL"
+          placeholder="e.g. https://stevenpaul.com"
+          value={updatedUser.website_url}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              website_url: e.target.value,
+            });
+          }}
+        />
+
+        <InputField
           id="twitter_username"
           label="Twitter Username"
           placeholder="e.g. stevenpaul"
@@ -160,7 +173,10 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
             });
           }}
         />
-        <button className={connectButton} onClick={updateProfile}>
+        <button
+          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
+          onClick={updateProfile}
+        >
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />
           ) : (
@@ -171,5 +187,3 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
     </div>
   );
 };
-
-const connectButton = `mt-2 py-2 px-3 flex w-fit font-semibold rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;

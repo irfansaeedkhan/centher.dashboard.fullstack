@@ -254,24 +254,6 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "centher",
-    "outputs": [
-      { "internalType": "contract IERC20", "name": "", "type": "address" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_newAddress", "type": "address" }
-    ],
-    "name": "changeCentherAddress",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
@@ -285,6 +267,15 @@
       { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
     "name": "changeCoreTeamAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeDexaAddress",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -346,6 +337,15 @@
     "inputs": [],
     "name": "coreTeamAddress",
     "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dexa",
+    "outputs": [
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
@@ -419,7 +419,7 @@
             "type": "uint256"
           }
         ],
-        "internalType": "struct CentherPresale.ContributionInfo",
+        "internalType": "struct DeXaPresale.ContributionInfo",
         "name": "",
         "type": "tuple"
       }
@@ -474,7 +474,7 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "_centher", "type": "address" },
+      { "internalType": "address", "name": "_dexa", "type": "address" },
       { "internalType": "address", "name": "_ntr", "type": "address" },
       { "internalType": "address", "name": "_busd", "type": "address" },
       { "internalType": "address", "name": "_register", "type": "address" },
@@ -589,7 +589,7 @@
       { "internalType": "uint8", "name": "lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
-        "name": "maxCentherAmountToSell",
+        "name": "maxDexaAmountToSell",
         "type": "uint256"
       },
       { "internalType": "bool", "name": "busdEnabled", "type": "bool" },
@@ -654,7 +654,7 @@
       { "internalType": "uint8", "name": "_lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
-        "name": "_maxCentherAmountToSell",
+        "name": "_maxDexaAmountToSell",
         "type": "uint256"
       },
       {
@@ -682,7 +682,7 @@
       { "internalType": "uint8", "name": "_lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
-        "name": "_maxCentherAmountToSell",
+        "name": "_maxDexaAmountToSell",
         "type": "uint256"
       },
       {
@@ -744,7 +744,7 @@
   },
   {
     "inputs": [],
-    "name": "withdrawCenther",
+    "name": "withdrawDexa",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

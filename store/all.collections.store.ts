@@ -4,7 +4,6 @@ import { devtools } from "zustand/middleware";
 import { getCollections } from "@/lib/get-collections";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { AppError } from "@/utils/app-error";
-import { collectionsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
 
@@ -34,7 +33,6 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
           set({ loading: "loading" });
 
           let _collections = await getCollections({
-            query: collectionsQuery,
             limit: get().limit,
             skip: get().offset,
           });

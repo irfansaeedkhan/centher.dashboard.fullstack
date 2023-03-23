@@ -88,6 +88,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.followers,
   AppRoutes.profile.archived_posts,
   AppRoutes.settings.index,
+  AppRoutes.settings.about,
   AppRoutes.settings.profile,
   AppRoutes.settings.social_links,
   AppRoutes.profile.nfts,
@@ -110,6 +111,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
+
+  AppRoutes.launchpad,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
@@ -117,7 +120,6 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _notReadyPages: string[] = [
   AppRoutes.settings.privacy,
 
-  AppRoutes.buy_centher,
   AppRoutes.referral.overview,
   AppRoutes.referral.network_rewards,
 

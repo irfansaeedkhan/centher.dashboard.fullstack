@@ -57,6 +57,43 @@
 }
 
 @layer components {
+  /* pages conditional media queries for display name */
+  /* notification page */
+  .notifcation-page-displayname {
+    max-width: calc(100vw - 100px);
+  }
+  @media screen and (min-width: 560px) {
+    .notifcation-page-displayname {
+      max-width: 60vw;
+    }
+  }
+  @media screen and (min-width: 1000px) {
+    .notifcation-page-displayname {
+      max-width: 730px;
+    }
+  }
+  /* locked background style */
+  .lockedBackground {
+    background: url("/images/lockedBackground.png") no-repeat center center;
+    background-size: cover;
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+        0deg,
+        rgba(20, 20, 22, 0.08),
+        rgba(20, 20, 22, 0.08)
+      ),
+      linear-gradient(
+        178.28deg,
+        rgba(255, 255, 255, 0.176) -38.36%,
+        rgba(255, 255, 255, 0) 125%
+      );
+    border: 0.5px solid;
+    border-image-source: linear-gradient(
+      178.28deg,
+      rgba(255, 255, 255, 0.176) -38.36%,
+      rgba(255, 255, 255, 0) 125%
+    );
+  }
   .carousel.carousel-slider {
     border-radius: 12px !important;
   }
@@ -83,6 +120,17 @@
   }
   .text-12px {
     @apply text-xs;
+  }
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  input[type="datetime-local"]::-moz-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
+  input[type="datetime-local"]::-ms-clear {
+    filter: invert(1);
   }
   .nftCardContainer {
     display: flex;

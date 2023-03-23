@@ -3,27 +3,14 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 // App imports
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import {
-  claimCentherHistory,
-  purchaseWithBusdHistory,
-  purchaseWithNtrHistory,
-  registrationHistory,
-} from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
-import {
-  ClaimHistory,
-  Overview,
-  PurchaseHistory,
-  RegistrationHistory,
-  Rewards,
-} from "@/models/referral";
+import { RegistrationHistory } from "@/models/referral";
 import { ethers } from "ethers";
-import { getPresaleContract } from "@/web3/utils/contract.helpers";
-import { getRegistrationAddress } from "@/web3/utils/address.helpers";
-import { SUBGRAPH_URL, ZeroAddress } from "@/web3/constants/common";
-import { Web3Provider } from "@ethersproject/providers";
-import { simpleRpcProvider } from "@/web3/utils/providers";
+import { ZeroAddress } from "@/web3/constants/common";
+import { BlockchainRead } from "@/web3/blockchain";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { simpleRpcProvider } from "@/web3/blockchain/helpers/provider.helper";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 
 export interface NetworkRewards {
   totalMembersWithoutReferrer: number;
@@ -50,23 +37,12 @@ export const useAdminRegistration = create<NetworkRewards>()(
       fetchRegistrationInfo: async () => {
         try {
           set({ loading: "loading" });
-          const client = new ApolloClient({
-            uri: SUBGRAPH_URL,
-            cache: new InMemoryCache(),
-          });
+
           let _registrationHistory: RegistrationHistory[] = [];
+          const result = await BlockchainRead.getRegistrationHistory(1000, 0);
 
-          const { data: result, error: error } = await client.query({
-            query: gql(registrationHistory),
-            variables: {
-              first: 1000,
-              skip: 0,
-            },
-            fetchPolicy: "cache-first",
-          });
-
-          if (result && !error) {
-            _registrationHistory = result.users.map((item: any) => {
+          if (result?.length) {
+            _registrationHistory = result.map((item: any) => {
               const date = new Date(item.createdAt * 1000);
               return {
                 date: `${date.getDate()}-${
@@ -77,14 +53,17 @@ export const useAdminRegistration = create<NetworkRewards>()(
                   ethers.utils.formatEther(item.paidAmountForRegistration)
                 ),
                 referrer: item.referrer,
+                createdAt: 0,
               };
             });
           }
 
-          const registrationAddress = getRegistrationAddress();
+          const registrationAddress = AddressFactory.getContractAddress(
+            SmartContractName.REGISTRATION
+          );
           const _claimableBNB = Number(
             ethers.utils.formatEther(
-              await simpleRpcProvider.getBalance(registrationAddress)
+              await simpleRpcProvider().getBalance(registrationAddress)
             )
           );
 

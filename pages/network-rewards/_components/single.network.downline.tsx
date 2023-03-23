@@ -1,4 +1,4 @@
-import { normalizeValue } from "@/web3/utils/call.helpers";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import React from "react";
 
 const SingleNetworkDownline = ({ data }: any) => {

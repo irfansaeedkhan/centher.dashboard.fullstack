@@ -30,7 +30,7 @@ function Loader(data: loadingData) {
         <div className="customloaderContainer">
           <div className="flex items-center justify-center">
             <div
-              className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-yellow-theme"
+              className="spinner-border inline-block h-8 w-8 animate-spin rounded-full border-4 text-brand-primary"
               role="status"
             >
               <span className="visually-hidden">Loading...</span>

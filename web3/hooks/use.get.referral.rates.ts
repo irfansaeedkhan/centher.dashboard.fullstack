@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { getPresaleContract } from "../utils/contract.helpers";
+import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
+import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
 
 export interface ReferralRates {
   rates: number[];
@@ -11,7 +12,9 @@ export interface ReferralRates {
 export const useGetReferralRate = () => {
   const [referralRate, setReferralRate] = useState<ReferralRates>();
   const fetchReferralRateAndAddresses = useCallback(async () => {
-    const presaleContract = getPresaleContract();
+    const presaleContract = SmartContractProvider.getContract(
+      SmartContractName.PRESALE
+    );
     const result = await presaleContract.getReferralRateAndAddresses();
     const _referralRate: ReferralRates = {
       rates: result._referralRate,

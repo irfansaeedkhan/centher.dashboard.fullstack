@@ -1,15 +1,14 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
+import { SiWhatsapp } from "react-icons/si";
+import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
-import { SiWhatsapp } from "react-icons/si";
-import { TwitterShareButton, WhatsappShareButton } from "react-share";
-import toast from "react-hot-toast";
-import clsx from "clsx";
-import ctl from "@netlify/classnames-template-literals";
 
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -22,23 +21,22 @@ import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
-import { NFTHistory } from "./nft.history";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
 import { NonNFTDescription } from "./non.nft.description";
 import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
-  reload: boolean;
-  setReload: any;
+  setNftData: () => void;
 }
 export const NFTRightSideComponent = ({
   data,
-  reload,
-  setReload,
+  setNftData,
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
   const { library, account } = useWeb3React();
@@ -67,6 +65,8 @@ export const NFTRightSideComponent = ({
     data?.owner
   );
   const { user: nftOwner } = useGetUser(nftOwnerAddress);
+  const verificationTick = useVerificationTick(user);
+  const verificationOwnerTick = useVerificationTick(nftOwner);
   useEffect(() => {
     if (data) {
       if (
@@ -97,7 +97,7 @@ export const NFTRightSideComponent = ({
     <div className={rightSideContainer}>
       <div className={titleContainer}>
         <h1 className={title}>{data?.name}</h1>
-        <div ref={toggleContainerRef} className={toggleContainer}>
+        <div ref={toggleContainerRef} className={`relative`}>
           <button onClick={togglePopFunc}>
             <ShareBigIcon />
           </button>
@@ -145,13 +145,23 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={clsx(
-                  `text-14px font-semibold text-white hover:text-brand-primary-dark`
+                  `text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
                 )}
                 title={user.display_name}
               >
-                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                <span className="block truncate break-words">
                   {sliceDisplayName(user.display_name)}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
@@ -180,12 +190,22 @@ export const NFTRightSideComponent = ({
                     account_address: nftOwnerAddress,
                   },
                 }}
-                className={`text-14px font-semibold text-white hover:text-brand-primary-dark`}
+                className={`text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
                 title={nftOwner.display_name}
               >
-                <span className="block w-full max-w-[230px] overflow-hidden truncate break-words f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]">
+                <span className="block truncate break-words ">
                   {sliceDisplayName(nftOwner.display_name)}
                 </span>
+                {!!verificationOwnerTick && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={"/images/rainbow-last-frame.png"}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
               </Link>
             ) : (
               <div className="mt-1 h-4 w-full animate-pulse rounded-sm bg-gray-shade-3"></div>
@@ -215,20 +235,28 @@ export const NFTRightSideComponent = ({
           </div>
         </div>
       </div>
-      {nftState === "nonNFT" && <NonNFTDescription data={data} />}
-      {nftState === "nonNFTBuyer" && <NonNFTBuyerDescription data={data} />}
-      {nftState === "fixedPriceNFT" && <FixedPriceNFTDescription data={data} />}
-      {nftState === "fixedPriceNFTBuyer" && (
-        <FixedPriceNFTBuyerDescription data={data} />
+      {nftState === "nonNFT" && (
+        <NonNFTDescription data={data} setNftData={setNftData} />
       )}
-      {/* {nftState === "timeAuctionedNFT" && <AuctionNftDescription data={data} />}
+      {nftState === "nonNFTBuyer" && (
+        <NonNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFT" && (
+        <FixedPriceNFTDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "fixedPriceNFTBuyer" && (
+        <FixedPriceNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
+      {nftState === "timeAuctionedNFT" && (
+        <AuctionNftDescription data={data} setNftData={setNftData} />
+      )}
       {nftState === "timeAuctionedNFTBuyer" && (
-        <AuctionNFTBuyerDescription data={data} />
-      )} */}
+        <AuctionNFTBuyerDescription data={data} setNftData={setNftData} />
+      )}
       <NFTListing data={data?.listingHistory} />
-      {/* {data?.saleState === "Auction" && (
+      {data?.saleState === "Auction" && (
         <NFTOffers data={data?.auctionInfo.bids} />
-      )} */}
+      )}
       {data?.saleState === "List" && <NFTOffers data={data?.listInfo.bids} />}
       {data?.saleState === "NON" && <NFTOffers data={data?.listInfo.bids} />}
       {/* <NFTHistory prices={data?.priceHistory} /> */}
@@ -236,28 +264,11 @@ export const NFTRightSideComponent = ({
   );
 };
 // styling
-const rightSideContainer = ctl(`
-w-full flex flex-col gap-6
-`);
-const titleContainer = ctl(`
-flex items-center justify-between 
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  animationTextHeading text-34px
-`);
-const toggleContainer = ctl(`
-relative
-`);
-const toggleList = ctl(`
- hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]
-`);
-const toggleListBtn = ctl(`
-w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]
-`);
-const toggleListIcons = ctl(`
-w-[24px] h-[24px] stroke-white
-`);
+const rightSideContainer = `w-full flex flex-col gap-6`;
+const titleContainer = `flex items-end fmd:items-center justify-between `;
+const title = `textGradient  font-semibold leading-[42px]  animationTextHeading text-34px`;
+const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
+const toggleListBtn = `w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
+const toggleListIcons = `w-[24px] h-[24px] stroke-white`;
 const nameBox = `flex items-start gap-3 flex-grow`;
-const nameBoxTitle = ctl(`
-text-12px font-normal text-gray-shade-2
-`);
+const nameBoxTitle = `text-12px font-normal text-gray-shade-2`;

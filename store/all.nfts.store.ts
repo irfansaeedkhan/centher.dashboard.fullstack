@@ -4,7 +4,6 @@ import { devtools } from "zustand/middleware";
 import { getNFTs } from "@/lib/get-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
 import { AppError } from "@/utils/app-error";
-import { allNFTsQuery } from "@/subgraph/querys";
 import { LoadingState } from "@/models/common";
 import { NFTCardData } from "@/components/nft.card/nft.card.v2";
 
@@ -35,7 +34,6 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           set({ loading: "loading" });
 
           let _nfts = await getNFTs({
-            query: allNFTsQuery,
             limit: get().limit,
             skip: get().offset,
           });

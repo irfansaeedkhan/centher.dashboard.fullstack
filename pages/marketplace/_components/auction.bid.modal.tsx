@@ -1,19 +1,15 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 
-const AuctionBidModal = ({ onSubmit }: any) => {
-  const [Modal, setModal] = useState(false);
-  const [bidPrice, setBidPrice] = useState<any>(null);
+const AuctionBidModal = ({ onSubmit, onClose }: any) => {
+  const [bidPrice, setBidPrice] = useState<string>("");
   const [bidPriceErr, setBidPriceErr] = useState(true);
-  // const bidNFTModalFunc = useCallback(() => {
 
-  // }, [bidPrice, bidPriceErr, library, onSubmit]);
   const handleBidValue = (e: any) => {
     setBidPrice(e.target.value);
 
@@ -24,12 +20,7 @@ const AuctionBidModal = ({ onSubmit }: any) => {
     }
   };
   return (
-    <CustomModal
-      onClose={() => {
-        setModal(false);
-      }}
-      title={"Place a bid"}
-    >
+    <CustomModal onClose={onClose} title={"Place a bid"}>
       <div className={modalBodyWrapper}>
         <div className={fieldWrapper}>
           <label className={fieldTitle}>Blockchain</label>
@@ -88,18 +79,18 @@ const AuctionBidModal = ({ onSubmit }: any) => {
 export default AuctionBidModal;
 
 // styling
-const modalBodyWrapper = ctl(`
+const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 
-`);
-const errMessage = ctl(`
+`;
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
+`;
+const fieldTitle = `
   text-14px  font-normal text-white
-`);
-const inputFieldModal = ctl(`
+`;
+const inputFieldModal = `
   w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
+`;

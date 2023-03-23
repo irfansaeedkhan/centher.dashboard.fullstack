@@ -9,6 +9,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { NFTImageCard } from "@/components/nft.image.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
+import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 
 const CreatedNFTS: NextPageWithLayout = () => {
   const router = useRouter();
@@ -31,32 +32,25 @@ const CreatedNFTS: NextPageWithLayout = () => {
   const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
 
   useEffect(() => {
-    if (loadingCreatedNFTs === "loaded") {
+    if (loadingCreatedNFTs == LoadingStatus.loaded) {
       setDisplayNFTs([...createdNfts]);
     }
   }, [loadingCreatedNFTs, createdNfts]);
 
   return (
     <>
-      {loadingCreatedNFTs === "loaded" && displayNFTs.length > 0 ? (
-        <div
-          className={clsx(
-            ` grid gap-2  `,
-            displayNFTs.length > 2
-              ? "grid-cols-[repeat(auto-fit,_minmax(104px,_1fr))]  [@media(min-width:768px)]:grid-cols-[repeat(auto-fit,_minmax(260px,_1fr))]"
-              : "grid-cols-[1fr,1fr,1fr] [@media(min-width:768px)]:grid-cols-[1fr,1fr] [@media(min-width:1440px)]:grid-cols-[1fr,1fr,1fr]"
-          )}
-        >
+      {loadingCreatedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
+        <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
           {displayNFTs.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />
           ))}
         </div>
       ) : (
-        loadingCreatedNFTs === "loading" && (
+        loadingCreatedNFTs == LoadingStatus.loading && (
           <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
         )
       )}
-      {loadingCreatedNFTs === "loaded" && createdNfts.length === 0 && (
+      {loadingCreatedNFTs == LoadingStatus.loaded && !createdNfts?.length && (
         <>
           <div className="flex items-center justify-center text-white">
             <HotNftEmptyIcon />

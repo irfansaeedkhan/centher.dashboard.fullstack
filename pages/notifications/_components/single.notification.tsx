@@ -12,6 +12,8 @@ import {
 } from "@/store/notifications.store";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import useGetUser from "@/hooks/use.get.user";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface SingleNotificationProps {
   notification: Notification;
@@ -24,6 +26,7 @@ export const SingleNotification = React.forwardRef<
   HTMLDivElement,
   SingleNotificationProps
 >(({ notification, length, index, days }, ref) => {
+  const { user } = useGetUser(notification.by.account_address);
   const markAsRead = useNotificationsStore((state) => state.markAsRead);
 
   const readNotification = async () => {
@@ -31,7 +34,7 @@ export const SingleNotification = React.forwardRef<
       markAsRead(notification._id);
     }
   };
-
+  const verificationTick = useVerificationTick(user);
   let notificationLink: JSX.Element | JSX.Element[] | null = null;
   if (notification.type === "post_like" || notification.type === "post_reply") {
     notificationLink = (
@@ -40,18 +43,27 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.feed.single_post,
           query: { post_id: notification.post._id },
         }}
-        className="block w-[60vw] text-sm text-white hover:text-brand-primary md:w-full"
+        className={clsx(
+          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary`,
+          !notification.by.display_name.includes(" ") &&
+            notification.by.display_name.length > 20 &&
+            `notifcation-page-displayname inline-block break-words md:w-full`
+        )}
       >
-        <span
-          className={clsx(
-            !notification.by.display_name.includes(" ") &&
-              notification.by.display_name.length > 20
-              ? "break-words"
-              : "overflow-hidden break-words md:w-full"
-          )}
-        >
+        <span title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
-        </span>{" "}
+        </span>
+        {!!verificationTick && (
+          <span className="verifiedIcon ml-0.5 inline-block h-[15px] w-[20px] min-w-[20px] fsm:ml-0.5 fsm:h-[20px]">
+            <Image
+              src={"/images/rainbow-last-frame.png"}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="fsm:mt-[5px]"
+            />
+          </span>
+        )}{" "}
         {notification.type === "post_like"
           ? "liked "
           : notification.type === "post_reply" && "replied to"}{" "}
@@ -65,19 +77,28 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm text-white hover:text-brand-primary md:w-full"
-      >
-        <span
-          title={notification.by.display_name}
-          className={clsx(
+        className={clsx(
+          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
             !notification.by.display_name.includes(" ") &&
-              notification.by.display_name.length > 20
-              ? "break-words"
-              : "overflow-hidden break-words md:w-full"
-          )}
-        >
+            notification.by.display_name.length > 20 &&
+            "notifcation-page-displayname inline-block break-words md:w-full"
+          }`
+        )}
+      >
+        <span title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
-        </span>{" "}
+        </span>
+        {!!verificationTick && (
+          <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
+            <Image
+              src={"/images/rainbow-last-frame.png"}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="mt-[5px]"
+            />
+          </span>
+        )}{" "}
         started following you.
       </Link>
     );
@@ -88,19 +109,28 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm text-white hover:text-brand-primary md:w-full"
-      >
-        <span
-          title={notification.by.display_name}
-          className={clsx(
+        className={clsx(
+          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
             !notification.by.display_name.includes(" ") &&
-              notification.by.display_name.length > 20
-              ? "break-words"
-              : "overflow-hidden break-words md:w-full"
-          )}
-        >
+            notification.by.display_name.length > 20 &&
+            "notifcation-page-displayname inline-block break-words md:w-full"
+          }`
+        )}
+      >
+        <span title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
-        </span>{" "}
+        </span>
+        {!!verificationTick && (
+          <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
+            <Image
+              src={"/images/rainbow-last-frame.png"}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="mt-[5px]"
+            />
+          </span>
+        )}{" "}
         has joined your network.
       </Link>
     );
@@ -111,21 +141,30 @@ export const SingleNotification = React.forwardRef<
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
         }}
-        className="block w-[60vw] text-sm text-white hover:text-brand-primary md:w-full"
+        className={clsx(
+          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
+            !notification.by.display_name.includes(" ") &&
+            notification.by.display_name.length > 20 &&
+            "notifcation-page-displayname inline-block break-words md:w-full"
+          }`
+        )}
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          <span
-            title={notification.by.display_name}
-            className={clsx(
-              !notification.by.display_name.includes(" ") &&
-                notification.by.display_name.length > 20
-                ? "break-words"
-                : "overflow-hidden break-words md:w-full"
-            )}
-          >
+          <span title={notification.by.display_name}>
             {sliceDisplayName(notification.by.display_name)}
           </span>
+          {!!verificationTick && (
+            <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
+              <Image
+                src={"/images/rainbow-last-frame.png"}
+                alt={"Verified"}
+                width={20}
+                height={20}
+                className="mt-[5px]"
+              />
+            </span>
+          )}
         </>
       </Link>
     );
@@ -140,16 +179,20 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          <span
-            title={notification.by.display_name}
-            className={clsx(
-              notification.by.display_name.includes(" ")
-                ? "text-ellipsis line-clamp-1"
-                : "block w-full max-w-full overflow-hidden  break-words"
-            )}
-          >
+          <span title={notification.by.display_name}>
             {sliceDisplayName(notification.by.display_name)}
           </span>
+          {!!verificationTick && (
+            <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
+              <Image
+                src={"/images/rainbow-last-frame.png"}
+                alt={"Verified"}
+                width={20}
+                height={20}
+                className="mt-[5px]"
+              />
+            </span>
+          )}
         </>
       </Link>
     );

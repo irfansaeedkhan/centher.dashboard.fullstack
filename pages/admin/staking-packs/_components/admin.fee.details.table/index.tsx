@@ -91,5 +91,5 @@ px-4 py-3
 `);
 
 const tableLink = ctl(`
-hover:text-yellow-theme
+hover:text-brand-primary
 `);

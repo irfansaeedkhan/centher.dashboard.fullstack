@@ -6,20 +6,17 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import Button from "@/components/button";
+import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import {
-  callCancelItemForSale,
-  callEditItemForSale,
-  normalizeValue,
-} from "@/web3/utils/call.helpers";
 import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
 
 import ChangePriceBidModal from "./change.price.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -35,12 +32,12 @@ export interface bidForm {
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
-  reload?: boolean;
-  setReload?: any;
+  setNftData: () => void;
 }
 
 export const FixedPriceNFTDescription = ({
   data,
+  setNftData,
 }: FixedPriceNFTDescriptionProps) => {
   const router = useRouter();
 
@@ -98,17 +95,29 @@ export const FixedPriceNFTDescription = ({
 
   const handleCancelListing = async () => {
     setupWaitingModal();
-    const result = await callCancelItemForSale(
-      library,
-      (data as INFTDetailData).collection,
-      (data as INFTDetailData).nftId
-    );
-    setupSuccessModal(result.success);
+    let success = false;
+    try {
+      const result = await BlockchainWrite.callCancelItemForSale(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
+    } catch (error) {
+      toast.error("something went wrong, please try again later");
+    } finally {
+      setupSuccessModal(success);
+    }
   };
 
   const handleEditPrice = async (newPrice: any) => {
-    let result = { success: false };
+    let result;
     setupWaitingModal();
+    let success = false;
     try {
       validateProvider();
       if (!data?.collection || !data?.nftId || !newPrice) {
@@ -117,17 +126,22 @@ export const FixedPriceNFTDescription = ({
         );
       }
 
-      result = await callEditItemForSale(
+      result = await BlockchainWrite.callEditItemForSale(
         library,
         data.collection,
         data.nftId,
         newPrice
       );
+
+      if (result?.length) {
+        setNftData();
+        success = true;
+      }
     } catch (err) {
       toastError(err);
+    } finally {
+      setupSuccessModal(success);
     }
-
-    setupSuccessModal(result.success);
   };
 
   const modalTemplateCollection: TemplateCollection = {
@@ -143,19 +157,17 @@ export const FixedPriceNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={handleCancelListing}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -186,19 +198,17 @@ export const FixedPriceNFTDescription = ({
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={() => handleEditPrice(newPrice)}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -236,9 +246,9 @@ export const FixedPriceNFTDescription = ({
           </h2>
           {status && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully changed{" "}
-              <span className="text-white">{data?.name}</span> NFT price on
-              <b>Centher</b> NFT platform.
+              Congratulations! You have successfully unlisted your NFT{" "}
+              <span className="text-white">{data?.name}</span> on
+              <b> Centher </b> NFT platform.
             </p>
           )}
           {!status && (
@@ -247,12 +257,10 @@ export const FixedPriceNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Ok"}
               variant="v4"
-              className="py-4"
               onClick={() => {
-                router.reload();
                 modal.dismissModal();
               }}
             />
@@ -302,13 +310,13 @@ export const FixedPriceNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <Button
+        <NewButton
           title={"Cancel Listing"}
           variant="v1"
           className="py-4"
           onClick={setupCancelItemPriceModal}
         />
-        <Button
+        <NewButton
           title={"Edit"}
           onClick={() => {
             setupBidNftModal();
