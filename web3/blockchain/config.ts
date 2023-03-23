@@ -32,7 +32,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     PRESALE: {
       // Presale Contract Address
-      56: "0x0000000000000000000000000000000000000000",
+      56: "0x23a376C486CD5536674fE84f42A1c3b81B00E5ca",
       5: "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
     },
     MARKETPALCE: {
@@ -66,7 +66,7 @@ export const BlockchainConfig: IBlockchainConfig = {
       5: "0x546EF9a07044500B00D1079a89A1e3Bd8Bc8B696",
     },
     DXC: {
-      56: "0x0000000000000000000000000000000000000000",
+      56: "0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A",
       5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
     },
   },

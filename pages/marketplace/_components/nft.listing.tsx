@@ -2,7 +2,6 @@
 import React from "react";
 
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
-
 import { NFTListingSingle } from "./nft.listing.single";
 interface NFTListingProps {
   data: IListHistory[] | undefined;

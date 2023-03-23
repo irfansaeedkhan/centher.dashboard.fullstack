@@ -6,8 +6,6 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BNBIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -18,6 +16,8 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
+import { BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   setNftData: () => void;
