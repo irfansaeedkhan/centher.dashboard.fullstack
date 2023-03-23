@@ -10,6 +10,7 @@ import { getSigner } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
+import { ZeroAddress } from "../constants/common";
 
 export class BlockchainRead {
   static async getReferrers(
@@ -1139,6 +1140,10 @@ export class BlockchainWrite {
     price: number,
     period: number,
     fee: number
+    // lock: number = 0,
+    // receiver: string = ZeroAddress
+    // lock: number = 86400 * 20,
+    // receiver: string = "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7",
   ): Promise<string> {
     try {
       const signer = getSigner(library);
@@ -1146,10 +1151,7 @@ export class BlockchainWrite {
         SmartContractName.MARKETPALCE,
         signer
       );
-
-      const normalizedValue = ethers.utils.parseEther(
-        normalizeValue(price) + ""
-      );
+      const normalizedValue = ethers.utils.parseEther(price.toFixed(18));
       const castedFee = ethers.utils.parseEther(fee.toFixed(10));
 
       await marketplaceContract.callStatic.createItems(
@@ -1159,6 +1161,8 @@ export class BlockchainWrite {
         isAuction,
         normalizedValue,
         period,
+        // lock,
+        // receiver,
         { value: castedFee }
       );
       const tx = await marketplaceContract.functions.createItems(
@@ -1168,6 +1172,8 @@ export class BlockchainWrite {
         isAuction,
         normalizedValue,
         period,
+        // lock,
+        // receiver,
         { value: castedFee }
       );
       await tx.wait();

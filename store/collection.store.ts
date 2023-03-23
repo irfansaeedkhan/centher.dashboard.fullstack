@@ -121,6 +121,7 @@ export const useCollectionStore = create<CollectionStore>()(
                 price: item.price,
                 owner: item.owner,
                 endTime: _endTime,
+                unlock: item.unlock,
               };
             });
           }

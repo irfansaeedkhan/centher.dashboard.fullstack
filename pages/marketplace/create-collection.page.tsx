@@ -1,6 +1,5 @@
 // React, Next, NPM Packages
-import { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
@@ -24,7 +23,6 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 const collectionsRemoteBasePath = "ipfs:/";
 
 const CreateNFTCollection: NextPageWithLayout = () => {
-  const [loadingState, setLoadingState] = useState(false);
   const [Modal, setModal] = useState(false);
   const [ModalTitle, setModalTitle] = useState("");
   const [ModalDisable, setModalDisable] = useState("");
@@ -35,8 +33,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const [clearForm, setClearForm] = useState(false);
 
   const router = useRouter();
-
-  // const [collectionData, setCollectionData] = useState<ICollectionData>()
 
   const { account, library } = useWeb3React();
 
@@ -60,11 +56,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             BlockchainConfig.fee.createCollectionFee
           )} BNB`}
         </h3>
-        {/* <h6 className="text-white text-14px font-bold flex items-center gap-2 justify-center">
-          <span>Price:</span>
-          <BNBIcon />
-          {collectionData?.price} BNB <span className="text-gray-shade-2 "> =${formatBNB2USD(collectionData?.price)}</span>
-        </h6> */}
         <div className={footerBtnContainer}>
           <Button
             title={"Checkout"}
@@ -89,22 +80,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         <p className="text-14px font-normal leading-6 text-gray-shade-2">
           Your transaction is in progress, Please wait.
         </p>
-        {/* <p className="text-gray-shade-2 text-14px font-normal leading-6">
-          Transaction Hash
-          <span className="text-yellow-theme ml-2">0x1204...23b350</span>
-        </p> */}
-        {/* <div className={footerBtnContainer}>
-          <Button
-            title={"Cancel"}
-            variant="v2"
-            className="py-4"
-            onClick={() => {
-              setModal(false);
-              setModalTitle("");
-              setModalContent(null);
-            }}
-          />
-        </div> */}
       </div>
     );
     setModal(true);
@@ -234,12 +209,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     buyNFTStep1Func(values);
   };
 
-  // useEffect(() => {
-  //   if(collectionData as ICollectionData && library) {
-  //     buyNFTStep1Func()
-  //   }
-  // }, [collectionData, library])
-
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create New Collection</h1>
@@ -287,21 +256,9 @@ CreateNFTCollection.getLayout = (page) => {
 export default CreateNFTCollection;
 
 // styling
-const modalBodyWrapper = ctl(`
-flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
-w-full mt-3 flex items-center gap-3
-`);
-const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
-`);
-const title = ctl(`
-textGradient  font-semibold leading-[42px]  pb-6 animationTextHeading lg:text-[34px] sm:text-2xl
-`);
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start 
-`);
+const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const footerBtnContainer = `w-full mt-3 flex items-center gap-3`;
+const ImgStyling = `w-[64px] h-[64px] rounded-2xl object-contain mx-auto`;
+const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
+const title = `textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`;
+const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;

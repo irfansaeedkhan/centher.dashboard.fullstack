@@ -72,7 +72,28 @@
       max-width: 730px;
     }
   }
-
+  /* locked background style */
+  .lockedBackground {
+    background: url("/images/lockedBackground.png") no-repeat center center;
+    background-size: cover;
+    backdrop-filter: blur(20px);
+    background: linear-gradient(
+        0deg,
+        rgba(20, 20, 22, 0.08),
+        rgba(20, 20, 22, 0.08)
+      ),
+      linear-gradient(
+        178.28deg,
+        rgba(255, 255, 255, 0.176) -38.36%,
+        rgba(255, 255, 255, 0) 125%
+      );
+    border: 0.5px solid;
+    border-image-source: linear-gradient(
+      178.28deg,
+      rgba(255, 255, 255, 0.176) -38.36%,
+      rgba(255, 255, 255, 0) 125%
+    );
+  }
   .carousel.carousel-slider {
     border-radius: 12px !important;
   }
