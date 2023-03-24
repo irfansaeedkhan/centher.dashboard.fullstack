@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
+import { useNewPostStore } from "@/store/new.post.store";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostModalContainer } from "./post.modal.container";
@@ -16,14 +16,8 @@ interface Props {
 
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
-  const {
-    editPostFiles,
-    closeModal,
-    isModalOpen,
-    setPostText,
-    postTextMaxLength,
-    posts,
-  } = useNewPostStore();
+  const { closeModal, isModalOpen, setPostText, postTextMaxLength, posts } =
+    useNewPostStore();
 
   const lastPost = useMemo(() => {
     return posts.at(-1);
@@ -31,10 +25,12 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
 
   const hasMedia = useMemo(() => {
     return (
-      !!lastPost?.media.length ||
-      !!editPostFiles?.filter((f) => !f.isDeleted).length
+      lastPost &&
+      (!!lastPost.media.length ||
+        !!lastPost.media.filter((f) => f.type === "edit" && !f.isDeleted)
+          .length)
     );
-  }, [editPostFiles, lastPost]);
+  }, [lastPost]);
 
   if (!user) {
     return null;

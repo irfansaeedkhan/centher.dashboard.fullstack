@@ -1,6 +1,4 @@
-import { nanoid } from "nanoid";
-
-import { useNewPostStore } from "@/store/new.post.store";
+import { SelectedFile, useNewPostStore } from "@/store/new.post.store";
 
 import {
   MAX_IMAGE_SIZE,
@@ -37,7 +35,12 @@ export const validateSelectedFiles = (
     const lastPost = getLastPost();
 
     // Convert to array
-    const files = Array.from(event.target.files ?? []);
+    const files: SelectedFile[] = Array.from(event.target.files ?? []).map(
+      (file) => ({
+        type: "new",
+        original: file,
+      })
+    );
 
     // Only add files in store if there are less than 5 files
     if (

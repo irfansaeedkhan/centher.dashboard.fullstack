@@ -13,12 +13,6 @@ import {
 } from "@/utils/create.post";
 import { v4 as uuid } from "uuid";
 
-interface SelectedFile {
-  name: string;
-  type: string;
-  size: number;
-  content: string;
-}
 export interface NewPostStore {
   modalType: ModalType;
   postId: string | null; // Used for editing post
@@ -33,10 +27,9 @@ export interface NewPostStore {
 
   selectedFiles: FileWithID[];
   setSelectedFiles: (files: MediaFile[]) => void;
-  addSelectedFiles: (files: File[]) => void;
+  addSelectedFiles: (files: SelectedFile[]) => void;
   removeSelectedFile: (fileUuid: string) => void;
 
-  editPostFiles?: EditMediaFile[];
   removeEditPostFile: (fileId: string) => void;
 
   postTextMaxLength: 260;
@@ -97,7 +90,6 @@ export const useNewPostStore = create<NewPostStore>()(
           isModalOpen: false,
           selectedFiles: [],
           isPostModalLoading: false,
-          editPostFiles: undefined,
           posts: [],
         });
         if (get().onCloseModal) {
@@ -127,14 +119,26 @@ export const useNewPostStore = create<NewPostStore>()(
           ),
         });
       },
-      addSelectedFiles: (files: File[]) =>
+      addSelectedFiles: (files) =>
         set((state) => {
-          const mediaFiles: MediaFile[] = files.map((file, i) => ({
-            uuid: uuid(),
-            post_uuid: state.posts.at(-1)!.uuid,
-            original: file,
-            index: i,
-          }));
+          const mediaFiles: MediaFile[] = files.map((file, i) => {
+            if (file.type === "new") {
+              return {
+                type: "new",
+                index: i,
+                uuid: uuid(),
+                original: file.original,
+                post_uuid: state.posts.at(-1)!.uuid,
+              };
+            } else {
+              return {
+                type: "edit",
+                uuid: uuid(),
+                original: file.original,
+                isDeleted: false,
+              };
+            }
+          });
 
           // Add files to the last post
           const posts = state.posts.map((post, index) =>
@@ -164,8 +168,18 @@ export const useNewPostStore = create<NewPostStore>()(
       editPostFiles: undefined,
       removeEditPostFile: (fileId: string) => {
         set((state) => ({
-          editPostFiles: state.editPostFiles?.map((file) =>
-            file.uuid === fileId ? { ...file, isDeleted: true } : file
+          posts: state.posts.map((post, index) =>
+            index === state.posts.length - 1
+              ? {
+                  ...post,
+                  media: post.media.map((file) => {
+                    return {
+                      ...file,
+                      isDeleted: file.uuid === fileId,
+                    };
+                  }),
+                }
+              : post
           ),
         }));
       },
@@ -271,18 +285,31 @@ export const useNewPostStore = create<NewPostStore>()(
           });
 
           if (response.data.shouldUploadMedia) {
-            const mediaList = postArray.flatMap((post) =>
-              post.media.map((media) => ({
-                post_uuid: post.uuid,
-                media: {
-                  uuid: media.uuid,
-                  type: media.original.type,
-                  name: media.original.name,
-                  size: media.original.size,
-                },
-                index: media.index,
-              }))
-            );
+            const mediaList = postArray.flatMap((post) => {
+              return post.media.map((media) => {
+                if (media.type === "new") {
+                  return {
+                    post_uuid: post.uuid,
+                    media: {
+                      uuid: media.uuid,
+                      type: media.original.type,
+                      name: media.original.name,
+                      size: media.original.size,
+                    },
+                    index: media.index,
+                  };
+                } else {
+                  return null;
+                }
+              });
+            });
+
+            if (
+              mediaList.length === 0 ||
+              mediaList.some((media) => media === null)
+            ) {
+              return;
+            }
 
             const {
               data: { presignedUrls },
@@ -309,7 +336,9 @@ export const useNewPostStore = create<NewPostStore>()(
                     return media.uuid === presignedUrl.media.uuid;
                   })?.original;
 
-                if (!file) return;
+                if (!file || !(file instanceof File)) {
+                  return;
+                }
 
                 formData.append("file", file);
 
@@ -339,30 +368,33 @@ export const useNewPostStore = create<NewPostStore>()(
 
       editPost: async () => {
         try {
-          // TODO: Handle edit post
-          // const { postText, editPostFiles, postId } = get();
+          const { postId, getLastPost } = get();
 
-          // if (
-          //   postText.trim() === "" &&
-          //   (!editPostFiles ||
-          //     editPostFiles.filter((f) => f.isDeleted).length ===
-          //       editPostFiles.length)
-          // ) {
-          //   toast.error("You can not make the post empty");
-          //   return;
-          // }
+          const post = getLastPost();
 
-          // set({ isPostModalLoading: true });
+          if (!post || !postId) return;
 
-          // await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
-          //   text: postText,
-          //   deleted_media: editPostFiles
-          //     ?.filter((file) => file.isDeleted)
-          //     .map((file) => file.original.url),
-          // });
+          if (
+            post.post_text.trim() === "" &&
+            (!post.media ||
+              post.media.filter((f) => f.type === "edit" && f.isDeleted)
+                .length === post.media.length)
+          ) {
+            toast.error("You can not make the post empty");
+            return;
+          }
 
-          // // If no file media that means only text was available in post
-          // await getNewPostAndUpdateState(postId!);
+          set({ isPostModalLoading: true });
+
+          await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
+            text: post.post_text,
+            deleted_media: post.media
+              .filter((file) => file.type === "edit" && file.isDeleted)
+              .map((file) => file.type === "edit" && file.original.url),
+          });
+
+          // If no file media that means only text was available in post
+          // await getNewPostAndUpdateState(postId);
           get().closeModal();
           return;
         } catch (error: any) {
@@ -387,19 +419,34 @@ export interface FileWithID {
   id: string;
 }
 
-export interface MediaFile {
+export interface MediaFileNew {
+  type: "new";
   uuid: string;
   post_uuid: string;
   original: File;
   index: number;
 }
 
-export type EditMediaFile = {
-  original: PostMedia;
+export interface MediaFileEdit {
+  type: "edit";
   uuid: string;
-  post_uuid: string;
+  original: PostMedia;
   isDeleted: boolean;
-};
+}
+
+export type MediaFile = MediaFileNew | MediaFileEdit;
+
+interface SelectedFileNew {
+  type: "new";
+  original: File;
+}
+
+interface SelectedFileEdit {
+  type: "edit";
+  original: PostMedia;
+}
+
+export type SelectedFile = SelectedFileNew | SelectedFileEdit;
 
 type ModalType = null | "new-post" | "reply" | "reply-of-reply" | "edit";
 
@@ -425,8 +472,7 @@ interface OpenModalOptionsReplyOfReply extends OpenModalOptionsBase {
 interface OpenModalOptionsEdit extends OpenModalOptionsBase {
   modalType: "edit";
   postId: string;
-  editPostFiles?: EditMediaFile[];
-  postText?: string;
+  posts: INewPost[];
 }
 
 type OpenModalOptions =

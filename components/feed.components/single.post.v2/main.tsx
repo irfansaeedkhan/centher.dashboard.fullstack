@@ -164,12 +164,22 @@ export const SinglePostV2: React.FC<Props> = ({
             openPostModal({
               modalType: "edit",
               postId: post._id,
-              postText: post.text_content,
-              editPostFiles: post.media?.map((m) => ({
-                original: m,
-                id: nanoid(),
-                isDeleted: false,
-              })),
+              posts: [
+                {
+                  uuid: post._id,
+                  post_text: post.text_content ?? "",
+                  media:
+                    post.media?.map((media) => {
+                      return {
+                        type: "edit",
+                        uuid: media.url,
+                        original: media,
+                        isDeleted: false,
+                      };
+                    }) ?? [],
+                },
+              ],
+              shouldAddNewPost: false,
               onCloseModal: () => setIsEditModalOpen(false),
             });
           }}

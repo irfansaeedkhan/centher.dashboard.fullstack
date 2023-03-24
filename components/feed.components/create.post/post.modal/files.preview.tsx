@@ -18,7 +18,6 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
   const {
     modalType,
     removeSelectedFile,
-    editPostFiles,
     setSelectedFiles,
     removeEditPostFile,
   } = useNewPostStore();
@@ -29,31 +28,35 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
 
   const postFiles = useMemo(() => {
     if (modalType === "edit") {
-      // TODO: Handle edit post files
-      return editPostFiles
-        ? editPostFiles
-            .filter((f) => !f.isDeleted)
-            .map((file) => {
-              return {
-                ...file,
-                original: {
-                  ...file.original,
-                  name: file.original.url,
-                },
-                src: file.original.url,
-              };
-            })
-        : [];
+      return post.media
+        .filter((file) => file.type === "edit" && !file.isDeleted)
+        .map((file) => {
+          if (file.type === "edit") {
+            return {
+              ...file,
+              src: file.original.url,
+            };
+          }
+          return {
+            ...file,
+            src: URL.createObjectURL(file.original),
+          };
+        });
     } else {
-      // TODO: Handle post files
       return post.media.map((file) => {
+        if (file.type === "edit") {
+          return {
+            ...file,
+            src: file.original.url,
+          };
+        }
         return {
           ...file,
           src: URL.createObjectURL(file.original),
         };
       });
     }
-  }, [post, modalType, editPostFiles]);
+  }, [modalType, post]);
 
   return (
     <div
@@ -69,7 +72,7 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={file.src}
-              alt={file.original.name}
+              alt={file.type === "new" ? file.original.name : file.original.url}
               className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
             />
           );
@@ -97,16 +100,12 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
                 }
               }}
             />
-            {file.original.type.startsWith("image") && (
+            {file.original.type.startsWith("image") && file.type === "new" && (
               <CropButton
                 className="absolute top-1 left-1 z-10"
                 onClick={() => {
                   setCropImageSrc({
-                    preview: URL.createObjectURL(
-                      file.original instanceof File
-                        ? file.original
-                        : new Blob([file.original.url])
-                    ),
+                    preview: URL.createObjectURL(file.original),
                     fileID: file.uuid,
                   });
                 }}
@@ -118,27 +117,30 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
         );
       })}
 
-      <CropperPostMediaImage
-        cropImageSrc={cropImageSrc}
-        onClose={() => {
-          setCropImageSrc({
-            preview: "",
-            fileID: "",
-          });
-        }}
-        onCrop={(croppedImage) => {
-          const croppedSelectedFiles = post.media.map((file) => {
-            if (file.uuid === cropImageSrc.fileID) {
-              return {
-                ...file,
-                original: croppedImage.original,
-              };
-            }
-            return file;
-          });
-          setSelectedFiles(croppedSelectedFiles);
-        }}
-      />
+      {modalType !== "edit" && (
+        <CropperPostMediaImage
+          cropImageSrc={cropImageSrc}
+          onClose={() => {
+            setCropImageSrc({
+              preview: "",
+              fileID: "",
+            });
+          }}
+          onCrop={(croppedImage) => {
+            const croppedSelectedFiles = post.media.map((file) => {
+              if (file.uuid === cropImageSrc.fileID && file.type === "new") {
+                return {
+                  ...file,
+                  original: croppedImage.original,
+                };
+              }
+              return file;
+            });
+
+            setSelectedFiles(croppedSelectedFiles);
+          }}
+        />
+      )}
     </div>
   );
 };
