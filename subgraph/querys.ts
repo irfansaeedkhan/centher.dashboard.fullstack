@@ -373,6 +373,25 @@ export const registeredCollections = `
   } 
 `;
 
+export const lockedNFTsAll = `
+  query {
+    nfts(where: {unlock_gt: "0"}) {
+      unlock
+      tokenId
+      collection
+    }
+  } 
+`;
+
+export const unlockTime = `
+  query MyQuery($collection: Bytes!, $tokenId: Int!) {
+    nfts(where: {collection: $collection, tokenId: $tokenId}) {
+      unlock
+      tokenId
+    }
+  } 
+`;
+
 export const myCollections = `
   query MyQuery($creator: Bytes!) {
     collections(where: {creator: $creator}) {
