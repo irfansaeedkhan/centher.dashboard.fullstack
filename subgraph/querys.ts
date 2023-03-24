@@ -283,6 +283,7 @@ export const listedNFTsByAccount = `
         tokenId
         price
         owner
+        unlock
         listInfo {
           price
           bidSize
