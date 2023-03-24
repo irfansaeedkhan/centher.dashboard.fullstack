@@ -213,6 +213,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             SmartContractName.NATIVE_COLLECTION
           );
           const _collections = await BlockchainRead.getRegisteredCollections();
+          const _lockedNFTs = await BlockchainRead.getLockedNFTsAll();
 
           if (result.result) {
             const colctns = _collections?.map((e: any) => e.collection);
@@ -220,6 +221,11 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             _nfts = result.result
               .filter((e) => isInList(e, colctns))
               .map((item: any) => {
+                const unlock = getUnlockTime(
+                  _lockedNFTs,
+                  item.tokenAddress._value,
+                  item.tokenId
+                );
                 return {
                   id: item.tokenHash,
                   collection: item.tokenAddress._value,
@@ -231,7 +237,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                   price: item.amount,
                   owner: item.ownerOf._value,
                   endTime: 0,
-                  unlock: item.unlock,
+                  unlock: unlock,
                 };
               });
           }
@@ -306,4 +312,18 @@ const isInList = (nft: any, collections: any[]) => {
   return !!collections.find(
     (e) => e.toLowerCase() == tokenAddress.toLowerCase()
   );
+};
+
+const getUnlockTime = (lockedNFTs: any[], collection: any, tokenId: any) => {
+  const _filter = lockedNFTs.filter(
+    (item: any) =>
+      item.collection.toLowerCase() === collection.toLowerCase() &&
+      Number(item.tokenId) === Number(tokenId)
+  );
+
+  if (_filter && _filter.length > 0) {
+    return _filter[0].unlock;
+  } else {
+    return 0;
+  }
 };
