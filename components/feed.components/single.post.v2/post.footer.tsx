@@ -1,10 +1,9 @@
 import React, { HTMLAttributes, useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
-import { FiMessageCircle, FiThumbsUp } from "react-icons/fi";
-import { IoMdShareAlt } from "react-icons/io";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
+import { CommentIcon, HeartIcon, RetweetIcon, ShareIcon } from "@/assets/svgs";
 
 import { ShareMenu } from "./share.menu";
 import { Placement, PostType } from "./main";
@@ -31,7 +30,7 @@ export const PostFooter: React.FC<Props> = ({
   return (
     <footer
       className={clsx(
-        "flex justify-between",
+        "flex justify-between fsm:justify-start fsm:gap-x-5",
         post.text_content ? "mt-3" : "mt-4"
       )}
     >
@@ -45,8 +44,24 @@ export const PostFooter: React.FC<Props> = ({
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiMessageCircle className="h-5 w-5" />
-        <span>{post.replies_count}</span>
+        <span className="group flex h-6 items-center justify-center rounded-md border border-transparent px-1 transition-all duration-200 hover:border-[#5F97FF]/30 hover:bg-[#5F97FF]/20">
+          <CommentIcon className="h-4 w-4 transition-all duration-100 group-hover:[&>*>*]:stroke-[#5F97FF]" />
+        </span>
+        <span className="leading-[17px]">{post.replies_count}</span>
+      </AnalyticsCount>
+      <AnalyticsCount
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className={clsx(
+          "text-gray-shade-10",
+          postType === "archived" && "!cursor-default"
+        )}
+      >
+        <span className="group flex h-6 items-center justify-center rounded-md border border-transparent px-1 transition-all duration-200 hover:border-brand-primary/30 hover:bg-brand-primary/20">
+          <RetweetIcon className="h-4 w-4 transition-all duration-100 group-hover:[&>*]:stroke-brand-primary" />
+        </span>
+        <span className="leading-[17px]">45</span>
       </AnalyticsCount>
       <AnalyticsCount
         onClick={(e) => {
@@ -55,13 +70,20 @@ export const PostFooter: React.FC<Props> = ({
         }}
         className={clsx(
           post.liked_by_loggedin_user
-            ? "text-brand-primary"
+            ? "text-gray-shade-10"
             : "text-gray-shade-10",
           postType === "archived" && "!cursor-default"
         )}
       >
-        <FiThumbsUp className="h-5 w-5" />
-        <span className="mt-1">{post.likes_count}</span>
+        <span className="group flex h-6 items-center justify-center rounded-md border border-transparent px-1 transition-all duration-200 hover:border-[#EA3943]/30 hover:bg-[#EA3943]/20">
+          <HeartIcon
+            className={clsx(
+              `h-4 w-4 transition-all duration-100 group-hover:[&>*]:stroke-[#EA3943]`,
+              post.liked_by_loggedin_user && "[&>*]:stroke-[#EA3943]"
+            )}
+          />
+        </span>
+        <span className="leading-[17px]">{post.likes_count}</span>
       </AnalyticsCount>
       <AnalyticsCount
         onClick={(e) => {
@@ -70,10 +92,12 @@ export const PostFooter: React.FC<Props> = ({
         ref={shareMenuContainerRef}
         className="relative text-gray-shade-10"
       >
-        <IoMdShareAlt
-          className="h-7 w-7 p-1"
-          onClick={() => setIsShareMenuOpen((prev) => !prev)}
-        />
+        <span className="group flex h-6 items-center justify-center rounded-md border border-transparent px-1 transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20">
+          <ShareIcon
+            className="h-4 w-4 cursor-pointer transition-all duration-100 group-hover:[&>*]:stroke-[#00BF96]"
+            onClick={() => setIsShareMenuOpen((prev) => !prev)}
+          />
+        </span>
 
         {isShareMenuOpen && <ShareMenu post={post} postType={postType} />}
       </AnalyticsCount>
@@ -89,7 +113,7 @@ const AnalyticsCount = React.forwardRef<HTMLDivElement, AnalyticsCountProps>(
       <div
         ref={ref}
         className={clsx(
-          "flex cursor-pointer items-center gap-x-2 text-base font-medium",
+          "flex cursor-pointer items-center gap-x-2 text-xs font-medium fmd:text-[13px]",
           className
         )}
         {...props}
