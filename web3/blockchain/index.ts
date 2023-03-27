@@ -349,6 +349,38 @@ export class BlockchainRead {
     return data.collections;
   }
 
+  static async getLockedNFTsAll(): Promise<any[]> {
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.LOCKED_NFTS_ALL
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data.nfts;
+  }
+
+  static async getUnlockTime(
+    collection: string,
+    tokenId: number
+  ): Promise<any[]> {
+    const variables = {
+      collection,
+      tokenId,
+    };
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.UNLOCK_TIME,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data.nfts;
+  }
+
   static async getCollectionByAccount(creator: string): Promise<any[]> {
     const variables = {
       creator,

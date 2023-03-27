@@ -60,7 +60,9 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
       <div
         className={`mt-10 flex flex-grow flex-col items-center px-2 pb-8 fsm:px-4`}
       >
-        <div className={`text-[15px] font-medium text-white`}>{data.name}</div>
+        <div className={`break-all text-[15px] font-medium text-white`}>
+          {data.name}
+        </div>
         {data.creator.is_registered ? (
           <span
             onClick={(e) => {
@@ -114,7 +116,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
           </span>
         )}
         <p
-          className={`mt-4 flex-grow whitespace-pre-wrap text-center text-xs font-medium text-gray-shade-14 line-clamp-1`}
+          className={`mt-4 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14 line-clamp-1`}
         >
           {data.description}
         </p>

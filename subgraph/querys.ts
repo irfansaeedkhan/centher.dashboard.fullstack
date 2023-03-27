@@ -283,6 +283,7 @@ export const listedNFTsByAccount = `
         tokenId
         price
         owner
+        unlock
         listInfo {
           price
           bidSize
@@ -369,6 +370,25 @@ export const registeredCollections = `
   query {
     collections {
       collection
+    }
+  } 
+`;
+
+export const lockedNFTsAll = `
+  query {
+    nfts(where: {unlock_gt: "0"}) {
+      unlock
+      tokenId
+      collection
+    }
+  } 
+`;
+
+export const unlockTime = `
+  query MyQuery($collection: Bytes!, $tokenId: Int!) {
+    nfts(where: {collection: $collection, tokenId: $tokenId}) {
+      unlock
+      tokenId
     }
   } 
 `;

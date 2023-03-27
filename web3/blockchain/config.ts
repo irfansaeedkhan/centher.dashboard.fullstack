@@ -54,7 +54,7 @@ export const BlockchainConfig: IBlockchainConfig = {
       5: "0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6",
     },
     BUSD: {
-      56: "0x0000000000000000000000000000000000000000",
+      56: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
       5: "0x60194b3eDF9b95A6087FE1940275AE7036641dd8",
     },
     NTR: {
@@ -141,7 +141,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-v1-1"
+      ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-marketplace"
       : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.32",
 };
 

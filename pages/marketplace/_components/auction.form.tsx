@@ -86,10 +86,12 @@ const AuctionForm = ({
     });
 
   // function to add/remove dynamic property
-  const handlePropertyChange = (e: any) => {
+  const handlePropertyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const limitedValue = value.slice(0, 16);
     setPropertyDetails((prev: any) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: limitedValue,
     }));
   };
   const addNewPropertyFunc = () => {
@@ -266,14 +268,16 @@ const AuctionForm = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Properties</label>
         <div className={addPropertyBtn}>
-          <span>Add new properties</span>
-          <button
-            onClick={() => {
-              setPropertyModal(true);
-            }}
-          >
-            <AddIcon />
-          </button>
+          <span>Add new properties (max 9)</span>
+          {propertyList.length < 9 && (
+            <button
+              onClick={() => {
+                setPropertyModal(true);
+              }}
+            >
+              <AddIcon />
+            </button>
+          )}
         </div>
       </div>
       <div className={propetiesListContainer}>
@@ -324,6 +328,7 @@ const AuctionForm = ({
                 placeholder="Character"
                 className={inputFieldModal}
                 onChange={handlePropertyChange}
+                value={propertyDetails.Type}
               />
             </div>
             <div className={fieldWrapper}>
@@ -336,6 +341,7 @@ const AuctionForm = ({
                 placeholder="Male"
                 className={inputFieldModal}
                 onChange={handlePropertyChange}
+                value={propertyDetails.PropertyName}
               />
             </div>
             {propertyErr && (
