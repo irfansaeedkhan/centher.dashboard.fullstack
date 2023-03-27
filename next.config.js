@@ -20,6 +20,7 @@ const nextConfig = {
         : [
             "localhost",
             "devapi.centher.io",
+            "playgroundapi.centher.io",
             "static.centher.io",
             "devstatic.centher.io",
             "s3.eu-west-3.amazonaws.com",

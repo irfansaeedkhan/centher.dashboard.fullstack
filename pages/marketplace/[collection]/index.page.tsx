@@ -84,6 +84,7 @@ const Collection: NextPageWithLayout = () => {
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
   }));
+
   const { user } = useGetUser(info?.creator);
   const [metadata, setMetadata] = useState<any>();
   const [orderdir, setOrderDir] = useState("desc");
@@ -109,7 +110,7 @@ const Collection: NextPageWithLayout = () => {
     if (lastNotiEntry?.isIntersecting) {
       updateOffset();
     }
-  }, [lastNotiEntry, updateOffset]);
+  }, [lastNotiRef, lastNotiEntry, updateOffset]);
 
   useEffect(() => {
     updateFilter(filterInView);
@@ -404,14 +405,6 @@ const Collection: NextPageWithLayout = () => {
                     setFilter("List");
                   }}
                 />
-                {/* <Button
-                title={"Auction"}
-                variant={filter === "Auction" ? "v1" : "v2"}
-                className="py-4"
-                onClick={() => {
-                  setFilter("Auction");
-                }}
-              /> */}
               </div>
               <select
                 className={inputField}
@@ -431,10 +424,10 @@ const Collection: NextPageWithLayout = () => {
                 })}
               </div>
             )}
+            <div ref={lastNotiRef} />
 
             {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
               <div className="flex flex-wrap items-center gap-10">
-                {/* we are showing 8 skeletons while reloading the page to users */}
                 <NftsSkeleton />
                 <NftsSkeleton />
                 <NftsSkeleton />
@@ -489,9 +482,7 @@ const topDetais = ctl(`
 const collectionName = ctl(`
 text-white text-20px font-semibold
 `);
-const textContent = ctl(`
-mt-6
-`);
+
 const profileDescription = ctl(`
 text-14px font-normal leading-6 text-gray-shade-16
 `);
