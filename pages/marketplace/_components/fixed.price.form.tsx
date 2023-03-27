@@ -87,11 +87,13 @@ const FixedPriceForm = ({
         // Collection: "",
       },
     });
-  // functions to add/remove dynamic properties
-  const handlePropertyChange = (e: any) => {
+
+  const handlePropertyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const limitedValue = value.slice(0, 16);
     setPropertyDetails((prev: any) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: limitedValue,
     }));
   };
   const addNewPropertyFunc = () => {
@@ -285,14 +287,16 @@ const FixedPriceForm = ({
           </span>
         </label>
         <div className={addPropertyBtn}>
-          <span>Add new properties</span>
-          <button
-            onClick={() => {
-              setPropertyModal(true);
-            }}
-          >
-            <AddIcon />
-          </button>
+          <span>Add new properties (max 9)</span>
+          {propertyList.length < 9 && (
+            <button
+              onClick={() => {
+                setPropertyModal(true);
+              }}
+            >
+              <AddIcon />
+            </button>
+          )}
         </div>
       </div>
       <div className={propetiesListContainer}>
@@ -349,6 +353,7 @@ const FixedPriceForm = ({
                 placeholder="Character"
                 className={inputFieldModal}
                 onChange={handlePropertyChange}
+                value={propertyDetails.Type}
               />
             </div>
             <div className={fieldWrapper}>
@@ -361,6 +366,7 @@ const FixedPriceForm = ({
                 placeholder="Male"
                 className={inputFieldModal}
                 onChange={handlePropertyChange}
+                value={propertyDetails.PropertyName}
               />
             </div>
             {propertyErr && (
