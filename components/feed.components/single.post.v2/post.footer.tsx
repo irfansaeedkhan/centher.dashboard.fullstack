@@ -88,7 +88,14 @@ export const PostFooter: React.FC<Props> = ({
             )}
           />
         </span>
-        <span className="leading-[17px]">{post.likes_count}</span>
+        <span
+          className={clsx(
+            "leading-[17px]",
+            post.liked_by_loggedin_user && "text-[#EA3943]"
+          )}
+        >
+          {post.likes_count}
+        </span>
       </AnalyticsCount>
       <AnalyticsCount
         onClick={(e) => {
