@@ -3,7 +3,12 @@ import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
-import { CommentIcon, HeartIcon, RetweetIcon, ShareIcon } from "@/assets/svgs";
+import {
+  CommentIcon,
+  HeartIcon,
+  // RetweetIcon,
+  ShareIcon,
+} from "@/assets/svgs";
 
 import { ShareMenu } from "./share.menu";
 import { Placement, PostType } from "./main";
@@ -49,7 +54,7 @@ export const PostFooter: React.FC<Props> = ({
         </span>
         <span className="leading-[17px]">{post.replies_count}</span>
       </AnalyticsCount>
-      <AnalyticsCount
+      {/* <AnalyticsCount
         onClick={(e) => {
           e.stopPropagation();
         }}
@@ -62,7 +67,7 @@ export const PostFooter: React.FC<Props> = ({
           <RetweetIcon className="h-4 w-4 transition-all duration-100 group-hover:[&>*]:stroke-brand-primary" />
         </span>
         <span className="leading-[17px]">45</span>
-      </AnalyticsCount>
+      </AnalyticsCount> */}
       <AnalyticsCount
         onClick={(e) => {
           e.stopPropagation();
