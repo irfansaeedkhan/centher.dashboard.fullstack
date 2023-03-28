@@ -250,33 +250,32 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
       }));
     }
   };
-
   return (
     <div className="relative mt-4">
-      {roundInfo?.status === "not-started" && (
-        <div
-          className={`absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center`}
-        >
-          <div className={`flex flex-col items-center justify-center gap-10`}>
-            <LockedIcon className="h-[80px] w-[80px]" />
-            <h6 className={`text-20px font-semibold text-white`}>
-              Wait for the presale to start
-            </h6>
-          </div>
+      {/* {roundInfo?.status === "not-started" && ( */}
+      <div
+        className={`absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center`}
+      >
+        <div className={`flex flex-col items-center justify-center gap-10`}>
+          <LockedIcon className="h-[80px] w-[80px]" />
+          <h6 className={`text-20px font-semibold text-white`}>
+            Wait for the presale to start
+          </h6>
         </div>
-      )}
+      </div>
+      {/* )} */}
 
       <div
         className={clsx(
-          roundInfo?.status === "not-started" &&
-            "pointer-events-none bg-black-shade-3/60 blur-xl"
+          // roundInfo?.status === "not-started" &&
+          "pointer-events-none bg-black-shade-3/60 blur-xl"
         )}
       >
         <div className={`rounded-xl bg-background-shade-3`}>
           <h1
             className={`border-b-2 border-b-gray-shade-3 px-5 py-6 text-center text-sm font-semibold text-white fsm:px-8 fsm:text-xl fmd:py-8 flg:text-2xl`}
           >
-            Please Enter DXC amount to you&apos;d like to purchase
+            Enter DXC amount you&apos;d like to purchase
           </h1>
 
           <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">

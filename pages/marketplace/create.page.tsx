@@ -255,6 +255,7 @@ const CreateNFT: NextPageWithLayout = () => {
           clearForm={clearForm}
         />
         <CreateNFTForm
+          library={library}
           createNFT={createNFT}
           clearForm={clearForm}
           asset={asset}

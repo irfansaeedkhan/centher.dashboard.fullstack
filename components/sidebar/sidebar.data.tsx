@@ -94,7 +94,8 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Launchpad",
-        url: "/launchpad/dexa/0",
+        // url: "/launchpad/dexa/0",
+        url: "/launchpad",
         icon: Launchpad,
         activeList: [AppRoutes.launchpad],
       },

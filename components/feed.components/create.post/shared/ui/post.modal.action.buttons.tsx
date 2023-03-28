@@ -12,13 +12,12 @@ import EmojiPicker, {
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
 import { SUPPORTED_VIDEO_TYPES } from "@/constants/supported.media.type";
-import { PhotoIcon, VideoIcon, EmojiIcon } from "@/assets/svgs";
+import { PhotoIcon, VideoIcon, EmojiIcon, CameraIcon2 } from "@/assets/svgs";
 
 import {
   FileType,
   validateSelectedFiles,
 } from "../utils/validate.selected.files";
-import { FiCamera } from "react-icons/fi";
 import CameraModal from "./camera.modal";
 
 interface Props {
@@ -69,22 +68,24 @@ export const PostModalActionButtons: React.FC<Props> = ({
       className={clsx(
         `relative flex`,
         {
-          "justify-between": placement === "create-post-card",
+          "justify-between fsm:justify-start fsm:gap-x-4":
+            placement === "create-post-card",
         },
         placement === "in-modal" &&
-          `justify-between fsm:justify-start fsm:gap-x-9`
+          `justify-between fsm:justify-start fsm:gap-x-4`
       )}
     >
       <label
         className={clsx(
-          `select-none`,
+          `group select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-150 hover:border-brand-primary/30 hover:bg-brand-primary/20`,
           buttonVariants({ color: "primary", placement })
         )}
       >
         <PhotoIcon
           className={clsx(
             placement === "in-modal" && iconClassesInModal,
-            placement === "create-post-card" && iconClassesCreatePostCard
+            placement === "create-post-card" && iconClassesCreatePostCard,
+            " group-hover:[&>*]:stroke-brand-primary"
           )}
         />
         Photo
@@ -100,18 +101,19 @@ export const PostModalActionButtons: React.FC<Props> = ({
       </label>
       <label
         className={clsx(
-          `select-none`,
-          buttonVariants({ color: "green", placement })
+          `group select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#76E268]/30 hover:bg-[#76E268]/20`,
+          buttonVariants({ color: "light_green", placement })
         )}
         onClick={() => {
           setShowCameraModal(true);
           onClickActionButton && onClickActionButton();
         }}
       >
-        <FiCamera
+        <CameraIcon2
           className={clsx(
             placement === "in-modal" && iconClassesInModal,
-            placement === "create-post-card" && iconClassesCreatePostCard
+            placement === "create-post-card" && iconClassesCreatePostCard,
+            " group-hover:[&>*]:stroke-[#76E268]"
           )}
         />
         Camera
@@ -119,14 +121,15 @@ export const PostModalActionButtons: React.FC<Props> = ({
 
       <label
         className={clsx(
-          `select-none`,
+          `group  select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#5F97FF]/30 hover:bg-[#5F97FF]/20`,
           buttonVariants({ color: "blue", placement })
         )}
       >
         <VideoIcon
           className={clsx(
             placement === "in-modal" && iconClassesInModal,
-            placement === "create-post-card" && iconClassesCreatePostCard
+            placement === "create-post-card" && iconClassesCreatePostCard,
+            " group-hover:[&>*]:stroke-[#5F97FF]"
           )}
         />
         Video
@@ -143,7 +146,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
 
       <label
         className={clsx(
-          `mr-2 hidden select-none flg:flex`,
+          `group mr-2 hidden select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20 flg:flex`,
           buttonVariants({ color: "green", placement })
         )}
         onClick={
@@ -160,7 +163,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
         <EmojiIcon
           className={clsx(
             placement === "in-modal" && iconClassesInModal,
-            placement === "create-post-card" && iconClassesCreatePostCard
+            placement === "create-post-card" && iconClassesCreatePostCard,
+            " group-hover:[&>*]:stroke-[#00BF96]"
           )}
         />
         Emoji
@@ -191,19 +195,20 @@ export const PostModalActionButtons: React.FC<Props> = ({
   );
 };
 
-const iconClassesInModal = `w-4 h-4 fsm:w-6 fsm:h-6`;
-const iconClassesCreatePostCard = `w-6 h-6`;
+const iconClassesInModal = `w-5 h-5`;
+const iconClassesCreatePostCard = `w-5 h-5`;
 
 const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
   variants: {
     color: {
-      primary: "text-brand-primary",
-      blue: "text-[#157AFB]",
-      green: "text-[#00BF96]",
+      primary: "hover:text-brand-primary",
+      blue: "hover:text-[#5F97FF]",
+      green: "hover:text-[#00BF96]",
+      light_green: "hover:text-[#76E268]",
     },
     placement: {
-      "create-post-card": "gap-3 text-14px",
-      "in-modal": "gap-2 fsm:gap-3 text-xs fsm:text-14px",
+      "create-post-card": "gap-3 text-[13px]",
+      "in-modal": "gap-2 fsm:gap-3 text-xs fsm:text-[13px]",
     },
   },
   defaultVariants: {
