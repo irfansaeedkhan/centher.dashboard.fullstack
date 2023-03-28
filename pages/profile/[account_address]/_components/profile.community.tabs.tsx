@@ -9,7 +9,7 @@ export const ProfileCommunityTabs: React.FC = ({}) => {
   const router = useRouter();
 
   return (
-    <div className="mb-4 flex w-full  justify-center space-x-2 rounded-2xl p-1.5 fsm:mb-6 fmd:justify-start [@media(max-width:370px)]:overflow-auto">
+    <div className="mb-4 flex w-full justify-center space-x-2 rounded-2xl p-1.5 fsm:mb-6 fmd:justify-start [@media(max-width:370px)]:overflow-auto">
       <Link
         href={`/profile/${router.query.account_address}/community/followers`}
         className="w-full max-w-max"

@@ -24,6 +24,16 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
+  if (checkMatch(request.nextUrl, notReadyPagesv2)) {
+    if (
+      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
+      process.env.NEXT_PUBLIC_APP_ENV === "staging"
+    ) {
+      const url = request.nextUrl.clone();
+      url.pathname = AppRoutes.coming_soon_v2;
+      return NextResponse.redirect(url);
+    }
+  }
 
   if (checkMatch(request.nextUrl, adminPages)) {
     if (!(await isAdmin(request))) {
@@ -105,8 +115,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.referral.network_genealogy,
 
   AppRoutes.marketplace.nft,
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
+
   AppRoutes.marketplace.explore,
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
@@ -143,3 +152,9 @@ const _notReadyPages: string[] = [
   AppRoutes.referral.liscense,
 ];
 const notReadyPages = changePaths(_notReadyPages);
+// Coming soon v2 pages - redirect to feed page
+const _notReadyPagesv2: string[] = [
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+];
+const notReadyPagesv2 = changePaths(_notReadyPagesv2);
