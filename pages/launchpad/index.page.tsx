@@ -18,6 +18,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
         width={650}
         height={650}
         alt="Profile Image"
+        priority
       />
     </div>
   );
