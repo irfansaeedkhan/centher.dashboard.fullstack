@@ -207,6 +207,20 @@
   },
   {
     "inputs": [
+      { "internalType": "address[]", "name": "users", "type": "address[]" },
+      {
+        "internalType": "address[]",
+        "name": "referrerAddresses",
+        "type": "address[]"
+      }
+    ],
+    "name": "registerForOwnerBatch",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "referrerAddress",

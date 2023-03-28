@@ -28,7 +28,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     REGISTRATION: {
       // Register Contract Address
       56: "0x811EdC3B67e9275397bfeaf7FAf7687e8F55FeEb",
-      5: "0x32607f0B1713C7E05f5c9DeF875688A8d4654d01",
+      5: "0x538584360a8ec67338Ce73721585aC386d7a4e6E",
     },
     PRESALE: {
       // Presale Contract Address
@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/centher-marketplace"
-      : "https://api.studio.thegraph.com/query/39184/nethernft_dev/v0.0.32",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/2ffaded8-83c4-4932-85f7-f42f08",
 };
 
 //TODO=> Implement configuration validator function
