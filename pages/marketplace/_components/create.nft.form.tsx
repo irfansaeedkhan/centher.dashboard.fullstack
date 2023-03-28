@@ -14,6 +14,7 @@ export interface CreateNFTFormProps {
   createNFT: any;
   clearForm: boolean;
   asset: Blob | undefined;
+  library: any;
 }
 export interface IProperty {
   Type: string;
@@ -33,6 +34,7 @@ export const CreateNFTForm = ({
   createNFT,
   clearForm,
   asset,
+  library,
 }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
   const { account } = useWeb3React();
@@ -62,6 +64,7 @@ export const CreateNFTForm = ({
       </div>
       {tab === "Fixed" && (
         <FixedPriceForm
+          library={library}
           createNFT={createNFT}
           collections={collections}
           clearForm={clearForm}
@@ -70,6 +73,7 @@ export const CreateNFTForm = ({
       )}
       {tab === "Auction" && (
         <AuctionForm
+          library={library}
           createNFT={createNFT}
           collections={collections}
           clearForm={clearForm}

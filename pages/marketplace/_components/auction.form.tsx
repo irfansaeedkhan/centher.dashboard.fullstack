@@ -8,11 +8,18 @@ import moment from "moment";
 // App imports
 import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { AddIcon } from "@/assets/svgs";
+import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
+import { FiArrowRight } from "react-icons/fi";
+import { toast } from "react-hot-toast";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import useUser from "@/hooks/use.user";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { useWeb3React } from "@web3-react/core";
 
 import CustomDropdown from "./custom.dropdown";
+import NewButton from "@/components/button/new.button";
 
 // form validations
 const schema = Joi.object({
@@ -51,13 +58,20 @@ interface AuctionFormProps {
   collections: IMyCollection[];
   clearForm: boolean;
   asset: Blob | undefined;
+  library: any;
 }
 const AuctionForm = ({
   createNFT,
   collections,
   clearForm,
   asset,
+  library,
 }: AuctionFormProps) => {
+  const { user: loggedInUser } = useUser();
+  const { connectWallet } = useConnectWallet();
+  const { deactivate } = useWeb3React();
+  const [Modal, setModal] = useState(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -299,17 +313,27 @@ const AuctionForm = ({
             );
           })}
       </div>
-      <Button
-        title={"Create NFT"}
-        variant={
-          formState.isValid && asset !== undefined && collectionErrorMsg == ""
-            ? "v1"
-            : "v2"
-        }
-        disabled={!formState.isValid && asset === undefined}
-        onClick={handleSubmit(onSubmit)}
-        className="mt-2 py-4"
-      />
+      {!library ? (
+        <NewButton
+          title={"Connect Wallet"}
+          variant="v9"
+          onClick={() => {
+            setConnectWalletModal(true);
+          }}
+        />
+      ) : (
+        <Button
+          title={"Create NFT"}
+          variant={
+            formState.isValid && asset !== undefined && collectionErrorMsg == ""
+              ? "v1"
+              : "v2"
+          }
+          disabled={!formState.isValid && asset === undefined}
+          onClick={handleSubmit(onSubmit)}
+          className="mt-2 py-4"
+        />
+      )}
       {propertyModal && (
         <CustomModal
           onClose={() => {
@@ -355,6 +379,51 @@ const AuctionForm = ({
             />
           </div>
         </CustomModal>
+      )}
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!loggedInUser) {
+                    toast.error("Please login to buy this nft");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (
+                    loggedInUser.account_address.toLowerCase() !==
+                    _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
       )}
     </div>
   );
