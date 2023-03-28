@@ -13,10 +13,6 @@ interface Props {
   onClose: () => void;
 }
 
-interface MediaDeviceInfoWithFacingMode extends MediaDeviceInfo {
-  facingMode?: string;
-}
-
 const CameraModal = ({ onClose }: Props) => {
   const { addSelectedFiles, closeModal } = useNewPostStore();
   const [cameraSource, setCameraSource] = useState<"user" | "environment">(
@@ -32,16 +28,16 @@ const CameraModal = ({ onClose }: Props) => {
   const webcamRef = useRef<Webcam | null>(null);
 
   useEffect(() => {
-    navigator.mediaDevices.enumerateDevices().then((devices) => {
-      const videoDevices = devices.filter(
-        (device) => device.kind === "videoinput"
-      ) as MediaDeviceInfoWithFacingMode[];
-
-      const hasBackCamera = videoDevices.some(
-        (device) => device.facingMode === "environment"
+    const getAvailableInputs = async () => {
+      const videoInputs = await navigator.mediaDevices.enumerateDevices();
+      const backCamera = videoInputs.find(
+        (device) =>
+          device.kind === "videoinput" && device.label.includes("back")
       );
-      setHasBackCamera(hasBackCamera);
-    });
+      setHasBackCamera(!!backCamera);
+    };
+
+    getAvailableInputs();
   }, []);
 
   const handleResetClick = useCallback(() => {
