@@ -6,25 +6,23 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
+import { ethers } from "ethers";
 
 // App imports
 import NewButton from "@/components/button/new.button";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
-import useGetUser from "@/hooks/use.get.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import Button from "@/components/button";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -44,7 +42,7 @@ export const FixedPriceNFTBuyerDescription = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
-  const { library, deactivate } = useWeb3React();
+  const { library, deactivate } = useWeb3React<ethers.providers.Web3Provider>();
   const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -52,13 +50,6 @@ export const FixedPriceNFTBuyerDescription = ({
     title: "",
     content: "",
   });
-  const nftOwnerAddress = useGetNFTOwner(
-    data?.collection,
-    data?.nftId,
-    data?.owner
-  );
-
-  const { user: nftOwner } = useGetUser(nftOwnerAddress);
 
   const bnbPrice = useBNBPrice();
 
@@ -91,8 +82,16 @@ export const FixedPriceNFTBuyerDescription = ({
   };
   const handleBuyNFT = async () => {
     let success = false;
+
     try {
       ProceedFunc();
+      if (!data || !loggedInUser || !library) return;
+
+      const balance = await library.getBalance(loggedInUser.account_address);
+
+      if (balance && balance.lt(`${data.listInfo.price}`)) {
+        return toast.error("Insufficient balance");
+      }
       const result = await BlockchainWrite.callBuyListedItem(
         library,
         (data as INFTDetailData).collection,
