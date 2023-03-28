@@ -52,7 +52,8 @@ export const AppRoutes = {
   search: "/search",
   coming_soon: "/coming-soon",
   notifications: "/notifications",
-  launchpad: "/launchpad/[token_address]/[round]",
+  // launchpad: "/launchpad/[token_address]/[round]",
+  launchpad: "/launchpad",
 
   referral: {
     network_genealogy: "/network-genealogy",
