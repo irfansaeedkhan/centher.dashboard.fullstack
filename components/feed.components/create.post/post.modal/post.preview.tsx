@@ -58,7 +58,7 @@ const PostPreview = ({ post }: Props) => {
       </div>
       <div
         key={post.uuid}
-        className="rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
+        className="break-words rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
       >
         {post.post_text}
       </div>
