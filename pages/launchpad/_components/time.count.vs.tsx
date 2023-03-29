@@ -89,12 +89,12 @@ interface SingleUnitBoxProps {
 const SingleUnitBox: React.FC<SingleUnitBoxProps> = ({ value, unit }) => {
   return (
     <div className={"box flex flex-col items-center gap-2"}>
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border-white/25 bg-[#F3F4F7] fsm:h-16 fsm:w-16 flg:h-20 flg:w-20 f2xl:h-[80px] f2xl:w-[80px]">
-        <h1 className="text-xl font-semibold text-black-shade-3 fsm:text-2xl flg:text-[34px]">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border-white/25 bg-[#F3F4F7] fsm:h-10 fsm:w-10 flg:h-12 flg:w-12 f2xl:h-[60px] f2xl:w-[60px]">
+        <h1 className="text-xl font-semibold text-black-shade-3 fsm:text-xl flg:text-[24px]">
           {value}
         </h1>
       </div>
-      <p className="text-[10px] font-semibold text-gray-shade-7 fsm:text-sm ">
+      <p className="fsm:text-14px text-[10px] font-semibold text-gray-shade-7 ">
         {unit}
       </p>
     </div>
