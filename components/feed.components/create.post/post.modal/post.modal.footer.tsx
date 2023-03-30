@@ -40,8 +40,8 @@ const PostModalFooter: React.FC = () => {
       <div className="flex items-center">
         <div
           className={clsx("h-7 w-7", {
-            "ml-4 fsm:ml-0": modalType !== "edit",
-            "mr-4 fsm:mr-0": modalType === "edit",
+            "ml-2 fsm:ml-0": modalType !== "edit",
+            "mr-2 fsm:mr-0": modalType === "edit",
           })}
         >
           <PostTextCounter

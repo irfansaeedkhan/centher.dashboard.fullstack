@@ -72,11 +72,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
       className={clsx(
         `relative flex`,
         {
-          "justify-between fsm:justify-start fsm:gap-x-4":
-            placement === "create-post-card",
+          "justify-start fsm:gap-x-4": placement === "create-post-card",
         },
-        placement === "in-modal" &&
-          `justify-between fsm:justify-start fsm:gap-x-4`
+        placement === "in-modal" && `justify-start gap-x-4`
       )}
     >
       <label
@@ -92,7 +90,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-brand-primary"
           )}
         />
-        Photo
+        <span className="hidden fsm:block">Photo</span>
         <input
           type="file"
           id="files-photo"
@@ -123,7 +121,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-[#76E268]"
           )}
         />
-        Camera
+        <span className="hidden fsm:block">Camera</span>
       </label>
 
       <label
@@ -139,7 +137,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-[#5F97FF]"
           )}
         />
-        Video
+        <span className="hidden fsm:block">Video</span>
         <input
           type="file"
           id="files-videos"
