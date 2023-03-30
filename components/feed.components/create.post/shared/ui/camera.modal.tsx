@@ -94,6 +94,7 @@ const CameraModal = ({ onClose }: Props) => {
         setVideoUrl(videoUrl);
         setIsRecording(false);
         setRecordingTime(0);
+        clearInterval(timerId);
       };
 
       mediaRecorder.start();
