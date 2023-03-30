@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
-import { nanoid } from "nanoid";
 
 import NewButton from "@/components/button/new.button";
 import { CameraCustomModal } from "@/components/modal/camera-modal";
@@ -118,7 +117,12 @@ const CameraModal = ({ onClose }: Props) => {
 
   const saveSelectedFile = useCallback(
     (file: File) => {
-      addSelectedFiles([file]);
+      addSelectedFiles([
+        {
+          type: "new",
+          original: file,
+        },
+      ]);
       handleResetClick();
       onClose();
     },
