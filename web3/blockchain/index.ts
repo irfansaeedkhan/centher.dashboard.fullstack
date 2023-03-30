@@ -1427,4 +1427,40 @@ export class BlockchainWrite {
       throw error;
     }
   }
+
+  static async transferNftWithLock(
+    library: Web3Provider,
+    collection: String,
+    tokenId: number,
+    receiver: string,
+    periodTimeSpan: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.MARKETPALCE,
+        signer
+      );
+
+      await marketplaceContract.callStatic.transferWithLock(
+        collection,
+        tokenId,
+        receiver,
+        periodTimeSpan
+      );
+
+      const tx = await marketplaceContract.functions.transferWithLock(
+        collection,
+        tokenId,
+        receiver,
+        periodTimeSpan
+      );
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callTransferWithLock");
+      throw error;
+    }
+  }
 }

@@ -38,7 +38,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     MARKETPALCE: {
       // Presale Contract Address
       56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
-      5: "0x3F625d143CBDe71812cee43FC10f058Db2e11b55",
+      5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
     },
     MULTICALL: {
       // Multicall Contract Address
@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/registration-v2"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/2ffaded8-83c4-4932-85f7-f42f08",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/16ac52b5-2c0e-494a-a2b1-338cde",
 };
 
 //TODO=> Implement configuration validator function
