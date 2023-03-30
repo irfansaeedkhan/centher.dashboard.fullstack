@@ -56,12 +56,14 @@ const PostPreview = ({ post }: Props) => {
           return media;
         })}
       </div>
-      <div
-        key={post.uuid}
-        className="break-words rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
-      >
-        {post.post_text}
-      </div>
+      {post.post_text && (
+        <div
+          key={post.uuid}
+          className="break-words rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
+        >
+          {post.post_text}
+        </div>
+      )}
     </div>
   );
 };
