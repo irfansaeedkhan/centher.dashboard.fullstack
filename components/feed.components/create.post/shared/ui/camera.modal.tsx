@@ -144,7 +144,6 @@ const CameraModal = ({ onClose }: Props) => {
     <CameraCustomModal
       onClose={() => {
         onClose();
-        closeModal();
       }}
       title="Camera"
     >
