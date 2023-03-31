@@ -1,17 +1,17 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { v4 as uuid } from "uuid";
 import axios from "axios";
 import toast from "react-hot-toast";
 
 import { PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
-import {
-  createFilesChunks,
-  getNewPostAndUpdateState,
-  uploadFiles,
-} from "@/utils/create.post";
-import { v4 as uuid } from "uuid";
+// import {
+//   createFilesChunks,
+//   getNewPostAndUpdateState,
+//   uploadFiles,
+// } from "@/utils/create.post";
 
 export interface NewPostStore {
   modalType: ModalType;
@@ -448,7 +448,13 @@ interface SelectedFileEdit {
 
 export type SelectedFile = SelectedFileNew | SelectedFileEdit;
 
-type ModalType = null | "new-post" | "reply" | "reply-of-reply" | "edit";
+type ModalType =
+  | null
+  | "new-post"
+  | "reply-of-thread-post"
+  | "reply"
+  | "reply-of-reply"
+  | "edit";
 
 interface OpenModalOptionsBase {
   onCloseModal?: () => void;
@@ -457,6 +463,11 @@ interface OpenModalOptionsBase {
 
 interface OpenModalOptionsCreate extends OpenModalOptionsBase {
   modalType: "new-post";
+}
+
+interface OpenModalOptionsReplyOfThreadPost extends OpenModalOptionsBase {
+  modalType: "reply-of-thread-post";
+  parentPostId: string;
 }
 
 interface OpenModalOptionsReply extends OpenModalOptionsBase {
@@ -477,6 +488,7 @@ interface OpenModalOptionsEdit extends OpenModalOptionsBase {
 
 type OpenModalOptions =
   | OpenModalOptionsCreate
+  | OpenModalOptionsReplyOfThreadPost
   | OpenModalOptionsReply
   | OpenModalOptionsReplyOfReply
   | OpenModalOptionsEdit;

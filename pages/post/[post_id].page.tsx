@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
@@ -17,6 +17,7 @@ import {
 } from "@/components/feed.components";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
+import { ArchivedPost, CompletedPost, Post } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -27,7 +28,7 @@ const SinglePostPage: NextPageWithLayout = () => {
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
   const {
-    post,
+    posts,
     fetchPost,
     resetStore,
     postLoading,
@@ -43,6 +44,25 @@ const SinglePostPage: NextPageWithLayout = () => {
   const feedStore = useFeedStore((state) => ({
     removePost: state.removePost,
   }));
+
+  const { firstPost, threadPosts } = useMemo(() => {
+    if (!!posts.length) {
+      const firstPostIndex = posts.findIndex(
+        (p) => p._id === router.query.post_id
+      );
+
+      return {
+        firstPost: posts[firstPostIndex] as Post,
+        threadPosts: [
+          ...posts
+            .filter((p) => p.status !== "deleted")
+            .slice(firstPostIndex + 1),
+        ] as (CompletedPost | ArchivedPost)[],
+      };
+    }
+
+    return { firstPost: null, threadPosts: [] };
+  }, [posts, router.query.post_id]);
 
   const openPostModal = useNewPostStore((state) => state.openModal);
 
@@ -77,13 +97,13 @@ const SinglePostPage: NextPageWithLayout = () => {
 
   const handleAction = async (
     postId: string,
-    postType: "main" | "reply",
+    postType: "main" | "reply" | "thread-post",
     actionFunction: (postId: string) => Promise<void>
   ) => {
     try {
       await actionFunction(postId);
 
-      if (postType === "reply") {
+      if (postType === "reply" || postType === "thread-post") {
         removeReply(postId);
       } else {
         feedStore.removePost(postId);
@@ -113,16 +133,34 @@ const SinglePostPage: NextPageWithLayout = () => {
 
       {postLoading === "loaded" && (
         <>
-          {post?.status === "complete" && (
+          {firstPost?.status === "complete" && (
             <SinglePostV2
-              key={post._id}
-              post={post}
-              postType={post.parent_post ? "reply-w-parent-header" : "main"}
+              key={firstPost._id}
+              post={firstPost}
+              parentPost={
+                firstPost.parent_post
+                  ? firstPost.parent_post
+                  : firstPost.thread_index && firstPost.thread_index > 0
+                  ? posts[0]
+                  : undefined
+              }
+              postType={
+                firstPost.parent_post
+                  ? "reply-w-parent-header"
+                  : !!firstPost.thread_index // means if thread_index is not undefined or greater than 0
+                  ? "thread-post-w-parent-header"
+                  : "main"
+              }
               placement={"single-post-page"}
+              borderRadius={{
+                top: true,
+                bottom:
+                  threadPosts.length > 0 || replies.length > 0 ? false : true,
+              }}
               onClickLike={async () => {
                 await likePostAPI(
-                  post._id,
-                  post.liked_by_loggedin_user ? "unlike" : "like",
+                  firstPost._id,
+                  firstPost.liked_by_loggedin_user ? "unlike" : "like",
                   "main"
                 );
               }}
@@ -130,70 +168,84 @@ const SinglePostPage: NextPageWithLayout = () => {
                 setIsReplyModalOpen(true);
                 openPostModal({
                   modalType: "reply",
-                  parentPostId: post._id,
+                  parentPostId: firstPost._id,
                   onCloseModal: () => setIsReplyModalOpen(false),
                   shouldAddNewPost: true,
                 });
               }}
-              onClickArchive={() => handleAction(post._id, "main", archivePost)}
-              onClickDelete={() => handleAction(post._id, "main", deletePost)}
-              onPostInViewport={() => handleCreatePostView(post._id)}
+              onClickArchive={() =>
+                handleAction(firstPost._id, "main", archivePost)
+              }
+              onClickDelete={() =>
+                handleAction(firstPost._id, "main", deletePost)
+              }
+              onPostInViewport={() => handleCreatePostView(firstPost._id)}
             />
           )}
 
-          {post?.status === "deleted" && (
+          {firstPost?.status === "deleted" && (
             <NoPostMessage
-              message="The main post was deleted by author."
-              className={clsx(post.replies_count > 0 && "rounded-b-none")}
+              message="The post was deleted by author."
+              className={clsx(firstPost.replies_count > 0 && "rounded-b-none")}
             />
           )}
 
-          {replies.map((reply) => {
-            if (reply._id === replies[replies.length - 1]._id) {
-              return (
-                <div
-                  ref={lastReplyRef}
-                  key={reply._id}
-                  onClick={() => {
-                    router.push({
-                      pathname: AppRoutes.feed.single_post,
-                      query: {
-                        post_id: reply._id,
-                      },
+          {threadPosts.map((post) => {
+            return (
+              <div
+                key={post._id}
+                onClick={() => {
+                  router.push({
+                    pathname: AppRoutes.feed.single_post,
+                    query: {
+                      post_id: post._id,
+                    },
+                  });
+                }}
+              >
+                <SinglePostV2
+                  post={post}
+                  parentPost={undefined}
+                  postType={"thread-post"}
+                  placement={"single-post-page"}
+                  borderRadius={{
+                    top: false,
+                    bottom:
+                      // if it is last post in threadPosts and there are no replies
+                      threadPosts[threadPosts.length - 1]._id === post._id &&
+                      replies.length === 0
+                        ? true
+                        : false,
+                  }}
+                  onClickLike={async () => {
+                    await likePostAPI(
+                      post._id,
+                      post.liked_by_loggedin_user ? "unlike" : "like",
+                      "thread-post"
+                    );
+                  }}
+                  onClickReply={() => {
+                    setIsReplyModalOpen(true);
+                    openPostModal({
+                      modalType: "reply-of-thread-post",
+                      parentPostId: post._id,
+                      onCloseModal: () => setIsReplyModalOpen(false),
+                      shouldAddNewPost: true,
                     });
                   }}
-                >
-                  <SinglePostV2
-                    post={reply}
-                    postType={"reply"}
-                    placement={"single-post-page"}
-                    onClickLike={async () => {
-                      await likePostAPI(
-                        reply._id,
-                        reply.liked_by_loggedin_user ? "unlike" : "like",
-                        "reply"
-                      );
-                    }}
-                    onClickReply={() => {
-                      setIsReplyModalOpen(true);
-                      openPostModal({
-                        modalType: "reply-of-reply",
-                        parentPostId: reply._id,
-                        onCloseModal: () => setIsReplyModalOpen(false),
-                        shouldAddNewPost: true,
-                      });
-                    }}
-                    onClickArchive={() =>
-                      handleAction(reply._id, "reply", archivePost)
-                    }
-                    onClickDelete={() =>
-                      handleAction(reply._id, "reply", deletePost)
-                    }
-                    onPostInViewport={() => handleCreatePostView(reply._id)}
-                  />
-                </div>
-              );
-            }
+                  onClickArchive={() =>
+                    handleAction(post._id, "thread-post", archivePost)
+                  }
+                  onClickDelete={() =>
+                    handleAction(post._id, "thread-post", deletePost)
+                  }
+                  onPostInViewport={() => handleCreatePostView(post._id)}
+                />
+              </div>
+            );
+          })}
+
+          {replies.map((reply) => {
             return (
               <div
                 key={reply._id}
@@ -210,6 +262,15 @@ const SinglePostPage: NextPageWithLayout = () => {
                   post={reply}
                   postType={"reply"}
                   placement={"single-post-page"}
+                  parentPost={reply.parent_post}
+                  borderRadius={{
+                    top: false,
+                    bottom:
+                      // if it is last post in replies and there are no more replies to fetch
+                      replies[replies.length - 1]._id === reply._id
+                        ? true
+                        : false,
+                  }}
                   onClickLike={async () => {
                     await likePostAPI(
                       reply._id,
@@ -238,7 +299,12 @@ const SinglePostPage: NextPageWithLayout = () => {
             );
           })}
 
-          {!post && <NoPostMessage message="The post does not exist." />}
+          {/* For fetch on scroll */}
+          {!!replies.length && <div ref={lastReplyRef} />}
+
+          {(!posts || !posts.length) && (
+            <NoPostMessage message="The post does not exist." />
+          )}
         </>
       )}
 

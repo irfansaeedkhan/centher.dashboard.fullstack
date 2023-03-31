@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
-import { ArchivedPost, CompletedPost } from "@/models/post";
+import { ArchivedPost, CompletedPost, ParentPost } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 
 import { PostModal } from "../create.post/post.modal";
@@ -19,7 +19,14 @@ import { PostUserImage } from "./post.user.image";
 import { LoggedInModal } from "./logged.in.modal";
 import { FullscreenMediaPreview } from "./fullscreen.media.preview";
 
-export type PostType = "main" | "reply" | "reply-w-parent-header" | "archived";
+export type PostType =
+  | "main"
+  | "thread-post"
+  | "thread-post-w-parent-header"
+  | "reply"
+  | "reply-w-parent-header"
+  | "archived";
+
 export type Placement =
   | "feed-page"
   | "single-post-page"
@@ -29,8 +36,13 @@ export type Placement =
 
 interface Props {
   post: CompletedPost | ArchivedPost;
+  parentPost: ParentPost | undefined;
   postType: PostType;
   placement: Placement;
+  borderRadius: {
+    top?: boolean;
+    bottom?: boolean;
+  };
   shouldShowThread?: boolean;
   shouldShowComments?: boolean;
   className?: string;
@@ -45,8 +57,13 @@ interface Props {
 
 export const SinglePostV2: React.FC<Props> = ({
   post,
+  parentPost,
   postType,
   placement,
+  borderRadius = {
+    top: true,
+    bottom: true,
+  },
   shouldShowThread = false,
   shouldShowComments = false,
   className,
@@ -107,15 +124,16 @@ export const SinglePostV2: React.FC<Props> = ({
       ref={currentPostRef}
       className={clsx(
         `w-full max-w-[544px] cursor-pointer rounded-10px bg-elevation-1 p-4`,
+        {
+          "rounded-t-none": !borderRadius.top,
+          "rounded-b-none": !borderRadius.bottom,
+        },
         placement === "single-post-page" &&
-          (postType === "main" || postType === "reply-w-parent-header") &&
-          post.replies_count > 0 &&
-          "rounded-b-none",
-        placement === "single-post-page" &&
-          postType === "reply" &&
-          "rounded-t-none rounded-b-none border-t border-t-gray-shade-3",
+          (postType === "reply" || postType === "thread-post") &&
+          "border-t border-t-gray-shade-3",
         className
       )}
+      data-post-id={post._id}
     >
       {postType === "archived" && (
         <div className="mb-2 flex gap-x-2.5 text-white">
@@ -125,11 +143,12 @@ export const SinglePostV2: React.FC<Props> = ({
       )}
 
       <div className="grid grid-cols-[auto_1fr] gap-x-3">
-        {postType === "reply-w-parent-header" &&
+        {(postType === "reply-w-parent-header" ||
+          postType === "thread-post-w-parent-header") &&
           post.status !== "archived" &&
-          post.parent_post && (
+          parentPost && (
             <>
-              <PostUserImage postUser={post.parent_post.user} />
+              <PostUserImage postUser={parentPost.user} />
               <div
                 className={clsx(
                   `mb-5 flex-grow border-b-2 border-b-gray-shade-3 pb-5`
@@ -137,7 +156,8 @@ export const SinglePostV2: React.FC<Props> = ({
               >
                 <PostHeader
                   post={post}
-                  postUser={post.parent_post?.user!}
+                  parentPost={parentPost}
+                  postUser={parentPost.user}
                   postType={postType}
                   loggedInUser={undefined}
                   onClickArchive={undefined}
@@ -154,7 +174,13 @@ export const SinglePostV2: React.FC<Props> = ({
         <PostHeader
           post={post}
           postUser={post.user}
-          postType={postType === "reply-w-parent-header" ? "main" : postType}
+          parentPost={parentPost}
+          postType={
+            postType === "reply-w-parent-header" ||
+            postType === "thread-post-w-parent-header"
+              ? "main"
+              : postType
+          }
           loggedInUser={loggedInUser}
           onClickArchive={onClickArchive}
           onClickRestore={onClickRestore}

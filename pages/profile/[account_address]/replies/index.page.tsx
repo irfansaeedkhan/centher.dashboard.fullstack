@@ -114,48 +114,6 @@ const Replies: NextPageWithLayout = () => {
   return (
     <>
       {posts.map((post) => {
-        if (post._id === posts[posts.length - 1]._id) {
-          return (
-            <div
-              ref={lastPostRef}
-              key={post._id}
-              onClick={() => {
-                router.push({
-                  pathname: AppRoutes.feed.single_post,
-                  query: {
-                    post_id: post._id,
-                  },
-                });
-              }}
-            >
-              <SinglePostV2
-                post={post}
-                postType={"reply-w-parent-header"}
-                placement="profile-replies-page"
-                shouldShowThread={post.is_thread}
-                shouldShowComments={post.replies_count > 0}
-                onClickLike={async () => {
-                  await likePostAPI(
-                    post._id,
-                    post.liked_by_loggedin_user ? "unlike" : "like"
-                  );
-                }}
-                onClickReply={() => {
-                  setIsReplyModalOpen(true);
-                  openPostModal({
-                    modalType: "reply",
-                    parentPostId: post._id,
-                    onCloseModal: () => setIsReplyModalOpen(false),
-                    shouldAddNewPost: true,
-                  });
-                }}
-                onClickArchive={() => handleAction(post._id, archivePost)}
-                onClickDelete={() => handleAction(post._id, deletePost)}
-                onPostInViewport={() => handleCreatePostView(post._id)}
-              />
-            </div>
-          );
-        }
         return (
           <div
             key={post._id}
@@ -170,8 +128,13 @@ const Replies: NextPageWithLayout = () => {
           >
             <SinglePostV2
               post={post}
+              parentPost={post.parent_post}
               postType={"reply-w-parent-header"}
               placement="profile-replies-page"
+              borderRadius={{
+                top: true,
+                bottom: true,
+              }}
               shouldShowThread={post.is_thread}
               shouldShowComments={post.replies_count > 0}
               onClickLike={async () => {
@@ -196,6 +159,8 @@ const Replies: NextPageWithLayout = () => {
           </div>
         );
       })}
+
+      {!!posts.length && <div ref={lastPostRef} />}
 
       {(loading === "loading" || loading === "idle") && (
         <>

@@ -8,6 +8,8 @@ export interface BasePost {
   replies_count: number;
   likes_count: number;
   is_thread: boolean;
+  thread_id: string | undefined;
+  thread_index: number | undefined;
   createdAt: string;
 }
 
@@ -39,7 +41,7 @@ export interface PostMedia {
 
 export type PostUser = Pick<
   User,
-  "_id" | "account_address" | "display_name" | "profile_image"
+  "_id" | "account_address" | "display_name" | "profile_image" | "is_verified"
 >;
 
 export interface ParentPost {

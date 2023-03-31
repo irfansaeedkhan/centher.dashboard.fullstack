@@ -9,12 +9,12 @@ import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
 
-type PostType = "main" | "reply";
+type PostType = "main" | "thread-post" | "reply";
 
 export interface SinglePostStore {
   postLoading: LoadingState;
   postId: string;
-  post: Post | null;
+  posts: Post[];
 
   replies: CompletedPost[];
   repliesLoading: LoadingState;
@@ -66,7 +66,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
       updateRepliesOffset: () =>
         set((state) => ({ repliesOffset: state.replies.length })),
 
-      post: null,
+      posts: [],
       replies: [],
 
       fetchPost: async () => {
@@ -85,7 +85,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
           const [postRes, repliesRes] = await Promise.all(promises);
 
           set({
-            post: postRes.data.post as Post,
+            posts: postRes.data.posts as Post[],
             postLoading: "loaded",
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
@@ -93,7 +93,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
         } catch (error: any) {
           if (error.response?.status === 404) {
             set({
-              post: null,
+              posts: [],
               postLoading: "loaded",
               replies: [],
               repliesLoading: "loaded",
@@ -169,68 +169,67 @@ export const useSinglePostStore = create<SinglePostStore>()(
       updatePostLikesCount: (actionType, postType, postId) => {
         if (!postId) return;
 
-        if (postType === "main") {
-          set((state) => {
-            if (
-              !state.post ||
-              postId.toLowerCase() !== state.post._id.toLowerCase()
-            ) {
-              return state;
-            }
+        // if (postType === "main") {
+        //   set((state) => {
+        //     if (
+        //       !state.post ||
+        //       postId.toLowerCase() !== state.post._id.toLowerCase()
+        //     ) {
+        //       return state;
+        //     }
 
-            return {
-              ...state,
-              post: {
-                ...state.post,
-                likes_count:
-                  actionType === "increment"
-                    ? state.post.likes_count + 1
-                    : state.post.likes_count - 1,
-                liked_by_loggedin_user: actionType === "increment",
-              },
-            };
-          });
-        } else if (postType === "reply") {
-          set((state) => {
-            const replies = state.replies.map((reply) => {
-              if (reply._id !== postId) {
-                return reply;
-              }
+        //     return {
+        //       ...state,
+        //       post: {
+        //         ...state.post,
+        //         likes_count:
+        //           actionType === "increment"
+        //             ? state.post.likes_count + 1
+        //             : state.post.likes_count - 1,
+        //         liked_by_loggedin_user: actionType === "increment",
+        //       },
+        //     };
+        //   });
+        // } else if (postType === "reply") {
+        //   set((state) => {
+        //     const replies = state.replies.map((reply) => {
+        //       if (reply._id !== postId) {
+        //         return reply;
+        //       }
 
-              return {
-                ...reply,
-                likes_count:
-                  actionType === "increment"
-                    ? reply.likes_count + 1
-                    : reply.likes_count - 1,
-                liked_by_loggedin_user: actionType === "increment",
-              };
-            });
+        //       return {
+        //         ...reply,
+        //         likes_count:
+        //           actionType === "increment"
+        //             ? reply.likes_count + 1
+        //             : reply.likes_count - 1,
+        //         liked_by_loggedin_user: actionType === "increment",
+        //       };
+        //     });
 
-            return {
-              ...state,
-              replies,
-            };
-          });
-        }
+        //     return {
+        //       ...state,
+        //       replies,
+        //     };
+        //   });
+        // }
       },
 
       removeReply: async (replyId) => {
-        try {
-          // Update replies count in post
-          const { decrementPostRepliesCount } = useFeedStore.getState();
-          decrementPostRepliesCount(get().post?._id);
-
-          set((state) => ({
-            post: {
-              ...state.post,
-              replies_count: (state.post?.replies_count ?? 1) - 1,
-            } as Post,
-            replies: state.replies.filter((reply) => reply._id !== replyId),
-          }));
-        } catch (error: any) {
-          customLog(error, ["development"]);
-        }
+        // try {
+        //   // Update replies count in post
+        //   const { decrementPostRepliesCount } = useFeedStore.getState();
+        //   decrementPostRepliesCount(get().post?._id);
+        //   set((state) => ({
+        //     post: {
+        //       ...state.post,
+        //       replies_count: (state.post?.replies_count ?? 1) - 1,
+        //     } as Post,
+        //     replies: state.replies.filter((reply) => reply._id !== replyId),
+        //   }));
+        // } catch (error: any) {
+        //   customLog(error, ["development"]);
+        // }
       },
 
       addNewReply: (reply) => {
@@ -240,13 +239,13 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       updatePost: (post) => {
-        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
+        // set((state) => ({ post: { ...state.post, ...(post as Post) } }));
       },
 
       resetStore: (postId, loading = "idle") => {
         set({
           postId,
-          post: null,
+          posts: [],
           postLoading: loading,
           replies: [],
           repliesLoading: loading,
@@ -255,30 +254,30 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       replaceEditedPost: (post) => {
-        set((state) => ({
-          post: post._id === state.post?._id ? post : state.post,
-          replies: state.replies.map((reply) => {
-            if (reply._id === post._id) {
-              return post;
-            }
-            return reply;
-          }),
-        }));
+        // set((state) => ({
+        //   post: post._id === state.post?._id ? post : state.post,
+        //   replies: state.replies.map((reply) => {
+        //     if (reply._id === post._id) {
+        //       return post;
+        //     }
+        //     return reply;
+        //   }),
+        // }));
       },
 
       createPostViewInStore: (postId) => {
-        set((state) => ({
-          post:
-            postId === state.post?._id
-              ? { ...state.post, viewed_by_loggedin_user: true }
-              : state.post,
-          replies: state.replies.map((reply) => {
-            if (reply._id === postId) {
-              return { ...reply, viewed_by_loggedin_user: true };
-            }
-            return reply;
-          }),
-        }));
+        // set((state) => ({
+        //   post:
+        //     postId === state.post?._id
+        //       ? { ...state.post, viewed_by_loggedin_user: true }
+        //       : state.post,
+        //   replies: state.replies.map((reply) => {
+        //     if (reply._id === postId) {
+        //       return { ...reply, viewed_by_loggedin_user: true };
+        //     }
+        //     return reply;
+        //   }),
+        // }));
       },
 
       updateRepliesCountForReply: (actionType, postId) => {

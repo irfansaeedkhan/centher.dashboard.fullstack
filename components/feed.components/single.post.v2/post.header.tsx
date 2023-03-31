@@ -7,7 +7,12 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { ArchivedPost, CompletedPost, PostUser } from "@/models/post";
+import {
+  ArchivedPost,
+  CompletedPost,
+  ParentPost,
+  PostUser,
+} from "@/models/post";
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
@@ -18,6 +23,7 @@ import { PostType } from "./main";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
+  parentPost: ParentPost | undefined;
   postUser: PostUser;
   postType: PostType;
   loggedInUser: LoggedInUser | undefined;
@@ -29,6 +35,7 @@ interface Props {
 
 export const PostHeader: React.FC<Props> = ({
   post,
+  parentPost,
   postUser,
   postType,
   loggedInUser,
@@ -37,19 +44,6 @@ export const PostHeader: React.FC<Props> = ({
   onClickArchive,
   onClickRestore,
 }) => {
-  const [postOwnerAddress, setPostOwnerAddress] = useState("");
-  useEffect(() => {
-    if (
-      postType === "reply" &&
-      post.status !== "archived" &&
-      post?.parent_post?.user?.account_address
-    ) {
-      setPostOwnerAddress(post?.parent_post.user?.account_address);
-    }
-  }, [post]);
-  const { user } = useGetUser(postUser.account_address);
-  const { user: postOwner } = useGetUser(postOwnerAddress);
-
   const isPostOwner = useMemo(() => {
     return (
       loggedInUser?.account_address.toLowerCase() ===
@@ -63,12 +57,15 @@ export const PostHeader: React.FC<Props> = ({
 
   const createdTime = useMemo(() => {
     // Show relative time under 7 days
-    const createdAt =
-      postType === "reply-w-parent-header" &&
+    let createdAt = post.createdAt;
+    if (
+      (postType === "reply-w-parent-header" ||
+        postType === "thread-post-w-parent-header") &&
       post.status !== "archived" &&
-      post.parent_post
-        ? post.parent_post.createdAt
-        : post.createdAt;
+      parentPost
+    ) {
+      createdAt = parentPost.createdAt;
+    }
 
     try {
       return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
@@ -78,10 +75,12 @@ export const PostHeader: React.FC<Props> = ({
       // There is some issue with dayjs, so we are returning 2s as a fallback
       return "2s";
     }
-  }, [post, postType]);
+  }, [post, postType, parentPost]);
 
-  const verificationTick = useVerificationTick(user);
-  const verificationTickPostOwner = useVerificationTick(postOwner);
+  const verificationTickPostCreator = useVerificationTick(post.user);
+  const verificationTickReplyingTo = useVerificationTick(
+    parentPost ? parentPost.user : null
+  );
 
   return (
     <div className="flex justify-between">
@@ -109,7 +108,7 @@ export const PostHeader: React.FC<Props> = ({
             >
               {postUser && sliceDisplayName(postUser.display_name)}
             </span>
-            {!!verificationTick && (
+            {!!verificationTickPostCreator && (
               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                 <Image
                   src={"/images/rainbow-last-frame.png"}
@@ -133,7 +132,7 @@ export const PostHeader: React.FC<Props> = ({
           </p>
         </div>
 
-        {postType === "reply" && post.status !== "archived" && (
+        {parentPost && postType === "reply" && post.status !== "archived" && (
           <>
             <Link
               onClick={(e) => {
@@ -142,7 +141,7 @@ export const PostHeader: React.FC<Props> = ({
               href={{
                 pathname: AppRoutes.profile.account_address,
                 query: {
-                  account_address: post.parent_post?.user.account_address,
+                  account_address: parentPost.user.account_address,
                 },
               }}
               className="group mt-0.5 flex items-center text-xs font-medium text-white "
@@ -155,11 +154,11 @@ export const PostHeader: React.FC<Props> = ({
                   `group-hover:text-brand-primary`,
                   `block w-full max-w-[75px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[180px] [@media(min-width:500px)]:max-w-[280px] [@media(min-width:600px)]:max-w-[315px]`
                 )}
-                title={post?.parent_post?.user.display_name}
+                title={parentPost.user.display_name}
               >
-                {post && sliceDisplayName(post?.parent_post?.user.display_name)}
+                {post && sliceDisplayName(parentPost.user.display_name)}
               </span>
-              {!!verificationTickPostOwner && (
+              {!!verificationTickReplyingTo && (
                 <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                   <Image
                     src={"/images/rainbow-last-frame.png"}
@@ -175,39 +174,46 @@ export const PostHeader: React.FC<Props> = ({
       </div>
 
       {/* Right Side */}
-      {isPostOwner && postType !== "reply-w-parent-header" && (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-          className="right-side"
-        >
-          {/* 3 dots menu */}
-          <PostActionMenu
-            postType={postType}
-            isBefore15Minutes={isBefore15Minutes}
-            onClickEdit={onClickEdit ?? (() => {})}
-            onClickArchive={onClickArchive ?? (async () => {})}
-            onClickRestore={onClickRestore ?? (async () => {})}
-            onClickDelete={onClickDelete ?? (async () => {})}
-          />
-        </div>
-      )}
+      {isPostOwner &&
+        postType !== "reply-w-parent-header" &&
+        postType !== "thread-post-w-parent-header" && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            className="right-side"
+          >
+            {/* 3 dots menu */}
+            <PostActionMenu
+              postType={postType}
+              isBefore15Minutes={isBefore15Minutes}
+              onClickEdit={onClickEdit ?? (() => {})}
+              onClickArchive={onClickArchive ?? (async () => {})}
+              onClickRestore={onClickRestore ?? (async () => {})}
+              onClickDelete={onClickDelete ?? (async () => {})}
+            />
+          </div>
+        )}
 
       {/* Right Side */}
-      {postType === "reply-w-parent-header" && post.status !== "archived" && (
-        <Link
-          href={{
-            pathname: AppRoutes.feed.single_post,
-            query: {
-              post_id: post.parent_post?._id,
-            },
-          }}
-          className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
-        >
-          View Post
-        </Link>
-      )}
+      {(postType === "reply-w-parent-header" ||
+        postType === "thread-post-w-parent-header") &&
+        parentPost &&
+        post.status !== "archived" && (
+          <Link
+            href={{
+              pathname: AppRoutes.feed.single_post,
+              query: {
+                post_id: parentPost._id,
+              },
+            }}
+            className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
+          >
+            {postType === "thread-post-w-parent-header"
+              ? "View Thread"
+              : "View Post"}
+          </Link>
+        )}
     </div>
   );
 };
