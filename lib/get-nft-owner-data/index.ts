@@ -1,4 +1,4 @@
-import { NFTCardData } from "@/components/nft.card/nft.card.v2";
+import { NFTCardData } from "@/components/nft.card";
 import { AppError } from "@/utils/app-error";
 
 import { getUserByAddressFromDB } from "../get-user-by-address";

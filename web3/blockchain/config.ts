@@ -113,9 +113,9 @@ export const BlockchainConfig: IBlockchainConfig = {
           level6: 0.7,
         }
       : {
-          createItemFeeForMarketplace: 0.0001,
+          createItemFeeForMarketplace: 0.0,
           createItemFeeForCreator: 0.0,
-          createCollectionFee: 0.0001,
+          createCollectionFee: 0.0,
           buyItemFeeForMarketplace: 1.5,
           buyItemFeeForCreator: 1.5,
           buyItemFeeForMultilevel: 7,
