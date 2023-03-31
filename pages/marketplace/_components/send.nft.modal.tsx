@@ -9,9 +9,10 @@ import CustomDropdown from "./custom.dropdown";
 
 const lockOptions = [
   { label: "No Lock", value: "0" },
-  { label: "Three month", value: "1" },
-  { label: "Six Month", value: "2" },
-  { label: "twelve Month", value: "3" },
+  { label: "Three month", value: "7884000" },
+  { label: "Six Month", value: "15768000" },
+  { label: "Nine Month", value: "23652000" },
+  { label: "twelve Month", value: "31536000" },
 ];
 
 interface SendNFTModalProps {

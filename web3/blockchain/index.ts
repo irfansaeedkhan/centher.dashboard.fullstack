@@ -1172,10 +1172,6 @@ export class BlockchainWrite {
     price: number,
     period: number,
     fee: number
-    // lock: number = 0,
-    // receiver: string = ZeroAddress
-    // lock: number = 86400 * 20,
-    // receiver: string = "0xcBe3a6B073d1460Cc642fC686769A2EB6aF32fa7",
   ): Promise<string> {
     try {
       const signer = getSigner(library);
@@ -1183,8 +1179,9 @@ export class BlockchainWrite {
         SmartContractName.MARKETPALCE,
         signer
       );
+
       const normalizedValue = ethers.utils.parseEther(price.toFixed(18));
-      const castedFee = ethers.utils.parseEther(fee.toFixed(10));
+      const castedFee = ethers.utils.parseEther(fee.toFixed(18));
 
       await marketplaceContract.callStatic.createItems(
         collection,
@@ -1193,10 +1190,9 @@ export class BlockchainWrite {
         isAuction,
         normalizedValue,
         period,
-        // lock,
-        // receiver,
         { value: castedFee }
       );
+
       const tx = await marketplaceContract.functions.createItems(
         collection,
         tokenUri,
@@ -1204,8 +1200,6 @@ export class BlockchainWrite {
         isAuction,
         normalizedValue,
         period,
-        // lock,
-        // receiver,
         { value: castedFee }
       );
       await tx.wait();

@@ -115,6 +115,9 @@ export const NonNFTDescription = ({
           data.nftId,
           listingPrice
         );
+        if (result?.length) {
+          setNftData();
+        }
         SuccessFunc(!!result);
       } catch (error) {
         toastError(error);
@@ -198,7 +201,9 @@ export const NonNFTDescription = ({
           input.ReceiverAddress,
           input.LockEndTime
         );
-
+        if (result?.length) {
+          setNftData();
+        }
         SuccessFunc(!!result);
       } catch (error) {
         toastError(error);
