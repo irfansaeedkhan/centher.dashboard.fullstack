@@ -1,8 +1,17 @@
 import React from "react";
+import clsx from "clsx";
 
-export const PromotionCard3 = () => {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+
+export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
   return (
-    <div className="relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px bg-[url(/images/market-place-comingsoon.png)] bg-cover bg-no-repeat p-6">
+    <div
+      className={clsx(
+        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px bg-[url(/images/market-place-comingsoon.png)] bg-cover bg-no-repeat p-6`,
+        className
+      )}
+      {...props}
+    >
       <div className="mt-3 mb-[6px] flex flex-col items-center justify-center gap-4 text-center">
         <span>
           <h2 className="!text-[24px] font-extrabold leading-[26px] text-white">
