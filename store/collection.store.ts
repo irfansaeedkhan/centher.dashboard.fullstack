@@ -7,12 +7,15 @@ import { LoadingState } from "@/models/common";
 import { CollectionInfo, NFT } from "@/models/nft";
 import { BlockchainRead } from "@/web3/blockchain";
 
+import { NFTCardData } from "@/components/nft.card";
+import { getNFTCardData } from "./../lib/get-nft-card-data/index";
+
 export type Filter = "All" | "List" | "Auction";
 
 export interface CollectionStore {
   info: CollectionInfo | undefined;
   fetchCollectionInfo: (collection: string) => Promise<void>;
-  nfts: NFT[];
+  nfts: NFTCardData[];
   fetchNFTs: (
     collection: string,
     saleState: string,
@@ -36,7 +39,7 @@ enum OrderBy {
 
 export const useCollectionStore = create<CollectionStore>()(
   devtools(
-    (set) => ({
+    (set, get) => ({
       info: undefined,
       nfts: [],
       offset: 0,
@@ -103,7 +106,6 @@ export const useCollectionStore = create<CollectionStore>()(
               offset
             );
           }
-
           if (result?.length) {
             _nfts = result.map((item: any) => {
               let _endTime = 0;
@@ -125,18 +127,24 @@ export const useCollectionStore = create<CollectionStore>()(
               };
             });
           }
+          const nftCardDataPromises = _nfts.map((nft) => getNFTCardData(nft));
 
-          set((state) => {
-            // Filter out all nfts that are already in the store
-            const filteredNFTs = state.nfts.filter(
-              (stateNFTs) =>
-                !_nfts.some((nfts: NFT) => stateNFTs.id === nfts.id)
-            );
-            return {
-              nfts: [..._nfts, ...filteredNFTs],
-              loadingNFTs: "loaded",
-            };
-          });
+          const nftCardDataResults = (
+            await Promise.allSettled(nftCardDataPromises)
+          ).filter(
+            (nft) => nft.status === "fulfilled"
+          ) as PromiseFulfilledResult<NFTCardData>[];
+
+          // Remove nfts that are already in the store
+          const filteredNFTs = nftCardDataResults.filter(
+            (nft) =>
+              !get().nfts.some((stateNFT) => stateNFT.id === nft.value.id)
+          );
+          set((state) => ({
+            ...state,
+            nfts: [...state.nfts, ...filteredNFTs.map((nft) => nft.value)],
+            loadingNFTs: "loaded",
+          }));
         } catch (error) {
           set({ loadingNFTs: "failed" });
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&

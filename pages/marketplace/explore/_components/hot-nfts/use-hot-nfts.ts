@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
 import { LoadingState } from "@/models/common";
-import { NFTCardData } from "@/components/nft.card/nft.card.v2";
+import { NFTCardData } from "@/components/nft.card";
 import { getNFTs } from "@/lib/get-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
 
