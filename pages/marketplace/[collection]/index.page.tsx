@@ -90,7 +90,8 @@ const Collection: NextPageWithLayout = () => {
   const [orderdir, setOrderDir] = useState("desc");
   const [coverImageUrl, setCoverImageUrl] = useState("");
   const [profileImageUrl, setProfileImageUrl] = useState("");
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user });
+
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -339,7 +340,7 @@ const Collection: NextPageWithLayout = () => {
                       {!!verificationTick && (
                         <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                           <Image
-                            src={"/images/rainbow-last-frame.png"}
+                            src={verificationTick}
                             alt={"Verified"}
                             width={20}
                             height={20}

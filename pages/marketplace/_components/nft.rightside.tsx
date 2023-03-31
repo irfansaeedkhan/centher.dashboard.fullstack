@@ -28,7 +28,7 @@ import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.descriptio
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { NFTHistory } from "./nft.history";
+// import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -65,8 +65,9 @@ export const NFTRightSideComponent = ({
     data?.owner
   );
   const { user: nftOwner } = useGetUser(nftOwnerAddress);
-  const verificationTick = useVerificationTick(user);
-  const verificationOwnerTick = useVerificationTick(nftOwner);
+  const verificationTick = useVerificationTick({ user });
+  const verificationOwnerTick = useVerificationTick({ user: nftOwner });
+
   useEffect(() => {
     if (data) {
       if (
@@ -155,7 +156,7 @@ export const NFTRightSideComponent = ({
                 {!!verificationTick && (
                   <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                     <Image
-                      src={"/images/rainbow-last-frame.png"}
+                      src={verificationTick}
                       alt={"Verified"}
                       width={20}
                       height={20}
@@ -199,7 +200,7 @@ export const NFTRightSideComponent = ({
                 {!!verificationOwnerTick && (
                   <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                     <Image
-                      src={"/images/rainbow-last-frame.png"}
+                      src={verificationOwnerTick}
                       alt={"Verified"}
                       width={20}
                       height={20}

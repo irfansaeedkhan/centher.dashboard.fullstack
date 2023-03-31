@@ -1,6 +1,6 @@
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
 
 import { AppRoutes } from "@/constants/app.routes";
 import useGetUser from "@/hooks/use.get.user";
@@ -9,8 +9,9 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 export const LevelChildCard = ({ childData, handleCard }: any) => {
   const { user } = useGetUser(childData?.user);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user });
   // const [activeCard, setActiveCard] = useState(false);
+
   return (
     <div
       className={`relative w-full cursor-pointer rounded-t-lg bg-background-shade-3  ${
@@ -57,7 +58,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
               {verificationTick && (
                 <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                   <Image
-                    src={"/images/rainbow-last-frame.png"}
+                    src={verificationTick}
                     alt={"Verified"}
                     width={20}
                     height={20}

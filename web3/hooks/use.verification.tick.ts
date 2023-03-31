@@ -1,15 +1,32 @@
 import { useEffect, useState } from "react";
 
-export const useVerificationTick = (user?: { is_verified: boolean } | null) => {
+interface Params {
+  user?: { is_verified: boolean } | null;
+  shouldAnimate?: boolean;
+}
+
+export const useVerificationTick = (
+  params: Params = {
+    user: null,
+    shouldAnimate: false,
+  }
+) => {
   const [verificationIcon, setVerificationIcon] = useState<null | string>(null);
 
   useEffect(() => {
-    if (!user) {
+    if (!params.user) {
       setVerificationIcon(null);
       return;
     }
 
-    if (user.is_verified) {
+    if (!params.shouldAnimate) {
+      setVerificationIcon(
+        params.user.is_verified ? "/images/rainbow-last-frame.png" : null
+      );
+      return;
+    }
+
+    if (params.user.is_verified) {
       const timeout1 = setTimeout(function () {
         setVerificationIcon("/images/rainbow-1.gif");
       }, 3000);
@@ -32,6 +49,7 @@ export const useVerificationTick = (user?: { is_verified: boolean } | null) => {
     } else {
       setVerificationIcon(null);
     }
-  }, [user]);
+  }, [params.user, params.shouldAnimate]);
+
   return verificationIcon;
 };

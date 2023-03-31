@@ -133,7 +133,7 @@ export const SinglePostV2: React.FC<Props> = ({
               />
               <div
                 className={clsx(
-                  `mb-5 flex-grow border-b-2 border-b-gray-shade-3 pb-5`
+                  `word-break mb-5 flex-grow truncate border-b-2 border-b-gray-shade-3 pb-5`
                 )}
               >
                 <PostHeader

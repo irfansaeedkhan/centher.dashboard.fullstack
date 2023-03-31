@@ -59,7 +59,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     }
   }, [deactivate, loggedInUser, account]);
 
-  const verificationTick = useVerificationTick(loggedInUser);
+  const verificationTick = useVerificationTick({ user: loggedInUser });
+
   return (
     <div
       ref={ref}
@@ -96,7 +97,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             {!!verificationTick && (
               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                 <Image
-                  src={"/images/rainbow-last-frame.png"}
+                  src={verificationTick}
                   alt={"Verified"}
                   width={20}
                   height={20}

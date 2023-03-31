@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
@@ -38,6 +38,9 @@ export const PostHeader: React.FC<Props> = ({
   onClickRestore,
 }) => {
   const [postOwnerAddress, setPostOwnerAddress] = useState("");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [containerWidth, setContainerWidth] = useState(0);
+
   useEffect(() => {
     if (
       postType === "reply" &&
@@ -46,9 +49,26 @@ export const PostHeader: React.FC<Props> = ({
     ) {
       setPostOwnerAddress(post?.parent_post.user?.account_address);
     }
-  }, [post]);
+  }, [post, postType]);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (!containerRef.current) return;
+
+      const newWidth = containerRef.current.offsetWidth;
+
+      if (newWidth !== containerWidth) {
+        setContainerWidth(newWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => {
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, [containerWidth]);
   const { user } = useGetUser(postUser.account_address);
-  const { user: postOwner } = useGetUser(postOwnerAddress);
+  const { user: replyPostUser } = useGetUser(postOwnerAddress);
 
   const isPostOwner = useMemo(() => {
     return (
@@ -80,89 +100,46 @@ export const PostHeader: React.FC<Props> = ({
     }
   }, [post, postType]);
 
-  const verificationTick = useVerificationTick(user);
-  const verificationTickPostOwner = useVerificationTick(postOwner);
+  const verificationTickMainPost = useVerificationTick({ user });
+  const verificationTickReplyPost = useVerificationTick({
+    user: replyPostUser,
+  });
 
   return (
-    <div className="flex justify-between">
-      {/* Left Side */}
-      <div className="left-side mr-2">
-        {/* Display Name */}
-        <div className={clsx(postType === "reply" && `flex items-center`)}>
-          <Link
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            href={{
-              pathname: AppRoutes.profile.account_address,
-              query: { account_address: postUser.account_address },
-            }}
+    <div ref={containerRef} className="flex justify-between">
+      <div
+        className={` truncate break-words`}
+        style={{ maxWidth: `${containerWidth - 30}px` }}
+      >
+        {/* Left Side */}
+        <div className="left-side word-break mr-2 truncate">
+          {/* Display Name */}
+          <div
             className={clsx(
-              `flex items-center text-sm  font-semibold text-white hover:text-brand-primary`
-            )}
-            title={postUser.display_name}
-          >
-            <span
-              className={clsx(
-                `block max-w-[116px] truncate break-words [@media(min-width:400px)]:max-w-[200px] [@media(min-width:500px)]:max-w-[300px] [@media(min-width:600px)]:max-w-[345px]`
-              )}
-            >
-              {postUser && sliceDisplayName(postUser.display_name)}
-            </span>
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
-                <Image
-                  src={"/images/rainbow-last-frame.png"}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
-                />
-              </span>
-            )}
-          </Link>
-
-          {/* Time */}
-          <p
-            className={clsx(
-              `text-xs font-medium text-gray-shade-7`,
-              postType === "reply" && "ml-3",
-              postType !== "reply" && "mt-0.5"
+              `word-break truncate`,
+              postType === "reply" && `flex items-center`
             )}
           >
-            {createdTime}
-          </p>
-        </div>
-
-        {postType === "reply" && post.status !== "archived" && (
-          <>
             <Link
               onClick={(e) => {
                 e.stopPropagation();
               }}
               href={{
                 pathname: AppRoutes.profile.account_address,
-                query: {
-                  account_address: post.parent_post?.user.account_address,
-                },
+                query: { account_address: postUser.account_address },
               }}
-              className="group mt-0.5 flex items-center text-xs font-medium text-white "
+              className={clsx(
+                `word-break flex w-full max-w-max items-center truncate text-sm font-semibold text-white hover:text-brand-primary`
+              )}
+              title={postUser.display_name}
             >
-              <span className="mr-1 min-w-max text-xs font-medium text-gray-shade-7">
-                Replying to
+              <span className={clsx(`block truncate break-words`)}>
+                {postUser && sliceDisplayName(postUser.display_name)}
               </span>
-              <span
-                className={clsx(
-                  `group-hover:text-brand-primary`,
-                  `block w-full max-w-[75px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[180px] [@media(min-width:500px)]:max-w-[280px] [@media(min-width:600px)]:max-w-[315px]`
-                )}
-                title={post?.parent_post?.user.display_name}
-              >
-                {post && sliceDisplayName(post?.parent_post?.user.display_name)}
-              </span>
-              {!!verificationTickPostOwner && (
+              {!!verificationTickMainPost && (
                 <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                   <Image
-                    src={"/images/rainbow-last-frame.png"}
+                    src={verificationTickMainPost}
                     alt={"Verified"}
                     width={20}
                     height={20}
@@ -170,8 +147,60 @@ export const PostHeader: React.FC<Props> = ({
                 </span>
               )}
             </Link>
-          </>
-        )}
+
+            {/* Time */}
+            <p
+              className={clsx(
+                `text-xs font-medium text-gray-shade-7`,
+                postType === "reply" && "ml-3",
+                postType !== "reply" && "mt-0.5"
+              )}
+            >
+              {createdTime}
+            </p>
+          </div>
+
+          {postType === "reply" && post.status !== "archived" && (
+            <>
+              <Link
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+                href={{
+                  pathname: AppRoutes.profile.account_address,
+                  query: {
+                    account_address: post.parent_post?.user.account_address,
+                  },
+                }}
+                className="word-break group mt-0.5 flex items-center truncate text-xs font-medium text-white"
+              >
+                <span className="mr-1 min-w-max text-xs font-medium text-gray-shade-7">
+                  Replying to
+                </span>
+                <span
+                  className={clsx(
+                    `group-hover:text-brand-primary`,
+                    `block truncate break-words`
+                  )}
+                  title={post?.parent_post?.user.display_name}
+                >
+                  {post &&
+                    sliceDisplayName(post?.parent_post?.user.display_name)}
+                </span>
+                {!!verificationTickReplyPost && (
+                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                    <Image
+                      src={verificationTickReplyPost}
+                      alt={"Verified"}
+                      width={20}
+                      height={20}
+                    />
+                  </span>
+                )}
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       {/* Right Side */}

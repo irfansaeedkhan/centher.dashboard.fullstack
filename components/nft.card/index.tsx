@@ -28,7 +28,9 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
   const { user } = useGetUser(data.owner.account_address);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({
+    user,
+  });
 
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -346,7 +348,10 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 };
 
 interface NFTOwner
-  extends Pick<User, "account_address" | "display_name" | "profile_image"> {
+  extends Pick<
+    User,
+    "account_address" | "display_name" | "profile_image" | "is_verified"
+  > {
   is_registered: boolean;
 }
 

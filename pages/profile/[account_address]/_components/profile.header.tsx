@@ -88,7 +88,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
   const isOwnProfile = useMemo(() => {
     return (
