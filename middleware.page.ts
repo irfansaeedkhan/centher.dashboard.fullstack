@@ -84,6 +84,9 @@ const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 const _adminPages: string[] = [
   AppRoutes.admin.registration,
   AppRoutes.admin.registration_setting,
+  AppRoutes.admin.network_rewards,
+  AppRoutes.admin.network_rewards_marketplace,
+  AppRoutes.admin.network_rewards_UpdateContract
 ];
 const adminPages = changePaths(_adminPages);
 
@@ -146,9 +149,6 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.influencer_details,
   AppRoutes.admin.transactions,
   AppRoutes.admin.users,
-  AppRoutes.admin.network_rewards,
-  AppRoutes.admin.network_rewards_marketplace,
-
   AppRoutes.referral.liscense,
 ];
 const notReadyPages = changePaths(_notReadyPages);
