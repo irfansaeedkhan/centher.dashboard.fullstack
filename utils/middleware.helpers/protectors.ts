@@ -27,9 +27,13 @@ export const isAdmin = async (request: NextRequest) => {
 
     if (!user) return false;
 
-    return (
-      user.account_address.toLowerCase() === ADMIN_ACCOUNT_ADDRESS.toLowerCase()
-    );
+
+    //TO DO: Must be commented or removed before going to production
+    return (true)
+    //TO DO: Must be uncommented before going to production
+    // return (
+    //   user.account_address.toLowerCase() === ADMIN_ACCOUNT_ADDRESS.toLowerCase()
+    // );
   } catch {
     return false;
   }
