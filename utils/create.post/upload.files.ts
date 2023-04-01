@@ -151,52 +151,47 @@ const completeMultipartUpload = async (
 };
 
 export const getNewPostAndUpdateState = async (currentPostId: string) => {
-  // Get the new post and add it to the top of the post list
-  const { data: postData } = await axiosNodeApi.get(
-    `/api/socials/posts/${currentPostId}`
-  );
-
-  const newPostStoreState = useNewPostStore.getState();
-  const feedStoreState = useFeedStore.getState();
-  const myPostStoreState = useMyPostStore.getState();
-  const myRepliesStoreState = useMyRepliesStore.getState();
-
-  if (newPostStoreState.modalType === "new-post") {
-    feedStoreState.addNewPost(postData.post);
-    myPostStoreState.addNewPost(postData.post);
-    useProfileCardStore.getState().incrementPostsCount();
-  } else if (
-    newPostStoreState.modalType === "reply" &&
-    newPostStoreState.parentPostId
-  ) {
-    feedStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
-    myPostStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
-    myRepliesStoreState.incrementPostRepliesCount(
-      newPostStoreState.parentPostId
-    );
-
-    const singlePostStoreState = useSinglePostStore.getState();
-
-    singlePostStoreState.addNewReply(postData.post);
-
-    const prevRepliesCount = singlePostStoreState.post?.replies_count;
-    singlePostStoreState.updatePost({
-      replies_count: prevRepliesCount ? prevRepliesCount + 1 : 1,
-    });
-  } else if (
-    newPostStoreState.modalType === "reply-of-reply" &&
-    newPostStoreState.parentPostId
-  ) {
-    // Increment replies count of reply
-    const singlePostStoreState = useSinglePostStore.getState();
-    singlePostStoreState.updateRepliesCountForReply(
-      "increment",
-      newPostStoreState.parentPostId
-    );
-  } else if (newPostStoreState.modalType === "edit") {
-    // Update all stores as we don't know which store the post is in
-    feedStoreState.replaceEditedPost(postData.post);
-    myPostStoreState.replaceEditedPost(postData.post);
-    useSinglePostStore.getState().replaceEditedPost(postData.post);
-  }
+  // // Get the new post and add it to the top of the post list
+  // const { data: postData } = await axiosNodeApi.get(
+  //   `/api/socials/posts/${currentPostId}`
+  // );
+  // const newPostStoreState = useNewPostStore.getState();
+  // const feedStoreState = useFeedStore.getState();
+  // const myPostStoreState = useMyPostStore.getState();
+  // const myRepliesStoreState = useMyRepliesStore.getState();
+  // if (newPostStoreState.modalType === "new-post") {
+  //   feedStoreState.addNewPost(postData.post);
+  //   myPostStoreState.addNewPost(postData.post);
+  //   useProfileCardStore.getState().incrementPostsCount();
+  // } else if (
+  //   newPostStoreState.modalType === "reply" &&
+  //   newPostStoreState.parentPostId
+  // ) {
+  //   feedStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
+  //   myPostStoreState.incrementPostRepliesCount(newPostStoreState.parentPostId);
+  //   myRepliesStoreState.incrementPostRepliesCount(
+  //     newPostStoreState.parentPostId
+  //   );
+  //   const singlePostStoreState = useSinglePostStore.getState();
+  //   singlePostStoreState.addNewReply(postData.post);
+  //   const prevRepliesCount = singlePostStoreState.post?.replies_count;
+  //   singlePostStoreState.updatePost({
+  //     replies_count: prevRepliesCount ? prevRepliesCount + 1 : 1,
+  //   });
+  // } else if (
+  //   newPostStoreState.modalType === "reply-of-reply" &&
+  //   newPostStoreState.parentPostId
+  // ) {
+  //   // Increment replies count of reply
+  //   const singlePostStoreState = useSinglePostStore.getState();
+  //   singlePostStoreState.updateRepliesCountForReply(
+  //     "increment",
+  //     newPostStoreState.parentPostId
+  //   );
+  // } else if (newPostStoreState.modalType === "edit") {
+  //   // Update all stores as we don't know which store the post is in
+  //   feedStoreState.replaceEditedPost(postData.post);
+  //   myPostStoreState.replaceEditedPost(postData.post);
+  //   useSinglePostStore.getState().replaceEditedPost(postData.post);
+  // }
 };
