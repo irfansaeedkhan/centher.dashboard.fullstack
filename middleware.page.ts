@@ -120,6 +120,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
 
   AppRoutes.launchpad,
 ];
@@ -153,8 +155,5 @@ const _notReadyPages: string[] = [
 ];
 const notReadyPages = changePaths(_notReadyPages);
 // Coming soon v2 pages - redirect to feed page
-const _notReadyPagesv2: string[] = [
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
-];
+const _notReadyPagesv2: string[] = [];
 const notReadyPagesv2 = changePaths(_notReadyPagesv2);
