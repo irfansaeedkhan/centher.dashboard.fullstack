@@ -16,7 +16,7 @@ interface CreatorCardProps {
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
   const { user } = useGetUser(data.account_address);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user });
 
   return (
     <div className={clsx("flex min-w-max items-center gap-3", className)}>
@@ -46,7 +46,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         {!!verificationTick && (
           <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}

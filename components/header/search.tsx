@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 import { useSearchStore } from "@/store/search.store";
-import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
 import useGetUser from "@/hooks/use.get.user";
 import { SearchIcon } from "@/assets/svgs";

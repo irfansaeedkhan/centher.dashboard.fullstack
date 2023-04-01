@@ -12,6 +12,7 @@ export const getCollectionCreatorData = async (
     return {
       account_address,
       display_name: user.display_name,
+      is_verified: user.is_verified,
       is_registered: true,
     };
   } catch (error: any) {
@@ -20,6 +21,7 @@ export const getCollectionCreatorData = async (
       return {
         account_address,
         display_name: account_address,
+        is_verified: false,
         is_registered: false,
       };
     }

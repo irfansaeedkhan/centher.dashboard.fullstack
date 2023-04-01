@@ -6,7 +6,6 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
-import useGetUser from "@/hooks/use.get.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 export interface CollectionCardProps {
@@ -21,8 +20,12 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
   const router = useRouter();
   const [coverImageUrl, setCoverImageUrl] = useState(data.coverImage);
   const [profileImageUrl, setProfileImageUrl] = useState(data.profileImage);
-  const { user } = useGetUser(data.creator.account_address);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({
+    user: {
+      is_verified: data.creator.is_verified,
+    },
+  });
+
   return (
     <div
       onClick={() => {
@@ -85,7 +88,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             {!!verificationTick && (
               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                 <Image
-                  src={"/images/rainbow-last-frame.png"}
+                  src={verificationTick}
                   alt={"Verified"}
                   width={20}
                   height={20}
@@ -103,7 +106,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             <span className="block max-w-[238px] truncate break-words">
               {sliceDisplayName(data.creator.display_name)}
             </span>
-            {!!verificationTick && (
+            {data.creator.is_verified && (
               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                 <Image
                   src={"/images/rainbow-last-frame.png"}
@@ -134,6 +137,7 @@ export interface CollectionCardData {
   creator: {
     account_address: User["account_address"];
     display_name: User["display_name"];
+    is_verified: User["is_verified"];
     is_registered: boolean;
   };
 }
