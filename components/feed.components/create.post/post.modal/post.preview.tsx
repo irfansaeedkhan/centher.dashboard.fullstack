@@ -21,7 +21,6 @@ const PostPreview = ({ post, removePost }: Props) => {
       };
     });
   }, [post]);
-  console.log(postFiles);
   return (
     <div className="mb-3 space-y-3">
       <div
