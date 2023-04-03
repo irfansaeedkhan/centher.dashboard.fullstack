@@ -14,7 +14,6 @@ export const changePaths = (paths: string[]) => {
       return changed;
     });
   } else {
-    console.error("The paths variable is undefined or null.");
     return [];
   }
 };
