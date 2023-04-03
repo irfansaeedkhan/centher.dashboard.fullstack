@@ -1,58 +1,36 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
+import clsx from "clsx";
 
+import useGetUser from "@/hooks/use.get.user";
 import { NFT } from "@/models/nft";
-import useGetNftOwnerDb from "@/hooks/use.get.nft.owner.db";
-import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
+import { User } from "@/models/user";
 import {
   formatAddress,
   formatEther2Number,
   formatIPFSUrl,
 } from "@/utils/format.address";
-import HotNftsHeaderSkeleton from "@/components/loading.skeletons/hot.nft.header";
 import { AppRoutes } from "@/constants/app.routes";
-import {
-  BNBIcon,
-  LockIcon,
-  // YellowTick
-} from "@/assets/svgs";
+import { BNBIcon, LockIcon } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { getUTCNow } from "@/web3/utils/utils";
-import { LockedNftModal } from "../modal/locked.nft.modal";
-import clsx from "clsx";
 
+import { LockedNftModal } from "../modal/locked.nft.modal";
 export interface NFTCardProps {
-  data: NFT;
+  data: NFTCardData;
 }
 
-export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
+export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
 
   const [showLockedDetails, setShowLockedDetails] = useState(false);
-
-  const nftOwner = useGetNFTOwner(data.collection, data.tokenId, data.owner);
-  const { user, notRegistered, imgSrc, loading } = useGetNftOwnerDb(
-    nftOwner.toLowerCase()
-  );
-  const [imageUrl, setImageUrl] = useState("");
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
-  useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const formattedUrl = formatIPFSUrl(ipfs);
-        const metadata = await axios.get(formattedUrl);
-        setName(metadata.data.name);
-        setDescription(metadata.data.description);
-        setImageUrl(formatIPFSUrl(metadata.data.image));
-      } catch (error) {}
-    };
-    if (data && data.ipfs) {
-      fetchMetadata(data.ipfs);
-    }
-  }, [data]);
+  const [imageUrl, setImageUrl] = useState(data.imageUrl);
+  const { user } = useGetUser(data.owner.account_address);
+  const verificationTick = useVerificationTick({
+    user,
+  });
 
   const [days, setDays] = useState(0);
   const [hours, setHours] = useState(0);
@@ -93,13 +71,12 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   const onClickOpen = () => {
     setShowLockedDetails(true);
   };
-
   return (
-    <div
-      className={`relative max-w-[300px] cursor-pointer overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`}
-    >
+    <div className={`cursor-pointer`}>
       <div
-        className={clsx(` flex max-w-[300px] flex-col bg-transparent`)}
+        className={clsx(
+          `relative flex max-w-[300px] flex-col overflow-hidden rounded-xl border border-gray-shade-3 bg-transparent`
+        )}
         onClick={() => {
           locked && onClickOpen();
         }}
@@ -110,49 +87,66 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             locked && "pointer-events-none"
           )}
         >
-          {loading !== "loading" && loading !== "idle" && user ? (
-            <div className={ownerDpWrapper}>
-              {user.account_address ? (
-                <Link href={`/profile/${user.account_address}`}>
-                  <Image
-                    className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
-                    src={user.profile_image.path ?? imgSrc}
-                    alt="profile"
-                    height={28}
-                    width={28}
-                  />
-                </Link>
-              ) : (
+          <div className={`flex items-center gap-2`}>
+            {data.owner.is_registered ? (
+              <Link href={`/profile/${data.owner.account_address}`}>
                 <Image
-                  src={user.profile_image.path ?? imgSrc}
-                  alt={user.display_name}
+                  className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
+                  src={data.owner.profile_image.path}
+                  alt={data.owner.display_name}
                   height={28}
                   width={28}
                 />
+              </Link>
+            ) : (
+              <Image
+                className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
+                src={data.owner.profile_image.path}
+                alt={data.owner.display_name}
+                height={28}
+                width={28}
+              />
+            )}
+            <div className="flex items-center truncate">
+              {data.owner.is_registered ? (
+                <Link
+                  className="flex w-full  cursor-pointer items-center  text-white"
+                  href={`/profile/${data.owner.account_address}`}
+                >
+                  <span className={` truncate text-xs font-medium text-white`}>
+                    {data.owner.display_name ??
+                      formatAddress(data.owner.account_address)}
+                  </span>
+                  {!!verificationTick && (
+                    <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                      <Image
+                        src={"/images/rainbow-last-frame.png"}
+                        alt={"Verified"}
+                        width={20}
+                        height={20}
+                      />
+                    </span>
+                  )}
+                </Link>
+              ) : (
+                <div className="flex items-center text-white">
+                  <span className={` truncate text-xs font-medium text-white`}>
+                    {formatAddress(data.owner.account_address)}
+                  </span>
+                  {!!verificationTick && (
+                    <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                      <Image
+                        src={"/images/rainbow-last-frame.png"}
+                        alt={"Verified"}
+                        width={20}
+                        height={20}
+                      />
+                    </span>
+                  )}
+                </div>
               )}
-              <div className="flex items-center gap-2">
-                {user.account_address ? (
-                  <Link
-                    className="w-full max-w-[150px] cursor-pointer truncate text-white"
-                    href={`/profile/${user.account_address}`}
-                  >
-                    <span className={`text-xs font-medium text-white`}>
-                      {user.display_name ?? formatAddress(nftOwner)}
-                    </span>
-                  </Link>
-                ) : (
-                  <div className="max-w-[200px] truncate text-white">
-                    <span className={`text-xs font-medium text-white`}>
-                      {formatAddress(notRegistered)}
-                    </span>
-                  </div>
-                )}
-                {/* <YellowTick className="h-[12px] w-[12px]" /> */}
-              </div>
             </div>
-          ) : (
-            <HotNftsHeaderSkeleton />
-          )}
+          </div>
         </div>
 
         <Link
@@ -168,23 +162,14 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             locked && "pointer-events-none"
           )}
         >
-          {imageUrl ? (
-            <Image
-              src={
-                imageUrl.includes("mp3")
-                  ? "/images/default-music.png"
-                  : imageUrl
-              }
-              alt="nft"
-              height={222}
-              width={293}
-              className="!h-[222px] !w-[293px] rounded-md object-cover"
-              onError={() => setImageUrl("/images/placeholder-square.svg")}
-            />
-          ) : (
-            <div className="mt-10 !h-[222px] !w-[293px] animate-pulse rounded-md bg-[#3C3F4A]"></div>
-          )}
-
+          <Image
+            src={imageUrl}
+            alt={data.name}
+            height={222}
+            width={293}
+            className="!h-[222px] !w-[293px] rounded-md object-cover"
+            onError={() => setImageUrl("/images/placeholder-square.svg")}
+          />
           {locked && (
             <div
               className={`absolute top-[70px] right-5 flex h-[24px] w-[77px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
@@ -197,25 +182,30 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
           )}
         </Link>
 
-        <Link
-          href={{
-            pathname: AppRoutes.marketplace.nft,
-            query: {
-              collection: data.collection,
-              tokenId: data.tokenId,
-            },
-          }}
-          className={clsx(
-            `flex flex-col gap-1 px-2 py-4`,
-            locked && "pointer-events-none"
-          )}
-        >
-          <span className={`font-medium text-white`}>{name}</span>
-        </Link>
-
+        <div className="flex-grow">
+          <Link
+            href={{
+              pathname: AppRoutes.marketplace.nft,
+              query: {
+                collection: data.collection,
+                tokenId: data.tokenId,
+              },
+            }}
+            className={clsx(
+              `flex flex-col gap-1 px-2 py-4`,
+              locked && "pointer-events-none"
+            )}
+          >
+            <span
+              className={`truncate break-words text-sm font-medium text-white`}
+            >
+              {data.name}
+            </span>
+          </Link>
+        </div>
         {locked ? (
-          <div className="h-[56px] px-[6px] pb-[8px]">
-            <div className="absolute bottom-2 left-[50%] h-[56px] w-[95%] translate-x-[-50%] overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat">
+          <div className="px-[6px] pb-[8px]">
+            <div className="h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat">
               <div
                 className={`text-12px bg-[rgba(20, 20, 22, 0.08)] flex h-full w-full items-center justify-center rounded-xl text-white backdrop-blur-[20px]`}
               >
@@ -268,7 +258,6 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
           </div>
         )}
       </div>
-
       {showLockedDetails && (
         <LockedNftModal
           title="Lock NFT Details"
@@ -279,7 +268,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <Image
-                src={imageUrl}
+                src={formatIPFSUrl(data.imageUrl)}
                 alt={"locknft"}
                 height={120}
                 width={120}
@@ -287,7 +276,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
               />
               <div className="flex w-full max-w-[240px] flex-col gap-2 fmd:gap-4">
                 <h5 className="text-18px text-center font-semibold text-white fmd:text-left">
-                  {name}
+                  {data.name}
                 </h5>
                 <div className="my-2 h-[47px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat fmd:mt-0">
                   {" "}
@@ -327,7 +316,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
                   Collection Description
                 </h5>
                 <h6 className="text-14px font-semibold text-white">
-                  {description}
+                  {data.description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -354,6 +343,23 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }, ref) => {
   );
 };
 
-const nftPrice = `!text-sm !font-medium flex items-center gap-2 text-white`;
+interface NFTOwner
+  extends Pick<
+    User,
+    "account_address" | "display_name" | "profile_image" | "is_verified"
+  > {
+  is_registered: boolean;
+}
 
-const ownerDpWrapper = `flex items-center gap-2`;
+export interface NFTCardData {
+  owner: NFTOwner;
+  id: NFT["id"];
+  collection: NFT["collection"];
+  tokenId: NFT["tokenId"];
+  price: NFT["price"];
+  name: string;
+  description: string;
+  imageUrl: string;
+  type: "image" | "video" | "audio";
+  unlock: NFT["unlock"];
+}

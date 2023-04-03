@@ -20,7 +20,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
   ({ result }, ref) => {
     const [_result, setResult] = useState<IUserWithFollow>(result);
     const { user: loggedInUser } = useUser();
-    const verificationTick = useVerificationTick(_result);
+    const verificationTick = useVerificationTick({ user: _result });
 
     const followUser = async (following_id: string) => {
       try {
@@ -44,7 +44,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
         ref={ref}
         className="flex items-center justify-between gap-4  border-b border-gray-shade-3 bg-background-shade-3 p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 fsm:gap-10"
       >
-        <div className="flex items-center gap-2">
+        <div className="word-break flex items-center gap-2 truncate">
           <Link href={`/profile/${_result.account_address}`}>
             <div className="relative h-10 w-10 sm:!h-12 sm:!w-12">
               <Image
@@ -57,7 +57,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               />
             </div>
           </Link>
-          <div className="flex flex-col gap-1">
+          <div className="word-break flex flex-col gap-1 truncate">
             <Link
               href={`/profile/${_result.account_address}`}
               title={_result.display_name}
@@ -66,8 +66,8 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               <span
                 title={_result.display_name}
                 className={clsx(
-                  `inline-block items-center   text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
-                  `block w-full max-w-[82px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[152px] [@media(min-width:500px)]:max-w-[258px]`
+                  `inline-block items-center text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
+                  `block w-full overflow-hidden truncate break-words`
                 )}
               >
                 {_result && sliceDisplayName(_result.display_name)}
@@ -75,7 +75,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               {!!verificationTick && (
                 <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem] fsm:ml-1">
                   <Image
-                    src={"/images/rainbow-last-frame.png"}
+                    src={verificationTick}
                     alt={"Verified"}
                     width={20}
                     height={20}

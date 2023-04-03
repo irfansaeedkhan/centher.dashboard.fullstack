@@ -3,7 +3,7 @@ import clsx from "clsx";
 
 import { SectionTitle } from "@/pages/marketplace/_components";
 import NFTsSkeleton from "@/components/loading.skeletons/nfts";
-import { NFTCardV2 } from "@/components/nft.card/nft.card.v2";
+import { NFTCard } from "@/components/nft.card";
 import { AppRoutes } from "@/constants/app.routes";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
@@ -33,7 +33,7 @@ export const HotNFTs: React.FC = () => {
         )}
       >
         {hotNFTs.map((nft) => (
-          <NFTCardV2 data={nft} key={nft.id} />
+          <NFTCard data={nft} key={nft.id} />
         ))}
 
         {(loading === "loading" || loading === "idle") && (

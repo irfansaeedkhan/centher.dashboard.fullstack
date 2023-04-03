@@ -1,4 +1,4 @@
-import { NFTCardData } from "@/components/nft.card/nft.card.v2";
+import { NFTCardData } from "@/components/nft.card";
 import { AppError } from "@/utils/app-error";
 
 import { getUserByAddressFromDB } from "../get-user-by-address";
@@ -12,6 +12,7 @@ export const getNFTOwnerData = async (
     return {
       account_address,
       display_name: user.display_name,
+      is_verified: user.is_verified,
       is_registered: true,
       profile_image: user.profile_image,
     };
@@ -21,6 +22,7 @@ export const getNFTOwnerData = async (
       return {
         account_address,
         display_name: account_address,
+        is_verified: false,
         is_registered: false,
         profile_image: {
           object_name: "https://static.centher.io/avatars/avatar-1.png",

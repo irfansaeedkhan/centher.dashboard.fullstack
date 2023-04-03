@@ -21,6 +21,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 
 import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
+import SendNFTModal from "./send.nft.modal";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -34,6 +35,7 @@ enum ModalType {
   successFuncModal = "successFuncModal",
   listingFuncModal = "listingFuncModal",
   saleWithListingModal = "saleWithListingModal",
+  sendFuncModal = "sendFuncModal",
 }
 
 export const NonNFTDescription = ({
@@ -77,6 +79,16 @@ export const NonNFTDescription = ({
       toastError(err);
     }
   };
+  const sendFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.sendFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
+
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
     if (library && data) {
@@ -103,6 +115,9 @@ export const NonNFTDescription = ({
           data.nftId,
           listingPrice
         );
+        if (result?.length) {
+          setNftData();
+        }
         SuccessFunc(!!result);
       } catch (error) {
         toastError(error);
@@ -154,6 +169,48 @@ export const NonNFTDescription = ({
       success = false;
     } finally {
       SuccessFunc(success);
+    }
+  };
+  const handleSendNFT = async (input: {
+    ReceiverAddress: string;
+    LockEndTime: number;
+  }) => {
+    ProceedFunc();
+    if (library && data) {
+      try {
+        if (!isApproved) {
+          try {
+            const approveResult =
+              await BlockchainWrite.callApproveNFTToMarketplace(
+                library,
+                data.collection
+              );
+
+            if (!approveResult?.length) {
+              throw new Error("something went wrong");
+            }
+          } catch (error) {
+            toastError(error);
+          }
+        }
+
+        const result = await BlockchainWrite.transferNftWithLock(
+          library,
+          data.collection,
+          data.nftId,
+          input.ReceiverAddress,
+          input.LockEndTime
+        );
+        if (result?.length) {
+          setNftData();
+        }
+        SuccessFunc(!!result);
+      } catch (error) {
+        toastError(error);
+        SuccessFunc(false);
+      }
+    } else {
+      SuccessFunc(false);
     }
   };
   const ProceedFunc = () => {
@@ -275,6 +332,11 @@ export const NonNFTDescription = ({
       visibility: true,
       content: () => <ChangePriceListModal handleListNFT={handleListNFT} />,
     },
+    sendFuncModal: {
+      title: "Send NFT",
+      visibility: true,
+      content: () => <SendNFTModal handleSend={handleSendNFT} />,
+    },
     saleWithListingModal: {
       title: "Edit listing",
       visibility: true,
@@ -353,6 +415,7 @@ export const NonNFTDescription = ({
           }}
         />
         <NewButton title={"List"} onClick={listingFunc} variant="v4" />
+        <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
       </div>
 
       {ModalModel.visibility && (

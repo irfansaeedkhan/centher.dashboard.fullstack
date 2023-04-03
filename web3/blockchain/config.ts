@@ -38,7 +38,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     MARKETPALCE: {
       // Presale Contract Address
       56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
-      5: "0x3F625d143CBDe71812cee43FC10f058Db2e11b55",
+      5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
     },
     MULTICALL: {
       // Multicall Contract Address
@@ -63,7 +63,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     NATIVE_COLLECTION: {
       56: "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
-      5: "0x546EF9a07044500B00D1079a89A1e3Bd8Bc8B696",
+      5: "0x5740512e4e88dd0a80a3e9cf505ff72c4dce8f37",
     },
     DXC: {
       56: "0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A",
@@ -113,9 +113,9 @@ export const BlockchainConfig: IBlockchainConfig = {
           level6: 0.7,
         }
       : {
-          createItemFeeForMarketplace: 0.0001,
+          createItemFeeForMarketplace: 0.0,
           createItemFeeForCreator: 0.0,
-          createCollectionFee: 0.0001,
+          createCollectionFee: 0.0,
           buyItemFeeForMarketplace: 1.5,
           buyItemFeeForCreator: 1.5,
           buyItemFeeForMultilevel: 7,
@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/registration-v2"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/2ffaded8-83c4-4932-85f7-f42f08",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/16ac52b5-2c0e-494a-a2b1-338cde",
 };
 
 //TODO=> Implement configuration validator function

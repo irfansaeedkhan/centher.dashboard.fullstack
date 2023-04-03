@@ -88,7 +88,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
   const isOwnProfile = useMemo(() => {
     return (
@@ -300,7 +300,7 @@ const ProfileHeader: React.FC<Props> = ({
                 </CoverUploadButton>
               )}
               {coverImage.newImage && (
-                <div className="flex flex-col gap-2 fsm:flex-row fsm:gap-3">
+                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-3">
                   <CoverUploadButton
                     variant="cancel"
                     onClick={setInitialCoverImage}
@@ -316,7 +316,9 @@ const ProfileHeader: React.FC<Props> = ({
                     <CgSpinner
                       className={`hidden h-4 w-4 animate-spin group-disabled:block`}
                     />
-                    <FiCamera className={`h-4 w-4 group-disabled:hidden`} />
+                    <span className="group flex items-center  rounded-lg bg-brand-primary text-[11px] font-semibold text-black-shade-3 hover:bg-brand-primary-dark fmd:hidden">
+                      Save
+                    </span>
                     <span className="hidden fmd:inline-block">
                       Upload Cover
                     </span>

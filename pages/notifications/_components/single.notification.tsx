@@ -34,7 +34,7 @@ export const SingleNotification = React.forwardRef<
       markAsRead(notification._id);
     }
   };
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user });
   let notificationLink: JSX.Element | JSX.Element[] | null = null;
   if (notification.type === "post_like" || notification.type === "post_reply") {
     notificationLink = (
@@ -56,7 +56,7 @@ export const SingleNotification = React.forwardRef<
         {!!verificationTick && (
           <span className="verifiedIcon ml-0.5 inline-block h-[15px] w-[20px] min-w-[20px] fsm:ml-0.5 fsm:h-[20px]">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}
@@ -91,7 +91,7 @@ export const SingleNotification = React.forwardRef<
         {!!verificationTick && (
           <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}
@@ -123,7 +123,7 @@ export const SingleNotification = React.forwardRef<
         {!!verificationTick && (
           <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}
@@ -157,7 +157,7 @@ export const SingleNotification = React.forwardRef<
           {!!verificationTick && (
             <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
               <Image
-                src={"/images/rainbow-last-frame.png"}
+                src={verificationTick}
                 alt={"Verified"}
                 width={20}
                 height={20}
@@ -185,7 +185,7 @@ export const SingleNotification = React.forwardRef<
           {!!verificationTick && (
             <span className="verifiedIcon ml-0.5 inline-block h-[20px] w-[20px] min-w-[20px] fsm:ml-0.5">
               <Image
-                src={"/images/rainbow-last-frame.png"}
+                src={verificationTick}
                 alt={"Verified"}
                 width={20}
                 height={20}

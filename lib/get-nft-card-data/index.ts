@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { NFT } from "@/models/nft";
-import { NFTCardData } from "@/components/nft.card/nft.card.v2";
+import { NFTCardData } from "@/components/nft.card";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppError } from "@/utils/app-error";
 import { ZeroAddress } from "@/web3/constants/common";

@@ -118,7 +118,7 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
   item,
   onClick,
 }) => {
-  const verificationTick = useVerificationTick(item);
+  const verificationTick = useVerificationTick({ user: item });
 
   return (
     <div className="flex items-start gap-2 p-4">
@@ -127,21 +127,19 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
         onClick={onClick}
         href={`/profile/${item.account_address}`}
         className={clsx(
-          `flex items-center text-sm font-medium text-white hover:text-brand-primary`
+          `word-break flex items-center truncate text-sm font-medium text-white hover:text-brand-primary`
         )}
       >
         <span
           title={item.display_name}
-          className={clsx(
-            `block w-full max-w-[252px] overflow-hidden truncate [@media(min-width:400px)]:max-w-[330px] [@media(min-width:500px)]:max-w-[430px] [@media(min-width:600px)]:max-w-[530px] [@media(min-width:700px)]:max-w-[630px]`
-          )}
+          className={clsx(`block w-full overflow-hidden truncate`)}
         >
           {sliceDisplayName(item.display_name)}
         </span>
         {!!verificationTick && (
           <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}

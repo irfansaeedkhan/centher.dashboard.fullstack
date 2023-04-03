@@ -19,13 +19,13 @@ const SearchPopupResult: React.FC<Props> = ({
   setSearchQueryInput,
   setOpenPopup,
 }) => {
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user });
 
   return (
     <div className="flex items-start gap-2 p-5">
       {/* <SearchIcon /> */}
       <Link
-        className="flex items-center text-sm font-medium text-white hover:text-brand-primary"
+        className="word-break flex items-center truncate text-sm font-medium text-white hover:text-brand-primary"
         onClick={() => {
           setSearchQueryInput("");
           setOpenPopup(false);
@@ -34,16 +34,14 @@ const SearchPopupResult: React.FC<Props> = ({
       >
         <span
           title={user.display_name}
-          className={clsx(
-            `block w-full max-w-[346px] overflow-hidden truncate [@media(min-width:890px)]:max-w-[468px]`
-          )}
+          className={clsx(`block w-full overflow-hidden truncate`)}
         >
           {user && sliceDisplayName(user.display_name)}
         </span>
         {!!verificationTick && (
-          <span className="verifiedIcon ml-0.5  h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
+          <span className="verifiedIcon ml-0.5 h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
             <Image
-              src={"/images/rainbow-last-frame.png"}
+              src={verificationTick}
               alt={"Verified"}
               width={20}
               height={20}

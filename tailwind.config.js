@@ -29,6 +29,7 @@ module.exports = {
       },
       fontSize: {
         34: "2.125rem",
+        clamp25: ["clamp(1rem, 2.5vw, 1.5rem)"],
       },
       flexShrink: {
         4: 4,

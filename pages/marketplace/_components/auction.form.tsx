@@ -4,6 +4,7 @@ import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
+import { IoIosClose } from "react-icons/io";
 
 // App imports
 import Button from "@/components/button";
@@ -300,12 +301,12 @@ const AuctionForm = ({
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute -top-2 -right-2"
+                  className="absolute top-0 right-0"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  {/* <CrossFullIcon /> */}
+                  <IoIosClose className="text-2xl text-white" />
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>

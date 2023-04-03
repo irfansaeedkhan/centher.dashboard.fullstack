@@ -5,7 +5,7 @@ import { getNFTs } from "@/lib/get-nfts";
 import { getNFTCardData } from "@/lib/get-nft-card-data";
 import { AppError } from "@/utils/app-error";
 import { LoadingState } from "@/models/common";
-import { NFTCardData } from "@/components/nft.card/nft.card.v2";
+import { NFTCardData } from "@/components/nft.card";
 
 export interface AllNFTsStore {
   nfts: NFTCardData[];

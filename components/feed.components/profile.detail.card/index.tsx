@@ -18,7 +18,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
 }) => {
   const profileCardDetails = useGetProfileCardDetails(user);
-  const verificationTick = useVerificationTick(user);
+  const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
   return (
     <div

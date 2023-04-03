@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
 import toast from "react-hot-toast";
 import clsx from "clsx";
+import { useWeb3React } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 
 import {
   getTokenBalance,
@@ -11,19 +11,13 @@ import {
 } from "@/web3/hooks/use.contracts.functions";
 import Button from "@/components/button";
 import { RoundInfo } from "@/web3/constants/types";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
-import {
-  BUSDIconBG,
-  LockedIcon,
-  CentherIconBG,
-  DXCIconBG,
-} from "@/assets/svgs";
+import { BUSDIconBG, LockedIcon, DXCIconBG } from "@/assets/svgs";
 
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { CentherTable } from "./centher.table";
 import { ConversionContainerV2 } from "./conversion.containerv2";
 import TimelinePeriod from "./timeline.period";
-import { BlockchainWrite } from "@/web3/blockchain";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -258,8 +252,8 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
       >
         <div className={`flex flex-col items-center justify-center gap-10`}>
           <LockedIcon className="h-[80px] w-[80px]" />
-          <h6 className={`text-20px font-semibold text-white`}>
-            Wait for the presale to start
+          <h6 className={`text-24px font-semibold tracking-[0.2em] text-white`}>
+            COMING SOON
           </h6>
         </div>
       </div>

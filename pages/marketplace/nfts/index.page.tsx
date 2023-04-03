@@ -6,7 +6,7 @@ import { useAllNFTsStore } from "@/store/all.nfts.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { SectionTitle } from "@/pages/marketplace/_components";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { NFTCardV2 } from "@/components/nft.card/nft.card.v2";
+import { NFTCard } from "@/components/nft.card";
 import NFTsSkeleton from "@/components/loading.skeletons/nfts";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 
@@ -56,7 +56,7 @@ const AllNftsPage: NextPageWithLayout = () => {
         )}
       >
         {nfts.map((nft) => {
-          return <NFTCardV2 data={nft} key={nft.id} />;
+          return <NFTCard data={nft} key={nft.id} />;
         })}
 
         {(loading === "loading" || loading === "idle") && (
