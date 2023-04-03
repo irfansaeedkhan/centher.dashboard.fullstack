@@ -154,6 +154,7 @@ const _notReadyPages: string[] = [
   AppRoutes.referral.liscense,
 ];
 const notReadyPages = changePaths(_notReadyPages);
+
 // Coming soon v2 pages - redirect to feed page
 const _notReadyPagesv2: string[] = [];
 const notReadyPagesv2 = changePaths(_notReadyPagesv2);
