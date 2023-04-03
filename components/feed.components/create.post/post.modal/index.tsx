@@ -16,8 +16,14 @@ interface Props {
 
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
-  const { closeModal, isModalOpen, setPostText, postTextMaxLength, posts } =
-    useNewPostStore();
+  const {
+    closeModal,
+    isModalOpen,
+    setPostText,
+    postTextMaxLength,
+    posts,
+    removePost,
+  } = useNewPostStore();
 
   const lastPost = useMemo(() => {
     return posts.at(-1);
@@ -74,7 +80,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
 
           <div>
             {posts.slice(0, -1).map((post, index) => (
-              <PostPreview key={index} post={post} />
+              <PostPreview key={index} post={post} removePost={removePost} />
             ))}
 
             {lastPost && (
