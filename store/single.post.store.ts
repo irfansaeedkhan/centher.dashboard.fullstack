@@ -169,50 +169,57 @@ export const useSinglePostStore = create<SinglePostStore>()(
       updatePostLikesCount: (actionType, postType, postId) => {
         if (!postId) return;
 
-        // if (postType === "main") {
-        //   set((state) => {
-        //     if (
-        //       !state.post ||
-        //       postId.toLowerCase() !== state.post._id.toLowerCase()
-        //     ) {
-        //       return state;
-        //     }
+        if (postType === "main" || postType === "thread-post") {
+          set((state) => {
+            if (
+              !state.posts ||
+              state.posts.length === 0 ||
+              state.posts.find((post) => post._id === postId) === undefined
+            ) {
+              return state;
+            }
 
-        //     return {
-        //       ...state,
-        //       post: {
-        //         ...state.post,
-        //         likes_count:
-        //           actionType === "increment"
-        //             ? state.post.likes_count + 1
-        //             : state.post.likes_count - 1,
-        //         liked_by_loggedin_user: actionType === "increment",
-        //       },
-        //     };
-        //   });
-        // } else if (postType === "reply") {
-        //   set((state) => {
-        //     const replies = state.replies.map((reply) => {
-        //       if (reply._id !== postId) {
-        //         return reply;
-        //       }
+            return {
+              ...state,
+              posts: state.posts.map((post) => {
+                if (post._id !== postId) {
+                  return post;
+                }
 
-        //       return {
-        //         ...reply,
-        //         likes_count:
-        //           actionType === "increment"
-        //             ? reply.likes_count + 1
-        //             : reply.likes_count - 1,
-        //         liked_by_loggedin_user: actionType === "increment",
-        //       };
-        //     });
+                return {
+                  ...post,
+                  likes_count:
+                    actionType === "increment"
+                      ? post.likes_count + 1
+                      : post.likes_count - 1,
+                  liked_by_loggedin_user: actionType === "increment",
+                };
+              }),
+            };
+          });
+        } else if (postType === "reply") {
+          set((state) => {
+            const replies = state.replies.map((reply) => {
+              if (reply._id !== postId) {
+                return reply;
+              }
 
-        //     return {
-        //       ...state,
-        //       replies,
-        //     };
-        //   });
-        // }
+              return {
+                ...reply,
+                likes_count:
+                  actionType === "increment"
+                    ? reply.likes_count + 1
+                    : reply.likes_count - 1,
+                liked_by_loggedin_user: actionType === "increment",
+              };
+            });
+
+            return {
+              ...state,
+              replies,
+            };
+          });
+        }
       },
 
       removeReply: async (replyId) => {
