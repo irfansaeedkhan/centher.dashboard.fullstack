@@ -37,7 +37,7 @@ const SinglePostPage: NextPageWithLayout = () => {
     fetchReplies,
     likePostAPI,
     updateRepliesOffset,
-    removeReply,
+    removePost,
     createPostViewInStore,
   } = useSinglePostStore();
 
@@ -102,9 +102,8 @@ const SinglePostPage: NextPageWithLayout = () => {
   ) => {
     try {
       await actionFunction(postId);
-
       if (postType === "reply" || postType === "thread-post") {
-        removeReply(postId);
+        removePost(postId, postType);
       } else {
         feedStore.removePost(postId);
 

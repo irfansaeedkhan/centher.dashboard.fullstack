@@ -31,7 +31,7 @@ export interface SinglePostStore {
     postType: PostType
   ) => Promise<void>;
 
-  removeReply: (replyId: string) => Promise<void>;
+  removePost: (postId: string, postType: PostType) => Promise<void>;
 
   addNewReply: (reply: CompletedPost) => void;
 
@@ -222,21 +222,31 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }
       },
 
-      removeReply: async (replyId) => {
-        // try {
-        //   // Update replies count in post
-        //   const { decrementPostRepliesCount } = useFeedStore.getState();
-        //   decrementPostRepliesCount(get().post?._id);
-        //   set((state) => ({
-        //     post: {
-        //       ...state.post,
-        //       replies_count: (state.post?.replies_count ?? 1) - 1,
-        //     } as Post,
-        //     replies: state.replies.filter((reply) => reply._id !== replyId),
-        //   }));
-        // } catch (error: any) {
-        //   customLog(error, ["development"]);
-        // }
+      removePost: async (postId, postType) => {
+        try {
+          if (postType === "reply") {
+            // Update replies count in post
+            const { decrementPostRepliesCount } = useFeedStore.getState();
+            decrementPostRepliesCount(get().postId);
+          }
+          set((state) => ({
+            posts:
+              postType === "reply"
+                ? state.posts.map((post) => {
+                    if (post._id === get().postId) {
+                      return {
+                        ...post,
+                        replies_count: post.replies_count - 1,
+                      };
+                    }
+                    return post;
+                  })
+                : state.posts.filter((post) => post._id !== postId),
+            replies: state.replies.filter((reply) => reply._id !== postId),
+          }));
+        } catch (error: any) {
+          customLog(error, ["development"]);
+        }
       },
 
       addNewReply: (reply) => {
@@ -246,7 +256,14 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       updatePost: (post) => {
-        // set((state) => ({ post: { ...state.post, ...(post as Post) } }));
+        set((state) => ({
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === post._id) {
+              return post as Post;
+            }
+            return statePost;
+          }),
+        }));
       },
 
       resetStore: (postId, loading = "idle") => {
@@ -261,30 +278,37 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       replaceEditedPost: (post) => {
-        // set((state) => ({
-        //   post: post._id === state.post?._id ? post : state.post,
-        //   replies: state.replies.map((reply) => {
-        //     if (reply._id === post._id) {
-        //       return post;
-        //     }
-        //     return reply;
-        //   }),
-        // }));
+        set((state) => ({
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === post._id) {
+              return post;
+            }
+            return statePost;
+          }),
+          replies: state.replies.map((reply) => {
+            if (reply._id === post._id) {
+              return post;
+            }
+            return reply;
+          }),
+        }));
       },
 
       createPostViewInStore: (postId) => {
-        // set((state) => ({
-        //   post:
-        //     postId === state.post?._id
-        //       ? { ...state.post, viewed_by_loggedin_user: true }
-        //       : state.post,
-        //   replies: state.replies.map((reply) => {
-        //     if (reply._id === postId) {
-        //       return { ...reply, viewed_by_loggedin_user: true };
-        //     }
-        //     return reply;
-        //   }),
-        // }));
+        set((state) => ({
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return { ...post, viewed_by_loggedin_user: true };
+            }
+            return post;
+          }),
+          replies: state.replies.map((reply) => {
+            if (reply._id === postId) {
+              return { ...reply, viewed_by_loggedin_user: true };
+            }
+            return reply;
+          }),
+        }));
       },
 
       updateRepliesCountForReply: (actionType, postId) => {
