@@ -213,7 +213,14 @@ export const SinglePostV2: React.FC<Props> = ({
 
         {/* Vertical Line */}
         {shouldShowThread && (
-          <div className="row-start-2 row-end-4 w-0.5 justify-self-center bg-gray-shade-3" />
+          <div
+            className={clsx(
+              "w-0.5 justify-self-center bg-gray-shade-3",
+              postType === "reply-w-parent-header"
+                ? "row-start-3 row-end-5"
+                : "row-start-2 row-end-4"
+            )}
+          />
         )}
 
         <div
