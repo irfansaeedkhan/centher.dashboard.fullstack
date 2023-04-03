@@ -227,6 +227,9 @@ export const PostHeader: React.FC<Props> = ({
         parentPost &&
         post.status !== "archived" && (
           <Link
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             href={{
               pathname: AppRoutes.feed.single_post,
               query: {

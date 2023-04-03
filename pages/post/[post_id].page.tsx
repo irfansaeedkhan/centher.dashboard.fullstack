@@ -51,6 +51,10 @@ const SinglePostPage: NextPageWithLayout = () => {
         (p) => p._id === router.query.post_id
       );
 
+      if (firstPostIndex === -1) {
+        return { firstPost: null, threadPosts: [] };
+      }
+
       return {
         firstPost: posts[firstPostIndex] as Post,
         threadPosts: [
