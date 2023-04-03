@@ -41,6 +41,7 @@ export interface NewPostStore {
   addNewPost: () => void;
 
   editPost: () => Promise<void>;
+  removePost: (postUuid: string) => void;
 
   onCloseModal: () => void;
 
@@ -402,6 +403,13 @@ export const useNewPostStore = create<NewPostStore>()(
           customLog("Error in edit post: ", ["development"]);
           customLog(error, ["development"]);
         }
+      },
+
+      removePost: (uuid: string) => {
+        set((state) => {
+          const posts = state.posts.filter((post) => post.uuid !== uuid);
+          return { posts };
+        });
       },
     }),
     { name: "NewPostStore" }
