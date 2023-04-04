@@ -25,12 +25,11 @@ export interface NewPostStore {
   isPostModalLoading: boolean;
   setisPostModalLoading: (isLoading: boolean) => void;
 
-  selectedFiles: FileWithID[];
   setSelectedFiles: (files: MediaFile[]) => void;
   addSelectedFiles: (files: SelectedFile[]) => void;
   removeSelectedFile: (fileUuid: string) => void;
 
-  removeEditPostFile: (fileId: string) => void;
+  removeEditPostFile: (fileUuid: string) => void;
 
   postTextMaxLength: 260;
   setPostText: (text: string) => void;
@@ -39,9 +38,9 @@ export interface NewPostStore {
   createPost: () => Promise<void>;
   posts: INewPost[];
   addNewPost: () => void;
+  removePost: (postUuid: string) => void;
 
   editPost: () => Promise<void>;
-  removePost: (postUuid: string) => void;
 
   onCloseModal: () => void;
 
@@ -89,7 +88,6 @@ export const useNewPostStore = create<NewPostStore>()(
           parentPostId: null,
           postId: null,
           isModalOpen: false,
-          selectedFiles: [],
           isPostModalLoading: false,
           posts: [],
         });
@@ -107,7 +105,6 @@ export const useNewPostStore = create<NewPostStore>()(
       setisPostModalLoading: (isLoading) =>
         set({ isPostModalLoading: isLoading }),
 
-      selectedFiles: [],
       setSelectedFiles: (files: MediaFile[]) => {
         set({
           posts: get().posts.map((post, index) =>
@@ -153,21 +150,20 @@ export const useNewPostStore = create<NewPostStore>()(
           return { posts };
         }),
 
-      removeSelectedFile: (fileId: string) => {
+      removeSelectedFile: (fileUuid: string) => {
         set((state) => ({
           posts: state.posts.map((post, index) =>
             index === state.posts.length - 1
               ? {
                   ...post,
-                  media: post.media.filter((file) => file.uuid !== fileId),
+                  media: post.media.filter((file) => file.uuid !== fileUuid),
                 }
               : post
           ),
         }));
       },
 
-      editPostFiles: undefined,
-      removeEditPostFile: (fileId: string) => {
+      removeEditPostFile: (fileUuid: string) => {
         set((state) => ({
           posts: state.posts.map((post, index) =>
             index === state.posts.length - 1
@@ -176,7 +172,7 @@ export const useNewPostStore = create<NewPostStore>()(
                   media: post.media.map((file) => {
                     return {
                       ...file,
-                      isDeleted: file.uuid === fileId,
+                      isDeleted: file.uuid === fileUuid,
                     };
                   }),
                 }
@@ -230,6 +226,13 @@ export const useNewPostStore = create<NewPostStore>()(
         ];
 
         set({ posts });
+      },
+
+      removePost: (uuid: string) => {
+        set((state) => {
+          const posts = state.posts.filter((post) => post.uuid !== uuid);
+          return { posts };
+        });
       },
 
       createPost: async () => {
@@ -403,13 +406,6 @@ export const useNewPostStore = create<NewPostStore>()(
           customLog("Error in edit post: ", ["development"]);
           customLog(error, ["development"]);
         }
-      },
-
-      removePost: (uuid: string) => {
-        set((state) => {
-          const posts = state.posts.filter((post) => post.uuid !== uuid);
-          return { posts };
-        });
       },
     }),
     { name: "NewPostStore" }
