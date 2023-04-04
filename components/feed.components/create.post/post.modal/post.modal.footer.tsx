@@ -54,7 +54,7 @@ const PostModalFooter: React.FC = () => {
           className={`mx-2 block h-4 w-0.5 rounded-xl bg-gray-shade-3`}
         ></div>
 
-        {modalType !== "edit" && (
+        {modalType === "new-post" && (
           <button
             onClick={() => addNewPost()}
             className="flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg text-brand-primary fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
