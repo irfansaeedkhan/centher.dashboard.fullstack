@@ -129,7 +129,7 @@ const CreateNFT: NextPageWithLayout = () => {
       visibility: true,
       content: (nftData: any) => (
         <div className={modalBodyWrapper2}>
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="text-18px break-words font-semibold text-white">
             {nftData?.name}
           </h2>
           <h3 className="text-14px font-normal text-white">
@@ -168,9 +168,9 @@ const CreateNFT: NextPageWithLayout = () => {
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
-              <span className="text-white">{nftData?.name} </span> NFT on{" "}
-              <b> Centher </b> NFT platform, Click view on profile to view your
-              NFT.
+              <span className="break-words text-white">{nftData?.name} </span>{" "}
+              NFT on <b> Centher </b> NFT platform, Click view on profile to
+              view your NFT.
             </p>
           )}
           {!txStatus && (
@@ -265,6 +265,7 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
+            setClearForm(true);
           }}
           title={ModalModel.title as any}
         >
