@@ -227,7 +227,9 @@ export const SinglePostV2: React.FC<Props> = ({
           className={clsx(
             `overflow-hidden`,
             placement === "single-post-page" &&
-              (postType === "main" || postType === "reply-w-parent-header")
+              (postType === "main" ||
+                postType === "reply-w-parent-header" ||
+                postType === "thread-post-w-parent-header")
               ? "col-span-full"
               : "col-span-1 col-start-2"
           )}
@@ -280,7 +282,9 @@ export const SinglePostV2: React.FC<Props> = ({
               "mb-2": shouldShowThread || shouldShowComments,
             },
             placement === "single-post-page" &&
-              (postType === "main" || postType === "reply-w-parent-header")
+              (postType === "main" ||
+                postType === "reply-w-parent-header" ||
+                postType === "thread-post-w-parent-header")
               ? "col-span-full"
               : "col-span-1 col-start-2"
           )}
