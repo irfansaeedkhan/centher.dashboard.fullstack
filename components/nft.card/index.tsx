@@ -107,15 +107,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 width={28}
               />
             )}
-            <div className="flex items-center ">
+            <div className="flex items-center truncate">
               {data.owner.is_registered ? (
                 <Link
                   className="flex w-full  cursor-pointer items-center  text-white"
                   href={`/profile/${data.owner.account_address}`}
                 >
-                  <span
-                    className={`max-w-[150px] truncate text-xs font-medium text-white`}
-                  >
+                  <span className={` truncate text-xs font-medium text-white`}>
                     {data.owner.display_name ??
                       formatAddress(data.owner.account_address)}
                   </span>
@@ -132,9 +130,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 </Link>
               ) : (
                 <div className="flex items-center text-white">
-                  <span
-                    className={`max-w-[200px] truncate text-xs font-medium text-white`}
-                  >
+                  <span className={` truncate text-xs font-medium text-white`}>
                     {formatAddress(data.owner.account_address)}
                   </span>
                   {!!verificationTick && (
@@ -366,4 +362,5 @@ export interface NFTCardData {
   imageUrl: string;
   type: "image" | "video" | "audio";
   unlock: NFT["unlock"];
+  endTime: NFT["endTime"];
 }

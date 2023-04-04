@@ -44,13 +44,13 @@ export const SingleNotification = React.forwardRef<
           query: { post_id: notification.post._id },
         }}
         className={clsx(
-          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary`,
+          `inline-block items-center break-words text-sm text-white hover:text-brand-primary`,
           !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
             `notifcation-page-displayname inline-block break-words md:w-full`
         )}
       >
-        <span title={notification.by.display_name}>
+        <span className="font-medium" title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
         </span>
         {!!verificationTick && (
@@ -78,14 +78,14 @@ export const SingleNotification = React.forwardRef<
           query: { account_address: notification.by.account_address },
         }}
         className={clsx(
-          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
+          `inline-block items-center break-words text-sm text-white hover:text-brand-primary ${
             !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
             "notifcation-page-displayname inline-block break-words md:w-full"
           }`
         )}
       >
-        <span title={notification.by.display_name}>
+        <span className="font-medium" title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
         </span>
         {!!verificationTick && (
@@ -110,14 +110,14 @@ export const SingleNotification = React.forwardRef<
           query: { account_address: notification.by.account_address },
         }}
         className={clsx(
-          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
+          `inline-block items-center break-words text-sm text-white hover:text-brand-primary ${
             !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
             "notifcation-page-displayname inline-block break-words md:w-full"
           }`
         )}
       >
-        <span title={notification.by.display_name}>
+        <span className="font-medium" title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
         </span>
         {!!verificationTick && (
@@ -142,7 +142,7 @@ export const SingleNotification = React.forwardRef<
           query: { account_address: notification.by.account_address },
         }}
         className={clsx(
-          `inline-block items-center break-words text-sm font-semibold text-white hover:text-brand-primary ${
+          `inline-block items-center break-words text-sm text-white hover:text-brand-primary ${
             !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
             "notifcation-page-displayname inline-block break-words md:w-full"
@@ -151,7 +151,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} NTR network rewards from{" "}
-          <span title={notification.by.display_name}>
+          <span className="font-medium" title={notification.by.display_name}>
             {sliceDisplayName(notification.by.display_name)}
           </span>
           {!!verificationTick && (
@@ -179,7 +179,7 @@ export const SingleNotification = React.forwardRef<
       >
         <>
           {notification.amount} BUSD network rewards from{" "}
-          <span title={notification.by.display_name}>
+          <span className="font-medium" title={notification.by.display_name}>
             {sliceDisplayName(notification.by.display_name)}
           </span>
           {!!verificationTick && (
