@@ -90,7 +90,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-brand-primary"
           )}
         />
-        <span className="hidden fsm:block">Photo</span>
+        <span className={clsx(placement === "in-modal" && "hidden fsm:block")}>
+          Photo
+        </span>
         <input
           type="file"
           id="files-photo"
@@ -121,7 +123,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-[#76E268]"
           )}
         />
-        <span className="hidden fsm:block">Camera</span>
+        <span className={clsx(placement === "in-modal" && "hidden fsm:block")}>
+          Camera
+        </span>
       </label>
 
       <label
@@ -137,7 +141,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-[#5F97FF]"
           )}
         />
-        <span className="hidden fsm:block">Video</span>
+        <span className={clsx(placement === "in-modal" && "hidden fsm:block")}>
+          Video
+        </span>
         <input
           type="file"
           id="files-videos"
