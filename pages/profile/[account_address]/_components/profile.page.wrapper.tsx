@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import clsx from "clsx";
 
 import { MessagesCard } from "@/components/feed.components";
+import { PromotionCard3 } from "@/components/feed.components/promotion.cards/card-3";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 import useGetUser from "@/hooks/use.get.user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -89,7 +90,8 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
 
           {currentTab === "social-profile" && messageBox && (
             <div className={`hidden space-y-3 f2xl:col-start-3 f2xl:block`}>
-              <MessagesCard className="sticky top-[84px]" />
+              <MessagesCard />
+              <PromotionCard3 className="sticky top-[84px]" />
             </div>
           )}
         </div>

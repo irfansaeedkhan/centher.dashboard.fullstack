@@ -406,7 +406,7 @@ export const NonNFTDescription = ({
           {data?.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center gap-4">
+      <div className="buttonContainer flex items-center gap-4 [@media(max-width:370px)]:overflow-auto">
         <NewButton
           title={"Auction"}
           variant="v1"
