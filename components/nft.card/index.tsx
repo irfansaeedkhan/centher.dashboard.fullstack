@@ -362,4 +362,5 @@ export interface NFTCardData {
   imageUrl: string;
   type: "image" | "video" | "audio";
   unlock: NFT["unlock"];
+  endTime: NFT["endTime"];
 }

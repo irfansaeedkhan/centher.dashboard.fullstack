@@ -32,6 +32,7 @@ export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
       owner: nftOwnerData,
       type: metadata.data.type,
       unlock: nft.unlock,
+      endTime: nft.endTime,
     };
   } catch (error: any) {
     throw new AppError(error, "Can not load NFT Card Data", "getNFTCardData");
