@@ -7,11 +7,10 @@ import toast from "react-hot-toast";
 import { PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
-// import {
-//   createFilesChunks,
-//   getNewPostAndUpdateState,
-//   uploadFiles,
-// } from "@/utils/create.post";
+import { SocketIoEvents } from "@/constants/socket-io-events";
+import { getPostAndUpdateStores } from "@/utils/create.post/get-post-and-update-stores";
+
+import { useSocketIOStore } from "./socket.io.store";
 
 export interface NewPostStore {
   modalType: ModalType;
@@ -355,9 +354,39 @@ export const useNewPostStore = create<NewPostStore>()(
             );
 
             await Promise.all(mediaUploadPromises);
-          }
 
-          get().closeModal();
+            const socket = useSocketIOStore.getState().socket;
+
+            if (!socket) return;
+
+            socket.on(
+              SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
+              async (data: { first_post_id: string }) => {
+                try {
+                  await getPostAndUpdateStores(
+                    data.first_post_id,
+                    get().modalType
+                  );
+                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+                  get().closeModal();
+                } catch (error: any) {
+                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+                  set({ isPostModalLoading: false });
+                  customLog("Error in create post: ", ["development"]);
+                  customLog(error, ["development"]);
+                  if (error.response?.data?.message_description) {
+                    toast.error(error.response.data.message_description);
+                  } else {
+                    toast.error("Something went wrong, please try again later");
+                  }
+                }
+              }
+            );
+          } else {
+            const postToFetchId = response.data.posts[0]._id;
+            await getPostAndUpdateStores(postToFetchId, get().modalType);
+            get().closeModal();
+          }
         } catch (error: any) {
           set({ isPostModalLoading: false });
           customLog("Error in create post: ", ["development"]);
@@ -452,7 +481,7 @@ interface SelectedFileEdit {
 
 export type SelectedFile = SelectedFileNew | SelectedFileEdit;
 
-type ModalType =
+export type ModalType =
   | null
   | "new-post"
   | "reply-of-thread-post"

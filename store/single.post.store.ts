@@ -250,6 +250,10 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       addNewReply: (reply) => {
+        // Filter out the post if it already exists in the store
+        if (get().replies.some((stateReply) => stateReply._id === reply._id))
+          return;
+
         set((state) => ({
           replies: [reply, ...state.replies],
         }));

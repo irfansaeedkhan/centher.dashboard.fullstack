@@ -5,6 +5,7 @@ import { useSocketIOStore } from "@/store/socket.io.store";
 import { useCountsStore } from "@/store/counts.store";
 import useUser from "@/hooks/use.user";
 import { getBackendUrl } from "@/constants/common";
+import { SocketIoEvents } from "@/constants/socket-io-events";
 
 const BACKEND_WS_URL = getBackendUrl("ws", "frontend-to-backend");
 
@@ -26,17 +27,17 @@ export const useCreateSocketIOConnection = () => {
     }
 
     if (socket) {
-      socket.on("connect", () => {
+      socket.on(SocketIoEvents.CONNECT, () => {
         process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
           console.log("socket connected");
       });
 
-      socket.on("disconnect", () => {
+      socket.on(SocketIoEvents.DISCONNECT, () => {
         process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
           console.log("socket disconnected");
       });
 
-      socket.on("notification", () => {
+      socket.on(SocketIoEvents.NOTIFICATION, () => {
         process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
           console.log("notification received");
         fetchCounts();
@@ -48,9 +49,9 @@ export const useCreateSocketIOConnection = () => {
 
     return () => {
       if (!socket) return;
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("notification");
+      socket.off(SocketIoEvents.CONNECT);
+      socket.off(SocketIoEvents.DISCONNECT);
+      socket.off(SocketIoEvents.NOTIFICATION);
     };
   }, [socket, setSocket, user, updateUser, fetchCounts]);
 };
