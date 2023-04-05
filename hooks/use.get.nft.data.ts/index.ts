@@ -13,7 +13,8 @@ export interface IListHistory {
     | "CancelAuction"
     | "BuyItem"
     | "AcceptBid"
-    | "EndAuction";
+    | "EndAuction"
+    | "TransferOwnerShip";
   txTime: number;
   seller: string;
   buyer: string;
