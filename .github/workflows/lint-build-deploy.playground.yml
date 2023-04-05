@@ -1,4 +1,4 @@
-name: Staging - Lint, Build & Deploy
+name: Playground - Lint, Build & Deploy
 
 on:
   push:
