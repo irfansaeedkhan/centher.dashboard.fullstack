@@ -1170,7 +1170,7 @@ describe("BlockchainRead", () => {
       .fn()
       .mockResolvedValue({ error: "error checking worked" });
     try {
-      await BlockchainRead.getGenealogy("test", 10, 0);
+      await BlockchainRead.getGenealogy(["test"]);
     } catch (err) {
       expect(err).toBe("error checking worked");
     }
@@ -1191,10 +1191,10 @@ describe("BlockchainRead", () => {
     ];
     ApolloProvider.query = jest.fn().mockResolvedValue({
       data: {
-        genealogies: data,
+        users: data,
       },
     });
-    const result = await BlockchainRead.getGenealogy("test", 10, 0);
+    const result = await BlockchainRead.getGenealogy(["test"]);
     expect(result).toEqual(data);
   });
 
@@ -1214,17 +1214,15 @@ describe("BlockchainRead", () => {
 
     ApolloProvider.query = jest.fn().mockResolvedValue({
       data: {
-        genealogies: data,
+        users: data,
       },
     });
 
     const spy = jest.spyOn(ApolloProvider, "query");
 
-    await BlockchainRead.getGenealogy("test", 10, 0);
+    await BlockchainRead.getGenealogy(["test"]);
     expect(spy).toBeCalledWith(QueryNames.GENEALOGY, {
-      referrer: "test",
-      first: 10,
-      skip: 0,
+      referrer_in: ["test"],
     });
   });
 
