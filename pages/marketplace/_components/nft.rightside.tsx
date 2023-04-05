@@ -99,7 +99,7 @@ export const NFTRightSideComponent = ({
       <div className={titleContainer}>
         <h1 className={title}>{data?.name}</h1>
         <div ref={toggleContainerRef} className={`relative`}>
-          <button onClick={togglePopFunc}>
+          <button onClick={togglePopFunc} className="fxl:translate-y-[14px]">
             <ShareBigIcon />
           </button>
           <div className={`${toggleList} ${togglePop && "z-50 !block"}`}>
@@ -266,7 +266,7 @@ export const NFTRightSideComponent = ({
 };
 // styling
 const rightSideContainer = `w-full flex flex-col gap-6`;
-const titleContainer = `flex items-end fmd:items-center justify-between `;
+const titleContainer = `flex items-end fmd:items-start  justify-between`;
 const title = `word-break textGradient  font-semibold leading-[42px]  animationTextHeading text-34px`;
 const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
 const toggleListBtn = `w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
