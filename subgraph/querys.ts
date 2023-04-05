@@ -414,17 +414,19 @@ export const topCreatorsQuery = `
 `;
 
 export const genealogyQuery = `
-query MyQuery($referrer: Bytes, $first: Int = 10, $skip: Int = 10) {
-  genealogies(where: {referrer: $referrer}, skip: $skip, first: $first) {
-    user {
-      generatedBUSD
-      generatedNTR
-      publicKey
-      people
-      generatedBNB
-    }
+query MyQuery($referrer_in:[Bytes!]){
+  users(
+    where: {referrer_in:$referrer_in }
+    first: 1000
+  ) {
+    referrer
+    publicKey
+    generatedNTR
+    generatedBUSD
+    generatedBNB
     createdAt
-    level
+    createNFTCount
+    createCollectionCount
   }
 }
 `;

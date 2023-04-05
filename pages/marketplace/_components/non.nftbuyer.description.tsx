@@ -220,15 +220,20 @@ export const NonNFTBuyerDescription = ({
           {data?.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center">
-        <Button
-          title={"Buy Now"}
-          variant={data?.saleState === "NON" ? "v2" : "v1"}
-          className="py-4"
-          disabled={data?.saleState === "NON"}
-          onClick={buyNFTStep1Func}
-        />
-      </div>
+
+      {data!.unlock < +new Date() / 1000 ? (
+        <div className="buttonContainer flex items-center">
+          <Button
+            title={"Buy Now"}
+            variant={data?.saleState === "NON" ? "v2" : "v1"}
+            className="py-4"
+            disabled={data?.saleState === "NON"}
+            onClick={buyNFTStep1Func}
+          />
+        </div>
+      ) : (
+        <div>This nft is locked</div>
+      )}
       {ModalModel.visibility && (
         <CustomModal
           onClose={() => {

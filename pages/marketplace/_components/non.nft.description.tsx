@@ -48,7 +48,6 @@ export const NonNFTDescription = ({
     title: "",
     content: "",
   });
-
   const bnbPrice = useBNBPrice();
   const isApproved = useGetApprovedForAll(account, data?.collection);
 
@@ -406,17 +405,21 @@ export const NonNFTDescription = ({
           {data?.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center gap-4 [@media(max-width:370px)]:overflow-auto">
-        <NewButton
-          title={"Auction"}
-          variant="v1"
-          onClick={() => {
-            setupAuctionModal();
-          }}
-        />
-        <NewButton title={"List"} onClick={listingFunc} variant="v4" />
-        <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
-      </div>
+      {data!.unlock < +new Date() / 1000 ? (
+        <div className="buttonContainer flex items-center gap-4">
+          <NewButton
+            title={"Auction"}
+            variant="v1"
+            onClick={() => {
+              setupAuctionModal();
+            }}
+          />
+          <NewButton title={"List"} onClick={listingFunc} variant="v4" />
+          <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
+        </div>
+      ) : (
+        <div>This nft is locked</div>
+      )}
 
       {ModalModel.visibility && (
         <CustomModal

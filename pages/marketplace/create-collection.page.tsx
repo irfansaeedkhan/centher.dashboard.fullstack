@@ -261,6 +261,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         />
         <CreateNFTCollectionForm
           createCollection={createCollection}
+          library={library}
           clearForm={clearForm}
           profile={profile}
           cover={cover}

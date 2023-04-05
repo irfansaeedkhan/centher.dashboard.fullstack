@@ -55,6 +55,7 @@ export interface INFTDetailData {
   auctionInfo: IAuctionInfo;
   listingHistory: IListHistory[];
   priceHistory: IListHistory[];
+  unlock: number;
 }
 
 export const useGetNftData = (
@@ -119,6 +120,7 @@ export async function fetchNft(
       auctionInfo: nftResult.auctionInfo,
       listingHistory: listResult,
       priceHistory: _priceHistories,
+      unlock: nftResult.unlock,
     };
     return _nftData;
   } else return null;
