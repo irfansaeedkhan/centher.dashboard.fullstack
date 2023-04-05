@@ -79,8 +79,12 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           </div>
 
           <div>
-            {posts.slice(0, -1).map((post, index) => (
-              <PostPreview key={index} post={post} removePost={removePost} />
+            {posts.slice(0, -1).map((post) => (
+              <PostPreview
+                key={post.uuid}
+                post={post}
+                removePost={removePost}
+              />
             ))}
 
             {lastPost && (
