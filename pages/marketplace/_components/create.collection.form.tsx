@@ -1,16 +1,24 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import ctl from "@netlify/classnames-template-literals";
+import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
+import { useWeb3React } from "@web3-react/core";
+import { toast } from "react-hot-toast";
 import { FiTwitter } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
+import ctl from "@netlify/classnames-template-literals";
 
-// App imports
 import Button from "@/components/button";
-import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
+import NewButton from "@/components/button/new.button";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import useUser from "@/hooks/use.user";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
+import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
+import { MetamaskIcon2 } from "@/assets/svgs";
+
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -75,6 +83,7 @@ interface CreateNFTCollectionFormProps {
   clearForm: boolean;
   cover: Blob | undefined;
   profile: Blob | undefined;
+  library: any;
 }
 export interface ICollectionData {
   name: string;
@@ -92,9 +101,15 @@ export const CreateNFTCollectionForm = ({
   clearForm,
   cover,
   profile,
+  library,
 }: CreateNFTCollectionFormProps) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
+  const { user: loggedInUser } = useUser();
+  const { connectWallet } = useConnectWallet();
+  const { deactivate } = useWeb3React();
+  const [Modal, setModal] = useState(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
 
   const handleSelectOption = (value: string) => {
     setSelectedOption(value);
@@ -340,26 +355,81 @@ export const CreateNFTCollectionForm = ({
             </div>
           </div>
         </div>
-        <Button
-          title={"Create Collection"}
-          variant={
-            formState.isValid &&
-            profile != undefined &&
-            cover != undefined &&
-            categoryError === false
-              ? "v1"
-              : "v2"
-          }
-          disabled={
-            !formState.isValid &&
-            profile === undefined &&
-            cover === undefined &&
-            categoryError
-          }
-          onClick={handleSubmit(onSubmit)}
-          className="mt-2 py-4"
-        />
+        {!library ? (
+          <NewButton
+            title={"Connect Wallet"}
+            variant="v9"
+            onClick={() => {
+              setConnectWalletModal(true);
+            }}
+          />
+        ) : (
+          <Button
+            title={"Create Collection"}
+            variant={
+              formState.isValid &&
+              profile != undefined &&
+              cover != undefined &&
+              categoryError === false
+                ? "v1"
+                : "v2"
+            }
+            disabled={
+              !formState.isValid &&
+              profile === undefined &&
+              cover === undefined &&
+              categoryError
+            }
+            onClick={handleSubmit(onSubmit)}
+            className="mt-2 py-4"
+          />
+        )}
       </div>
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!loggedInUser) {
+                    toast.error("Please login to buy this nft");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (
+                    loggedInUser.account_address.toLowerCase() !==
+                    _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
+      )}
     </div>
   );
 };
