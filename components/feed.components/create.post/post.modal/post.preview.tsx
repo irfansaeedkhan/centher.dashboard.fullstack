@@ -22,7 +22,7 @@ const PostPreview = ({ post, removePost }: Props) => {
     });
   }, [post]);
   return (
-    <div className="mb-3 space-y-3">
+    <div className="mb-3 rounded-[10px] border border-[#0d0d0d]">
       <div
         className={clsx(`relative grid gap-2`, {
           "grid-cols-2": post.media.length === 2,
@@ -31,7 +31,7 @@ const PostPreview = ({ post, removePost }: Props) => {
       >
         {postFiles.length > 0 && (
           <button
-            className="absolute top-2 right-1 z-10 rounded-md bg-black/40 p-1"
+            className="absolute top-2 right-1 z-10 rounded-md bg-white/10 p-1"
             onClick={() => removePost(post.uuid)}
           >
             <IoClose className="h-5 w-5 fill-white text-white" />
@@ -68,12 +68,12 @@ const PostPreview = ({ post, removePost }: Props) => {
       {post.post_text && (
         <div
           key={post.uuid}
-          className="relative whitespace-pre-wrap break-words rounded-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
+          className="relative break-words rounded-b-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
         >
           {post.post_text}
           {postFiles.length === 0 && (
             <button
-              className="absolute top-2 right-2 z-10 "
+              className="absolute top-2 right-2 z-10 rounded-md bg-white/10 p-1"
               onClick={() => removePost(post.uuid)}
             >
               <IoClose className="h-5 w-5 fill-white text-white" />
