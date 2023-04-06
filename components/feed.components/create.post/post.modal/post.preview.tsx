@@ -68,9 +68,9 @@ const PostPreview = ({ post, removePost }: Props) => {
       {post.post_text && (
         <div
           key={post.uuid}
-          className="relative break-words rounded-b-[10px] px-4 py-3 text-sm font-semibold text-white opacity-50"
+          className="relative whitespace-pre-wrap break-words rounded-b-[10px] px-4 py-3 text-sm font-semibold text-white opacity-50"
         >
-          {post.post_text}
+          {post.post_text.trim()}
           {postFiles.length === 0 && (
             <button
               className="absolute top-2 right-2 z-10 hidden rounded-md bg-white/10 p-1 group-hover:block"
