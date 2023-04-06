@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
+import { IoClose } from "react-icons/io5";
+import clsx from "clsx";
 
 import { INewPost } from "@/store/new.post.store";
-import clsx from "clsx";
-import { IoClose } from "react-icons/io5";
 
 interface Props {
   post: INewPost;
@@ -31,7 +31,7 @@ const PostPreview = ({ post, removePost }: Props) => {
       >
         {postFiles.length > 0 && (
           <button
-            className="absolute top-2 right-1 z-10 hidden rounded-md bg-white/10 p-1 group-hover:block"
+            className="absolute top-2 right-1 z-10 hidden rounded-md bg-black/40 p-1 group-hover:block"
             onClick={() => removePost(post.uuid)}
           >
             <IoClose className="h-5 w-5 fill-white text-white" />
