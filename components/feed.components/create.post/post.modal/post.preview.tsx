@@ -22,7 +22,7 @@ const PostPreview = ({ post, removePost }: Props) => {
     });
   }, [post]);
   return (
-    <div className="mb-3 rounded-[10px] border border-[#0d0d0d]">
+    <div className="mb-3 rounded-[10px] border border-[#0d0d0d] bg-black-shade-9">
       <div
         className={clsx(`relative grid gap-2`, {
           "grid-cols-2": post.media.length === 2,
@@ -68,7 +68,7 @@ const PostPreview = ({ post, removePost }: Props) => {
       {post.post_text && (
         <div
           key={post.uuid}
-          className="relative break-words rounded-b-[10px] bg-black-shade-9 px-4 py-3 text-sm font-semibold text-white opacity-50"
+          className="relative break-words rounded-b-[10px] px-4 py-3 text-sm font-semibold text-white opacity-50"
         >
           {post.post_text}
           {postFiles.length === 0 && (

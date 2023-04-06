@@ -88,7 +88,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             ))}
 
             {lastPost && (
-              <>
+              <div className="rounded-10px bg-background-shade-3">
                 <FilesPreview post={lastPost} />
 
                 <div className={clsx(`w-full`, hasMedia && "mt-4")}>
@@ -102,7 +102,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
                     onChange={(e) => setPostText(e.target.value)}
                   ></textarea>
                 </div>
-              </>
+              </div>
             )}
           </div>
         </div>
