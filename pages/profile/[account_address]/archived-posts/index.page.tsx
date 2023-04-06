@@ -56,7 +56,10 @@ const ArchivedPosts: NextPageWithLayout = () => {
       if (!isReply) {
         // Increment post count on profile card
         useProfileCardStore.getState().incrementPostsCount();
-        useFeedStore.getState().addNewPost(await getPost(postId));
+        const post = await getPost(postId);
+        if (post.status === "complete") {
+          useFeedStore.getState().addNewPost(post);
+        }
       }
     } catch (error: any) {
       customLog(error, ["development"]);
