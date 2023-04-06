@@ -73,7 +73,7 @@ const PostPreview = ({ post, removePost }: Props) => {
           {post.post_text}
           {postFiles.length === 0 && (
             <button
-              className="absolute top-2 right-2 z-10 rounded-md bg-white/10 p-1"
+              className="absolute top-2 right-2 z-10 hidden rounded-md bg-white/10 p-1 group-hover:block"
               onClick={() => removePost(post.uuid)}
             >
               <IoClose className="h-5 w-5 fill-white text-white" />
