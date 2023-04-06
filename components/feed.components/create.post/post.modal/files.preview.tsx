@@ -11,10 +11,10 @@ export type PostImageCropperData = {
 };
 
 interface Props {
-  post: INewPost;
+  media: INewPost["media"];
 }
 
-export const FilesPreview: React.FC<Props> = ({ post }) => {
+export const FilesPreview: React.FC<Props> = ({ media }) => {
   const {
     modalType,
     removeSelectedFile,
@@ -28,7 +28,7 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
 
   const postFiles = useMemo(() => {
     if (modalType === "edit") {
-      return post.media
+      return media
         .filter((file) => file.type === "edit" && !file.isDeleted)
         .map((file) => {
           if (file.type === "edit") {
@@ -43,7 +43,7 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
           };
         });
     } else {
-      return post.media.map((file) => {
+      return media.map((file) => {
         if (file.type === "edit") {
           return {
             ...file,
@@ -56,7 +56,7 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
         };
       });
     }
-  }, [modalType, post]);
+  }, [modalType, media]);
 
   return (
     <div
@@ -127,7 +127,7 @@ export const FilesPreview: React.FC<Props> = ({ post }) => {
             });
           }}
           onCrop={(croppedImage) => {
-            const croppedSelectedFiles = post.media.map((file) => {
+            const croppedSelectedFiles = media.map((file) => {
               if (file.uuid === cropImageSrc.fileID && file.type === "new") {
                 return {
                   ...file,

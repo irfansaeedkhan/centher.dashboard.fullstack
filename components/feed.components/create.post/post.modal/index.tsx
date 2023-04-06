@@ -89,7 +89,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
 
             {lastPost && (
               <div className="scrollSet rounded-10px bg-background-shade-3">
-                <FilesPreview post={lastPost} />
+                <FilesPreview media={lastPost.media} />
 
                 <div className={clsx(`w-full`, hasMedia && "mt-4")}>
                   <textarea
