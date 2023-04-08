@@ -7,8 +7,8 @@ import toast from "react-hot-toast";
 import { PostMedia } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
+import { getPostAndUpdateStores } from "@/utils/create.post";
 import { SocketIoEvents } from "@/constants/socket-io-events";
-import { getPostAndUpdateStores } from "@/utils/create.post/get-post-and-update-stores";
 
 import { useSocketIOStore } from "./socket.io.store";
 
@@ -363,10 +363,12 @@ export const useNewPostStore = create<NewPostStore>()(
               SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
               async (data: { first_post_id: string }) => {
                 try {
-                  await getPostAndUpdateStores(
-                    data.first_post_id,
-                    get().modalType
-                  );
+                  await getPostAndUpdateStores({
+                    parentPostId: get().parentPostId,
+                    postId: data.first_post_id,
+                    newPostsCount: postArray.length,
+                    modalType: get().modalType,
+                  });
                   socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
                   get().closeModal();
                 } catch (error: any) {
@@ -384,7 +386,12 @@ export const useNewPostStore = create<NewPostStore>()(
             );
           } else {
             const postToFetchId = response.data.posts[0]._id;
-            await getPostAndUpdateStores(postToFetchId, get().modalType);
+            await getPostAndUpdateStores({
+              parentPostId: get().parentPostId,
+              postId: postToFetchId,
+              newPostsCount: postArray.length,
+              modalType: get().modalType,
+            });
             get().closeModal();
           }
         } catch (error: any) {
@@ -427,7 +434,12 @@ export const useNewPostStore = create<NewPostStore>()(
           });
 
           // If no file media that means only text was available in post
-          // await getNewPostAndUpdateState(postId);
+          await getPostAndUpdateStores({
+            modalType: get().modalType,
+            parentPostId: get().parentPostId,
+            postId,
+            newPostsCount: 0, // we are only editing the post, not creating new
+          });
           get().closeModal();
           return;
         } catch (error: any) {

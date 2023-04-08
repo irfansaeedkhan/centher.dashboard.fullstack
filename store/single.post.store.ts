@@ -35,7 +35,10 @@ export interface SinglePostStore {
 
   addNewReply: (reply: CompletedPost) => void;
 
-  updatePost: (post: Partial<Post>) => void;
+  updatePost: (
+    postId: string,
+    postUpdater: (post: Post) => Partial<Post>
+  ) => void;
 
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
@@ -259,11 +262,14 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }));
       },
 
-      updatePost: (post) => {
+      updatePost: (postId, postUpdater) => {
         set((state) => ({
           posts: state.posts.map((statePost) => {
-            if (statePost._id === post._id) {
-              return post as Post;
+            if (statePost._id === postId) {
+              return {
+                ...statePost,
+                ...(postUpdater(statePost) as Post),
+              };
             }
             return statePost;
           }),
