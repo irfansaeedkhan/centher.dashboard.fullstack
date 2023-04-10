@@ -21,6 +21,7 @@ const PostPreview = ({ post, removePost }: Props) => {
       };
     });
   }, [post]);
+
   return (
     <div className="group mb-3 rounded-[10px] border border-[#0d0d0d] bg-black-shade-9">
       <div
@@ -43,6 +44,7 @@ const PostPreview = ({ post, removePost }: Props) => {
             media = (
               // eslint-disable-next-line @next/next/no-img-element
               <img
+                key={file.uuid}
                 src={file.src}
                 alt={
                   file.type === "new" ? file.original.name : file.original.url
@@ -53,6 +55,7 @@ const PostPreview = ({ post, removePost }: Props) => {
           } else if (file.original.type.startsWith("video")) {
             media = (
               <video
+                key={file.uuid}
                 src={file.src}
                 className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
                 controls
