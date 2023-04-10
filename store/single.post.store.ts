@@ -9,12 +9,12 @@ import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
 
-type PostType = "main" | "reply";
+type PostType = "main" | "thread-post" | "reply";
 
 export interface SinglePostStore {
   postLoading: LoadingState;
   postId: string;
-  post: Post | null;
+  posts: Post[];
 
   replies: CompletedPost[];
   repliesLoading: LoadingState;
@@ -31,11 +31,14 @@ export interface SinglePostStore {
     postType: PostType
   ) => Promise<void>;
 
-  removeReply: (replyId: string) => Promise<void>;
+  removePost: (postId: string, postType: PostType) => Promise<void>;
 
   addNewReply: (reply: CompletedPost) => void;
 
-  updatePost: (post: Partial<Post>) => void;
+  updatePost: (
+    postId: string,
+    postUpdater: (post: Post) => Partial<Post>
+  ) => void;
 
   updatePostLikesCount: (
     actionType: "increment" | "decrement",
@@ -66,7 +69,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
       updateRepliesOffset: () =>
         set((state) => ({ repliesOffset: state.replies.length })),
 
-      post: null,
+      posts: [],
       replies: [],
 
       fetchPost: async () => {
@@ -85,7 +88,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
           const [postRes, repliesRes] = await Promise.all(promises);
 
           set({
-            post: postRes.data.post as Post,
+            posts: postRes.data.posts as Post[],
             postLoading: "loaded",
             replies: repliesRes.data.posts,
             repliesLoading: "loaded",
@@ -93,7 +96,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
         } catch (error: any) {
           if (error.response?.status === 404) {
             set({
-              post: null,
+              posts: [],
               postLoading: "loaded",
               replies: [],
               repliesLoading: "loaded",
@@ -169,25 +172,32 @@ export const useSinglePostStore = create<SinglePostStore>()(
       updatePostLikesCount: (actionType, postType, postId) => {
         if (!postId) return;
 
-        if (postType === "main") {
+        if (postType === "main" || postType === "thread-post") {
           set((state) => {
             if (
-              !state.post ||
-              postId.toLowerCase() !== state.post._id.toLowerCase()
+              !state.posts ||
+              state.posts.length === 0 ||
+              state.posts.find((post) => post._id === postId) === undefined
             ) {
               return state;
             }
 
             return {
               ...state,
-              post: {
-                ...state.post,
-                likes_count:
-                  actionType === "increment"
-                    ? state.post.likes_count + 1
-                    : state.post.likes_count - 1,
-                liked_by_loggedin_user: actionType === "increment",
-              },
+              posts: state.posts.map((post) => {
+                if (post._id !== postId) {
+                  return post;
+                }
+
+                return {
+                  ...post,
+                  likes_count:
+                    actionType === "increment"
+                      ? post.likes_count + 1
+                      : post.likes_count - 1,
+                  liked_by_loggedin_user: actionType === "increment",
+                };
+              }),
             };
           });
         } else if (postType === "reply") {
@@ -215,18 +225,27 @@ export const useSinglePostStore = create<SinglePostStore>()(
         }
       },
 
-      removeReply: async (replyId) => {
+      removePost: async (postId, postType) => {
         try {
-          // Update replies count in post
-          const { decrementPostRepliesCount } = useFeedStore.getState();
-          decrementPostRepliesCount(get().post?._id);
-
+          if (postType === "reply") {
+            // Update replies count in post
+            const { decrementPostRepliesCount } = useFeedStore.getState();
+            decrementPostRepliesCount(get().postId);
+          }
           set((state) => ({
-            post: {
-              ...state.post,
-              replies_count: (state.post?.replies_count ?? 1) - 1,
-            } as Post,
-            replies: state.replies.filter((reply) => reply._id !== replyId),
+            posts:
+              postType === "reply"
+                ? state.posts.map((post) => {
+                    if (post._id === get().postId) {
+                      return {
+                        ...post,
+                        replies_count: post.replies_count - 1,
+                      };
+                    }
+                    return post;
+                  })
+                : state.posts.filter((post) => post._id !== postId),
+            replies: state.replies.filter((reply) => reply._id !== postId),
           }));
         } catch (error: any) {
           customLog(error, ["development"]);
@@ -234,19 +253,33 @@ export const useSinglePostStore = create<SinglePostStore>()(
       },
 
       addNewReply: (reply) => {
+        // Filter out the post if it already exists in the store
+        if (get().replies.some((stateReply) => stateReply._id === reply._id))
+          return;
+
         set((state) => ({
           replies: [reply, ...state.replies],
         }));
       },
 
-      updatePost: (post) => {
-        set((state) => ({ post: { ...state.post, ...(post as Post) } }));
+      updatePost: (postId, postUpdater) => {
+        set((state) => ({
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === postId) {
+              return {
+                ...statePost,
+                ...(postUpdater(statePost) as Post),
+              };
+            }
+            return statePost;
+          }),
+        }));
       },
 
       resetStore: (postId, loading = "idle") => {
         set({
           postId,
-          post: null,
+          posts: [],
           postLoading: loading,
           replies: [],
           repliesLoading: loading,
@@ -256,7 +289,12 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
       replaceEditedPost: (post) => {
         set((state) => ({
-          post: post._id === state.post?._id ? post : state.post,
+          posts: state.posts.map((statePost) => {
+            if (statePost._id === post._id) {
+              return post;
+            }
+            return statePost;
+          }),
           replies: state.replies.map((reply) => {
             if (reply._id === post._id) {
               return post;
@@ -268,10 +306,12 @@ export const useSinglePostStore = create<SinglePostStore>()(
 
       createPostViewInStore: (postId) => {
         set((state) => ({
-          post:
-            postId === state.post?._id
-              ? { ...state.post, viewed_by_loggedin_user: true }
-              : state.post,
+          posts: state.posts.map((post) => {
+            if (post._id === postId) {
+              return { ...post, viewed_by_loggedin_user: true };
+            }
+            return post;
+          }),
           replies: state.replies.map((reply) => {
             if (reply._id === postId) {
               return { ...reply, viewed_by_loggedin_user: true };

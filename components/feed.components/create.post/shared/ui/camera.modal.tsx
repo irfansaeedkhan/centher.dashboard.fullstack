@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
-import { nanoid } from "nanoid";
 
 import NewButton from "@/components/button/new.button";
 import { CameraCustomModal } from "@/components/modal/camera-modal";
@@ -28,17 +27,21 @@ const CameraModal = ({ onClose }: Props) => {
   const webcamRef = useRef<Webcam | null>(null);
 
   useEffect(() => {
-    const getAvailableInputs = async () => {
-      const videoInputs = await navigator.mediaDevices.enumerateDevices();
-      const backCamera = videoInputs.find(
-        (device) =>
-          device.kind === "videoinput" && device.label.includes("back")
-      );
-      setHasBackCamera(!!backCamera);
+    const checkBackCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: cameraSource },
+        });
+        const track = stream.getVideoTracks()[0];
+        setHasBackCamera(!!track);
+        track.stop();
+      } catch (error) {
+        setHasBackCamera(false);
+      }
     };
 
-    getAvailableInputs();
-  }, []);
+    checkBackCamera();
+  }, [cameraSource]);
 
   const handleResetClick = useCallback(() => {
     setVideoUrl(null);
@@ -95,6 +98,7 @@ const CameraModal = ({ onClose }: Props) => {
         setVideoUrl(videoUrl);
         setIsRecording(false);
         setRecordingTime(0);
+        clearInterval(timerId);
       };
 
       mediaRecorder.start();
@@ -120,7 +124,7 @@ const CameraModal = ({ onClose }: Props) => {
     (file: File) => {
       addSelectedFiles([
         {
-          id: nanoid(),
+          type: "new",
           original: file,
         },
       ]);
@@ -144,7 +148,6 @@ const CameraModal = ({ onClose }: Props) => {
     <CameraCustomModal
       onClose={() => {
         onClose();
-        closeModal();
       }}
       title="Camera"
     >

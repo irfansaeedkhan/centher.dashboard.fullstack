@@ -1,3 +1,4 @@
+import { useNewPostStore } from "@/store/new.post.store";
 import React from "react";
 import { IoClose } from "react-icons/io5";
 
@@ -7,6 +8,7 @@ interface Props {
 }
 
 const PostModalHeader: React.FC<Props> = ({ title, onClickClose }) => {
+  const { isPostModalLoading } = useNewPostStore();
   return (
     <div
       className={`flex items-center border-b-2 border-gray-shade-3 border-opacity-40 p-3`}
@@ -17,9 +19,11 @@ const PostModalHeader: React.FC<Props> = ({ title, onClickClose }) => {
         {title}
       </h3>
 
-      <button onClick={onClickClose}>
-        <IoClose className="h-5 w-5 fill-white" />
-      </button>
+      {!isPostModalLoading && (
+        <button onClick={onClickClose}>
+          <IoClose className="h-5 w-5 fill-white" />
+        </button>
+      )}
     </div>
   );
 };

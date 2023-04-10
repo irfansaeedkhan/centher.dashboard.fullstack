@@ -1,2 +1,1 @@
-export * from "./upload.files";
-export * from "./create.files.chunks";
+export { getPostAndUpdateStores } from "./get-post-and-update-stores";

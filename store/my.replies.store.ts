@@ -14,6 +14,7 @@ export interface RepliesStore {
   fetchPosts: () => Promise<void>;
   resetPosts: (loading?: LoadingState) => void;
 
+  addNewPost: (post: CompletedPost) => void;
   removePost: (postId: string) => void;
   incrementPostRepliesCount: (postId?: string) => void;
   updatePostLikesCount: (
@@ -70,6 +71,15 @@ export const useMyRepliesStore = create<RepliesStore>()(
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }
+      },
+
+      addNewPost: (post) => {
+        // Filter out the post if it already exists in the store
+        if (get().posts.some((statePost) => statePost._id === post._id)) return;
+
+        set((state) => ({
+          posts: [post, ...state.posts],
+        }));
       },
 
       removePost: (postId) => {

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import { IoClose, IoCrop } from "react-icons/io5";
 
-import { useNewPostStore } from "@/store/new.post.store";
+import { INewPost, useNewPostStore } from "@/store/new.post.store";
 import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
 
 export type PostImageCropperData = {
@@ -10,12 +10,14 @@ export type PostImageCropperData = {
   fileID: string;
 };
 
-export const FilesPreview = () => {
+interface Props {
+  media: INewPost["media"];
+}
+
+export const FilesPreview: React.FC<Props> = ({ media }) => {
   const {
     modalType,
-    selectedFiles,
     removeSelectedFile,
-    editPostFiles,
     setSelectedFiles,
     removeEditPostFile,
   } = useNewPostStore();
@@ -26,29 +28,35 @@ export const FilesPreview = () => {
 
   const postFiles = useMemo(() => {
     if (modalType === "edit") {
-      return editPostFiles
-        ? editPostFiles
-            .filter((f) => !f.isDeleted)
-            .map((file) => {
-              return {
-                ...file,
-                original: {
-                  ...file.original,
-                  name: file.original.url,
-                },
-                src: file.original.url,
-              };
-            })
-        : [];
+      return media
+        .filter((file) => file.type === "edit" && !file.isDeleted)
+        .map((file) => {
+          if (file.type === "edit") {
+            return {
+              ...file,
+              src: file.original.url,
+            };
+          }
+          return {
+            ...file,
+            src: URL.createObjectURL(file.original),
+          };
+        });
     } else {
-      return selectedFiles.map((file) => {
+      return media.map((file) => {
+        if (file.type === "edit") {
+          return {
+            ...file,
+            src: file.original.url,
+          };
+        }
         return {
           ...file,
           src: URL.createObjectURL(file.original),
         };
       });
     }
-  }, [selectedFiles, modalType, editPostFiles]);
+  }, [modalType, media]);
 
   return (
     <div
@@ -64,7 +72,7 @@ export const FilesPreview = () => {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={file.src}
-              alt={file.original.name}
+              alt={file.type === "new" ? file.original.name : file.original.url}
               className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
             />
           );
@@ -81,28 +89,24 @@ export const FilesPreview = () => {
         }
 
         return (
-          <div key={file.id} className={`relative`}>
+          <div key={file.uuid} className={`relative`}>
             <CloseButton
               className="absolute top-1 right-1 z-10"
               onClick={() => {
                 if (modalType === "edit") {
-                  removeEditPostFile(file.id);
+                  removeEditPostFile(file.uuid);
                 } else {
-                  removeSelectedFile(file.id);
+                  removeSelectedFile(file.uuid);
                 }
               }}
             />
-            {file.original.type.startsWith("image") && (
+            {file.original.type.startsWith("image") && file.type === "new" && (
               <CropButton
                 className="absolute top-1 left-1 z-10"
                 onClick={() => {
                   setCropImageSrc({
-                    preview: URL.createObjectURL(
-                      file.original instanceof File
-                        ? file.original
-                        : new Blob([file.original.url])
-                    ),
-                    fileID: file.id,
+                    preview: URL.createObjectURL(file.original),
+                    fileID: file.uuid,
                   });
                 }}
               />
@@ -113,27 +117,30 @@ export const FilesPreview = () => {
         );
       })}
 
-      <CropperPostMediaImage
-        cropImageSrc={cropImageSrc}
-        onClose={() => {
-          setCropImageSrc({
-            preview: "",
-            fileID: "",
-          });
-        }}
-        onCrop={(croppedImage) => {
-          const croppedSelectedFiles = selectedFiles.map((file) => {
-            if (file.id === cropImageSrc.fileID) {
-              return {
-                ...file,
-                original: croppedImage.original,
-              };
-            }
-            return file;
-          });
-          setSelectedFiles(croppedSelectedFiles);
-        }}
-      />
+      {modalType !== "edit" && (
+        <CropperPostMediaImage
+          cropImageSrc={cropImageSrc}
+          onClose={() => {
+            setCropImageSrc({
+              preview: "",
+              fileID: "",
+            });
+          }}
+          onCrop={(croppedImage) => {
+            const croppedSelectedFiles = media.map((file) => {
+              if (file.uuid === cropImageSrc.fileID && file.type === "new") {
+                return {
+                  ...file,
+                  original: croppedImage.original,
+                };
+              }
+              return file;
+            });
+
+            setSelectedFiles(croppedSelectedFiles);
+          }}
+        />
+      )}
     </div>
   );
 };

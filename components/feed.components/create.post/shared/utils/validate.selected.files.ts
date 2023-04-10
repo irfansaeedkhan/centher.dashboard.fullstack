@@ -1,6 +1,4 @@
-import { nanoid } from "nanoid";
-
-import { useNewPostStore } from "@/store/new.post.store";
+import { SelectedFile, useNewPostStore } from "@/store/new.post.store";
 
 import {
   MAX_IMAGE_SIZE,
@@ -32,16 +30,24 @@ export const validateSelectedFiles = (
       validateFile(event.target.files[i], fileType);
     }
 
-    const { selectedFiles, addSelectedFiles } = useNewPostStore.getState();
+    const { addSelectedFiles, getLastPost } = useNewPostStore.getState();
+
+    const lastPost = getLastPost();
 
     // Convert to array
-    const files = Array.from(event.target.files ?? []).map((file) => ({
-      original: file,
-      id: nanoid(),
-    }));
+    const files: SelectedFile[] = Array.from(event.target.files ?? []).map(
+      (file) => ({
+        type: "new",
+        original: file,
+      })
+    );
 
     // Only add files in store if there are less than 5 files
-    if (selectedFiles.length < 5 && files.length + selectedFiles.length <= 5) {
+    if (
+      lastPost &&
+      lastPost.media.length < 5 &&
+      files.length + lastPost.media.length <= 5
+    ) {
       addSelectedFiles(files);
     } else {
       const error: SelectFileError = {

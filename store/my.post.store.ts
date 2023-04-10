@@ -79,6 +79,9 @@ export const useMyPostStore = create<MyPostStore>()(
       },
 
       addNewPost: (post) => {
+        // Filter out the post if it already exists in the store
+        if (get().posts.some((statePost) => statePost._id === post._id)) return;
+
         set((state) => ({
           posts: [post, ...state.posts],
         }));

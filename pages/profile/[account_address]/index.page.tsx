@@ -119,46 +119,6 @@ const Profile: NextPageWithLayout = () => {
       )}
 
       {posts.map((post) => {
-        if (post._id === posts[posts.length - 1]._id) {
-          return (
-            <div
-              key={post._id}
-              ref={lastPostRef}
-              onClick={() =>
-                router.push({
-                  pathname: AppRoutes.feed.single_post,
-                  query: {
-                    post_id: post._id,
-                  },
-                })
-              }
-            >
-              <SinglePostV2
-                post={post}
-                postType={"main"}
-                placement="profile-posts-page"
-                shouldShowThread={post.replies_count > 0}
-                onClickLike={async () => {
-                  await likePostAPI(
-                    post._id,
-                    post.liked_by_loggedin_user ? "unlike" : "like"
-                  );
-                }}
-                onClickReply={() => {
-                  setIsReplyModalOpen(true);
-                  openPostModal({
-                    modalType: "reply",
-                    parentPostId: post._id,
-                    onCloseModal: () => setIsReplyModalOpen(false),
-                  });
-                }}
-                onClickArchive={() => handleAction(post._id, archivePost)}
-                onClickDelete={() => handleAction(post._id, deletePost)}
-                onPostInViewport={() => handleCreatePostView(post._id)}
-              />
-            </div>
-          );
-        }
         return (
           <div
             key={post._id}
@@ -173,9 +133,15 @@ const Profile: NextPageWithLayout = () => {
           >
             <SinglePostV2
               post={post}
+              parentPost={undefined}
               postType={"main"}
               placement="profile-posts-page"
-              shouldShowThread={post.replies_count > 0}
+              borderRadius={{
+                top: true,
+                bottom: true,
+              }}
+              shouldShowThread={post.is_thread}
+              shouldShowComments={post.replies_count > 0}
               onClickLike={async () => {
                 await likePostAPI(
                   post._id,
@@ -188,6 +154,7 @@ const Profile: NextPageWithLayout = () => {
                   modalType: "reply",
                   parentPostId: post._id,
                   onCloseModal: () => setIsReplyModalOpen(false),
+                  shouldAddNewPost: true,
                 });
               }}
               onClickArchive={() => handleAction(post._id, archivePost)}
@@ -197,6 +164,8 @@ const Profile: NextPageWithLayout = () => {
           </div>
         );
       })}
+
+      {!!posts.length && <div ref={lastPostRef} />}
 
       {(loading === "loading" || loading === "idle") && (
         <>
