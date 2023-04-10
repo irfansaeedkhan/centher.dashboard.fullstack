@@ -427,10 +427,11 @@ export const NonNFTDescription = ({
       throw new Error("Connect your wallet");
     }
   }
+
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
-  console.log("data::", data);
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
