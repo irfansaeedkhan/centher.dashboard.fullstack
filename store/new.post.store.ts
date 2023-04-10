@@ -169,10 +169,14 @@ export const useNewPostStore = create<NewPostStore>()(
               ? {
                   ...post,
                   media: post.media.map((file) => {
-                    return {
-                      ...file,
-                      isDeleted: file.uuid === fileUuid,
-                    };
+                    if (fileUuid === file.uuid) {
+                      return {
+                        ...file,
+                        isDeleted: true,
+                      };
+                    } else {
+                      return file;
+                    }
                   }),
                 }
               : post
