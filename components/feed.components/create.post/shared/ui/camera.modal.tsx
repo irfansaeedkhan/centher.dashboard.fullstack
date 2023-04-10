@@ -31,7 +31,9 @@ const CameraModal = ({ onClose }: Props) => {
       const videoInputs = await navigator.mediaDevices.enumerateDevices();
       const backCamera = videoInputs.find(
         (device) =>
-          device.kind === "videoinput" && device.label.includes("back")
+          device.kind === "videoinput" &&
+          device.label.toLowerCase().includes("back") &&
+          device.deviceId.indexOf("facing back") !== -1
       );
       setHasBackCamera(!!backCamera);
     };
