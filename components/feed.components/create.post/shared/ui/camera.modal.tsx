@@ -27,18 +27,20 @@ const CameraModal = ({ onClose }: Props) => {
   const webcamRef = useRef<Webcam | null>(null);
 
   useEffect(() => {
-    const getAvailableInputs = async () => {
-      const videoInputs = await navigator.mediaDevices.enumerateDevices();
-      const backCamera = videoInputs.find(
-        (device) =>
-          device.kind === "videoinput" &&
-          device.label.toLowerCase().includes("back") &&
-          device.deviceId.indexOf("facing back") !== -1
-      );
-      setHasBackCamera(!!backCamera);
+    const checkBackCamera = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+        });
+        const track = stream.getVideoTracks()[0];
+        setHasBackCamera(!!track);
+        track.stop();
+      } catch (error) {
+        setHasBackCamera(false);
+      }
     };
 
-    getAvailableInputs();
+    checkBackCamera();
   }, []);
 
   const handleResetClick = useCallback(() => {
