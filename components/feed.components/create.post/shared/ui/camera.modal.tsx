@@ -30,7 +30,7 @@ const CameraModal = ({ onClose }: Props) => {
     const checkBackCamera = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
+          video: { facingMode: cameraSource },
         });
         const track = stream.getVideoTracks()[0];
         setHasBackCamera(!!track);
@@ -41,7 +41,7 @@ const CameraModal = ({ onClose }: Props) => {
     };
 
     checkBackCamera();
-  }, []);
+  }, [cameraSource]);
 
   const handleResetClick = useCallback(() => {
     setVideoUrl(null);
