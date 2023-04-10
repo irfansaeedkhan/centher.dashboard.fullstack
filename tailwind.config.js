@@ -22,7 +22,6 @@ module.exports = {
       f2xl: "1440px",
       ...defaultTheme.screens,
     },
-
     extend: {
       fontFamily: {
         monto: ["Montserrat Alternates", "san-serif"],

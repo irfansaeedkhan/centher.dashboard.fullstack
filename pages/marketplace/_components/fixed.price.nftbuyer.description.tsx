@@ -237,7 +237,7 @@ export const FixedPriceNFTBuyerDescription = ({
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
         <p
-          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6`)}
+          className={clsx(greyTxt, `word-break whitespace-pre-wrap leading-6 `)}
         >
           {data?.description}
         </p>

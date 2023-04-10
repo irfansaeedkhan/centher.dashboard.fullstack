@@ -12,7 +12,7 @@ import {
   formatIPFSUrl,
 } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { BNBIcon, LockIcon } from "@/assets/svgs";
+import { BNBIcon, LockedIconBG, HammerIconBG } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { getUTCNow } from "@/web3/utils/utils";
@@ -24,46 +24,88 @@ export interface NFTCardProps {
 
 export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-
+  const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
   const { user } = useGetUser(data.owner.account_address);
   const verificationTick = useVerificationTick({
     user,
   });
-
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
+  const [lockedTimer, setLockedTimer] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+  });
+  const [auctionTimer, setAuctionTimer] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+  });
 
   useEffect(() => {
-    let timeRemaining = Number(data.unlock) * 1000 - getUTCNow();
-    if (timeRemaining <= 0) return;
+    if (data.endTime === 0) {
+      setAuctionTimer({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+      });
+      let timeRemainingLocked = Number(data.unlock) * 1000 - getUTCNow();
+      if (timeRemainingLocked <= 0) return;
 
-    const interval = setInterval(() => {
-      if (timeRemaining > 1000) {
-        timeRemaining -= 1000;
-        setCountdownFor(timeRemaining);
-      }
+      const interval = setInterval(() => {
+        if (timeRemainingLocked > 1000) {
+          timeRemainingLocked -= 1000;
+          setCountdownFor(timeRemainingLocked);
+        }
 
-      if (timeRemaining <= 1000) {
+        if (timeRemainingLocked <= 1000) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => {
         clearInterval(interval);
-      }
-    }, 1000);
+      };
+    } else {
+      setLockedTimer({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+      });
+      let timeRemainingAuction = Number(data.endTime) * 1000 - getUTCNow();
+      if (timeRemainingAuction <= 0) return;
 
-    return () => {
-      clearInterval(interval);
-    };
+      const interval = setInterval(() => {
+        if (timeRemainingAuction > 1000) {
+          timeRemainingAuction -= 1000;
+          setCountdownFor(timeRemainingAuction);
+        }
+
+        if (timeRemainingAuction <= 1000) {
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
   }, [data]);
 
   const setCountdownFor = (deadline: number) => {
     const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
     const _hours = Math.floor((deadline / (1000 * 60 * 60)) % 24);
     const _minutes = Math.floor((deadline / 1000 / 60) % 60);
-
-    setDays(_days <= 0 ? 0 : _days);
-    setHours(_hours <= 0 ? 0 : _hours);
-    setMinutes(_minutes <= 0 ? 0 : _minutes);
+    setLockedTimer({
+      days: _days <= 0 ? 0 : _days,
+      hours: _hours <= 0 ? 0 : _hours,
+      minutes: _minutes <= 0 ? 0 : _minutes,
+    });
+    setAuctionTimer({
+      days: _days <= 0 ? 0 : _days,
+      hours: _hours <= 0 ? 0 : _hours,
+      minutes: _minutes <= 0 ? 0 : _minutes,
+    });
   };
   const onClickClose = () => {
     setShowLockedDetails(false);
@@ -172,11 +214,58 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           />
           {locked && (
             <div
-              className={`absolute top-[70px] right-5 flex h-[24px] w-[77px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
+              className={`absolute top-[70px] right-5 flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
             >
               <div className="flex items-center gap-[6px]">
-                <LockIcon className="w-[28%]" />
+                <LockedIconBG className="inline-block h-4 w-4 scale-[2]" />
                 LOCKED
+              </div>
+            </div>
+          )}
+          {auction && (
+            <div
+              className={`absolute top-[70px] right-5 flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
+            >
+              <div className="flex items-center gap-[6px]">
+                <HammerIconBG className="inline-block h-4 w-4" />
+                AUCTION
+              </div>
+            </div>
+          )}
+          {auction && (
+            <div className="absolute top-[54%] left-[50%] h-[56px] w-[90%] translate-x-[-50%] overflow-hidden rounded-xl border border-solid border-black/10 bg-gray-800 bg-opacity-25 bg-center bg-no-repeat px-[6px] backdrop-blur-[20px]">
+              <div
+                className={`text-12px flex h-full w-full items-center justify-center rounded-xl text-white `}
+              >
+                <div className="flex w-full items-center justify-evenly">
+                  <span className="text-10px max-w-[112px] font-medium text-white">
+                    This auction will end in
+                  </span>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[13px] font-semibold text-white">
+                      {auctionTimer.days}
+                    </span>
+                    <span className="text-[8px] font-medium text-white">
+                      DAYS
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[13px] font-semibold text-white">
+                      {auctionTimer.hours}
+                    </span>
+                    <span className="text-[8px] font-medium text-white">
+                      HOURS
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center ">
+                    <span className="text-[13px] font-semibold text-white">
+                      {auctionTimer.minutes}
+                    </span>
+                    <span className="text-[8px] font-medium text-white">
+                      MIN
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -215,7 +304,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                   </span>
                   <div className="flex flex-col items-center ">
                     <span className="text-[13px] font-semibold text-white">
-                      {days}
+                      {lockedTimer.days}
                     </span>
                     <span className="text-[8px] font-medium text-white">
                       DAYS
@@ -223,7 +312,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                   </div>
                   <div className="flex flex-col items-center ">
                     <span className="text-[13px] font-semibold text-white">
-                      {hours}
+                      {lockedTimer.hours}
                     </span>
                     <span className="text-[8px] font-medium text-white">
                       HOURS
@@ -231,7 +320,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                   </div>
                   <div className="flex flex-col items-center ">
                     <span className="text-[13px] font-semibold text-white">
-                      {minutes}
+                      {lockedTimer.minutes}
                     </span>
                     <span className="text-[8px] font-medium text-white">
                       MIN
@@ -283,7 +372,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                   <div className="text-12px bg-[rgba(20, 20, 22, 0.08)]  flex h-full w-full items-center justify-evenly gap-5 px-4 py-2 text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left ">
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        {days}
+                        {lockedTimer.days}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         DAYS
@@ -291,7 +380,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                     </div>
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        {hours}
+                        {lockedTimer.hours}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         HOURS
@@ -299,7 +388,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                     </div>
                     <div className="flex flex-col items-center ">
                       <span className="text-[14px] font-semibold text-white">
-                        {minutes}
+                        {lockedTimer.minutes}
                       </span>
                       <span className="text-[10px] font-medium text-white">
                         MIN
@@ -362,4 +451,5 @@ export interface NFTCardData {
   imageUrl: string;
   type: "image" | "video" | "audio";
   unlock: NFT["unlock"];
+  endTime: NFT["endTime"];
 }

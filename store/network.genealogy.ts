@@ -11,6 +11,7 @@ import { ethers } from "ethers";
 export const referralPercent = [6, 4, 2, 2, 2, 2];
 
 export interface GenealogyStore {
+  users: any[];
   genealogies: Genealogy[] | null;
   rewardsTotal: RewardsTotal;
   fetchGenealogy: (account: string) => Promise<void>;
@@ -22,6 +23,7 @@ export interface GenealogyStore {
 export const useGenealogyStore = create<GenealogyStore>()(
   devtools(
     (set, get) => ({
+      users: [],
       genealogies: null,
       rewardsTotal: { people: 0, busd: 0, bnb: 0, ntr: 0 },
       loading: "idle",
@@ -30,52 +32,60 @@ export const useGenealogyStore = create<GenealogyStore>()(
         try {
           set({ loading: "loading" });
 
-          let _genealogies: Genealogy[];
-          let _rewardsTotal: RewardsTotal;
-
-          const result = await BlockchainRead.getGenealogy(account, 1000, 0);
-          _genealogies = [];
-          if (result) {
-            _rewardsTotal = { people: 0, busd: 0, bnb: 0, ntr: 0 };
-            for (let i = 0; i < 6; i++) {
-              let levelArray = result.filter(
-                (item: any) => item.level === i + 1
+          let counter = 0;
+          const levels: any[] = [];
+          let referrersToFetch = [account];
+          do {
+            if (referrersToFetch.length) {
+              const result = await BlockchainRead.getGenealogy(
+                referrersToFetch
               );
-              let generatedBUSD = 0,
-                generatedBNB = 0,
-                generatedNTR = 0;
-              for (let j = 0; j < levelArray.length; j++) {
-                generatedBUSD += Number(
-                  ethers.utils.formatEther(levelArray[j].user.generatedBUSD[i])
-                );
-                generatedBNB += Number(
-                  ethers.utils.formatEther(levelArray[j].user.generatedBNB[i])
-                );
-                generatedNTR += Number(
-                  ethers.utils.formatEther(levelArray[j].user.generatedNTR[i])
-                );
+              referrersToFetch = result.map((e) => e.publicKey);
+
+              if (result) {
+                levels.push(result);
               }
-              let levelInfo = {
+            } else levels.push([]);
+            counter++;
+          } while (counter < 6);
+
+          const _genealogies = levels.map((e, i) => {
+            if (!e?.length) {
+              return {
                 id: i + 1,
                 level: `0${i + 1}`,
                 percent: referralPercent[i],
-                people: levelArray.length,
-                generatedBUSD: generatedBUSD,
-                generatedNTR: generatedNTR,
-                generatedBNB: generatedBNB,
+                people: 0,
+                generatedBUSD: 0,
+                generatedNTR: 0,
+                generatedBNB: 0,
                 children: [],
               };
-
-              _genealogies.push(levelInfo);
-
-              _rewardsTotal.people += levelArray.length;
-              _rewardsTotal.bnb += generatedBNB;
-              _rewardsTotal.busd += generatedBUSD;
-              _rewardsTotal.ntr += generatedNTR;
+            } else {
+              return {
+                id: i + 1,
+                level: `0${i + 1}`,
+                percent: referralPercent[i],
+                people: e.length,
+                generatedBUSD: subByKey(e, "generatedBUSD"),
+                generatedNTR: subByKey(e, "generatedNTR"),
+                generatedBNB: subByKey(e, "generatedBNB"),
+                children: [],
+              };
             }
-          }
+          });
+
+          const flatedArray = levels.flat();
+          const _rewardsTotal = {
+            people: flatedArray.length,
+            busd: subByKey(flatedArray, "generatedBUSD"),
+            ntr: subByKey(flatedArray, "generatedNTR"),
+            bnb: subByKey(flatedArray, "generatedBNB"),
+          };
+
           set((state) => {
             return {
+              users: levels,
               genealogies: _genealogies,
               rewardsTotal: _rewardsTotal,
               loading: "loaded",
@@ -90,7 +100,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
       fetchReferrers: async (account, level) => {
         try {
           set({ updating: "loading" });
-          let _children: GenealogyChild[];
+          let _children: GenealogyChild[] = [];
           let _genealogies: Genealogy[] | null = get().genealogies;
 
           if (_genealogies?.length) {
@@ -114,35 +124,35 @@ export const useGenealogyStore = create<GenealogyStore>()(
               }
             }
           }
-          const result = await BlockchainRead.getGenealogyAt(account, 1);
-          if (result) {
-            _children = result.map((item: any) => {
-              const people = item.user.people.reduce(
-                (prev: any, next: any) => Number(prev) + Number(next),
-                0
-              );
-              return {
-                id: level + 1,
-                level: `0${level + 1}`,
-                user: item.user.publicKey,
-                people: people,
-                generatedBUSD: Number(
-                  ethers.utils.formatEther(item.user.generatedBUSD[level])
-                ),
-                generatedNTR: Number(
-                  ethers.utils.formatEther(item.user.generatedNTR[level])
-                ),
-                generatedBNB: Number(
-                  ethers.utils.formatEther(item.user.generatedBNB[level])
-                ),
-                active: false,
-              };
-            });
-            if (_children && _children.length > 0) {
-              if (_genealogies) {
-                _genealogies = _genealogies.slice();
-                _genealogies[level].children = _children;
-              }
+          const users = get().users;
+          if (users.length) {
+            _children = users[level]
+              .filter((e: any) => e.referrer == account)
+              .map((e: any) => {
+                return {
+                  id: level + 1,
+                  level: `0${level + 1}`,
+                  user: e.publicKey,
+                  people: users.flat().filter((r) => r.referrer == e.publicKey)
+                    .length,
+                  generatedBUSD: Number(
+                    ethers.utils.formatEther(e.generatedBUSD[level])
+                  ),
+                  generatedNTR: Number(
+                    ethers.utils.formatEther(e.generatedNTR[level])
+                  ),
+                  generatedBNB: Number(
+                    ethers.utils.formatEther(e.generatedBNB[level])
+                  ),
+                  active: false,
+                };
+              });
+          }
+
+          if (_children && _children.length > 0) {
+            if (_genealogies) {
+              _genealogies = _genealogies.slice();
+              _genealogies[level].children = _children;
             }
           }
 
@@ -162,3 +172,13 @@ export const useGenealogyStore = create<GenealogyStore>()(
     { name: "GenealogyStore" }
   )
 );
+
+function subByKey(array: any[], key: string): number {
+  if (array.some((e) => !e[key])) {
+    throw new Error("invalid key. All array memebers should have the key.");
+  }
+  return array.reduce(
+    (a: number, b: any) => a + b[key].reduce((v: number, j: any) => v + +j, 0),
+    0
+  );
+}

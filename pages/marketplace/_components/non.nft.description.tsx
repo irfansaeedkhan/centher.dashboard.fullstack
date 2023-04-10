@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
@@ -48,10 +48,58 @@ export const NonNFTDescription = ({
     title: "",
     content: "",
   });
-
+  const [days, setDays] = useState<number>(0);
+  const [hours, setHours] = useState<number>(0);
+  const [minutes, setMinutes] = useState<number>(0);
+  const [seconds, setSeconds] = useState<number>(0);
+  const [nowTime, setNowTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
   const isApproved = useGetApprovedForAll(account, data?.collection);
+  useEffect(() => {
+    if (data) {
+      var endtime = new Date(data?.unlock * 1000);
+      var now = new Date();
+      setNowTime(now);
+      setEndTime(endtime);
 
+      var updateTime = setInterval(() => {
+        var now = new Date().getTime();
+
+        var difference = data.unlock * 1000 - now;
+
+        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
+        var newHours = Math.floor(
+          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        var newMinutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setDays(newDays);
+        setHours(newHours);
+        setMinutes(newMinutes);
+        setSeconds(newSeconds);
+
+        if (difference <= 0) {
+          clearInterval(updateTime);
+          setDays(0);
+          setHours(0);
+          setMinutes(0);
+          setSeconds(0);
+          setEnd(true);
+        } else {
+          setEnd(false);
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(updateTime);
+    };
+  }, [data]);
   const handleListNFT = async (bidPrice: any) => {
     try {
       validateProvider();
@@ -379,6 +427,7 @@ export const NonNFTDescription = ({
       throw new Error("Connect your wallet");
     }
   }
+
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
@@ -406,17 +455,67 @@ export const NonNFTDescription = ({
           {data?.description}
         </p>
       </div>
-      <div className="buttonContainer flex items-center gap-4 [@media(max-width:370px)]:overflow-auto">
-        <NewButton
-          title={"Auction"}
-          variant="v1"
-          onClick={() => {
-            setupAuctionModal();
-          }}
-        />
-        <NewButton title={"List"} onClick={listingFunc} variant="v4" />
-        <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
-      </div>
+      {data!.unlock < +new Date() / 1000 ? (
+        <div className="buttonContainer flex items-center gap-4">
+          <NewButton
+            title={"Auction"}
+            variant="v1"
+            onClick={() => {
+              setupAuctionModal();
+            }}
+          />
+          <NewButton title={"List"} onClick={listingFunc} variant="v4" />
+          <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
+        </div>
+      ) : (
+        <div className={greyBoxContainer}>
+          <h4 className={desTitle}>Description</h4>
+          <p className={`${greyTxt} leading-6`}>{data?.description}</p>
+
+          <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
+            <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
+              <AuctionIcon />
+              <h4 className="text-14px font-normal text-white">
+                This NFT will unlock in
+              </h4>
+            </div>
+            <div className="flex w-full justify-center p-4">
+              <div className="timerBox flex items-center gap-5">
+                <div className="dateBix flex flex-col items-center gap-2">
+                  <h5 className="text-20px font-semibold text-white">{days}</h5>
+                  <h6 className="text-12px font-normal text-gray-shade-7">
+                    Days
+                  </h6>
+                </div>
+                <div className="dateBix flex flex-col items-center gap-2">
+                  <h5 className="text-20px font-semibold text-white">
+                    {hours}
+                  </h5>
+                  <h6 className="text-12px font-normal text-gray-shade-7">
+                    Hours
+                  </h6>
+                </div>
+                <div className="dateBix flex flex-col items-center gap-2">
+                  <h5 className="text-20px font-semibold text-white">
+                    {minutes}
+                  </h5>
+                  <h6 className="text-12px font-normal text-gray-shade-7">
+                    Minutes
+                  </h6>
+                </div>
+                <div className="dateBix flex flex-col items-center gap-2">
+                  <h5 className="text-20px font-semibold text-white">
+                    {seconds}
+                  </h5>
+                  <h6 className="text-12px font-normal text-gray-shade-7">
+                    Seconds
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {ModalModel.visibility && (
         <CustomModal

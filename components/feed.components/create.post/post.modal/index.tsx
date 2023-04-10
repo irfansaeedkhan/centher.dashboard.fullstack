@@ -2,12 +2,13 @@ import React, { useMemo } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 
-import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
+import { useNewPostStore } from "@/store/new.post.store";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { PostModalContainer } from "./post.modal.container";
 import { FilesPreview } from "./files.preview";
+import PostPreview from "./post.preview";
 
 interface Props {
   modalTitle: string;
@@ -16,21 +17,26 @@ interface Props {
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const {
-    selectedFiles,
-    editPostFiles,
     closeModal,
     isModalOpen,
-    postText,
     setPostText,
     postTextMaxLength,
+    posts,
+    removePost,
   } = useNewPostStore();
+
+  const lastPost = useMemo(() => {
+    return posts.at(-1);
+  }, [posts]);
 
   const hasMedia = useMemo(() => {
     return (
-      !!selectedFiles.length ||
-      !!editPostFiles?.filter((f) => !f.isDeleted).length
+      lastPost &&
+      (!!lastPost.media.length ||
+        !!lastPost.media.filter((f) => f.type === "edit" && !f.isDeleted)
+          .length)
     );
-  }, [selectedFiles, editPostFiles]);
+  }, [lastPost]);
 
   if (!user) {
     return null;
@@ -73,19 +79,31 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           </div>
 
           <div>
-            <FilesPreview />
+            {posts.slice(0, -1).map((post) => (
+              <PostPreview
+                key={post.uuid}
+                post={post}
+                removePost={removePost}
+              />
+            ))}
 
-            <div className={clsx(`w-full`, hasMedia && "mt-4")}>
-              <textarea
-                className={`fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
-                cols={12}
-                rows={4}
-                maxLength={postTextMaxLength}
-                placeholder="Type here"
-                value={postText}
-                onChange={(e) => setPostText(e.target.value)}
-              ></textarea>
-            </div>
+            {lastPost && (
+              <div className="scrollSet rounded-10px bg-background-shade-3">
+                <FilesPreview media={lastPost.media} />
+
+                <div className={clsx(`w-full`, hasMedia && "mt-4")}>
+                  <textarea
+                    className={`scrollSet fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
+                    cols={12}
+                    rows={4}
+                    maxLength={postTextMaxLength}
+                    placeholder="Type here"
+                    value={lastPost.post_text}
+                    onChange={(e) => setPostText(e.target.value)}
+                  ></textarea>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </PostModalContainer>

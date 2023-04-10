@@ -5,7 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { BNBIcon, WarningIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon, HammerIconBG } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -321,44 +321,47 @@ export const AuctionNftDescription = ({
       </div>
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
-        <p className={`${greyTxt} leading-6`}>{data?.description}</p>
-
-        <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
-          <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
-            <AuctionIcon />
-            <h4 className="text-14px font-normal text-white">
-              Auction ends in
-            </h4>
-          </div>
-          <div className="flex w-full justify-center p-4">
-            <div className="timerBox flex items-center gap-5">
-              <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-20px font-semibold text-white">{days}</h5>
-                <h6 className="text-12px font-normal text-gray-shade-7">
-                  Days
-                </h6>
+        <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
+        <div className="w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-[length:85%] bg-center bg-no-repeat ">
+          <div className="text-14px flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
+            <div className="flex flex-col items-center gap-3 text-center  fsm:max-w-[138px]">
+              <HammerIconBG className="scale-150" />
+              <h4 className="text-14px font-normal text-white">
+                This Auction will end in
+              </h4>
+            </div>
+            <div className="flex h-full w-full max-w-[280px] items-center justify-evenly gap-2 fsm:justify-end fsm:gap-8">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[20px] font-semibold text-white">
+                  {days}
+                </span>
+                <span className="text-[12px] font-medium text-[#CFD1DD]">
+                  DAYS
+                </span>
               </div>
-              <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-20px font-semibold text-white">{hours}</h5>
-                <h6 className="text-12px font-normal text-gray-shade-7">
-                  Hours
-                </h6>
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[20px] font-semibold text-white">
+                  {hours}
+                </span>
+                <span className="text-[12px] font-medium text-[#CFD1DD]">
+                  HOURS
+                </span>
               </div>
-              <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-20px font-semibold text-white">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[20px] font-semibold text-white">
                   {minutes}
-                </h5>
-                <h6 className="text-12px font-normal text-gray-shade-7">
-                  Minutes
-                </h6>
+                </span>
+                <span className="text-[12px] font-medium text-[#CFD1DD]">
+                  MIN
+                </span>
               </div>
-              <div className="dateBix flex flex-col items-center gap-2">
-                <h5 className="text-20px font-semibold text-white">
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[20px] font-semibold text-white">
                   {seconds}
-                </h5>
-                <h6 className="text-12px font-normal text-gray-shade-7">
+                </span>
+                <span className="text-[12px] font-medium text-[#CFD1DD]">
                   Seconds
-                </h6>
+                </span>
               </div>
             </div>
           </div>

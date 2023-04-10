@@ -4,7 +4,8 @@ import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
 import DXCIconImg from "./dexa-logo.png";
 import VerifiedIconImg from "./verifiedmark.png";
-
+import LockedIconImg from "./lock-icon.png";
+import HammerIconImg from "./hammer-icon.png";
 export interface IconProps {
   className?: string;
 }
@@ -128,7 +129,28 @@ export const CentherIconBG: React.FC<IconProps> = (props) => {
     />
   );
 };
-
+export const HammerIconBG: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={HammerIconImg.src}
+      alt="Hammer Icon"
+      width={15}
+      height={15}
+    />
+  );
+};
+export const LockedIconBG: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={LockedIconImg.src}
+      alt="Locked Icon"
+      width={15}
+      height={15}
+    />
+  );
+};
 export const DXCIconBG: React.FC<IconProps> = (props) => {
   return (
     <img

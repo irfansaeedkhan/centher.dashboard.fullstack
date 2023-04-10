@@ -56,7 +56,10 @@ const ArchivedPosts: NextPageWithLayout = () => {
       if (!isReply) {
         // Increment post count on profile card
         useProfileCardStore.getState().incrementPostsCount();
-        useFeedStore.getState().addNewPost(await getPost(postId));
+        const post = await getPost(postId);
+        if (post.status === "complete") {
+          useFeedStore.getState().addNewPost(post);
+        }
       }
     } catch (error: any) {
       customLog(error, ["development"]);
@@ -79,37 +82,27 @@ const ArchivedPosts: NextPageWithLayout = () => {
       </div>
       <div className="space-y-3">
         {posts.map((post) => {
-          if (post._id === posts[posts.length - 1]._id) {
-            return (
-              <div key={post._id} ref={lastPostRef}>
-                <SinglePostV2
-                  post={post}
-                  postType={"archived"}
-                  placement="profile-archived-page"
-                  shouldShowThread={false}
-                  onClickRestore={() =>
-                    handleRestoreAction(post._id, !!post.parent_post_id)
-                  }
-                  onClickDelete={() => handleDeleteAction(post._id)}
-                />
-              </div>
-            );
-          }
-
           return (
-            <SinglePostV2
-              key={post._id}
-              post={post}
-              postType={"archived"}
-              placement="profile-archived-page"
-              shouldShowThread={false}
-              onClickRestore={() =>
-                handleRestoreAction(post._id, !!post.parent_post_id)
-              }
-              onClickDelete={() => handleDeleteAction(post._id)}
-            />
+            <div key={post._id}>
+              <SinglePostV2
+                post={post}
+                parentPost={undefined}
+                postType={"archived"}
+                placement="profile-archived-page"
+                borderRadius={{
+                  top: true,
+                  bottom: true,
+                }}
+                onClickRestore={() =>
+                  handleRestoreAction(post._id, !!post.parent_post_id)
+                }
+                onClickDelete={() => handleDeleteAction(post._id)}
+              />
+            </div>
           );
         })}
+
+        {!!posts.length && <div ref={lastPostRef} />}
 
         {(loading === "loading" || loading === "idle") && (
           <>

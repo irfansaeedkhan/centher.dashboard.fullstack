@@ -142,7 +142,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/registration-v2"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/16ac52b5-2c0e-494a-a2b1-338cde",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/534d595c-4f9b-4469-a61d-c032e4",
 };
 
 //TODO=> Implement configuration validator function

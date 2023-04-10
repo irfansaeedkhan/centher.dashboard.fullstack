@@ -1,8 +1,11 @@
+import { Post } from "@/models/post";
 import { axiosNodeApi } from "@/utils/axios";
 
 export const getPost = async (postId: string) => {
-  const { data } = await axiosNodeApi.get(`/api/socials/posts/${postId}`);
-  return data.post;
+  const { data } = await axiosNodeApi.get(
+    `/api/socials/posts/${postId}?exact_post=true`
+  );
+  return data.posts[0] as Post;
 };
 
 export const archivePost = async (postId: string) => {
