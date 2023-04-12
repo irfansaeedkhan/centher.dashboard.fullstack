@@ -60,7 +60,7 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
 
   return (
     <div
-      className={clsx(`grid gap-2`, {
+      className={clsx(`grid gap-[10px]`, {
         "grid-cols-2": postFiles.length === 2,
         "grid-cols-2 fsm:grid-cols-3": postFiles.length >= 3,
       })}
