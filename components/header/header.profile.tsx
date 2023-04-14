@@ -88,9 +88,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             title={loggedInUser?.display_name}
           >
             <span
-              className={clsx(
-                ` block w-full max-w-full overflow-hidden truncate`
-              )}
+              className={clsx(` block max-w-full overflow-hidden truncate`)}
             >
               {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
             </span>
