@@ -16,7 +16,6 @@ import {
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import useGetUser from "@/hooks/use.get.user";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
@@ -73,6 +72,8 @@ export const PostHeader: React.FC<Props> = ({
     try {
       return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
         ? dayjs(new Date(createdAt)).fromNow()
+        : dayjs().diff(dayjs(new Date(createdAt)), "day") > 365
+        ? dayjs(new Date(createdAt)).format("D MMM, YYYY")
         : dayjs(new Date(createdAt)).format("D MMM");
     } catch (error) {
       // There is some issue with dayjs, so we are returning 2s as a fallback
