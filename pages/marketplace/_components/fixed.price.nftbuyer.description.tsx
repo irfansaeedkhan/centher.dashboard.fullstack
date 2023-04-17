@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { ethers } from "ethers";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import NewButton from "@/components/button/new.button";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -59,7 +60,7 @@ export const FixedPriceNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
   const ProceedFunc = () => {
@@ -68,16 +69,16 @@ export const FixedPriceNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
   const handleBuyNFT = async () => {
@@ -104,10 +105,10 @@ export const FixedPriceNFTBuyerDescription = ({
         success = true;
       }
     } catch (error) {
-      toastError(error);
-      SuccessFunc(false);
+      toastError("something went wrong");
+      SuccessFunc(false, "Something went wrong. Unable to buy ");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(success, "Congratulations! You have successfully bought ");
     }
   };
 
@@ -124,7 +125,9 @@ export const FixedPriceNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
+          <h2 className="text-18px word-break font-semibold text-white">
+            {data?.name}
+          </h2>
           <h3 className="text-14px font-normal text-white">
             Marketplace Fee {BlockchainConfig.fee.buyItemFeeForMarketplace}%
           </h3>
@@ -169,7 +172,7 @@ export const FixedPriceNFTBuyerDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -183,15 +186,15 @@ export const FixedPriceNFTBuyerDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully bought{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
+              {msg}
+              <span className="word-break text-white">{data?.name}</span> NFT on{" "}
               <b>Centher</b>
               platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
 
@@ -278,7 +281,7 @@ export const FixedPriceNFTBuyerDescription = ({
       {connectWalletModal && (
         <CustomNewModal
           onClose={() => {
-            setModal(false);
+            setConnectWalletModal(false);
           }}
           title={"Connect to wallet"}
         >

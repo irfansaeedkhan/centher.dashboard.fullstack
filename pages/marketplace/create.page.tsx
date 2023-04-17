@@ -52,7 +52,7 @@ const CreateNFT: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, nftData);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
@@ -65,7 +65,7 @@ const CreateNFT: NextPageWithLayout = () => {
         nftData,
       });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const handleCreateCollection = async (nftData: any) => {
@@ -119,7 +119,7 @@ const CreateNFT: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
 
@@ -129,7 +129,7 @@ const CreateNFT: NextPageWithLayout = () => {
       visibility: true,
       content: (nftData: any) => (
         <div className={modalBodyWrapper2}>
-          <h2 className="text-18px break-words font-semibold text-white">
+          <h2 className="text-18px word-break font-semibold text-white">
             {nftData?.name}
           </h2>
           <h3 className="text-14px font-normal text-white">
@@ -168,7 +168,7 @@ const CreateNFT: NextPageWithLayout = () => {
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
-              <span className="break-words text-white">{nftData?.name} </span>{" "}
+              <span className="word-break text-white">{nftData?.name} </span>{" "}
               NFT on <b> Centher </b> NFT platform, Click view on profile to
               view your NFT.
             </p>

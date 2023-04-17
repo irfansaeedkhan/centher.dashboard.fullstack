@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon, LoaderIcon, HammerIconBG, WarningIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -22,6 +23,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import AuctionBidModal from "./auction.bid.modal";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
   setNftData: () => void;
@@ -114,22 +116,23 @@ export const AuctionNFTBuyerDescription = ({
     };
   }, [data]);
 
-  const SuccessFunc = useCallback((txStatus: boolean) => {
+  const SuccessFunc = useCallback((txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong, please try again later.");
     }
   }, []);
+
   const ProceedFunc = () => {
     try {
       validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong, please try again later.");
     }
   };
   const onSubmit = useCallback(
@@ -163,8 +166,9 @@ export const AuctionNFTBuyerDescription = ({
         }
       } catch (error) {
         toast.error("something went wrong, please try again later.");
+        SuccessFunc(false, "Something went wrong, auction failed");
       } finally {
-        SuccessFunc(success);
+        SuccessFunc(success, "Bid placed successfully on auctioned on");
       }
     },
     [SuccessFunc, bnbBalance, data, library, price]
@@ -177,7 +181,7 @@ export const AuctionNFTBuyerDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result);
+      SuccessFunc(!!result, "Auction has ended for ");
       setNftData();
     } catch (err: any) {
       toastError(err);
@@ -202,7 +206,7 @@ export const AuctionNFTBuyerDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper1}>
           <Image
             className={ImgStyling}
@@ -216,15 +220,14 @@ export const AuctionNFTBuyerDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully placed bid on{" "}
-              <span className="text-white">{data?.name} </span> NFT on{" "}
-              <b> Centher </b>
+              {msg} <span className="word-break text-white">{data?.name} </span>{" "}
+              NFT on <b> Centher </b>
               platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           <Button

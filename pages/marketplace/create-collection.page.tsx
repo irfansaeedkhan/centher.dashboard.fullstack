@@ -48,7 +48,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, collectionData);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
@@ -61,7 +61,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionData,
       });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
@@ -131,7 +131,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const modalTemplateCollection: TemplateCollection = {
@@ -147,7 +147,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="text-18px word-break font-semibold text-white">
             {collectionData?.name}
           </h2>
           <h3 className="text-14px font-normal text-white">
@@ -184,7 +184,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
-              <span className="text-white">{collectionData?.name}</span>{" "}
+              <span className="word-break text-white">
+                {collectionData?.name}
+              </span>{" "}
               Collection on <b> Centher </b> platform, Click view on profile to
               view your collection.
             </p>

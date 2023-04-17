@@ -229,7 +229,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             >
               <div className="flex w-full items-center justify-evenly">
                 <span className="text-10px hidden max-w-[100px] font-medium text-white f2xl:block">
-                  Time remaining to unlock
+                  This auction will end in
                 </span>
                 <div className="flex flex-col items-center ">
                   <span className="text-[13px] font-semibold text-white">

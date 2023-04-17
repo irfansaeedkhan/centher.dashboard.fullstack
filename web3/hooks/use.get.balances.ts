@@ -17,9 +17,7 @@ export const useGetNtrBalance = (address: string | null | undefined) => {
           await contract.balanceOf(address)
         );
         setBalance(Number(ntrBalance));
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     })();
   }, [address]);
   return balance;
@@ -40,9 +38,7 @@ export const useGetNtrDaoBalance = (address: string | null | undefined) => {
           6
         );
         setBalance(Number(ntrdaoBalance));
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     })();
   }, [address]);
   return balance;
@@ -64,9 +60,7 @@ export const useGetBusdBalance = (address: string | null | undefined) => {
           await contract.balanceOf(address)
         );
         setBalance(Number(busdBalance));
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     })();
   }, [address]);
   return balance;
@@ -88,9 +82,7 @@ export const useGetBNBBalance = (address: string | null | undefined) => {
           await provider.getBalance(address)
         );
         setBalance(Number(bnbBalance));
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     })();
   }, [address]);
   return balance;

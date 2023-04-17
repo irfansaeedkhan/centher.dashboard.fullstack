@@ -6,6 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
+import { IModalProps } from "@/components/modal/standard.modal";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -55,7 +56,7 @@ export const FixedPriceNFTDescription = ({
       validateProvider();
       modal.createModal(ModalType.cancelPrice);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -64,7 +65,7 @@ export const FixedPriceNFTDescription = ({
       validateProvider();
       modal.createModal(ModalType.bidNft);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -73,7 +74,7 @@ export const FixedPriceNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.editListing, bidPrice);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -81,15 +82,15 @@ export const FixedPriceNFTDescription = ({
     try {
       modal.createModal(ModalType.txInProgress);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
-  const setupSuccessModal = (txStatus: boolean) => {
+  const setupSuccessModal = (txStatus: boolean, msg: string) => {
     try {
-      modal.createModal(ModalType.success, txStatus);
+      modal.createModal(ModalType.success, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong, please try again later");
     }
   };
 
@@ -109,8 +110,15 @@ export const FixedPriceNFTDescription = ({
       }
     } catch (error) {
       toast.error("something went wrong, please try again later");
+      setupSuccessModal(
+        false,
+        "Something went wrong. canceling your listing failed. please refresh the page or try later."
+      );
     } finally {
-      setupSuccessModal(success);
+      setupSuccessModal(
+        success,
+        "Congratulations! You have successfully canceled your listing of NFT "
+      );
     }
   };
 
@@ -138,9 +146,16 @@ export const FixedPriceNFTDescription = ({
         success = true;
       }
     } catch (err) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
+      setupSuccessModal(
+        false,
+        "Something went wrong. please refresh the page or try later."
+      );
     } finally {
-      setupSuccessModal(success);
+      setupSuccessModal(
+        success,
+        "Congratulations! You have successfully updated price of your NFT "
+      );
     }
   };
 
@@ -232,7 +247,7 @@ export const FixedPriceNFTDescription = ({
     success: {
       title: "Complete Checkout",
       visibility: true,
-      content: (status: boolean) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -242,18 +257,18 @@ export const FixedPriceNFTDescription = ({
             width={64}
           />
           <h2 className="text-18px font-semibold text-white">
-            {status ? "Success!" : "Failed!"}
+            {txStatus ? "Success!" : "Failed!"}
           </h2>
-          {status && (
+          {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully unlisted your NFT{" "}
-              <span className="text-white">{data?.name}</span> on
+              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              on
               <b> Centher </b> NFT platform.
             </p>
           )}
-          {!status && (
+          {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>

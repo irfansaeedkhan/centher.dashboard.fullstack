@@ -7,6 +7,7 @@ import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { AuctionIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -95,7 +96,7 @@ export const NonNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
   const handleBuyNFT = async () => {
@@ -115,10 +116,13 @@ export const NonNFTBuyerDescription = ({
         success = true;
       }
     } catch (error) {
-      toastError(error);
-      SuccessFunc(false);
+      toastError("something went wrong");
+      SuccessFunc(false, "Unable to buy NFT");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(
+        success,
+        "Congratulations! You have successfully bought the "
+      );
     }
   };
   const ProceedFunc = () => {
@@ -127,16 +131,16 @@ export const NonNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
 
@@ -189,7 +193,7 @@ export const NonNFTBuyerDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -203,15 +207,14 @@ export const NonNFTBuyerDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully placed bid on{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
-              <b>Centher</b>
+              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              NFT on <b>Centher</b>
               platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           {/* <Link href={{

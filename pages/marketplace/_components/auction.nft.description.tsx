@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon, WarningIcon, LoaderIcon, HammerIconBG } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -105,7 +106,7 @@ export const AuctionNftDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.cancelAuctionFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const endAuctionFunc = () => {
@@ -114,7 +115,7 @@ export const AuctionNftDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.endAuctionFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const ProceedFunc = () => {
@@ -123,16 +124,16 @@ export const AuctionNftDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
   const handleEndAuction = async () => {
@@ -143,10 +144,13 @@ export const AuctionNftDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result);
+      SuccessFunc(
+        !!result,
+        "Congratulations! You have successfully ended the auction of "
+      );
       setNftData();
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const handleCancelAuction = async () => {
@@ -164,10 +168,13 @@ export const AuctionNftDescription = ({
         success = true;
       }
     } catch (error) {
-      toastError(error);
-      SuccessFunc(false);
+      toastError("something went wrong");
+      SuccessFunc(false, "Failed to cancel auction");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(
+        success,
+        "Congratulations! You have successfully canceled auction of "
+      );
     }
   };
 
@@ -222,7 +229,9 @@ export const AuctionNftDescription = ({
     successFuncModal: {
       title: "Checkout",
       visibility: true,
-      content: (txStatus: boolean) => (
+      // give them types
+
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -236,14 +245,14 @@ export const AuctionNftDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully created{" "}
-              <span className="text-white">{data?.name} </span> NFT on{" "}
-              <b> Centher </b> platform.
+              {msg}
+              <span className="word-break text-white">{data?.name} </span> NFT
+              on <b> Centher </b> platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>

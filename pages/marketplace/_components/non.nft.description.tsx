@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import clsx from "clsx";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -31,11 +32,12 @@ interface NonNFTDescriptionProps {
 enum ModalType {
   auctionModal = "auctionModal",
   saleWithAuction = "saleWithAuction",
+  cancelAuction = "cancelAuction",
   proceedFuncModal = "proceedFuncModal",
-  successFuncModal = "successFuncModal",
   listingFuncModal = "listingFuncModal",
   saleWithListingModal = "saleWithListingModal",
   sendFuncModal = "sendFuncModal",
+  successFuncModal = "successFuncModal",
 }
 
 export const NonNFTDescription = ({
@@ -106,7 +108,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       saleWithListing(bidPrice);
     } catch (err: any) {
-      toastError(err);
+      toastError("Failed to list NFT");
     }
   };
   const saleWithListing = (listingPrice: any) => {
@@ -115,7 +117,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.saleWithListingModal, listingPrice);
     } catch (err: any) {
-      toastError(err);
+      toastError("Failed to sale with listing");
     }
   };
   const listingFunc = () => {
@@ -124,7 +126,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.listingFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Failed to list NFT");
     }
   };
   const sendFunc = () => {
@@ -133,7 +135,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.sendFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Failed to send");
     }
   };
 
@@ -153,7 +155,7 @@ export const NonNFTDescription = ({
               throw new Error("something went wrong");
             }
           } catch (error) {
-            toastError(error);
+            toastError("something went wrong");
           }
         }
 
@@ -166,13 +168,13 @@ export const NonNFTDescription = ({
         if (result?.length) {
           setNftData();
         }
-        SuccessFunc(!!result);
+        SuccessFunc(!!result, "Congratulations! You have successfully listed ");
       } catch (error) {
-        toastError(error);
-        SuccessFunc(false);
+        toastError("something went wrong with listing");
+        SuccessFunc(false, "something went wrong with listing");
       }
     } else {
-      SuccessFunc(false);
+      SuccessFunc(false, "something went wrong with listing");
     }
   };
   const handleAuction = async (data: any) => {
@@ -181,7 +183,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.saleWithAuction, data);
     } catch (err: any) {
-      toastError(err);
+      toastError("failed to auction");
     }
   };
   const setupAuctionModal = () => {
@@ -190,7 +192,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.auctionModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("failed to auction");
     }
   };
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
@@ -231,8 +233,9 @@ export const NonNFTDescription = ({
       }
     } catch (err) {
       success = false;
+      SuccessFunc(false, "something went wrong with auction");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(success, "Congratulations! You have successfully auctioned ");
     }
   };
   const handleSendNFT = async (input: {
@@ -255,7 +258,7 @@ export const NonNFTDescription = ({
               throw new Error("something went wrong");
             }
           } catch (error) {
-            toastError(error);
+            toastError("failed to send nft");
           }
         }
 
@@ -270,13 +273,13 @@ export const NonNFTDescription = ({
         if (result?.length) {
           setNftData();
         }
-
-        success = !!result?.length;
+        SuccessFunc(!!result, "Congratulations! You have successfully sent ");
       } catch (error) {
-        toastError(error);
+        toastError("failed to send nft");
+        SuccessFunc(false, "failed to send nft");
       }
     } else {
-      SuccessFunc(success);
+      SuccessFunc(false, "failed to send nft");
     }
   };
 
@@ -286,18 +289,20 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
+
   const modalTemplateCollection: TemplateCollection = {
     auctionModal: {
       title: "Auction",
@@ -305,6 +310,40 @@ export const NonNFTDescription = ({
       content: () => <CreateNFTAuctionModal handleAuction={handleAuction} />,
     },
     saleWithAuction: {
+      title: "Auction",
+      visibility: true,
+      content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
+        <div className={modalBodyWrapper}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Are you sure you want to setup auction?
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            It will be available for auction on market and You will be asked to
+            confirm the transaction through your wallet.
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={() =>
+                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+              }
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+    },
+    cancelAuction: {
       title: "Cancel listing",
       visibility: true,
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
@@ -356,7 +395,7 @@ export const NonNFTDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -370,15 +409,14 @@ export const NonNFTDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully listed{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
-              <b>Centher </b>
+              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              NFT on <b>Centher </b>
               platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>
