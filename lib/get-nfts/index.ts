@@ -23,6 +23,7 @@ export const getNFTs = async ({
           collection: item.collection,
           tokenId: item.tokenId,
           creator: item.creator,
+          mintHash: item.mintHash,
           createTime: item.createTime,
           ipfs: item.ipfs,
           saleState: item.saleState,

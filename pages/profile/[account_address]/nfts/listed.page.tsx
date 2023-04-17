@@ -3,13 +3,13 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 
-import { NFT } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { NFTImageCard } from "@/components/nft.image.card";
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
+import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
 
 const ListedNFTS: NextPageWithLayout = () => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const ListedNFTS: NextPageWithLayout = () => {
     }
   }, [account, fetchListedNFTs]);
 
-  const [displayNFTs, setDisplayNFTs] = useState<NFT[]>([]);
+  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
 
   useEffect(() => {
     if (loadingListedNFTs == LoadingStatus.loaded) {

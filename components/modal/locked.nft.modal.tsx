@@ -39,7 +39,7 @@ export const LockedNftModal: React.FC<CustomModalProps> = ({
       >
         {/* Container */}
         <div
-          className={`flex h-full w-full max-w-[656px] flex-col border border-gray-shade-3 border-opacity-40 bg-black-shade-12 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-2xl md:mx-0`}
+          className={`flex h-full w-full max-w-[656px] flex-col overflow-auto border border-gray-shade-3 border-opacity-40 bg-black-shade-12 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-2xl md:mx-0`}
         >
           {/* Header */}
           <div
@@ -57,7 +57,9 @@ export const LockedNftModal: React.FC<CustomModalProps> = ({
           </div>
 
           {/* Children Wrapper */}
-          <div className="scrollSet overflow-auto">{children}</div>
+          <div className="scrollSet overflow-auto bg-black-shade-12">
+            {children}
+          </div>
         </div>
       </div>
     </ModalPortal>

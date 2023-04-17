@@ -57,6 +57,7 @@ export const useExploreStore = create<ExploreStore>()(
                 owner: item.owner,
                 endTime: _endTime,
                 unlock: item.unlock,
+                mintHash: item.mintHash,
               };
             });
           }

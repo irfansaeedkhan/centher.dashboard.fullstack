@@ -35,11 +35,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
     days: 0,
     hours: 0,
     minutes: 0,
+    seconds: 0,
   });
   const [auctionTimer, setAuctionTimer] = useState({
     days: 0,
     hours: 0,
     minutes: 0,
+    seconds: 0,
   });
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
         days: 0,
         hours: 0,
         minutes: 0,
+        seconds: 0,
       });
       let timeRemainingLocked = Number(data.unlock) * 1000 - getUTCNow();
       if (timeRemainingLocked <= 0) return;
@@ -71,6 +74,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
         days: 0,
         hours: 0,
         minutes: 0,
+        seconds: 0,
       });
       let timeRemainingAuction = Number(data.endTime) * 1000 - getUTCNow();
       if (timeRemainingAuction <= 0) return;
@@ -96,15 +100,18 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
     const _days = Math.floor(deadline / (1000 * 60 * 60 * 24));
     const _hours = Math.floor((deadline / (1000 * 60 * 60)) % 24);
     const _minutes = Math.floor((deadline / 1000 / 60) % 60);
+    const _seconds = Math.floor((deadline / 1000) % 60);
     setLockedTimer({
       days: _days <= 0 ? 0 : _days,
       hours: _hours <= 0 ? 0 : _hours,
       minutes: _minutes <= 0 ? 0 : _minutes,
+      seconds: _seconds <= 0 ? 0 : _seconds,
     });
     setAuctionTimer({
       days: _days <= 0 ? 0 : _days,
       hours: _hours <= 0 ? 0 : _hours,
       minutes: _minutes <= 0 ? 0 : _minutes,
+      seconds: _seconds <= 0 ? 0 : _seconds,
     });
   };
   const onClickClose = () => {
@@ -113,6 +120,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const onClickOpen = () => {
     setShowLockedDetails(true);
   };
+
   return (
     <div className={`cursor-pointer`}>
       <div
@@ -363,35 +371,45 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 width={120}
                 className="h-[120px] w-[120px] rounded-xl object-cover"
               />
-              <div className="flex w-full max-w-[240px] flex-col gap-2 fmd:gap-4">
-                <h5 className="text-18px text-center font-semibold text-white fmd:text-left">
+              <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
+                <h5 className="text-18px text-center font-semibold text-white fsm:text-left">
                   {data.name}
                 </h5>
-                <div className="my-2 h-[47px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat fmd:mt-0">
-                  {" "}
-                  <div className="text-12px bg-[rgba(20, 20, 22, 0.08)]  flex h-full w-full items-center justify-evenly gap-5 px-4 py-2 text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left ">
+                <div className="my-2 h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat p-[2px] fmd:mt-0">
+                  <div className="text-12px bg-[rgba(20, 20, 22, 0.08)]  flex h-full w-full items-center justify-evenly gap-5 overflow-hidden px-4 py-2 text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left">
+                    <h4 className="min-w-[80px] max-w-[114px] text-[11px] font-bold text-white">
+                      This NFT will unlock in
+                    </h4>
                     <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
+                      <span className="text-[12px] font-semibold text-white">
                         {lockedTimer.days}
                       </span>
-                      <span className="text-[10px] font-medium text-white">
+                      <span className="text-[8px] font-medium text-white">
                         DAYS
                       </span>
                     </div>
                     <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
+                      <span className="text-[12px] font-semibold text-white">
                         {lockedTimer.hours}
                       </span>
-                      <span className="text-[10px] font-medium text-white">
+                      <span className="text-[8px] font-medium text-white">
                         HOURS
                       </span>
                     </div>
                     <div className="flex flex-col items-center ">
-                      <span className="text-[14px] font-semibold text-white">
+                      <span className="text-[12px] font-semibold text-white">
                         {lockedTimer.minutes}
                       </span>
-                      <span className="text-[10px] font-medium text-white">
+                      <span className="text-[8px] font-medium text-white">
                         MIN
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center ">
+                      <span className="text-[12px] font-semibold text-white">
+                        {lockedTimer.seconds}
+                      </span>
+                      <span className="text-[8px] font-medium text-white">
+                        SEC
                       </span>
                     </div>
                   </div>
@@ -399,10 +417,35 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               </div>
             </div>
             {/* description */}
-            <div className="mt-4 flex flex-col gap-6 fmd:mt-6">
+            <div className=" mt-6 flex w-full flex-col items-start gap-6 fsm:flex-row">
+              <div className="flex min-w-fit items-center justify-center gap-3">
+                <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
+                <div className="flex flex-col gap-1">
+                  <h5 className="text-12px font-normal text-gray-shade-18">
+                    Creater
+                  </h5>
+
+                  <h5 className="word-break text-14px font-semibold text-white">
+                    {data.creator?.display_name}
+                  </h5>
+                </div>
+              </div>
+              <div className="flex min-w-fit items-center justify-center gap-3">
+                <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
+                <div className="flex flex-col gap-1">
+                  <h5 className="text-12px font-normal text-gray-shade-18">
+                    Owner
+                  </h5>
+                  <h5 className="word-break text-14px  font-semibold text-white">
+                    {data.owner?.display_name}
+                  </h5>
+                </div>
+              </div>
+            </div>
+            <div className="mt-6 flex flex-col gap-6">
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
-                  Collection Description
+                  Description
                 </h5>
                 <h6 className="text-14px font-semibold text-white">
                   {data.description}
@@ -412,8 +455,16 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
                   {data.collection}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Mint Transaction
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  {data.mintHash}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
@@ -432,7 +483,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   );
 };
 
-interface NFTOwner
+export interface NFTOwner
   extends Pick<
     User,
     "account_address" | "display_name" | "profile_image" | "is_verified"
@@ -448,6 +499,8 @@ export interface NFTCardData {
   price: NFT["price"];
   name: string;
   description: string;
+  creator: NFTOwner;
+  mintHash: string;
   imageUrl: string;
   type: "image" | "video" | "audio";
   unlock: NFT["unlock"];

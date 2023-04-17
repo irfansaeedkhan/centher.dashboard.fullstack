@@ -1,13 +1,16 @@
+import { User } from "./user";
+
 export interface NFT {
   id: string;
   collection: string;
   tokenId: number;
   creator: string;
+  owner: string;
+  mintHash: string;
   createTime: number;
   ipfs: string;
   saleState: string;
   price: number;
-  owner: string;
   endTime: number;
   unlock: number;
 }

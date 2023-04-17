@@ -117,6 +117,7 @@ export const useCollectionStore = create<CollectionStore>()(
                 collection: item.collection,
                 tokenId: item.tokenId,
                 creator: item.creator,
+                mintHash: item.mintHash,
                 createTime: item.createTime,
                 ipfs: item.ipfs,
                 saleState: item.saleState,

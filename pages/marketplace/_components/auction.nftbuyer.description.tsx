@@ -99,18 +99,15 @@ export const AuctionNFTBuyerDescription = ({
     };
   }, [data]);
 
-  const SuccessFunc = useCallback(
-    (txStatus: boolean) => {
-      try {
-        validateProvider();
-        modal.dismissModal();
-        modal.createModal(ModalType.successFuncModal, txStatus);
-      } catch (err: any) {
-        toastError(err);
-      }
-    },
-    [data]
-  );
+  const SuccessFunc = useCallback((txStatus: boolean) => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.successFuncModal, txStatus);
+    } catch (err: any) {
+      toastError(err);
+    }
+  }, []);
   const ProceedFunc = () => {
     try {
       validateProvider();
