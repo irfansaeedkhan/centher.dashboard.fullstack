@@ -136,7 +136,6 @@ const Replies: NextPageWithLayout = () => {
                 bottom: true,
               }}
               shouldShowThread={post.is_thread}
-              shouldShowComments={post.replies_count > 0}
               onClickLike={async () => {
                 await likePostAPI(
                   post._id,

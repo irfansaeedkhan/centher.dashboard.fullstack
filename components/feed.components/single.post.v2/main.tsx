@@ -44,7 +44,6 @@ interface Props {
     bottom?: boolean;
   };
   shouldShowThread?: boolean;
-  shouldShowComments?: boolean;
   className?: string;
   onPostInViewport?: () => Promise<void>;
   onClickReply?: () => void;
@@ -65,7 +64,6 @@ export const SinglePostV2: React.FC<Props> = ({
     bottom: true,
   },
   shouldShowThread = false,
-  shouldShowComments = false,
   className,
   onPostInViewport = async () => {},
   onClickReply = () => {},
@@ -279,7 +277,7 @@ export const SinglePostV2: React.FC<Props> = ({
         <div
           className={clsx(
             {
-              "mb-2": shouldShowThread || shouldShowComments,
+              "mb-2": shouldShowThread,
             },
             placement === "single-post-page" &&
               (postType === "main" ||
@@ -317,11 +315,7 @@ export const SinglePostV2: React.FC<Props> = ({
         </div>
       </div>
 
-      <ShowThread
-        post={post}
-        shouldShowThread={shouldShowThread}
-        shouldShowComments={shouldShowComments}
-      />
+      <ShowThread post={post} shouldShowThread={shouldShowThread} />
 
       {isEditModalOpen && <PostModal modalTitle="Edit Post" />}
 
