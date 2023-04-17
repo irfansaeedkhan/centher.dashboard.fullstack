@@ -32,14 +32,6 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  // NFTPrice: Joi.number().greater(0).required().label("NFT Price").messages({
-  //   "string.empty": `NFTPrice Required`,
-  //   "any.required": `Required Field`,
-  // }),
-  // Collection: Joi.string().required().max(150).label("Collection").messages({
-  //   "string.empty": `Collection Required`,
-  //   "any.required": `Required Field`,
-  // }),
 });
 interface FixedPriceFormProps {
   createNFT: any;
@@ -239,7 +231,7 @@ const FixedPriceForm = ({
             id="NFTPrice"
             autoComplete="off"
             placeholder="Enter NFT Price"
-            className={nftPriceError === "" ? inputField : inputFieldError}
+            className={!nftPriceError ? inputField : inputFieldError}
             onChange={(e) => {
               setNFTPriceError(undefined);
               const inputValue = e.target.value;
@@ -271,13 +263,6 @@ const FixedPriceForm = ({
         {nftPriceError !== "" && (
           <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
         )}
-        {/* <div className={serviceFee}>
-          <div className={serviceFeeTitle}>
-            <span className={serviceFeeName}>Service fee</span>
-            <QuestionIcon />
-          </div>
-          <span className={serviceFeeNumber}>0.0370 BNB</span>
-        </div> */}
       </div>
       <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
