@@ -89,15 +89,14 @@ export const PostHeader: React.FC<Props> = ({
   useEffect(() => {
     const updateWidth = () => {
       if (!containerRef.current) return;
-
-      const newWidth = containerRef.current.offsetWidth;
-
+      const newWidth = containerRef.current.offsetWidth - 40;
       if (newWidth !== containerWidth) {
         setContainerWidth(newWidth);
       }
     };
-    updateWidth();
     window.addEventListener("resize", updateWidth);
+    updateWidth(); // Move this line inside the event listener
+
     return () => {
       window.removeEventListener("resize", updateWidth);
     };
@@ -107,7 +106,7 @@ export const PostHeader: React.FC<Props> = ({
     <div ref={containerRef} className="flex justify-between">
       <div
         className={` truncate break-words`}
-        style={{ maxWidth: `${containerWidth - 30}px` }}
+        style={{ maxWidth: `${containerWidth}px` }}
       >
         {/* Left Side */}
         <div className="left-side word-break mr-2 truncate">
