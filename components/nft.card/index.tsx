@@ -301,7 +301,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           </Link>
         </div>
         {locked ? (
-          <div className="px-[6px] pb-[8px]">
+          <div className="-mt-[6px] px-[6px] pb-[6px]">
             <div className="h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat">
               <div
                 className={`text-12px bg-[rgba(20, 20, 22, 0.08)] flex h-full w-full items-center justify-center rounded-xl text-white backdrop-blur-[20px]`}
