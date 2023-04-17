@@ -6,10 +6,14 @@ import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import Button from "@/components/button";
-import { BNBIcon, LoaderIcon, HammerIconBG } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon, HammerIconBG, WarningIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import {
+  formatAddress,
+  formatBNB2USD,
+  formatEther2Number,
+} from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
@@ -26,12 +30,14 @@ interface AuctionNFTBuyerDescriptionProps {
 enum ModalType {
   proceedFuncModal = "proceedFuncModal",
   successFuncModal = "successFuncModal",
+  endAuctionFuncModal = "endAuctionFuncModal",
 }
 export const AuctionNFTBuyerDescription = ({
   data,
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
   const [BidModal, setBidModal] = useState(false);
+  const [isUserWinner, SetIsUserWinner] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -62,6 +68,14 @@ export const AuctionNFTBuyerDescription = ({
       var now = new Date();
       setNowTime(now);
       setEndTime(endtime);
+
+      if (
+        account?.toLowerCase() ==
+        data?.auctionInfo.highestBidAddress?.toLowerCase()
+      ) {
+        SetIsUserWinner(true);
+      }
+
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
@@ -88,6 +102,7 @@ export const AuctionNFTBuyerDescription = ({
           setMinutes(0);
           setSeconds(0);
           setEnd(true);
+          setNftData();
         } else {
           setEnd(false);
         }
@@ -154,6 +169,20 @@ export const AuctionNFTBuyerDescription = ({
     },
     [SuccessFunc, bnbBalance, data, library, price]
   );
+  const handleEndAuction = async () => {
+    ProceedFunc();
+    try {
+      const result = await BlockchainWrite.callEndAuction(
+        library,
+        (data as INFTDetailData).collection,
+        (data as INFTDetailData).nftId
+      );
+      SuccessFunc(!!result);
+      setNftData();
+    } catch (err: any) {
+      toastError(err);
+    }
+  };
   const modalTemplateCollection: TemplateCollection = {
     proceedFuncModal: {
       title: "Complete Checkout",
@@ -209,6 +238,48 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       ),
     },
+    endAuctionFuncModal: {
+      title: "Collect NFT",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper1}>
+          <WarningIcon className="mx-auto" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Click Proceed to collect your NFT!
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            {formatAddress(data?.owner)} receives
+            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
+            will receive the NFT
+          </p>
+          <div className={footerBtnContainer}>
+            <Button
+              title={"Go back"}
+              variant="v2"
+              className="py-4"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            <Button
+              title={"Proceed"}
+              onClick={handleEndAuction}
+              variant="v1"
+              className="py-4"
+            />
+          </div>
+        </div>
+      ),
+    },
+  };
+  const endAuctionFunc = () => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.endAuctionFuncModal);
+    } catch (err: any) {
+      toastError(err);
+    }
   };
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
@@ -282,7 +353,7 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       </div>
       <div className="buttonContainer flex items-center">
-        {nowTime <= endTime && (
+        {nowTime < endTime && (
           <Button
             title={"Place bid"}
             variant={end ? "v2" : "v1"}
@@ -299,8 +370,20 @@ export const AuctionNFTBuyerDescription = ({
             }}
           />
         )}
+        {nowTime > endTime && isUserWinner && (
+          <Button
+            title={"Claim NFT"}
+            variant={"v1"}
+            className="py-4"
+            onClick={endAuctionFunc}
+          />
+        )}
+        {nowTime > endTime && !isUserWinner && (
+          <div className={infoBox}>
+            <p className={desTitle}>This NFT no longer available for bidding</p>
+          </div>
+        )}
       </div>
-
       {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
@@ -330,3 +413,5 @@ const greyTxt = `text-14px font-normal text-gray-shade-7`;
 const desTitle = `text-14px font-semibold text-white`;
 const BnBNum = `text-16px font-bold text-white`;
 const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;
+const footerBtnContainer = `flex items-center gap-4`;
+const infoBox = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6 items-center w-full`;

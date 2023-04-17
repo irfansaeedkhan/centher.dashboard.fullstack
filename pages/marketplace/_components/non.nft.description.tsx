@@ -201,6 +201,22 @@ export const NonNFTDescription = ({
     let success = false;
     try {
       if (library && data) {
+        if (!isApproved) {
+          try {
+            const approveResult =
+              await BlockchainWrite.callApproveNFTToMarketplace(
+                library,
+                data.collection
+              );
+
+            if (!approveResult?.length) {
+              throw new Error("something went wrong");
+            }
+          } catch (error) {
+            toastError(error);
+          }
+        }
+
         const result = await BlockchainWrite.callCreateAuction(
           library,
           data.collection,

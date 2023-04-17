@@ -48,15 +48,18 @@ export const AuctionNftDescription = ({
   const [seconds, setSeconds] = useState<number>(0);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [hasBid, sethasBid] = useState(false);
 
   const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
+      var hasBid = data.auctionInfo.bids?.length > 0;
       var endtime = new Date(data?.auctionInfo.endTime * 1000);
       var now = new Date();
       setNowTime(now);
       setEndTime(endtime);
+      sethasBid(hasBid);
 
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
@@ -84,6 +87,7 @@ export const AuctionNftDescription = ({
           setMinutes(0);
           setSeconds(0);
           setEnd(true);
+          setNftData();
         } else {
           setEnd(false);
         }
@@ -133,7 +137,6 @@ export const AuctionNftDescription = ({
   };
   const handleEndAuction = async () => {
     ProceedFunc();
-    let success = false;
     try {
       const result = await BlockchainWrite.callEndAuction(
         library,
@@ -376,24 +379,15 @@ export const AuctionNftDescription = ({
             onClick={cancelAuctionFunc}
           />
         )}
-        {nowTime === endTime ||
-          (nowTime > endTime && (
-            <Button
-              title={
-                data?.auctionInfo?.bids && data?.auctionInfo?.bids?.length > 0
-                  ? "Announce Winner"
-                  : "Cancel Auction"
-              }
-              disabled={!end}
-              onClick={
-                data?.auctionInfo?.bids && data?.auctionInfo?.bids?.length > 0
-                  ? endAuctionFunc
-                  : cancelAuctionFunc
-              }
-              variant="v4"
-              className="py-4"
-            />
-          ))}
+        {nowTime > endTime && (
+          <Button
+            title={hasBid ? "Announce Winner" : "End Auction"}
+            disabled={!end}
+            onClick={hasBid ? endAuctionFunc : cancelAuctionFunc}
+            variant="v1"
+            className="py-4"
+          />
+        )}
       </div>
       {ModalModel.visibility && (
         <CustomModal

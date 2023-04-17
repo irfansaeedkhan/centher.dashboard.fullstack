@@ -5,7 +5,7 @@ const UserProfileHeaderSkeleton: React.FC = () => {
     <div className="rounded-xl bg-[#131314]">
       {/* cover card */}
       <div>
-        <div className="relative h-[25vh] w-full animate-pulse rounded-t-xl bg-[#3C3F4A] bg-cover bg-center bg-no-repeat">
+        <div className="relative h-[25vh] w-full animate-pulse rounded-t-xl bg-[#3C3F4A] bg-cover bg-center bg-no-repeat fmd:h-[180px]">
           {/* profile image , user display name , icons , edit profile */}
           <div className="absolute left-[50%] -bottom-12 translate-x-[-50%] cursor-pointer">
             <div className="h-[112px] w-[111px] animate-pulse rounded-full border-2 border-[#2A2D3C] bg-[#3C3F4A] object-cover"></div>
