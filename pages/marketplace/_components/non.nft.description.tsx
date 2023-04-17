@@ -239,6 +239,7 @@ export const NonNFTDescription = ({
     ReceiverAddress: string;
     LockEndTime: number;
   }) => {
+    let success = false;
     ProceedFunc();
     if (library && data) {
       try {
@@ -265,18 +266,20 @@ export const NonNFTDescription = ({
           input.ReceiverAddress,
           input.LockEndTime
         );
+
         if (result?.length) {
           setNftData();
         }
-        SuccessFunc(!!result);
+
+        success = !!result?.length;
       } catch (error) {
         toastError(error);
-        SuccessFunc(false);
       }
     } else {
-      SuccessFunc(false);
+      SuccessFunc(success);
     }
   };
+
   const ProceedFunc = () => {
     try {
       validateProvider();
