@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
+import NewButton from "@/components/button/new.button";
 import { BNBIcon } from "@/assets/svgs";
-import Button from "@/components/button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -84,12 +84,12 @@ const ChangePriceBidModal = ({
         )}
       </div>
 
-      <Button
+      <NewButton
         title={"Next"}
-        variant={changeNFTPrice === null || nftPriceError ? "v2" : "v1"}
+        variant={changeNFTPrice === null || nftPriceError ? "v10" : "v1"}
         disabled={changeNFTPrice === null || nftPriceError ? true : false}
         onClick={() => setupEditListingItemPriceModal(changeNFTPrice)}
-        className="mt-2 py-4"
+        className="mt-2"
       />
     </div>
   );
@@ -99,7 +99,7 @@ export default ChangePriceBidModal;
 
 // styling
 const modalBodyWrapper = `
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+  flex flex-col gap-4 w-full px-4 pt-4 text-center
 `;
 const errMessage = `
 pb-2 text-12px font-medium
@@ -108,8 +108,8 @@ const fieldWrapper = `
   flex gap-2 flex-col w-full
 `;
 const fieldTitle = `
-  text-14px  font-normal text-white
+  text-14px font-normal text-white text-start
 `;
 const inputFieldModal = `
-  w-full py-3 px-5 h-[48px]  !bg-black-shade-2  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
 `;
