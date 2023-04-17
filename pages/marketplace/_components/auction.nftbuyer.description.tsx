@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
@@ -18,6 +19,11 @@ import {
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import NewButton from "@/components/button/new.button";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import useUser from "@/hooks/use.user";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { MetamaskIcon2 } from "@/assets/svgs";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
@@ -38,6 +44,11 @@ export const AuctionNFTBuyerDescription = ({
   data,
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
+  const { user: loggedInUser } = useUser();
+  const { connectWallet } = useConnectWallet();
+  const { deactivate } = useWeb3React();
+  const [Modal, setModal] = useState(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -355,38 +366,50 @@ export const AuctionNFTBuyerDescription = ({
           </div>
         </div>
       </div>
-      <div className="buttonContainer flex items-center">
-        {nowTime < endTime && (
-          <Button
-            title={"Place bid"}
-            variant={end ? "v2" : "v1"}
-            disabled={end}
-            className="py-4"
-            onClick={() => {
-              if (!library) {
-                toast.error("Connect your wallet");
-                return;
-              }
-              if (library) {
-                setBidModal(true);
-              }
-            }}
-          />
-        )}
-        {nowTime > endTime && isUserWinner && (
-          <Button
-            title={"Claim NFT"}
-            variant={"v1"}
-            className="py-4"
-            onClick={endAuctionFunc}
-          />
-        )}
-        {nowTime > endTime && !isUserWinner && (
-          <div className={infoBox}>
-            <p className={desTitle}>This NFT no longer available for bidding</p>
-          </div>
-        )}
-      </div>
+      {!library ? (
+        <NewButton
+          title={"Connect Wallet"}
+          variant="v9"
+          onClick={() => {
+            setConnectWalletModal(true);
+          }}
+        />
+      ) : (
+        <div className="buttonContainer flex items-center">
+          {nowTime < endTime && (
+            <Button
+              title={"Place bid"}
+              variant={end ? "v2" : "v1"}
+              disabled={end}
+              className="py-4"
+              onClick={() => {
+                if (!library) {
+                  toast.error("Connect your wallet");
+                  return;
+                }
+                if (library) {
+                  setBidModal(true);
+                }
+              }}
+            />
+          )}
+          {nowTime > endTime && isUserWinner && (
+            <Button
+              title={"Claim NFT"}
+              variant={"v1"}
+              className="py-4"
+              onClick={endAuctionFunc}
+            />
+          )}
+          {nowTime > endTime && !isUserWinner && (
+            <div className={infoBox}>
+              <p className={desTitle}>
+                This NFT no longer available for bidding
+              </p>
+            </div>
+          )}
+        </div>
+      )}
       {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
@@ -404,6 +427,51 @@ export const AuctionNFTBuyerDescription = ({
             setBidModal(false);
           }}
         />
+      )}
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setConnectWalletModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!loggedInUser) {
+                    toast.error("Please login to buy this nft");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (
+                    loggedInUser.account_address.toLowerCase() !==
+                    _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
       )}
     </div>
   );
