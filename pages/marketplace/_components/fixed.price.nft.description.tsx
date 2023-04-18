@@ -164,17 +164,17 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to cancel your Listing?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="mb-2 text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Canceling your listing will unpublish this sale from market and You
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v2"
+              variant="v10"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -357,7 +357,7 @@ export const FixedPriceNFTDescription = ({
 
 // styling
 const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+  flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
 `);
 const footerBtnContainer = ctl(`
 flex items-center gap-4
