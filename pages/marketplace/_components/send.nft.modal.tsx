@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
 
-import Button from "@/components/button";
 import CustomDropdown from "./custom.dropdown";
+import NewButton from "@/components/button/new.button";
 
 const lockOptions = [
   { label: "No Lock", value: "0" },
@@ -46,23 +46,6 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
 
   return (
     <form className={modalBodyWrapper}>
-      {/* <div className={fieldWrapper}>
-        <label className={fieldTitle}>Set Lock End Time</label>
-        <input
-          type="datetime-local"
-          id="LockEndTime"
-          autoComplete="off"
-          {...nftForm.register("LockEndTime")}
-          placeholder="Set Lock End Time"
-          className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-2 text-white !ring-0"
-        />
-        {nftForm.formState.errors.LockEndTime && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {nftForm.formState.errors.LockEndTime.message}
-          </p>
-        )}
-      </div> */}
-
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Set Lock End Time</label>
 
@@ -91,12 +74,12 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
           </p>
         )}
       </div>
-      <Button
+      <NewButton
         title={"Next"}
-        variant={nftForm.formState.isValid ? "v1" : "v2"}
+        variant={nftForm.formState.isValid ? "v1" : "v10"}
         disabled={!nftForm.formState.isValid}
         onClick={nftForm.handleSubmit(handleSendData)}
-        className="mt-2 py-4"
+        className="mt-2"
       />
     </form>
   );

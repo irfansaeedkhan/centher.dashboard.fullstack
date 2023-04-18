@@ -1,14 +1,12 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import Button from "@/components/button";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, WarningIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
@@ -315,29 +313,27 @@ export const NonNFTDescription = ({
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to setup auction?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             It will be available for auction on market and You will be asked to
             confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
               }
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -349,29 +345,27 @@ export const NonNFTDescription = ({
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to cancel your Listing?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Canceling your listing will unpublish this sale from market and You
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
               }
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -383,10 +377,10 @@ export const NonNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -404,26 +398,25 @@ export const NonNFTDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="fmd:text-18px mt-2 text-base font-semibold text-white">
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher </b>
               platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Ok"}
               variant="v4"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -448,28 +441,26 @@ export const NonNFTDescription = ({
       content: (listingPrice: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to List your NFT to sell?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm ">
             {`Listing Price will be  ${normalizeValue(
               Number(listingPrice)
             )} BNB.`}
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
-              variant="v2"
-              className="py-4"
+              variant="v10"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={() => handleListing(listingPrice)}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -588,8 +579,8 @@ export const NonNFTDescription = ({
   );
 };
 // styling
-const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
-const footerBtnContainer = `flex items-center gap-4`;
+const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
+const footerBtnContainer = `flex items-center gap-4 mt-2`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
 const greyTxt = `text-14px font-normal text-gray-shade-7`;
