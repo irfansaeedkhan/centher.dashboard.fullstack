@@ -89,6 +89,8 @@ export const NFTRightSideComponent = ({
         path: "https://static.centher.io/avatars/avatar-1.png",
       },
     };
+  } else {
+    nftOwner = _nftOwner;
   }
 
   useEffect(() => {
