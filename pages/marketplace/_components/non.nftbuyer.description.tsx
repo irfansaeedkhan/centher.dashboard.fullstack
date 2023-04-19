@@ -14,7 +14,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import NewButton from "@/components/button/new.button";
@@ -45,10 +45,26 @@ export const NonNFTBuyerDescription = ({
   const [seconds, setSeconds] = useState<number>(0);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [isMigrated, setIsMigrated] = useState(false);
   const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
 
+  useEffect(() => {}, [data, library]);
+
   useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        setIsMigrated(Status);
+      }
+    };
+
+    CheckStatus();
+
     if (data) {
       var endtime = new Date(data?.unlock * 1000);
       var now = new Date();
@@ -90,7 +106,7 @@ export const NonNFTBuyerDescription = ({
     return () => {
       clearInterval(updateTime);
     };
-  }, [data]);
+  }, [library, data]);
   const buyNFTStep1Func = () => {
     try {
       validateProvider();
@@ -272,11 +288,10 @@ export const NonNFTBuyerDescription = ({
 
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center">
-          <Button
+          <NewButton
             title={"Buy Now"}
             variant={data?.saleState === "NON" ? "v2" : "v1"}
-            className="py-4"
-            disabled={data?.saleState === "NON"}
+            disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
           />
         </div>

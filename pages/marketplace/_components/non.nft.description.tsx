@@ -21,6 +21,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
 import SendNFTModal from "./send.nft.modal";
+import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -55,10 +56,13 @@ export const NonNFTDescription = ({
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [end, setEnd] = useState(true);
+  const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
   const isApproved = useGetApprovedForAll(account, data?.collection);
+
   useEffect(() => {
     if (data) {
+      setTransferable(!TokenBlackList.isBlocked(data?.collection, data.nftId));
       var endtime = new Date(data?.unlock * 1000);
       var now = new Date();
       setNowTime(now);
@@ -513,7 +517,9 @@ export const NonNFTDescription = ({
             }}
           />
           <NewButton title={"List"} onClick={listingFunc} variant="v4" />
-          <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
+          {transferable && (
+            <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
+          )}
         </div>
       ) : (
         <div className={greyBoxContainer}>

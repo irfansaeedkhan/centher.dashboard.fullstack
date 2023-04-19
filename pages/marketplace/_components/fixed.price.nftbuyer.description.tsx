@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
@@ -43,14 +43,30 @@ export const FixedPriceNFTBuyerDescription = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
-  const { library, deactivate } = useWeb3React<ethers.providers.Web3Provider>();
+  const { library, deactivate } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
+
+  useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        setIsMigrated(Status);
+      }
+    };
+
+    CheckStatus();
+  }, [data, library]);
 
   const bnbPrice = useBNBPrice();
 
@@ -249,7 +265,8 @@ export const FixedPriceNFTBuyerDescription = ({
         {library ? (
           <NewButton
             title={"Buy Now"}
-            variant="v1"
+            disabled={!isMigrated}
+            variant={isMigrated ? "v1" : "v4"}
             onClick={async () => {
               if (!loggedInUser) {
                 toast.error("Please login to buy this nft");

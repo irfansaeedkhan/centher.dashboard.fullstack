@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
@@ -13,11 +12,12 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, WarningIcon, LoaderIcon, MigrateIcon } from "@/assets/svgs";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { ModalMigrate } from "@/components/modal/modal.migrate";
 
 import ChangePriceBidModal from "./change.price.bid.modal";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -25,6 +25,7 @@ enum ModalType {
   editListing = "editListing",
   txInProgress = "txInProgress",
   success = "success",
+  migrate = "migrate",
 }
 
 export interface bidForm {
@@ -40,14 +41,88 @@ export const FixedPriceNFTDescription = ({
   data,
   setNftData,
 }: FixedPriceNFTDescriptionProps) => {
-  const router = useRouter();
-
   const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
+  const [migrateModal, setMigrateModal] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
+
+  useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        if (!Status) {
+          setMigrateModal({
+            visibility: true,
+            title: "Migrate NFT",
+            content: (
+              <div className="p-4">
+                <div className="mb-6 flex w-full justify-center">
+                  <MigrateIcon />
+                </div>
+                <h3 className="mb-2 flex w-full justify-center space-x-1 text-sm font-semibold text-white fsm:text-lg">
+                  <span>Migrate your</span>
+                  <span className="text-brand-primary"> listed tokens</span>
+                </h3>
+                <p className="mb-6 text-center text-xs text-white fsm:text-sm">
+                  Migrate your tokens to our new marketplace for uninterrupted
+                  rewards and benefits. Don&apos;t miss out - act now!
+                </p>
+                <NewButton
+                  title={"Migrate Now"}
+                  variant="v1"
+                  className="py-4"
+                  onClick={migrateNowHandler}
+                />
+              </div>
+            ),
+          });
+        }
+      }
+    };
+
+    const migrateNowHandler = async () => {
+      let success = false;
+      try {
+        setMigrateModal({ ...migrateModal, visibility: false });
+        setupWaitingModal();
+        const result = await BlockchainWrite.transferNftToCurrentMarketplace(
+          library,
+          data?.collection as string,
+          data?.nftId as number,
+          data?.listInfo?.price as number,
+          data?.auctionInfo.endTime as number
+        );
+
+        if (!result?.length) {
+          throw new Error("cannot migrate");
+        }
+        success = true;
+        setupSuccessModal(
+          success,
+          "Congratulations! Migration is completed for "
+        );
+      } catch (error) {
+        toast.error("It's not possible to transfer your NFT to new version");
+        setupSuccessModal(
+          success,
+          "It's not possible to transfer your NFT to new version"
+        );
+      }
+    };
+    CheckStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, library]);
 
   const bnbPrice = useBNBPrice();
 
@@ -350,6 +425,16 @@ export const FixedPriceNFTDescription = ({
         >
           {ModalModel.content}
         </CustomModal>
+      )}
+      {migrateModal.visibility && (
+        <ModalMigrate
+          onClose={() => {
+            setMigrateModal({ ...migrateModal, visibility: false });
+          }}
+          title={migrateModal.title as string}
+        >
+          {migrateModal.content}
+        </ModalMigrate>
       )}
     </div>
   );
