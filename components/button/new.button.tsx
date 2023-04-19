@@ -3,7 +3,17 @@ import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
-  variant?: "v1" | "v2" | "v3" | "v4" | "v5" | "v6" | "v7" | "v8" | "v9";
+  variant?:
+    | "v1"
+    | "v2"
+    | "v3"
+    | "v4"
+    | "v5"
+    | "v6"
+    | "v7"
+    | "v8"
+    | "v9"
+    | "v10";
   Icon?: React.ReactNode;
 }
 
@@ -27,6 +37,7 @@ const NewButton: React.FC<ButtonProps> = ({
         variant === "v8" && "bg-black-shade-3 text-gray-shade-7",
         variant === "v9" &&
           "border border-brand-primary bg-transparent text-brand-primary",
+        variant === "v10" && "bg-gray-shade-3 text-gray-shade-8",
         `flex h-11 w-full items-center justify-center gap-3 rounded-lg py-[10px] px-2 text-sm font-semibold`,
         className && className
       )}

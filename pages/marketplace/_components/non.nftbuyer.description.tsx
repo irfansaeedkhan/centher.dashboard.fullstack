@@ -7,15 +7,17 @@ import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { AuctionIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import NewButton from "@/components/button/new.button";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -43,10 +45,26 @@ export const NonNFTBuyerDescription = ({
   const [seconds, setSeconds] = useState<number>(0);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
+  const [isMigrated, setIsMigrated] = useState(false);
   const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
 
+  useEffect(() => {}, [data, library]);
+
   useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        setIsMigrated(Status);
+      }
+    };
+
+    CheckStatus();
+
     if (data) {
       var endtime = new Date(data?.unlock * 1000);
       var now = new Date();
@@ -88,14 +106,14 @@ export const NonNFTBuyerDescription = ({
     return () => {
       clearInterval(updateTime);
     };
-  }, [data]);
+  }, [library, data]);
   const buyNFTStep1Func = () => {
     try {
       validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
   const handleBuyNFT = async () => {
@@ -115,10 +133,13 @@ export const NonNFTBuyerDescription = ({
         success = true;
       }
     } catch (error) {
-      toastError(error);
-      SuccessFunc(false);
+      toastError("something went wrong");
+      SuccessFunc(false, "Unable to buy NFT");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(
+        success,
+        "Congratulations! You have successfully bought the "
+      );
     }
   };
   const ProceedFunc = () => {
@@ -127,16 +148,16 @@ export const NonNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong");
     }
   };
 
@@ -161,12 +182,7 @@ export const NonNFTBuyerDescription = ({
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
           </h6>
           <div className={footerBtnContainer}>
-            <Button
-              title={"Checkout"}
-              variant="v1"
-              className="py-4"
-              onClick={handleBuyNFT}
-            />
+            <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
           </div>
         </div>
       ),
@@ -189,7 +205,7 @@ export const NonNFTBuyerDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -203,15 +219,14 @@ export const NonNFTBuyerDescription = ({
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully placed bid on{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
-              <b>Centher</b>
+              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              NFT on <b>Centher</b>
               platform.
             </p>
           )}
           {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           {/* <Link href={{
@@ -273,11 +288,10 @@ export const NonNFTBuyerDescription = ({
 
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center">
-          <Button
+          <NewButton
             title={"Buy Now"}
             variant={data?.saleState === "NON" ? "v2" : "v1"}
-            className="py-4"
-            disabled={data?.saleState === "NON"}
+            disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
           />
         </div>

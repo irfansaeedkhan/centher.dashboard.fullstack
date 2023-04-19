@@ -167,6 +167,7 @@ interface NotificationBy {
     object_name: string;
   };
   account_address: string;
+  is_verified: boolean;
 }
 
 interface BaseNotification {
@@ -186,6 +187,16 @@ interface PostLikeNotification extends BaseNotification {
   post: NotificationPost;
 }
 
+interface ReplyLikeNotification extends BaseNotification {
+  type: "reply_like";
+  post: NotificationPost;
+}
+
+interface ReplyToReplyNotification extends BaseNotification {
+  type: "reply_reply";
+  post: NotificationPost;
+}
+
 interface PostReplyNotification extends BaseNotification {
   type: "post_reply";
   post: NotificationPost;
@@ -201,14 +212,14 @@ interface NewReferralNotification extends BaseNotification {
 
 interface NTRNetworkRewardsNotification extends BaseNotification {
   type: "centher_purchase_ntr";
-  amount: Number;
-  level: Number;
+  amount: number;
+  level: number;
 }
 
 interface BUSDNetworkRewardsNotification extends BaseNotification {
   type: "centher_purchase_busd";
-  amount: Number;
-  level: Number;
+  amount: number;
+  level: number;
 }
 
 export type Notification =
@@ -217,4 +228,6 @@ export type Notification =
   | FollowNotification
   | NewReferralNotification
   | NTRNetworkRewardsNotification
+  | ReplyLikeNotification
+  | ReplyToReplyNotification
   | BUSDNetworkRewardsNotification;

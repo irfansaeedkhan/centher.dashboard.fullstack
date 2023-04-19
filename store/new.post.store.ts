@@ -282,7 +282,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          const response = await axiosNodeApi.post(`/api/socials/posts/v2`, {
+          const response = await axiosNodeApi.post(`/api/socials/posts`, {
             replying_to: get().parentPostId,
             posts: postArray.map((post) => ({
               uuid: post.uuid,
@@ -321,7 +321,7 @@ export const useNewPostStore = create<NewPostStore>()(
             const {
               data: { presignedUrls },
             } = await axiosNodeApi.post(
-              `/api/socials/posts/v2/media/presigned-urls`,
+              `/api/socials/posts/media/presigned-urls`,
               {
                 media_list: mediaList,
               }

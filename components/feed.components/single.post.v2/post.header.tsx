@@ -16,7 +16,6 @@ import {
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import useGetUser from "@/hooks/use.get.user";
 
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
@@ -73,6 +72,8 @@ export const PostHeader: React.FC<Props> = ({
     try {
       return dayjs().diff(dayjs(new Date(createdAt)), "day") < 7
         ? dayjs(new Date(createdAt)).fromNow()
+        : dayjs().diff(dayjs(new Date(createdAt)), "day") > 365
+        ? dayjs(new Date(createdAt)).format("D MMM, YYYY")
         : dayjs(new Date(createdAt)).format("D MMM");
     } catch (error) {
       // There is some issue with dayjs, so we are returning 2s as a fallback
@@ -88,15 +89,14 @@ export const PostHeader: React.FC<Props> = ({
   useEffect(() => {
     const updateWidth = () => {
       if (!containerRef.current) return;
-
-      const newWidth = containerRef.current.offsetWidth;
-
+      const newWidth = containerRef.current.offsetWidth - 40;
       if (newWidth !== containerWidth) {
         setContainerWidth(newWidth);
       }
     };
-    updateWidth();
     window.addEventListener("resize", updateWidth);
+    updateWidth(); // Move this line inside the event listener
+
     return () => {
       window.removeEventListener("resize", updateWidth);
     };
@@ -106,7 +106,7 @@ export const PostHeader: React.FC<Props> = ({
     <div ref={containerRef} className="flex justify-between">
       <div
         className={` truncate break-words`}
-        style={{ maxWidth: `${containerWidth - 30}px` }}
+        style={{ maxWidth: `${containerWidth}px` }}
       >
         {/* Left Side */}
         <div className="left-side word-break mr-2 truncate">

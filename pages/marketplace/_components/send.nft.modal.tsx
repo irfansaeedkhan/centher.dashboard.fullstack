@@ -2,17 +2,16 @@ import React, { useState } from "react";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
 
-import Button from "@/components/button";
 import CustomDropdown from "./custom.dropdown";
+import NewButton from "@/components/button/new.button";
 
 const lockOptions = [
   { label: "No Lock", value: "0" },
   { label: "Three month", value: "7884000" },
   { label: "Six Month", value: "15768000" },
   { label: "Nine Month", value: "23652000" },
-  { label: "twelve Month", value: "31536000" },
+  { label: "twelve Month", value: "31536000" }, // which unit is this? seconds? minutes? hours? days? months? years?
 ];
 
 interface SendNFTModalProps {
@@ -46,23 +45,6 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
 
   return (
     <form className={modalBodyWrapper}>
-      {/* <div className={fieldWrapper}>
-        <label className={fieldTitle}>Set Lock End Time</label>
-        <input
-          type="datetime-local"
-          id="LockEndTime"
-          autoComplete="off"
-          {...nftForm.register("LockEndTime")}
-          placeholder="Set Lock End Time"
-          className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-2 text-white !ring-0"
-        />
-        {nftForm.formState.errors.LockEndTime && (
-          <p className={`text-red-500 ${errMessage}`}>
-            {nftForm.formState.errors.LockEndTime.message}
-          </p>
-        )}
-      </div> */}
-
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Set Lock End Time</label>
 
@@ -74,7 +56,7 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Nft Receiver Address</label>
-        <div className="relative h-[48px]  !bg-black-shade-2">
+        <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
           <input
             type="text"
             id="ReceiverAddress"
@@ -91,12 +73,12 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
           </p>
         )}
       </div>
-      <Button
+      <NewButton
         title={"Next"}
-        variant={nftForm.formState.isValid ? "v1" : "v2"}
+        variant={nftForm.formState.isValid ? "v1" : "v10"}
         disabled={!nftForm.formState.isValid}
         onClick={nftForm.handleSubmit(handleSendData)}
-        className="mt-2 py-4"
+        className="mt-2"
       />
     </form>
   );
@@ -105,15 +87,9 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
 export default SendNFTModal;
 
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
+const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
+const errMessage = `pb-2 text-12px font-medium`;
+
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+
+const fieldTitle = `text-14px text-start font-normal text-white`;

@@ -5,6 +5,7 @@ import dxcAbi from "../abis/dxc.json";
 import centherAbi from "../abis/centher.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
+import oldMarketplaceAbi from "../abis/marketplace.old.json";
 import registrationAbi from "../abis/registration.json";
 import multicallAbi from "../abis/multicall.json";
 import busdAbi from "../abis/erc20.json";
@@ -36,7 +37,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       5: "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
     },
     MARKETPALCE: {
-      // Presale Contract Address
+      56: "0x08c4153B3fDa5215cd284c58e7Cb641df0f54d29",
+      5: "0x05901C4ef5742D2dE298a7970C38b0de4412BfD9",
+    },
+    OLD_MARKETPALCE: {
       56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
       5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
     },
@@ -63,7 +67,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     NATIVE_COLLECTION: {
       56: "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
-      5: "0x5740512e4e88dd0a80a3e9cf505ff72c4dce8f37",
+      5: "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
     },
     DXC: {
       56: "0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A",
@@ -83,6 +87,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     REGISTRATION: registrationAbi,
     PRESALE: presaleAbi,
     MARKETPALCE: marketplaceAbi,
+    OLD_MARKETPALCE: oldMarketplaceAbi,
     MULTICALL: multicallAbi,
     PANCAKE_ROUTER: routerAbi,
     WBNB: {},
@@ -141,8 +146,8 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/algoalliance/registration-v2"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/534d595c-4f9b-4469-a61d-c032e4",
+      ? "https://api.thegraph.com/subgraphs/name/algoalliance/marketplace-v2"
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
 
 //TODO=> Implement configuration validator function

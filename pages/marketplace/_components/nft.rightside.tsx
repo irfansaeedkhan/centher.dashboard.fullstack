@@ -28,6 +28,7 @@ import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.descriptio
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { User } from "@/models/user";
 // import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
@@ -64,9 +65,33 @@ export const NFTRightSideComponent = ({
     data?.nftId,
     data?.owner
   );
-  const { user: nftOwner } = useGetUser(nftOwnerAddress);
+  const { user: _nftOwner, loading: _nftOwnerLoading } =
+    useGetUser(nftOwnerAddress);
   const verificationTick = useVerificationTick({ user });
-  const verificationOwnerTick = useVerificationTick({ user: nftOwner });
+  const verificationOwnerTick = useVerificationTick({ user: _nftOwner });
+
+  // FIXME: This is a quick fix for the case when the nft owner is not in the database
+  let nftOwner: Pick<
+    User,
+    "_id" | "account_address" | "display_name" | "profile_image"
+  > | null = null;
+
+  if (
+    !_nftOwner &&
+    (_nftOwnerLoading === "loaded" || _nftOwnerLoading === "failed")
+  ) {
+    nftOwner = {
+      _id: nftOwnerAddress,
+      account_address: nftOwnerAddress,
+      display_name: nftOwnerAddress,
+      profile_image: {
+        object_name: "https://static.centher.io/avatars/avatar-1.png",
+        path: "https://static.centher.io/avatars/avatar-1.png",
+      },
+    };
+  } else {
+    nftOwner = _nftOwner;
+  }
 
   useEffect(() => {
     if (data) {

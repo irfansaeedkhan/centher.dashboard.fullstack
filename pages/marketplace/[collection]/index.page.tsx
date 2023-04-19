@@ -418,22 +418,19 @@ const Collection: NextPageWithLayout = () => {
             </div>
           </div>
           <div className="tabsContent mt-10">
-            {nfts.length > 0 && (
-              <div className={`${nftCardWrapper} nftCardContainer`}>
-                {nfts.map((data) => {
-                  return <NFTCard data={data} key={data.id} />;
-                })}
-              </div>
-            )}
-            <div ref={lastNotiRef} />
-
-            {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
-              <div className="flex flex-wrap items-center gap-10">
-                <NftsSkeleton />
-                <NftsSkeleton />
-                <NftsSkeleton />
-              </div>
-            )}
+            <div className={`${nftCardWrapper} nftCardContainer`}>
+              {nfts.map((data) => {
+                return <NFTCard data={data} key={data.id} />;
+              })}
+              {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
+                <>
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <NftsSkeleton key={index} />
+                  ))}
+                </>
+              )}
+              <div ref={lastNotiRef} />
+            </div>
 
             {loadingNFTs === "loaded" && nfts.length === 0 && (
               <div>

@@ -31,7 +31,8 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
       });
       onClose();
     }
-  }, [cropperRef, cropImageSrc, onClose]);
+  }, [cropperRef, cropImageSrc, onClose, onCrop]);
+
   return cropImageSrc.preview ? (
     <PostCropModalContainer
       title="Crop"
@@ -51,7 +52,7 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
             ref={cropperRef}
           />
         </div>
-        <div className="absolute bottom-0 mt-3 flex w-full justify-center text-center">
+        <div className="bottom-0 mt-3 flex w-full justify-center text-center [@media(max-width:600px)]:absolute">
           <button
             className="mb-3 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
             onClick={cropImageFunc}

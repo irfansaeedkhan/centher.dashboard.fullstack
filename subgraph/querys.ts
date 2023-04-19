@@ -4,6 +4,7 @@ export const hotNFTsQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -70,6 +71,7 @@ export const allNFTsQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -100,6 +102,7 @@ export const allNFTsByFilterQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -127,6 +130,7 @@ export const nftQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -195,6 +199,7 @@ export const nftsQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -223,6 +228,7 @@ export const nftsBySaleStateQuery = `
       collection
       createTime
       creator
+      mintHash
       id
       ipfs
       saleState
@@ -277,6 +283,7 @@ export const listedNFTsByAccount = `
         collection
         createTime
         creator
+        mintHash
         id
         ipfs
         saleState
@@ -311,6 +318,7 @@ export const listedUserNFTsByAccount = `
         collection
         createTime
         creator
+        mintHash
         id
         ipfs
         saleState
@@ -344,6 +352,7 @@ export const createdNFTsByAccount = `
         collection
         createTime
         creator
+        mintHash
         id
         ipfs
         saleState

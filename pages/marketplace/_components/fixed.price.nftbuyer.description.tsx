@@ -1,5 +1,5 @@
 // React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { ethers } from "ethers";
 
 // App imports
+import { IModalProps } from "@/components/modal/standard.modal";
 import NewButton from "@/components/button/new.button";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -18,7 +19,7 @@ import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
@@ -42,14 +43,30 @@ export const FixedPriceNFTBuyerDescription = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
-  const { library, deactivate } = useWeb3React<ethers.providers.Web3Provider>();
+  const { library, deactivate } = useWeb3React();
   const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
+
+  useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        setIsMigrated(Status);
+      }
+    };
+
+    CheckStatus();
+  }, [data, library]);
 
   const bnbPrice = useBNBPrice();
 
@@ -59,7 +76,7 @@ export const FixedPriceNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
   const ProceedFunc = () => {
@@ -68,16 +85,16 @@ export const FixedPriceNFTBuyerDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
-  const SuccessFunc = (txStatus: boolean) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
       modal.dismissModal();
-      modal.createModal(ModalType.successFuncModal, txStatus);
+      modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("Something went wrong. Please try again later.");
     }
   };
   const handleBuyNFT = async () => {
@@ -104,10 +121,10 @@ export const FixedPriceNFTBuyerDescription = ({
         success = true;
       }
     } catch (error) {
-      toastError(error);
-      SuccessFunc(false);
+      toastError("something went wrong");
+      SuccessFunc(false, "Something went wrong. Unable to buy ");
     } finally {
-      SuccessFunc(success);
+      SuccessFunc(success, "Congratulations! You have successfully bought ");
     }
   };
 
@@ -124,17 +141,19 @@ export const FixedPriceNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">{data?.name}</h2>
-          <h3 className="text-14px font-normal text-white">
+          <h2 className="fmd:text-18px word-break text-base font-semibold text-white">
+            {data?.name}
+          </h2>
+          <h3 className="text-xs font-normal text-white fmd:text-sm">
             Marketplace Fee {BlockchainConfig.fee.buyItemFeeForMarketplace}%
           </h3>
-          <h3 className="text-14px font-normal text-white">
+          <h3 className="text-xs font-normal text-white fmd:text-sm">
             Collection Fee {BlockchainConfig.fee.buyItemFeeForCreator}%
           </h3>
-          <h3 className="text-14px font-normal text-white">
+          <h3 className="text-xs font-normal text-white fmd:text-sm">
             Multilevel Fee {BlockchainConfig.fee.buyItemFeeForMultilevel}%
           </h3>
-          <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
+          <h6 className="flex items-center justify-center gap-2 text-xs font-bold text-white fmd:text-sm">
             <span>Price:</span>
             <BNBIcon />
             {`${normalizeValue(
@@ -157,10 +176,10 @@ export const FixedPriceNFTBuyerDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px text-base font-semibold leading-6 text-white">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -169,7 +188,7 @@ export const FixedPriceNFTBuyerDescription = ({
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (txStatus: any) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
           <Image
             className={ImgStyling}
@@ -178,20 +197,20 @@ export const FixedPriceNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="fmd:text-18px text-base font-semibold text-white">
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully bought{" "}
-              <span className="text-white">{data?.name}</span> NFT on{" "}
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+              {msg}
+              <span className="word-break text-white">{data?.name}</span> NFT on{" "}
               <b>Centher</b>
               platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+              {msg ?? "Transaction Failed."}
             </p>
           )}
 
@@ -246,7 +265,8 @@ export const FixedPriceNFTBuyerDescription = ({
         {library ? (
           <NewButton
             title={"Buy Now"}
-            variant="v1"
+            disabled={!isMigrated}
+            variant={isMigrated ? "v1" : "v4"}
             onClick={async () => {
               if (!loggedInUser) {
                 toast.error("Please login to buy this nft");
@@ -278,7 +298,7 @@ export const FixedPriceNFTBuyerDescription = ({
       {connectWalletModal && (
         <CustomNewModal
           onClose={() => {
-            setModal(false);
+            setConnectWalletModal(false);
           }}
           title={"Connect to wallet"}
         >
@@ -325,13 +345,13 @@ export const FixedPriceNFTBuyerDescription = ({
 };
 // styling
 const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+  flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
 `);
 const footerBtnContainer = ctl(`
-flex items-center gap-4 mt-3
+flex items-center gap-4 
 `);
 const ImgStyling = ctl(`
-w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
+w-[64px] h-[64px]  rounded-2xl object-cover mx-auto
 `);
 const nftDescriptionContainer = ctl(`
 w-full flex flex-col gap-5

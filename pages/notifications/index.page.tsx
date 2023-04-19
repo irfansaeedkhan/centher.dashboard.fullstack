@@ -1,19 +1,17 @@
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import ctl from "@netlify/classnames-template-literals";
-import { BiCheckDouble } from "react-icons/bi";
+import clsx from "clsx";
 
 import { useNotificationsStore } from "@/store/notifications.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import SingleNotificationSkeleton from "@/components/loading.skeletons/single.notification";
+import { NotificationBell } from "@/assets/svgs";
 
 import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
 } from "./_components";
-import { NotificationBell } from "@/assets/svgs";
-import clsx from "clsx";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
@@ -66,33 +64,22 @@ const Notifications: NextPageWithLayout = () => {
       >
         {notifications.length > 0 && (
           <div className="flex w-full max-w-[1005px] flex-col">
-            <div className={sectionName}>Notifications</div>
+            <div className={`mb-5 font-bold text-white`}>Notifications</div>
 
             {notifications.map((notification, index) => {
-              if (
-                notification._id === notifications[notifications.length - 1]._id
-              ) {
-                return (
-                  <SingleNotification
-                    ref={lastNotiRef}
-                    length={notifications.length}
-                    notification={notification}
-                    key={notification._id}
-                    index={index}
-                    days="befor_seven"
-                  />
-                );
-              }
               return (
                 <SingleNotification
-                  length={notifications.length}
-                  notification={notification}
                   key={notification._id}
-                  index={index}
-                  days="befor_seven"
+                  notification={notification}
+                  className={clsx(
+                    index === notifications.length - 1 && `rounded-b-xl`,
+                    index === 0 && `rounded-t-xl`
+                  )}
                 />
               );
             })}
+
+            <div ref={lastNotiRef} />
           </div>
         )}
 
@@ -126,5 +113,3 @@ Notifications.getLayout = (page) => {
 };
 
 export default Notifications;
-
-const sectionName = ctl(`text-white font-bold mb-5`);

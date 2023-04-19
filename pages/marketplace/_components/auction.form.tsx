@@ -384,7 +384,7 @@ const AuctionForm = ({
       {connectWalletModal && (
         <CustomNewModal
           onClose={() => {
-            setModal(false);
+            setConnectWalletModal(false);
           }}
           title={"Connect to wallet"}
         >

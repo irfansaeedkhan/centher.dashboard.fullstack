@@ -12,10 +12,12 @@ export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
   try {
     const user = nft.owner !== ZeroAddress ? nft.owner : nft.creator;
     const nftOwnerDataPromise = getNFTOwnerData(user);
+    const nftCreatorDataPromise = getNFTOwnerData(nft.creator);
     const formattedUrl = formatIPFSUrl(nft.ipfs);
     const metadataPromise = axios.get(formattedUrl);
-    const [nftOwnerData, metadata] = await Promise.all([
+    const [nftOwnerData, nftCreatorData, metadata] = await Promise.all([
       nftOwnerDataPromise,
+      nftCreatorDataPromise,
       metadataPromise,
     ]);
 
@@ -30,6 +32,8 @@ export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
       description: metadata.data.description,
       price: nft.price,
       owner: nftOwnerData,
+      creator: nftCreatorData,
+      mintHash: nft.mintHash,
       type: metadata.data.type,
       unlock: nft.unlock,
       endTime: nft.endTime,

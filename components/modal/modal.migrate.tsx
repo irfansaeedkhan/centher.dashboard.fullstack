@@ -1,14 +1,14 @@
 import React from "react";
 import { IoClose } from "react-icons/io5";
 
-interface CustomModalProps {
+interface Props {
   children: React.ReactNode;
   title: string;
   onClose: () => void;
   disable?: string;
 }
 
-export const CustomModal: React.FC<CustomModalProps> = (props) => {
+export const ModalMigrate: React.FC<Props> = (props) => {
   return (
     <div
       className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none backdrop-blur-lg backdrop-filter focus:outline-none 
@@ -16,11 +16,11 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
     >
       {/*content*/}
       <div
-        className={`relative mx-3 flex w-full flex-col rounded-2xl bg-popup-0 p-4 focus:outline-none fmd:w-140 fmd:p-6 flg:w-164 f2xl:w-164`}
+        className={`relative mx-3 flex w-full flex-col rounded-2xl border border-gray-shade-3 bg-black-shade-3 py-6 focus:outline-none fmd:w-140 flg:w-164 f2xl:w-164`}
       >
         {/*header*/}
         <div
-          className={`relative flex h-[28px] items-center justify-between rounded-t`}
+          className={`relative mb-4 flex h-[28px] items-center justify-between rounded-t px-6`}
         >
           <span
             className={`text-[16px] font-semibold text-white fmd:text-[18px]`}
@@ -33,7 +33,9 @@ export const CustomModal: React.FC<CustomModalProps> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-[450px] overflow-y-auto`}>{props.children}</div>
+        <div className={`max-h-[450px] overflow-y-auto px-6`}>
+          {props.children}
+        </div>
       </div>
     </div>
   );

@@ -104,6 +104,7 @@ export async function fetchNft(
   });
   if (nftResult) {
     const metadata = await axios.get(formatIPFSUrl(nftResult.ipfs));
+
     const _nftData: INFTDetailData = {
       name: metadata.data.name,
       image: formatIPFSUrl(metadata.data.image),

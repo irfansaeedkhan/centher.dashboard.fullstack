@@ -116,7 +116,6 @@ const Feed: NextPageWithLayout = () => {
               postType={"main"}
               placement="feed-page"
               shouldShowThread={post.is_thread}
-              shouldShowComments={post.replies_count > 0}
               borderRadius={{
                 top: true,
                 bottom: true,

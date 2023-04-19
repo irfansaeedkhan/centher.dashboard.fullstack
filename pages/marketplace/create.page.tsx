@@ -1,11 +1,12 @@
 // React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
 // App imports
-import Button from "@/components/button";
+import NewButton from "@/components/button/new.button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -52,7 +53,7 @@ const CreateNFT: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, nftData);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
@@ -65,7 +66,7 @@ const CreateNFT: NextPageWithLayout = () => {
         nftData,
       });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const handleCreateCollection = async (nftData: any) => {
@@ -119,7 +120,7 @@ const CreateNFT: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
 
@@ -127,35 +128,50 @@ const CreateNFT: NextPageWithLayout = () => {
     buyNFTStep1FuncModal: {
       title: "Complete Checkout",
       visibility: true,
-      content: (nftData: any) => (
-        <div className={modalBodyWrapper2}>
-          <h2 className="text-18px break-words font-semibold text-white">
-            {nftData?.name}
-          </h2>
-          <h3 className="text-14px font-normal text-white">
-            {`Marketplace fee ${normalizeValue(
-              BlockchainConfig.fee.createItemFeeForMarketplace
-            )} BNB`}
-          </h3>
-          <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
-            <span>Price:</span>
-            <BNBIcon />
-            {normalizeValue(nftData?.price)} BNB{" "}
-            <span className="text-gray-shade-2 ">
-              {" "}
-              =${Number((nftData?.price * bnbPrice).toFixed(5))}
-            </span>
-          </h6>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Checkout"}
-              variant="v1"
-              className="py-4"
-              onClick={() => handleCreateCollection(nftData)}
-            />
+      content: (nftData: any) => {
+        const src = asset ? URL.createObjectURL(asset) : "";
+        return (
+          <div className={modalBodyWrapper2}>
+            <div className="mb-4 flex w-full justify-center">
+              <Image
+                src={src}
+                alt="nft"
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-xl object-cover"
+              />
+            </div>
+            <h2 className="text-18px word-break font-semibold text-white">
+              {nftData?.name}
+            </h2>
+            <h3 className="text-14px font-normal text-white">
+              {`Marketplace fee ${normalizeValue(
+                BlockchainConfig.fee.createItemFeeForMarketplace
+              )} BNB`}
+            </h3>
+            <h6 className="text-14px mt-2 flex items-center justify-center gap-2 font-bold text-white">
+              <span>Price:</span>
+              <BNBIcon />
+              {normalizeValue(nftData?.price)} BNB{" "}
+              <span className="text-gray-shade-2 ">
+                {" "}
+                =
+                <span className="font-normal">
+                  ${Number((nftData?.price * bnbPrice).toFixed(5))}
+                </span>
+              </span>
+            </h6>
+            <div className={footerBtnContainer}>
+              <NewButton
+                title={"Checkout"}
+                variant="v1"
+                className=""
+                onClick={() => handleCreateCollection(nftData)}
+              />
+            </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
     buyNFTSuccessFuncModal: {
       title: "Complete Checkout",
@@ -166,9 +182,9 @@ const CreateNFT: NextPageWithLayout = () => {
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-14px mt-2 font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
-              <span className="break-words text-white">{nftData?.name} </span>{" "}
+              <span className="word-break text-white">{nftData?.name} </span>{" "}
               NFT on <b> Centher </b> NFT platform, Click view on profile to
               view your NFT.
             </p>
@@ -180,20 +196,20 @@ const CreateNFT: NextPageWithLayout = () => {
           )}
           <div className={footerBtnContainer}>
             {txStatus ? (
-              <Button
+              <NewButton
                 title={"Go Back"}
                 variant="v4"
-                className="py-4"
+                className=""
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
                 }}
               />
             ) : (
-              <Button
+              <NewButton
                 title={"Try Again"}
                 variant="v4"
-                className="py-4"
+                className=""
                 onClick={() => {
                   modal.dismissModal();
                 }}
@@ -201,10 +217,10 @@ const CreateNFT: NextPageWithLayout = () => {
             )}
 
             {txStatus && (
-              <Button
+              <NewButton
                 title={"View on Profile"}
                 variant="v1"
-                className="py-4"
+                className=""
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -289,8 +305,8 @@ CreateNFT.getLayout = (page: any) => {
 export default CreateNFT;
 
 // styling
-const modalBodyWrapper2 = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
-const footerBtnContainer = `mt-3 flex flex-col-reverse fsm:flex-row gap-2`;
+const modalBodyWrapper2 = `flex flex-col gap-2 w-full mt-8 text-center`;
+const footerBtnContainer = `mt-4 flex flex-col-reverse fsm:flex-row gap-2`;
 const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
 const title = `textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`;
 const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;
