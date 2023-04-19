@@ -37,11 +37,11 @@ export const BlockchainConfig: IBlockchainConfig = {
       5: "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
     },
     MARKETPALCE: {
-      56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
+      56: "0x08c4153B3fDa5215cd284c58e7Cb641df0f54d29",
       5: "0x05901C4ef5742D2dE298a7970C38b0de4412BfD9",
     },
     OLD_MARKETPALCE: {
-      56: "0x0000000000000000000000000000000000000000",
+      56: "0x761135A25bB3b5e4Cad435073735a54B6E624Ea6",
       5: "0xc7E952Ae4C3Ad5Dc8Aa0E615De9d9780305a3437",
     },
     MULTICALL: {
@@ -146,7 +146,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/algoalliance/registration-v2"
+      ? "https://api.thegraph.com/subgraphs/name/algoalliance/marketplace-v2"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
 
