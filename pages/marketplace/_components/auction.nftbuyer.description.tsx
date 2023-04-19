@@ -7,7 +7,6 @@ import { FiArrowRight } from "react-icons/fi";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import Button from "@/components/button";
 import { BNBIcon, LoaderIcon, HammerIconBG, WarningIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -241,7 +240,7 @@ export const AuctionNFTBuyerDescription = ({
               {msg ?? "Transaction Failed."}
             </p>
           )}
-          <Button
+          <NewButton
             title={"Ok"}
             variant="v1"
             className="py-4"
@@ -267,19 +266,17 @@ export const AuctionNFTBuyerDescription = ({
             will receive the NFT
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
-              variant="v2"
-              className="py-4"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={handleEndAuction}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -394,7 +391,7 @@ export const AuctionNFTBuyerDescription = ({
             />
           )}
           {nowTime > endTime && isUserWinner && (
-            <Button
+            <NewButton
               title={"Claim NFT"}
               variant={"v1"}
               className="py-4"
@@ -477,7 +474,7 @@ export const AuctionNFTBuyerDescription = ({
   );
 };
 // styling
-const modalBodyWrapper1 = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 items-center`;
+const modalBodyWrapper1 = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 items-center`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
 const greyTxt = `text-14px font-normal text-gray-shade-7`;

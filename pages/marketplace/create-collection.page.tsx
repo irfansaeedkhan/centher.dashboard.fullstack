@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 
 // App imports
 import { useWeb3React } from "@web3-react/core";
-import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -19,6 +18,7 @@ import { ICollectionData } from "./_components/create.collection.form";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import NewButton from "@/components/button/new.button";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -156,10 +156,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             )} BNB`}
           </h3>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Checkout"}
               variant="v1"
-              className="py-4"
               onClick={() => handleCreateCollection(collectionData)}
             />
           </div>
@@ -197,10 +196,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={txStatus ? "Go Back" : "Try Again"}
               variant="v4"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
                 setClearForm(true);
@@ -208,10 +206,9 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             />
 
             {txStatus && (
-              <Button
+              <NewButton
                 title={"View on Profile"}
                 variant="v1"
-                className="py-4"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -297,7 +294,7 @@ CreateNFTCollection.getLayout = (page) => {
 export default CreateNFTCollection;
 
 // styling
-const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const modalBodyWrapper = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
 const footerBtnContainer = `w-full mt-3 flex items-center gap-3`;
 const ImgStyling = `w-[64px] h-[64px] rounded-2xl object-contain mx-auto`;
 const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;

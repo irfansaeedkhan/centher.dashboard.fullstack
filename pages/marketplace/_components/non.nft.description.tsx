@@ -327,7 +327,7 @@ export const NonNFTDescription = ({
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v2"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -359,7 +359,7 @@ export const NonNFTDescription = ({
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v2"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -456,7 +456,7 @@ export const NonNFTDescription = ({
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v10"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}

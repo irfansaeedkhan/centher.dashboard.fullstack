@@ -196,7 +196,7 @@ export const AuctionNftDescription = ({
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v2"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -284,7 +284,7 @@ export const AuctionNftDescription = ({
           <div className={footerBtnContainer}>
             <NewButton
               title={"Go back"}
-              variant="v2"
+              variant="v4"
               onClick={() => {
                 modal.dismissModal();
               }}

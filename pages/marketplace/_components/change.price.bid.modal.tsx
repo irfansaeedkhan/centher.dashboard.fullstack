@@ -77,7 +77,7 @@ const ChangePriceBidModal = ({
               "h-full w-full !border-0 bg-transparent text-white !ring-0"
             }
           />
-          <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6>
+          {/* <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6> */}
         </div>
         {nftPriceError !== "" && (
           <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
