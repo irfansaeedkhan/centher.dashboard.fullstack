@@ -42,9 +42,7 @@ export const LockedNftModal: React.FC<CustomModalProps> = ({
           className={`flex h-full w-full max-w-[656px] flex-col overflow-auto border border-gray-shade-3 border-opacity-40 bg-black-shade-12 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-2xl md:mx-0`}
         >
           {/* Header */}
-          <div
-            className={`flex items-center border-b-2 border-gray-shade-3 border-opacity-40 p-3`}
-          >
+          <div className={`flex items-center border-opacity-40 p-3`}>
             <h3
               className={`flex-grow text-left text-base font-semibold text-white fsm:text-xl`}
             >

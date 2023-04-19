@@ -372,7 +372,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 className="h-[120px] w-[120px] rounded-xl object-cover"
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
-                <h5 className="text-18px text-center font-semibold text-white fsm:text-left">
+                <h5 className="text-18px word-break text-center font-semibold text-white fsm:text-left">
                   {data.name}
                 </h5>
                 <div className="my-2 h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat p-[2px] fmd:mt-0">
@@ -417,7 +417,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               </div>
             </div>
             {/* description */}
-            <div className=" mt-6 flex w-full flex-col items-start gap-6 fsm:flex-row">
+            <div className=" mt-6 flex w-full flex-col items-start gap-6">
               <div className="flex min-w-fit items-center justify-center gap-3">
                 <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                 <div className="flex flex-col gap-1">
