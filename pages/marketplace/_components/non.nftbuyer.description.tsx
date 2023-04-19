@@ -17,6 +17,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import NewButton from "@/components/button/new.button";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -165,12 +166,7 @@ export const NonNFTBuyerDescription = ({
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
           </h6>
           <div className={footerBtnContainer}>
-            <Button
-              title={"Checkout"}
-              variant="v1"
-              className="py-4"
-              onClick={handleBuyNFT}
-            />
+            <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
           </div>
         </div>
       ),

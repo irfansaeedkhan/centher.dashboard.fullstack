@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
 
 import CustomDropdown from "./custom.dropdown";
 import NewButton from "@/components/button/new.button";
@@ -12,7 +11,7 @@ const lockOptions = [
   { label: "Three month", value: "7884000" },
   { label: "Six Month", value: "15768000" },
   { label: "Nine Month", value: "23652000" },
-  { label: "twelve Month", value: "31536000" },
+  { label: "twelve Month", value: "31536000" }, // which unit is this? seconds? minutes? hours? days? months? years?
 ];
 
 interface SendNFTModalProps {
@@ -57,7 +56,7 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Nft Receiver Address</label>
-        <div className="relative h-[48px]  !bg-black-shade-2">
+        <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
           <input
             type="text"
             id="ReceiverAddress"
@@ -88,15 +87,9 @@ const SendNFTModal = ({ handleSend }: SendNFTModalProps) => {
 export default SendNFTModal;
 
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const errMessage = ctl(`
-pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
+const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
+const errMessage = `pb-2 text-12px font-medium`;
+
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+
+const fieldTitle = `text-14px text-start font-normal text-white`;

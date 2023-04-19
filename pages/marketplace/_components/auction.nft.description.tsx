@@ -19,6 +19,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import NewButton from "@/components/button/new.button";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -185,27 +186,25 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to cancel your Auction?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Canceling your auction will unpublish this sale from market and You
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={handleCancelAuction}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -217,10 +216,10 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -240,26 +239,25 @@ export const AuctionNftDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="fmd:text-18px mt-2 text-base font-semibold text-white">
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg}
               <span className="word-break text-white">{data?.name} </span> NFT
               on <b> Centher </b> platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Ok"}
               variant="v4"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -275,28 +273,26 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Click Proceed to announce winner of your NFT!
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Your NFT will go to{" "}
             {formatAddress(data?.auctionInfo.highestBidAddress)} and you will
             receive {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
           </p>
           <div className={footerBtnContainer}>
-            <Button
+            <NewButton
               title={"Go back"}
               variant="v2"
-              className="py-4"
               onClick={() => {
                 modal.dismissModal();
               }}
             />
-            <Button
+            <NewButton
               title={"Proceed"}
               onClick={handleEndAuction}
               variant="v1"
-              className="py-4"
             />
           </div>
         </div>
@@ -381,20 +377,18 @@ export const AuctionNftDescription = ({
       </div>
       <div className="buttonContainer flex items-center gap-4">
         {nowTime < endTime && (
-          <Button
+          <NewButton
             title={"Cancel Auction"}
             variant="v1"
-            className="py-4"
             onClick={cancelAuctionFunc}
           />
         )}
         {nowTime > endTime && (
-          <Button
+          <NewButton
             title={hasBid ? "Announce Winner" : "End Auction"}
             disabled={!end}
             onClick={hasBid ? endAuctionFunc : cancelAuctionFunc}
             variant="v1"
-            className="py-4"
           />
         )}
       </div>
@@ -412,8 +406,8 @@ export const AuctionNftDescription = ({
   );
 };
 // styling
-const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
-const footerBtnContainer = `flex items-center gap-4`;
+const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
+const footerBtnContainer = `flex items-center gap-4 mt-2`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
 const greyTxt = `text-14px font-normal text-gray-shade-7`;

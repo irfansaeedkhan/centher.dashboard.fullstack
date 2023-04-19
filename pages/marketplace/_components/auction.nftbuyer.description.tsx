@@ -377,9 +377,9 @@ export const AuctionNFTBuyerDescription = ({
       ) : (
         <div className="buttonContainer flex items-center">
           {nowTime < endTime && (
-            <Button
+            <NewButton
               title={"Place bid"}
-              variant={end ? "v2" : "v1"}
+              variant={end ? "v10" : "v1"}
               disabled={end}
               className="py-4"
               onClick={() => {

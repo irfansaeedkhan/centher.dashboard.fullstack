@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
 
-import Button from "@/components/button";
+import NewButton from "@/components/button/new.button";
 
 interface CreateNFTAuctionModalProps {
   handleAuction: any;
@@ -59,7 +59,7 @@ const CreateNFTAuctionModal = ({
           autoComplete="off"
           {...auctionForm.register("AuctionEndTime")}
           placeholder="Set Auction End Time"
-          className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-2 text-white !ring-0"
+          className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-3 text-white !ring-0"
         />
         {auctionForm.formState.errors.AuctionEndTime && (
           <p className={`text-red-500 ${errMessage}`}>
@@ -69,7 +69,7 @@ const CreateNFTAuctionModal = ({
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Starting price for NFT</label>
-        <div className="relative h-[48px]  !bg-black-shade-2">
+        <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
           <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
@@ -89,12 +89,12 @@ const CreateNFTAuctionModal = ({
           </p>
         )}
       </div>
-      <Button
+      <NewButton
         title={"Next"}
-        variant={auctionForm.formState.isValid ? "v1" : "v2"}
+        variant={auctionForm.formState.isValid ? "v1" : "v10"}
         disabled={!auctionForm.formState.isValid}
         onClick={auctionForm.handleSubmit(handleAuctionData)}
-        className="mt-2 py-4"
+        className="mt-2"
       />
     </form>
   );
@@ -104,7 +104,7 @@ export default CreateNFTAuctionModal;
 
 // styling
 const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
+  flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
 `);
 const errMessage = ctl(`
 pb-2 text-12px font-medium
@@ -113,5 +113,5 @@ const fieldWrapper = ctl(`
   flex gap-2 flex-col w-full
 `);
 const fieldTitle = ctl(`
-  text-14px  font-normal text-white
+  text-14px text-start font-normal text-white
 `);
