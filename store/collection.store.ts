@@ -70,7 +70,7 @@ export const useCollectionStore = create<CollectionStore>()(
             collection
           );
 
-          let col;
+          let col: CollectionInfo;
           if (isOld(collection)) {
             col = {
               name: getOldName(),
