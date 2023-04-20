@@ -12,6 +12,10 @@ import {
   NFTLockedDetailsProps,
   getUsersByAddressesFromDB,
 } from "@/lib/get-user-by-address";
+import {
+  getOldName,
+  isOld,
+} from "@/web3/blockchain/helpers/native.collection.helper";
 
 export interface ProfileNFTStore {
   collections: Collection[] | undefined;
@@ -100,6 +104,16 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           let _collections = await BlockchainRead.getCollectionByAccount(
             account
           );
+
+          _collections = _collections.map((collection) => {
+            if (isOld(collection.collection)) {
+              return {
+                ...collection,
+                name: getOldName(),
+              };
+            } else return collection;
+          });
+
           set((state) => {
             return {
               collections: _collections,

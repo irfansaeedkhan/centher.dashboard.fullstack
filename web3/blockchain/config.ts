@@ -66,7 +66,7 @@ export const BlockchainConfig: IBlockchainConfig = {
       5: "0x4fF5719EF59e28aA5fd86c50Af2a3563cC01905B",
     },
     NATIVE_COLLECTION: {
-      56: "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
+      56: "0x67d19ebb78a0c4610f9a51a95b41868e39864d04",
       5: "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
     },
     DXC: {

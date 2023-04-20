@@ -317,7 +317,7 @@ const Collection: NextPageWithLayout = () => {
             <div className={coverDetails}>
               <div className={topDetais}>
                 <div className="w-full">
-                  <h5 className={collectionName}>{metadata?.name}</h5>
+                  <h5 className={collectionName}>{info?.name}</h5>
                   <div className="lg:flex-start mt-1 flex justify-center gap-1 text-left md:items-center lg:justify-start">
                     <h6 className="text-14px min-w-max text-white">
                       Created by

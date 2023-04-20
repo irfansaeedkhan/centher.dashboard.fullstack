@@ -6,6 +6,10 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import { AppError } from "@/utils/app-error";
 
 import { getCollectionCreatorData } from "../get-collection-creator-data";
+import {
+  getOldName,
+  isOld,
+} from "@/web3/blockchain/helpers/native.collection.helper";
 
 export const getCollectionCardData = async (
   collection: Collection
@@ -21,10 +25,11 @@ export const getCollectionCardData = async (
 
     const profileImage = formatIPFSUrl(metadata.data.profileIPFSHash);
     const coverImage = formatIPFSUrl(metadata.data.coverIPFSHash);
+    const name = isOld(collection.collection) ? getOldName() : collection.name;
 
     return {
       address: collection.id,
-      name: collection.name,
+      name,
       profileImage,
       coverImage,
       description: metadata.data.description,
