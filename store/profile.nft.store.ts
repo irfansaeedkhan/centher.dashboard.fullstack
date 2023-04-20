@@ -13,7 +13,11 @@ import {
   getUsersByAddressesFromDB,
 } from "@/lib/get-user-by-address";
 
+const swappingCollections = ["0x2A6c77A2731Bc076409C9C702783A4e69FE85b96"];
+const externalCollectionsToShow = [...swappingCollections];
+
 export interface ProfileNFTStore {
+  allowedCollections: string[];
   collections: Collection[] | undefined;
   ownedNfts: NFTLockedDetailsProps[];
   listedNfts: NFTLockedDetailsProps[];
@@ -58,6 +62,7 @@ export interface ProfileNFTStore {
 export const useProfileNFTStore = create<ProfileNFTStore>()(
   devtools(
     (set) => ({
+      allowedCollections: [],
       collections: [],
       ownedNfts: [],
       listedNfts: [],
@@ -221,6 +226,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
       fetchOwnedNFTs: async (account) => {
         try {
           set({ loadingOwnedNFTs: "loading" });
+          let allowedCollections: string[] = [];
           let _nfts: NFTLockedDetailsProps[] = [];
           const fetcher = new MoralisFetcher();
           const result = await fetcher.getWalletNfts({
@@ -238,13 +244,15 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           const platformNativeCollection = AddressFactory.getContractAddress(
             SmartContractName.NATIVE_COLLECTION
           );
+
+          externalCollectionsToShow.push(platformNativeCollection);
+
           const _collections = await BlockchainRead.getRegisteredCollections();
           const _lockedNFTs = await BlockchainRead.getLockedNFTsAll();
 
           if (result.result) {
-            const colctns = _collections?.map((e: any) => e.collection);
-            colctns.push(platformNativeCollection);
-
+            allowedCollections = _collections?.map((e: any) => e.collection);
+            allowedCollections.push(...externalCollectionsToShow);
             const users = await getUsers(
               result.result
                 .map((e: any) => [e.minter_address?._value, e.ownerOf?._value])
@@ -252,43 +260,43 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 .filter(Boolean)
             );
 
-            _nfts = result.result
-              .filter((e) => isInList(e, colctns))
-              .map((item: any) => {
-                const unlock = getUnlockTime(
-                  _lockedNFTs,
-                  item.tokenAddress._value,
-                  item.tokenId
-                );
-                const creator = users.find((e) =>
-                  isAddressesMatch(
-                    e.account_address,
-                    item.minter_address?._value
-                  )
-                );
-                const owner = users.find((e) =>
-                  isAddressesMatch(e.account_address, item.ownerOf._value)
-                );
+            _nfts = result.result.map((item: any) => {
+              const unlock = getUnlockTime(
+                _lockedNFTs,
+                item.tokenAddress._value,
+                item.tokenId
+              );
+              const creator = users.find((e) =>
+                isAddressesMatch(e.account_address, item.minter_address?._value)
+              );
+              const owner = users.find((e) =>
+                isAddressesMatch(e.account_address, item.ownerOf._value)
+              );
 
-                return {
-                  id: item.tokenHash,
-                  collection: item.tokenAddress._value,
-                  tokenId: item.tokenId,
-                  creator: creator ? creator : null,
-                  createTime: item.blockNumberMinted,
-                  ipfs: item.tokenUri,
-                  saleState: "NON",
-                  price: item.amount,
-                  owner: owner ? owner : null,
-                  endTime: 0,
-                  unlock: unlock,
-                  mintHash: item.tokenHash,
-                };
-              });
+              const internal = isInList(item, allowedCollections);
+              const isSwap = isInList(item, swappingCollections);
+              const saleState = isSwap ? "SWAP" : !internal ? "VIEW" : "NON";
+              return {
+                id: item.tokenHash,
+                collection: item.tokenAddress._value,
+                tokenId: item.tokenId,
+                creator: creator ? creator : null,
+                createTime: item.blockNumberMinted,
+                ipfs: item.tokenUri,
+                saleState,
+                price: item.amount,
+                owner: owner ? owner : null,
+                endTime: 0,
+                unlock: unlock,
+                mintHash: item.tokenHash,
+                external: !internal,
+              };
+            });
           }
 
           set((state) => {
             return {
+              allowedCollections,
               ownedNfts: _nfts,
               loadingOwnedNFTs: "loaded",
             };
@@ -362,7 +370,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
 );
 
 const isInList = (nft: any, collections: any[]) => {
-  if (!collections) {
+  if (!collections?.length) {
     return false;
   }
 
