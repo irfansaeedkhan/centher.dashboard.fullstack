@@ -9,6 +9,10 @@ import { BlockchainRead } from "@/web3/blockchain";
 
 import { NFTCardData } from "@/components/nft.card";
 import { getNFTCardData } from "./../lib/get-nft-card-data/index";
+import {
+  getOldName,
+  isOld,
+} from "@/web3/blockchain/helpers/native.collection.helper";
 
 export type Filter = "All" | "List" | "Auction";
 
@@ -62,12 +66,31 @@ export const useCollectionStore = create<CollectionStore>()(
       fetchCollectionInfo: async (collection) => {
         try {
           set({ loadingCollectionInfo: "loading" });
-          const _collection: CollectionInfo =
-            await BlockchainRead.getCollection(collection);
+          let _collection: CollectionInfo = await BlockchainRead.getCollection(
+            collection
+          );
+
+          let col;
+          if (isOld(collection)) {
+            col = {
+              name: getOldName(),
+              txTime: _collection.txTime,
+              tradingVolumn: _collection.tradingVolumn,
+              totalSupply: _collection.totalSupply,
+              symbol: _collection.symbol,
+              maxSupply: _collection.maxSupply,
+              ipfs: _collection.ipfs,
+              creator: _collection.creator,
+              createHash: _collection.createHash,
+              collection: _collection.collection,
+            };
+          } else {
+            col = _collection;
+          }
 
           set((state) => {
             return {
-              info: _collection,
+              info: col,
               loadingCollectionInfo: "loaded",
             };
           });
