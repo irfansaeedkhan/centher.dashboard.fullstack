@@ -12,6 +12,8 @@ import { getUTCNow } from "@/web3/utils/utils";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
 
 import { LockedNftModal } from "../modal/locked.nft.modal";
+import { useRouter } from "next/router";
+import Button from "../button";
 
 export interface NFTCardProps {
   data: NFTLockedDetailsProps;
@@ -22,7 +24,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
 
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
+  const internal = !data.external;
   const [showLockedDetails, setShowLockedDetails] = useState(false);
+  const [showSwapingDetails, setShowSwapingDetails] = useState(false);
+  const [showExternalDetails, setShowExternalDetails] = useState(false);
+  const router = useRouter();
+
   const [name, setName] = useState();
   const [description, setDescription] = useState();
   useEffect(() => {
@@ -127,8 +134,29 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const onClickClose = () => {
     setShowLockedDetails(false);
   };
+  const onViewClickClose = () => {
+    setShowExternalDetails(false);
+  };
+  const onSwapClickClose = () => {
+    setShowSwapingDetails(false);
+  };
+
   const onClickOpen = () => {
-    setShowLockedDetails(true);
+    if (data.saleState == "SWAP") {
+      setShowSwapingDetails(true);
+    } else if (data.saleState == "VIEW") {
+      setShowExternalDetails(true);
+    } else if (locked) {
+      setShowLockedDetails(true);
+    } else {
+      router.push({
+        pathname: AppRoutes.marketplace.nft,
+        query: {
+          collection: data.collection,
+          tokenId: data.tokenId,
+        },
+      });
+    }
   };
 
   return (
@@ -138,17 +166,10 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           `relative h-0 overflow-hidden rounded-xl bg-transparent pb-[100%]`
         )}
         onClick={() => {
-          locked && onClickOpen();
+          onClickOpen();
         }}
       >
-        <Link
-          href={{
-            pathname: AppRoutes.marketplace.nft,
-            query: {
-              collection: data.collection,
-              tokenId: data.tokenId,
-            },
-          }}
+        <div
           className={clsx(
             `flex h-full w-full justify-center`,
             locked && "pointer-events-none"
@@ -169,6 +190,13 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             />
           ) : (
             <div className="absolute inset-0 h-full w-full animate-pulse rounded-xl bg-[#3C3F4A] object-cover"></div>
+          )}
+          {internal && (
+            <div
+              className={`absolute left-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+            >
+              <div className="flex items-center gap-[6px]">CENTHER</div>
+            </div>
           )}
           {locked && (
             <div
@@ -272,7 +300,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               <HammerIconBG />
             </div>
           )}
-        </Link>
+        </div>
       </div>
       {showLockedDetails && (
         <LockedNftModal
@@ -333,6 +361,190 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            {/* description */}
+            <div className="mt-6 flex w-full flex-col items-start gap-6">
+              {data.creator?.display_name && (
+                <div className="flex min-w-fit items-center justify-center gap-3">
+                  <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
+                  <div className="flex flex-col gap-1">
+                    <h5 className="text-12px font-normal text-gray-shade-18">
+                      Creater
+                    </h5>
+
+                    <h5 className="word-break text-14px font-semibold text-white">
+                      {data.creator.display_name}
+                    </h5>
+                  </div>
+                </div>
+              )}
+              {data.owner?.display_name && (
+                <div className="flex min-w-fit items-center justify-center gap-3">
+                  <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
+                  <div className="flex flex-col gap-1">
+                    <h5 className="text-12px font-normal text-gray-shade-18">
+                      Owner
+                    </h5>
+                    <h5 className="word-break text-14px font-semibold text-white">
+                      {data.owner.display_name}
+                    </h5>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Description
+                </h5>
+                <h6 className="text-14px font-semibold text-white">
+                  {description}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Collection Address
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  {data.collection}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Mint Transaction
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  {data.mintHash}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Token ID
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                  {data.tokenId}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </LockedNftModal>
+      )}
+      {showSwapingDetails && (
+        <LockedNftModal
+          title="NFT Details"
+          isOpen={showSwapingDetails}
+          onClickClose={onSwapClickClose}
+        >
+          <div className="p-5 fmd:p-10">
+            {/* head */}
+            <div className="flex flex-col items-center gap-4 fsm:flex-row">
+              <Image
+                src={imageUrl}
+                alt={"locknft"}
+                height={120}
+                width={120}
+                className="h-[120px] w-[120px] rounded-xl object-cover"
+              />
+              <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
+                <h5 className="text-18px word-break text-center font-semibold text-white fsm:text-left">
+                  {name}
+                </h5>
+              </div>
+            </div>
+            {/* description */}
+            <div className="mt-6 flex w-full flex-col items-start gap-6">
+              {data.creator?.display_name && (
+                <div className="flex min-w-fit items-center justify-center gap-3">
+                  <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
+                  <div className="flex flex-col gap-1">
+                    <h5 className="text-12px font-normal text-gray-shade-18">
+                      Creater
+                    </h5>
+
+                    <h5 className="word-break text-14px font-semibold text-white">
+                      {data.creator.display_name}
+                    </h5>
+                  </div>
+                </div>
+              )}
+              {data.owner?.display_name && (
+                <div className="flex min-w-fit items-center justify-center gap-3">
+                  <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
+                  <div className="flex flex-col gap-1">
+                    <h5 className="text-12px font-normal text-gray-shade-18">
+                      Owner
+                    </h5>
+                    <h5 className="word-break text-14px font-semibold text-white">
+                      {data.owner.display_name}
+                    </h5>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex flex-col gap-6">
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Description
+                </h5>
+                <h6 className="text-14px font-semibold text-white">
+                  {description}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Collection Address
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  {data.collection}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Mint Transaction
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  {data.mintHash}
+                </h6>
+              </div>
+              <div className="flex flex-col gap-2">
+                <h5 className="text-14px font-normal text-gray-shade-18">
+                  Token ID
+                </h5>
+                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                  {data.tokenId}
+                </h6>
+              </div>
+            </div>
+            <Button
+              title={"Swap NFT"}
+              variant={"v2"}
+              disabled={true}
+              className="mt-6 py-4"
+            />
+          </div>
+        </LockedNftModal>
+      )}
+      {showExternalDetails && (
+        <LockedNftModal
+          title="NFT Details"
+          isOpen={showExternalDetails}
+          onClickClose={onViewClickClose}
+        >
+          <div className="p-5 fmd:p-10">
+            {/* head */}
+            <div className="flex flex-col items-center gap-4 fsm:flex-row">
+              <Image
+                src={imageUrl}
+                alt={"locknft"}
+                height={120}
+                width={120}
+                className="h-[120px] w-[120px] rounded-xl object-cover"
+              />
+              <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
+                <h5 className="text-18px word-break text-center font-semibold text-white fsm:text-left">
+                  {name}
+                </h5>
               </div>
             </div>
             {/* description */}
