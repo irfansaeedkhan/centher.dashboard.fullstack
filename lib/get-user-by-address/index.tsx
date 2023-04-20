@@ -22,6 +22,7 @@ export interface NFTLockedDetailsProps {
   price: number;
   endTime: number;
   unlock: number;
+  external?: boolean;
 }
 
 export const getUserByAddressFromDB = async (
