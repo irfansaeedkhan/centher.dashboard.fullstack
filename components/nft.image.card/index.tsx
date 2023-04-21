@@ -41,7 +41,9 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
         setImageUrl(imgUrl);
         setName(_metadata.data.name);
         setDescription(_metadata.data.description);
-      } catch (error) {}
+      } catch (error) {
+        setImageUrl("/images/placeholder-square.svg");
+      }
     };
     if (data && data.ipfs) {
       fetchMetadata(data.ipfs);
