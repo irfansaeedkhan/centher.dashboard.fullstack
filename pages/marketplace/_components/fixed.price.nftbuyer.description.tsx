@@ -266,7 +266,7 @@ export const FixedPriceNFTBuyerDescription = ({
           <NewButton
             title={"Buy Now"}
             disabled={!isMigrated}
-            variant={isMigrated ? "v1" : "v4"}
+            variant={isMigrated ? "v1" : "v2"}
             onClick={async () => {
               if (!loggedInUser) {
                 toast.error("Please login to buy this nft");
