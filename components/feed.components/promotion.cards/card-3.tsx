@@ -1,5 +1,7 @@
 import React from "react";
 import clsx from "clsx";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -26,8 +28,17 @@ export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
           feature is
         </p>
         <h3 className="!text-[16px] font-bold  leading-[28px] tracking-widest text-white">
-          COMING SOON
+          LIVE NOW
         </h3>
+
+        <Link
+          href={{
+            pathname: AppRoutes.marketplace.explore,
+          }}
+          className={`flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark `}
+        >
+          Check it out
+        </Link>
       </div>
     </div>
   );

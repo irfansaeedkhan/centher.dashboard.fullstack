@@ -134,12 +134,12 @@ export const BlockchainConfig: IBlockchainConfig = {
   scanner: {
     name:
       process.env.NEXT_PUBLIC_APP_ENV === "production"
-        ? "BSCScan"
+        ? "BscScan"
         : "Etherscan",
     url:
       process.env.NEXT_PUBLIC_APP_ENV === "production"
-        ? "https://bscscan.com/address/"
-        : "https://goerli.etherscan.io/",
+        ? "https://bscscan.com"
+        : "https://goerli.etherscan.io",
   },
   ipfsUrl:
     process.env.NEXT_PUBLIC_IPFS_GATEWAY_URL ||
@@ -150,4 +150,4 @@ export const BlockchainConfig: IBlockchainConfig = {
       : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
 
-//TODO=> Implement configuration validator function
+// TODO: Implement configuration validator function
