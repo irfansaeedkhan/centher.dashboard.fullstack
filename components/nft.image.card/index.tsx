@@ -1,7 +1,6 @@
-// React, Next, NPM Packages
+/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/router";
 import axios from "axios";
 import clsx from "clsx";
 
@@ -12,7 +11,6 @@ import { getUTCNow } from "@/web3/utils/utils";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
 
 import { LockedNftModal } from "../modal/locked.nft.modal";
-import { useRouter } from "next/router";
 import Button from "../button";
 
 export interface NFTCardProps {
@@ -178,7 +176,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
         >
           {imageUrl ? (
-            <Image
+            <img
               src={
                 imageUrl.includes("mp3")
                   ? "/images/default-music.png"
@@ -313,7 +311,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <Image
+              <img
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -441,7 +439,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <Image
+              <img
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -536,7 +534,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <Image
+              <img
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
