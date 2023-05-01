@@ -253,8 +253,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimum_payment_token_amount
-                      ? bookNow
-                      : () => {}
+                      ? () => {}
+                      : bookNow
                   }
                 />
               )}
