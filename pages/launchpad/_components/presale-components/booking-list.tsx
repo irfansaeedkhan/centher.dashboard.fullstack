@@ -4,11 +4,16 @@ import { Booking, PreBookingRounds } from "@/lib/get-pre-bookings-stats/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 
 interface Props {
+  recievableTokenName: string;
   bookings: Booking[];
   rounds: PreBookingRounds;
 }
 
-export const BookingList: React.FC<Props> = ({ bookings, rounds }) => {
+export const BookingList: React.FC<Props> = ({
+  recievableTokenName,
+  bookings,
+  rounds,
+}) => {
   return (
     <div className="scrollSetLight2 overflow-x-auto">
       <table className="w-full table-auto rounded-lg">
@@ -22,7 +27,7 @@ export const BookingList: React.FC<Props> = ({ bookings, rounds }) => {
               Receivable
             </th>
             <th className="whitespace-nowrap px-4 py-2 text-start">
-              Token Price
+              {recievableTokenName} Price
             </th>
             <th className="whitespace-nowrap px-4 py-2 text-start">Round</th>
             <th className="whitespace-nowrap px-4 py-2 text-start">Trx Hash</th>
@@ -55,11 +60,10 @@ export const BookingList: React.FC<Props> = ({ bookings, rounds }) => {
                   {booking.receivable_token_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
-                  {(
-                    1 /
+                  {
                     rounds[booking.round]
                       .receivable_token_price_in_payment_token
-                  ).toFixed(2)}{" "}
+                  }{" "}
                   {booking.payment_token_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">{booking.round}</td>
@@ -76,7 +80,7 @@ export const BookingList: React.FC<Props> = ({ bookings, rounds }) => {
                   >
                     {booking.trx_hash.slice(0, 6)}...
                     {booking.trx_hash.endsWith("-1")
-                      ? booking.trx_hash.slice(-4, -2)
+                      ? booking.trx_hash.slice(-6, -2)
                       : booking.trx_hash.slice(-4)}
                   </a>
                 </td>

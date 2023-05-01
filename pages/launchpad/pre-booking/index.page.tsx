@@ -85,6 +85,7 @@ const PreSale: NextPageWithLayout = () => {
         <hr className="border border-gray-shade-3" />
 
         <BookingList
+          recievableTokenName={preBookingStats.receivable_token_name}
           rounds={preBookingStats.pre_booking.rounds}
           bookings={
             bookingsTab === "recent-bookings"
