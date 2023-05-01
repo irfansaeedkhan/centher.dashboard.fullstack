@@ -34,7 +34,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     payment_token_name,
     payment_token_address,
     pre_booking: {
-      minimum_payment_token_amount = 10, // TODO: remove this default value once API is updated
+      minimum_payment_token_amount,
       is_sold_out,
       current_round,
       rounds,
