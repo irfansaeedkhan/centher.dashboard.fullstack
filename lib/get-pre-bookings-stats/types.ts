@@ -10,6 +10,7 @@ export interface PreBookingStats {
   pre_booking: PreBooking;
   presale: Presale;
   bookings: Bookings;
+  my_rewards: Reward[];
 }
 
 export interface PreBooking {
@@ -49,9 +50,22 @@ export interface Booking {
   sender_address: string;
   payment_token_amount: number;
   payment_token_name: string;
-  trx_hash: string;
-  round: number;
   receivable_token_amount: number;
   receivable_token_name: string;
+  trx_hash: string;
+  round: number;
+  createdAt: number;
+}
+
+export interface Reward {
+  id: string;
+  sender_address: string;
+  payment_token_amount: number;
+  payment_token_name: string;
+  receivable_token_amount: number;
+  receivable_token_name: string;
+  reward_token_amount: number;
+  reward_token_name: string;
+  trx_hash: string;
   createdAt: number;
 }

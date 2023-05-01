@@ -11,6 +11,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import BookingData from "../_components/presale-components/booking-data";
 import { BookingList } from "../_components/presale-components/booking-list";
+import { RewardsList } from "../_components/presale-components/rewards-list";
 
 const PreSale: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -19,12 +20,14 @@ const PreSale: NextPageWithLayout = () => {
   );
   const router = useRouter();
   const [bookingsTab, setBookingsTab] = useState<
-    "recent-bookings" | "my-bookings"
+    "recent-bookings" | "my-bookings" | "my-rewards"
   >("recent-bookings");
 
   useEffect(() => {
     if (router.query.tab === "my-bookings") {
       setBookingsTab("my-bookings");
+    } else if (router.query.tab === "my-rewards") {
+      setBookingsTab("my-rewards");
     } else {
       setBookingsTab("recent-bookings");
     }
@@ -50,8 +53,8 @@ const PreSale: NextPageWithLayout = () => {
     <div className="space-y-6">
       <BookingData preBookingStats={preBookingStats} />
 
-      <div className="h-auto w-full rounded-[14px] border border-gray-shade-3 bg-black-shade-3 ">
-        <div className="flex items-center gap-4 rounded-t-[14px] bg-elevation-1 py-6 px-4 font-semibold text-white fsm:gap-6 fsm:px-8">
+      <div className="h-auto w-full overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
+        <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 py-6 px-4 font-semibold text-white fsm:gap-8 fsm:px-8">
           <button
             onClick={() => {
               router.push({
@@ -60,7 +63,7 @@ const PreSale: NextPageWithLayout = () => {
               });
             }}
             className={clsx(
-              `text-sm fsm:text-base`,
+              `whitespace-nowrap text-sm fsm:text-base`,
               bookingsTab === "recent-bookings" && "text-brand-primary"
             )}
           >
@@ -74,27 +77,48 @@ const PreSale: NextPageWithLayout = () => {
               });
             }}
             className={clsx(
-              `text-sm fsm:text-base`,
+              `whitespace-nowrap text-sm fsm:text-base`,
               bookingsTab === "my-bookings" && "text-brand-primary"
             )}
           >
             My Bookings
           </button>
+          <button
+            onClick={() => {
+              router.push({
+                pathname: AppRoutes.launchpad_pre_booking,
+                query: { tab: "my-rewards" },
+              });
+            }}
+            className={clsx(
+              `whitespace-nowrap text-sm fsm:text-base`,
+              bookingsTab === "my-rewards" && "text-brand-primary"
+            )}
+          >
+            My Rewards
+          </button>
         </div>
 
         <hr className="border border-gray-shade-3" />
 
-        <BookingList
-          recievableTokenName={preBookingStats.receivable_token_name}
-          rounds={preBookingStats.pre_booking.rounds}
-          bookings={
-            bookingsTab === "recent-bookings"
-              ? preBookingStats.bookings.recent_bookings
-              : bookingsTab === "my-bookings"
-              ? preBookingStats.bookings.my_bookings
-              : []
-          }
-        />
+        {(bookingsTab === "recent-bookings" ||
+          bookingsTab === "my-bookings") && (
+          <BookingList
+            recievableTokenName={preBookingStats.receivable_token_name}
+            rounds={preBookingStats.pre_booking.rounds}
+            bookings={
+              bookingsTab === "recent-bookings"
+                ? preBookingStats.bookings.recent_bookings
+                : bookingsTab === "my-bookings"
+                ? preBookingStats.bookings.my_bookings
+                : []
+            }
+          />
+        )}
+
+        {bookingsTab === "my-rewards" && (
+          <RewardsList rewards={preBookingStats.my_rewards ?? []} />
+        )}
       </div>
     </div>
   ) : null;
