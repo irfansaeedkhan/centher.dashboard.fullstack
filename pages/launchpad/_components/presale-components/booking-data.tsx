@@ -245,10 +245,17 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   title="Book Now"
                   disabled={
                     typeof paymentForm.paymentTokenAmount === "string" ||
-                    paymentForm.paymentTokenAmount === 0
+                    paymentForm.paymentTokenAmount <
+                      minimum_payment_token_amount
                   }
                   className={clsx("flg:max-w-[210px]")}
-                  onClick={bookNow}
+                  onClick={
+                    typeof paymentForm.paymentTokenAmount === "string" ||
+                    paymentForm.paymentTokenAmount <
+                      minimum_payment_token_amount
+                      ? bookNow
+                      : () => {}
+                  }
                 />
               )}
             </div>
