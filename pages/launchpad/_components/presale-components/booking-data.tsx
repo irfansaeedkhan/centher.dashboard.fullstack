@@ -33,7 +33,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     payment_token_symbol,
     payment_token_name,
     payment_token_address,
-    pre_booking: { is_sold_out, current_round, rounds, payment_address },
+    pre_booking: {
+      minimum_payment_token_amount = 10, // TODO: remove this default value once API is updated
+      is_sold_out,
+      current_round,
+      rounds,
+      payment_address,
+    },
     presale,
   } = preBookingStats;
 
@@ -197,6 +203,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   placeholder="00"
                   className="foucs:outline-none w-full border-0 bg-transparent p-0 text-white focus:ring-0"
                   value={paymentForm.paymentTokenAmount}
+                  min={0}
                   onChange={(e) => {
                     setPaymentForm({
                       ...paymentForm,
@@ -230,7 +237,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                 <NewButton
                   variant={
                     typeof paymentForm.paymentTokenAmount === "string" ||
-                    paymentForm.paymentTokenAmount === 0
+                    paymentForm.paymentTokenAmount <
+                      minimum_payment_token_amount
                       ? "v2"
                       : "v1"
                   }
@@ -245,6 +253,15 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               )}
             </div>
           )}
+          <p className="mt-4 text-[13px] text-gray-shade-14 fmd:mt-8">
+            <span className="text-red-400">Note:</span> Minimum payment amount
+            is{" "}
+            <span className="font-medium">
+              {minimum_payment_token_amount} {payment_token_name}
+            </span>
+            . Any amount less than that will not be considered for booking and{" "}
+            <span className="font-medium">it will not be refunded</span>.
+          </p>
         </div>
       </div>
       {isModalOpen && (

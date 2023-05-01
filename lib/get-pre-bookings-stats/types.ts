@@ -14,6 +14,7 @@ export interface PreBookingStats {
 
 export interface PreBooking {
   current_round: number;
+  minimum_payment_token_amount: number;
   is_sold_out: boolean;
   payment_address: string;
   rounds: PreBookingRounds;
