@@ -53,10 +53,15 @@ export const BookingList: React.FC<Props> = ({
                   </a>
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
-                  {booking.payment_token_amount} {booking.payment_token_name}
+                  {booking.payment_token_amount.toString().includes(".")
+                    ? booking.payment_token_amount.toFixed(2)
+                    : booking.payment_token_amount}{" "}
+                  {booking.payment_token_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
-                  {booking.receivable_token_amount}{" "}
+                  {booking.receivable_token_amount.toString().includes(".")
+                    ? booking.receivable_token_amount.toFixed(2)
+                    : booking.receivable_token_amount}{" "}
                   {booking.receivable_token_name}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">

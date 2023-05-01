@@ -62,6 +62,11 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     paymentTokenAmount: "",
   });
 
+  const receivableTokenAmount =
+    typeof paymentForm.paymentTokenAmount === "number"
+      ? paymentForm.paymentTokenAmount / receivableTokenPriceCurrentRound
+      : 0;
+
   const { library, account } = useWeb3React();
 
   const bookNow = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -149,7 +154,9 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
         <div className="fmd:flex-grow">
           <p className="w-full text-end text-sm text-gray-shade-14">
             1 {payment_token_symbol} ={" "}
-            {onePaymentTokenToReceivableToken.toFixed(2)}{" "}
+            {onePaymentTokenToReceivableToken.toString().includes(".")
+              ? onePaymentTokenToReceivableToken.toFixed(2)
+              : onePaymentTokenToReceivableToken}{" "}
             {receivable_token_symbol}
           </p>
           <div className="mt-3 h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
@@ -182,10 +189,16 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </div>
             <div className="mt-2 flex w-full items-center justify-between">
               <p className="text-sm text-gray-shade-14">
-                {paymentTokensCollected} {payment_token_symbol}
+                {paymentTokensCollected.toString().includes(".")
+                  ? paymentTokensCollected.toFixed(2)
+                  : paymentTokensCollected}{" "}
+                {payment_token_symbol}
               </p>
               <p className="text-sm text-gray-shade-14">
-                {paymentTokenMaxCap} {payment_token_symbol}
+                {paymentTokenMaxCap.toString().includes(".")
+                  ? paymentTokenMaxCap.toFixed(2)
+                  : paymentTokenMaxCap}{" "}
+                {payment_token_symbol}
               </p>
             </div>
           </div>
@@ -215,10 +228,9 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                 <p className="absolute bottom-[-20px] left-0 text-xs text-gray-shade-14">
                   {" "}
                   ={" "}
-                  {typeof paymentForm.paymentTokenAmount === "number"
-                    ? paymentForm.paymentTokenAmount /
-                      receivableTokenPriceCurrentRound
-                    : 0}{" "}
+                  {receivableTokenAmount.toString().includes(".")
+                    ? receivableTokenAmount.toFixed(2)
+                    : receivableTokenAmount}{" "}
                   {receivable_token_symbol}
                 </p>
                 <div className="flex items-center gap-2">
