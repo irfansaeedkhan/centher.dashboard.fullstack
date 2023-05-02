@@ -11,7 +11,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
-import { TbBrandTiktok } from "react-icons/tb";
+import { TbBrandTiktok, TbBrandTelegram } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
@@ -502,6 +502,7 @@ const ProfileHeader: React.FC<Props> = ({
           user.twitch_username ||
           user.twitter_username ||
           user.website_url ||
+          user.telegram_username ||
           user.youtube_url) && (
           <div className="mt-3 flex w-full items-center justify-center gap-4">
             {user.tiktok_username && (
@@ -568,6 +569,16 @@ const ProfileHeader: React.FC<Props> = ({
                 rel="noreferrer"
               >
                 <SiOnlyfans className={socialLinks} />
+              </a>
+            )}
+
+            {user.telegram_username && (
+              <a
+                href={`https://t.me/${user.telegram_username}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <TbBrandTelegram className={socialLinks} />
               </a>
             )}
           </div>

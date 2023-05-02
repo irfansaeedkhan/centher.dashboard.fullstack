@@ -15,6 +15,7 @@ export interface User {
   twitch_username: string;
   onlyfans_username: string;
   youtube_url: string;
+  telegram_username: string;
 }
 
 export interface UserImage {
