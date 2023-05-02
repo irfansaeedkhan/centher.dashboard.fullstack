@@ -224,11 +224,24 @@ interface BUSDNetworkRewardsNotification extends BaseNotification {
 
 interface PresaleBookingNotification extends BaseNotification {
   type: "presale_booking";
+  trx_hash: string;
   paid_amount: number;
   paid_token_name: string;
   receivable_amount: number;
   receivable_token_name: string;
   receivable_in_round: number;
+  by: {
+    display_name: NotificationBy["display_name"];
+    profile_image: NotificationBy["profile_image"];
+    is_verified: NotificationBy["is_verified"];
+  };
+}
+
+interface PresaleBookingReferralNotification extends BaseNotification {
+  type: "presale_booking_referral";
+  trx_hash: string;
+  reward_amount: number;
+  reward_token_name: string;
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];
@@ -245,4 +258,5 @@ export type Notification =
   | ReplyLikeNotification
   | ReplyToReplyNotification
   | BUSDNetworkRewardsNotification
-  | PresaleBookingNotification;
+  | PresaleBookingNotification
+  | PresaleBookingReferralNotification;

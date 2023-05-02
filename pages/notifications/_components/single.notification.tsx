@@ -97,7 +97,10 @@ const getNotificationMessage = (
   let NotificationByName: JSX.Element | null = null;
   let VerificationTick: JSX.Element | null = null;
 
-  if (notification.type !== "presale_booking") {
+  if (
+    notification.type !== "presale_booking" &&
+    notification.type !== "presale_booking_referral"
+  ) {
     NotificationByName = (
       <Link
         onClick={(e) => {
@@ -203,6 +206,16 @@ const getNotificationMessage = (
           starts.
         </>
       );
+    case "presale_booking_referral":
+      return (
+        <>
+          You got a referral commission of{" "}
+          <span className="font-medium">
+            {notification.reward_amount} {notification.reward_token_name}
+          </span>{" "}
+          from presale booking. Check it out.
+        </>
+      );
     default:
       return "";
   }
@@ -233,6 +246,11 @@ const getNotificationUrl = (
         pathname: AppRoutes.launchpad_pre_booking,
         query: { tab: "my-bookings" },
       };
+    case "presale_booking_referral":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-rewards" },
+      };
     default:
       return null;
   }
@@ -258,6 +276,11 @@ const getNotificationImageUrl = (
       return {
         pathname: AppRoutes.launchpad_pre_booking,
         query: { tab: "my-bookings" },
+      };
+    case "presale_booking_referral":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-rewards" },
       };
     default:
       return null;
