@@ -107,10 +107,15 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       setIsLoading("loaded");
       setIsModalOpen(true);
     } catch (err: any) {
-      if (err.reason.includes("balance")) {
+      if (
+        err.reason?.toLowerCase().includes("transfer amount exceeds balance")
+      ) {
         toast.error(`${payment_token_name}: Insufficient balance`);
-      } else if (err.reason.includes("user rejected")) {
-        toast.error(err.reason);
+      } else if (
+        err.reason?.toLowerCase().includes("user rejected") ||
+        err.message?.toLowerCase().includes("user rejected")
+      ) {
+        toast.error("User rejected the transaction");
       } else {
         toast.error("Something is wrong! Please try again later.");
       }
