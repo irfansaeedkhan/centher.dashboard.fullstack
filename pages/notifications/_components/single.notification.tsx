@@ -71,7 +71,7 @@ export const SingleNotification: React.FC<SingleNotificationProps> = ({
             <div
               className={clsx(`inline-block items-center text-sm text-white`)}
             >
-              <span>
+              <span className="inline-block w-full">
                 {getNotificationMessage(notification, verificationTick)}
               </span>
             </div>
@@ -114,77 +114,50 @@ const getNotificationMessage = (
           `break-words hover:text-brand-primary`,
           !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
-            `notifcation-page-displayname inline-block break-words md:w-full`
+            `notifcation-page-displayname word-break inline break-words md:w-full`
         )}
       >
         <span className="font-medium" title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
         </span>
+        {!!verificationTick ? (
+          <span className="verifiedIcon inline-block h-[15px] w-[20px] min-w-[20px] fsm:h-[20px]">
+            <Image
+              src={verificationTick}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="fsm:mt-[5px]"
+            />
+          </span>
+        ) : null}
       </Link>
     );
-
-    VerificationTick = !!verificationTick ? (
-      <span className="verifiedIcon inline-block h-[15px] w-[20px] min-w-[20px] fsm:h-[20px]">
-        <Image
-          src={verificationTick}
-          alt={"Verified"}
-          width={20}
-          height={20}
-          className="fsm:mt-[5px]"
-        />
-      </span>
-    ) : null;
   }
 
   switch (notification.type) {
     case "post_like":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} liked your post.
-        </>
-      );
+      return <>{NotificationByName} liked your post.</>;
     case "post_reply":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} replied to your post.
-        </>
-      );
+      return <>{NotificationByName} replied to your post.</>;
     case "reply_like":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} liked your reply.
-        </>
-      );
+      return <>{NotificationByName} liked your reply.</>;
     case "reply_reply":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} has replied to your reply.
-        </>
-      );
+      return <>{NotificationByName} has replied to your reply.</>;
     case "follow":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} started following you.
-        </>
-      );
+      return <>{NotificationByName} started following you.</>;
     case "new_referral":
-      return (
-        <>
-          {NotificationByName} {VerificationTick} joined your network.
-        </>
-      );
+      return <>{NotificationByName} joined your network.</>;
     case "centher_purchase_ntr":
       return (
         <>
           {notification.amount} NTR network rewards from {NotificationByName}
-          {VerificationTick}
         </>
       );
     case "centher_purchase_busd":
       return (
         <>
           {notification.amount} BUSD network rewards from {NotificationByName}
-          {VerificationTick}
         </>
       );
     case "presale_booking":
@@ -196,7 +169,9 @@ const getNotificationMessage = (
           </span>{" "}
           tokens are booked! You will be able to claim your{" "}
           <span className="font-medium">
-            {notification.receivable_amount}{" "}
+            {notification.receivable_amount.toString().includes(".")
+              ? notification.receivable_amount.toFixed(2)
+              : notification.receivable_amount}{" "}
             {notification.receivable_token_name}
           </span>{" "}
           when{" "}
@@ -211,7 +186,10 @@ const getNotificationMessage = (
         <>
           You got a referral commission of{" "}
           <span className="font-medium">
-            {notification.reward_amount} {notification.reward_token_name}
+            {notification.reward_amount.toString().includes(".")
+              ? notification.reward_amount.toFixed(2)
+              : notification.reward_amount}{" "}
+            {notification.reward_token_name}
           </span>{" "}
           from presale booking. Check it out.
         </>
