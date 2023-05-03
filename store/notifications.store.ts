@@ -242,6 +242,7 @@ interface PresaleBookingReferralNotification extends BaseNotification {
   trx_hash: string;
   reward_amount: number;
   reward_token_name: string;
+  level: number;
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];

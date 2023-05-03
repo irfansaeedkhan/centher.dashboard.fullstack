@@ -67,5 +67,6 @@ export interface Reward {
   reward_token_amount: number;
   reward_token_name: string;
   trx_hash: string;
+  level: number;
   createdAt: number;
 }
