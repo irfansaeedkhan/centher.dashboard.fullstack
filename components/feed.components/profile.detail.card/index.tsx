@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
+import ProfileModal from "@/components/modal/profile.modal";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
@@ -17,9 +18,16 @@ interface ProfileDetailCardProps {
 export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   user,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const profileCardDetails = useGetProfileCardDetails(user);
   const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div
       className={clsx(
@@ -34,24 +42,18 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         }}
       ></div>
 
-      <div className={`relative mx-auto h-[60px] !w-[60px]`}>
-        <Link
-          href={{
-            pathname: AppRoutes.profile.account_address,
-            query: {
-              account_address: user.account_address,
-            },
-          }}
-        >
-          <Image
-            src={user.profile_image.path}
-            className={`mx-auto h-[60px] w-[60px] cursor-pointer rounded-full object-cover`}
-            alt={user.display_name}
-            width={60}
-            height={60}
-            sizes={"256px"}
-          />
-        </Link>
+      <div
+        className={`relative mx-auto h-[60px] !w-[60px]`}
+        onClick={handleImageClick}
+      >
+        <Image
+          src={user.profile_image.path}
+          className={`mx-auto h-[60px] w-[60px] cursor-pointer rounded-full object-cover`}
+          alt={user.display_name}
+          width={60}
+          height={60}
+          sizes={"256px"}
+        />
       </div>
 
       <h3 className={`p-2`}>
@@ -137,6 +139,12 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             {profileCardDetails.posts_views_count}
           </h6>
         </div>
+      )}
+      {isModalOpen && (
+        <ProfileModal
+          onClose={handleCloseModal}
+          src={user.profile_image.path}
+        />
       )}
     </div>
   );
