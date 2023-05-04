@@ -31,7 +31,6 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     receivable_token_image,
     receivable_token_symbol,
     payment_token_symbol,
-    payment_token_name,
     payment_token_address,
     pre_booking: {
       minimum_payment_token_amount,
@@ -55,7 +54,6 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
   const receivableTokenPriceCurrentRound =
     rounds[current_round as keyof typeof rounds]
       .receivable_token_price_in_payment_token;
-  const onePaymentTokenToReceivableToken = 1 / receivableTokenPriceCurrentRound;
 
   const lastRoundLeftCap =
     current_round === 3
@@ -171,11 +169,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
         </div>
         <div className="fmd:flex-grow">
           <p className="w-full text-end text-sm text-gray-shade-14">
-            1 {payment_token_symbol} ={" "}
-            {onePaymentTokenToReceivableToken.toString().includes(".")
-              ? onePaymentTokenToReceivableToken.toFixed(2)
-              : onePaymentTokenToReceivableToken}{" "}
-            {receivable_token_symbol}
+            1 {receivable_token_symbol} = {receivableTokenPriceCurrentRound}{" "}
+            {payment_token_symbol}
           </p>
           <div className="mt-3 h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
             <div className="flex items-center justify-between gap-10">
