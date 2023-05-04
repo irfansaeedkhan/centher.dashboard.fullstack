@@ -24,6 +24,7 @@ export const SingleNotification: React.FC<SingleNotificationProps> = ({
 }) => {
   const router = useRouter();
   const markAsRead = useNotificationsStore((state) => state.markAsRead);
+  const verificationTick = useVerificationTick({ user: notification.by });
 
   const readNotification = async () => {
     if (notification.status === "unread") {
@@ -42,29 +43,38 @@ export const SingleNotification: React.FC<SingleNotificationProps> = ({
       )}
       onClick={() => {
         readNotification();
-        router.push(getNotificationUrl(notification));
+        const link = getNotificationUrl(notification);
+        if (!link) return;
+        router.push(link);
       }}
     >
       <div className="flex items-center gap-2">
-        <Link
-          onClick={(e) => e.stopPropagation()}
-          href={{
-            pathname: AppRoutes.profile.account_address,
-            query: { account_address: notification.by.account_address },
+        <span
+          onClick={(e) => {
+            e.stopPropagation();
+            const link = getNotificationImageUrl(notification);
+            if (!link) return;
+            router.push(link);
           }}
           className="flex flex-shrink-0"
         >
           <Image
-            src={notification.by?.profile_image?.path}
+            src={notification.by.profile_image.path}
             alt="dp"
             width={44}
             height={44}
             className="!h-[40px] !w-[40px] rounded-full object-cover fsm:h-[44px] fsm:w-[44px]"
           />
-        </Link>
+        </span>
         <div className="flex flex-grow flex-col">
           <div>
-            <NotificationLink notification={notification} />
+            <div
+              className={clsx(`inline-block items-center text-sm text-white`)}
+            >
+              <span className="inline-block w-full">
+                {getNotificationMessage(notification, verificationTick)}
+              </span>
+            </div>
           </div>
           <Timestamp
             timestamp={notification.createdAt}
@@ -80,19 +90,21 @@ export const SingleNotification: React.FC<SingleNotificationProps> = ({
   );
 };
 
-const NotificationLink: React.FC<{
-  notification: Notification;
-}> = ({ notification }) => {
-  const verificationTick = useVerificationTick({ user: notification.by });
+const getNotificationMessage = (
+  notification: Notification,
+  verificationTick: string | null = null
+) => {
+  let NotificationByName: JSX.Element | null = null;
 
-  return (
-    <div className={clsx(`inline-block items-center text-sm text-white`)}>
-      {(notification.type === "centher_purchase_ntr" ||
-        notification.type === "centher_purchase_busd") && (
-        <span>{getNotificationMessage(notification)}</span>
-      )}
+  if (
+    notification.type !== "presale_booking" &&
+    notification.type !== "presale_booking_referral"
+  ) {
+    NotificationByName = (
       <Link
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
         href={{
           pathname: AppRoutes.profile.account_address,
           query: { account_address: notification.by.account_address },
@@ -101,56 +113,94 @@ const NotificationLink: React.FC<{
           `break-words hover:text-brand-primary`,
           !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
-            `notifcation-page-displayname inline-block break-words md:w-full`
+            `notifcation-page-displayname word-break inline break-words md:w-full`
         )}
       >
         <span className="font-medium" title={notification.by.display_name}>
           {sliceDisplayName(notification.by.display_name)}
         </span>
+        {!!verificationTick ? (
+          <span className="verifiedIcon inline-block h-[15px] w-[20px] min-w-[20px] fsm:h-[20px]">
+            <Image
+              src={verificationTick}
+              alt={"Verified"}
+              width={20}
+              height={20}
+              className="fsm:mt-[5px]"
+            />
+          </span>
+        ) : null}
       </Link>
-      {!!verificationTick && (
-        <span className="verifiedIcon ml-0.5 inline-block h-[15px] w-[20px] min-w-[20px] fsm:ml-0.5 fsm:h-[20px]">
-          <Image
-            src={verificationTick}
-            alt={"Verified"}
-            width={20}
-            height={20}
-            className="fsm:mt-[5px]"
-          />
-        </span>
-      )}{" "}
-      {!(
-        notification.type === "centher_purchase_ntr" ||
-        notification.type === "centher_purchase_busd"
-      ) && <span>{getNotificationMessage(notification)}</span>}
-    </div>
-  );
-};
+    );
+  }
 
-const getNotificationMessage = (notification: Notification) => {
   switch (notification.type) {
     case "post_like":
-      return "liked your post.";
+      return <>{NotificationByName} liked your post.</>;
     case "post_reply":
-      return "replied to your post.";
+      return <>{NotificationByName} replied to your post.</>;
     case "reply_like":
-      return "liked your reply.";
+      return <>{NotificationByName} liked your reply.</>;
     case "reply_reply":
-      return "has replied to your reply.";
+      return <>{NotificationByName} has replied to your reply.</>;
     case "follow":
-      return "started following you.";
+      return <>{NotificationByName} started following you.</>;
     case "new_referral":
-      return "joined your network.";
+      return <>{NotificationByName} joined your network.</>;
     case "centher_purchase_ntr":
-      return `${notification.amount} NTR network rewards from`;
+      return (
+        <>
+          {notification.amount} NTR network rewards from {NotificationByName}
+        </>
+      );
     case "centher_purchase_busd":
-      return `${notification.amount} BUSD network rewards from`;
+      return (
+        <>
+          {notification.amount} BUSD network rewards from {NotificationByName}
+        </>
+      );
+    case "presale_booking":
+      return (
+        <>
+          Your{" "}
+          <span className="font-medium">
+            {notification.receivable_token_symbol}
+          </span>{" "}
+          tokens are booked! You will be able to claim your{" "}
+          <span className="font-medium">
+            {notification.receivable_amount.toString().includes(".")
+              ? notification.receivable_amount.toFixed(2)
+              : notification.receivable_amount}{" "}
+            {notification.receivable_token_symbol}
+          </span>{" "}
+          when{" "}
+          <span className="font-medium">
+            round {notification.receivable_in_round}
+          </span>{" "}
+          starts.
+        </>
+      );
+    case "presale_booking_referral":
+      return (
+        <>
+          You got a referral commission of{" "}
+          <span className="font-medium">
+            {notification.reward_amount.toString().includes(".")
+              ? notification.reward_amount.toFixed(2)
+              : notification.reward_amount}{" "}
+            {notification.reward_token_symbol}
+          </span>{" "}
+          from presale booking. Check it out.
+        </>
+      );
     default:
       return "";
   }
 };
 
-const getNotificationUrl = (notification: Notification): LinkProps["href"] => {
+const getNotificationUrl = (
+  notification: Notification
+): LinkProps["href"] | null => {
   switch (notification.type) {
     case "post_like":
     case "post_reply":
@@ -168,8 +218,49 @@ const getNotificationUrl = (notification: Notification): LinkProps["href"] => {
         pathname: AppRoutes.profile.account_address,
         query: { account_address: notification.by.account_address },
       };
+    case "presale_booking":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-bookings" },
+      };
+    case "presale_booking_referral":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-rewards" },
+      };
     default:
-      return {};
+      return null;
+  }
+};
+
+const getNotificationImageUrl = (
+  notification: Notification
+): LinkProps["href"] | null => {
+  switch (notification.type) {
+    case "post_like":
+    case "post_reply":
+    case "reply_like":
+    case "reply_reply":
+    case "follow":
+    case "new_referral":
+    case "centher_purchase_busd":
+    case "centher_purchase_ntr":
+      return {
+        pathname: AppRoutes.profile.account_address,
+        query: { account_address: notification.by.account_address },
+      };
+    case "presale_booking":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-bookings" },
+      };
+    case "presale_booking_referral":
+      return {
+        pathname: AppRoutes.launchpad_pre_booking,
+        query: { tab: "my-rewards" },
+      };
+    default:
+      return null;
   }
 };
 

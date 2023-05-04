@@ -43,7 +43,8 @@ export type FieldName =
   | "tiktok_username"
   | "twitch_username"
   | "onlyfans_username"
-  | "youtube_url";
+  | "youtube_url"
+  | "telegram_username";
 
 const fieldWrapper = `flex  gap-2 flex-col`;
 

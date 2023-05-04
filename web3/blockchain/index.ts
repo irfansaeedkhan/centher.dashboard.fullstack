@@ -1562,4 +1562,43 @@ export class BlockchainWrite {
       throw error;
     }
   }
+
+  static async preBookDexa(
+    paymentAmountRaw: number,
+    paymentAddress: string,
+    paymentTokenAddress: string,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const paymentTokenAbi = BlockchainConfig.abis.BUSD; // TODO: change to ERC20 abi for generic usage
+      const paymentTokenContract = SmartContractProvider.getContractInstance(
+        paymentTokenAbi,
+        paymentTokenAddress,
+        signer
+      );
+
+      const paymentAmount = ethers.utils.parseUnits(
+        paymentAmountRaw.toString(),
+        18
+      );
+
+      await paymentTokenContract.callStatic.transfer(
+        paymentAddress,
+        paymentAmount
+      );
+
+      const tx = await paymentTokenContract.functions.transfer(
+        paymentAddress,
+        paymentAmount
+      );
+
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "preBookDexa");
+      throw error;
+    }
+  }
 }

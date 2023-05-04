@@ -48,6 +48,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
         twitch_username: updatedUser.twitch_username,
         onlyfans_username: updatedUser.onlyfans_username,
         youtube_url: updatedUser.youtube_url,
+        telegram_username: updatedUser.telegram_username,
       });
 
       setUpdatedUser(data.user as LoggedInUser);
@@ -162,6 +163,18 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
         <InputField
+          id="telegram_username"
+          label="Telegram Username"
+          placeholder="e.g. stevenpaul"
+          value={updatedUser.telegram_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              telegram_username: e.target.value,
+            });
+          }}
+        />
+        <InputField
           id="youtube_url"
           label="Youtube URL"
           placeholder="e.g. https://youtube.com/stevenpaul"
@@ -173,6 +186,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
             });
           }}
         />
+
         <button
           className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
           onClick={updateProfile}

@@ -118,6 +118,8 @@ export { default as MoonIcon } from "./moonicon.svg";
 export { default as LockVector } from "./lockvector.svg";
 export { default as MigrateIcon } from "./migrate.icon.svg";
 export { default as CircularClose } from "./icon.close.circle.svg";
+export { default as BUSDNEW } from "./busd.new.svg";
+export { default as GreenTick } from "./green.tick.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

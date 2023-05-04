@@ -1,3 +1,4 @@
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -6,6 +7,7 @@ import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
 
 import { PurchaseCentherCardV2 } from "../../_components/purchase-centher-card-v2";
 import LaunchpadComingSoon from "../../_components/lauchpad.comingsoon";
+import { AppRoutes } from "@/constants/app.routes";
 
 const BuyTokenPage: NextPageWithLayout = () => {
   const router = useRouter();
@@ -35,3 +37,12 @@ BuyTokenPage.getLayout = (page) => (
 );
 
 export default BuyTokenPage;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    redirect: {
+      destination: AppRoutes.launchpad_pre_booking,
+      permanent: false,
+    },
+  };
+};

@@ -1,12 +1,10 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import moment from "moment";
 
-// App imports
 import { axiosNodeApi } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { Notification } from "@/assets/svgs";
-import moment from "moment";
 
 export interface NotificationsStore {
   notifications: Notification[];
@@ -19,10 +17,6 @@ export interface NotificationsStore {
   markAllAsRead: () => Promise<void>;
   loading: LoadingState;
 }
-
-const today = moment().format("YYYY-MM-DD");
-const yesterday = moment(today).subtract(1, "day").format("YYYY-MM-DD");
-const sevenday = moment(today).subtract(7, "day").format("YYYY-MM-DD");
 
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
@@ -175,8 +169,6 @@ interface BaseNotification {
 
   for: string;
 
-  by: NotificationBy;
-
   status: "read" | "unread";
   createdAt: string;
   updatedAt: string;
@@ -184,42 +176,81 @@ interface BaseNotification {
 
 interface PostLikeNotification extends BaseNotification {
   type: "post_like";
+  by: NotificationBy;
   post: NotificationPost;
 }
 
 interface ReplyLikeNotification extends BaseNotification {
   type: "reply_like";
+  by: NotificationBy;
   post: NotificationPost;
 }
 
 interface ReplyToReplyNotification extends BaseNotification {
   type: "reply_reply";
+  by: NotificationBy;
   post: NotificationPost;
 }
 
 interface PostReplyNotification extends BaseNotification {
   type: "post_reply";
+  by: NotificationBy;
   post: NotificationPost;
 }
 
 interface FollowNotification extends BaseNotification {
   type: "follow";
+  by: NotificationBy;
 }
 
 interface NewReferralNotification extends BaseNotification {
   type: "new_referral";
+  by: NotificationBy;
 }
 
 interface NTRNetworkRewardsNotification extends BaseNotification {
   type: "centher_purchase_ntr";
+  by: NotificationBy;
   amount: number;
   level: number;
 }
 
 interface BUSDNetworkRewardsNotification extends BaseNotification {
   type: "centher_purchase_busd";
+  by: NotificationBy;
   amount: number;
   level: number;
+}
+
+interface PresaleBookingNotification extends BaseNotification {
+  type: "presale_booking";
+  trx_hash: string;
+  paid_amount: number;
+  paid_token_name: string;
+  paid_token_symbol: string;
+  receivable_amount: number;
+  receivable_token_name: string;
+  receivable_token_symbol: string;
+  receivable_in_round: number;
+  by: {
+    display_name: NotificationBy["display_name"];
+    profile_image: NotificationBy["profile_image"];
+    is_verified: NotificationBy["is_verified"];
+  };
+}
+
+interface PresaleBookingReferralNotification extends BaseNotification {
+  type: "presale_booking_referral";
+  trx_hash: string;
+  reward_amount: number;
+  reward_token_name: string;
+  reward_token_symbol: string;
+  level: number;
+  by: {
+    display_name: NotificationBy["display_name"];
+    profile_image: NotificationBy["profile_image"];
+    is_verified: NotificationBy["is_verified"];
+  };
 }
 
 export type Notification =
@@ -230,4 +261,6 @@ export type Notification =
   | NTRNetworkRewardsNotification
   | ReplyLikeNotification
   | ReplyToReplyNotification
-  | BUSDNetworkRewardsNotification;
+  | BUSDNetworkRewardsNotification
+  | PresaleBookingNotification
+  | PresaleBookingReferralNotification;
