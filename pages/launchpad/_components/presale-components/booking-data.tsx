@@ -59,7 +59,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
 
   const lastRoundLeftCap =
     current_round === 3
-      ? rounds[3].payment_token_max_cap - rounds[3].payment_token_max_cap + 1
+      ? rounds[3].payment_token_max_cap - rounds[3].payment_tokens_collected + 1
       : rounds[3].payment_token_max_cap;
 
   let minimumPaymentTokenAmount = minimum_payment_token_amount;
