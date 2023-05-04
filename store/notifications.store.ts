@@ -227,8 +227,10 @@ interface PresaleBookingNotification extends BaseNotification {
   trx_hash: string;
   paid_amount: number;
   paid_token_name: string;
+  paid_token_symbol: string;
   receivable_amount: number;
   receivable_token_name: string;
+  receivable_token_symbol: string;
   receivable_in_round: number;
   by: {
     display_name: NotificationBy["display_name"];
@@ -242,6 +244,7 @@ interface PresaleBookingReferralNotification extends BaseNotification {
   trx_hash: string;
   reward_amount: number;
   reward_token_name: string;
+  reward_token_symbol: string;
   level: number;
   by: {
     display_name: NotificationBy["display_name"];

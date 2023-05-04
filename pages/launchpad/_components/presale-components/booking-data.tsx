@@ -123,7 +123,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       if (
         err.reason?.toLowerCase().includes("transfer amount exceeds balance")
       ) {
-        toast.error(`${payment_token_name}: Insufficient balance`);
+        toast.error(`${payment_token_symbol}: Insufficient balance`);
       } else if (
         err.reason?.toLowerCase().includes("user rejected") ||
         err.message?.toLowerCase().includes("user rejected")
@@ -299,7 +299,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               <span className="text-red-400">Note:</span> Minimum payment amount
               is{" "}
               <span className="font-medium">
-                {minimumPaymentTokenAmount} {payment_token_name}
+                {minimumPaymentTokenAmount} {payment_token_symbol}
               </span>
               . Any amount less than that will not be considered for booking and{" "}
               <span className="font-medium">it will not be refunded</span>.

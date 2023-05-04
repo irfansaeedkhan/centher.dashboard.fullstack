@@ -95,7 +95,6 @@ const getNotificationMessage = (
   verificationTick: string | null = null
 ) => {
   let NotificationByName: JSX.Element | null = null;
-  let VerificationTick: JSX.Element | null = null;
 
   if (
     notification.type !== "presale_booking" &&
@@ -165,14 +164,14 @@ const getNotificationMessage = (
         <>
           Your{" "}
           <span className="font-medium">
-            {notification.receivable_token_name}
+            {notification.receivable_token_symbol}
           </span>{" "}
           tokens are booked! You will be able to claim your{" "}
           <span className="font-medium">
             {notification.receivable_amount.toString().includes(".")
               ? notification.receivable_amount.toFixed(2)
               : notification.receivable_amount}{" "}
-            {notification.receivable_token_name}
+            {notification.receivable_token_symbol}
           </span>{" "}
           when{" "}
           <span className="font-medium">
@@ -189,7 +188,7 @@ const getNotificationMessage = (
             {notification.reward_amount.toString().includes(".")
               ? notification.reward_amount.toFixed(2)
               : notification.reward_amount}{" "}
-            {notification.reward_token_name}
+            {notification.reward_token_symbol}
           </span>{" "}
           from presale booking. Check it out.
         </>

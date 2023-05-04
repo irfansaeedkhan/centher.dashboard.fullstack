@@ -104,7 +104,7 @@ const PreSale: NextPageWithLayout = () => {
         {(bookingsTab === "recent-bookings" ||
           bookingsTab === "my-bookings") && (
           <BookingList
-            recievableTokenName={preBookingStats.receivable_token_name}
+            recievableTokenSymbol={preBookingStats.receivable_token_symbol}
             rounds={preBookingStats.pre_booking.rounds}
             bookings={
               bookingsTab === "recent-bookings"

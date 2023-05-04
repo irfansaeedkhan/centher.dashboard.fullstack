@@ -50,8 +50,10 @@ export interface Booking {
   sender_address: string;
   payment_token_amount: number;
   payment_token_name: string;
+  payment_token_symbol: string;
   receivable_token_amount: number;
   receivable_token_name: string;
+  receivable_token_symbol: string;
   trx_hash: string;
   round: number;
   createdAt: number;
@@ -62,10 +64,13 @@ export interface Reward {
   sender_address: string;
   payment_token_amount: number;
   payment_token_name: string;
+  payment_token_symbol: string;
   receivable_token_amount: number;
   receivable_token_name: string;
+  receivable_token_symbol: string;
   reward_token_amount: number;
   reward_token_name: string;
+  reward_token_symbol: string;
   trx_hash: string;
   level: number;
   createdAt: number;
