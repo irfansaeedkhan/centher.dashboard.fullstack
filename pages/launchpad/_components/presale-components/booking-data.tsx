@@ -43,8 +43,9 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     presale,
   } = preBookingStats;
 
-  const paymentTokensCollected =
-    rounds[current_round as keyof typeof rounds].payment_tokens_collected;
+  const paymentTokensCollected = is_sold_out
+    ? rounds[current_round as keyof typeof rounds].payment_token_max_cap
+    : rounds[current_round as keyof typeof rounds].payment_tokens_collected;
 
   const paymentTokenMaxCap =
     rounds[current_round as keyof typeof rounds].payment_token_max_cap;
@@ -55,6 +56,16 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     rounds[current_round as keyof typeof rounds]
       .receivable_token_price_in_payment_token;
   const onePaymentTokenToReceivableToken = 1 / receivableTokenPriceCurrentRound;
+
+  const lastRoundLeftCap =
+    current_round === 3
+      ? rounds[3].payment_token_max_cap - rounds[3].payment_token_max_cap + 1
+      : rounds[3].payment_token_max_cap;
+
+  let minimumPaymentTokenAmount = minimum_payment_token_amount;
+  if (current_round === 3 && lastRoundLeftCap < minimum_payment_token_amount) {
+    minimumPaymentTokenAmount = lastRoundLeftCap;
+  }
 
   const [paymentForm, setPaymentForm] = useState<{
     paymentTokenAmount: string | number;
@@ -176,7 +187,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                 paymentTokenCollectionPercentage >= 75 &&
                   paymentTokenCollectionPercentage < 100 &&
                   `bg-[#FEBF32]/[0.16]`,
-                paymentTokenCollectionPercentage === 100 &&
+                (paymentTokenCollectionPercentage === 100 || is_sold_out) &&
                   `bg-[#E5535A]/[0.16]`
               )}
             >
@@ -187,7 +198,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   paymentTokenCollectionPercentage >= 75 &&
                     paymentTokenCollectionPercentage < 100 &&
                     `bg-brand-primary`,
-                  paymentTokenCollectionPercentage === 100 && `bg-[#EA3943]`,
+                  (paymentTokenCollectionPercentage === 100 || is_sold_out) &&
+                    `bg-[#EA3943]`,
                   `absolute top-0 z-50 h-3 rounded-3xl`
                 )}
               ></div>
@@ -255,7 +267,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   variant={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
-                      minimum_payment_token_amount
+                      minimumPaymentTokenAmount ||
+                    paymentForm.paymentTokenAmount > lastRoundLeftCap
                       ? "v2"
                       : "v1"
                   }
@@ -263,13 +276,15 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   disabled={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
-                      minimum_payment_token_amount
+                      minimumPaymentTokenAmount ||
+                    paymentForm.paymentTokenAmount > lastRoundLeftCap
                   }
                   className={clsx("flg:max-w-[210px]")}
                   onClick={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
-                      minimum_payment_token_amount
+                      minimumPaymentTokenAmount ||
+                    paymentForm.paymentTokenAmount > lastRoundLeftCap
                       ? () => {}
                       : bookNow
                   }
@@ -277,15 +292,17 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               )}
             </div>
           )}
-          <p className="mt-4 text-[13px] text-gray-shade-14 fmd:mt-8">
-            <span className="text-red-400">Note:</span> Minimum payment amount
-            is{" "}
-            <span className="font-medium">
-              {minimum_payment_token_amount} {payment_token_name}
-            </span>
-            . Any amount less than that will not be considered for booking and{" "}
-            <span className="font-medium">it will not be refunded</span>.
-          </p>
+          {!is_sold_out && (
+            <p className="mt-4 text-[13px] text-gray-shade-14 fmd:mt-8">
+              <span className="text-red-400">Note:</span> Minimum payment amount
+              is{" "}
+              <span className="font-medium">
+                {minimumPaymentTokenAmount} {payment_token_name}
+              </span>
+              . Any amount less than that will not be considered for booking and{" "}
+              <span className="font-medium">it will not be refunded</span>.
+            </p>
+          )}
         </div>
       </div>
       {isModalOpen && (
