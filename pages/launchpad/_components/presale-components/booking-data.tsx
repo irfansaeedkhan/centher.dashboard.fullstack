@@ -62,7 +62,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       current_round === 3
         ? rounds[3].receivable_token_max_cap -
             rounds[3].receivable_tokens_collected
-        : rounds[3].receivable_token_max_cap,
+        : 0,
       receivableTokenPriceCurrentRound
     )
   );
@@ -276,8 +276,9 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount >
-                      lastRoundLeftCapInPaymentToken
+                    (current_round === 3 &&
+                      paymentForm.paymentTokenAmount >
+                        lastRoundLeftCapInPaymentToken)
                       ? "v2"
                       : "v1"
                   }
@@ -286,16 +287,18 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount >
-                      lastRoundLeftCapInPaymentToken
+                    (current_round === 3 &&
+                      paymentForm.paymentTokenAmount >
+                        lastRoundLeftCapInPaymentToken)
                   }
                   className={clsx("flg:max-w-[210px]")}
                   onClick={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount >
-                      lastRoundLeftCapInPaymentToken
+                    (current_round === 3 &&
+                      paymentForm.paymentTokenAmount >
+                        lastRoundLeftCapInPaymentToken)
                       ? () => {}
                       : bookNow
                   }
