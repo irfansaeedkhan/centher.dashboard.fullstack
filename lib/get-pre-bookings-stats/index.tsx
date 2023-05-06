@@ -10,7 +10,6 @@ export const getPreBookingStats = async (
   const endpoint = `${process.env.NEXT_PUBLIC_PRE_BOOKING_API_URL}/presale/statistics/${userAccountAddress}`;
   try {
     const { data } = await axios.get(endpoint);
-
     return data;
   } catch (error: any) {
     throw new AppError(
@@ -19,4 +18,18 @@ export const getPreBookingStats = async (
       "getPreBookingStats"
     );
   }
+};
+
+export const receivableTokenAmountToPaymentTokenAmount = (
+  receivableTokenAmount: number,
+  receivableTokenPriceCurrentRound: number
+): number => {
+  return receivableTokenAmount * receivableTokenPriceCurrentRound;
+};
+
+export const paymentTokenAmountToReceivableTokenAmount = (
+  paymentTokenAmount: number,
+  receivableTokenPriceCurrentRound: number
+): number => {
+  return paymentTokenAmount / receivableTokenPriceCurrentRound;
 };
