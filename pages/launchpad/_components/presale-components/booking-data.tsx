@@ -7,6 +7,7 @@ import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
 
+import { receivableTokenAmountToPaymentTokenAmount } from "@/lib/get-pre-bookings-stats";
 import { PreBookingStats } from "@/lib/get-pre-bookings-stats/types";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -37,34 +38,42 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       is_sold_out,
       current_round,
       rounds,
-      payment_address,
+      payment_wallet_address,
     },
     presale,
   } = preBookingStats;
-
-  const paymentTokensCollected = is_sold_out
-    ? rounds[current_round as keyof typeof rounds].payment_token_max_cap
-    : rounds[current_round as keyof typeof rounds].payment_tokens_collected;
-
-  const paymentTokenMaxCap =
-    rounds[current_round as keyof typeof rounds].payment_token_max_cap;
-  const paymentTokenCollectionPercentage =
-    (paymentTokensCollected / paymentTokenMaxCap) * 100;
 
   const receivableTokenPriceCurrentRound =
     rounds[current_round as keyof typeof rounds]
       .receivable_token_price_in_payment_token;
 
-  const lastRoundLeftCap =
-    current_round === 3
-      ? Math.ceil(
-          rounds[3].payment_token_max_cap - rounds[3].payment_tokens_collected
-        )
-      : rounds[3].payment_token_max_cap;
+  const receivableTokensCollected = is_sold_out
+    ? rounds[current_round as keyof typeof rounds].receivable_token_max_cap
+    : rounds[current_round as keyof typeof rounds].receivable_tokens_collected;
+
+  const receivableTokenMaxCap =
+    rounds[current_round as keyof typeof rounds].receivable_token_max_cap;
+
+  const receivableTokenCollectionPercentage =
+    (receivableTokensCollected / receivableTokenMaxCap) * 100;
+
+  const lastRoundLeftCapInPaymentToken = Math.ceil(
+    receivableTokenAmountToPaymentTokenAmount(
+      current_round === 3
+        ? rounds[3].receivable_token_max_cap -
+            rounds[3].receivable_tokens_collected
+        : rounds[3].receivable_token_max_cap,
+      receivableTokenPriceCurrentRound
+    )
+  );
 
   let minimumPaymentTokenAmount = minimum_payment_token_amount;
-  if (current_round === 3 && lastRoundLeftCap < minimum_payment_token_amount) {
-    minimumPaymentTokenAmount = lastRoundLeftCap;
+
+  if (
+    current_round === 3 &&
+    lastRoundLeftCapInPaymentToken < minimumPaymentTokenAmount
+  ) {
+    minimumPaymentTokenAmount = lastRoundLeftCapInPaymentToken;
   }
 
   const [paymentForm, setPaymentForm] = useState<{
@@ -106,7 +115,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     try {
       await BlockchainWrite.preBookDexa(
         paymentForm.paymentTokenAmount,
-        payment_address,
+        payment_wallet_address,
         payment_token_address,
         library
       );
@@ -180,22 +189,24 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             <div
               className={clsx(
                 "relative mt-[22px] h-3 w-full overflow-hidden rounded-3xl",
-                paymentTokenCollectionPercentage < 75 && `bg-[#76E268]/[0.16]`,
-                paymentTokenCollectionPercentage >= 75 &&
-                  paymentTokenCollectionPercentage < 100 &&
+                receivableTokenCollectionPercentage < 75 &&
+                  `bg-[#76E268]/[0.16]`,
+                receivableTokenCollectionPercentage >= 75 &&
+                  receivableTokenCollectionPercentage < 100 &&
                   `bg-[#FEBF32]/[0.16]`,
-                (paymentTokenCollectionPercentage === 100 || is_sold_out) &&
+                (receivableTokenCollectionPercentage === 100 || is_sold_out) &&
                   `bg-[#E5535A]/[0.16]`
               )}
             >
               <div
-                style={{ width: `${paymentTokenCollectionPercentage}%` }}
+                style={{ width: `${receivableTokenCollectionPercentage}%` }}
                 className={clsx(
-                  paymentTokenCollectionPercentage < 75 && `bg-[#76E268]`,
-                  paymentTokenCollectionPercentage >= 75 &&
-                    paymentTokenCollectionPercentage < 100 &&
+                  receivableTokenCollectionPercentage < 75 && `bg-[#76E268]`,
+                  receivableTokenCollectionPercentage >= 75 &&
+                    receivableTokenCollectionPercentage < 100 &&
                     `bg-brand-primary`,
-                  (paymentTokenCollectionPercentage === 100 || is_sold_out) &&
+                  (receivableTokenCollectionPercentage === 100 ||
+                    is_sold_out) &&
                     `bg-[#EA3943]`,
                   `absolute top-0 z-50 h-3 rounded-3xl`
                 )}
@@ -203,16 +214,16 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </div>
             <div className="mt-2 flex w-full items-center justify-between">
               <p className="text-sm text-gray-shade-14">
-                {paymentTokensCollected.toString().includes(".")
-                  ? paymentTokensCollected.toFixed(2)
-                  : paymentTokensCollected}{" "}
-                {payment_token_symbol}
+                {receivableTokensCollected.toString().includes(".")
+                  ? receivableTokensCollected.toFixed(2)
+                  : receivableTokensCollected}{" "}
+                {receivable_token_symbol}
               </p>
               <p className="text-sm text-gray-shade-14">
-                {paymentTokenMaxCap.toString().includes(".")
-                  ? paymentTokenMaxCap.toFixed(2)
-                  : paymentTokenMaxCap}{" "}
-                {payment_token_symbol}
+                {receivableTokenMaxCap.toString().includes(".")
+                  ? receivableTokenMaxCap.toFixed(2)
+                  : receivableTokenMaxCap}{" "}
+                {receivable_token_symbol}
               </p>
             </div>
           </div>
@@ -265,7 +276,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount > lastRoundLeftCap
+                    paymentForm.paymentTokenAmount >
+                      lastRoundLeftCapInPaymentToken
                       ? "v2"
                       : "v1"
                   }
@@ -274,14 +286,16 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount > lastRoundLeftCap
+                    paymentForm.paymentTokenAmount >
+                      lastRoundLeftCapInPaymentToken
                   }
                   className={clsx("flg:max-w-[210px]")}
                   onClick={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
-                    paymentForm.paymentTokenAmount > lastRoundLeftCap
+                    paymentForm.paymentTokenAmount >
+                      lastRoundLeftCapInPaymentToken
                       ? () => {}
                       : bookNow
                   }
@@ -291,8 +305,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
           )}
           {!is_sold_out && (
             <p className="mt-4 text-[13px] text-gray-shade-14 fmd:mt-8">
-              <span className="text-red-400">Note:</span> Minimum payment amount
-              is{" "}
+              <span className="text-red-400">Note:</span> Minimum booking is{" "}
               <span className="font-medium">
                 {minimumPaymentTokenAmount} {payment_token_symbol}
               </span>

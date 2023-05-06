@@ -17,14 +17,14 @@ export interface PreBooking {
   current_round: number;
   minimum_payment_token_amount: number;
   is_sold_out: boolean;
-  payment_address: string;
+  payment_wallet_address: string;
   rounds: PreBookingRounds;
 }
 
 export interface PreBookingRounds {
   [key: number]: {
-    payment_token_max_cap: number;
-    payment_tokens_collected: number;
+    receivable_token_max_cap: number;
+    receivable_tokens_collected: number;
     receivable_token_price_in_payment_token: number;
   };
 }
