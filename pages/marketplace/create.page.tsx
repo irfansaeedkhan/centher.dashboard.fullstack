@@ -12,6 +12,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
@@ -19,7 +20,6 @@ import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
 // Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
@@ -46,6 +46,7 @@ const CreateNFT: NextPageWithLayout = () => {
   const bnbPrice = useBNBPrice();
 
   const { account, library } = useWeb3React();
+  const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
     try {
@@ -105,6 +106,18 @@ const CreateNFT: NextPageWithLayout = () => {
   };
 
   const createNFT = (values: INFTData) => {
+    if (!account || !library) {
+      toastError("Please connect your wallet for creating NFT!");
+      return;
+    }
+    if (!user) {
+      toastError("Please login for creating NFT!");
+      return;
+    }
+    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+      toastError("Please connect your wallet to correct account!");
+      return;
+    }
     if (asset === undefined) {
       toastError("Choose file.");
       return;
