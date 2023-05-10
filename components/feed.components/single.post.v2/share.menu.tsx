@@ -15,12 +15,14 @@ import { PostType } from "./main";
 interface SinglePostProps extends HTMLAttributes<HTMLDivElement> {
   post: CompletedPost | ArchivedPost;
   postType: PostType;
+  setIsShareMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ShareMenu: React.FC<SinglePostProps> = ({
   post,
   postType,
   className,
+  setIsShareMenuOpen,
   ...props
 }) => {
   const shareUrl = useMemo(() => {
@@ -47,7 +49,13 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
     >
       {shareMenuState === "menu-1" && (
         <div>
-          <button onClick={copyShareUrl} className={clsx(shareBtnClasses)}>
+          <button
+            onClick={() => {
+              copyShareUrl();
+              setIsShareMenuOpen(false);
+            }}
+            className={clsx(shareBtnClasses)}
+          >
             <LinkIcon className={`h-5 w-5`} />
             <span>Copy Link</span>
           </button>
@@ -74,6 +82,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             <span className="flex-grow text-left">Share Via</span>
           </button>
           <WhatsappShareButton
+            onClick={() => setIsShareMenuOpen(false)}
             url={shareUrl}
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
@@ -82,6 +91,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             <span>WhatsApp</span>
           </WhatsappShareButton>
           <TwitterShareButton
+            onClick={() => setIsShareMenuOpen(false)}
             url={shareUrl}
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
