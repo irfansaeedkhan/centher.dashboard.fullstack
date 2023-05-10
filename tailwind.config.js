@@ -70,6 +70,7 @@ module.exports = {
         },
         red: {
           theme: "#E35259",
+          "shade-1": "#FF424D",
         },
         danger: "#EA3943",
         "gray-shade": {
