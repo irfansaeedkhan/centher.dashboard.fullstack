@@ -7,6 +7,7 @@ import { useFeedStore } from "@/store/feed.store";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ArchiveEmptyIcon } from "@/assets/svgs";
+import { BackButton } from "@/pages/post/_components/back.button";
 import {
   unArchivePost,
   deletePost,
@@ -77,6 +78,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
 
   return (
     <>
+      <BackButton className="mb-3" />
       <div className="mb-6 rounded-md bg-gray-shade-9 py-[10px] text-center text-sm text-[#E7E8EE]">
         Items in your archive are only visible to you.
       </div>

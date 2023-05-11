@@ -111,7 +111,13 @@ export const PostFooter: React.FC<Props> = ({
           />
         </span>
 
-        {isShareMenuOpen && <ShareMenu post={post} postType={postType} />}
+        {isShareMenuOpen && (
+          <ShareMenu
+            post={post}
+            setIsShareMenuOpen={setIsShareMenuOpen}
+            postType={postType}
+          />
+        )}
       </AnalyticsCount>
     </footer>
   );

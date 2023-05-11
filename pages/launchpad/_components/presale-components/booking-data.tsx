@@ -306,16 +306,25 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               )}
             </div>
           )}
-          {!is_sold_out && (
-            <p className="mt-4 text-[13px] text-gray-shade-14 fmd:mt-8">
-              <span className="text-red-400">Note:</span> Minimum booking is{" "}
-              <span className="font-medium">
-                {minimumPaymentTokenAmount} {payment_token_symbol}
-              </span>
-              . Any amount less than that will not be considered for booking and{" "}
-              <span className="font-medium">it will not be refunded</span>.
+          <div className="mt-4 space-y-3 fmd:mt-8">
+            {!is_sold_out && (
+              <p className="text-[13px] text-gray-shade-14">
+                <span className="text-red-400">Note:</span> Minimum booking is{" "}
+                <span className="font-medium">
+                  {minimumPaymentTokenAmount} {payment_token_symbol}
+                </span>
+                . Any amount less than that will not be considered for booking
+                and <span className="font-medium">it will not be refunded</span>
+                .
+              </p>
+            )}
+            <p className={"text-[13px] text-gray-shade-14"}>
+              <span className="text-red-400">Terms &amp; Conditions:</span> The
+              purchased tokens will be locked automatically for 6 months, after
+              which 5% of the purchased tokens will be released every month and
+              possible to claim.
             </p>
-          )}
+          </div>
         </div>
       </div>
       {isModalOpen && (

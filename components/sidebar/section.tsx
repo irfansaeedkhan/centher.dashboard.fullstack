@@ -38,7 +38,7 @@ export const Section: React.FC<SectionProps> = (props) => {
               className={clsx(
                 item.activeList.indexOf(router.pathname) !== -1 &&
                   "bg-black-shade-7",
-                "flex justify-between py-[6px] pl-6 pr-4"
+                "flex items-center justify-between py-[6px] pl-6 pr-4"
               )}
             >
               <div className={`flex items-center gap-2`}>
@@ -65,6 +65,11 @@ export const Section: React.FC<SectionProps> = (props) => {
               {!!count && props.user && (
                 <span className="flex h-5 w-9 items-center justify-center rounded-lg bg-brand-primary px-2 py-[2px] text-sm font-semibold text-black-shade-7">
                   {count}
+                </span>
+              )}
+              {item.label === "Launchpad" && (
+                <span className="flex h-5 w-[52px] flex-shrink-0 items-center justify-center rounded-lg bg-red-shade-1/[0.16] text-[10px] font-semibold leading-3 text-red-shade-1">
+                  Hot 🔥
                 </span>
               )}
             </div>

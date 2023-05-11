@@ -9,6 +9,7 @@ import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
+import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
@@ -40,7 +41,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const router = useRouter();
 
   const { account, library } = useWeb3React();
-
+  const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (collectionData: any) => {
     try {
@@ -108,6 +109,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const createCollection = (values: ICollectionData) => {
+    if (!account || !library) {
+      toastError("Please connect your wallet for creating collection!");
+      return;
+    }
+    if (!user) {
+      toastError("Please login for creating collection!");
+      return;
+    }
+    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+      toastError("Please connect your wallet to correct account!");
+      return;
+    }
     if (profile === undefined) {
       toastError("Choose profile image.");
       return;
