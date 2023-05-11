@@ -6,7 +6,7 @@ import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
 import { logger } from "./helpers/alert.helper";
-import { getSigner } from "./helpers/provider.helper";
+import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
@@ -579,6 +579,20 @@ export class BlockchainRead {
         BlockchainConfig.network
       ]?.toLowerCase()
     );
+  }
+
+  static async getTokenUnlockTimeFromContract(
+    collection: string,
+    tokenId: number
+  ): Promise<number> {
+    const signer = simpleRpcProvider();
+    const nftContract = SmartContractProvider.getNFTContract(
+      collection,
+      signer
+    );
+
+    const tx = await nftContract.functions.unlockTime(tokenId);
+    return tx?.toString();
   }
 }
 export class BlockchainWrite {

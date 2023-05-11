@@ -273,9 +273,10 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 .flat()
                 .filter(Boolean)
             );
+            for (let token of result.result) {
+              const item = token as any;
 
-            _nfts = result.result.map((item: any) => {
-              const unlock = getUnlockTime(
+              let unlock = getUnlockTime(
                 _lockedNFTs,
                 item.tokenAddress._value,
                 item.tokenId
@@ -284,15 +285,23 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 isAddressesMatch(e.account_address, item.minter_address?._value)
               );
               const owner = users.find((e) =>
-                isAddressesMatch(e.account_address, item.ownerOf._value)
+                isAddressesMatch(e.account_address, item.ownerOf?._value)
               );
 
               const internal = isInList(item, allowedCollections);
               const isSwap = isInList(item, swappingCollections);
               const saleState = isSwap ? "SWAP" : !internal ? "VIEW" : "NON";
-              return {
+
+              unlock = isSwap
+                ? await getSwapingUnlockTime(
+                    item.tokenId,
+                    swappingCollections[0]
+                  )
+                : unlock;
+
+              _nfts.push({
                 id: item.tokenHash,
-                collection: item.tokenAddress._value,
+                collection: item.tokenAddress?._value,
                 tokenId: item.tokenId,
                 creator: creator ? creator : null,
                 createTime: item.blockNumberMinted,
@@ -304,8 +313,8 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 unlock: unlock,
                 mintHash: item.tokenHash,
                 external: !internal,
-              };
-            });
+              });
+            }
           }
 
           set((state) => {
@@ -422,4 +431,11 @@ const isAddressesMatch = (
     !!address_two &&
     address_one.toLowerCase() === address_two.toLowerCase()
   );
+};
+
+const getSwapingUnlockTime = async (
+  tokenId: number,
+  collection: string
+): Promise<number> => {
+  return BlockchainRead.getTokenUnlockTimeFromContract(collection, tokenId);
 };
