@@ -20,6 +20,7 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import NewButton from "@/components/button/new.button";
+import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -298,7 +299,17 @@ CreateNFTCollection.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Create Collection">
       <div className={dashboardContentContainer}>
-        <div className={feedContainer}>{page}</div>
+        <GoogleReCaptchaProvider
+          reCaptchaKey={process.env.GOOGLE_SITE_KEY!}
+          scriptProps={{
+            async: false,
+            defer: false,
+            appendTo: "head",
+            nonce: undefined,
+          }}
+        >
+          <div className={feedContainer}>{page}</div>
+        </GoogleReCaptchaProvider>
       </div>
     </AllPagesWrapper>
   );
