@@ -9,9 +9,6 @@ import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 
-import { InputField } from "./input.field";
-import ProfilePicture from "./profile.picture";
-
 interface EditProfileFormProps {
   user: LoggedInUser;
 }
@@ -25,6 +22,7 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
   const [isLoading, setisLoading] = useState<LoadingState>("idle");
+  const [isModified, setIsModified] = useState(false); // track if any input field has been modified
 
   const updateProfile = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -56,6 +54,7 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
       toast.success("Profile updated successfully");
       setisLoading("loaded");
       button.disabled = false;
+      isModified && setIsModified(false);
     } catch (error: any) {
       button.disabled = false;
       setisLoading("failed");
@@ -80,6 +79,7 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
                 ...updatedUser,
                 profile_bio: e.target.value,
               });
+              setIsModified(true);
             }}
             value={updatedUser.profile_bio}
             placeholder="Enter Your bio!"
@@ -88,7 +88,7 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
             cols={30}
             rows={5}
             maxLength={160}
-            className={clsx(inputField)}
+            className={clsx(inputField, "scrollSetLight2 overflow-auto")}
           ></textarea>
           {updatedUser.profile_bio.length > 0 && (
             <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7 fsm:ml-0">
@@ -100,7 +100,13 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
           )}
         </div>
 
-        <button className={connectButton} onClick={updateProfile}>
+        <button
+          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark ${
+            !isModified ? "cursor-not-allowed bg-[#2A2D3C] text-[#A0A4BB]" : ""
+          }`}
+          disabled={!isModified}
+          onClick={updateProfile}
+        >
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />
           ) : (
@@ -111,8 +117,6 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
     </div>
   );
 };
-
-const connectButton = `mt-2 py-2 px-3 text-sm flex w-[128px] h-9 font-semibold rounded-lg justify-center items-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
 
 const fieldTitle = `text-sm text-white`;
 

@@ -2,17 +2,19 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { useSWRConfig } from "swr";
 import axios from "axios";
+import clsx from "clsx";
 import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
+import { CgSpinner } from "react-icons/cg";
 
 import { LoggedInUser, UserImage } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage } from "@/utils/user.helpers";
-import { AvatarIcon, Polygon, UploadIcon } from "@/assets/svgs";
+import { AvatarIcon, UploadIcon } from "@/assets/svgs";
 
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
+import CropProfilePicture from "./crop-profile-picture";
 
 interface ProfilePictureProps {
   user: LoggedInUser;
@@ -20,8 +22,15 @@ interface ProfilePictureProps {
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   const { mutate } = useSWRConfig();
+  const [isLoading, setIsLoading] = useState("idle");
+  const [cropModal, setCropModal] = useState(false);
   const [profileImage, setProfileImage] = useState(user.profile_image);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [uploadFile, setUploadFile] = useState<File>();
+  const [profileImageData, setProfileImageData] = useState<UserImage>({
+    path: "",
+    object_name: "",
+  });
   const [profileModal, setProfileModal] = useState<
     "selfie" | "avatar" | "nft" | "upload"
   >();
@@ -42,14 +51,12 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     toast.success("Profile image updated successfully");
   };
 
-  const handleSelectCustomImage: React.ChangeEventHandler<
-    HTMLInputElement
-  > = async (e) => {
+  const showPreviewImage: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     // Close Menu
+    setCropModal(true);
     setIsMenuOpen(false);
 
     const file = e.currentTarget.files?.[0];
-
     if (!file) {
       return;
     }
@@ -60,21 +67,33 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       return;
     }
 
-    const profileImageData: UserImage = {
+    setProfileImageData({
       path: URL.createObjectURL(file),
       object_name: file.name,
-    };
+    });
+
+    // Update profile image in state with base64 image
+
+    setProfileImage({
+      path: URL.createObjectURL(file),
+      object_name: file.name,
+    });
+    setUploadFile(file);
+  };
+
+  const handleUploadCustomImage: React.MouseEventHandler<
+    HTMLButtonElement
+  > = async (e) => {
+    // Close Menu
+    if (!uploadFile) return;
+    setIsLoading("loading");
+    setIsMenuOpen(false);
 
     try {
       // Get pre-signed URL from API
       const { data } = await axiosNodeApi.get(
-        "/api/s3-upload/user-image?filename=" + file.name
+        "/api/s3-upload/user-image?filename=" + profileImage.object_name
       );
-
-      profileImageData.object_name = data.objectName;
-
-      // Update profile image in state with base64 image
-      setProfileImage({ ...profileImageData });
 
       // Create form data
       const presignedPostData = data.presignedPostData;
@@ -82,7 +101,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       Object.keys(presignedPostData.fields).forEach((key) => {
         formData.append(key, presignedPostData.fields[key]);
       });
-      formData.append("file", file);
+      formData.append("file", uploadFile);
 
       // Upload file to S3
       await axios.post(presignedPostData.url, formData);
@@ -92,7 +111,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       // Update profile image in DB
       updateUserImage({
         type: "profile_image",
-        object_name: profileImageData.object_name,
+        object_name: data.objectName,
         path: profileImageData.path,
       });
 
@@ -101,8 +120,16 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
         { ...user, profile_image: profileImageData },
         false
       );
+      toast.success("Profile picture updated successfully!");
+      setProfileImageData({
+        path: "",
+        object_name: "",
+      });
+      setIsLoading("loaded");
+      setUploadFile(undefined);
     } catch (error: any) {
       process.env.NODE_ENV !== "production" && console.dir(error);
+      setIsLoading("loaded");
       let errorMsg = "Error uploading image";
       if (
         typeof error.response?.data === "string" &&
@@ -137,9 +164,37 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
         </div>
       </div>
       <div className="relative mt-4">
-        <button className={connectButton} onClick={() => setIsMenuOpen(true)}>
-          Choose Image
-        </button>
+        {profileImageData.path ? (
+          <div className="flex items-center gap-5">
+            <button
+              className={clsx(connectButtonDiscard, "w-[100px]")}
+              onClick={() => {
+                setProfileImageData({
+                  path: "",
+                  object_name: "",
+                });
+                setProfileImage(user.profile_image);
+                setUploadFile(undefined);
+              }}
+            >
+              Discard
+            </button>
+            <button
+              className={clsx(connectButton, "w-[100px]")}
+              onClick={handleUploadCustomImage}
+            >
+              {isLoading === "loading" ? (
+                <CgSpinner className="h-4 w-4 animate-spin" />
+              ) : (
+                "Upload"
+              )}
+            </button>
+          </div>
+        ) : (
+          <button className={connectButton} onClick={() => setIsMenuOpen(true)}>
+            Choose Image
+          </button>
+        )}
         {isMenuOpen && (
           <div
             ref={ref}
@@ -167,7 +222,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                   type="file"
                   className="hidden"
                   accept="image/jpeg,image/png"
-                  onChange={handleSelectCustomImage}
+                  onChange={showPreviewImage}
                 />
               </label>
             </div>
@@ -211,6 +266,17 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
         }}
         onAvatarSelect={handleSelectAvatar}
       />
+      {cropModal && (
+        <CropProfilePicture
+          user={user}
+          isOpen={cropModal}
+          setCropModal={setCropModal}
+          setUploadFile={setUploadFile}
+          setProfileImage={setProfileImage}
+          profileImageData={profileImageData}
+          setProfileImageData={setProfileImageData}
+        />
+      )}
     </div>
   );
 };
@@ -220,3 +286,4 @@ export default ProfilePicture;
 const fieldTitle = `relative text-sm flex flex-col text-white`;
 
 const connectButton = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
+const connectButtonDiscard = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-brand-primary bg-gray-shade-3 transition-all`;

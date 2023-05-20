@@ -23,6 +23,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
   const [isLoading, setisLoading] = useState<LoadingState>("idle");
+  const [isModified, setIsModified] = useState(false); // track if any input field has been modified
 
   const updateProfile = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -54,6 +55,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
       toast.success("Profile updated successfully");
       setisLoading("loaded");
       button.disabled = false;
+      isModified && setIsModified(false);
     } catch (error: any) {
       button.disabled = false;
       setisLoading("failed");
@@ -81,6 +83,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               pseudonym: e.target.value,
             });
+            setIsModified(true);
           }}
         />
         <div className="flex w-full flex-col gap-6 fsm:flex-row fmd:gap-3">
@@ -95,6 +98,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
                   ...updatedUser,
                   first_name: e.target.value,
                 });
+                setIsModified(true);
               }}
             />
           </div>
@@ -109,6 +113,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
                   ...updatedUser,
                   last_name: e.target.value,
                 });
+                setIsModified(true);
               }}
             />
           </div>
@@ -123,6 +128,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
                 display_name_field: e.target
                   .value as LoggedInUser["display_name_field"],
               });
+              setIsModified(true);
             }}
             value={updatedUser.display_name_field}
             className={`w-full rounded-lg border-0 bg-[#1E1E21] py-3 px-5 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
@@ -134,8 +140,11 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
         </div>
 
         <button
-          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
+          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all ${
+            !isModified ? "cursor-not-allowed bg-[#2A2D3C] text-[#A0A4BB]" : ""
+          }`}
           onClick={updateProfile}
+          disabled={!isModified}
         >
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />

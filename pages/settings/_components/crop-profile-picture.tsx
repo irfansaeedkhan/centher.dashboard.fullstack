@@ -1,0 +1,105 @@
+import React, { Dispatch, SetStateAction, useRef } from "react";
+import {
+  FixedCropper,
+  FixedCropperRef,
+  ImageRestriction,
+} from "react-advanced-cropper";
+import "react-advanced-cropper/dist/style.css";
+
+import { ModalWrapper } from "@/components/modal";
+import { LoggedInUser, UserImage } from "@/models/user";
+import { CropFunctions } from "../crop-functions";
+
+interface CropperProps {
+  isOpen: boolean;
+  user: LoggedInUser;
+  profileImageData: UserImage;
+  setCropModal: Dispatch<SetStateAction<boolean>>;
+  setProfileImage: Dispatch<SetStateAction<UserImage>>;
+  setProfileImageData: Dispatch<SetStateAction<UserImage>>;
+  setUploadFile: Dispatch<SetStateAction<File | undefined>>;
+}
+
+const CropProfilePicture: React.FC<CropperProps> = ({
+  user,
+  isOpen,
+  setCropModal,
+  setUploadFile,
+  setProfileImage,
+  profileImageData,
+  setProfileImageData,
+}) => {
+  const cropperRef = useRef<FixedCropperRef>(null);
+
+  const onCrop = async () => {
+    if (!cropperRef.current) return;
+    const base64 = cropperRef.current.getCanvas()?.toDataURL(); // base64 string
+    if (!base64) return;
+
+    const file: File = await dataUrlToFile(base64 || "", "cropped-image.png");
+    setUploadFile(file);
+    setProfileImage((prev) => ({
+      ...prev,
+      path: base64,
+    }));
+    setProfileImageData((prev) => ({
+      ...prev,
+      path: base64,
+    }));
+    setCropModal(false);
+  };
+
+  return (
+    <ModalWrapper
+      title="Crop"
+      onClose={() => {
+        setCropModal(false);
+        setProfileImageData({
+          path: "",
+          object_name: "",
+        });
+        setProfileImage(user.profile_image);
+      }}
+      isOpen={isOpen}
+    >
+      <div>
+        <div className="max-h-[600px] overflow-hidden rounded-lg text-center">
+          <FixedCropper
+            src={profileImageData.path}
+            ref={cropperRef}
+            stencilProps={{
+              handlers: false,
+              lines: false,
+              movable: false,
+              resizable: false,
+            }}
+            stencilSize={{
+              width: 400,
+              height: 400,
+            }}
+            imageRestriction={ImageRestriction.stencil}
+          />
+        </div>
+        <div className="relative mt-5 flex w-full flex-col items-center justify-center">
+          <CropFunctions cropperRef={cropperRef} />
+          <div className="mt-2 flex w-[82.55px]  flex-shrink-0 justify-center text-center">
+            <button
+              className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
+              onClick={onCrop}
+            >
+              Crop
+            </button>
+          </div>
+        </div>
+      </div>
+    </ModalWrapper>
+  );
+};
+
+export default CropProfilePicture;
+
+async function dataUrlToFile(dataUrl: string, fileName: string): Promise<File> {
+  const res: Response = await fetch(dataUrl);
+  const blob: Blob = await res.blob();
+  return new File([blob], fileName, { type: "image/png" });
+}
