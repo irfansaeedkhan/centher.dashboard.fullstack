@@ -20,7 +20,8 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import NewButton from "@/components/button/new.button";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -35,6 +36,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
+  const { submitRecaptcha } = useRecaptcha();
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
@@ -67,6 +69,12 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
+    const success = await submitRecaptcha();
+    if (!success) {
+      toastError("Please verify you are not a robot");
+      return;
+    }
+
     ProceedFunc();
     let collectionCreated = false;
     try {
@@ -299,17 +307,11 @@ CreateNFTCollection.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Create Collection">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaProvider
-          reCaptchaKey={process.env.GOOGLE_SITE_KEY!}
-          scriptProps={{
-            async: false,
-            defer: false,
-            appendTo: "head",
-            nonce: undefined,
-          }}
+        <GoogleReCaptchaWrapper
+          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
         >
           <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaProvider>
+        </GoogleReCaptchaWrapper>
       </div>
     </AllPagesWrapper>
   );
