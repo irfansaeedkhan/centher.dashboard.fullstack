@@ -24,6 +24,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
+import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -310,17 +311,11 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaProvider
-          reCaptchaKey={process.env.GOOGLE_SITE_KEY!}
-          scriptProps={{
-            async: false,
-            defer: false,
-            appendTo: "head",
-            nonce: undefined,
-          }}
+        <GoogleReCaptchaWrapper
+          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
         >
           <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaProvider>
+        </GoogleReCaptchaWrapper>
       </div>
     </AllPagesWrapper>
   );
