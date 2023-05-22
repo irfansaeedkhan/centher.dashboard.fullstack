@@ -25,6 +25,7 @@ import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -42,6 +43,7 @@ const CreateNFT: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
+  const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
@@ -73,6 +75,12 @@ const CreateNFT: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (nftData: any) => {
+    const success = await submitRecaptcha();
+    if (!success) {
+      toastError("Please verify you are not a robot");
+      return;
+    }
+
     ProceedFunc();
     let nfdCreated = false;
     try {
