@@ -21,7 +21,6 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import NewButton from "@/components/button/new.button";
 import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -36,7 +35,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  const { submitRecaptcha } = useRecaptcha();
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
@@ -69,12 +67,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
-    const success = await submitRecaptcha();
-    if (!success) {
-      toastError("Please verify you are not a robot");
-      return;
-    }
-
     ProceedFunc();
     let collectionCreated = false;
     try {

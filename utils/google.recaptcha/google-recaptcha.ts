@@ -12,7 +12,6 @@ export const useRecaptcha = () => {
     }
 
     const gReCaptchaToken = await executeRecaptcha("enquiryFormSubmit");
-    console.log("gReCaptchaToken", gReCaptchaToken);
     return submitEnquiryForm(gReCaptchaToken);
   }, [executeRecaptcha]);
 
