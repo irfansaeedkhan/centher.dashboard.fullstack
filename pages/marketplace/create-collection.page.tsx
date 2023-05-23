@@ -1,27 +1,26 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-
-// App imports
 import { useWeb3React } from "@web3-react/core";
+
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
+import NewButton from "@/components/button/new.button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
-import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
-import { readFileAsync } from "@/utils/file.reader.util";
-import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
-import { ICollectionData } from "./_components/create.collection.form";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import NewButton from "@/components/button/new.button";
-import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
+import { readFileAsync } from "@/utils/file.reader.util";
 import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
+
+import { ICollectionData } from "./_components/create.collection.form";
+import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
+import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {

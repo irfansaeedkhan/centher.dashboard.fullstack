@@ -1,31 +1,28 @@
-// React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
-// App imports
-import NewButton from "@/components/button/new.button";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import NewButton from "@/components/button/new.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
+import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-// Current page imports
+
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import { GoogleReCaptchaProvider } from "react-google-recaptcha-v3";
 import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 
 const nftRemoteBasePath = "ipfs:/";
 
