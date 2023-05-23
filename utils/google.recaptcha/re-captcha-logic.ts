@@ -1,6 +1,8 @@
 import axios from "axios";
 
-export const submitEnquiryForm = (gReCaptchaToken: any): Promise<boolean> => {
+export const submitEnquiryForm = (
+  gReCaptchaToken: string
+): Promise<boolean> => {
   return axios
     .post<boolean>(
       `${process.env.NEXT_PUBLIC_RECAPTCHA_SERVICE_API_HOST}/api/recaptcha`,

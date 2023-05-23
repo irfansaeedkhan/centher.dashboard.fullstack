@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 import { useGoogleReCaptcha } from "react-google-recaptcha-v3";
+import { customLog } from "../custom.log";
 import { submitEnquiryForm } from "./re-captcha-logic";
 
 export const useRecaptcha = () => {
@@ -7,7 +8,10 @@ export const useRecaptcha = () => {
 
   const submitRecaptcha = useCallback(async (): Promise<boolean> => {
     if (!executeRecaptcha) {
-      console.log("Execute recaptcha not yet available");
+      customLog("Execute recaptcha not yet available", [
+        "development",
+        "staging",
+      ]);
       return false;
     }
 
