@@ -321,7 +321,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             <p className={"text-[13px] text-gray-shade-14"}>
               <span className="text-red-400">Terms &amp; Conditions:</span> The
               purchased tokens will be locked automatically for 6 months, after
-              which 5% of the purchased tokens will be released every month and
+              which 8% of the purchased tokens will be released every month and
               possible to claim.
             </p>
           </div>
