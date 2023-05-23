@@ -995,3 +995,102 @@ input[type="radio"]:disabled + label:after {
 .cropper-drag-box.cropper-modal {
   background: #0d0d0d;
 }
+
+/* .cropper-crop-box {
+  width: 200px !important;
+  height: 200px !important;
+} */
+
+.circle-stencil {
+  cursor: move;
+}
+.circle-stencil__handler {
+  position: absolute;
+  right: 0%;
+  top: 0%;
+  z-index: 1;
+  cursor: ne-resize;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(50%, -50%);
+}
+.circle-stencil__overlay {
+  border: dashed 2px white;
+  box-sizing: border-box;
+  /* border-radius: 50%; */
+}
+.circle-stencil__draggable-area {
+  width: 100%;
+  height: 100%;
+}
+
+.advanced-cropper-rectangle-stencil__draggable-area {
+  border: 2px solid #febf32;
+}
+
+.range {
+  height: 1rem;
+  width: 100%;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: hidden;
+  background-color: transparent;
+  border-radius: 1rem;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: hsla(220 13.376% 69.216% / 0.1);
+}
+.range::-moz-range-track {
+  height: 0.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  background-color: hsla(220 13.376% 69.216% / 0.1);
+}
+.range:focus {
+  outline: none;
+}
+
+.range:focus-visible::-webkit-slider-thumb {
+  --focus-shadow: 0 0 0 6px hsl(220 17.647% 20%) inset,
+    0 0 0 2rem hsl(220 13.376% 69.216%) inset;
+}
+.range:focus-visible::-moz-range-thumb {
+  --focus-shadow: 0 0 0 6px hsl(220 17.647% 20%) inset,
+    0 0 0 2rem hsl(220 13.376% 69.216%) inset;
+}
+.range::-webkit-slider-thumb {
+  background-color: hsl(220 17.647% 20%);
+  position: relative;
+  height: 1rem;
+  width: 1rem;
+  border-style: none;
+  border-radius: 1rem;
+  appearance: none;
+  -webkit-appearance: none;
+  top: 50%;
+  color: #febf32;
+  transform: translateY(-50%);
+  box-shadow: 0 0 0 3px #febf32 inset, var(--focus-shadow, 0 0),
+    calc(100rem * -1 - 0.6rem) 0 0 100rem;
+}
+
+.range::-moz-range-thumb {
+  background-color: hsl(220 17.647% 20%);
+  position: relative;
+  height: 1rem;
+  width: 1rem;
+  border-style: none;
+  border-radius: 1rem;
+  top: 50%;
+  color: #febf32;
+  box-shadow: 0 0 0 3px #febf32 inset, var(--focus-shadow, 0 0),
+    calc(100rem * -1 - 0.6rem) 0 0 100rem;
+}

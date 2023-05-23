@@ -19,5 +19,5 @@ export const useRecaptcha = () => {
     return submitEnquiryForm(gReCaptchaToken);
   }, [executeRecaptcha]);
 
-  return { submitRecaptcha };
+  return { submitRecaptcha: submitRecaptcha };
 };
