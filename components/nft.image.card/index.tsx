@@ -1,21 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import { CgSpinner } from "react-icons/cg";
+import { toast } from "react-hot-toast";
 import clsx from "clsx";
 
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
 
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
-import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
-import { useWeb3React } from "@web3-react/core";
-import { CgSpinner } from "react-icons/cg";
-import { toast } from "react-hot-toast";
 
 export interface NFTCardProps {
   data: NFTLockedDetailsProps;
