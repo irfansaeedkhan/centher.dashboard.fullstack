@@ -12,6 +12,7 @@ import busdAbi from "../abis/erc20.json";
 import ntrAbi from "../abis/ntr.json";
 import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
+import nftadapter from "../abis/nftadapter.json";
 
 import { BigNumber } from "ethers";
 
@@ -73,6 +74,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       56: "0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A",
       5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
     },
+    NFT_ADAPTER: {
+      56: "0x0000000000000000000000000000000000000000",
+      5: "0x5eC749C6E996d6DE0ac740864B5f1Ca8Ff7c589a",
+    },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -96,6 +101,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     NATIVE_COLLECTION: {},
     ERC721: ERC721Abi,
     DXC: dxcAbi,
+    NFT_ADAPTER: nftadapter,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),
@@ -149,5 +155,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       ? "https://api.thegraph.com/subgraphs/name/algoalliance/marketplace-v2"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
+
+export const SwapCollection =
+  process.env.NEXT_PUBLIC_APP_ENV === "production"
+    ? "0x2A6c77A2731Bc076409C9C702783A4e69FE85b96"
+    : "0x5637abde4520fb4b8169d558948d9deb8fce7004";
 
 // TODO: Implement configuration validator function

@@ -12,6 +12,10 @@ import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
 
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { useWeb3React } from "@web3-react/core";
+import { CgSpinner } from "react-icons/cg";
+import { toast } from "react-hot-toast";
 
 export interface NFTCardProps {
   data: NFTLockedDetailsProps;
@@ -19,6 +23,8 @@ export interface NFTCardProps {
 
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState("");
+  const { library, account } = useWeb3React();
+
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
 
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
@@ -26,10 +32,14 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [showSwapingDetails, setShowSwapingDetails] = useState(false);
   const [showExternalDetails, setShowExternalDetails] = useState(false);
+  const [swapIsLoading, setSwapIsLoading] = useState("loaded");
+  const [swapedBefore, setSwapedBefore] = useState(false);
+
   const router = useRouter();
 
   const [name, setName] = useState();
   const [description, setDescription] = useState();
+
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -43,10 +53,20 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
         setImageUrl("/images/placeholder-square.svg");
       }
     };
+
+    const setSwapHistory = async () => {
+      const isSwaped = await BlockchainRead.isTokenSwaped(
+        library,
+        data.collection,
+        data.tokenId
+      );
+      setSwapedBefore(isSwaped);
+    };
     if (data && data.ipfs) {
       fetchMetadata(data.ipfs);
+      setSwapHistory();
     }
-  }, [data]);
+  }, [data, library]);
 
   const [lockedTimer, setLockedTimer] = useState({
     days: 0,
@@ -156,6 +176,22 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           tokenId: data.tokenId,
         },
       });
+    }
+  };
+
+  const handleSwapNft = async () => {
+    try {
+      setSwapIsLoading("loading");
+      if (swapedBefore) {
+        throw new Error("Token is already swaped");
+      }
+
+      await BlockchainWrite.swapDexagon(library, data.collection, data.tokenId);
+      toast.success("Swapped successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setSwapIsLoading("loaded");
     }
   };
 
@@ -516,12 +552,21 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h6>
               </div>
             </div>
-            <Button
-              title={"Swap NFT"}
-              variant={"v2"}
-              disabled={true}
-              className="mt-6 py-4"
-            />
+            {account?.toLowerCase() ==
+              data.owner?.account_address?.toLowerCase() &&
+              swapedBefore == false &&
+              (swapIsLoading == "loading" ? (
+                <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7">
+                  <CgSpinner className="h-5 animate-spin" />
+                </button>
+              ) : (
+                <Button
+                  title={"Swap NFT"}
+                  variant="v1"
+                  className="mt-6"
+                  onClick={handleSwapNft}
+                />
+              ))}
           </div>
         </LockedNftModal>
       )}

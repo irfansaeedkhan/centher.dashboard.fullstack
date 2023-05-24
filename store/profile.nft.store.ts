@@ -16,8 +16,9 @@ import {
   getOldName,
   isOld,
 } from "@/web3/blockchain/helpers/native.collection.helper";
+import { SwapCollection } from "@/web3/blockchain/config";
 
-const swappingCollections = ["0x2A6c77A2731Bc076409C9C702783A4e69FE85b96"];
+const swappingCollections = [SwapCollection];
 const externalCollectionsToShow = [...swappingCollections];
 
 export interface ProfileNFTStore {

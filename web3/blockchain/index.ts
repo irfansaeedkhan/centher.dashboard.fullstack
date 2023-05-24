@@ -583,9 +583,16 @@ export class BlockchainRead {
 
   static async getTokenUnlockTimeFromContract(
     collection: string,
-    tokenId: number
+    tokenId: number,
+    library?: Web3Provider
   ): Promise<number> {
-    const signer = simpleRpcProvider();
+    let signer;
+    if (library) {
+      signer = getSigner(library);
+    } else {
+      signer = simpleRpcProvider();
+    }
+
     const nftContract = SmartContractProvider.getNFTContract(
       collection,
       signer
@@ -593,6 +600,25 @@ export class BlockchainRead {
 
     const tx = await nftContract.functions.unlockTime(tokenId);
     return tx?.toString();
+  }
+
+  static async isTokenSwaped(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<boolean> {
+    const signer = getSigner(library);
+    const nftAdapterContract = SmartContractProvider.getContract(
+      SmartContractName.NFT_ADAPTER,
+      signer
+    );
+
+    const result = await nftAdapterContract.functions.isSwapped(
+      collection,
+      tokenId
+    );
+
+    return result[0];
   }
 }
 export class BlockchainWrite {
@@ -1613,6 +1639,58 @@ export class BlockchainWrite {
     } catch (error: any) {
       logger(error, "preBookDexa");
       throw error;
+    }
+  }
+
+  static async swapDexagon(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<string> {
+    const signer = getSigner(library);
+    const nftAdapterContract = SmartContractProvider.getContract(
+      SmartContractName.NFT_ADAPTER,
+      signer
+    );
+
+    const nftContract = SmartContractProvider.getNFTContract(
+      collection,
+      signer
+    );
+
+    let lockTime;
+
+    try {
+      lockTime = await BlockchainRead.getTokenUnlockTimeFromContract(
+        collection,
+        tokenId,
+        library
+      );
+    } catch (error) {
+      throw new Error("cannot get token lock time");
+    }
+
+    try {
+      const approvalTx = await nftContract.functions.setApprovalForAll(
+        AddressFactory.getContractAddress(SmartContractName.NFT_ADAPTER),
+        true
+      );
+      await approvalTx.wait();
+    } catch (error) {
+      throw new Error("cannot set approval for smart contract");
+    }
+
+    try {
+      const tx = await nftAdapterContract.functions.claim(
+        collection,
+        tokenId,
+        lockTime,
+        ""
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      throw new Error("cannot swap token");
     }
   }
 }
