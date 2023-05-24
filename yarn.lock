@@ -7859,10 +7859,10 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-advanced-cropper@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/react-advanced-cropper/-/react-advanced-cropper-0.18.0.tgz#582136fcc337a2b6f9ddb34f0f142d8d0333d0b6"
-  integrity sha512-WFmKcP0iUQ58VtA0N0WFRwJyRA5MCgvTTxsDV6x2A41tR0RK5vOtM4OWpVAcOxHJxolw8e8VLOaEkQRM775ILw==
+react-advanced-cropper@0.19.3:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/react-advanced-cropper/-/react-advanced-cropper-0.19.3.tgz#54c60e682aaa549cb9921a65a252cae0eede9bf5"
+  integrity sha512-rC07DvUMidJgyD9sR1Clz9R3RtxgfrpjZN837awJFcnhlDjKs3arwUA6rfhJZ3jHuo9FmQfZ86xmDeNA1PBFKg==
   dependencies:
     advanced-cropper "~0.18.0"
     classnames "^2.2.6"
@@ -7906,6 +7906,13 @@ react-easy-swipe@^0.0.21:
   integrity sha512-OeR2jAxdoqUMHIn/nS9fgreI5hSpgGoL5ezdal4+oO7YSSgJR8ga+PkYGJrSrJ9MKlPcQjMQXnketrD7WNmNsg==
   dependencies:
     prop-types "^15.5.8"
+
+react-google-recaptcha-v3@^1.10.1:
+  version "1.10.1"
+  resolved "https://registry.yarnpkg.com/react-google-recaptcha-v3/-/react-google-recaptcha-v3-1.10.1.tgz#5b125bc0dec123206431860e8800e188fc735aff"
+  integrity sha512-K3AYzSE0SasTn+XvV2tq+6YaxM+zQypk9rbCgG4OVUt7Rh4ze9basIKefoBz9sC0CNslJj9N1uwTTgRMJQbQJQ==
+  dependencies:
+    hoist-non-react-statics "^3.3.2"
 
 react-hook-form@^7.37.0:
   version "7.42.1"
