@@ -76,7 +76,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     NFT_ADAPTER: {
       56: "0x0000000000000000000000000000000000000000",
-      5: "0x5eC749C6E996d6DE0ac740864B5f1Ca8Ff7c589a",
+      5: "0xebd85ff8B90235f44f3474cB54c6a2A7c6c5d5f5",
     },
   },
   network:
