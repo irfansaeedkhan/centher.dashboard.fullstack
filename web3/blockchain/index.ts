@@ -1670,6 +1670,10 @@ export class BlockchainWrite {
       throw new Error("cannot get token lock time");
     }
 
+    if (typeof lockTime == "number") {
+      lockTime = lockTime - +new Date();
+    } else throw new Error("invalid locktime");
+
     try {
       const approvalTx = await nftContract.functions.setApprovalForAll(
         AddressFactory.getContractAddress(SmartContractName.NFT_ADAPTER),
