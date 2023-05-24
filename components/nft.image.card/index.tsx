@@ -187,10 +187,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       }
 
       await BlockchainWrite.swapDexagon(library, data.collection, data.tokenId);
+      setShowSwapingDetails(false);
       toast.success("Swapped successfully");
+      router.reload();
     } catch (error: any) {
       toast.error(error.message);
-    } finally {
+      setShowSwapingDetails(false);
       setSwapIsLoading("loaded");
     }
   };

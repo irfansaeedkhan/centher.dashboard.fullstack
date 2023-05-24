@@ -1671,7 +1671,7 @@ export class BlockchainWrite {
     }
 
     if (+lockTime != 0) {
-      lockTime = lockTime - +new Date();
+      lockTime = (lockTime - +new Date() / 1000).toFixed(0);
     }
 
     try {
@@ -1697,6 +1697,7 @@ export class BlockchainWrite {
       await tx.wait();
       return tx.hash;
     } catch (error) {
+      console.log(error);
       throw new Error("cannot swap token");
     }
   }

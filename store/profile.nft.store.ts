@@ -307,7 +307,7 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 creator: creator ? creator : null,
                 createTime: item.blockNumberMinted,
                 ipfs: item.tokenUri,
-                saleState: "SWAP",
+                saleState,
                 price: item.amount,
                 owner: owner ? owner : null,
                 endTime: 0,
