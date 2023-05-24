@@ -1689,7 +1689,10 @@ export class BlockchainWrite {
         collection,
         tokenId,
         lockTime,
-        ""
+        "",
+        {
+          value: "1",
+        }
       );
       await tx.wait();
       return tx.hash;
