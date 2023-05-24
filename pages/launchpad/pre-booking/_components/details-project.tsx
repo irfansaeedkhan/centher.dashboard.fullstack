@@ -1,0 +1,138 @@
+import React from "react";
+import { FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
+import { CgSpinner } from "react-icons/cg";
+import { SiBinance } from "react-icons/si";
+
+import useUser from "@/hooks/use.user";
+import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
+import { LinkNewIcon, NewTelegramIcon, Whitepaper } from "@/assets/svgs";
+
+const DetailsProject = () => {
+  const { user } = useUser();
+  const { loading, preBookingStats } = usePreBookingStats(
+    user?.account_address
+  );
+
+  if (loading === "failed") {
+    return (
+      <div className="text-center font-medium text-red-400">
+        Failed to load data!
+      </div>
+    );
+  }
+
+  if (loading === "loading" || loading === "idle") {
+    return (
+      <div className="text-center">
+        <CgSpinner className="inline-block h-6 w-6 animate-spin text-gray-500" />
+      </div>
+    );
+  }
+
+  if (!preBookingStats) return null;
+
+  return (
+    <div className="flex h-auto w-full flex-col gap-6 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-4 fsm:p-6 flg:p-8 fxl:p-10">
+      <div className="text-base font-semibold text-white fmd:text-xl">
+        About {preBookingStats.receivable_token_name}
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Official Links</div>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://dexagon.io/"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
+              <span>Website</span>
+            </a>
+            <a
+              href="https://dexagon.io/wp-content/uploads/2023/04/Dexagon-White-Paper-1.pdf"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <Whitepaper className="group-hover:[&>*]:stroke-white" />
+              <span>Whitepaper</span>
+            </a>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Social Links</div>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://twitter.com/officialdexagon"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>Twitter</span>
+            </a>
+            <a
+              href="https://youtube.com/@officialdexagon"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <FiYoutube className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>YouTube</span>
+            </a>
+            <a
+              href="https://instagram.com/dexagonofficial"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <FiInstagram className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>Instagram</span>
+            </a>
+            <a
+              href="https://t.me/officialdexagon"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <NewTelegramIcon className="group-hover:[&>*]:stroke-white" />
+              <span>Telegram</span>
+            </a>
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Explorers</div>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://bscscan.com/address/0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c"
+              target="_blank"
+              rel="noreferrer noopener"
+              className={button}
+            >
+              <SiBinance className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>BscScan</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-4">
+        <div className="text-sm font-semibold text-white">Description</div>
+        <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
+          At Dexagon we want to open the gates to the Virtual Life on the
+          metaverse, revealing a new way of approaching the virtual world.
+          It&apos;s a new approach that involves all the senses, bringing you in
+          a complete different experience: the immersiverse. Dexagon is a
+          massive interoperable metaverse project based on custom hardware
+          technology (Diogene VR visor and ring) and utility token to use inside
+          multiple metaverse platforms. The metaverse of Dexagon is all based on
+          decentralization, where DeFi and real estate operations are possible!
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default DetailsProject;
+
+const button = `group flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 stroke-gray-shade-14 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14 hover:text-white`;

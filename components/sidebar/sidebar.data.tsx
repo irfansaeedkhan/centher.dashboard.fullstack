@@ -94,9 +94,13 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Launchpad",
-        url: AppRoutes.launchpad_pre_booking,
+        url: AppRoutes.launchpad_pre_booking.index,
         icon: Launchpad,
-        activeList: [AppRoutes.launchpad_pre_booking, AppRoutes.launchpad],
+        activeList: [
+          AppRoutes.launchpad_pre_booking.index,
+          AppRoutes.launchpad,
+          AppRoutes.launchpad_pre_booking.booking,
+        ],
       },
     ],
   },
