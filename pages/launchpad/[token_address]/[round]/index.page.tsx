@@ -41,7 +41,7 @@ export default BuyTokenPage;
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
     redirect: {
-      destination: AppRoutes.launchpad_pre_booking,
+      destination: AppRoutes.launchpad_pre_booking.index,
       permanent: false,
     },
   };

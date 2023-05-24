@@ -1,26 +1,25 @@
+// React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
 
+// App imports
+import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import NewButton from "@/components/button/new.button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
+import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
+import { readFileAsync } from "@/utils/file.reader.util";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
+import { ICollectionData } from "./_components/create.collection.form";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
-import { readFileAsync } from "@/utils/file.reader.util";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
-
-import { ICollectionData } from "./_components/create.collection.form";
-import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
-import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import NewButton from "@/components/button/new.button";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -35,7 +34,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  const { submitRecaptcha } = useRecaptcha();
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
@@ -68,11 +66,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
-    const success = await submitRecaptcha();
-    if (!success) {
-      toastError("Please verify you are a human!");
-      return;
-    }
     ProceedFunc();
     let collectionCreated = false;
     try {
@@ -305,11 +298,7 @@ CreateNFTCollection.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Create Collection">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        >
-          <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaWrapper>
+        <div className={feedContainer}>{page}</div>
       </div>
     </AllPagesWrapper>
   );

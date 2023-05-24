@@ -34,7 +34,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
       </div>
       <Link
         href={{
-          pathname: AppRoutes.launchpad_pre_booking,
+          pathname: AppRoutes.launchpad_pre_booking.index,
         }}
         className={`mt-4 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark `}
       >
