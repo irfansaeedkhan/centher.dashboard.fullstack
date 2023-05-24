@@ -1,0 +1,11 @@
+/* Button.module.css */
+.primary-gradient-btn {
+  border-radius: var(--border-rounded);
+}
+.primary-gradient-btn::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  background-color: var(--background-color);
+  border-radius: var(--border-rounded);
+}

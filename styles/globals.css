@@ -579,6 +579,135 @@
   #trashRect {
     transform: translateY(100%);
   }
+
+  /* button variants */
+  /* primary */
+  .primary-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    border: none;
+    position: relative;
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .primary-btn.primary-bg-black::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+    border-radius: 8px;
+    background: #0b0b0b;
+    transition: 100ms;
+    z-index: 1;
+  }
+  .primary-btn.primary-bg-grey::before {
+    content: "";
+    position: absolute;
+    left: 1px;
+    right: 1px;
+    top: 1px;
+    bottom: 1px;
+    border-radius: 8px;
+    background: #17171a;
+    transition: 100ms;
+    z-index: 1;
+  }
+  .primary-btn:hover::before {
+    opacity: 0%;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+  }
+  .primary-btn:hover {
+    /* gradient/1 */
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .primary-btn span {
+    z-index: 10;
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    position: inherit;
+  }
+  .primary-btn:hover span {
+    color: black;
+    text-fill-color: black;
+    -webkit-text-fill-color: black;
+  }
+
+  /* only text gradient */
+  .text-gradient {
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* new */
+  /* primary-gradient-btn */
+
+  .default-button-styling {
+    @apply rounded-lg px-4 py-2 font-semibold transition duration-100 ease-in-out;
+  }
+  /* .primary-gradient-btn{
+
+  } */
+  .primary-gradient-btn .primary-gradient-btn-text {
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  .primary-gradient-btn:hover .primary-gradient-btn-text {
+    background: black;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 }
 
 @layer utilities {
