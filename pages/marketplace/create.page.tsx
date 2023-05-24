@@ -1,28 +1,28 @@
+// React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
-import { NextPageWithLayout } from "@/pages/_app.page";
+// App imports
 import NewButton from "@/components/button/new.button";
+import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
+// Current page imports
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -40,7 +40,6 @@ const CreateNFT: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
@@ -72,12 +71,6 @@ const CreateNFT: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (nftData: any) => {
-    const success = await submitRecaptcha();
-    if (!success) {
-      toastError("Please verify you are not a robot");
-      return;
-    }
-
     ProceedFunc();
     let nfdCreated = false;
     try {
@@ -316,11 +309,7 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        >
-          <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaWrapper>
+        <div className={feedContainer}>{page}</div>
       </div>
     </AllPagesWrapper>
   );
