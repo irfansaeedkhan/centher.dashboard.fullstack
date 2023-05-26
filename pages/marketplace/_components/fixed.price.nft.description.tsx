@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
+import FinalButton from "@/components/button/final.button";
 import { IModalProps } from "@/components/modal/standard.modal";
-import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { BNBIcon, WarningIcon, LoaderIcon, MigrateIcon } from "@/assets/svgs";
+import {
+  BNBIcon,
+  WarningIcon,
+  LoaderIcon,
+  MigrateIcon,
+  GreenTick,
+  CircularClose,
+} from "@/assets/svgs";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalMigrate } from "@/components/modal/modal.migrate";
@@ -78,10 +84,10 @@ export const FixedPriceNFTDescription = ({
                   Migrate your tokens to our new marketplace for uninterrupted
                   rewards and benefits. Don&apos;t miss out - act now!
                 </p>
-                <NewButton
+                <FinalButton
                   title={"Migrate Now"}
-                  variant="v1"
-                  className="py-4"
+                  variant="primary"
+                  className="w-full rounded-[14px]"
                   onClick={migrateNowHandler}
                 />
               </div>
@@ -247,17 +253,19 @@ export const FixedPriceNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={handleCancelListing}
-              variant="v1"
+              variant="primary"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -266,7 +274,7 @@ export const FixedPriceNFTDescription = ({
       visibility: true,
     },
     bidNft: {
-      title: "Change Price",
+      title: "Edit listing",
       visibility: true,
       content: () => (
         <ChangePriceBidModal
@@ -288,25 +296,28 @@ export const FixedPriceNFTDescription = ({
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={() => handleEditPrice(newPrice)}
-              variant="v1"
+              variant="primary"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
       ),
     },
     txInProgress: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
+
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
@@ -324,16 +335,23 @@ export const FixedPriceNFTDescription = ({
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="text-18px font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px font-semibold text-white">
+              {txStatus ? (
+                <span>
+                  {msg.includes("updated")
+                    ? "Listing updated successfully"
+                    : msg.includes("canceled")
+                    ? "Listing successfully canceled"
+                    : "Listing NFT successfully"}
+                </span>
+              ) : (
+                "Failed!"
+              )}
+            </h2>
+          </div>
+
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
@@ -347,12 +365,13 @@ export const FixedPriceNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <NewButton
-              title={"Ok"}
-              variant="v4"
+            <FinalButton
+              title={"View item"}
+              variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -400,19 +419,19 @@ export const FixedPriceNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <NewButton
+        <FinalButton
           title={"Cancel Listing"}
-          variant="v1"
-          className="py-4"
+          variant="secondary"
           onClick={setupCancelItemPriceModal}
+          className="w-full rounded-[14px]"
         />
-        <NewButton
+        <FinalButton
           title={"Edit"}
           onClick={() => {
             setupBidNftModal();
           }}
-          variant="v4"
-          className="py-4"
+          variant="primary"
+          className="w-full"
         />
       </div>
 
@@ -421,7 +440,8 @@ export const FixedPriceNFTDescription = ({
           onClose={() => {
             modal.dismissModal();
           }}
-          title={ModalModel.title as any}
+          title={ModalModel.title as string}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>
@@ -441,29 +461,29 @@ export const FixedPriceNFTDescription = ({
 };
 
 // styling
-const modalBodyWrapper = ctl(`
+const modalBodyWrapper = `
   flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
-`);
-const footerBtnContainer = ctl(`
+`;
+const footerBtnContainer = `
 flex items-center gap-4
-`);
+`;
 
-const nftDescriptionContainer = ctl(`
+const nftDescriptionContainer = `
 w-full flex flex-col gap-5
-`);
+`;
 
-const greyBoxContainer = ctl(`
+const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6 
-`);
-const greyTxt = ctl(`
+`;
+const greyTxt = `
 text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
+`;
+const desTitle = `
 text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
+`;
+const BnBNum = `
 text-16px font-bold text-white
-`);
-const ImgStyling = ctl(`
+`;
+const ImgStyling = `
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
+`;

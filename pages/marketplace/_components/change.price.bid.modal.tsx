@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import NewButton from "@/components/button/new.button";
+import FinalButton from "@/components/button/final.button";
 import { BNBIcon } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import Image from "next/image";
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -15,26 +16,36 @@ const ChangePriceBidModal = ({
   data,
   setupEditListingItemPriceModal,
 }: FixedPriceNFTDescriptionProps) => {
-  const [nftPrice, setNFTPrice] = useState<any>(
-    formatEther2Number(data?.listInfo.price)
-  );
+  const [nftPrice, setNFTPrice] = useState<any>("");
   const [changeNFTPrice, setChangeNFTPrice] = useState<any>(null);
   const [nftPriceError, setNFTPriceError] = useState<any>("");
 
+  useEffect(() => {
+    setNFTPrice(formatEther2Number(data?.listInfo.price));
+  }, [nftPrice, data?.listInfo.price]);
+
   return (
     <div className={modalBodyWrapper}>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Blockchain</label>
-        <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
-          <BNBIcon />{" "}
-          <h6 className="text-14px font-semibold text-white">BNB</h6>
+      {data && (
+        <div className="flex flex-col items-center justify-center gap-6">
+          <Image
+            src={data.image}
+            alt="NFT Image"
+            width={64}
+            height={64}
+            className="!h-[64px] rounded-xl object-cover"
+          />
+          <h4 className="text-center text-lg font-semibold text-white">
+            {data.name}
+          </h4>
         </div>
-      </div>
+      )}
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Price</label>
         <div
           className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
         >
+          <BNBIcon />
           <input
             type="text"
             id="bidPrice"
@@ -74,7 +85,7 @@ const ChangePriceBidModal = ({
             }}
             placeholder={nftPrice}
             className={
-              "h-full w-full !border-0 bg-transparent text-white !ring-0"
+              "h-full w-full !border-0 bg-transparent px-0 text-white !ring-0"
             }
           />
           {/* <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6> */}
@@ -84,9 +95,11 @@ const ChangePriceBidModal = ({
         )}
       </div>
 
-      <NewButton
+      <FinalButton
         title={"Next"}
-        variant={changeNFTPrice === null || nftPriceError ? "v10" : "v1"}
+        variant={
+          changeNFTPrice === null || nftPriceError ? "primary" : "primary"
+        }
         disabled={changeNFTPrice === null || nftPriceError ? true : false}
         onClick={() => setupEditListingItemPriceModal(changeNFTPrice)}
         className="mt-2"

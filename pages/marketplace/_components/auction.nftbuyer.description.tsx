@@ -7,7 +7,16 @@ import { FiArrowRight } from "react-icons/fi";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import { BNBIcon, LoaderIcon, HammerIconBG, WarningIcon } from "@/assets/svgs";
+import FinalButton from "@/components/button/final.button";
+import {
+  BNBIcon,
+  LoaderIcon,
+  HammerIconBG,
+  WarningIcon,
+  MetamaskIcon2,
+  GreenTick,
+  CircularClose,
+} from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -18,16 +27,14 @@ import {
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import NewButton from "@/components/button/new.button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
+import { BlockchainWrite } from "@/web3/blockchain";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { MetamaskIcon2 } from "@/assets/svgs";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 // same directory
 import AuctionBidModal from "./auction.bid.modal";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -46,7 +53,6 @@ export const AuctionNFTBuyerDescription = ({
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
@@ -199,7 +205,7 @@ export const AuctionNFTBuyerDescription = ({
   };
   const modalTemplateCollection: TemplateCollection = {
     proceedFuncModal: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
       content: () => (
         <div className={modalBodyWrapper1}>
@@ -218,16 +224,22 @@ export const AuctionNFTBuyerDescription = ({
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper1}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="text-18px font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px font-semibold text-white">
+              {txStatus ? (
+                <span>
+                  {msg.includes("updated")
+                    ? "Auction successfully updated"
+                    : msg.includes("canceled")
+                    ? "Auction successfully canceled"
+                    : "Auction successfully created"}
+                </span>
+              ) : (
+                "Failed!"
+              )}
+            </h2>
+          </div>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name} </span>{" "}
@@ -240,13 +252,13 @@ export const AuctionNFTBuyerDescription = ({
               {msg ?? "Transaction Failed."}
             </p>
           )}
-          <NewButton
-            title={"Ok"}
-            variant="v1"
-            className="py-4"
+          <FinalButton
+            title={"View item"}
+            variant="primary"
             onClick={() => {
               modal.dismissModal();
             }}
+            className="w-full rounded-[14px]"
           />
         </div>
       ),
@@ -266,17 +278,19 @@ export const AuctionNFTBuyerDescription = ({
             will receive the NFT
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={handleEndAuction}
-              variant="v1"
+              variant="primary"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -364,21 +378,22 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       </div>
       {!library ? (
-        <NewButton
+        <FinalButton
           title={"Connect Wallet"}
-          variant="v9"
+          variant="primary"
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="w-full rounded-[14px]"
         />
       ) : (
         <div className="buttonContainer flex items-center">
           {nowTime < endTime && (
-            <NewButton
+            <FinalButton
               title={"Place bid"}
-              variant={end ? "v10" : "v1"}
+              variant={end ? "primary" : "primary"}
               disabled={end}
-              className="py-4"
+              className="w-full rounded-[14px]"
               onClick={() => {
                 if (!library) {
                   toast.error("Connect your wallet");
@@ -391,10 +406,10 @@ export const AuctionNFTBuyerDescription = ({
             />
           )}
           {nowTime > endTime && isUserWinner && (
-            <NewButton
+            <FinalButton
               title={"Claim NFT"}
-              variant={"v1"}
-              className="py-4"
+              variant={"primary"}
+              className="w-full rounded-[14px]"
               onClick={endAuctionFunc}
             />
           )}
@@ -413,6 +428,7 @@ export const AuctionNFTBuyerDescription = ({
             modal.dismissModal();
           }}
           title={ModalModel.title as any}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>

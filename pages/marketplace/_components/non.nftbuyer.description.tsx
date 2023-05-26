@@ -3,12 +3,10 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
 import clsx from "clsx";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import Button from "@/components/button";
 import { AuctionIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -17,7 +15,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import NewButton from "@/components/button/new.button";
+import FinalButton from "@/components/button/final.button";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -182,13 +180,18 @@ export const NonNFTBuyerDescription = ({
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
           </h6>
           <div className={footerBtnContainer}>
-            <NewButton title={"Checkout"} variant="v1" onClick={handleBuyNFT} />
+            <FinalButton
+              title={"Checkout"}
+              variant="primary"
+              onClick={handleBuyNFT}
+              className="w-full rounded-[14px]"
+            />
           </div>
         </div>
       ),
     },
     proceedFuncModal: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
       content: () => (
         <div className={modalBodyWrapper}>
@@ -238,10 +241,10 @@ export const NonNFTBuyerDescription = ({
           className={footerBtnContainer}
         > */}
           <div className={footerBtnContainer}>
-            <Button
-              title={"Ok"}
-              variant="v4"
-              className="py-4"
+            <FinalButton
+              title={"View item"}
+              variant="primary"
+              className="w-full rounded-[14px]"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -288,11 +291,12 @@ export const NonNFTBuyerDescription = ({
 
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center">
-          <NewButton
+          <FinalButton
             title={"Buy Now"}
-            variant={data?.saleState === "NON" ? "v2" : "v1"}
+            variant={data?.saleState === "NON" ? "primary" : "primary"}
             disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
+            className="w-full"
           />
         </div>
       ) : (
@@ -350,6 +354,7 @@ export const NonNFTBuyerDescription = ({
             modal.dismissModal();
           }}
           title={ModalModel.title as any}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>
@@ -358,28 +363,28 @@ export const NonNFTBuyerDescription = ({
   );
 };
 // styling
-const modalBodyWrapper = ctl(`
+const modalBodyWrapper = `
   flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
+`;
+const footerBtnContainer = `
 flex items-center gap-4 mt-3
-`);
-const ImgStyling = ctl(`
+`;
+const ImgStyling = `
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
-const nftDescriptionContainer = ctl(`
+`;
+const nftDescriptionContainer = `
 w-full flex flex-col gap-5
-`);
+`;
 
-const greyBoxContainer = ctl(`
+const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
-`);
-const greyTxt = ctl(`
+`;
+const greyTxt = `
 text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
+`;
+const desTitle = `
 text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
+`;
+const BnBNum = `
 text-16px font-bold text-white
-`);
+`;

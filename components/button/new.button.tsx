@@ -15,7 +15,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
     | "v9"
     | "v10"
     | "v11"
-    | "v12";
+    | "v12"
+    | "v13";
   Icon?: React.ReactNode;
 }
 
@@ -45,6 +46,8 @@ const NewButton: React.FC<ButtonProps> = ({
           "!h-[30px] !w-fit bg-[#76E268]/[0.16] !px-3 !py-1 !text-xs text-[#76E268]",
         variant === "v12" &&
           "!h-[30px] !w-fit bg-[#EA3943]/[0.16] !px-3 !py-1 !text-xs text-[#EA3943]",
+        variant === "v13" &&
+          "border border-gray-shade-3 bg-transparent text-white",
         className && className
       )}
       {...props}

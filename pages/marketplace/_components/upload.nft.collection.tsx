@@ -2,11 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 // App imports
 import { CrossIcon } from "@/assets/svgs";
-import clsx from "clsx";
 
 interface UploadNFTCollectionProps {
   profile: Blob | undefined;
@@ -78,8 +77,12 @@ export const UploadNFTCollection = ({
         <p className={clsx(`mb-3`, description)}>
           This image will also be used for navigation. 350 x 350 recommended.
         </p>
-        <div className={"relative flex flex-col items-center md:items-start"}>
-          {/* {showProfileImage && (
+        <div
+          className={
+            "relative flex w-full flex-col items-center rounded-[20px] border border-gray-shade-3 bg-black-shade-9 p-6 md:items-start"
+          }
+        >
+          {showProfileImage && (
             <button
               className={profileDelBtn}
               onClick={() => {
@@ -89,7 +92,7 @@ export const UploadNFTCollection = ({
             >
               <CrossIcon />
             </button>
-          )} */}
+          )}
           <div className={profileImgContainer}>
             {showProfileImage && (
               <div>
@@ -200,54 +203,51 @@ export const UploadNFTCollection = ({
   );
 };
 // styling
-const title = ctl(`
+const title = `
 text-14px font-semibold text-white pb-2
-`);
-const description = ctl(`
+`;
+const description = `
 text-14px font-normal text-[#B7BBCC] leading-6
-`);
-const imgBox = ctl(`
+`;
+const imgBox = `
 bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full  mt-3 p-6 flex flex-col gap-5
-`);
-const nftBoxContainer = ctl(`
+`;
+const nftBoxContainer = `
 w-full max-w-[544px] flex flex-col gap-6
-`);
-const previewImgContainer = ctl(`
+`;
+const previewImgContainer = `
  bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full pb-[50%] mt-3
-`);
-const coverStyling = ctl(`
+`;
+const coverStyling = `
 w-full h-full absolute rounded-2xl object-contain
-`);
+`;
 
-const coverDelBtn = ctl(`
+const coverDelBtn = `
   absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
-  `);
-const uploadBox = ctl(`
+  `;
+const uploadBox = `
 w-full h-full absolute flex items-center justify-center
-  `);
-const uploadBoxContent = ctl(`
+  `;
+const uploadBoxContent = `
 flex flex-col items-center justify-center gap-5
-  `);
-const formatName = ctl(`
+  `;
+const formatName = `
   text-gray-shade-7 text-12px font-semibold
-    `);
-const uploadBtnContainer = ctl(`
+    `;
+const uploadBtnContainer = `
   relative w-[132px] h-10
-    `);
-const chooseFileBtn = ctl(`
- z-10 absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3 
-    `);
-const chooseFileBtn2 = ctl(`
-  absolute w-full h-full  opacity-0
-    `);
+    `;
+const chooseFileBtn = `
+ z-10 absolute w-full h-full text-sm text-white font-bold leading-normal bg-transparent rounded-[14px] border border-gray-shade-3 text-center flex items-center justify-center hover:bg-[#1E202B] cursor-pointer`;
+const chooseFileBtn2 = `absolute w-full h-full opacity-0`;
 
 // profile img styling
-const profileImgContainer = ctl(`
+const profileImgContainer = `
  bg-gray-shade-9 relative border border-gray-shade-9 h-[96px] w-[96px] rounded-full 
-`);
-const profileStyling = ctl(`
+`;
+const profileStyling = `
 w-full h-full absolute rounded-full object-cover
-`);
-const profileDelBtn = ctl(`
+`;
+const profileDelBtn = `
   absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
-  `);
+  `;
