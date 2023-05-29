@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 // App imports
-import Button from "@/components/button";
+import FinalButton from "@/components/button/final.button";
 import { useWeb3React } from "@web3-react/core";
 import { useGetMyCollections } from "@/hooks/use.get.my.collections";
 
@@ -45,17 +45,17 @@ export const CreateNFTForm = ({
       className={`relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 py-8 px-6`}
     >
       <div className={`flex w-full max-w-[290px] gap-4`}>
-        <Button
+        <FinalButton
           title={"Fixed Price"}
-          variant={tab === "Fixed" ? "v1" : "v2"}
+          variant={tab === "Fixed" ? "primary" : "secondary"}
           onClick={() => {
             setTab("Fixed");
           }}
           className={`${Tab} ${tab === "Fixed" && activeTab}`}
         />
-        <Button
+        <FinalButton
           title={"Auction"}
-          variant={tab === "Auction" ? "v1" : "v2"}
+          variant={tab === "Auction" ? "primary" : "secondary"}
           onClick={() => {
             setTab("Auction");
           }}
@@ -85,5 +85,5 @@ export const CreateNFTForm = ({
 };
 // styling
 
-const Tab = `w-full py-3 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3`;
+const Tab = `w-full cursor-pointer hover:bg-brand-primary rounded-[14px]`;
 const activeTab = `text-black-shade-3 [&>*>*]:stroke-black-shade-3`;

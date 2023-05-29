@@ -1,26 +1,27 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Joi from "joi";
+import { IoIosClose } from "react-icons/io";
+import { toast } from "react-hot-toast";
+import { FiArrowRight } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
-import { IoIosClose } from "react-icons/io";
+import Joi from "joi";
+import clsx from "clsx";
 
 // App imports
-import Button from "@/components/button";
+import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { FiArrowRight } from "react-icons/fi";
-import { toast } from "react-hot-toast";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useWeb3React } from "@web3-react/core";
 
 import CustomDropdown from "./custom.dropdown";
-import NewButton from "@/components/button/new.button";
 
 // form validations
 const schema = Joi.object({
@@ -71,7 +72,6 @@ const AuctionForm = ({
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
@@ -82,6 +82,11 @@ const AuctionForm = ({
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
+  const today = new Date();
+
+  // Add 7 days to today's date
+  let futureDate = new Date(today);
+  futureDate.setDate(today.getDate() + 7);
 
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
@@ -204,9 +209,10 @@ const AuctionForm = ({
           maxLength={550}
           {...register("Description")}
           placeholder="Write some details about your NFT"
-          className={
-            !formState.errors.Description ? inputField : inputFieldError
-          }
+          className={clsx(
+            !formState.errors.Description ? inputField : inputFieldError,
+            "customScrollbar2"
+          )}
           cols={20}
           rows={3}
         ></textarea>
@@ -221,9 +227,11 @@ const AuctionForm = ({
           Set Auction End Time <span className="text-red-500">*</span>{" "}
         </label>
         <input
-          type="datetime-local"
+          type="date"
           id="AuctionEndTime"
           autoComplete="off"
+          min={new Date().toISOString().split("T")[0]}
+          max={futureDate.toISOString().split("T")[0]}
           {...register("AuctionEndTime")}
           placeholder="Set Auction End Time"
           className={`${
@@ -249,15 +257,15 @@ const AuctionForm = ({
           <span className="text-14px  absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
-          <input
-            type="number"
+          <CustomNumberInput
+            {...register("StartingNFTPrice")}
             id="StartingNFTPrice"
             autoComplete="off"
-            {...register("StartingNFTPrice")}
             placeholder="Enter NFT Price"
             className={
               !formState.errors.StartingNFTPrice ? inputField : inputFieldError
             }
+            min={0}
           />
         </div>
         {formState.errors.StartingNFTPrice && (
@@ -295,44 +303,49 @@ const AuctionForm = ({
           )}
         </div>
       </div>
-      <div className={propetiesListContainer}>
-        {propertyList?.length > 0 &&
-          propertyList.map((item: any, index: number) => {
+      {propertyList?.length > 0 && (
+        <div
+          className={
+            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 py-6 px-5"
+          }
+        >
+          {propertyList.map((item: any, index: number) => {
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute top-0 right-0"
+                  className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  <IoIosClose className="text-2xl text-white" />
+                  <IoIosClose className="text-xl text-white" />
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>
               </div>
             );
-          })}
-      </div>
+          })}{" "}
+        </div>
+      )}
       {!library ? (
-        <NewButton
+        <FinalButton
           title={"Connect Wallet"}
-          variant="v9"
+          variant="primary"
           onClick={() => {
             setConnectWalletModal(true);
           }}
         />
       ) : (
-        <Button
+        <FinalButton
           title={"Create NFT"}
           variant={
             formState.isValid && asset !== undefined && collectionErrorMsg == ""
-              ? "v1"
-              : "v2"
+              ? "primary"
+              : "secondary"
           }
-          disabled={!formState.isValid && asset === undefined}
+          disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2 py-4"
+          className="mt-2"
         />
       )}
       {propertyModal && (
@@ -372,11 +385,11 @@ const AuctionForm = ({
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
             )}
-            <Button
+            <FinalButton
               title={"Save"}
-              variant="v1"
+              variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2 py-4"
+              className="mt-2"
             />
           </div>
         </CustomModal>
@@ -442,33 +455,31 @@ const fieldWrapper = `
   flex gap-2 flex-col w-full
 `;
 const fieldTitle = `
-  text-14px  font-normal text-white
+  text-14px text-start font-normal text-white
 `;
 const inputField = `
-  w-full py-3 px-5  !bg-black-shade-3  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme
+  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-brand-primary active:!ring-brand-primary
 `;
 const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
 `;
 const addPropertyBtn = `
-flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
+flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
 `;
 const modalBodyWrapper = `
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5
+flex flex-col gap-2 w-full mt-8 text-center p-[2px]
 `;
-const propetiesListContainer = `
-flex flex-wrap gap-[2%]
-`;
+
 const properyCard = `
-border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
+gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
 `;
 const PropertyName = `
-text-12px font-medium text-brand-primary
+text-12px font-medium textGradient
 `;
 const Type = `
 text-14px font-semibold text-white
 `;
 const inputFieldModal = `
-  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-brand-primary active:!ring-brand-primary
 `;

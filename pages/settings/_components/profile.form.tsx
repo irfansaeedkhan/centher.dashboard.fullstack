@@ -3,6 +3,7 @@ import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 
+import FinalButton from "@/components/button/final.button";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
@@ -139,19 +140,18 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
           </select>
         </div>
 
-        <button
-          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all ${
-            !isModified ? "cursor-not-allowed bg-[#2A2D3C] text-[#A0A4BB]" : ""
-          }`}
+        <FinalButton
+          title={ButtonsText.update_profile}
+          variant={isModified ? "primary" : "secondary"}
           onClick={updateProfile}
           disabled={!isModified}
-        >
-          {isLoading === "loading" ? (
-            <CgSpinner className="animate-spin" />
-          ) : (
-            ButtonsText.update_profile
-          )}
-        </button>
+          Icon={
+            isLoading === "loading" && (
+              <CgSpinner className="animate-spin text-white" />
+            )
+          }
+          className="w-fit rounded-[14px] text-sm font-medium "
+        />
       </div>
     </div>
   );

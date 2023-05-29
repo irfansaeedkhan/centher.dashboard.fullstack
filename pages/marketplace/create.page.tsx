@@ -1,16 +1,14 @@
-// React, Next, NPM Packages
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
-// App imports
-import NewButton from "@/components/button/new.button";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { BNBIcon, LoaderIcon } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
@@ -20,7 +18,7 @@ import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-// Current page imports
+
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 
@@ -175,10 +173,10 @@ const CreateNFT: NextPageWithLayout = () => {
               </span>
             </h6>
             <div className={footerBtnContainer}>
-              <NewButton
+              <FinalButton
                 title={"Checkout"}
-                variant="v1"
-                className=""
+                variant="primary"
+                className="w-full"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -191,9 +189,12 @@ const CreateNFT: NextPageWithLayout = () => {
       visibility: true,
       content: ({ txStatus, nftData }: any) => (
         <div className={modalBodyWrapper2}>
-          <h2 className="text-18px font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px mt-2 font-semibold text-white">
+              {txStatus ? "NFT Created Successfully" : "Failed!"}
+            </h2>
+          </div>
           {txStatus && (
             <p className="text-14px mt-2 font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
@@ -209,35 +210,23 @@ const CreateNFT: NextPageWithLayout = () => {
           )}
           <div className={footerBtnContainer}>
             {txStatus ? (
-              <NewButton
-                title={"Go Back"}
-                variant="v4"
-                className=""
-                onClick={() => {
-                  modal.dismissModal();
-                  setClearForm(true);
-                }}
-              />
-            ) : (
-              <NewButton
-                title={"Try Again"}
-                variant="v4"
-                className=""
-                onClick={() => {
-                  modal.dismissModal();
-                }}
-              />
-            )}
-
-            {txStatus && (
-              <NewButton
+              <FinalButton
                 title={"View on Profile"}
-                variant="v1"
-                className=""
+                variant="primary"
+                className="w-full"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
                   router.push(`/profile/${account}/nfts/created`);
+                }}
+              />
+            ) : (
+              <FinalButton
+                title={"Try Again"}
+                variant="secondary"
+                className="w-full"
+                onClick={() => {
+                  modal.dismissModal();
                 }}
               />
             )}
@@ -296,7 +285,8 @@ const CreateNFT: NextPageWithLayout = () => {
             modal.dismissModal();
             setClearForm(true);
           }}
-          title={ModalModel.title as any}
+          title={ModalModel.title as string}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>
@@ -321,5 +311,5 @@ export default CreateNFT;
 const modalBodyWrapper2 = `flex flex-col gap-2 w-full mt-8 text-center`;
 const footerBtnContainer = `mt-4 flex flex-col-reverse fsm:flex-row gap-2`;
 const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
-const title = `textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`;
+const title = `textGradient font-semibold leading-[42px] pb-6 lg:text-[34px] sm:text-2xl`;
 const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;

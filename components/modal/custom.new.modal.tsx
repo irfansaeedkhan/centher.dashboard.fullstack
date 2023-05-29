@@ -16,7 +16,7 @@ export const CustomNewModal: React.FC<CustomModalProps> = (props) => {
     >
       {/*content*/}
       <div
-        className={`relative mx-3 flex w-full flex-col rounded-lg border border-gray-shade-3 bg-black-shade-3 py-6 focus:outline-none fmd:w-140 flg:w-164 f2xl:w-164`}
+        className={`relative mx-3 flex w-full flex-col rounded-3xl border border-gray-shade-3 bg-black-shade-3 py-6 focus:outline-none fmd:w-140 flg:w-164 f2xl:w-164`}
       >
         {/*header*/}
         <div
@@ -36,7 +36,7 @@ export const CustomNewModal: React.FC<CustomModalProps> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-[450px] overflow-y-auto`}>{props.children}</div>
+        <div className={`max-h-[600px] overflow-y-auto`}>{props.children}</div>
       </div>
     </div>
   );

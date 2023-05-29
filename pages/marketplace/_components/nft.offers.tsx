@@ -18,6 +18,10 @@ interface NFTOffersProps {
 }
 export const NFTOffers = ({ data }: NFTOffersProps) => {
   const bnbPrice = useBNBPrice();
+  // sort data by time
+  data?.sort((a, b) => {
+    return b.txTime - a.txTime;
+  });
   return (
     <div className={`w-full`}>
       {data?.length ? (

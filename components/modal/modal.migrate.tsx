@@ -33,7 +33,7 @@ export const ModalMigrate: React.FC<Props> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-[450px] overflow-y-auto px-6`}>
+        <div className={`max-h-[600px] overflow-y-auto px-6`}>
           {props.children}
         </div>
       </div>

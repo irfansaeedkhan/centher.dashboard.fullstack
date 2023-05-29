@@ -6,12 +6,10 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
-import { FiTwitter } from "react-icons/fi";
-import { FiArrowRight } from "react-icons/fi";
-import ctl from "@netlify/classnames-template-literals";
+import { FiTwitter, FiArrowRight } from "react-icons/fi";
+import clsx from "clsx";
 
-import Button from "@/components/button";
-import NewButton from "@/components/button/new.button";
+import FinalButton from "@/components/button/final.button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -220,9 +218,10 @@ export const CreateNFTCollectionForm = ({
             maxLength={550}
             {...register("description")}
             placeholder="Write some details about your NFTs collection"
-            className={
-              !formState.errors.description ? inputField : inputFieldError
-            }
+            className={clsx(
+              !formState.errors.description ? inputField : inputFieldError,
+              "customScrollbar2"
+            )}
             cols={20}
             rows={3}
           ></textarea>
@@ -245,31 +244,7 @@ export const CreateNFTCollectionForm = ({
             onSelect={handleSelectOption}
           />
         </div>
-        {/* <div className={fieldWrapper}>
-          <label htmlFor="textarea" className={fieldTitle}>
-            Category <span className="text-red-500">*</span>
-          </label>
-          <select
-            id="category"
-            {...register("category")}
-            className={
-              !formState.errors.category ? inputField : inputFieldError
-            }
-          >
-            {categories.slice(1, categories.length).map((item, key) => {
-              return (
-                <option value={item === "Select" ? "" : item} key={key}>
-                  {item}
-                </option>
-              );
-            })}
-          </select>
-          {formState.errors.category && (
-            <p className={`text-red-500 ${errMessage}`}>
-              {formState.errors.category.message}
-            </p>
-          )}
-        </div> */}
+
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
             URL <span className="text-gray-shade-17"> (optional)</span>
@@ -356,23 +331,24 @@ export const CreateNFTCollectionForm = ({
           </div>
         </div>
         {!library ? (
-          <NewButton
+          <FinalButton
             title={"Connect Wallet"}
-            variant="v9"
+            variant="primary"
             onClick={() => {
               setConnectWalletModal(true);
             }}
+            className="mt-2 w-full py-4"
           />
         ) : (
-          <Button
+          <FinalButton
             title={"Create Collection"}
             variant={
               formState.isValid &&
               profile != undefined &&
               cover != undefined &&
               categoryError === false
-                ? "v1"
-                : "v2"
+                ? "primary"
+                : "primary"
             }
             disabled={
               !formState.isValid &&
@@ -381,7 +357,7 @@ export const CreateNFTCollectionForm = ({
               categoryError
             }
             onClick={handleSubmit(onSubmit)}
-            className="mt-2 py-4"
+            className="mt-2 w-full py-4"
           />
         )}
       </div>
@@ -434,41 +410,41 @@ export const CreateNFTCollectionForm = ({
   );
 };
 // styling
-const CreateNFTCollectionFormContainer = ctl(`
+const CreateNFTCollectionFormContainer = `
  bg-black-shade-9 rounded-2xl relative w-full border border-gray-shade-3 py-8 px-6 flex flex-col gap-6
-`);
-const formContainer = ctl(`
+`;
+const formContainer = `
  flex flex-col gap-5
-`);
-const errMessage = ctl(`
+`;
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
+`;
+const fieldTitle = `
   text-14px  font-normal text-white
-`);
-const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-const inputFieldError = ctl(`
+`;
+const inputField = `
+  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary
+`;
+const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
-`);
-const linkField = ctl(`
-absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-const linkFieldError = ctl(`
+`;
+const linkField = `
+absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary
+`;
+const linkFieldError = `
   ${linkField}
    focus:!ring-red-500
-`);
-const linkInputContainer = ctl(`
-inputItem h-[48px]  w-full !bg-black-shade-3   text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme relative
-`);
-const linkIcon = ctl(`
+`;
+const linkInputContainer = `
+inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary relative
+`;
+const linkIcon = `
 z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] w-5 h-5
-`);
-const linkListContainer = ctl(`
+`;
+const linkListContainer = `
 flex flex-col gap-5
-`);
+`;

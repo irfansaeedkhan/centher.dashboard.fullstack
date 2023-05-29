@@ -1,5 +1,5 @@
-import React from "react";
 import clsx from "clsx";
+import React from "react";
 import styles from "./button.module.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -29,11 +29,20 @@ const FinalButton: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        ` default-button-styling`,
+        ` default-button-styling flex items-center justify-center gap-2`,
         variant === "primary" &&
-          `primary-gradient-btn relative bg-gradient-pattern hover:before:bg-transparent`,
+          `primary-gradient-btn relative bg-gradient-pattern`,
+        variant === "primary" &&
+          !props.disabled &&
+          "hover:before:bg-transparent",
+        variant === "primary" &&
+          props.disabled &&
+          "hover:primary-gradient-btn2",
         variant === "secondary" &&
-          "border border-[#1E202B] bg-transparent font-semibold text-white hover:border-transparent hover:bg-[#1E202B]",
+          "border border-[#1E202B] bg-transparent font-semibold text-white ",
+        variant === "secondary" &&
+          !props.disabled &&
+          "hover:border-transparent hover:bg-[#1E202B]",
         variant === "danger" &&
           "border border-[#FF424D] bg-transparent font-semibold text-[#FF424D] hover:border-transparent hover:bg-[#FF424D] hover:text-white",
         `${props.disabled && "opacity-50"}`,

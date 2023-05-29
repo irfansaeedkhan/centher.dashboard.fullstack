@@ -1,10 +1,10 @@
 // React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 
 // App imports
-import Button from "@/components/button";
-import { ImageIcon, GifIcon } from "@/assets/svgs";
+
+import { PhotoIcon, GifNew, GifNewWhite } from "@/assets/svgs";
 
 // same directory Imports
 import ImageNFTUpload from "./image.nft.upload";
@@ -30,44 +30,41 @@ export const UploadNFT = ({
   clearForm,
 }: UploadNFTProps1) => {
   return (
-    <div className={nftBoxContainer}>
-      <div className={tabsBtnContainer}>
-        <Button
-          title={"Image"}
-          variant={assetTab === "Image" ? "v1" : "v2"}
-          Icon={<ImageIcon />}
+    <div className="flex w-full max-w-[544px] flex-col gap-6">
+      <div className="flex w-full border-b border-gray-shade-3 [@media(max-width:600px)]:flex-wrap [@media(max-width:600px)]:justify-between [@media(max-width:600px)]:!gap-0">
+        <label
           onClick={() => {
             setAssetTab("Image");
           }}
-          className={`${Tab} ${assetTab === "Image" && activeTab}`}
-        />
-        <Button
-          title={"GIF"}
-          variant={assetTab === "Gif" ? "v1" : "v2"}
-          Icon={<GifIcon />}
+          className={clsx(
+            label,
+            assetTab === "Image" ? "myBox text-white" : "text-[#A0A4BB]"
+          )}
+        >
+          <PhotoIcon
+            className={clsx(
+              "group-hover:[&>*]:stroke-brand-primary",
+              assetTab === "Image" && "[&>*]:stroke-white"
+            )}
+          />
+          <span>Image</span>
+        </label>
+        <label
+          className={clsx(
+            label,
+            assetTab === "Gif" ? "myBox text-white" : "text-[#A0A4BB]"
+          )}
           onClick={() => {
             setAssetTab("Gif");
           }}
-          className={`${Tab} ${assetTab === "Gif" && activeTab}`}
-        />
-        {/* <Button
-          title={"Video"}
-          variant={assetTab === "Video" ? "v1" : "v2"}
-          Icon={<VideosIcon />}
-          onClick={() => {
-            setAssetTab("Video");
-          }}
-          className={`${Tab} ${assetTab === "Video" && activeTab}`}
-        />
-        <Button
-          title={"Audio"}
-          variant={assetTab === "Audio" ? "v1" : "v2"}
-          Icon={<AudioIcon />}
-          onClick={() => {
-            setAssetTab("Audio");
-          }}
-          className={`${Tab} ${assetTab === "Audio" && activeTab}`}
-        /> */}
+        >
+          {assetTab === "Gif" ? (
+            <GifNewWhite />
+          ) : (
+            <GifNew className={clsx("")} />
+          )}
+          <span>Gif</span>
+        </label>
       </div>
       {assetTab === "Image" && (
         <ImageNFTUpload
@@ -96,16 +93,5 @@ export const UploadNFT = ({
     </div>
   );
 };
-// styling
-const tabsBtnContainer = ctl(`
-w-full flex gap-4 [@media(max-width:600px)]:flex-wrap [@media(max-width:600px)]:justify-between [@media(max-width:600px)]:!gap-0
-`);
-const Tab = ctl(`
-py-4 [&>*>*]:hover:stroke-black-shade-3 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3 [@media(max-width:600px)]:!w-[49%] [@media(max-width:600px)]:mb-[2%]
-`);
-const activeTab = ctl(`
- text-black-shade-3 [&>*>*]:stroke-black-shade-3
-`);
-const nftBoxContainer = ctl(`
-w-full max-w-[544px] flex flex-col gap-6
-`);
+
+const label = `group flex w-full max-w-[130px] flex-shrink-0 cursor-pointer select-none items-center justify-center gap-2 rounded-md border border-transparent py-[10px] px-6 text-sm font-semibold transition-all duration-150 hover:bg-brand-primary/20 hover:text-white`;

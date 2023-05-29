@@ -6,10 +6,17 @@ import toast from "react-hot-toast";
 import clsx from "clsx";
 
 // App imports
+import FinalButton from "@/components/button/final.button";
 import { IModalProps } from "@/components/modal/standard.modal";
-import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { BNBIcon, WarningIcon, LoaderIcon, AuctionIcon } from "@/assets/svgs";
+import {
+  BNBIcon,
+  WarningIcon,
+  LoaderIcon,
+  AuctionIcon,
+  GreenTick,
+  CircularClose,
+} from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
@@ -181,7 +188,7 @@ export const NonNFTDescription = ({
   };
   const handleAuction = async (data: any) => {
     try {
-      validateProvider();
+      // validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.saleWithAuction, data);
     } catch (err: any) {
@@ -198,7 +205,7 @@ export const NonNFTDescription = ({
     }
   };
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
-    const endTime = Math.floor((Date.parse(auctionDate) - Date.now()) / 1000);
+    const endTime = Math.floor(auctionDate * 24 * 60 * 60);
     validateProvider();
     ProceedFunc();
 
@@ -325,19 +332,21 @@ export const NonNFTDescription = ({
             confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
               }
-              variant="v1"
+              variant="primary"
+              className="w-full"
             />
           </div>
         </div>
@@ -357,26 +366,28 @@ export const NonNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
               }
-              variant="v1"
+              variant="primary"
+              className="w-full"
             />
           </div>
         </div>
       ),
     },
     proceedFuncModal: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
       content: () => (
         <div className={modalBodyWrapper}>
@@ -395,16 +406,22 @@ export const NonNFTDescription = ({
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="fmd:text-18px mt-2 text-base font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px font-semibold text-white">
+              {txStatus ? (
+                <span>
+                  {msg.includes("updated")
+                    ? "Listing updated successfully"
+                    : msg.includes("canceled")
+                    ? "Listing successfully canceled"
+                    : "Listing NFT successfully"}
+                </span>
+              ) : (
+                "Failed!"
+              )}
+            </h2>
+          </div>
           {txStatus && (
             <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
@@ -418,21 +435,28 @@ export const NonNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <NewButton
-              title={"Ok"}
-              variant="v4"
+            <FinalButton
+              title={"View item"}
+              variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full"
             />
           </div>
         </div>
       ),
     },
     listingFuncModal: {
-      title: "Listing Item",
+      title: "List for sale",
       visibility: true,
-      content: () => <ChangePriceListModal handleListNFT={handleListNFT} />,
+      content: () => (
+        <ChangePriceListModal
+          handleListNFT={handleListNFT}
+          data={data}
+          handleAuction={handleAuction}
+        />
+      ),
     },
     sendFuncModal: {
       title: "Send NFT",
@@ -440,7 +464,7 @@ export const NonNFTDescription = ({
       content: () => <SendNFTModal handleSend={handleSendNFT} />,
     },
     saleWithListingModal: {
-      title: "Edit listing",
+      title: "List for sale",
       visibility: true,
       content: (listingPrice: any) => (
         <div className={modalBodyWrapper}>
@@ -454,17 +478,19 @@ export const NonNFTDescription = ({
             )} BNB.`}
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v4"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={() => handleListing(listingPrice)}
-              variant="v1"
+              variant="primary"
+              className="w-full"
             />
           </div>
         </div>
@@ -509,16 +535,27 @@ export const NonNFTDescription = ({
       </div>
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center gap-4">
-          <NewButton
+          {/* <NewButton
             title={"Auction"}
             variant="v1"
             onClick={() => {
               setupAuctionModal();
             }}
+          /> */}
+          <FinalButton
+            title="Sell"
+            onClick={listingFunc}
+            variant="primary"
+            className="h-11 w-full"
+            borderRounded="14px"
           />
-          <NewButton title={"List"} onClick={listingFunc} variant="v4" />
           {transferable && (
-            <NewButton title={"Send"} onClick={sendFunc} variant="v4" />
+            <FinalButton
+              title={"Send"}
+              onClick={sendFunc}
+              variant="secondary"
+              className="h-11 w-full rounded-[14px]"
+            />
           )}
         </div>
       ) : (
@@ -577,6 +614,7 @@ export const NonNFTDescription = ({
             modal.dismissModal();
           }}
           title={ModalModel.title as any}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>

@@ -1,13 +1,14 @@
 // React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
+import clsx from "clsx";
 
 // App imports
-import { useAvatars } from "@/hooks/use.avatars";
+import FinalButton from "@/components/button/final.button";
 import { AvatarModalWrapper } from "@/components/modal/avatar.modal.wrapper";
+import { useAvatars } from "@/hooks/use.avatars";
 import { UserImage } from "@/models/user";
 import { Avatar } from "@/models/avatars";
-import clsx from "clsx";
 
 interface AvatarModalProps {
   isOpen: boolean;
@@ -31,47 +32,56 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
         onClose();
       }}
       title={"Choose avatar"}
-      bodyWrapper="flex justify-center"
+      bodyWrapper="flex justify-center flex-col gap-5 items-center"
     >
       <div
-        className={`m-0 flex w-full max-w-[536px] flex-wrap items-center justify-center gap-10`}
+        className={`scrollSetLight m-0 flex h-auto max-h-[500px] w-full max-w-[550px] flex-wrap items-center justify-center gap-8 overflow-auto px-4 pt-4`}
       >
         {avatars.map((avatar) => {
           return (
-            <Image
+            <div
               key={avatar.path}
-              src={avatar.path}
-              alt={avatar.name}
-              width={92}
-              height={92}
-              onClick={() => {
-                setSlectedAvatar(avatar);
-              }}
               className={clsx(
-                `cursor-pointer rounded-full bg-gray-shade-3 object-cover focus:outline-brand-primary`,
-                slectedAvatar === avatar && `ring-2 ring-brand-primary`
+                slectedAvatar === avatar &&
+                  `gradient-border-3 h-[72px] w-[72px] rounded-full p-[2px]`
               )}
-            />
+            >
+              <Image
+                src={avatar.path}
+                alt={avatar.name}
+                width={72}
+                height={72}
+                onClick={() => {
+                  setSlectedAvatar(avatar);
+                }}
+                className={clsx(
+                  `cursor-pointer rounded-full bg-gray-shade-3 object-cover`
+                )}
+              />
+            </div>
           );
         })}
+      </div>
+      <div className="w-full px-4">
         {slectedAvatar ? (
-          <button
+          <FinalButton
+            title="Choose"
+            variant="primary"
             onClick={() => {
               onAvatarSelect(slectedAvatar);
               onClose();
               setSlectedAvatar(null);
             }}
-            className="w-full rounded-lg bg-brand-primary py-[10px] text-base font-bold leading-6 text-black"
-          >
-            Choose
-          </button>
+            disabled={!slectedAvatar}
+            className="w-full"
+          />
         ) : (
-          <button
-            disabled
-            className="w-full rounded-lg bg-gray-shade-3 py-[10px] text-base font-bold leading-6 text-gray-shade-8"
-          >
-            Choose
-          </button>
+          <FinalButton
+            title="Choose"
+            variant="primary"
+            disabled={!slectedAvatar}
+            className="w-full"
+          />
         )}
       </div>
     </AvatarModalWrapper>
