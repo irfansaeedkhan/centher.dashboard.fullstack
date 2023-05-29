@@ -7859,10 +7859,10 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-advanced-cropper@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/react-advanced-cropper/-/react-advanced-cropper-0.18.0.tgz#582136fcc337a2b6f9ddb34f0f142d8d0333d0b6"
-  integrity sha512-WFmKcP0iUQ58VtA0N0WFRwJyRA5MCgvTTxsDV6x2A41tR0RK5vOtM4OWpVAcOxHJxolw8e8VLOaEkQRM775ILw==
+react-advanced-cropper@0.19.3:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/react-advanced-cropper/-/react-advanced-cropper-0.19.3.tgz#54c60e682aaa549cb9921a65a252cae0eede9bf5"
+  integrity sha512-rC07DvUMidJgyD9sR1Clz9R3RtxgfrpjZN837awJFcnhlDjKs3arwUA6rfhJZ3jHuo9FmQfZ86xmDeNA1PBFKg==
   dependencies:
     advanced-cropper "~0.18.0"
     classnames "^2.2.6"
@@ -7877,6 +7877,13 @@ react-circular-progressbar@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/react-circular-progressbar/-/react-circular-progressbar-2.1.0.tgz"
   integrity sha512-xp4THTrod4aLpGy68FX/k1Q3nzrfHUjUe5v6FsdwXBl3YVMwgeXYQKDrku7n/D6qsJA9CuunarAboC2xCiKs1g==
+
+react-countdown@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.5.tgz#70c035b5cbc7e8fdb4ad91fe5f44afd7a7933a68"
+  integrity sha512-K26ENYEesMfPxhRRtm1r+Pf70SErrvW3g4CArLi/x6MPFjgfDFYePT4UghEj8p2nI0cqVV7/JjDgjyr//U60Og==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-cropper@^2.1.8:
   version "2.1.8"

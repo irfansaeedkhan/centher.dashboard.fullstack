@@ -55,6 +55,8 @@ module.exports = {
       },
       backgroundImage: {
         "buydao-pattern": "url('/images/buyntrdaoBackground.png')",
+        "gradient-pattern":
+          "linear-gradient(270.23deg,#5691ff -9.34%,#72f6d1 17.09%,#76e268 48.54%,#ffd505 78.11%,#ff5e52 107.63%)",
       },
       colors: {
         app: {
@@ -70,6 +72,7 @@ module.exports = {
         },
         red: {
           theme: "#E35259",
+          "shade-1": "#FF424D",
         },
         danger: "#EA3943",
         "gray-shade": {

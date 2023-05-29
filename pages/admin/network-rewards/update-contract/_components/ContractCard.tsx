@@ -379,7 +379,6 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   // });
 
   // const onSubmit = async (data: any) => {
-  //   console.log(data);
   // };
 
   // return (

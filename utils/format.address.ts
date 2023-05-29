@@ -51,13 +51,13 @@ export const formatIPFSUrl = (hash: string | undefined) => {
 export const formatTxUrl = (hash: string | undefined) => {
   if (hash === undefined) return BlockchainConfig.scanner.url;
   else {
-    return `${BlockchainConfig.scanner.url}tx/${hash}`;
+    return `${BlockchainConfig.scanner.url}/tx/${hash}`;
   }
 };
 
 export const formatAddressUrl = (hash: string | undefined) => {
   if (hash === undefined) return BlockchainConfig.scanner.url;
   else {
-    return `${BlockchainConfig.scanner.url}address/${hash}`;
+    return `${BlockchainConfig.scanner.url}/address/${hash}`;
   }
 };

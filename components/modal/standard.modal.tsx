@@ -23,7 +23,10 @@ export interface ModalState {
   onClose: ModalProps["onClickClose"];
   onClickConfirm: ModalProps["onClickConfirm"];
 }
-
+export interface IModalProps {
+  txStatus: boolean;
+  msg: string;
+}
 export type ModalStatus =
   | "success"
   | "progress"

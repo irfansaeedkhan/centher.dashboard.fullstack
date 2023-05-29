@@ -1,5 +1,6 @@
 import { BlockchainRead } from "@/web3/blockchain";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { CollectionBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { useEffect, useState } from "react";
 
@@ -26,13 +27,15 @@ export const useGetMyCollections = (account: string | null | undefined) => {
     const fetchMyCollections = async (account: string) => {
       const result = await BlockchainRead.getAccountCollections(account);
       if (result?.length) {
-        const _collections = result.map((item: any) => {
-          return {
-            id: item.id,
-            name: item.name,
-            collection: item.collection,
-          };
-        });
+        const _collections = result
+          .map((item: any) => {
+            return {
+              id: item.id,
+              name: item.name,
+              collection: item.collection,
+            };
+          })
+          .filter((e) => !CollectionBlackList.isBlocked(e.collection));
         setCollections([CentherNativeCollection, ..._collections]);
       }
     };

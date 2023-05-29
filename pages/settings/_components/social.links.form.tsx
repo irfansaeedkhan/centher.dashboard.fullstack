@@ -26,6 +26,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
   const { mutate } = useSWRConfig();
   const [updatedUser, setUpdatedUser] = React.useState(props.user);
   const [isLoading, setisLoading] = useState<LoadingState>("idle");
+  const [isModified, setIsModified] = useState(false); // track if any input field has been modified
 
   const updateProfile = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -48,6 +49,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
         twitch_username: updatedUser.twitch_username,
         onlyfans_username: updatedUser.onlyfans_username,
         youtube_url: updatedUser.youtube_url,
+        telegram_username: updatedUser.telegram_username,
       });
 
       setUpdatedUser(data.user as LoggedInUser);
@@ -57,6 +59,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
       toast.success("Social links updated successfully");
       setisLoading("loaded");
       button.disabled = false;
+      isModified && setIsModified(false);
     } catch (error: any) {
       button.disabled = false;
       setisLoading("failed");
@@ -81,6 +84,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               website_url: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -94,6 +98,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               twitter_username: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -107,6 +112,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               facebook_username: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -120,6 +126,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               instagram_username: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -133,6 +140,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               tiktok_username: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -146,6 +154,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               twitch_username: e.target.value,
             });
+            setIsModified(true);
           }}
         />
 
@@ -159,6 +168,19 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               onlyfans_username: e.target.value,
             });
+            setIsModified(true);
+          }}
+        />
+        <InputField
+          id="telegram_username"
+          label="Telegram Username"
+          placeholder="e.g. stevenpaul"
+          value={updatedUser.telegram_username}
+          onChange={(e) => {
+            setUpdatedUser({
+              ...updatedUser,
+              telegram_username: e.target.value,
+            });
           }}
         />
         <InputField
@@ -171,11 +193,16 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
               ...updatedUser,
               youtube_url: e.target.value,
             });
+            setIsModified(true);
           }}
         />
+
         <button
-          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark`}
+          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark ${
+            !isModified ? "cursor-not-allowed bg-[#2A2D3C] text-[#A0A4BB]" : ""
+          }`}
           onClick={updateProfile}
+          disabled={!isModified}
         >
           {isLoading === "loading" ? (
             <CgSpinner className="animate-spin" />

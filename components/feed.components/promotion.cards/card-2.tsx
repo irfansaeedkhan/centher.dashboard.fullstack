@@ -26,24 +26,19 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
       </div>
       <div>
         <p
-          className={`text-center text-sm font-extrabold leading-[17.07px] text-white`}
+          className={`text-center text-sm font-medium leading-[17.07px] text-white`}
         >
-          Did you take a look at our new
-        </p>
-        <p
-          className={`animationTextHeading text-center !text-[22px] font-extrabold leading-[26.82px]`}
-        >
-          LAUNCHPAD?
+          We released the Pre Booking Form for DeXa Token! The first token
+          launched on Centher! Book your tokens now before the Pre Sale starts!
         </p>
       </div>
       <Link
         href={{
-          pathname: AppRoutes.launchpad,
-          query: { token_address: "dexa", round: 0 },
+          pathname: AppRoutes.launchpad_pre_booking.index,
         }}
         className={`mt-4 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark `}
       >
-        Go
+        Book Now
       </Link>
     </div>
   );

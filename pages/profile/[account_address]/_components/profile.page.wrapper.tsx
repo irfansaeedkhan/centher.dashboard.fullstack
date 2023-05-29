@@ -76,7 +76,10 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
             )}
           </div>
 
-          <CardsContainerLeft className="flg:col-span-1 flg:col-start-2 flg:row-start-2 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3" />
+          <CardsContainerLeft
+            user={user}
+            className="flg:col-span-1 flg:col-start-2 flg:row-start-2 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3"
+          />
 
           <div
             className={clsx(

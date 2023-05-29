@@ -1,26 +1,23 @@
 import React from "react";
-import { useRouter } from "next/router";
 import clsx from "clsx";
 
-import useGetUser from "@/hooks/use.get.user";
 import {
-  PromotionCard1,
   PromotionCard2,
+  PromotionCard4,
 } from "@/components/feed.components/promotion.cards";
 import { ProfileDetailCard } from "@/components/feed.components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
+import { User } from "@/models/user";
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  user: User | null;
+}
 
 export const CardsContainerLeft: React.FC<Props> = ({
+  user,
   className,
   ...props
 }) => {
-  const router = useRouter();
-  const { user } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
-
   return (
     <div
       className={clsx(`hidden max-w-[272px] space-y-3 flg:block`, className)}
@@ -29,7 +26,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
       {user ? (
         <>
           <ProfileDetailCard user={user} />
-          <PromotionCard1 />
+          <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>
       ) : (

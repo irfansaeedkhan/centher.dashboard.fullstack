@@ -1,24 +1,24 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 
-// App imports
-import { useWeb3React } from "@web3-react/core";
-import Button from "@/components/button";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
+import FinalButton from "@/components/button/final.button";
+import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
-import { ICollectionData } from "./_components/create.collection.form";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+
+import { ICollectionData } from "./_components/create.collection.form";
+import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -40,7 +40,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const router = useRouter();
 
   const { account, library } = useWeb3React();
-
+  const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (collectionData: any) => {
     try {
@@ -48,7 +48,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.buyNFTStep1FuncModal, collectionData);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const buyNFTSuccessFunc = (txStatus: boolean, collectionData: any) => {
@@ -61,7 +61,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionData,
       });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
@@ -108,6 +108,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const createCollection = (values: ICollectionData) => {
+    if (!account || !library) {
+      toastError("Please connect your wallet for creating collection!");
+      return;
+    }
+    if (!user) {
+      toastError("Please login for creating collection!");
+      return;
+    }
+    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+      toastError("Please connect your wallet to correct account!");
+      return;
+    }
     if (profile === undefined) {
       toastError("Choose profile image.");
       return;
@@ -131,7 +143,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       modal.dismissModal();
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong");
     }
   };
   const modalTemplateCollection: TemplateCollection = {
@@ -147,7 +159,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="text-18px word-break font-semibold text-white">
             {collectionData?.name}
           </h2>
           <h3 className="text-14px font-normal text-white">
@@ -156,11 +168,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             )} BNB`}
           </h3>
           <div className={footerBtnContainer}>
-            <Button
+            <FinalButton
               title={"Checkout"}
-              variant="v1"
-              className="py-4"
+              variant="primary"
               onClick={() => handleCreateCollection(collectionData)}
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -179,12 +191,14 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             width={64}
           />
           <h2 className="text-18px font-semibold text-white">
-            {txStatus ? "Success!" : "Failed!"}
+            {txStatus ? "Collection Created Successfully" : "Failed!"}
           </h2>
           {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
-              <span className="text-white">{collectionData?.name}</span>{" "}
+              <span className="word-break text-white">
+                {collectionData?.name}
+              </span>{" "}
               Collection on <b> Centher </b> platform, Click view on profile to
               view your collection.
             </p>
@@ -195,26 +209,28 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             </p>
           )}
           <div className={footerBtnContainer}>
-            <Button
-              title={txStatus ? "Go Back" : "Try Again"}
-              variant="v4"
-              className="py-4"
-              onClick={() => {
-                modal.dismissModal();
-                setClearForm(true);
-              }}
-            />
+            {!txStatus && (
+              <FinalButton
+                title={"Try Again"}
+                variant="secondary"
+                onClick={() => {
+                  modal.dismissModal();
+                  setClearForm(true);
+                }}
+                className="w-full rounded-[14px]"
+              />
+            )}
 
             {txStatus && (
-              <Button
-                title={"View on Profile"}
-                variant="v1"
-                className="py-4"
+              <FinalButton
+                title={"View Collection"}
+                variant="primary"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
                   router.push(`/profile/${account}/nfts/collection`);
                 }}
+                className="w-full"
               />
             )}
           </div>
@@ -222,7 +238,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       ),
     },
     proceedFuncModal: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
       content: () => (
         <div className={modalBodyWrapper}>
@@ -274,6 +290,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             modal.dismissModal();
           }}
           title={ModalModel.title as any}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>
@@ -295,9 +312,9 @@ CreateNFTCollection.getLayout = (page) => {
 export default CreateNFTCollection;
 
 // styling
-const modalBodyWrapper = `flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center`;
+const modalBodyWrapper = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
 const footerBtnContainer = `w-full mt-3 flex items-center gap-3`;
 const ImgStyling = `w-[64px] h-[64px] rounded-2xl object-contain mx-auto`;
 const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;
-const title = `textGradient font-semibold leading-[42px] pb-6 animationTextHeading lg:text-[34px] sm:text-2xl`;
+const title = `textGradient font-semibold leading-[42px] pb-6 lg:text-[34px] sm:text-2xl`;
 const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;

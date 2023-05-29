@@ -11,7 +11,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
-import { TbBrandTiktok } from "react-icons/tb";
+import { TbBrandTiktok, TbBrandTelegram } from "react-icons/tb";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiOnlyfans } from "react-icons/si";
 import { HiLink } from "react-icons/hi";
@@ -32,6 +32,7 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import useUser from "@/hooks/use.user";
 import { CoverImage, MutualFollowersData, User } from "@/models/user";
 import Button from "@/components/button";
+import ProfileModal from "@/components/modal/profile.modal";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage, sliceAccountAddress } from "@/utils/user.helpers";
@@ -88,6 +89,7 @@ const ProfileHeader: React.FC<Props> = ({
 
   const [follow, setFollow] = useState<boolean>(false);
   const [loadingState, setLoadingState] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const verificationTick = useVerificationTick({ user, shouldAnimate: true });
 
   const isOwnProfile = useMemo(() => {
@@ -264,6 +266,12 @@ const ProfileHeader: React.FC<Props> = ({
     }
   };
 
+  const handleImageClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div className={`rounded-xl bg-background-shade-3`}>
       <div
@@ -337,7 +345,10 @@ const ProfileHeader: React.FC<Props> = ({
         <div
           className={`absolute left-[50%] -bottom-12 h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
         >
-          <div className="relative h-[112px] !w-[112px]">
+          <div
+            className="relative h-[112px] !w-[112px]"
+            onClick={handleImageClick}
+          >
             <Image
               src={user.profile_image.path}
               alt={user.display_name}
@@ -502,6 +513,7 @@ const ProfileHeader: React.FC<Props> = ({
           user.twitch_username ||
           user.twitter_username ||
           user.website_url ||
+          user.telegram_username ||
           user.youtube_url) && (
           <div className="mt-3 flex w-full items-center justify-center gap-4">
             {user.tiktok_username && (
@@ -570,6 +582,16 @@ const ProfileHeader: React.FC<Props> = ({
                 <SiOnlyfans className={socialLinks} />
               </a>
             )}
+
+            {user.telegram_username && (
+              <a
+                href={`https://t.me/${user.telegram_username}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <TbBrandTelegram className={socialLinks} />
+              </a>
+            )}
           </div>
         )}
 
@@ -583,6 +605,13 @@ const ProfileHeader: React.FC<Props> = ({
 
         <ProfileTabsSocial account_address={router.query.account_address} />
       </div>
+
+      {isModalOpen && (
+        <ProfileModal
+          onClose={handleCloseModal}
+          src={user.profile_image.path}
+        />
+      )}
     </div>
   );
 };

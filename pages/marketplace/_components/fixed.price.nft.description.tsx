@@ -1,22 +1,29 @@
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import NewButton from "@/components/button/new.button";
+import FinalButton from "@/components/button/final.button";
+import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import { BNBIcon, WarningIcon, LoaderIcon } from "@/assets/svgs";
+import {
+  BNBIcon,
+  WarningIcon,
+  LoaderIcon,
+  MigrateIcon,
+  GreenTick,
+  CircularClose,
+} from "@/assets/svgs";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { ModalMigrate } from "@/components/modal/modal.migrate";
 
 import ChangePriceBidModal from "./change.price.bid.modal";
-import { BlockchainWrite } from "@/web3/blockchain";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -24,6 +31,7 @@ enum ModalType {
   editListing = "editListing",
   txInProgress = "txInProgress",
   success = "success",
+  migrate = "migrate",
 }
 
 export interface bidForm {
@@ -39,14 +47,88 @@ export const FixedPriceNFTDescription = ({
   data,
   setNftData,
 }: FixedPriceNFTDescriptionProps) => {
-  const router = useRouter();
-
   const { library } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
+  const [migrateModal, setMigrateModal] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
+
+  useEffect(() => {
+    const CheckStatus = async () => {
+      if (data?.saleState === "List") {
+        const Status = await BlockchainRead.isCurrentMarketplaceOwner(
+          library,
+          data.collection,
+          data.nftId
+        );
+        if (!Status) {
+          setMigrateModal({
+            visibility: true,
+            title: "Migrate NFT",
+            content: (
+              <div className="p-4">
+                <div className="mb-6 flex w-full justify-center">
+                  <MigrateIcon />
+                </div>
+                <h3 className="mb-2 flex w-full justify-center space-x-1 text-sm font-semibold text-white fsm:text-lg">
+                  <span>Migrate your</span>
+                  <span className="text-brand-primary"> listed tokens</span>
+                </h3>
+                <p className="mb-6 text-center text-xs text-white fsm:text-sm">
+                  Migrate your tokens to our new marketplace for uninterrupted
+                  rewards and benefits. Don&apos;t miss out - act now!
+                </p>
+                <FinalButton
+                  title={"Migrate Now"}
+                  variant="primary"
+                  className="w-full rounded-[14px]"
+                  onClick={migrateNowHandler}
+                />
+              </div>
+            ),
+          });
+        }
+      }
+    };
+
+    const migrateNowHandler = async () => {
+      let success = false;
+      try {
+        setMigrateModal({ ...migrateModal, visibility: false });
+        setupWaitingModal();
+        const result = await BlockchainWrite.transferNftToCurrentMarketplace(
+          library,
+          data?.collection as string,
+          data?.nftId as number,
+          data?.listInfo?.price as number,
+          data?.auctionInfo.endTime as number
+        );
+
+        if (!result?.length) {
+          throw new Error("cannot migrate");
+        }
+        success = true;
+        setupSuccessModal(
+          success,
+          "Congratulations! Migration is completed for "
+        );
+      } catch (error) {
+        toast.error("It's not possible to transfer your NFT to new version");
+        setupSuccessModal(
+          success,
+          "It's not possible to transfer your NFT to new version"
+        );
+      }
+    };
+    CheckStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, library]);
 
   const bnbPrice = useBNBPrice();
 
@@ -55,7 +137,7 @@ export const FixedPriceNFTDescription = ({
       validateProvider();
       modal.createModal(ModalType.cancelPrice);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -64,7 +146,7 @@ export const FixedPriceNFTDescription = ({
       validateProvider();
       modal.createModal(ModalType.bidNft);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -73,7 +155,7 @@ export const FixedPriceNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.editListing, bidPrice);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
@@ -81,15 +163,15 @@ export const FixedPriceNFTDescription = ({
     try {
       modal.createModal(ModalType.txInProgress);
     } catch (err: any) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
     }
   };
 
-  const setupSuccessModal = (txStatus: boolean) => {
+  const setupSuccessModal = (txStatus: boolean, msg: string) => {
     try {
-      modal.createModal(ModalType.success, txStatus);
+      modal.createModal(ModalType.success, { txStatus, msg });
     } catch (err: any) {
-      toastError(err);
+      toastError("something went wrong, please try again later");
     }
   };
 
@@ -109,8 +191,15 @@ export const FixedPriceNFTDescription = ({
       }
     } catch (error) {
       toast.error("something went wrong, please try again later");
+      setupSuccessModal(
+        false,
+        "Something went wrong. canceling your listing failed. please refresh the page or try later."
+      );
     } finally {
-      setupSuccessModal(success);
+      setupSuccessModal(
+        success,
+        "Congratulations! You have successfully canceled your listing of NFT "
+      );
     }
   };
 
@@ -138,9 +227,16 @@ export const FixedPriceNFTDescription = ({
         success = true;
       }
     } catch (err) {
-      toastError(err);
+      toast.error("something went wrong, please try again later");
+      setupSuccessModal(
+        false,
+        "Something went wrong. please refresh the page or try later."
+      );
     } finally {
-      setupSuccessModal(success);
+      setupSuccessModal(
+        success,
+        "Congratulations! You have successfully updated price of your NFT "
+      );
     }
   };
 
@@ -149,25 +245,27 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
             Are you sure you want to cancel your Listing?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="mb-2 text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
             Canceling your listing will unpublish this sale from market and You
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v2"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={handleCancelListing}
-              variant="v1"
+              variant="primary"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -176,7 +274,7 @@ export const FixedPriceNFTDescription = ({
       visibility: true,
     },
     bidNft: {
-      title: "Change Price",
+      title: "Edit listing",
       visibility: true,
       content: () => (
         <ChangePriceBidModal
@@ -198,25 +296,28 @@ export const FixedPriceNFTDescription = ({
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
-            <NewButton
+            <FinalButton
               title={"Go back"}
-              variant="v2"
+              variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
-            <NewButton
+            <FinalButton
               title={"Proceed"}
               onClick={() => handleEditPrice(newPrice)}
-              variant="v1"
+              variant="primary"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
       ),
     },
     txInProgress: {
-      title: "Complete Checkout",
+      title: "Transaction in progress",
       visibility: true,
+
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
@@ -232,37 +333,45 @@ export const FixedPriceNFTDescription = ({
     success: {
       title: "Complete Checkout",
       visibility: true,
-      content: (status: boolean) => (
+      content: ({ txStatus, msg }: IModalProps) => (
         <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="text-18px font-semibold text-white">
-            {status ? "Success!" : "Failed!"}
-          </h2>
-          {status && (
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px font-semibold text-white">
+              {txStatus ? (
+                <span>
+                  {msg.includes("updated")
+                    ? "Listing updated successfully"
+                    : msg.includes("canceled")
+                    ? "Listing successfully canceled"
+                    : "Listing NFT successfully"}
+                </span>
+              ) : (
+                "Failed!"
+              )}
+            </h2>
+          </div>
+
+          {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Congratulations! You have successfully unlisted your NFT{" "}
-              <span className="text-white">{data?.name}</span> on
+              {msg} <span className="word-break text-white">{data?.name}</span>{" "}
+              on
               <b> Centher </b> NFT platform.
             </p>
           )}
-          {!status && (
+          {!txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              Transaction Failed.
+              {msg ?? "Transaction Failed."}
             </p>
           )}
           <div className={footerBtnContainer}>
-            <NewButton
-              title={"Ok"}
-              variant="v4"
+            <FinalButton
+              title={"View item"}
+              variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -310,19 +419,19 @@ export const FixedPriceNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <NewButton
+        <FinalButton
           title={"Cancel Listing"}
-          variant="v1"
-          className="py-4"
+          variant="secondary"
           onClick={setupCancelItemPriceModal}
+          className="w-full rounded-[14px]"
         />
-        <NewButton
+        <FinalButton
           title={"Edit"}
           onClick={() => {
             setupBidNftModal();
           }}
-          variant="v4"
-          className="py-4"
+          variant="primary"
+          className="w-full"
         />
       </div>
 
@@ -331,39 +440,50 @@ export const FixedPriceNFTDescription = ({
           onClose={() => {
             modal.dismissModal();
           }}
-          title={ModalModel.title as any}
+          title={ModalModel.title as string}
+          disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
         >
           {ModalModel.content}
         </CustomModal>
+      )}
+      {migrateModal.visibility && (
+        <ModalMigrate
+          onClose={() => {
+            setMigrateModal({ ...migrateModal, visibility: false });
+          }}
+          title={migrateModal.title as string}
+        >
+          {migrateModal.content}
+        </ModalMigrate>
       )}
     </div>
   );
 };
 
 // styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5 text-center
-`);
-const footerBtnContainer = ctl(`
+const modalBodyWrapper = `
+  flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
+`;
+const footerBtnContainer = `
 flex items-center gap-4
-`);
+`;
 
-const nftDescriptionContainer = ctl(`
+const nftDescriptionContainer = `
 w-full flex flex-col gap-5
-`);
+`;
 
-const greyBoxContainer = ctl(`
+const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6 
-`);
-const greyTxt = ctl(`
+`;
+const greyTxt = `
 text-14px font-normal text-gray-shade-7
-`);
-const desTitle = ctl(`
+`;
+const desTitle = `
 text-14px font-semibold text-white
-`);
-const BnBNum = ctl(`
+`;
+const BnBNum = `
 text-16px font-bold text-white
-`);
-const ImgStyling = ctl(`
+`;
+const ImgStyling = `
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto
-`);
+`;

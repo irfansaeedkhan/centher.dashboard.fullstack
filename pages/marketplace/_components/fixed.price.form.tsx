@@ -1,12 +1,12 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
+import clsx from "clsx";
 
 // App imports
-import Button from "@/components/button";
+import FinalButton from "@/components/button/final.button";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import CustomDropdown from "./custom.dropdown";
@@ -14,7 +14,6 @@ import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { IoIosClose } from "react-icons/io";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import NewButton from "@/components/button/new.button";
 import { FiArrowRight } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
@@ -32,14 +31,6 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
-  // NFTPrice: Joi.number().greater(0).required().label("NFT Price").messages({
-  //   "string.empty": `NFTPrice Required`,
-  //   "any.required": `Required Field`,
-  // }),
-  // Collection: Joi.string().required().max(150).label("Collection").messages({
-  //   "string.empty": `Collection Required`,
-  //   "any.required": `Required Field`,
-  // }),
 });
 interface FixedPriceFormProps {
   createNFT: any;
@@ -63,11 +54,9 @@ const FixedPriceForm = ({
   asset,
   library,
 }: FixedPriceFormProps) => {
-  const [loadingState, setLoadingState] = useState(false);
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -169,6 +158,7 @@ const FixedPriceForm = ({
       setSelectedOption(collections[0].collection);
       setPropertyList([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearForm, reset]);
 
   return (
@@ -184,7 +174,9 @@ const FixedPriceForm = ({
           autoComplete="off"
           {...register("NFTName")}
           placeholder="eg. &#34;big skull&#34;"
-          className={!formState.errors.NFTName ? inputField : inputFieldError}
+          className={clsx(
+            !formState.errors.NFTName ? inputField : inputFieldError
+          )}
         />
         {formState.errors.NFTName && (
           <p className={`text-red-500 ${errMessage}`}>
@@ -202,9 +194,10 @@ const FixedPriceForm = ({
           maxLength={550}
           {...register("Description")}
           placeholder="Write some details about your NFT"
-          className={
-            !formState.errors.Description ? inputField : inputFieldError
-          }
+          className={clsx(
+            !formState.errors.NFTName ? inputField : inputFieldError,
+            "customScrollbar2"
+          )}
           cols={20}
           rows={3}
         ></textarea>
@@ -223,23 +216,13 @@ const FixedPriceForm = ({
           <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
-          {/* <input
-            type="number"
-            id="NFTPrice"
-            autoComplete="off"
-            {...register("NFTPrice")}
-            placeholder="Enter NFT Price"
-            className={
-              !formState.errors.NFTPrice ? inputField : inputFieldError
-            }
-          /> */}
           <input
             type="number"
             value={changeNFTPrice === undefined ? "" : changeNFTPrice}
             id="NFTPrice"
             autoComplete="off"
             placeholder="Enter NFT Price"
-            className={nftPriceError === "" ? inputField : inputFieldError}
+            className={!nftPriceError ? inputField : inputFieldError}
             onChange={(e) => {
               setNFTPriceError(undefined);
               const inputValue = e.target.value;
@@ -271,13 +254,6 @@ const FixedPriceForm = ({
         {nftPriceError !== "" && (
           <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
         )}
-        {/* <div className={serviceFee}>
-          <div className={serviceFeeTitle}>
-            <span className={serviceFeeName}>Service fee</span>
-            <QuestionIcon />
-          </div>
-          <span className={serviceFeeNumber}>0.0370 BNB</span>
-        </div> */}
       </div>
       <div className={"z-50 flex w-full flex-col gap-2"}>
         <label htmlFor="textarea" className={fieldTitle}>
@@ -313,36 +289,41 @@ const FixedPriceForm = ({
           )}
         </div>
       </div>
-      <div className={propetiesListContainer}>
-        {propertyList?.length > 0 &&
-          propertyList.map((item: any, index: number) => {
+      {propertyList?.length > 0 && (
+        <div
+          className={
+            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 py-6 px-5"
+          }
+        >
+          {propertyList.map((item: any, index: number) => {
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute top-0 right-0"
+                  className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
                 >
-                  <IoIosClose className="text-2xl text-white" />
+                  <IoIosClose className="text-xl text-white" />
                 </button>
                 <h5 className={PropertyName}>{item.PropertyName}</h5>
                 <h6 className={Type}>{item.Type}</h6>
               </div>
             );
-          })}
-      </div>
+          })}{" "}
+        </div>
+      )}
 
       {!library ? (
-        <NewButton
+        <FinalButton
           title={"Connect Wallet"}
-          variant="v9"
+          variant="primary"
           onClick={() => {
             setConnectWalletModal(true);
           }}
         />
       ) : (
-        <Button
+        <FinalButton
           title={"Create NFT"}
           variant={
             formState.isValid &&
@@ -350,12 +331,12 @@ const FixedPriceForm = ({
             nftPriceError === undefined &&
             collectionErrorMsg == undefined &&
             changeNFTPrice !== undefined
-              ? "v1"
-              : "v2"
+              ? "primary"
+              : "secondary"
           }
-          disabled={!formState.isValid && asset === undefined}
+          disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2 py-4"
+          className="mt-2"
         />
       )}
 
@@ -396,11 +377,11 @@ const FixedPriceForm = ({
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
             )}
-            <Button
+            <FinalButton
               title={"Save"}
-              variant="v1"
+              variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2 py-4"
+              className="mt-2"
             />
           </div>
         </CustomModal>
@@ -408,7 +389,7 @@ const FixedPriceForm = ({
       {connectWalletModal && (
         <CustomNewModal
           onClose={() => {
-            setModal(false);
+            setConnectWalletModal(false);
           }}
           title={"Connect to wallet"}
         >
@@ -457,43 +438,41 @@ const FixedPriceForm = ({
 export default FixedPriceForm;
 
 // styling
-const formContainer = ctl(`
+const formContainer = `
  flex flex-col gap-4
-`);
-const errMessage = ctl(`
+`;
+const errMessage = `
 pb-2 text-12px font-medium
-`);
-const fieldWrapper = ctl(`
+`;
+const fieldWrapper = `
   flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-14px  font-normal text-white
-`);
-const inputField = ctl(`
-  w-full py-3 px-5  !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-const inputFieldModal = ctl(`
-  w-full py-3 px-5  !bg-black-shade-2  text-white font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`);
-const inputFieldError = ctl(`
+`;
+const fieldTitle = `
+text-14px text-start font-normal text-white
+`;
+const inputField = `
+w-full py-3 px-5  !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary
+`;
+const inputFieldModal = `
+w-full py-3 px-5 !bg-black-shade-2 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-brand-primary active:!ring-brand-primary
+`;
+const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
-`);
-const addPropertyBtn = ctl(`
-flex items-center justify-between w-full py-3 px-5  !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none   focus:ring-yellow-theme h-[48px]
-`);
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full border-t-2 border-gray-shade-3 p-5
-`);
-const propetiesListContainer = ctl(`
-flex flex-wrap gap-[2%]
-`);
-const properyCard = ctl(`
-border border-yellow-theme rounded-10px flex flex-col items-center justify-center py-7 px-5 gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
-`);
-const PropertyName = ctl(`
-text-12px font-medium text-brand-primary
-`);
-const Type = ctl(`
+`;
+const addPropertyBtn = `
+flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
+`;
+const modalBodyWrapper = `
+flex flex-col gap-2 w-full mt-8 text-center p-[2px]
+`;
+
+const properyCard = `
+gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
+`;
+const PropertyName = `
+text-12px font-medium textGradient
+`;
+const Type = `
 text-14px font-semibold text-white
-`);
+`;

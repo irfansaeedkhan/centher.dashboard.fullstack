@@ -88,14 +88,14 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             ))}
 
             {lastPost && (
-              <div className="scrollSet rounded-10px bg-background-shade-3">
+              <div className="">
                 <FilesPreview media={lastPost.media} />
 
                 <div className={clsx(`w-full`, hasMedia && "mt-4")}>
                   <textarea
                     className={`scrollSet fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
                     cols={12}
-                    rows={4}
+                    rows={3}
                     maxLength={postTextMaxLength}
                     placeholder="Type here"
                     value={lastPost.post_text}

@@ -124,6 +124,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.create_collection,
 
   AppRoutes.launchpad,
+  AppRoutes.launchpad_pre_booking.index,
+  AppRoutes.launchpad_pre_booking.booking,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 

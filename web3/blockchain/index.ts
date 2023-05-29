@@ -6,7 +6,7 @@ import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
 import { logger } from "./helpers/alert.helper";
-import { getSigner } from "./helpers/provider.helper";
+import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
@@ -557,6 +557,42 @@ export class BlockchainRead {
     }
 
     return data.users;
+  }
+
+  static async isCurrentMarketplaceOwner(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number
+  ): Promise<boolean> {
+    const signer = getSigner(library);
+    const nftContract = SmartContractProvider.getNFTContract(
+      collection,
+      signer
+    );
+
+    await nftContract.callStatic.ownerOf(tokenId);
+
+    const tx = await nftContract.functions.ownerOf(tokenId);
+    return (
+      tx[0]?.toLowerCase() ==
+      BlockchainConfig.contracts.MARKETPALCE[
+        BlockchainConfig.network
+      ]?.toLowerCase()
+    );
+  }
+
+  static async getTokenUnlockTimeFromContract(
+    collection: string,
+    tokenId: number
+  ): Promise<number> {
+    const signer = simpleRpcProvider();
+    const nftContract = SmartContractProvider.getNFTContract(
+      collection,
+      signer
+    );
+
+    const tx = await nftContract.functions.unlockTime(tokenId);
+    return tx?.toString();
   }
 }
 export class BlockchainWrite {
@@ -1447,6 +1483,135 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "callTransferWithLock");
+      throw error;
+    }
+  }
+
+  static async transferNftToCurrentMarketplace(
+    library: Web3Provider,
+    collection: string,
+    tokenId: number,
+    price: number,
+    endTime: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const marketplaceContract = SmartContractProvider.getContract(
+        SmartContractName.OLD_MARKETPALCE,
+        signer
+      );
+
+      if (endTime && endTime > +new Date() / 1000) {
+        await marketplaceContract.callStatic.cancelAuction(collection, tokenId);
+
+        const cancelLIstTx = await marketplaceContract.functions.cancelAuction(
+          collection,
+          tokenId
+        );
+
+        await cancelLIstTx.wait();
+
+        if (!cancelLIstTx?.hash) {
+          throw new Error("Cancel list issue");
+        }
+
+        const approveTx = await this.callApproveNFTToMarketplace(
+          library,
+          collection
+        );
+
+        if (!approveTx?.length) {
+          throw new Error("Approve issue");
+        }
+
+        endTime = Math.floor(endTime - +Date.now() / 1000);
+        const tx = await this.callCreateAuction(
+          library,
+          collection,
+          tokenId,
+          price,
+          endTime
+        );
+
+        return tx;
+      } else {
+        await marketplaceContract.callStatic.cancelItemForSale(
+          collection,
+          tokenId
+        );
+
+        const cancelLIstTx =
+          await marketplaceContract.functions.cancelItemForSale(
+            collection,
+            tokenId
+          );
+
+        await cancelLIstTx.wait();
+
+        if (!cancelLIstTx?.hash) {
+          throw new Error("Cancel list issue");
+        }
+
+        const approveTx = await this.callApproveNFTToMarketplace(
+          library,
+          collection
+        );
+
+        if (!approveTx?.length) {
+          throw new Error("Approve issue");
+        }
+
+        const tx = await this.callListItemForSale(
+          library,
+          collection,
+          tokenId,
+          price
+        );
+
+        return tx;
+      }
+    } catch (error: any) {
+      console.log(error);
+      logger(error, "callTransferNftToCurrentMarketplace");
+      throw error;
+    }
+  }
+
+  static async preBookDexa(
+    paymentAmountRaw: number,
+    paymentAddress: string,
+    paymentTokenAddress: string,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const paymentTokenAbi = BlockchainConfig.abis.BUSD; // TODO: change to ERC20 abi for generic usage
+      const paymentTokenContract = SmartContractProvider.getContractInstance(
+        paymentTokenAbi,
+        paymentTokenAddress,
+        signer
+      );
+
+      const paymentAmount = ethers.utils.parseUnits(
+        paymentAmountRaw.toString(),
+        18
+      );
+
+      await paymentTokenContract.callStatic.transfer(
+        paymentAddress,
+        paymentAmount
+      );
+
+      const tx = await paymentTokenContract.functions.transfer(
+        paymentAddress,
+        paymentAmount
+      );
+
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "preBookDexa");
       throw error;
     }
   }

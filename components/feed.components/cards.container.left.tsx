@@ -8,7 +8,7 @@ import { AppRoutes } from "@/constants/app.routes";
 
 import ProfileDetailCardSkeleton from "../loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
-import { PromotionCard1, PromotionCard2 } from "./promotion.cards";
+import { PromotionCard2, PromotionCard4 } from "./promotion.cards";
 
 export const CardsContainerLeft = () => {
   const router = useRouter();
@@ -35,7 +35,7 @@ export const CardsContainerLeft = () => {
       {profileCardUser ? (
         <>
           <ProfileDetailCard user={profileCardUser} />
-          <PromotionCard1 />
+          <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>
       ) : (

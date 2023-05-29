@@ -116,6 +116,15 @@ export { default as AuctionIcon } from "./auctionicon.svg";
 export { default as LockIcon } from "./lock.svg";
 export { default as MoonIcon } from "./moonicon.svg";
 export { default as LockVector } from "./lockvector.svg";
+export { default as MigrateIcon } from "./migrate.icon.svg";
+export { default as CircularClose } from "./icon.close.circle.svg";
+export { default as BUSDNEW } from "./busd.new.svg";
+export { default as GreenTick } from "./green.tick.svg";
+export { default as GifNew } from "./gif.new.svg";
+export { default as GifNewWhite } from "./gif-new-white.svg";
+export { default as LinkNewIcon } from "./link.new.svg";
+export { default as Whitepaper } from "./whitepaper.svg";
+export { default as NewTelegramIcon } from "./telegram.new.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

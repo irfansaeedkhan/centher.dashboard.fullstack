@@ -70,9 +70,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `relative flex`,
+        `relative flex w-full`,
         {
-          "justify-start fsm:gap-x-4": placement === "create-post-card",
+          "justify-between fsm:gap-x-4": placement === "create-post-card",
         },
         placement === "in-modal" && `justify-start gap-x-4`
       )}
