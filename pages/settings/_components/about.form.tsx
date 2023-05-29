@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
 
+import FinalButton from "@/components/button/final.button";
 import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
@@ -100,19 +101,18 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
           )}
         </div>
 
-        <button
-          className={`mt-2 flex h-9 w-[128px] items-center justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark ${
-            !isModified ? "cursor-not-allowed bg-[#2A2D3C] text-[#A0A4BB]" : ""
-          }`}
-          disabled={!isModified}
+        <FinalButton
+          title={ButtonsText.update_profile}
+          variant={isModified ? "primary" : "secondary"}
           onClick={updateProfile}
-        >
-          {isLoading === "loading" ? (
-            <CgSpinner className="animate-spin" />
-          ) : (
-            ButtonsText.update_profile
-          )}
-        </button>
+          disabled={!isModified}
+          Icon={
+            isLoading === "loading" && (
+              <CgSpinner className="animate-spin text-white" />
+            )
+          }
+          className="w-fit rounded-[14px] text-sm font-semibold"
+        />
       </div>
     </div>
   );

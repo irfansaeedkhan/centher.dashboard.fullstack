@@ -2,11 +2,11 @@ import React, { useRef, useState } from "react";
 import Image from "next/image";
 import { useSWRConfig } from "swr";
 import axios from "axios";
-import clsx from "clsx";
 import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 
+import FinalButton from "@/components/button/final.button";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { updateUserImage } from "@/utils/user.helpers";
@@ -166,8 +166,10 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       <div className="relative mt-4">
         {profileImageData.path ? (
           <div className="flex items-center gap-5">
-            <button
-              className={clsx(connectButtonDiscard, "w-[100px]")}
+            <FinalButton
+              title="Discard"
+              variant="secondary"
+              className="w-[100px] rounded-[14px]"
               onClick={() => {
                 setProfileImageData({
                   path: "",
@@ -176,24 +178,26 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                 setProfileImage(user.profile_image);
                 setUploadFile(undefined);
               }}
-            >
-              Discard
-            </button>
-            <button
-              className={clsx(connectButton, "w-[100px]")}
+            />
+            <FinalButton
+              title="Upload"
+              variant="primary"
+              className="w-[100px] rounded-[14px]"
               onClick={handleUploadCustomImage}
-            >
-              {isLoading === "loading" ? (
-                <CgSpinner className="h-4 w-4 animate-spin" />
-              ) : (
-                "Upload"
-              )}
-            </button>
+              Icon={
+                isLoading === "loading" && (
+                  <CgSpinner className="animate-spin text-white" />
+                )
+              }
+            />
           </div>
         ) : (
-          <button className={connectButton} onClick={() => setIsMenuOpen(true)}>
-            Choose Image
-          </button>
+          <FinalButton
+            title="Choose Image"
+            variant="primary"
+            className={connectButton}
+            onClick={() => setIsMenuOpen(true)}
+          />
         )}
         {isMenuOpen && (
           <div
@@ -201,10 +205,10 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             className="absolute top-[calc(100%+0.5rem)] flex h-auto w-[380px] flex-col gap-6 rounded-xl bg-black-shade-12 p-6"
           >
             {/* Choose Avatar */}
-            <div className="flex cursor-pointer items-center gap-2">
+            <div className="flex cursor-pointer items-center gap-2 text-white hover:text-brand-primary">
               <AvatarIcon />
               <span
-                className="text-sm font-medium text-white hover:text-brand-primary"
+                className="text-sm font-medium  "
                 onClick={() => setProfileModal("avatar")}
               >
                 Choose Avatar
