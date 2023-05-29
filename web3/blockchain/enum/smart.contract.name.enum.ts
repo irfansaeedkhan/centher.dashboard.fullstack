@@ -11,4 +11,5 @@ export enum SmartContractName {
   NTR = "NTR",
   NATIVE_COLLECTION = "NATIVE_COLLECTION",
   DXC = "DXC",
+  NFT_ADAPTER = "NFT_ADAPTER",
 }
