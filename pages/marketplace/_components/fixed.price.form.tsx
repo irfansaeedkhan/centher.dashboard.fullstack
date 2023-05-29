@@ -2,24 +2,26 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
+import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
+import { IoIosClose } from "react-icons/io";
+import { toast } from "react-hot-toast";
 import Joi from "joi";
 import clsx from "clsx";
 
 // App imports
 import FinalButton from "@/components/button/final.button";
-import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
-import CustomDropdown from "./custom.dropdown";
+import { CustomNumberInput } from "@/components/custom-number-input";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { IoIosClose } from "react-icons/io";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { FiArrowRight } from "react-icons/fi";
-import { toast } from "react-hot-toast";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { useWeb3React } from "@web3-react/core";
+import useUser from "@/hooks/use.user";
+
+import CustomDropdown from "./custom.dropdown";
 
 // form validations
 const schema = Joi.object({
@@ -216,8 +218,7 @@ const FixedPriceForm = ({
           <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
-          <input
-            type="number"
+          <CustomNumberInput
             value={changeNFTPrice === undefined ? "" : changeNFTPrice}
             id="NFTPrice"
             autoComplete="off"

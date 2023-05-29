@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { BNBIcon } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import FinalButton from "@/components/button/final.button";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 
 import CustomDropdown from "./custom.dropdown";
@@ -103,8 +104,7 @@ const ChangePriceListModal: React.FC<Props> = ({
           className={`flex h-[48px] w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 !p-0 py-3 !px-3 text-sm font-semibold text-gray-shade-17 focus-within:ring-1 focus-within:ring-brand-primary focus:outline-none active:!ring-brand-primary`}
         >
           <BNBIcon className="h-4 w-4" />
-          <input
-            type="text"
+          <CustomNumberInput
             id="bidPrice"
             autoComplete="off"
             placeholder="0.00"
@@ -158,7 +158,6 @@ const ChangePriceListModal: React.FC<Props> = ({
               }
             }}
           />
-          {/* <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6> */}
         </div>
         {nftPriceError !== "" && (
           <p className={`text-12px pb-2 font-medium text-red-500`}>

@@ -1,20 +1,21 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Joi from "joi";
+import { IoIosClose } from "react-icons/io";
+import { toast } from "react-hot-toast";
+import { FiArrowRight } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
-import { IoIosClose } from "react-icons/io";
+import Joi from "joi";
 import clsx from "clsx";
 
 // App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { FiArrowRight } from "react-icons/fi";
-import { toast } from "react-hot-toast";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -71,7 +72,6 @@ const AuctionForm = ({
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
@@ -82,6 +82,11 @@ const AuctionForm = ({
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
+  const today = new Date();
+
+  // Add 7 days to today's date
+  let futureDate = new Date(today);
+  futureDate.setDate(today.getDate() + 7);
 
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
@@ -222,9 +227,11 @@ const AuctionForm = ({
           Set Auction End Time <span className="text-red-500">*</span>{" "}
         </label>
         <input
-          type="datetime-local"
+          type="date"
           id="AuctionEndTime"
           autoComplete="off"
+          min={new Date().toISOString().split("T")[0]}
+          max={futureDate.toISOString().split("T")[0]}
           {...register("AuctionEndTime")}
           placeholder="Set Auction End Time"
           className={`${
@@ -250,15 +257,15 @@ const AuctionForm = ({
           <span className="text-14px  absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
-          <input
-            type="number"
+          <CustomNumberInput
+            {...register("StartingNFTPrice")}
             id="StartingNFTPrice"
             autoComplete="off"
-            {...register("StartingNFTPrice")}
             placeholder="Enter NFT Price"
             className={
               !formState.errors.StartingNFTPrice ? inputField : inputFieldError
             }
+            min={0}
           />
         </div>
         {formState.errors.StartingNFTPrice && (

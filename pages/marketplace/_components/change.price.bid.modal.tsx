@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 import FinalButton from "@/components/button/final.button";
+import { CustomNumberInput } from "@/components/custom-number-input";
 import { BNBIcon } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import Image from "next/image";
 
 interface FixedPriceNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -43,11 +44,10 @@ const ChangePriceBidModal = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Price</label>
         <div
-          className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
+          className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 ring-0 focus-within:!ring-brand-primary`}
         >
           <BNBIcon />
-          <input
-            type="text"
+          <CustomNumberInput
             id="bidPrice"
             autoComplete="off"
             onChange={(e) => {
@@ -88,7 +88,6 @@ const ChangePriceBidModal = ({
               "h-full w-full !border-0 bg-transparent px-0 text-white !ring-0"
             }
           />
-          {/* <h6 className="text-14px font-semibold text-gray-shade-7">=$0000</h6> */}
         </div>
         {nftPriceError !== "" && (
           <p className={`text-red-500 ${errMessage}`}>{nftPriceError}</p>
@@ -124,5 +123,5 @@ const fieldTitle = `
   text-14px font-normal text-white text-start
 `;
 const inputFieldModal = `
-  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
+  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus-within:outline-none focus-within:ring-2 focus-within:!ring-brand-primary active:!ring-yellow-theme
 `;
