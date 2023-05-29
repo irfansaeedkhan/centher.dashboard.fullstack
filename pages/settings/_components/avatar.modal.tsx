@@ -35,7 +35,7 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
       bodyWrapper="flex justify-center flex-col gap-5 items-center"
     >
       <div
-        className={`m-0 flex h-auto max-h-[500px] w-full max-w-[520px] flex-wrap items-center justify-center gap-8 overflow-auto px-4 pt-4`}
+        className={`scrollSetLight m-0 flex h-auto max-h-[500px] w-full max-w-[550px] flex-wrap items-center justify-center gap-8 overflow-auto px-4 pt-4`}
       >
         {avatars.map((avatar) => {
           return (
