@@ -11,10 +11,12 @@ import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { trxInProgress } from "@/utils/modal/constants";
+import MessageModal from "@/utils/modal/message-modal";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import {
   BNBIcon,
   WarningIcon,
-  LoaderIcon,
   MigrateIcon,
   GreenTick,
   CircularClose,
@@ -242,36 +244,19 @@ export const FixedPriceNFTDescription = ({
 
   const modalTemplateCollection: TemplateCollection = {
     cancelPrice: {
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Are you sure you want to cancel your Listing?
-          </h3>
-          <p className="mb-2 text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Canceling your listing will unpublish this sale from market and You
-            will be asked to confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={handleCancelListing}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
-      ),
       title: "Cancel listing",
       visibility: true,
+      content: () => (
+        <MessageModal
+          heading="Are you sure you want to cancel your Listing?"
+          subHeading={`Canceling your listing will unpublish this sale from market and You
+        will be asked to confirm the transaction through your wallet.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleCancelListing}
+        />
+      ),
     },
     bidNft: {
       title: "Edit listing",
@@ -287,57 +272,24 @@ export const FixedPriceNFTDescription = ({
       title: "Edit listing",
       visibility: true,
       content: (newPrice: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
-            Are you sure you want to edit your Listing Price?
-          </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Listing Price will be changed.
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={() => handleEditPrice(newPrice)}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to edit your Listing Price?"
+          subHeading={`Listing Price will be changed.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => handleEditPrice(newPrice)}
+        />
       ),
     },
-    txInProgress: {
-      title: "Transaction in progress",
-      visibility: true,
-
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
-            Transaction in progress
-          </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
-    },
+    txInProgress: trxInProgress,
     success: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -350,31 +302,22 @@ export const FixedPriceNFTDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-
-          {txStatus && (
+          }
+          subHeading={
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               on
               <b> Centher </b> NFT platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"View item"}
-              variant="primary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
   };

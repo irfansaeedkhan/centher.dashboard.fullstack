@@ -12,7 +12,6 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import {
   BNBIcon,
   WarningIcon,
-  LoaderIcon,
   AuctionIcon,
   GreenTick,
   CircularClose,
@@ -20,6 +19,9 @@ import {
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import SuccessMessageModal from "@/utils/modal/success-modal";
+import { trxInProgress } from "@/utils/modal/constants";
+import MessageModal from "@/utils/modal/message-modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -322,93 +324,44 @@ export const NonNFTDescription = ({
       title: "Auction",
       visibility: true,
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Are you sure you want to setup auction?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            It will be available for auction on market and You will be asked to
-            confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={() =>
-                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
-              }
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to setup auction?"
+          subHeading={`It will be available for auction on market and You will be asked to
+        confirm the transaction through your wallet.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() =>
+            handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+          }
+        />
       ),
     },
     cancelAuction: {
       title: "Cancel listing",
       visibility: true,
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Are you sure you want to cancel your Listing?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Canceling your listing will unpublish this sale from market and You
-            will be asked to confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={() =>
-                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
-              }
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to cancel your Listing?"
+          subHeading={`Canceling your listing will unpublish this sale from market and You
+        will be asked to confirm the transaction through your wallet.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() =>
+            handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+          }
+        />
       ),
     },
-    proceedFuncModal: {
-      title: "Transaction in progress",
-      visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Transaction in progress
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
-    },
+    proceedFuncModal: trxInProgress,
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -421,30 +374,22 @@ export const NonNFTDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+          }
+          subHeading={
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher </b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"View item"}
-              variant="primary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full"
-            />
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     listingFuncModal: {
@@ -467,33 +412,16 @@ export const NonNFTDescription = ({
       title: "List for sale",
       visibility: true,
       content: (listingPrice: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Are you sure you want to List your NFT to sell?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm ">
-            {`Listing Price will be  ${normalizeValue(
-              Number(listingPrice)
-            )} BNB.`}
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={() => handleListing(listingPrice)}
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to List your NFT to sell?"
+          subHeading={`Listing Price will be  ${normalizeValue(
+            Number(listingPrice)
+          )} BNB.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => handleListing(listingPrice)}
+        />
       ),
     },
   };

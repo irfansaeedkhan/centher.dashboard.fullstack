@@ -14,6 +14,8 @@ import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import { trxInProgress } from "@/utils/modal/constants";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -173,61 +175,33 @@ export const FixedPriceNFTBuyerDescription = ({
         </div>
       ),
     },
-    proceedFuncModal: {
-      title: "Transaction in progress",
-      visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px text-base font-semibold leading-6 text-white">
-            Transaction in progress
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
-    },
+    proceedFuncModal: trxInProgress,
     successFuncModal: {
       title: "Your purchase is successful",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="fmd:text-18px text-base font-semibold text-white">
-            {txStatus ? "Purchased" : "Failed!"}
-          </h2>
-          {txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
+              {txStatus ? "Purchased" : "Failed!"}
+            </h2>
+          }
+          subHeading={
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg}
               <span className="word-break text-white">{data?.name}</span> NFT on{" "}
               <b>Centher</b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"View item"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
   };

@@ -1,7 +1,7 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
 
 // App imports
 import FinalButton from "@/components/button/final.button";
@@ -16,16 +16,18 @@ import {
 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import {
   formatAddress,
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
-import toast from "react-hot-toast";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
+import MessageModal from "@/utils/modal/message-modal";
+import { trxInProgress } from "@/utils/modal/constants";
+import SuccessMessageModal from "@/utils/modal/success-modal";
+import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -190,59 +192,27 @@ export const AuctionNftDescription = ({
       title: "Cancel Auction",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Are you sure you want to cancel your Auction?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Canceling your auction will unpublish this sale from market and You
-            will be asked to confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              variant="primary"
-              onClick={handleCancelAuction}
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to cancel your Auction?"
+          subHeading="Canceling your auction will unpublish this sale from market and You
+        will be asked to confirm the transaction through your wallet."
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleCancelAuction}
+        />
       ),
     },
-    proceedFuncModal: {
-      title: "Transaction in progress",
-      visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Transaction in progress
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
-    },
+    proceedFuncModal: trxInProgress,
     successFuncModal: {
       title: "Checkout",
       visibility: true,
       // give them types
 
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -255,64 +225,38 @@ export const AuctionNftDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
+          }
+          subHeading={
             <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
               {msg}
               <span className="word-break text-white">{data?.name} </span> NFT
               on <b> Centher </b> platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"View item"}
-              variant="primary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            {/* </Link> */}
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     endAuctionFuncModal: {
       title: "Announce Winner",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
-            Click Proceed to announce winner of your NFT!
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Your NFT will go to{" "}
-            {formatAddress(data?.auctionInfo.highestBidAddress)} and you will
-            receive {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={handleEndAuction}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Click Proceed to announce winner of your NFT!"
+          subHeading={`Your NFT will go to{" "}
+          ${formatAddress(data?.auctionInfo.highestBidAddress)} and you will
+          receive ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleEndAuction}
+        />
       ),
     },
   };

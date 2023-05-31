@@ -24,6 +24,9 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import { trxInProgress } from "@/utils/modal/constants";
+import MessageModal from "@/utils/modal/message-modal";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
@@ -204,29 +207,14 @@ export const AuctionNFTBuyerDescription = ({
     }
   };
   const modalTemplateCollection: TemplateCollection = {
-    proceedFuncModal: {
-      title: "Transaction in progress",
-      visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper1}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
-            Transaction in progress
-          </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
-    },
+    proceedFuncModal: trxInProgress,
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper1}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -239,61 +227,38 @@ export const AuctionNFTBuyerDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
+          }
+          subHeading={
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name} </span>{" "}
               NFT on <b> Centher </b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <FinalButton
-            title={"View item"}
-            variant="primary"
-            onClick={() => {
-              modal.dismissModal();
-            }}
-            className="w-full rounded-[14px]"
-          />
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     endAuctionFuncModal: {
       title: "Collect NFT",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper1}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
-            Click Proceed to collect your NFT!
-          </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
-            {formatAddress(data?.owner)} receives
-            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
-            will receive the NFT
-          </p>
-          <div className={footerBtnContainer}>
-            <FinalButton
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <FinalButton
-              title={"Proceed"}
-              onClick={handleEndAuction}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Click Proceed to collect your NFT!"
+          subHeading={`${formatAddress(data?.owner)} receives
+        ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
+        will receive the NFT`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleEndAuction}
+        />
       ),
     },
   };
