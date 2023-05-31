@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -29,7 +28,7 @@ const schema = Joi.object({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
-  Description: Joi.string().required().max(550).label("Description").messages({
+  Description: Joi.string().required().label("Description").messages({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
@@ -160,8 +159,7 @@ const FixedPriceForm = ({
       setSelectedOption(collections[0].collection);
       setPropertyList([]);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearForm, reset]);
+  }, [clearForm, reset, collections]);
 
   return (
     <div className={formContainer}>
@@ -193,7 +191,6 @@ const FixedPriceForm = ({
         <textarea
           id="Description"
           autoComplete="off"
-          maxLength={550}
           {...register("Description")}
           placeholder="Write some details about your NFT"
           className={clsx(
@@ -201,7 +198,7 @@ const FixedPriceForm = ({
             "customScrollbar2"
           )}
           cols={20}
-          rows={3}
+          rows={6}
         ></textarea>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>

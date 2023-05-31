@@ -1,5 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
+import { useWeb3React } from "@web3-react/core";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
@@ -12,14 +13,13 @@ import clsx from "clsx";
 // App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomNumberInput } from "@/components/custom-number-input";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { useWeb3React } from "@web3-react/core";
+import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 
 import CustomDropdown from "./custom.dropdown";
 
@@ -29,7 +29,7 @@ const schema = Joi.object({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
-  Description: Joi.string().required().max(550).label("Description").messages({
+  Description: Joi.string().required().label("Description").messages({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
@@ -48,7 +48,6 @@ const schema = Joi.object({
     }),
 });
 
-// schema.validate({ AuctionEndTime: 1994 });
 interface AuctionFormFields {
   NFTName: string;
   Description: string;
@@ -206,7 +205,6 @@ const AuctionForm = ({
         <textarea
           id="Description"
           autoComplete="off"
-          maxLength={550}
           {...register("Description")}
           placeholder="Write some details about your NFT"
           className={clsx(
@@ -214,7 +212,7 @@ const AuctionForm = ({
             "customScrollbar2"
           )}
           cols={20}
-          rows={3}
+          rows={6}
         ></textarea>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
