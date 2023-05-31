@@ -9,16 +9,20 @@ import {
 import { User } from "@/models/user";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
+import { getAllUserGenealogy } from "@/lib/get-user-genealogy";
 
 export const useGetProfileCardDetails = (user: User) => {
   const { profileCard, setProfileCard } = useProfileCardStore();
 
   useEffect(() => {
     const account_address = user.account_address;
+
     if (account_address) {
       (async () => {
         try {
+          const users = await getAllUserGenealogy(account_address);
           const res = await getProfileCardDetails(account_address);
+          res.profileCardDetails.total_referrees = users.flat().length || 0;
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
           customLog(error, ["development"]);

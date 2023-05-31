@@ -468,7 +468,7 @@ const ProfileHeader: React.FC<Props> = ({
               )}
 
             {!!loggedInUser && (
-              <div className="mt-3 flex justify-center gap-5 flg:hidden">
+              <div className="mt-3 flex justify-center gap-2 flg:hidden">
                 <div className="w-16 space-y-1.5 text-center">
                   <span className="block text-xs font-medium text-gray-shade-7">
                     Post
@@ -491,6 +491,14 @@ const ProfileHeader: React.FC<Props> = ({
                   </span>
                   <span className="text-xs font-semibold text-white">
                     {profileCardDetails.following_count ?? "--"}
+                  </span>
+                </div>
+                <div className="w-16 space-y-1.5 text-center">
+                  <span className="block text-xs font-medium text-gray-shade-7">
+                    Referrals
+                  </span>
+                  <span className="text-xs font-semibold text-white">
+                    {profileCardDetails.total_referrees ?? "--"}
                   </span>
                 </div>
               </div>

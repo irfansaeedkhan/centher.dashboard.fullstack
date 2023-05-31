@@ -1,12 +1,10 @@
-// React, Next, NPM Packages
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { ethers } from "ethers";
 
-// App imports
 import { LoadingState } from "@/models/common";
 import { Genealogy, GenealogyChild, RewardsTotal } from "@/models/referral";
-import { BlockchainRead } from "@/web3/blockchain";
-import { ethers } from "ethers";
+import { getAllUserGenealogy } from "@/lib/get-user-genealogy";
 
 export const referralPercent = [6, 4, 2, 2, 2, 2];
 
@@ -32,22 +30,7 @@ export const useGenealogyStore = create<GenealogyStore>()(
         try {
           set({ loading: "loading" });
 
-          let counter = 0;
-          const levels: any[] = [];
-          let referrersToFetch = [account];
-          do {
-            if (referrersToFetch.length) {
-              const result = await BlockchainRead.getGenealogy(
-                referrersToFetch
-              );
-              referrersToFetch = result.map((e) => e.publicKey);
-
-              if (result) {
-                levels.push(result);
-              }
-            } else levels.push([]);
-            counter++;
-          } while (counter < 6);
+          const levels = await getAllUserGenealogy(account);
 
           const _genealogies = levels.map((e, i) => {
             if (!e?.length) {

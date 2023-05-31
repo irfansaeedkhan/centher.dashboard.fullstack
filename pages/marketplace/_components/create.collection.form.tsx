@@ -29,14 +29,10 @@ const schema = Joi.object({
     "string.empty": `NFT Name Required`,
     "any.required": `Required Field`,
   }),
-  description: Joi.string().required().max(550).label("description").messages({
+  description: Joi.string().required().label("description").messages({
     "string.empty": `description Required`,
     "any.required": `Required Field`,
   }),
-  // category: Joi.string().required().max(150).label("category").messages({
-  //   "string.empty": `category Required`,
-  //   "any.required": `Required Field`,
-  // }),
   url: Joi.string().allow("").optional().max(50).label("url").messages({
     "string.empty": `url Required`,
     "any.required": `Required Field`,
@@ -215,7 +211,6 @@ export const CreateNFTCollectionForm = ({
           <textarea
             id="description"
             autoComplete="off"
-            maxLength={550}
             {...register("description")}
             placeholder="Write some details about your NFTs collection"
             className={clsx(
@@ -223,7 +218,7 @@ export const CreateNFTCollectionForm = ({
               "customScrollbar2"
             )}
             cols={20}
-            rows={3}
+            rows={6}
           ></textarea>
           {formState.errors.description && (
             <p className={`text-red-500 ${errMessage}`}>

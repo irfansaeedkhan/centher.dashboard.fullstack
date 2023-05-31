@@ -1,12 +1,14 @@
-// App imports
 import React, { useEffect, useState } from "react";
-// Current directory imports
-import { LevelMain } from "./level.main";
+
+import NetworkGenealogySkeleton from "@/components/loading.skeletons/network.genealogy.skeleton";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
-import NetworkGenealogySkeleton from "@/components/loading.skeletons/network.genealogy.skeleton";
+import ProfileCommunityLayout from "@/layouts/profile.community.layout";
+import { NextPageWithLayout } from "@/pages/_app.page";
 
-export const Levels = () => {
+import { LevelMain } from "./_components/level.main";
+
+const Referrals: NextPageWithLayout = () => {
   const [level, setLevel] = useState(0);
   const [activeParent, setActiveParent] = useState<any>([]);
   const { user: loggedInUser } = useUser();
@@ -54,22 +56,9 @@ export const Levels = () => {
       .reduce((a, b) => Number(a) + Number(b), 0);
 
   return (
-    <div>
-      {!!totalPeople ? (
-        <div className="pl-1 pr-2 ">
-          <div className="mb-4 flex  w-full max-w-[300px] flex-col gap-2 rounded-t-lg bg-background-shade-3  px-4 py-3">
-            <h5 className="text-14px font-medium text-gray-shade-19">
-              Total Numbers Of People
-            </h5>
-            <h6 className="text-14px font-semibold text-white-shade-1">
-              {totalPeople ?? "N/A"}
-            </h6>
-          </div>
-        </div>
-      ) : null}
-
+    <div className="w-full">
       {!!genealogies?.length ? (
-        <div className="customScrollbar geonologyScroll flex w-full gap-3 pl-1 pr-2">
+        <div className="customScrollbar flex w-full gap-3 overflow-auto pl-1 pr-2 pb-4">
           {genealogies &&
             genealogies.length > 0 &&
             genealogies.map((parentData: any, index: number) => {
@@ -88,3 +77,11 @@ export const Levels = () => {
     </div>
   );
 };
+
+Referrals.getLayout = (page) => (
+  <ProfileCommunityLayout>
+    <div>{page}</div>
+  </ProfileCommunityLayout>
+);
+
+export default Referrals;
