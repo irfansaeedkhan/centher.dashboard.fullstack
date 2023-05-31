@@ -115,7 +115,25 @@ const DetailsProject = () => {
             </a>
           </div>
         </div>
+        <div className="flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Category</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className={button}>
+              <span>Metaverse</span>
+            </div>
+            <div className={button}>
+              <span>Real Estate</span>
+            </div>
+            <div className={button}>
+              <span>Decentralized Finance</span>
+            </div>
+            <div className={button}>
+              <span>Artificial Intelligence</span>
+            </div>
+          </div>
+        </div>
       </div>
+
       <div className="flex flex-col gap-4">
         <div className="text-sm font-semibold text-white">Description</div>
         <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
