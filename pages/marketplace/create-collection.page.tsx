@@ -9,10 +9,9 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
+import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
-import SuccessMessageModal from "@/utils/modal/success-modal";
-import { trxInProgress } from "@/utils/modal/constants";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
@@ -183,13 +182,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, collectionData }: any) => (
-        <SuccessMessageModal
-          heading={
-            <h2 className="text-18px mt-2 font-semibold text-white">
-              {txStatus ? "Collection Created Successfully" : "Failed!"}
-            </h2>
-          }
-          subHeading={
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={URL.createObjectURL(profile as Blob)}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Collection Created Successfully" : "Failed!"}
+          </h2>
+          {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
               <span className="word-break text-white">
@@ -198,21 +202,56 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               Collection on <b> Centher </b> platform, Click view on profile to
               view your collection.
             </p>
-          }
-          txStatus={txStatus}
-          dismissModal={() => {
-            modal.dismissModal();
-            setClearForm(true);
-          }}
-          proceedFunc={() => {
-            modal.dismissModal();
-            setClearForm(true);
-            router.push(`/profile/${account}/nfts/collection`);
-          }}
-        />
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            {!txStatus && (
+              <FinalButton
+                title={"Try Again"}
+                variant="secondary"
+                onClick={() => {
+                  modal.dismissModal();
+                  setClearForm(true);
+                }}
+                className="w-full rounded-[14px]"
+              />
+            )}
+
+            {txStatus && (
+              <FinalButton
+                title={"View Collection"}
+                variant="primary"
+                onClick={() => {
+                  modal.dismissModal();
+                  setClearForm(true);
+                  router.push(`/profile/${account}/nfts/collection`);
+                }}
+                className="w-full"
+              />
+            )}
+          </div>
+        </div>
       ),
     },
-    proceedFuncModal: trxInProgress,
+    proceedFuncModal: {
+      title: "Transaction in progress",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
   };
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);

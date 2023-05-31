@@ -7,17 +7,15 @@ import clsx from "clsx";
 
 // App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import { AuctionIcon, BNBIcon } from "@/assets/svgs";
+import { AuctionIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
-import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import FinalButton from "@/components/button/final.button";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { trxInProgress } from "@/utils/modal/constants";
+import FinalButton from "@/components/button/final.button";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -192,32 +190,68 @@ export const NonNFTBuyerDescription = ({
         </div>
       ),
     },
-    proceedFuncModal: trxInProgress,
+    proceedFuncModal: {
+      title: "Transaction in progress",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <SuccessMessageModal
-          heading={
-            <h2 className="text-18px mt-2 font-semibold text-white">
-              {txStatus ? "Success!" : "Failed!"}
-            </h2>
-          }
-          subHeading={
+        <div className={modalBodyWrapper}>
+          <Image
+            className={ImgStyling}
+            src={data ? data.image : ""}
+            alt="image"
+            height={64}
+            width={64}
+          />
+          <h2 className="text-18px font-semibold text-white">
+            {txStatus ? "Success!" : "Failed!"}
+          </h2>
+          {txStatus && (
             <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher</b>
               platform.
             </p>
-          }
-          txStatus={txStatus}
-          dismissModal={() => {
-            modal.dismissModal();
-          }}
-          proceedFunc={() => {
-            modal.dismissModal();
-          }}
-        />
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              {msg ?? "Transaction Failed."}
+            </p>
+          )}
+          {/* <Link href={{
+              pathname: AppRoutes.marketplace.nft,
+              query: {
+                collection: nftData?.collection,
+                nftId: 2,
+              }}} 
+          className={footerBtnContainer}
+        > */}
+          <div className={footerBtnContainer}>
+            <FinalButton
+              title={"View item"}
+              variant="primary"
+              className="w-full rounded-[14px]"
+              onClick={() => {
+                modal.dismissModal();
+              }}
+            />
+            {/* </Link> */}
+          </div>
+        </div>
       ),
     },
   };

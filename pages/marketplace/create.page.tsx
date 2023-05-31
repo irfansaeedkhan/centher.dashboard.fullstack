@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
@@ -8,13 +8,11 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { BNBIcon, GreenTick, CircularClose } from "@/assets/svgs";
+import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
-import { trxInProgress } from "@/utils/modal/constants";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
-import SuccessMessageModal from "@/utils/modal/success-modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
@@ -57,7 +55,6 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("something went wrong");
     }
   };
-
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
     try {
       validateProvider();
@@ -71,7 +68,6 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("something went wrong");
     }
   };
-
   const handleCreateCollection = async (nftData: any) => {
     ProceedFunc();
     let nfdCreated = false;
@@ -192,33 +188,67 @@ const CreateNFT: NextPageWithLayout = () => {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, nftData }: any) => (
-        <SuccessMessageModal
-          heading={
+        <div className={modalBodyWrapper2}>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
             <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? "NFT Created Successfully" : "Failed!"}
             </h2>
-          }
-          subHeading={
+          </div>
+          {txStatus && (
             <p className="text-14px mt-2 font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
               <span className="word-break text-white">{nftData?.name} </span>{" "}
               NFT on <b> Centher </b> NFT platform, Click view on profile to
               view your NFT.
             </p>
-          }
-          txStatus={txStatus}
-          dismissModal={() => {
-            modal.dismissModal();
-          }}
-          proceedFunc={() => {
-            modal.dismissModal();
-            setClearForm(true);
-            router.push(`/profile/${account}/nfts/created`);
-          }}
-        />
+          )}
+          {!txStatus && (
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+              Transaction Failed.
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            {txStatus ? (
+              <FinalButton
+                title={"View on Profile"}
+                variant="primary"
+                className="w-full"
+                onClick={() => {
+                  modal.dismissModal();
+                  setClearForm(true);
+                  router.push(`/profile/${account}/nfts/created`);
+                }}
+              />
+            ) : (
+              <FinalButton
+                title={"Try Again"}
+                variant="secondary"
+                className="w-full"
+                onClick={() => {
+                  modal.dismissModal();
+                }}
+              />
+            )}
+          </div>
+        </div>
       ),
     },
-    proceedFuncModal: trxInProgress,
+    proceedFuncModal: {
+      title: "Transaction in progress",
+      visibility: true,
+      content: () => (
+        <div className={modalBodyWrapper2}>
+          <LoaderIcon className="mx-auto animate-spin" />
+          <h3 className="text-18px font-semibold leading-6 text-white">
+            Transaction in progress
+          </h3>
+          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            Your transaction is in progress, Please wait.
+          </p>
+        </div>
+      ),
+    },
   };
 
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
