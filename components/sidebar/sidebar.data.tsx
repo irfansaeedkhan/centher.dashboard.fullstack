@@ -81,12 +81,6 @@ export const sidebarData: SidebarData = {
           AppRoutes.referral.network_rewards,
         ],
       },
-      {
-        label: "Network Genealogy",
-        url: AppRoutes.referral.network_genealogy,
-        icon: NetworkGenealogy,
-        activeList: [AppRoutes.referral.network_genealogy],
-      },
     ],
   },
   dao_government: {

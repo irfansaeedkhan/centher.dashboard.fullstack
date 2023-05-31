@@ -41,7 +41,7 @@ export const LevelParentCard = ({ parentData }: any) => {
           </h6>
         </div>
         <div className="flex flex-col items-end  gap-2">
-          <h5 className=" text-12px font-medium text-gray-shade-19 fsm:max-w-[75px]">
+          <h5 className=" text-12px font-medium text-gray-shade-19 ">
             Total BUSD Generated
           </h5>
           <h6 className="text-14px font-semibold text-white-shade-1">

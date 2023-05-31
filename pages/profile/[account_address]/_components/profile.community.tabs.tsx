@@ -34,6 +34,18 @@ export const ProfileCommunityTabs: React.FC = ({}) => {
           className="fmd:px-6 fmd:py-2"
         />
       </Link>
+      <Link
+        href={`/profile/${router.query.account_address}/community/referrals`}
+        className="w-full max-w-max"
+      >
+        <Button
+          title={"Referrals"}
+          variant={`${
+            router.pathname === AppRoutes.profile.referrals ? "v1" : "v8"
+          }`}
+          className="fmd:px-6 fmd:py-2"
+        />
+      </Link>
     </div>
   );
 };

@@ -92,7 +92,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       </h3>
 
       <div
-        className={`flex items-center justify-center gap-8 bg-background-shade-2 py-3 px-7`}
+        className={`flex items-center justify-center gap-2 bg-background-shade-2 py-3 px-7`}
       >
         <div>
           <div>
@@ -115,6 +115,14 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
             <h4 className={clsx(label, `mb-2`)}>Following</h4>
             <h5 className={clsx(count)}>
               {profileCardDetails.following_count ?? "--"}
+            </h5>
+          </div>
+        </div>
+        <div>
+          <div>
+            <h4 className={clsx(label, `mb-2`)}>Referrals</h4>
+            <h5 className={clsx(count)}>
+              {profileCardDetails.total_referrees ?? "--"}
             </h5>
           </div>
         </div>
