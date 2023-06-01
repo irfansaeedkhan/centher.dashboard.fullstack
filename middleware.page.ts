@@ -112,8 +112,6 @@ const _authenticatedUserPages: string[] = [
 
   AppRoutes.notifications,
 
-  AppRoutes.referral.network_genealogy,
-
   AppRoutes.marketplace.nft,
 
   AppRoutes.marketplace.explore,
@@ -133,8 +131,10 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _notReadyPages: string[] = [
   AppRoutes.settings.privacy,
 
+  AppRoutes.referral.network_genealogy,
   AppRoutes.referral.overview,
   AppRoutes.referral.network_rewards,
+  AppRoutes.referral.liscense,
 
   AppRoutes.chat,
   AppRoutes.profits_dashboard,
@@ -152,8 +152,6 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.users,
   AppRoutes.admin.network_rewards,
   AppRoutes.admin.network_rewards_marketplace,
-
-  AppRoutes.referral.liscense,
 ];
 const notReadyPages = changePaths(_notReadyPages);
 
