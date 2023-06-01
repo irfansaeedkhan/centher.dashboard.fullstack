@@ -59,6 +59,8 @@ export const AppRoutes = {
     index: "/launchpad/pre-booking",
     booking: "/launchpad/pre-booking/bookings",
   },
+
+  // Not ready pages
   referral: {
     network_genealogy: "/network-genealogy",
     network_rewards: "/network-rewards/rewards",
@@ -66,7 +68,6 @@ export const AppRoutes = {
     liscense: "/network-rewards/liscense",
   },
 
-  // Not ready pages
   chat: "/chat",
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",

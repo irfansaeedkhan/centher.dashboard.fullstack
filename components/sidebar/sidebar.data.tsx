@@ -69,20 +69,6 @@ export const sidebarData: SidebarData = {
       },
     ],
   },
-  referral_program: {
-    label: "REFERRAL PROGRAM",
-    items: [
-      {
-        label: "Network Rewards",
-        url: AppRoutes.referral.overview,
-        icon: NetworkRewards,
-        activeList: [
-          AppRoutes.referral.overview,
-          AppRoutes.referral.network_rewards,
-        ],
-      },
-    ],
-  },
   dao_government: {
     label: "DAO GOVERNMENT",
     items: [
@@ -103,6 +89,5 @@ export const sidebarData: SidebarData = {
 export const SidebarSections = [
   sidebarData.social_network,
   sidebarData.nft_marketplace,
-  sidebarData.referral_program,
   sidebarData.dao_government,
 ];
