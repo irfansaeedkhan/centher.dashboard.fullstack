@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 import NetworkGenealogySkeleton from "@/components/loading.skeletons/network.genealogy.skeleton";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
 import ProfileCommunityLayout from "@/layouts/profile.community.layout";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { AppRoutes } from "@/constants/app.routes";
 
 import { LevelMain } from "./_components/level.main";
 
@@ -12,6 +14,7 @@ const Referrals: NextPageWithLayout = () => {
   const [level, setLevel] = useState(0);
   const [activeParent, setActiveParent] = useState<any>([]);
   const { user: loggedInUser } = useUser();
+  const router = useRouter();
 
   const { genealogies, fetchGenealogy, fetchReferrers, loading, updating } =
     useGenealogyStore((state) => ({
@@ -23,14 +26,27 @@ const Referrals: NextPageWithLayout = () => {
     }));
 
   useEffect(() => {
-    const fetchGeealogyBaseData = async (account: string) => {
+    const fetchGenealogyBaseData = async (account: string) => {
       await fetchGenealogy(account);
       await fetchReferrers(account, 0);
     };
-    if (loggedInUser?.account_address) {
-      fetchGeealogyBaseData(loggedInUser?.account_address);
+
+    if (router.query.account_address && loggedInUser) {
+      if (
+        router.query.account_address.toString().toLowerCase() !==
+        loggedInUser.account_address.toLowerCase()
+      ) {
+        // Redirect to the profile page if the account address in the URL is not the same as the logged in user's account address
+        router.replace({
+          pathname: AppRoutes.profile.account_address,
+          query: { account_address: router.query.account_address },
+        });
+        return;
+      }
+
+      fetchGenealogyBaseData(loggedInUser.account_address);
     }
-  }, [fetchGenealogy, fetchReferrers, loggedInUser?.account_address]);
+  }, [fetchGenealogy, fetchReferrers, router, loggedInUser]);
 
   // handles the active parentCard and list shown
   const handleCard = async (childData: any) => {
@@ -57,23 +73,36 @@ const Referrals: NextPageWithLayout = () => {
 
   return (
     <div className="w-full">
-      {!!genealogies?.length ? (
-        <div className="customScrollbar flex w-full gap-3 overflow-auto pl-1 pr-2 pb-4">
-          {genealogies &&
-            genealogies.length > 0 &&
-            genealogies.map((parentData: any, index: number) => {
+      <div className="customScrollbar flex w-full gap-3 overflow-auto pl-1 pr-2 pb-4">
+        {!!genealogies?.length ? (
+          <>
+            {genealogies &&
+              genealogies.length > 0 &&
+              genealogies.map((parentData: any, index: number) => {
+                return (
+                  <LevelMain
+                    parentData={parentData}
+                    handleCard={handleCard}
+                    key={index}
+                  />
+                );
+              })}
+          </>
+        ) : (
+          <>
+            {Array.from({
+              length: 6,
+            }).map((_, index) => {
               return (
-                <LevelMain
-                  parentData={parentData}
-                  handleCard={handleCard}
+                <NetworkGenealogySkeleton
                   key={index}
+                  className="flex-shrink-0"
                 />
               );
             })}
-        </div>
-      ) : (
-        <NetworkGenealogySkeleton />
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 };
