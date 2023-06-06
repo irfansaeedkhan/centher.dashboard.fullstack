@@ -10,7 +10,6 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
@@ -20,7 +19,6 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 
 import { ICollectionData } from "./_components/create.collection.form";
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
-import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const collectionsRemoteBasePath = "ipfs:/";
 enum ModalType {
@@ -35,7 +33,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  const { submitRecaptcha } = useRecaptcha();
   const [profile, setProfile] = useState<Blob | undefined>(undefined);
   const [cover, setCover] = useState<Blob | undefined>(undefined);
   const [clearForm, setClearForm] = useState(false);
@@ -68,11 +65,6 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (collectionData: any) => {
-    const success = await submitRecaptcha();
-    if (!success) {
-      toastError("Please verify you are a human!");
-      return;
-    }
     ProceedFunc();
     let collectionCreated = false;
     try {
@@ -311,11 +303,7 @@ CreateNFTCollection.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Create Collection">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        >
-          <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaWrapper>
+        <div className={feedContainer}>{page}</div>
       </div>
     </AllPagesWrapper>
   );

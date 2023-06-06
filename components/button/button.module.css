@@ -8,5 +8,5 @@
   inset: 1px;
   background-color: var(--background-color);
   border-radius: var(--border-rounded);
-  transition: all 0.2s linear !important;
+  transition: all 1s linear !important;
 }
