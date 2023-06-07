@@ -12,6 +12,7 @@ import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
+import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { readFileAsync } from "@/utils/file.reader.util";
@@ -21,6 +22,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
+import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -38,6 +40,7 @@ const CreateNFT: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
+  const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
@@ -69,6 +72,12 @@ const CreateNFT: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (nftData: any) => {
+    const success = await submitRecaptcha();
+    if (!success) {
+      toastError("Please verify you are not a robot");
+      return;
+    }
+
     ProceedFunc();
     let nfdCreated = false;
     try {
@@ -299,7 +308,11 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        <div className={feedContainer}>{page}</div>
+        <GoogleReCaptchaWrapper
+          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
+        >
+          <div className={feedContainer}>{page}</div>
+        </GoogleReCaptchaWrapper>
       </div>
     </AllPagesWrapper>
   );
