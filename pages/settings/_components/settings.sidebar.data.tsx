@@ -1,8 +1,9 @@
 import React from "react";
-import { AppRoutes } from "@/constants/app.routes";
 import { BiLink, BiUser } from "react-icons/bi";
 import { TbInfoSquare } from "react-icons/tb";
-// import { CgLock } from "react-icons/cg";
+import { CgLock } from "react-icons/cg";
+
+import { AppRoutes } from "@/constants/app.routes";
 
 export const SettingsSidebarData: SettingsSidebarItem[] = [
   {
@@ -20,11 +21,11 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
     icon: <BiLink />,
     link: AppRoutes.settings.social_links,
   },
-  // {
-  //   label: "Privacy",
-  //   icon: <CgLock />,
-  //   link: AppRoutes.settings.privacy,
-  // },
+  {
+    label: "Privacy",
+    icon: <CgLock />,
+    link: AppRoutes.settings.privacy,
+  },
 ];
 
 type SettingsSidebarItem = {

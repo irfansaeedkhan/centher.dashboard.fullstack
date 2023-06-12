@@ -1,9 +1,9 @@
 import React from "react";
-import { PrivacyValues } from "./privacy.form";
+import { PrivacyValues, PrivacyCookiesValues } from "./privacy.form";
 
 interface RadioButtonProps {
   name: string;
-  value: PrivacyValues;
+  value: PrivacyValues | PrivacyCookiesValues;
   checked: boolean;
   label: string;
   id: string;

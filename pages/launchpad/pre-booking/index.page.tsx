@@ -11,7 +11,7 @@ const ProjectDetails: NextPageWithLayout = () => {
 };
 
 ProjectDetails.getLayout = (page) => (
-  <AllPagesWrapper pageTitle="Project Deatails">
+  <AllPagesWrapper pageTitle="Project Details">
     <div className="mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto">
       <PreBookingWrapper>{page}</PreBookingWrapper>
     </div>
