@@ -16,6 +16,12 @@ export interface User {
   onlyfans_username: string;
   youtube_url: string;
   telegram_username: string;
+  cookies_consent: CookiesConsent;
+}
+
+export interface CookiesConsent {
+  consent_given: boolean;
+  timestamp: Date;
 }
 
 export interface UserImage {

@@ -18,7 +18,15 @@ const Privacy: NextPageWithLayout = () => {
         Privacy
       </h6>
 
-      {user ? <PrivacyForm /> : <ProfileSettingPrivacySkeleton />}
+      {user ? (
+        <PrivacyForm />
+      ) : (
+        <div className="space-y-12">
+          {Array.from({ length: 2 }).map((_, i) => {
+            return <ProfileSettingPrivacySkeleton key={i} />;
+          })}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,37 +1,53 @@
-// React, Next, NPM Packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 
-// App imports
+import FinalButton from "@/components/button/final.button";
+import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
-import PrivacyFormSection from "./privacy.form.section";
+import { updateCookiesConsent } from "@/lib/cookies-consent";
 
-// Current directory imports
+// import PrivacyFormSection from "./privacy.form.section";
+import PrivacyFormCookies from "./privacy.form.cookies";
 
 const ButtonsText = {
   loading: "Continue...",
   update_profile: "Save Changes",
 };
 
-export type PrivacyValues =
-  | "everyone"
-  | "people_who_follow_you"
-  | "people_you_follow"
-  | "no_one";
-
 export const PrivacyForm = () => {
-  const [isLoading, setisLoading] = useState<LoadingState>("idle");
-  const [selectedReplyOption, setSelectedReplyOption] =
-    useState<PrivacyValues>("everyone");
-  const [selectedMessageOption, setSelectedMessageOption] =
-    useState<PrivacyValues>("everyone");
-  const [selectedPostsOption, setSelectedPostsOption] =
-    useState<PrivacyValues>("everyone");
+  const [isLoading, setIsLoading] = useState<LoadingState>("idle");
+  const { user } = useUser();
+  // const [selectedReplyOption, setSelectedReplyOption] =
+  //   useState<PrivacyValues>("everyone");
+  // const [selectedMessageOption, setSelectedMessageOption] =
+  //   useState<PrivacyValues>("everyone");
+  // const [selectedPostsOption, setSelectedPostsOption] =
+  //   useState<PrivacyValues>("everyone");
+  const [selectedCookieOption, setSelectedCookieOption] =
+    useState<PrivacyCookiesValues>("allow");
+
+  useEffect(() => {
+    if (user) {
+      setSelectedCookieOption(
+        user.cookies_consent?.consent_given ? "allow" : "decline"
+      );
+    }
+  }, [user]);
+
+  const changePrivacy = async () => {
+    try {
+      setIsLoading("loading");
+      await updateCookiesConsent(selectedCookieOption === "allow");
+      setIsLoading("idle");
+    } catch {
+      setIsLoading("failed");
+    }
+  };
 
   return (
     <div className="flex items-center justify-center">
       <div className="flex w-full flex-col gap-6">
-        <PrivacyFormSection
+        {/* <PrivacyFormSection
           title="Reply"
           tagline="Choose who can reply on your posts"
           name="reply"
@@ -57,15 +73,38 @@ export const PrivacyForm = () => {
             setSelectedPostsOption(event.currentTarget.value as any);
           }}
           selectedState={selectedPostsOption}
+        /> */}
+
+        <PrivacyFormCookies
+          title="Cookies"
+          tagline="We use third-party cookies in order to personalize your site experience."
+          name="cookies"
+          handleOptionChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSelectedCookieOption(event.currentTarget.value as any);
+          }}
+          selectedState={selectedCookieOption}
         />
-        <button className="mt-2 flex w-fit justify-center rounded-lg bg-brand-primary py-2 px-3 text-sm font-semibold text-black transition-all hover:bg-brand-primary-dark">
-          {isLoading === "loading" ? (
-            <CgSpinner className="animate-spin" />
-          ) : (
-            ButtonsText.update_profile
-          )}
-        </button>
+
+        <FinalButton
+          title={ButtonsText.update_profile}
+          variant={"primary"}
+          onClick={changePrivacy}
+          Icon={
+            isLoading === "loading" && (
+              <CgSpinner className="animate-spin text-white" />
+            )
+          }
+          className="w-fit text-sm font-medium"
+        />
       </div>
     </div>
   );
 };
+
+export type PrivacyValues =
+  | "everyone"
+  | "people_who_follow_you"
+  | "people_you_follow"
+  | "no_one";
+
+export type PrivacyCookiesValues = "allow" | "decline";

@@ -9,6 +9,7 @@ import { RefreshContextProvider } from "@/web3/context/refresh.context";
 import { getLibrary } from "@/web3";
 import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
+import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import "@/styles/globals.css";
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -26,13 +27,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
+      <ScriptTags />
+      <CookiesConstentModal />
       <NextNProgress
         color="#FEBF32"
         options={{
           showSpinner: false,
         }}
       />
-      <ScriptTags />
       <RefreshContextProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
           <Toaster
