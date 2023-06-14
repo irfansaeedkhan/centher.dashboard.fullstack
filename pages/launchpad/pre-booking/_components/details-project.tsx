@@ -1,11 +1,19 @@
 import React from "react";
+import Image from "next/image";
 import { FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
 import { SiBinance } from "react-icons/si";
 
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
-import { LinkNewIcon, NewTelegramIcon, Whitepaper } from "@/assets/svgs";
+import {
+  LinkNewIcon,
+  NewTelegramIcon,
+  NewCentherIcon,
+  Whitepaper,
+} from "@/assets/svgs";
+
+import TeamMembers from "./team-members";
 
 const DetailsProject = () => {
   const { user } = useUser();
@@ -99,6 +107,15 @@ const DetailsProject = () => {
               <NewTelegramIcon className="group-hover:[&>*]:stroke-white" />
               <span>Telegram</span>
             </a>
+            <a
+              href="https://app.centher.io/profile/0xa638d0182d075278a9ea6480c1430c6e7fb490c9"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+            >
+              <NewCentherIcon />
+              <span>Centher</span>
+            </a>
           </div>
         </div>
         <div className="flex flex-col gap-3">
@@ -132,6 +149,10 @@ const DetailsProject = () => {
             </div>
           </div>
         </div>
+        <div className="mt-3 mb-2  flex flex-col gap-3">
+          <div className="text-sm font-semibold text-white">Team</div>
+          <TeamMembers />
+        </div>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -154,3 +175,4 @@ const DetailsProject = () => {
 export default DetailsProject;
 
 const button = `group flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 stroke-gray-shade-14 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14 hover:text-white`;
+const centher_button = `group flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14 hover:text-white`;
