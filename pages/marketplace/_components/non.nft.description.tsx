@@ -608,6 +608,7 @@ export const NonNFTDescription = ({
       )}
       {sendNftModal && (
         <SendNFTModal
+          data={data}
           handleSend={handleSendNFT}
           onClose={() => {
             setSendNftModal(false);
