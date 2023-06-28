@@ -49,7 +49,7 @@ const PostPreview = ({ post, removePost }: Props) => {
                 alt={
                   file.type === "new" ? file.original.name : file.original.url
                 }
-                className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
+                className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
               />
             );
           } else if (file.original.type.startsWith("video")) {
@@ -57,7 +57,7 @@ const PostPreview = ({ post, removePost }: Props) => {
               <video
                 key={file.uuid}
                 src={file.src}
-                className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
+                className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
                 controls
                 controlsList="nodownload"
                 onContextMenu={(e) => e.preventDefault()}
