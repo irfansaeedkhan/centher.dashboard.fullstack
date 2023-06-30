@@ -152,7 +152,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/algoalliance/marketplace-v2"
+      ? "https://api.thegraph.com/subgraphs/name/rezahssini/new-subgraph"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
 
