@@ -276,10 +276,15 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               .flat()
               .filter(Boolean);
 
-            const users = await getUsers([
-              ...userAddressesToFetch,
-              dexaProfile,
-            ]);
+            if (
+              !userAddressesToFetch.find((e) =>
+                isAddressesMatch(e, dexaProfile)
+              )
+            ) {
+              userAddressesToFetch.push(dexaProfile);
+            }
+
+            const users = await getUsers(userAddressesToFetch);
 
             for (let token of result.result) {
               const item = token as any;
@@ -314,12 +319,6 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                     swappingCollections[0]
                   )
                 : unlock;
-              if (
-                isAddressesMatch(item.tokenAddress?._value, dexaCollection) &&
-                +item.tokenId == 1
-              ) {
-                return;
-              }
 
               _nfts.push({
                 id: item.tokenHash,
