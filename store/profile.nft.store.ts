@@ -18,6 +18,9 @@ import {
 } from "@/web3/blockchain/helpers/native.collection.helper";
 import { SwapCollection } from "@/web3/blockchain/config";
 
+const dexaCollection = "0x08b660beec8d1f9a0162e3c04416c84eac8d334b";
+const dexaProfile = "0xa638d0182d075278a9ea6480c1430c6e7fb490c9";
+
 const swappingCollections = [SwapCollection];
 const externalCollectionsToShow = [...swappingCollections];
 
@@ -268,12 +271,16 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
           if (result.result) {
             allowedCollections = _collections?.map((e: any) => e.collection);
             allowedCollections.push(...externalCollectionsToShow);
-            const users = await getUsers(
-              result.result
-                .map((e: any) => [e.minter_address?._value, e.ownerOf?._value])
-                .flat()
-                .filter(Boolean)
-            );
+            const userAddressesToFetch = result.result
+              .map((e: any) => [e.minter_address?._value, e.ownerOf?._value])
+              .flat()
+              .filter(Boolean);
+
+            const users = await getUsers([
+              ...userAddressesToFetch,
+              dexaProfile,
+            ]);
+
             for (let token of result.result) {
               const item = token as any;
 
@@ -282,9 +289,17 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                 item.tokenAddress._value,
                 item.tokenId
               );
-              const creator = users.find((e) =>
+
+              let creator = users.find((e) =>
                 isAddressesMatch(e.account_address, item.minter_address?._value)
               );
+
+              if (isAddressesMatch(item.tokenAddress?._value, dexaCollection)) {
+                creator = users.find((e) =>
+                  isAddressesMatch(e.account_address, dexaProfile)
+                );
+              }
+
               const owner = users.find((e) =>
                 isAddressesMatch(e.account_address, item.ownerOf?._value)
               );
@@ -299,6 +314,12 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
                     swappingCollections[0]
                   )
                 : unlock;
+              if (
+                isAddressesMatch(item.tokenAddress?._value, dexaCollection) &&
+                +item.tokenId == 1
+              ) {
+                return;
+              }
 
               _nfts.push({
                 id: item.tokenHash,
