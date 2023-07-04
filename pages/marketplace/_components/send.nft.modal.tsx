@@ -23,13 +23,15 @@ interface SendNFTModalProps {
   handleSend: any;
   onClose: () => void;
 }
+
+interface sendFormInterface {
+  LockEndTime: number;
+  ReceiverAddress: string;
+  message?: string;
+}
+
 const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
   const [lock, setLock] = useState<string>("0");
-  interface sendFormInterface {
-    LockEndTime: number;
-    ReceiverAddress: string;
-    message?: string;
-  }
 
   const SendModalschema = Joi.object({
     ReceiverAddress: Joi.string().required().label("ReceiverAddress").messages({
@@ -44,7 +46,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
   });
 
   const nftForm = useForm<sendFormInterface>({
-    // mode: "onChange",
     resolver: joiResolver(SendModalschema),
     defaultValues: {
       ReceiverAddress: "",
@@ -72,7 +73,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
         className={`relative mx-3 flex h-auto max-h-[800px] w-full flex-col rounded-3xl bg-popup-0 pb-6 focus:outline-none fmd:w-164`}
       >
         {/*header*/}
-
         <button
           className={`absolute top-6 right-6 text-white`}
           onClick={onClose}
@@ -122,7 +122,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
 
         <div className={`h-full max-h-[729px] overflow-y-auto pt-[100px]`}>
           <form
-            className={modalBodyWrapper}
+            className={`flex w-full flex-col gap-4 px-4 pt-2 text-center fmd:px-6 fmd:pt-4`}
             onSubmit={nftForm.handleSubmit(handleSendData)}
           >
             <div className={fieldWrapper}>
@@ -144,7 +144,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
               </div>
 
               {nftForm.formState.errors.ReceiverAddress && (
-                <p className={`text-red-500 ${errMessage}`}>
+                <p className={`text-12px pb-2 font-medium text-red-500`}>
                   {nftForm.formState.errors.ReceiverAddress.message}
                 </p>
               )}
@@ -209,9 +209,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
 export default SendNFTModal;
 
 // styling
-const modalBodyWrapper = `flex flex-col gap-4 w-full fmd:px-6 px-4 fmd:pt-4 pt-2 text-center`;
-const errMessage = `pb-2 text-12px font-medium`;
-
 const fieldWrapper = `flex gap-2 flex-col w-full`;
 
 const fieldTitle = `text-14px text-start font-normal text-white`;
