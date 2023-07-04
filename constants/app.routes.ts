@@ -89,4 +89,9 @@ export const AppRoutes = {
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
   },
+
+  staking: {
+    index: "/staking",
+    // staking_data: "/staking/[staking_id]",
+  },
 } as const;
