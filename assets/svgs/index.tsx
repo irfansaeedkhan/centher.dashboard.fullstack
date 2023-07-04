@@ -125,7 +125,12 @@ export { default as GifNewWhite } from "./gif-new-white.svg";
 export { default as LinkNewIcon } from "./link.new.svg";
 export { default as Whitepaper } from "./whitepaper.svg";
 export { default as NewTelegramIcon } from "./telegram.new.svg";
+export { default as NewCentherIcon } from "./centher.new.svg";
 export { default as CookiesIcon } from "./cookies.svg";
+export { default as ClipboardList } from "./clipboard-list.svg";
+export { default as Referrals } from "./referrals.svg";
+export { default as Followers } from "./followers.svg";
+export { default as Following } from "./following.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

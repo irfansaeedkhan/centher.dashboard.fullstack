@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
-import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import clsx from "clsx";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
@@ -73,13 +72,12 @@ export const PostMedia: React.FC<Props> = ({
       }}
     >
       {/* root node */}
-      <div className="overflow-hidden rounded-10px" ref={emblaRef}>
-        {/* container node */}
-        <div className="flex">
-          {post.media!.map((media) => {
+      <div className="relative">
+        <div className="grid max-h-[45dvh] grid-cols-2 grid-rows-2 gap-[6px] fsm:gap-2 [@media(max-width:500px)]:max-h-[30dvh] [@media(max-width:500px)]:min-h-[22dvh]">
+          {post.media!.map((media, index) => {
+            let mediaData: React.ReactNode = null;
             if (media.type === "image") {
-              return (
-                // Slide
+              mediaData = (
                 <Image
                   key={media.url}
                   src={media.url}
@@ -87,7 +85,7 @@ export const PostMedia: React.FC<Props> = ({
                   width={544}
                   height={326}
                   sizes="544px"
-                  className={`mx-2 max-h-[326px] min-h-[200px] flex-[0_0_100%] break-all rounded-10px object-cover lg:max-h-[510px]`}
+                  className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
                   onClick={(e) => {
                     e.stopPropagation();
                     onClickMedia(media.url);
@@ -95,12 +93,11 @@ export const PostMedia: React.FC<Props> = ({
                 />
               );
             } else if (media.type === "video") {
-              return (
-                // Slide
+              mediaData = (
                 <video
                   key={media.url}
                   src={media.url}
-                  className={`mx-2 max-h-[326px] min-h-[200px] flex-[0_0_100%] break-all rounded-xl object-cover lg:max-h-[510px]`}
+                  className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
                   controls
                   controlsList="nodownload"
                   onClick={(e) => {
@@ -111,27 +108,31 @@ export const PostMedia: React.FC<Props> = ({
                 />
               );
             }
+            return (
+              <div
+                key={index}
+                className={clsx(
+                  `relative`,
+                  post.media?.length == 1 && "col-span-2 row-span-2",
+                  post.media?.length === 2 && "col-span-1 row-span-2",
+                  post.media?.length === 4 && "col-span-1 row-span-1",
+                  index === 0 &&
+                    post.media?.length == 3 &&
+                    "col-span-1 row-span-2",
+                  index === 1 &&
+                    post.media?.length == 3 &&
+                    "col-span-1 row-span-1 ",
+                  index === 2 &&
+                    post.media?.length == 3 &&
+                    "col-span-1 row-span-1 "
+                )}
+              >
+                {mediaData}
+              </div>
+            );
           })}
         </div>
       </div>
-      {/* navigation prev*/}
-      {post.media!.length > 1 && selectedIndex > 0 && (
-        <button
-          className="absolute left-0 top-1/2 -translate-y-1/2 translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:translate-x-2"
-          onClick={scrollPrev}
-        >
-          <MdNavigateBefore className="h-3 w-3 fill-white fsm:h-4 fsm:w-4" />
-        </button>
-      )}
-      {/* navigation next*/}
-      {post.media!.length > 1 && selectedIndex < post.media!.length - 1 && (
-        <button
-          className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2"
-          onClick={scrollNext}
-        >
-          <MdNavigateNext className="h-3 w-3 fill-white fsm:h-4 fsm:w-4" />
-        </button>
-      )}
     </div>
   );
 };

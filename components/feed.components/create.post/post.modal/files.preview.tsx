@@ -20,6 +20,7 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
     removeSelectedFile,
     setSelectedFiles,
     removeEditPostFile,
+    isPostModalLoading,
   } = useNewPostStore();
   const [cropImageSrc, setCropImageSrc] = useState<PostImageCropperData>({
     preview: "",
@@ -60,12 +61,11 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
 
   return (
     <div
-      className={clsx(`grid gap-[10px]`, {
-        "grid-cols-2": postFiles.length === 2,
-        "grid-cols-2 fsm:grid-cols-3": postFiles.length >= 3,
-      })}
+      className={clsx(
+        `grid max-h-[45dvh] grid-cols-2 grid-rows-2 gap-[6px] fsm:gap-2`
+      )}
     >
-      {postFiles.map((file) => {
+      {postFiles.map((file, index) => {
         let media: React.ReactNode = null;
         if (file.original.type.startsWith("image")) {
           media = (
@@ -73,14 +73,14 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
             <img
               src={file.src}
               alt={file.type === "new" ? file.original.name : file.original.url}
-              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
+              className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
             />
           );
         } else if (file.original.type.startsWith("video")) {
           media = (
             <video
               src={file.src}
-              className={`h-full max-h-[480px] w-full rounded-10px object-cover`}
+              className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
               controls
               controlsList="nodownload"
               onContextMenu={(e) => e.preventDefault()}
@@ -89,7 +89,19 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
         }
 
         return (
-          <div key={file.uuid} className={`relative`}>
+          <div
+            key={file.uuid}
+            className={clsx(
+              `relative`,
+              postFiles.length == 1 && "col-span-2 row-span-2",
+              postFiles.length === 2 && "col-span-1 row-span-2",
+              postFiles.length === 4 && "col-span-1 row-span-1",
+              index === 0 && postFiles.length == 3 && "col-span-1 row-span-2",
+              index === 1 && postFiles.length == 3 && "col-span-1 row-span-1 ",
+              index === 2 && postFiles.length == 3 && "col-span-1 row-span-1 ",
+              isPostModalLoading && "pointer-events-none"
+            )}
+          >
             <CloseButton
               className="absolute top-1 right-1 z-10"
               onClick={() => {

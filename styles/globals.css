@@ -785,6 +785,13 @@
     background-clip: text;
     text-fill-color: transparent;
   }
+
+  .centher-social-button:hover span {
+    color: white;
+  }
+  .centher-social-button:hover svg g path {
+    fill: #ffffff;
+  }
 }
 
 @layer utilities {

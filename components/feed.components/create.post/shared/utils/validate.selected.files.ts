@@ -45,14 +45,14 @@ export const validateSelectedFiles = (
     // Only add files in store if there are less than 5 files
     if (
       lastPost &&
-      lastPost.media.length < 5 &&
-      files.length + lastPost.media.length <= 5
+      lastPost.media.length < 4 &&
+      files.length + lastPost.media.length <= 4
     ) {
       addSelectedFiles(files);
     } else {
       const error: SelectFileError = {
         code: "app_max_file_count",
-        message: "Maximum 5 files are allowed in post",
+        message: "Maximum 4 files are allowed in post",
       };
       throw error;
     }

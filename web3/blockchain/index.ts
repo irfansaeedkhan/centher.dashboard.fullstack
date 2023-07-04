@@ -1658,21 +1658,21 @@ export class BlockchainWrite {
       signer
     );
 
-    let lockTime;
+    const lockTime = 0;
 
-    try {
-      lockTime = await BlockchainRead.getTokenUnlockTimeFromContract(
-        collection,
-        tokenId,
-        library
-      );
-    } catch (error) {
-      throw new Error("cannot get token lock time");
-    }
+    // try {
+    //   lockTime = await BlockchainRead.getTokenUnlockTimeFromContract(
+    //     collection,
+    //     tokenId,
+    //     library
+    //   );
+    // } catch (error) {
+    //   throw new Error("cannot get token lock time");
+    // }
 
-    if (+lockTime != 0) {
-      lockTime = (lockTime - +new Date() / 1000).toFixed(0);
-    }
+    // if (+lockTime != 0) {
+    //   lockTime = (lockTime - +new Date() / 1000).toFixed(0);
+    // }
 
     try {
       const approvalTx = await nftContract.functions.setApprovalForAll(
