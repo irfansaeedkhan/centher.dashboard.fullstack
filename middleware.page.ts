@@ -125,6 +125,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.launchpad,
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
+  AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 

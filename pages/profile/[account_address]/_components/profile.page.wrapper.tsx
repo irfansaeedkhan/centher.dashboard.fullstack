@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 
-import { MessagesCard } from "@/components/feed.components";
 import { PromotionCard3 } from "@/components/feed.components/promotion.cards/card-3";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
 import useGetUser from "@/hooks/use.get.user";
 import { axiosNodeApi } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { MutualFollowersData } from "@/models/user";
+import { SuggestedCard } from "@/components/feed.components/suggested.card";
 
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
@@ -93,7 +93,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
 
           {currentTab === "social-profile" && messageBox && (
             <div className={`hidden space-y-3 f2xl:col-start-3 f2xl:block`}>
-              <MessagesCard />
+              <SuggestedCard />
               <PromotionCard3 className="sticky top-[84px]" />
             </div>
           )}
