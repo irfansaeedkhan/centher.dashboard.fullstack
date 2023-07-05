@@ -8,6 +8,7 @@ import Joi from "joi";
 
 import FinalButton from "@/components/button/final.button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import moment from "moment";
 
 const lockOptions = [
   { label: "0 Day", value: "0" },
@@ -60,7 +61,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
       LockEndTime: +lock,
       message: data.message,
     };
-    handleSend(finalData);
   };
 
   return (
@@ -168,7 +168,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
               <div className="flex items-center justify-between gap-10">
                 <label className={fieldTitle}>Set Lock End Time</label>
                 <label className={fieldTitle}>
-                  15 March, 2023 - 15 Jun, 2023
+                  {moment().add(lock, "seconds").format("DD MMMM, YYYY")}
                 </label>
               </div>
               <p className="my-1 text-start text-xs text-[#838B8F]">
