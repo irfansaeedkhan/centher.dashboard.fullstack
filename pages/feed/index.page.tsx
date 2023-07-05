@@ -20,6 +20,7 @@ import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.po
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
+import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
 
 const Feed: NextPageWithLayout = () => {
   const router = useRouter();
@@ -97,49 +98,55 @@ const Feed: NextPageWithLayout = () => {
         <CreatePostCard />
       )}
 
-      {posts.map((post) => {
+      {posts.map((post, index) => {
         return (
-          <div
-            key={post._id}
-            onClick={() => {
-              router.push({
-                pathname: AppRoutes.feed.single_post,
-                query: {
-                  post_id: post._id,
-                },
-              });
-            }}
-          >
-            <SinglePostV2
-              post={post}
-              parentPost={undefined}
-              postType={"main"}
-              placement="feed-page"
-              shouldShowThread={post.is_thread}
-              borderRadius={{
-                top: true,
-                bottom: true,
-              }}
-              onClickLike={async () => {
-                await likePostAPI(
-                  post._id,
-                  post.liked_by_loggedin_user ? "unlike" : "like"
-                );
-              }}
-              onClickReply={() => {
-                setIsReplyModalOpen(true);
-                openPostModal({
-                  modalType: "reply",
-                  parentPostId: post._id,
-                  onCloseModal: () => setIsReplyModalOpen(false),
-                  shouldAddNewPost: true,
+          <>
+            <div
+              key={post._id}
+              onClick={() => {
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    post_id: post._id,
+                  },
                 });
               }}
-              onClickArchive={() => handleAction(post._id, archivePost)}
-              onClickDelete={() => handleAction(post._id, deletePost)}
-              onPostInViewport={() => handleCreatePostView(post._id)}
-            />
-          </div>
+            >
+              <SinglePostV2
+                post={post}
+                parentPost={undefined}
+                postType={"main"}
+                placement="feed-page"
+                shouldShowThread={post.is_thread}
+                borderRadius={{
+                  top: true,
+                  bottom: true,
+                }}
+                onClickLike={async () => {
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                }}
+                onClickReply={() => {
+                  setIsReplyModalOpen(true);
+                  openPostModal({
+                    modalType: "reply",
+                    parentPostId: post._id,
+                    onCloseModal: () => setIsReplyModalOpen(false),
+                    shouldAddNewPost: true,
+                  });
+                }}
+                onClickArchive={() => handleAction(post._id, archivePost)}
+                onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
+              />
+            </div>
+
+            {(index + 1) % 10 === 0 && (
+              <SuggestedCardMobile className={`block f2xl:hidden`} />
+            )}
+          </>
         );
       })}
 
@@ -165,6 +172,9 @@ const Feed: NextPageWithLayout = () => {
             <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>
+          </div>
+          <div className="mt-4">
+            <SuggestedCardMobile className={`block f2xl:hidden`} />
           </div>
         </div>
       )}
