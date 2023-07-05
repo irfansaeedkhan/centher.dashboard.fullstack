@@ -5,10 +5,10 @@ import { IoClose } from "react-icons/io5";
 import { joiResolver } from "@hookform/resolvers/joi";
 import clsx from "clsx";
 import Joi from "joi";
+import moment from "moment";
 
 import FinalButton from "@/components/button/final.button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import moment from "moment";
 
 const lockOptions = [
   { label: "0 Day", value: "0" },
