@@ -62,7 +62,7 @@ const Search: NextPageWithLayout = () => {
           <div className={`animationTextHeading mb-4 text-xl fmd:text-2xl`}>
             Search Result
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col">
             {searchResults.length > 0 &&
               searchResults.map((result, i) => {
                 if (i === searchResults.length - 1) {
