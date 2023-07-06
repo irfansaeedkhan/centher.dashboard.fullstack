@@ -26,6 +26,7 @@ const Feed: NextPageWithLayout = () => {
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
+
   const {
     posts,
     fetchPosts,
@@ -173,6 +174,7 @@ const Feed: NextPageWithLayout = () => {
               Create a new post or follow someone
             </p>
           </div>
+
           <div className="mt-4">
             <SuggestedCardMobile className={`block f2xl:hidden`} />
           </div>
