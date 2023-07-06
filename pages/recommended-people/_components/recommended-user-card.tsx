@@ -39,6 +39,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
             width={44}
             height={44}
             alt="profile pic"
+            className="rounded-full"
           />
         </Link>
 

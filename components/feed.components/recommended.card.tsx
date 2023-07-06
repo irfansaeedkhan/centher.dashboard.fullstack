@@ -1,34 +1,25 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { toast } from "react-hot-toast";
-import {
-  getRecommendedPeople,
-  RecommendedPeople,
-} from "@/lib/recommended-people";
+
+import { RecommendedPeople } from "@/lib/recommended-people";
 import { LoadingState } from "@/models/common";
 import { axiosNodeApi } from "@/utils/axios";
 import RecommendedPeopleLeftCardSkeleton from "@/components/loading.skeletons/recommended.people.left.card";
 import RecommendedUserCard from "./recommended-user-card";
 
-export const RecommendedCard = () => {
-  const [recommendedPeople, setRecommendedPeople] = useState<
-    RecommendedPeople[]
-  >([]);
-  const [loading, setLoading] = useState<LoadingState>("idle");
+interface Props {
+  loading: LoadingState;
+  setRecommendedPeople: React.Dispatch<
+    React.SetStateAction<RecommendedPeople[]>
+  >;
+  recommendedPeople: RecommendedPeople[];
+}
 
-  useEffect(() => {
-    setLoading("loading"); // Set loading state to loading before making API call
-
-    getRecommendedPeople()
-      .then((data) => {
-        setRecommendedPeople(data);
-        setLoading("loaded"); // Set loading state to loaded after data has been fetched
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading("failed"); // Set loading state to failed in case of error
-      });
-  }, []);
-
+export const RecommendedCard: React.FC<Props> = ({
+  loading,
+  setRecommendedPeople,
+  recommendedPeople,
+}) => {
   const followUser = async (following_id: string) => {
     try {
       setRecommendedPeople((prev) =>
