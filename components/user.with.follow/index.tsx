@@ -1,9 +1,10 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 
+import FinalButton from "../button/final.button";
 import useUser from "@/hooks/use.user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosNodeApi } from "@/utils/axios";
@@ -89,23 +90,13 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           </div>
         </div>
         {loggedInUser?._id !== _result._id && (
-          <button
-            className={clsx(
-              _result.is_followed_by_loggedin_user
-                ? followingButton
-                : connectButton
-            )}
+          <FinalButton
+            title={
+              _result.is_followed_by_loggedin_user ? "Following" : "Follow"
+            }
+            className="text-sm"
             onClick={() => followUser(_result._id)}
-          >
-            <span
-              className={clsx(
-                _result.is_followed_by_loggedin_user &&
-                  "animationTextHeading !text-sm"
-              )}
-            >
-              {_result.is_followed_by_loggedin_user ? "Following" : "Follow"}
-            </span>
-          </button>
+          />
         )}
       </div>
     );
@@ -115,7 +106,3 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
 UserWithFollow.displayName = "UserWithFollow";
 
 export default UserWithFollow;
-
-const connectButton = `fsm:px-6 px-4 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;
-
-const followingButton = `fsm:px-6 px-4 py-2 flex !text-sm rounded-lg items-center font-semibold bg-gray-shade-3`;
