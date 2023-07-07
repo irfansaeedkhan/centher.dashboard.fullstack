@@ -69,7 +69,7 @@ export const AppRoutes = {
     liscense: "/network-rewards/liscense",
   },
 
-  chat: "/chat",
+  chat: { index: "/chat", single_chat: "/chat/[chat_id]" },
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   staking_packs: "/staking-packs",

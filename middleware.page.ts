@@ -136,7 +136,8 @@ const _notReadyPages: string[] = [
   AppRoutes.referral.network_rewards,
   AppRoutes.referral.liscense,
 
-  AppRoutes.chat,
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
   AppRoutes.staking_packs,
