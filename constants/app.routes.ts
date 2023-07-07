@@ -54,10 +54,17 @@ export const AppRoutes = {
   coming_soon: "/coming-soon",
   coming_soon_v2: "/coming-soon-v2",
   notifications: "/notifications",
+  recommended: "/recommended-people",
   launchpad: "/launchpad/[token_address]/[round]",
   launchpad_pre_booking: {
     index: "/launchpad/pre-booking",
     booking: "/launchpad/pre-booking/bookings",
+  },
+  staking: {
+    index: "/staking",
+    create_staking: "/staking/create-staking",
+    staking_list: "/staking/staking-list",
+    staking_details: "/staking/staking-details",
   },
 
   // Not ready pages
@@ -88,10 +95,5 @@ export const AppRoutes = {
     registration_setting: "/admin/registration/setting",
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
-  },
-
-  staking: {
-    index: "/staking",
-    // staking_data: "/staking/[staking_id]",
   },
 } as const;

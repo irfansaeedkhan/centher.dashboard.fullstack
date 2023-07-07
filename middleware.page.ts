@@ -127,7 +127,10 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.launchpad_pre_booking.booking,
 
   AppRoutes.staking.index,
-  // AppRoutes.staking.staking_data,
+  AppRoutes.staking.create_staking,
+  AppRoutes.staking.staking_list,
+  AppRoutes.staking.staking_details,
+  AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
