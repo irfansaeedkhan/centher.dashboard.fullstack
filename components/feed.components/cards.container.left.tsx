@@ -7,7 +7,11 @@ import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
 import { ProfileDetailCard } from "./profile.detail.card";
-import { PromotionCard2, PromotionCard4 } from "./promotion.cards";
+import {
+  PromotionCard2,
+  PromotionCard4,
+  PromotionCard5,
+} from "./promotion.cards";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -46,6 +50,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
       {profileCardUser ? (
         <>
           <ProfileDetailCard user={profileCardUser} />
+          <PromotionCard5 />
           <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>

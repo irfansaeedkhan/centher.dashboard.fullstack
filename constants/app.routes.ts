@@ -69,7 +69,7 @@ export const AppRoutes = {
     liscense: "/network-rewards/liscense",
   },
 
-  chat: "/chat",
+  chat: { index: "/chat", single_chat: "/chat/[chat_id]" },
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   staking_packs: "/staking-packs",
@@ -90,4 +90,8 @@ export const AppRoutes = {
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
   },
+  chat_coming_soon: "/chat-coming-soon",
+  staking_coming_soon: "/staking-coming-soon",
+  citizenship_coming_soon: "/citizenship-coming-soon",
+  citizenship_subscription_coming_soon: "/citizenship-subscription-coming-soon",
 } as const;
