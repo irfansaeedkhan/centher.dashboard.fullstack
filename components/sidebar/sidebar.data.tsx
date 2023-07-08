@@ -88,7 +88,9 @@ export const sidebarData: SidebarData = {
         icon: Launchpad,
         activeList: [
           AppRoutes.staking.index,
-          // AppRoutes.staking.staking_data,
+          AppRoutes.staking.staking_list,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details,
         ],
       },
     ],
