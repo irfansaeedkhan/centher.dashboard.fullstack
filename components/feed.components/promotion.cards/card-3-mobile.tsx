@@ -6,7 +6,10 @@ import FinalButton from "@/components/button/final.button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
-export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
+export const PromotionCard3Mobile: React.FC<Props> = ({
+  className,
+  ...props
+}) => {
   return (
     <div
       className={clsx(

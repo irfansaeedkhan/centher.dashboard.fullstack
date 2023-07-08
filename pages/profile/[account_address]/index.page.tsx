@@ -10,6 +10,9 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { useCreateUserProfileView } from "@/hooks/user.profile.views";
+import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
+import { NoPost } from "@/assets/svgs";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
   archivePost,
@@ -21,10 +24,11 @@ import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
 import { CreatePostCard } from "@/components/feed.components/create.post/create.post.card";
-import { customLog } from "@/utils/custom.log";
-import { AppRoutes } from "@/constants/app.routes";
-import { NoPost } from "@/assets/svgs";
-
+import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
+import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
+import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
+import { PromotionCard6Mobile } from "@/components/feed.components/promotion.cards/card-6-mobile";
+import { PromotionCard3Mobile } from "@/components/feed.components/promotion.cards/card-3-mobile";
 import { ProfilePageWrapper } from "./_components";
 
 const Profile: NextPageWithLayout = () => {
@@ -118,49 +122,72 @@ const Profile: NextPageWithLayout = () => {
         <CreatePostCard />
       )}
 
-      {posts.map((post) => {
+      {posts.map((post, index) => {
         return (
-          <div
-            key={post._id}
-            onClick={() =>
-              router.push({
-                pathname: AppRoutes.feed.single_post,
-                query: {
-                  post_id: post._id,
-                },
-              })
-            }
-          >
-            <SinglePostV2
-              post={post}
-              parentPost={undefined}
-              postType={"main"}
-              placement="profile-posts-page"
-              borderRadius={{
-                top: true,
-                bottom: true,
-              }}
-              shouldShowThread={post.is_thread}
-              onClickLike={async () => {
-                await likePostAPI(
-                  post._id,
-                  post.liked_by_loggedin_user ? "unlike" : "like"
-                );
-              }}
-              onClickReply={() => {
-                setIsReplyModalOpen(true);
-                openPostModal({
-                  modalType: "reply",
-                  parentPostId: post._id,
-                  onCloseModal: () => setIsReplyModalOpen(false),
-                  shouldAddNewPost: true,
-                });
-              }}
-              onClickArchive={() => handleAction(post._id, archivePost)}
-              onClickDelete={() => handleAction(post._id, deletePost)}
-              onPostInViewport={() => handleCreatePostView(post._id)}
-            />
-          </div>
+          <>
+            <div
+              key={post._id}
+              onClick={() =>
+                router.push({
+                  pathname: AppRoutes.feed.single_post,
+                  query: {
+                    post_id: post._id,
+                  },
+                })
+              }
+            >
+              <SinglePostV2
+                post={post}
+                parentPost={undefined}
+                postType={"main"}
+                placement="profile-posts-page"
+                borderRadius={{
+                  top: true,
+                  bottom: true,
+                }}
+                shouldShowThread={post.is_thread}
+                onClickLike={async () => {
+                  await likePostAPI(
+                    post._id,
+                    post.liked_by_loggedin_user ? "unlike" : "like"
+                  );
+                }}
+                onClickReply={() => {
+                  setIsReplyModalOpen(true);
+                  openPostModal({
+                    modalType: "reply",
+                    parentPostId: post._id,
+                    onCloseModal: () => setIsReplyModalOpen(false),
+                    shouldAddNewPost: true,
+                  });
+                }}
+                onClickArchive={() => handleAction(post._id, archivePost)}
+                onClickDelete={() => handleAction(post._id, deletePost)}
+                onPostInViewport={() => handleCreatePostView(post._id)}
+              />
+            </div>
+            {(index + 1) / 6 === 1 && (
+              <div
+                className={`flex flex-col items-center gap-2 fsm:flex-row flg:hidden`}
+              >
+                <PromotionCard2Mobile />
+                <PromotionCard5Mobile />
+              </div>
+            )}
+
+            {(index + 1) / 8 === 1 && (
+              <div
+                className={`flex flex-col items-center gap-2 fsm:flex-row f2xl:hidden`}
+              >
+                <PromotionCard6Mobile />
+                <PromotionCard3Mobile />
+              </div>
+            )}
+
+            {(index + 1) % 10 === 0 && (
+              <SuggestedCardMobile className={`block f2xl:hidden`} />
+            )}
+          </>
         );
       })}
 
@@ -186,6 +213,21 @@ const Profile: NextPageWithLayout = () => {
             <p className="text-gray-shade-7">
               Create a new post or follow someone
             </p>
+          </div>
+          <div className="mt-4">
+            <SuggestedCardMobile className={`block f2xl:hidden`} />
+          </div>
+          <div
+            className={`mt-4 flex flex-col items-center gap-2 fsm:flex-row flg:hidden`}
+          >
+            <PromotionCard2Mobile />
+            <PromotionCard5Mobile />
+          </div>
+          <div
+            className={`mt-4 flex flex-col items-center gap-2 fsm:flex-row f2xl:hidden`}
+          >
+            <PromotionCard6Mobile />
+            <PromotionCard3Mobile />
           </div>
         </div>
       )}

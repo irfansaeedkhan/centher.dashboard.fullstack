@@ -24,13 +24,14 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
-  if (checkMatch(request.nextUrl, notReadyPagesv2)) {
+
+  if (checkMatch(request.nextUrl, chatComingSoonPages)) {
     if (
       process.env.NEXT_PUBLIC_APP_ENV === "production" ||
       process.env.NEXT_PUBLIC_APP_ENV === "staging"
     ) {
       const url = request.nextUrl.clone();
-      url.pathname = AppRoutes.coming_soon_v2;
+      url.pathname = AppRoutes.chat_coming_soon;
       return NextResponse.redirect(url);
     }
   }
@@ -136,8 +137,6 @@ const _notReadyPages: string[] = [
   AppRoutes.referral.network_rewards,
   AppRoutes.referral.liscense,
 
-  AppRoutes.chat.index,
-  AppRoutes.chat.single_chat,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
   AppRoutes.staking_packs,
@@ -156,6 +155,9 @@ const _notReadyPages: string[] = [
 ];
 const notReadyPages = changePaths(_notReadyPages);
 
-// Coming soon v2 pages - redirect to feed page
-const _notReadyPagesv2: string[] = [];
-const notReadyPagesv2 = changePaths(_notReadyPagesv2);
+// Chat Coming Soon
+const _chatComingSoonPages: string[] = [
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
+];
+const chatComingSoonPages = changePaths(_chatComingSoonPages);
