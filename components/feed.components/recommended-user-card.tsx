@@ -30,13 +30,14 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
             },
           }}
           title={user.display_name}
+          className="flex"
         >
           <Image
             src={user.profile_image.path}
             width={44}
             height={44}
             alt="profile pic"
-            className="flex-shrink-0 rounded-full"
+            className="h-11 w-11 flex-shrink-0 rounded-full object-cover"
           />
         </Link>
 
