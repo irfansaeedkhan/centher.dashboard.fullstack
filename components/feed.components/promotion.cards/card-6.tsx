@@ -11,7 +11,7 @@ export const PromotionCard6: React.FC<Props> = ({ className, ...props }) => {
   return (
     <div
       className={clsx(
-        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px bg-[url(/images/promotion-card-6.gif)] bg-cover bg-no-repeat p-6`,
+        `relative flex h-[348px] w-[272px] flex-col items-center justify-end overflow-hidden rounded-10px bg-[url(/images/staking.gif)] bg-cover bg-no-repeat p-6`,
         className
       )}
       {...props}
