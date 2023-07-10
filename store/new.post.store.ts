@@ -118,7 +118,9 @@ export const useNewPostStore = create<NewPostStore>()(
       },
       addSelectedFiles: (files) =>
         set((state) => {
-          const mediaFiles: MediaFile[] = files.map((file, i) => {
+          let mediaFiles: MediaFile[] = [];
+
+          mediaFiles = files.map((file, i) => {
             if (file.type === "new") {
               return {
                 type: "new",
@@ -138,14 +140,33 @@ export const useNewPostStore = create<NewPostStore>()(
           });
 
           // Add files to the last post
-          const posts = state.posts.map((post, index) =>
-            index === state.posts.length - 1
-              ? {
-                  ...post,
-                  media: [...post.media, ...mediaFiles],
-                }
-              : post
-          );
+          const posts = state.posts.map((post, index) => {
+            if (index !== state.posts.length - 1) {
+              return post;
+            }
+            if (
+              mediaFiles[0].original.type.startsWith("video") &&
+              post.media[0]?.original.type.startsWith("video")
+            ) {
+              return {
+                ...post,
+                media: [mediaFiles[0]],
+              };
+            }
+            if (post.media[0]?.original.type.startsWith("video")) {
+              return post;
+            }
+            if (
+              mediaFiles[0].original.type.startsWith("video") &&
+              post.media[0]?.original.type.startsWith("image")
+            ) {
+              return post;
+            }
+            return {
+              ...post,
+              media: [...post.media, ...mediaFiles],
+            };
+          });
           return { posts };
         }),
 
@@ -212,6 +233,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
       addNewPost: () => {
         // Check if the last post is empty
+
         if (
           get().posts.at(-1)?.post_text.trim() === "" &&
           get().posts.at(-1)?.media.length === 0

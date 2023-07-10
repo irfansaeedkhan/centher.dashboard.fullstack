@@ -22,42 +22,6 @@ export const PostMedia: React.FC<Props> = ({
   previewIndex,
   onClickMedia,
 }) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    draggable: post.media!.length > 1,
-    speed: 20,
-    startIndex: previewIndex,
-  });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const scrollPrev = useCallback(() => {
-    if (emblaApi) emblaApi.scrollPrev();
-  }, [emblaApi]);
-
-  const scrollNext = useCallback(() => {
-    if (emblaApi) emblaApi.scrollNext();
-  }, [emblaApi]);
-
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi, setSelectedIndex]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect);
-
-    return () => {
-      emblaApi.off("select", onSelect);
-    };
-  }, [emblaApi, onSelect, previewIndex]);
-
-  // When media is deleted from post during edit, scroll the carousel to the first image
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.scrollTo(0);
-  }, [post.media?.length, emblaApi]);
-
   return (
     <div
       className={clsx(
