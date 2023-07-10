@@ -15,7 +15,7 @@ export const PromotionCard2Mobile: React.FC<Props> = ({
   return (
     <div
       className={clsx(
-        `relative flex h-[348px] w-[272px] flex-col items-center justify-center overflow-hidden rounded-10px bg-[url(/images/bg-promotion2.png)] bg-cover bg-no-repeat p-6`,
+        `relative flex h-[348px] w-[272px] flex-col items-center justify-center overflow-hidden rounded-10px border border-gray-shade-3 bg-[url(/images/bg-promotion2.png)] bg-cover bg-no-repeat p-6`,
         className
       )}
       {...props}
