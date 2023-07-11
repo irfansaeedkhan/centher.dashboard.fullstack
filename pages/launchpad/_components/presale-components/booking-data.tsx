@@ -16,6 +16,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
 import { BUSDNEW, GreenTick } from "@/assets/svgs";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   preBookingStats: PreBookingStats;
@@ -24,6 +25,7 @@ interface Props {
 const BookingData: React.FC<Props> = ({ preBookingStats }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
+  const [isNtrHolder, setIsNtrHolder] = useState(false);
   const isClient = useIsClient();
   const { user } = useUser();
 
@@ -41,11 +43,17 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       payment_wallet_address,
     },
     presale,
+    ntrBusdRate,
+    ntrContractAddress,
+    ntrMinimumAmount,
   } = preBookingStats;
 
   const receivableTokenPriceCurrentRound =
     rounds[current_round as keyof typeof rounds]
       .receivable_token_price_in_payment_token;
+
+  const receivableTokenPriceCurrentRoundWithNTR =
+    receivableTokenPriceCurrentRound / ntrBusdRate;
 
   const receivableTokensCollected = is_sold_out
     ? rounds[current_round as keyof typeof rounds].receivable_token_max_cap
@@ -58,16 +66,22 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     (receivableTokensCollected / receivableTokenMaxCap) * 100;
 
   const lastRoundLeftCapInPaymentToken = Math.ceil(
-    receivableTokenAmountToPaymentTokenAmount(
-      current_round === 3
-        ? rounds[3].receivable_token_max_cap -
-            rounds[3].receivable_tokens_collected
-        : 0,
-      receivableTokenPriceCurrentRound
-    )
+    // receivableTokenAmountToPaymentTokenAmount(
+    //   current_round === 3
+    //     ? rounds[3].receivable_token_max_cap -
+    //         rounds[3].receivable_tokens_collected
+    //     : 0,
+    //   receivableTokenPriceCurrentRound
+    // )
+    current_round === 3
+      ? rounds[3].receivable_token_max_cap -
+          rounds[3].receivable_tokens_collected
+      : 0
   );
 
-  let minimumPaymentTokenAmount = minimum_payment_token_amount;
+  let minimumPaymentTokenAmount = isNtrHolder
+    ? ntrMinimumAmount
+    : minimum_payment_token_amount;
 
   if (
     current_round === 3 &&
@@ -82,9 +96,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
     paymentTokenAmount: "",
   });
 
+  const rate = isNtrHolder
+    ? receivableTokenPriceCurrentRoundWithNTR
+    : receivableTokenPriceCurrentRound;
+
   const receivableTokenAmount =
     typeof paymentForm.paymentTokenAmount === "number"
-      ? paymentForm.paymentTokenAmount / receivableTokenPriceCurrentRound
+      ? paymentForm.paymentTokenAmount / rate
       : 0;
 
   const { library, account } = useWeb3React();
@@ -112,11 +130,15 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       return;
     }
 
+    const contractAddress = isNtrHolder
+      ? ntrContractAddress
+      : payment_token_address;
+
     try {
       await BlockchainWrite.preBookDexa(
         paymentForm.paymentTokenAmount,
         payment_wallet_address,
-        payment_token_address,
+        contractAddress,
         library
       );
 
@@ -146,7 +168,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
   return (
     <div className="h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-4 pt-[22px] pb-10 fsm:px-6 flg:px-8 fxl:px-10">
       <div className="flex w-full flex-col gap-10 fmd:flex-row">
-        <div className="mt-8 flex w-full flex-col justify-between gap-6 fsm:flex-row fmd:w-[233px] fmd:flex-col fmd:justify-start">
+        <div className="mt-8 flex w-full flex-shrink-0 flex-col justify-between gap-6 fmd:w-[276px] fmd:flex-col fmd:justify-start">
           <div className="flex flex-col">
             <Image
               src={receivable_token_image}
@@ -163,9 +185,16 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               title={is_sold_out ? "Pre Booking Ended" : "Pre Booking Live"}
             />
           </div>
-          <div className="space-y-4">
+          <div className="relative mt-3 flex h-14 w-full max-w-[275px] items-center gap-2 px-3">
+            <Image
+              src={"/images/timer.png"}
+              alt="timer"
+              width={275}
+              height={56}
+              className="absolute top-0 left-0 m-auto fmd:inset-0"
+            />
             <p className="text-sm font-medium text-gray-shade-14">
-              The presale for {receivable_token_name} will start in
+              The presale will start in
             </p>
 
             {isClient && (
@@ -227,13 +256,22 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               </p>
             </div>
           </div>
+          <p className="mt-4 text-xs text-white">
+            If you are {isNtrHolder && "not a"} <b>NTR</b> Holder please{" "}
+            <span
+              className="textGradient cursor-pointer"
+              onClick={() => setIsNtrHolder(!isNtrHolder)}
+            >
+              Click here
+            </span>
+          </p>
           {is_sold_out ? (
-            <div className="mt-9 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] py-3 px-4 text-sm text-[#E5535A]">
+            <div className="mt-4 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] py-3 px-4 text-sm text-[#E5535A]">
               All tokens have been booked! wait for Presale rounds to start in
               order to claim your tokens.
             </div>
           ) : (
-            <div className="mt-9 flex flex-col items-center gap-8 fmd:flex-row fmd:gap-4">
+            <div className="mt-4 flex flex-col items-center gap-8 fmd:flex-row fmd:gap-4">
               <div className="relative flex h-12 w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 p-3 focus-within:ring-1 focus-within:ring-brand-primary flg:max-w-full">
                 <CustomNumberInput
                   name={payment_token_symbol}
@@ -258,47 +296,55 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     : receivableTokenAmount}{" "}
                   {receivable_token_symbol}
                 </p>
-                <div className="flex items-center gap-2">
-                  {/* TODO: Change this hard-coded icon to icon url coming from backend */}
-                  <BUSDNEW />
-                  <p className="text-xs font-semibold text-brand-primary">
-                    {payment_token_symbol}
-                  </p>
-                </div>
+                {isNtrHolder ? (
+                  <div className="flex w-full max-w-[60px] items-center gap-2">
+                    {/* TODO: Change this hard-coded icon to icon url coming from backend */}
+                    <Image
+                      src="/images/ntr.png"
+                      alt="NTR"
+                      width={20}
+                      height={20}
+                      className="h-5 w-5 flex-shrink-0 object-cover"
+                    />
+                    <p className="text-xs font-semibold text-white">NTR</p>
+                  </div>
+                ) : (
+                  <div className="flex w-full max-w-[65px] items-center gap-2">
+                    {/* TODO: Change this hard-coded icon to icon url coming from backend */}
+                    <span className="h-5 w-5 flex-shrink-0 object-cover">
+                      <BUSDNEW />
+                    </span>
+                    <p className="text-xs font-semibold text-brand-primary">
+                      {payment_token_symbol}
+                    </p>
+                  </div>
+                )}
               </div>
               {isLoading === "loading" ? (
                 <button className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7 flg:max-w-[210px]">
                   <CgSpinner className="h-5 w-5 animate-spin" />
                 </button>
               ) : (
-                <NewButton
-                  variant={
-                    typeof paymentForm.paymentTokenAmount === "string" ||
-                    paymentForm.paymentTokenAmount <
-                      minimumPaymentTokenAmount ||
-                    (current_round === 3 &&
-                      paymentForm.paymentTokenAmount >
-                        lastRoundLeftCapInPaymentToken)
-                      ? "v2"
-                      : "v1"
-                  }
+                <FinalButton
+                  variant={"primary"}
                   title="Book Now"
+                  borderRounded={"8px"}
                   disabled={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
                     (current_round === 3 &&
-                      paymentForm.paymentTokenAmount >
-                        lastRoundLeftCapInPaymentToken)
+                      receivableTokenAmount > lastRoundLeftCapInPaymentToken)
                   }
-                  className={clsx("flg:max-w-[210px]")}
+                  className={clsx(
+                    "h-12 w-full fsm:flex-shrink-0 fmd:max-w-[210px] "
+                  )}
                   onClick={
                     typeof paymentForm.paymentTokenAmount === "string" ||
                     paymentForm.paymentTokenAmount <
                       minimumPaymentTokenAmount ||
                     (current_round === 3 &&
-                      paymentForm.paymentTokenAmount >
-                        lastRoundLeftCapInPaymentToken)
+                      receivableTokenAmount > lastRoundLeftCapInPaymentToken)
                       ? () => {}
                       : bookNow
                   }
@@ -311,7 +357,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               <p className="text-[13px] text-gray-shade-14">
                 <span className="text-red-400">Note:</span> Minimum booking is{" "}
                 <span className="font-medium">
-                  {minimumPaymentTokenAmount} {payment_token_symbol}
+                  {minimumPaymentTokenAmount}{" "}
+                  {isNtrHolder ? "NTR" : payment_token_symbol}
                 </span>
                 . Any amount less than that will not be considered for booking
                 and <span className="font-medium">it will not be refunded</span>
@@ -358,22 +405,22 @@ const countdownRenderer: CountdownRendererFn = ({
   seconds,
 }) => {
   return (
-    <div className="flex gap-6">
+    <div className="flex gap-5">
       <div className="flex flex-col items-center">
-        <h6 className="text-sm font-semibold text-white">{days}</h6>
-        <p className="text-[10px] font-medium text-white">DAYS</p>
+        <h6 className="text-xs font-semibold text-white">{days}</h6>
+        <p className="text-[8px] font-medium text-white">DAYS</p>
       </div>
       <div className="flex flex-col items-center">
-        <h6 className="text-sm font-semibold text-white">{hours}</h6>
-        <p className="text-[10px] font-medium text-white">HOURS</p>
+        <h6 className="text-xs font-semibold text-white">{hours}</h6>
+        <p className="text-[8px] font-medium text-white">HOURS</p>
       </div>
       <div className="flex flex-col items-center">
-        <h6 className="text-sm font-semibold text-white">{minutes}</h6>
-        <p className="text-[10px] font-medium text-white">MIN</p>
+        <h6 className="text-xs font-semibold text-white">{minutes}</h6>
+        <p className="text-[8px] font-medium text-white">MIN</p>
       </div>
       <div className="flex flex-col items-center">
-        <h6 className="text-sm font-semibold text-white">{seconds}</h6>
-        <p className="text-[10px] font-medium text-white">SEC</p>
+        <h6 className="text-xs font-semibold text-white">{seconds}</h6>
+        <p className="text-[8px] font-medium text-white">SEC</p>
       </div>
     </div>
   );
