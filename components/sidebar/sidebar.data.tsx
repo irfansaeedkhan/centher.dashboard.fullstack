@@ -33,10 +33,10 @@ export const sidebarData: SidebarData = {
       },
       {
         label: "Chat",
-        url: AppRoutes.chat,
+        url: AppRoutes.chat.index,
         icon: Chat,
         countType: "chats",
-        activeList: [AppRoutes.chat],
+        activeList: [AppRoutes.chat.index, AppRoutes.chat.single_chat],
       },
     ],
   },
