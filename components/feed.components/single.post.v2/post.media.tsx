@@ -60,7 +60,7 @@ export const PostMedia: React.FC<Props> = ({
               mediaData = (
                 <video
                   autoPlay={false}
-                  muted={false}
+                  muted={true}
                   playsInline={true}
                   key={media.url}
                   src={media.url}
