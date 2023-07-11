@@ -6,7 +6,7 @@ import { NoStakingIcon } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
 import { BuyPassportModal } from "@/components/modal/buy-passpost-modal";
 
-const Staking: NextPageWithLayout = () => {
+const CreateStaking: NextPageWithLayout = () => {
   const [showBuyPassportModal, setShowBuyPassportModal] = useState(false);
 
   return (
@@ -37,7 +37,7 @@ const Staking: NextPageWithLayout = () => {
   );
 };
 
-Staking.getLayout = (page) => (
+CreateStaking.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Staking">
     <div className="mx-auto w-full max-w-[1144px] bg-black-shade-3 font-monto">
       {page}
@@ -45,4 +45,4 @@ Staking.getLayout = (page) => (
   </AllPagesWrapper>
 );
 
-export default Staking;
+export default CreateStaking;
