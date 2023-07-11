@@ -11,6 +11,7 @@ export interface PreBookingStats {
   presale: Presale;
   bookings: Bookings;
   my_rewards: Reward[];
+  [key: string]: any;
 }
 
 export interface PreBooking {

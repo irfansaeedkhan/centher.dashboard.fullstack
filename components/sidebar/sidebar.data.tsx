@@ -92,6 +92,17 @@ export const sidebarData: SidebarData = {
           AppRoutes.launchpad_pre_booking.booking,
         ],
       },
+      {
+        label: "Staking",
+        url: AppRoutes.staking.index,
+        icon: Launchpad,
+        activeList: [
+          AppRoutes.staking.index,
+          AppRoutes.staking.staking_list,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details,
+        ],
+      },
     ],
   },
 };
