@@ -13,6 +13,7 @@ import { SuggestedCard } from "@/components/feed.components/suggested.card";
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
 import { UserNotFound } from "./user.not.found";
+import { PromotionCard6 } from "@/components/feed.components/promotion.cards/card-6";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -94,6 +95,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
           {currentTab === "social-profile" && messageBox && (
             <div className={`hidden space-y-3 f2xl:col-start-3 f2xl:block`}>
               <SuggestedCard />
+              <PromotionCard6 />
               <PromotionCard3 className="sticky top-[84px]" />
             </div>
           )}
