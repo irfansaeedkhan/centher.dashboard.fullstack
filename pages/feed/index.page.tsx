@@ -20,7 +20,12 @@ import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.po
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import { NoPost } from "@/assets/svgs";
+import AdsWrapper from "@/components/wrappers/ads-wrapper";
 import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
+import { PromotionCard6Mobile } from "@/components/feed.components/promotion.cards/card-6-mobile";
+import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
+import { PromotionCard3Mobile } from "@/components/feed.components/promotion.cards/card-3-mobile";
+import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
 
 const Feed: NextPageWithLayout = () => {
   const router = useRouter();
@@ -143,6 +148,35 @@ const Feed: NextPageWithLayout = () => {
                 onPostInViewport={() => handleCreatePostView(post._id)}
               />
             </div>
+            {(index + 1) / 4 === 1 && (
+              <div className="block flg:hidden">
+                <AdsWrapper>
+                  <PromotionCard2Mobile />
+                </AdsWrapper>
+              </div>
+            )}
+            {(index + 1) / 6 === 1 && (
+              <div className="block flg:hidden">
+                <AdsWrapper>
+                  <PromotionCard5Mobile />
+                </AdsWrapper>
+              </div>
+            )}
+
+            {(index + 1) / 8 === 1 && (
+              <div className="block f2xl:hidden">
+                <AdsWrapper>
+                  <PromotionCard6Mobile />
+                </AdsWrapper>
+              </div>
+            )}
+            {(index + 1) / 12 === 1 && (
+              <div className="block f2xl:hidden">
+                <AdsWrapper>
+                  <PromotionCard3Mobile />
+                </AdsWrapper>
+              </div>
+            )}
 
             {(index + 1) % 10 === 0 && (
               <SuggestedCardMobile className={`block f2xl:hidden`} />
@@ -177,6 +211,26 @@ const Feed: NextPageWithLayout = () => {
 
           <div className="mt-4">
             <SuggestedCardMobile className={`block f2xl:hidden`} />
+          </div>
+          <div className={`mt-4 flex flg:hidden`}>
+            <AdsWrapper>
+              <PromotionCard2Mobile />
+            </AdsWrapper>
+          </div>
+          <div className={`mt-4 flex flg:hidden`}>
+            <AdsWrapper>
+              <PromotionCard5Mobile />
+            </AdsWrapper>
+          </div>
+          <div className={`mt-4 flex f2xl:hidden`}>
+            <AdsWrapper>
+              <PromotionCard6Mobile />
+            </AdsWrapper>
+          </div>
+          <div className={`mt-4 flex f2xl:hidden`}>
+            <AdsWrapper>
+              <PromotionCard3Mobile />
+            </AdsWrapper>
           </div>
         </div>
       )}

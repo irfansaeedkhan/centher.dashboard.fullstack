@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import toast from "react-hot-toast";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
@@ -30,12 +30,15 @@ export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { appendPostText, getLastPost, addNewPost } = useNewPostStore();
+  const { appendPostText, getLastPost, addNewPost, posts } = useNewPostStore();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
   const belowMobile = useMediaQuery("(max-width: 560px)");
-
+  const [activeBtn, setActiveBtn] = useState({
+    image: false,
+    video: false,
+  });
   useOnClickOutside(emojiPickerContainerRef, () => {
     setShowEmojiPicker(false);
   });
@@ -55,6 +58,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       }
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
+
       // Call the callback function if any
       onClickActionButton && onClickActionButton();
     } catch (err: any) {
@@ -66,6 +70,27 @@ export const PostModalActionButtons: React.FC<Props> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (posts[0]?.media[0]?.original?.type?.startsWith("image")) {
+      setActiveBtn({
+        image: false,
+        video: true,
+      });
+    }
+    if (posts[0]?.media[0]?.original?.type?.startsWith("video")) {
+      setActiveBtn({
+        image: true,
+        video: false,
+      });
+    }
+    if (posts[0]?.media.length == 0) {
+      setActiveBtn({
+        image: false,
+        video: false,
+      });
+    }
+  }, [posts]);
 
   return (
     <div
@@ -80,6 +105,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       <label
         className={clsx(
           `group select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-150 hover:border-brand-primary/30 hover:bg-brand-primary/20`,
+          activeBtn.image && "pointer-events-none",
           buttonVariants({ color: "primary", placement })
         )}
       >
@@ -131,6 +157,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       <label
         className={clsx(
           `group  select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#5F97FF]/30 hover:bg-[#5F97FF]/20`,
+          activeBtn.video && "pointer-events-none",
           buttonVariants({ color: "blue", placement })
         )}
       >
@@ -150,7 +177,6 @@ export const PostModalActionButtons: React.FC<Props> = ({
           name="videos-file"
           accept={SUPPORTED_VIDEO_TYPES}
           style={{ display: "none" }}
-          multiple
           onChange={(e) => handleSelectFiles(e, "video")}
         />
       </label>

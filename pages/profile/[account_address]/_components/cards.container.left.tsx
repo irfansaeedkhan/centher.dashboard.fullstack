@@ -4,6 +4,7 @@ import clsx from "clsx";
 import {
   PromotionCard2,
   PromotionCard4,
+  PromotionCard5,
 } from "@/components/feed.components/promotion.cards";
 import { ProfileDetailCard } from "@/components/feed.components";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
@@ -26,6 +27,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
       {user ? (
         <>
           <ProfileDetailCard user={user} />
+          <PromotionCard5 />
           <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>
