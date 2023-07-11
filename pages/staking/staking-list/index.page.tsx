@@ -18,7 +18,7 @@ const StakingList: NextPageWithLayout = () => {
           <FinalButton className="" title="Create New" variant="primary" />
         </Link>
       </div>
-      <div className="mt-7 flex flex-wrap items-center gap-6">
+      <div className="max-w-list-card mt-7 flex h-full min-h-[682px] gap-6">
         {ListCardData.map((card, index) => (
           <ListCard key={index} card={card} />
         ))}
