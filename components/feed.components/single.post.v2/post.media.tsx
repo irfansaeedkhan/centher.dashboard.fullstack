@@ -59,6 +59,9 @@ export const PostMedia: React.FC<Props> = ({
             } else if (media.type === "video") {
               mediaData = (
                 <video
+                  autoPlay={false}
+                  muted={false}
+                  playsInline={true}
                   key={media.url}
                   src={media.url}
                   className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
