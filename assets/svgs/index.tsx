@@ -131,6 +131,8 @@ export { default as ClipboardList } from "./clipboard-list.svg";
 export { default as Referrals } from "./referrals.svg";
 export { default as Followers } from "./followers.svg";
 export { default as Following } from "./following.svg";
+export { default as NoStakingIcon } from "./no-staking-icon.svg";
+export { default as Staking } from "./staking-icon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

@@ -6,6 +6,7 @@ import {
   Explore,
   Notification,
   Launchpad,
+  Staking,
   NetworkGenealogy,
   NetworkRewards,
   CreateNFT,
@@ -56,6 +57,15 @@ export const sidebarData: SidebarData = {
         ],
       },
       {
+        label: "Staking",
+        url: AppRoutes.staking.index,
+        icon: Staking,
+        activeList: [
+          AppRoutes.staking.index,
+          // AppRoutes.staking.staking_data,
+        ],
+      },
+      {
         label: "Create Collection",
         url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
@@ -80,15 +90,6 @@ export const sidebarData: SidebarData = {
           AppRoutes.launchpad_pre_booking.index,
           AppRoutes.launchpad,
           AppRoutes.launchpad_pre_booking.booking,
-        ],
-      },
-      {
-        label: "Staking",
-        url: AppRoutes.staking.index,
-        icon: Launchpad,
-        activeList: [
-          AppRoutes.staking.index,
-          // AppRoutes.staking.staking_data,
         ],
       },
     ],
