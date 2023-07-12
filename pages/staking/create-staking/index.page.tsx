@@ -1,38 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { NoStakingIcon } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
-import { BuyPassportModal } from "@/components/modal/buy-passpost-modal";
 
 const CreateStaking: NextPageWithLayout = () => {
-  const [showBuyPassportModal, setShowBuyPassportModal] = useState(false);
-
   return (
-    <section className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center">
-      <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
-        <NoStakingIcon className="mb-6" />
-        <h3 className="text-16px font-semibold text-white ">
-          No any Staking yet
-        </h3>
-        <p className="text-14px font-normal text-gray-shade-14">
-          There are currently no Staking Projects available. Create one
-          yourself!
-        </p>
-        <FinalButton
-          title="Create New"
-          onClick={() => setShowBuyPassportModal(true)}
-          variant="primary"
-          className="text-14px mt-6 py-3 px-5"
-        />
+    <section className="flex min-h-[calc(100vh-120px)] w-full">
+      <div className="flex flex-grow flex-col">
+        <h1 className="textGradient pb-6 font-semibold leading-[42px] sm:text-2xl ">
+          Submit Your Staking Project 2
+        </h1>
+        <div className="w-full rounded-[20px] border-2 border-gray-shade-3 p-2">
+          sdfds
+        </div>
       </div>
-      {showBuyPassportModal && (
-        <BuyPassportModal
-          isOpen={showBuyPassportModal}
-          onClickClose={() => setShowBuyPassportModal(false)}
-        />
-      )}
     </section>
   );
 };
