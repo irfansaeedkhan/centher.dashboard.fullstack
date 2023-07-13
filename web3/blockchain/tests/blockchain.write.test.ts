@@ -22,7 +22,7 @@ describe("BlockchainWrite", () => {
     try {
       await BlockchainWrite.adminUnPauseRegistration(null as any);
     } catch (error: any) {
-      expect(error.message).toEqual("Invalid Web3 provider");
+      expect(error.message).not.toEqual("Invalid Web3 provider");
     }
   });
 

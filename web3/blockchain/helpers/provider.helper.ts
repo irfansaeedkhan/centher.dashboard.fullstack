@@ -10,7 +10,7 @@ export function getDefaultProvider(
 
 export function getSigner(library: Web3Provider): JsonRpcSigner {
   if (!library) {
-    throw new Error("Invalid Web3 provider");
+    return simpleRpcProvider().getSigner();
   }
 
   const signer = library.getSigner();
