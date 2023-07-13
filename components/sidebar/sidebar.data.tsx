@@ -7,8 +7,6 @@ import {
   Notification,
   Launchpad,
   Staking,
-  NetworkGenealogy,
-  NetworkRewards,
   CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
@@ -62,7 +60,11 @@ export const sidebarData: SidebarData = {
         icon: Staking,
         activeList: [
           AppRoutes.staking.index,
-          // AppRoutes.staking.staking_data,
+          AppRoutes.staking.staking_list,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details.index,
+          AppRoutes.staking.staking_details.rewards,
+          AppRoutes.staking.staking_details.referrals,
         ],
       },
       {
@@ -90,17 +92,6 @@ export const sidebarData: SidebarData = {
           AppRoutes.launchpad_pre_booking.index,
           AppRoutes.launchpad,
           AppRoutes.launchpad_pre_booking.booking,
-        ],
-      },
-      {
-        label: "Staking",
-        url: AppRoutes.staking.index,
-        icon: Launchpad,
-        activeList: [
-          AppRoutes.staking.index,
-          AppRoutes.staking.staking_list,
-          AppRoutes.staking.create_staking,
-          AppRoutes.staking.staking_details,
         ],
       },
     ],

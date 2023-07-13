@@ -133,6 +133,10 @@ export { default as Followers } from "./followers.svg";
 export { default as Following } from "./following.svg";
 export { default as NoStakingIcon } from "./no-staking-icon.svg";
 export { default as Staking } from "./staking-icon.svg";
+export { default as ArrowDownGradient } from "./arrow-down-gradient.svg";
+export { default as ArrowUpGradient } from "./arrow-up-gradient.svg";
+export { default as ClaimableReward } from "./claimable-reward.svg";
+export { default as StakingUsers } from "./staking-users.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
