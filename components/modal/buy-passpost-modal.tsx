@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
+import { IoClose } from "react-icons/io5";
+import Image from "next/image";
 import clsx from "clsx";
 
 import { useEventListener } from "usehooks-ts";
 import { useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
-import Image from "next/image";
 import FinalButton from "../button/final.button";
 
 interface CustomModalProps {
@@ -37,16 +38,13 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
 
   return (
     <ModalPortal wrapperId="buy-passport-portal">
-      {/* Background */}
       <div
         className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black-shade-8 font-monto backdrop-blur-[7px] backdrop-filter fsm:bg-transparent`}
       >
-        {/* Container */}
         <div
           className={`flex h-full w-full max-w-[422px] flex-col overflow-auto border border-solid  border-[#2a2d3c]   bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
           ref={PassportModalRef}
         >
-          {/* Header */}
           <div className={`flex items-start justify-between pb-6`}>
             <div className="flex flex-col">
               <h3
@@ -58,9 +56,9 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
                 Breaking the limit
               </h5>
             </div>
-            {/* <button onClick={onClickClose}>
+            <button className="block sm:hidden" onClick={onClickClose}>
               <IoClose className="ioCLose h-5 w-5 fill-white" />
-            </button> */}
+            </button>
           </div>
           <div className="mx-auto flex w-[90%] items-center justify-center gap-2">
             <button
@@ -76,7 +74,7 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
                   className={clsx(
                     `relative ${
                       tab === "annually"
-                        ? "primary-gradient-btn-text"
+                        ? "primary-gradient-btn-text custom"
                         : "text-white"
                     }`
                   )}
@@ -84,7 +82,7 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
                   Annualy
                 </span>
                 <span className="rounded-full bg-background-shade-3 py-[2px] px-2">
-                  <span className="primary-gradient-btn-text relative text-xs font-medium">
+                  <span className="primary-gradient-btn-text custom relative text-xs font-medium">
                     Save 12%
                   </span>
                 </span>
@@ -103,7 +101,7 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
                   className={clsx(
                     `relative ${
                       tab === "monthly"
-                        ? "primary-gradient-btn-text"
+                        ? "primary-gradient-btn-text custom"
                         : "text-white"
                     }`
                   )}
@@ -144,7 +142,7 @@ export const BuyPassportModal: React.FC<CustomModalProps> = ({
               <FinalButton
                 title={tab === "annually" ? "$1757 / year" : "$185 / month"}
                 variant="primary"
-                className="text-14px mt-5 w-full py-3"
+                className="text-14px mt-5 w-full py-3 hover:text-black"
               />
             </div>
           </div>
