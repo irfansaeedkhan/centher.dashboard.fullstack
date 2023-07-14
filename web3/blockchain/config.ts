@@ -153,7 +153,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/rezahssini/new-subgraph"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/withcitizenship",
 };
 
 export const SwapCollection =
