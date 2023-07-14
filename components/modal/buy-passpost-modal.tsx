@@ -10,10 +10,8 @@ import FinalButton from "../button/final.button";
 import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useWeb3React } from "@web3-react/core";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { ethers } from "ethers";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { toast } from "react-hot-toast";
 
 interface CustomModalProps {
   isOpen: boolean;
