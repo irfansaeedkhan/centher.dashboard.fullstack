@@ -40,7 +40,7 @@ export const PostMedia: React.FC<Props> = ({
         <div className="grid max-h-[45dvh] grid-cols-2 grid-rows-2 gap-[6px] fsm:gap-2 [@media(max-width:500px)]:max-h-[30dvh] [@media(max-width:500px)]:min-h-[22dvh]">
           {post.media!.map((media, index) => {
             let mediaData: React.ReactNode = null;
-            if (media.type === "image") {
+            if (media.type.includes("image")) {
               mediaData = (
                 <Image
                   key={media.url}
@@ -56,9 +56,12 @@ export const PostMedia: React.FC<Props> = ({
                   }}
                 />
               );
-            } else if (media.type === "video") {
+            } else if (media.type.includes("video")) {
               mediaData = (
                 <video
+                  autoPlay={false}
+                  muted={true}
+                  playsInline={true}
                   key={media.url}
                   src={media.url}
                   className={`h-full max-h-[480px] w-full rounded-xl object-cover`}
