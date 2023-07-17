@@ -13,6 +13,7 @@ interface NFTLeftSideComponentProps {
   mintTx: string | undefined;
   collection: string | undefined;
   attributes: IProperty[] | undefined;
+  collectionMintedTokens: number;
 }
 
 export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
@@ -51,6 +52,7 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
         nftId={props.nftId}
         mintTx={props.mintTx}
         collection={props.collection}
+        collectionMintedTokens={props.collectionMintedTokens}
       />
       <NFTProperties attributes={props.attributes} />
     </div>

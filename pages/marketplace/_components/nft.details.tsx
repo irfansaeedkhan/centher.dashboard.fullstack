@@ -10,6 +10,7 @@ interface NFTDetailsProps {
   nftId: number | undefined;
   mintTx: string | undefined;
   collection: string | undefined;
+  collectionMintedTokens: number;
 }
 export const NFTDetails = (props: NFTDetailsProps) => {
   return (
@@ -25,7 +26,10 @@ export const NFTDetails = (props: NFTDetailsProps) => {
                 <div className={`flex flex-col gap-5`}>
                   <div className={detailBox}>
                     <h5 className={title}>NFT ID</h5>
-                    <h6 className={value}>{props.nftId}</h6>
+                    <h6 className={value}>
+                      {props.nftId ? props.nftId : 0}/
+                      {props.collectionMintedTokens}
+                    </h6>
                   </div>
                   <div className={detailBox}>
                     <h5 className={title}>MINT TRANSACTION</h5>
