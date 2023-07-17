@@ -620,6 +620,25 @@ export class BlockchainRead {
 
     return result[0];
   }
+
+  static async getCollectionMintedTokensCount(
+    collection: string
+  ): Promise<number> {
+    const variables = {
+      collection,
+    };
+
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.GET_COLLECTION_MINTED_NFTS,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data.nfts.length;
+  }
 }
 export class BlockchainWrite {
   static async adminUnPauseRegistration(

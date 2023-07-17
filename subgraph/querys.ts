@@ -536,3 +536,9 @@ export const registrationHistory = `
     }
   }
 `;
+
+export const getCollectionMintedNFTs = `query MyQuery($collection: Bytes = "") {
+  nfts(where: {collection: $collection}) {
+    id
+  }
+}`;
