@@ -301,13 +301,15 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                           <button
                             onClick={async () => {
                               if (!loggedInUser) {
-                                toast.error("Please login to buy this nft");
+                                toast.error(
+                                  "Please login to buy this membership"
+                                );
                                 setConnectWalletModal(false);
                                 return;
                               }
                               const _account = await connectWallet();
                               if (
-                                loggedInUser.account_address.toLowerCase() !==
+                                loggedInUser._id.toLowerCase() !==
                                 _account?.toLowerCase()
                               ) {
                                 toast.error(
