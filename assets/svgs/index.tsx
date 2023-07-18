@@ -133,6 +133,7 @@ export { default as Followers } from "./followers.svg";
 export { default as Following } from "./following.svg";
 export { default as NoStakingIcon } from "./no-staking-icon.svg";
 export { default as Staking } from "./staking-icon.svg";
+export { default as TeamMemberIcon } from "./team-member-icon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

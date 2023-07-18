@@ -59,10 +59,12 @@ export const sidebarData: SidebarData = {
       {
         label: "Staking",
         url: AppRoutes.staking.index,
-        icon: Staking,
+        icon: Launchpad,
         activeList: [
           AppRoutes.staking.index,
-          // AppRoutes.staking.staking_data,
+          AppRoutes.staking.staking_list,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details,
         ],
       },
       {
@@ -90,17 +92,6 @@ export const sidebarData: SidebarData = {
           AppRoutes.launchpad_pre_booking.index,
           AppRoutes.launchpad,
           AppRoutes.launchpad_pre_booking.booking,
-        ],
-      },
-      {
-        label: "Staking",
-        url: AppRoutes.staking.index,
-        icon: Launchpad,
-        activeList: [
-          AppRoutes.staking.index,
-          AppRoutes.staking.staking_list,
-          AppRoutes.staking.create_staking,
-          AppRoutes.staking.staking_details,
         ],
       },
     ],
