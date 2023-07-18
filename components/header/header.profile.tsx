@@ -15,8 +15,11 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import {
   ConnectIcon,
   DisconnectIcon,
-  SettingIcon,
-  UserIcon,
+  PopupBellIcon,
+  PopupFeedIcon,
+  PopupMessageIcon,
+  PopupSettingIcon,
+  PopupUserIcon,
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 
@@ -61,7 +64,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   return (
     <div
       ref={ref}
-      className={`absolute -right-[62px] top-[calc(100%+10px)] z-50 h-[448px] w-300 rounded-lg bg-black fxl:right-0 `}
+      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-300 overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px]`}
     >
       <div
         className={clsx(
@@ -81,7 +84,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         )}
         <div className={`space-y-1`}>
           <div
-            className="flex max-w-[215px] items-center  text-sm font-semibold text-white"
+            className="flex max-w-[215px] items-center  text-sm font-semibold text-white fsm:text-base"
             title={loggedInUser?.display_name}
           >
             <span
@@ -105,7 +108,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             target={"_blank"}
             rel="noreferrer"
             title="View on Explorer"
-            className={`group flex items-center gap-2 text-white`}
+            className={`group flex items-center gap-1 text-white`}
           >
             <span
               className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
@@ -118,7 +121,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </a>
         </div>
       </div>
-      <div className="border-b border-gray-shade-border-color px-4 py-3">
+      <div className="border-b border-gray-shade-border-color py-3">
         <Link
           href={{
             pathname: AppRoutes.profile.user_id,
@@ -127,18 +130,67 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             },
           }}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 text-white hover:stroke-brand-primary hover:text-brand-primary"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
         >
-          <UserIcon />
-          <p className="text-sm font-medium ">Profile</p>
+          <PopupUserIcon />
+          <div className="flex flex-col gap-[2px]">
+            <p className="text-sm font-medium">View my profile</p>
+            <span className="text-xs font-medium text-gray-shade-14">
+              Social Posts, NFTS
+            </span>
+          </div>
+        </Link>
+        <Link
+          href={{ pathname: AppRoutes.feed.index }}
+          onClick={onClickOutside}
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+        >
+          <PopupFeedIcon />
+          <div className="flex flex-col gap-[2px]">
+            <p className="text-sm font-medium">My Feed</p>
+            <span className="text-xs font-medium text-gray-shade-14">
+              Feed and Posts
+            </span>
+          </div>
+        </Link>
+        <Link
+          href={{ pathname: AppRoutes.chat.index }}
+          onClick={onClickOutside}
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+        >
+          <PopupMessageIcon />
+          <div className="flex flex-col gap-[2px]">
+            <p className="text-sm font-medium">Chat</p>
+            <span className="text-xs font-medium text-gray-shade-14">
+              Groups, Conversations
+            </span>
+          </div>
+        </Link>
+        <Link
+          href={{ pathname: AppRoutes.notifications }}
+          onClick={onClickOutside}
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+        >
+          <PopupBellIcon />
+          <div className="flex flex-col gap-[2px]">
+            <p className="text-sm font-medium">Notifications</p>
+            <span className="text-xs font-medium text-gray-shade-14">
+              Alerts, Notifications
+            </span>
+          </div>
         </Link>
         <Link
           href={matches ? AppRoutes.settings.profile : AppRoutes.settings.index}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 text-white hover:stroke-brand-primary hover:text-brand-primary"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
         >
-          <SettingIcon />
-          <p className="text-sm font-medium ">Settings</p>
+          <PopupSettingIcon />
+          <div className="flex flex-col gap-[2px]">
+            <p className="text-sm font-medium">Settings</p>
+            <span className="text-xs font-medium text-gray-shade-14">
+              Account, Privacy
+            </span>
+          </div>
         </Link>
       </div>
       <div className="border-b border-gray-shade-border-color p-4">
@@ -156,10 +208,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 "?referred_by=" +
                 loggedInUser?._id
               }
-              className="w-full rounded-md border-0 bg-black-shade-3 py-2 pl-3 text-xs font-medium text-gray-shade-7 focus:outline-none focus:ring-0"
+              className="w-full rounded-md border-0 bg-black-shade-3 bg-opacity-60 py-2 pl-3 text-xs font-medium text-gray-shade-14 backdrop-blur-lg backdrop-filter focus:outline-none focus:ring-0"
             />
             <FiCopy
-              className="ml-2 h-5 w-5 stroke-gray-shade-7 hover:stroke-brand-primary"
+              className="ml-2 h-6 w-6 stroke-gray-shade-14 hover:stroke-brand-primary"
               onClick={async () => {
                 await copyText(
                   window.location.origin +
@@ -182,10 +234,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               id="referral_link"
               readOnly
               value={loggedInUser?._id}
-              className="w-full rounded-md border-0 bg-black-shade-3 py-2 pl-3 text-xs font-medium text-gray-shade-7 focus:outline-none focus:ring-0"
+              className="w-full rounded-md border-0 bg-black-shade-3 bg-opacity-60 py-2 pl-3 text-xs font-medium text-gray-shade-14 backdrop-blur-lg backdrop-filter focus:outline-none focus:ring-0"
             />
             <FiCopy
-              className="ml-2 h-5 w-5 stroke-gray-shade-7 hover:stroke-brand-primary"
+              className="ml-2 h-6 w-6 stroke-gray-shade-14 hover:stroke-brand-primary"
               onClick={async () => {
                 await copyText(loggedInUser?._id ?? "");
                 toast.success("Account address copied!");
@@ -193,8 +245,8 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             />
           </div>
         </div>
-        <p className="mt-2 text-[10px] text-gray-shade-7">
-          Copy your referral link and share it with your friends to generate
+        <p className="mt-[10px] text-[10px] font-normal text-gray-shade-14">
+          Copy your Referral link and share it with your friends to generate
           income!
         </p>
       </div>
@@ -222,7 +274,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             }}
           >
             <ConnectIcon />
-            <p className="text-sm font-medium leading-6">Connect your Wallet</p>
+            <p className="textGradient text-sm font-medium leading-6">
+              Connect your Wallet
+            </p>
           </button>
         )}
       </div>

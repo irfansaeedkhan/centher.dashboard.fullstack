@@ -8,7 +8,7 @@ export const ProfileCommunityTabs: React.FC = ({}) => {
   const router = useRouter();
 
   return (
-    <div className="mb-4 flex w-full justify-center space-x-2 rounded-2xl p-1.5 fsm:mb-6 sm:gap-2 flg:justify-start [@media(max-width:370px)]:overflow-auto">
+    <div className="mb-4 flex w-full justify-center space-x-2 rounded-2xl p-1.5 sm:gap-2 fsm:mb-6 flg:justify-start [@media(max-width:370px)]:overflow-auto">
       <Link
         href={{
           pathname: AppRoutes.profile.followers,
