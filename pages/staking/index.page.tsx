@@ -4,10 +4,10 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { NoStakingIcon } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
-import { BuyPassportModal } from "@/components/modal/buy-passpost-modal";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 const Staking: NextPageWithLayout = () => {
-  const [showBuyPassportModal, setShowBuyPassportModal] = useState(false);
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
 
   return (
     <section className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center">
@@ -22,15 +22,15 @@ const Staking: NextPageWithLayout = () => {
         </p>
         <FinalButton
           title="Create New"
-          onClick={() => setShowBuyPassportModal(true)}
+          onClick={() => setShowBuyCitizenshipModal(true)}
           variant="primary"
           className="text-14px mt-6 py-3 px-5"
         />
       </div>
-      {showBuyPassportModal && (
-        <BuyPassportModal
-          isOpen={showBuyPassportModal}
-          onClickClose={() => setShowBuyPassportModal(false)}
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
     </section>

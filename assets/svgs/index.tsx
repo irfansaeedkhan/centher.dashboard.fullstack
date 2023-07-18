@@ -137,6 +137,7 @@ export { default as ArrowDownGradient } from "./arrow-down-gradient.svg";
 export { default as ArrowUpGradient } from "./arrow-up-gradient.svg";
 export { default as ClaimableReward } from "./claimable-reward.svg";
 export { default as StakingUsers } from "./staking-users.svg";
+export { default as IconFailure } from "./icon-failure.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

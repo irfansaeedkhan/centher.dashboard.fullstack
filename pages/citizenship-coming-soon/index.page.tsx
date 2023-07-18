@@ -5,10 +5,10 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "@/components/button/final.button";
-import { BuyPassportModal } from "@/components/modal/buy-passpost-modal";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 const CitizenshipComingSoon: NextPageWithLayout = () => {
-  const [showBuyPassportModal, setShowBuyPassportModal] = useState(false);
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
 
   return (
     <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
@@ -61,7 +61,7 @@ const CitizenshipComingSoon: NextPageWithLayout = () => {
             Get your Passport now{" "}
             <span
               className="cursor-pointer text-brand-primary hover:text-brand-primary-dark"
-              onClick={() => setShowBuyPassportModal(true)}
+              onClick={() => setShowBuyCitizenshipModal(true)}
             >
               here
             </span>{" "}
@@ -80,14 +80,14 @@ const CitizenshipComingSoon: NextPageWithLayout = () => {
             variant="primary"
             className="h-10 w-[200px] text-[14px]"
             borderRounded="14px"
-            onClick={() => setShowBuyPassportModal(true)}
+            onClick={() => setShowBuyCitizenshipModal(true)}
           />
         </div>
       </div>
-      {showBuyPassportModal && (
-        <BuyPassportModal
-          isOpen={showBuyPassportModal}
-          onClickClose={() => setShowBuyPassportModal(false)}
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
     </div>
