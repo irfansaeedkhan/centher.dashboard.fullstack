@@ -40,6 +40,7 @@ export const AppRoutes = {
     profile: "/settings/profile",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
+    citizenship_add_details: "/settings/citizenship-add-details",
   },
 
   feed: {

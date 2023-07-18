@@ -1262,6 +1262,74 @@ input[type="radio"] + label:after {
   transition: all 0.2s ease;
 }
 
+input[type="radio"].green-radio + label,
+input[type="radio"].red-radio + label {
+  display: inline-block;
+  position: relative;
+  padding-left: 28px;
+  margin-right: 0px;
+  cursor: pointer;
+  line-height: 20px;
+  font-size: inherit;
+  color: #fff;
+}
+input[type="radio"].green-radio + label:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #76e268;
+  border-radius: 50%;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+input[type="radio"].green-radio + label:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid #76e268;
+  outline: #76e268;
+  background: #76e268;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+input[type="radio"].red-radio + label:before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid #e34048;
+  border-radius: 50%;
+  background: transparent;
+  transition: all 0.2s ease;
+}
+input[type="radio"].red-radio + label:after {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid #e34048;
+  outline: #e34048;
+  background: #e34048;
+  transform: scale(0);
+  transition: all 0.2s ease;
+}
+
 input[type="radio"]:checked + label:after {
   transform: scale(1);
 }

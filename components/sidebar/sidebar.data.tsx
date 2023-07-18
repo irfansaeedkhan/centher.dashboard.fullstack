@@ -57,7 +57,7 @@ export const sidebarData: SidebarData = {
       {
         label: "Staking",
         url: AppRoutes.staking.index,
-        icon: Staking,
+        icon: Launchpad,
         activeList: [
           AppRoutes.staking.index,
           AppRoutes.staking.staking_list,
