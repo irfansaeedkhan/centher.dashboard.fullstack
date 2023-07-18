@@ -32,7 +32,12 @@ const FinalButton: React.FC<ButtonProps> = ({
   return (
     <>
       {isLoading ? (
-        <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7">
+        <button
+          className={clsx(
+            `flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7`,
+            className && className
+          )}
+        >
           <CgSpinner className="h-5 animate-spin" />
         </button>
       ) : (
