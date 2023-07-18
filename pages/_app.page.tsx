@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 // App Imports
 import { RefreshContextProvider } from "@/web3/context/refresh.context";
 import { getLibrary } from "@/web3";
-import { useCreateSocketIOConnection } from "@/socket.io";
+// import { useCreateSocketIOConnection } from "@/socket.io";
 import ScriptTags from "@/components/script.tags";
 import { CookiesConstentModal } from "@/components/modal/cookies-consent.modal";
 import "@/styles/globals.css";
@@ -22,7 +22,7 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Create a socket.io connection
-  useCreateSocketIOConnection();
+  // useCreateSocketIOConnection();
   const getLayout = Component.getLayout || ((page) => page);
 
   return (

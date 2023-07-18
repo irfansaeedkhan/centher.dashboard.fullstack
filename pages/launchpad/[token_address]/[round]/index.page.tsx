@@ -1,13 +1,11 @@
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
-
+import { AppRoutes } from "@/constants/app.routes";
 import { PurchaseCentherCardV2 } from "../../_components/purchase-centher-card-v2";
 import LaunchpadComingSoon from "../../_components/lauchpad.comingsoon";
-import { AppRoutes } from "@/constants/app.routes";
 
 const BuyTokenPage: NextPageWithLayout = () => {
   const router = useRouter();

@@ -1,16 +1,15 @@
 import { NFTCardData } from "@/components/nft.card";
 import { AppError } from "@/utils/app-error";
-
-import { getUserByAddressFromDB } from "../get-user-by-address";
+import { getUserByIdFromDB } from "../get-user-by-id";
 
 export const getNFTOwnerData = async (
-  account_address: string
+  userId: string
 ): Promise<NFTCardData["owner"]> => {
   try {
-    const user = await getUserByAddressFromDB(account_address);
+    const user = await getUserByIdFromDB(userId);
 
     return {
-      account_address,
+      _id: userId,
       display_name: user.display_name,
       is_verified: user.is_verified,
       is_registered: true,
@@ -20,14 +19,11 @@ export const getNFTOwnerData = async (
     // If user is not registered, we will return a default user data
     if (error?.originalError?.response?.status === 404) {
       return {
-        account_address,
-        display_name: account_address,
+        _id: userId,
+        display_name: userId,
         is_verified: false,
         is_registered: false,
-        profile_image: {
-          object_name: "https://static.centher.io/avatars/avatar-1.png",
-          path: "https://static.centher.io/avatars/avatar-1.png",
-        },
+        profile_image: "https://static.centher.io/avatars/avatar-1.png",
       };
     }
     throw new AppError(error, "Can not load NFT Owner Data", "getNFTOwnerData");

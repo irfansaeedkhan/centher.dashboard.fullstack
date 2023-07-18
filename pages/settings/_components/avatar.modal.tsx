@@ -1,9 +1,6 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { AvatarModalWrapper } from "@/components/modal/avatar.modal.wrapper";
 import { useAvatars } from "@/hooks/use.avatars";

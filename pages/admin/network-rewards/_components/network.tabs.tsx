@@ -1,8 +1,8 @@
-import { AppRoutes } from "@/constants/app.routes";
-import clsx from "clsx";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import React from "react";
+import { useRouter } from "next/router";
+import Link from "next/link";
+import clsx from "clsx";
+import { AppRoutes } from "@/constants/app.routes";
 
 const NetworkTabs = () => {
   const router = useRouter();

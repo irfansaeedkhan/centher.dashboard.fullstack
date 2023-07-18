@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
-
 import { useFeedStore } from "@/store/feed.store";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useNewPostStore } from "@/store/new.post.store";

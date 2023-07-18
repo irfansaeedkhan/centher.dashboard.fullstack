@@ -1,10 +1,9 @@
 import React from "react";
-
+import { useRouter } from "next/router";
+import Link from "next/link";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
-import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
-import { useRouter } from "next/router";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 
 interface Props {
@@ -52,7 +51,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 href={{
                   pathname: AppRoutes.profile.nfts,
                   query: {
-                    account_address: item.buyer,
+                    user_id: item.buyer,
                   },
                 }}
               >
@@ -73,7 +72,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 href={{
                   pathname: AppRoutes.profile.nfts,
                   query: {
-                    account_address: item.seller,
+                    user_id: item.seller,
                   },
                 }}
               >

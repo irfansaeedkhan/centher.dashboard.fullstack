@@ -5,7 +5,6 @@ import {
   ImageRestriction,
 } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
-
 import { ModalWrapper } from "@/components/modal";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { CropFunctions } from "../crop-functions";
@@ -15,7 +14,7 @@ interface CropperProps {
   user: LoggedInUser;
   profileImageData: UserImage;
   setCropModal: Dispatch<SetStateAction<boolean>>;
-  setProfileImage: Dispatch<SetStateAction<UserImage>>;
+  setProfileImage: Dispatch<SetStateAction<string>>;
   setProfileImageData: Dispatch<SetStateAction<UserImage>>;
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
 }
@@ -38,10 +37,7 @@ const CropProfilePicture: React.FC<CropperProps> = ({
 
     const file: File = await dataUrlToFile(base64 || "", "cropped-image.png");
     setUploadFile(file);
-    setProfileImage((prev) => ({
-      ...prev,
-      path: base64,
-    }));
+    setProfileImage(base64);
     setProfileImageData((prev) => ({
       ...prev,
       path: base64,

@@ -1,19 +1,18 @@
-import { UserImage } from "@/models/user";
+import { User } from "@/models/user";
 import { AppError } from "@/utils/app-error";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 
 export interface RecommendedPeople {
-  _id: string;
-  display_name: string;
-  account_address: string;
-  profile_image: UserImage;
-  is_verified: boolean;
+  _id: User["_id"];
+  display_name: User["display_name"];
+  profile_image: User["profile_image"];
+  is_verified: User["is_verified"];
   is_followed_by_loggedin_user: boolean;
 }
 
 export const getRecommendedPeople = async (): Promise<RecommendedPeople[]> => {
   try {
-    const res = await axiosNodeApi.get<{ users: RecommendedPeople[] }>(
+    const res = await axiosApiCenther.get<{ users: RecommendedPeople[] }>(
       "/api/socials/recommended-people"
     );
     return res.data.users;

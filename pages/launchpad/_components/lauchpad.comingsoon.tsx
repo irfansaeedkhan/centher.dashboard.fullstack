@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { LockIcon } from "@/assets/svgs";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";

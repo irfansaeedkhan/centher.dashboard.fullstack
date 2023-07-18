@@ -1,11 +1,7 @@
-// React, Next, NPM Packages
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// App imports
 import { AppRoutes } from "@/constants/app.routes";
-import { LogoText } from "@/assets/svgs";
 
 interface SignupProps {
   title: string;

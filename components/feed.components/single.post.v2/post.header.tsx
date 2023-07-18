@@ -5,7 +5,6 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import {
   ArchivedPost,
@@ -16,7 +15,6 @@ import {
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
 
@@ -47,11 +45,8 @@ export const PostHeader: React.FC<Props> = ({
   const [containerWidth, setContainerWidth] = useState(0);
 
   const isPostOwner = useMemo(() => {
-    return (
-      loggedInUser?.account_address.toLowerCase() ===
-      postUser.account_address.toLowerCase()
-    );
-  }, [loggedInUser?.account_address, postUser.account_address]);
+    return loggedInUser?._id.toLowerCase() === postUser._id.toLowerCase();
+  }, [loggedInUser?._id, postUser._id]);
 
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
@@ -122,8 +117,8 @@ export const PostHeader: React.FC<Props> = ({
                 e.stopPropagation();
               }}
               href={{
-                pathname: AppRoutes.profile.account_address,
-                query: { account_address: postUser.account_address },
+                pathname: AppRoutes.profile.user_id,
+                query: { user_id: postUser._id },
               }}
               className={clsx(
                 `word-break flex w-full max-w-max items-center truncate text-sm font-semibold text-white hover:text-brand-primary`
@@ -164,9 +159,9 @@ export const PostHeader: React.FC<Props> = ({
                   e.stopPropagation();
                 }}
                 href={{
-                  pathname: AppRoutes.profile.account_address,
+                  pathname: AppRoutes.profile.user_id,
                   query: {
-                    account_address: parentPost.user.account_address,
+                    user_id: parentPost.user._id,
                   },
                 }}
                 className="word-break group mt-0.5 flex items-center truncate text-xs font-medium text-white"

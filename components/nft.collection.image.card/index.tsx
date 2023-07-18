@@ -1,12 +1,11 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
-
 import { Collection } from "@/models/nft";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
+
 export interface NFTCardProps {
   data: Collection;
 }

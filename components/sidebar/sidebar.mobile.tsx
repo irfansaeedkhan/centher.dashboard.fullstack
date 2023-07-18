@@ -1,18 +1,13 @@
-// React, Next, NPM Packages
 import React, { RefObject, useRef } from "react";
 import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { useOnClickOutside } from "usehooks-ts";
 import { IoSearchSharp } from "react-icons/io5";
-
-// App imports
+import { logout } from "@/lib/auth";
 import useUser from "@/hooks/use.user";
-import { axiosNodeApi } from "@/utils/axios";
 import { Logout } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-
-// Current directory imports
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
 import { SidebarSections } from "./sidebar.data";
@@ -31,28 +26,21 @@ export const SidebarMobile: React.FC<SidebarMobileProps> = ({
   const ref = useRef<HTMLDivElement>(null);
   const { user, isLoading: isUserLoading } = useUser();
 
-  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     const button = e.currentTarget;
     button.disabled = true;
     onClose();
-    axiosNodeApi
-      .post("/api/auth/logout")
-      .then(({ data }) => {
-        button.disabled = false;
-        toast.success(data.message_description ?? "Logged out successfully!");
-        window.location.replace(AppRoutes.auth.login);
-      })
-      .catch((err: any) => {
-        // If user is already logged out, reload the page
-        if (err.response?.data?.message === "unauthenticated") {
-          window.location.replace(AppRoutes.auth.login);
-          return;
-        }
-        button.disabled = false;
-        toast.error(
-          err.response?.data?.message_description ?? "Something went wrong!"
-        );
-      });
+    try {
+      const data = await logout();
+      toast.success(data.message);
+      window.location.replace(AppRoutes.auth.login);
+    } catch (err: any) {
+      toast.error(err.message ?? "Something went wrong!");
+    } finally {
+      button.disabled = false;
+    }
   };
 
   useOnClickOutside(ref, (e) => {

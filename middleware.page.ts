@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
 import {
   changePaths,
   checkMatch,
@@ -93,7 +92,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.home,
   AppRoutes.search,
 
-  AppRoutes.profile.account_address,
+  AppRoutes.profile.user_id,
   AppRoutes.profile.replies,
   AppRoutes.profile.following,
   AppRoutes.profile.followers,

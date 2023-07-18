@@ -84,7 +84,9 @@ jobs:
       - name: Setup build time public environment variables and store in .env.production
         run: |
           echo "NEXT_PUBLIC_APP_ENV=${{ vars.NEXT_PUBLIC_APP_ENV }}" >> .env.production
-          echo "NEXT_PUBLIC_NODE_API_HOST=${{ vars.NEXT_PUBLIC_NODE_API_HOST }}" >> .env.production
+          echo "NEXT_PUBLIC_CAPI_HOST=${{ vars.NEXT_PUBLIC_CAPI_HOST }}" >> .env.production
+          echo "NEXT_PUBLIC_CIS_HOST=${{ vars.NEXT_PUBLIC_CIS_HOST }}" >> .env.production
+          echo "NEXT_PUBLIC_CFS_HOST=${{ vars.NEXT_PUBLIC_CFS_HOST }}" >> .env.production
           echo "NEXT_PUBLIC_MORALIS_URL=${{ vars.NEXT_PUBLIC_MORALIS_URL }}" >> .env.production
           echo "NEXT_PUBLIC_IPFS_GATEWAY_URL=${{ vars.NEXT_PUBLIC_IPFS_GATEWAY_URL }}" >> .env.production
           echo "NEXT_PUBLIC_PRE_BOOKING_API_URL=${{ vars.NEXT_PUBLIC_PRE_BOOKING_API_URL }}" >> .env.production

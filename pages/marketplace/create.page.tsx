@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -19,7 +18,6 @@ import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
@@ -121,7 +119,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("Please login for creating NFT!");
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }

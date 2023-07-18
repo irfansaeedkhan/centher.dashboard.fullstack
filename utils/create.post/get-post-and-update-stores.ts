@@ -11,17 +11,19 @@ export const getPostAndUpdateStores = async ({
   postId,
   newPostsCount,
   modalType,
+  isAuthenticated,
 }: {
   parentPostId: string | null;
   postId: string;
   newPostsCount: number;
   modalType: ModalType;
+  isAuthenticated: boolean;
 }) => {
   // Add the post to the following stores:
   // - Feed store, My Posts Store (if it is not a reply)
   // - Single Post store, My Replies Store (if it is a reply)
 
-  const post = await getPost(postId);
+  const post = await getPost(postId, isAuthenticated);
 
   if (modalType === null) return;
 

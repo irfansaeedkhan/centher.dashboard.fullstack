@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Image from "next/image";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
-
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -15,14 +15,12 @@ import {
   WalletIconModal,
   MetamaskIcon,
 } from "@/assets/svgs";
-
 import { InputField } from "./input.field";
 import { SignupState, FeeModalState } from "./form.fields.data";
 import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
-import Link from "next/link";
 
 // Initial Signup State
 const initialSignupState: SignupState = {

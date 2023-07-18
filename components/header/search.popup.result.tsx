@@ -2,11 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import clsx from "clsx";
-
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { SearchIcon } from "@/assets/svgs";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   user: User;
@@ -30,7 +29,12 @@ const SearchPopupResult: React.FC<Props> = ({
           setSearchQueryInput("");
           setOpenPopup(false);
         }}
-        href={`/profile/${user.account_address}`}
+        href={{
+          pathname: AppRoutes.profile.user_id,
+          query: {
+            user_id: user._id,
+          },
+        }}
       >
         <span
           title={user.display_name}

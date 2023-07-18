@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -9,7 +8,6 @@ import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
-
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
@@ -18,7 +16,8 @@ import { formatAddress } from "@/utils/format.address";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
-
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { User } from "@/models/user";
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
@@ -27,9 +26,6 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
-import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import { User } from "@/models/user";
-// import { NFTHistory } from "./nft.history";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -40,10 +36,9 @@ export const NFTRightSideComponent = ({
   setNftData,
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
-  const { library, account } = useWeb3React();
+  const { account } = useWeb3React();
   const router = useRouter();
   const { user } = useGetUser(data?.creator);
-  // const { user: creatorProfile } = useGetUser(router.query.account_address?.toString());
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
 
@@ -71,10 +66,8 @@ export const NFTRightSideComponent = ({
   const verificationOwnerTick = useVerificationTick({ user: _nftOwner });
 
   // FIXME: This is a quick fix for the case when the nft owner is not in the database
-  let nftOwner: Pick<
-    User,
-    "_id" | "account_address" | "display_name" | "profile_image"
-  > | null = null;
+  let nftOwner: Pick<User, "_id" | "display_name" | "profile_image"> | null =
+    null;
 
   if (
     !_nftOwner &&
@@ -82,12 +75,8 @@ export const NFTRightSideComponent = ({
   ) {
     nftOwner = {
       _id: nftOwnerAddress,
-      account_address: nftOwnerAddress,
       display_name: nftOwnerAddress,
-      profile_image: {
-        object_name: "https://static.centher.io/avatars/avatar-1.png",
-        path: "https://static.centher.io/avatars/avatar-1.png",
-      },
+      profile_image: "https://static.centher.io/avatars/avatar-1.png",
     };
   } else {
     nftOwner = _nftOwner;
@@ -151,7 +140,7 @@ export const NFTRightSideComponent = ({
         <div className={clsx(nameBox)}>
           {user ? (
             <Image
-              src={user?.profile_image.path}
+              src={user?.profile_image}
               width={48}
               height={48}
               alt="profile"
@@ -167,7 +156,7 @@ export const NFTRightSideComponent = ({
                 href={{
                   pathname: AppRoutes.profile.owned,
                   query: {
-                    account_address: data?.creator,
+                    user_id: data?.creator,
                   },
                 }}
                 className={clsx(
@@ -197,7 +186,7 @@ export const NFTRightSideComponent = ({
         <div className={clsx(nameBox)}>
           {nftOwner ? (
             <Image
-              src={nftOwner?.profile_image.path}
+              src={nftOwner?.profile_image}
               width={48}
               height={48}
               alt="profile"
@@ -213,7 +202,7 @@ export const NFTRightSideComponent = ({
                 href={{
                   pathname: AppRoutes.profile.owned,
                   query: {
-                    account_address: nftOwnerAddress,
+                    user_id: nftOwnerAddress,
                   },
                 }}
                 className={`text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}

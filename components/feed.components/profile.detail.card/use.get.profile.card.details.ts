@@ -1,27 +1,26 @@
-// React, Next, NPM Packages
 import { useEffect } from "react";
-
-// App imports
 import {
   initialProfileCard,
   useProfileCardStore,
 } from "@/store/profile.card.store";
 import { User } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getAllUserGenealogy } from "@/lib/get-user-genealogy";
+import useUser from "@/hooks/use.user";
 
 export const useGetProfileCardDetails = (user: User) => {
+  const { user: loggedInUser } = useUser();
   const { profileCard, setProfileCard } = useProfileCardStore();
 
   useEffect(() => {
-    const account_address = user.account_address;
+    const userId = user._id;
 
-    if (account_address) {
+    if (userId) {
       (async () => {
         try {
-          const users = await getAllUserGenealogy(account_address);
-          const res = await getProfileCardDetails(account_address);
+          const users = await getAllUserGenealogy(userId);
+          const res = await getProfileCardDetails(userId, !!loggedInUser);
           res.profileCardDetails.total_referrees = users.flat().length || 0;
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
@@ -30,14 +29,21 @@ export const useGetProfileCardDetails = (user: User) => {
         }
       })();
     }
-  }, [user, setProfileCard]);
+  }, [user, setProfileCard, loggedInUser]);
 
   return profileCard;
 };
 
-const getProfileCardDetails = async (account_address: string) => {
-  const { data } = await axiosNodeApi.get(
-    `/api/socials/analytics/profile-card/${account_address}`
-  );
+const getProfileCardDetails = async (
+  userId: string,
+  isAuthenticated: boolean
+) => {
+  let url = `/api/socials/analytics/profile-card/${userId}`;
+
+  if (isAuthenticated && process.env.NEXT_PUBLIC_APP_ENV !== "development") {
+    url += "/with-auth";
+  }
+
+  const { data } = await axiosApiCenther.get(url);
   return data;
 };

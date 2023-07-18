@@ -1,11 +1,7 @@
-// React, Next, NPM Packages
 import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
-
-// App imports
 import { IModalProps } from "@/components/modal/standard.modal";
 import FinalButton from "@/components/button/final.button";
 import {
@@ -32,8 +28,6 @@ import useUser from "@/hooks/use.user";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-
-// same directory
 import AuctionBidModal from "./auction.bid.modal";
 
 interface AuctionNFTBuyerDescriptionProps {
@@ -471,8 +465,7 @@ export const AuctionNFTBuyerDescription = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import clsx from "clsx";
-
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
@@ -71,9 +70,9 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             onClick={(e) => {
               e.stopPropagation();
               router.push({
-                pathname: AppRoutes.profile.account_address,
+                pathname: AppRoutes.profile.user_id,
                 query: {
-                  account_address: data.creator.account_address,
+                  user_id: data.creator._id,
                 },
               });
             }}
@@ -135,7 +134,7 @@ export interface CollectionCardData {
   coverImage: string;
   description: string;
   creator: {
-    account_address: User["account_address"];
+    _id: User["_id"];
     display_name: User["display_name"];
     is_verified: User["is_verified"];
     is_registered: boolean;

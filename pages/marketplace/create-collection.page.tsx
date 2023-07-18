@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -17,7 +16,7 @@ import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
+import { AppRoutes } from "@/constants/app.routes";
 import { ICollectionData } from "./_components/create.collection.form";
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
@@ -124,7 +123,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       toastError("Please login for creating collection!");
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -236,7 +235,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
-                  router.push(`/profile/${account}/nfts/collection`);
+                  router.push({
+                    pathname: AppRoutes.profile.collection,
+                    query: { user_id: account },
+                  });
                 }}
                 className="w-full"
               />

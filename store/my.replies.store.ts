@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import { likePost } from "@/components/feed.components";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 export interface RepliesStore {
@@ -49,7 +49,7 @@ export const useMyRepliesStore = create<RepliesStore>()(
           const limit = 10;
 
           const url = `/api/socials/posts/user/replies?offset=${offset}&limit=${limit}`;
-          const { data } = await axiosNodeApi.get(url);
+          const { data } = await axiosApiCenther.get(url);
           set((state) => {
             const filteredPosts = state.posts.filter(
               (statePost) =>

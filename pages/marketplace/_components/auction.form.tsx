@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { IoIosClose } from "react-icons/io";
@@ -9,8 +8,6 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
 import Joi from "joi";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
@@ -20,7 +17,6 @@ import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
-
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -422,8 +418,7 @@ const AuctionForm = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

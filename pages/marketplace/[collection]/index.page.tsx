@@ -12,7 +12,6 @@ import { useInView } from "react-intersection-observer";
 import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbWorld } from "react-icons/tb";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
@@ -22,13 +21,11 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
-
 import {
   DotsIcon,
   FacebookCircleIcon,
@@ -326,7 +323,7 @@ const Collection: NextPageWithLayout = () => {
                       href={{
                         pathname: AppRoutes.profile.nfts,
                         query: {
-                          account_address: info?.creator,
+                          user_id: info?.creator,
                         },
                       }}
                       className={clsx(

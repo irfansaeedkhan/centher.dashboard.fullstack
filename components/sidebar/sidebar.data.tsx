@@ -1,4 +1,3 @@
-// App imports
 import {
   Feed,
   Chat,
@@ -6,12 +5,9 @@ import {
   Explore,
   Notification,
   Launchpad,
-  NetworkGenealogy,
-  NetworkRewards,
   CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-
 import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {

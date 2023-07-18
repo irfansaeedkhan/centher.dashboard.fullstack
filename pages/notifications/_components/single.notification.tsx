@@ -1,10 +1,9 @@
 import React from "react";
-import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
+import Link, { LinkProps } from "next/link";
 import Image from "next/image";
 import moment from "moment";
 import clsx from "clsx";
-
 import {
   Notification,
   useNotificationsStore,
@@ -59,7 +58,7 @@ export const SingleNotification: React.FC<SingleNotificationProps> = ({
           className="flex flex-shrink-0"
         >
           <Image
-            src={notification.by.profile_image.path}
+            src={notification.by.profile_image}
             alt="dp"
             width={44}
             height={44}
@@ -106,8 +105,8 @@ const getNotificationMessage = (
           e.stopPropagation();
         }}
         href={{
-          pathname: AppRoutes.profile.account_address,
-          query: { account_address: notification.by.account_address },
+          pathname: AppRoutes.profile.user_id,
+          query: { user_id: notification.by._id },
         }}
         className={clsx(
           `break-words hover:text-brand-primary`,
@@ -215,8 +214,8 @@ const getNotificationUrl = (
     case "centher_purchase_busd":
     case "centher_purchase_ntr":
       return {
-        pathname: AppRoutes.profile.account_address,
-        query: { account_address: notification.by.account_address },
+        pathname: AppRoutes.profile.user_id,
+        query: { user_id: notification.by._id },
       };
     case "presale_booking":
       return {
@@ -246,8 +245,8 @@ const getNotificationImageUrl = (
     case "centher_purchase_busd":
     case "centher_purchase_ntr":
       return {
-        pathname: AppRoutes.profile.account_address,
-        query: { account_address: notification.by.account_address },
+        pathname: AppRoutes.profile.user_id,
+        query: { user_id: notification.by._id },
       };
     case "presale_booking":
       return {

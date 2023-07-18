@@ -1,10 +1,7 @@
-// React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-// App imports
-import { LogoText, PlusIconBtn } from "@/assets/svgs";
+import { PlusIconBtn } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 
 export interface AdminHeaderProps {
@@ -16,16 +13,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
   return (
     <div>
       <div
-        className={`
-  flex
-  h-[60px]
-  w-full
-  items-center
-  border-b-[1.5px]
-  border-gray-shade-border-color
-  bg-background-shade-1
-  px-5
-`}
+        className={`flex h-[60px] w-full items-center border-b-[1.5px] border-gray-shade-border-color bg-background-shade-1 px-5`}
       >
         <div className={`w-72`}>
           <Link
@@ -52,22 +40,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
           {props.url && (
             <Link
               href={props.url}
-              className={`
-  group 
-  flex 
-  cursor-pointer 
-  items-center 
-  gap-2 
-  rounded-lg 
-  bg-brand-primary 
-  px-3 
-  py-2
-  text-sm
-  font-semibold
-  text-black-shade-2
-  hover:bg-gray-shade-3 
-  hover:text-brand-primary
-`}
+              className={`group flex cursor-pointer items-center gap-2 rounded-lg bg-brand-primary px-3 py-2 text-sm font-semibold text-black-shade-2 hover:bg-gray-shade-3  hover:text-brand-primary`}
             >
               <PlusIconBtn
                 className={`stroke-black group-hover:stroke-brand-primary`}

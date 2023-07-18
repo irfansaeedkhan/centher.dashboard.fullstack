@@ -6,15 +6,12 @@ import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
-
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-
 import { AppRoutes } from "@/constants/app.routes";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import {
   ConnectIcon,
   DisconnectIcon,
@@ -54,7 +51,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
     if (!account || !loggedInUser) {
       return;
     }
-    if (loggedInUser.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (loggedInUser._id.toLowerCase() !== account.toLowerCase()) {
       deactivate();
     }
   }, [deactivate, loggedInUser, account]);
@@ -74,7 +71,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       >
         {loggedInUser && (
           <Image
-            src={loggedInUser.profile_image.path}
+            src={loggedInUser.profile_image}
             alt={loggedInUser.display_name}
             width={40}
             height={40}
@@ -104,7 +101,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             )}
           </div>
           <a
-            href={`${BlockchainConfig.scanner.url}/address/${loggedInUser?.account_address}`}
+            href={`${BlockchainConfig.scanner.url}/address/${loggedInUser?._id}`}
             target={"_blank"}
             rel="noreferrer"
             title="View on Explorer"
@@ -124,9 +121,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       <div className="border-b border-gray-shade-border-color px-4 py-3">
         <Link
           href={{
-            pathname: AppRoutes.profile.account_address,
+            pathname: AppRoutes.profile.user_id,
             query: {
-              account_address: loggedInUser?.account_address,
+              user_id: loggedInUser?._id,
             },
           }}
           onClick={onClickOutside}
@@ -155,8 +152,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               readOnly
               value={
                 window.location.origin +
-                "/auth/register?referred_by=" +
-                loggedInUser?.account_address
+                AppRoutes.auth.register +
+                "?referred_by=" +
+                loggedInUser?._id
               }
               className="w-full rounded-md border-0 bg-black-shade-3 py-2 pl-3 text-xs font-medium text-gray-shade-7 focus:outline-none focus:ring-0"
             />
@@ -165,8 +163,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               onClick={async () => {
                 await copyText(
                   window.location.origin +
-                    "/auth/register?referred_by=" +
-                    loggedInUser?.account_address
+                    AppRoutes.auth.register +
+                    "?referred_by=" +
+                    loggedInUser?._id
                 );
                 toast.success("Referral link copied!");
               }}
@@ -182,13 +181,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               name="referral_link"
               id="referral_link"
               readOnly
-              value={loggedInUser?.account_address}
+              value={loggedInUser?._id}
               className="w-full rounded-md border-0 bg-black-shade-3 py-2 pl-3 text-xs font-medium text-gray-shade-7 focus:outline-none focus:ring-0"
             />
             <FiCopy
               className="ml-2 h-5 w-5 stroke-gray-shade-7 hover:stroke-brand-primary"
               onClick={async () => {
-                await copyText(loggedInUser?.account_address ?? "");
+                await copyText(loggedInUser?._id ?? "");
                 toast.success("Account address copied!");
               }}
             />
@@ -216,10 +215,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             onClick={async () => {
               if (!loggedInUser) return;
               const _account = await connectWallet();
-              if (
-                loggedInUser.account_address.toLowerCase() !==
-                _account?.toLowerCase()
-              ) {
+              if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
                 toast.error("Please connect to correct account");
                 deactivate();
               }

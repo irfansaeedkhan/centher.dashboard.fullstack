@@ -108,19 +108,14 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
           <button
             className="bg-yellow-theme flex w-full cursor-pointer items-center justify-center rounded-lg py-3 px-2 text-sm font-semibold tracking-wide text-black shadow-lg transition-all duration-150 ease-linear"
             onClick={async () => {
-              const res = await fetch(
-                previewCanvasRef.current?.toDataURL("image/webp") ?? ""
-              );
-              const blob = await res.blob();
-              const file = new File(
-                [blob],
-                user?.account_address + "-" + Date.now(),
-                {
-                  type: "image/webp",
-                }
-              );
-              const previewUrl = URL.createObjectURL(file);
-
+              // const res = await fetch(
+              //   previewCanvasRef.current?.toDataURL("image/webp") ?? ""
+              // );
+              // const blob = await res.blob();
+              // const file = new File([blob], user?._id + "-" + Date.now(), {
+              //   type: "image/webp",
+              // });
+              // const previewUrl = URL.createObjectURL(file);
               // setCustomProfileImage(file);
               setCapture(false);
             }}

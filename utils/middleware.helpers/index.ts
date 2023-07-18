@@ -1,4 +1,4 @@
 export { changePaths } from "./change.paths";
 export { checkMatch } from "./check.match";
-export { getSessionUser } from "./get.session.user";
+export { validateRefreshToken } from "./validate-refresh-token";
 export { isAdmin, isAuthenticated } from "./protectors";
