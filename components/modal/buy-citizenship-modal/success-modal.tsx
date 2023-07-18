@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
+import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "../../button/final.button";
 
 interface CustomModalProps {
@@ -10,6 +12,8 @@ interface CustomModalProps {
 export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
   onClickClose,
 }) => {
+  const router = useRouter();
+
   return (
     <div className="flex flex-col gap-8 text-center">
       <Image
@@ -30,7 +34,10 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
         </p>
       </div>
       <FinalButton
-        onClick={onClickClose}
+        onClick={() => {
+          onClickClose();
+          router.push({ pathname: AppRoutes.settings.citizenship_add_details });
+        }}
         title="Continue"
         variant="primary"
         className="text-14px  w-full py-3 hover:text-black"
