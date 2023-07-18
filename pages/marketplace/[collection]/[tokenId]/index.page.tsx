@@ -48,6 +48,11 @@ const NFT: NextPageWithLayout = () => {
             mintTx={nftData?.mintTx}
             collection={nftData?.collection}
             attributes={nftData?.attributes}
+            collectionMintedTokens={
+              !nftData?.collectionMintedTokens
+                ? 0
+                : +nftData.collectionMintedTokens
+            }
           />
           <NFTRightSideComponent data={nftData} setNftData={setNftData} />
         </div>

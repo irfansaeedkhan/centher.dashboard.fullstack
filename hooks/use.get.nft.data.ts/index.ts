@@ -57,6 +57,7 @@ export interface INFTDetailData {
   listingHistory: IListHistory[];
   priceHistory: IListHistory[];
   unlock: number;
+  collectionMintedTokens: number;
 }
 
 export const useGetNftData = (
@@ -102,6 +103,10 @@ export async function fetchNft(
       item.type === "EndAuction"
     );
   });
+
+  const collectionMintedTokens =
+    await BlockchainRead.getCollectionMintedTokensCount(collection);
+
   if (nftResult) {
     const metadata = await axios.get(formatIPFSUrl(nftResult.ipfs));
 
@@ -123,6 +128,7 @@ export async function fetchNft(
       listingHistory: listResult,
       priceHistory: _priceHistories,
       unlock: nftResult.unlock,
+      collectionMintedTokens: collectionMintedTokens,
     };
     return _nftData;
   } else return null;

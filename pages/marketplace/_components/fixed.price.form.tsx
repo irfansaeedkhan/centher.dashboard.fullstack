@@ -32,6 +32,7 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
+  NFTSupply: Joi.number(),
 });
 interface FixedPriceFormProps {
   createNFT: any;
@@ -45,6 +46,7 @@ interface FormFields {
   Description: String;
   NFTAmount: number | null;
   NFTPrice: number | null;
+  NFTSupply: number | null;
   Collection: String;
 }
 // TODO: Kindly fix any types
@@ -87,6 +89,7 @@ const FixedPriceForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
+        NFTSupply: 1,
         // NFTPrice: null,
         // Collection: "",
       },
@@ -135,10 +138,11 @@ const FixedPriceForm = ({
       setNFTPriceError("Field Required");
       return;
     }
+
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
-      supply: 1,
+      supply: data.NFTSupply,
       collection: selectedOption,
       isAuction: false,
       price: changeNFTPrice,
@@ -155,6 +159,7 @@ const FixedPriceForm = ({
       reset({
         NFTName: "",
         Description: "",
+        NFTSupply: 1,
       });
       setSelectedOption(collections[0].collection);
       setPropertyList([]);
@@ -266,6 +271,26 @@ const FixedPriceForm = ({
           onSelect={handleOptionSelect}
           error={collectionErrorMsg}
         />
+      </div>
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>
+          Supply <span className="text-red-500">*</span>{" "}
+        </label>
+        <input
+          type="number"
+          id="NFTSupply"
+          autoComplete="off"
+          {...register("NFTSupply")}
+          placeholder="eg. 1"
+          className={clsx(
+            !formState.errors.NFTSupply ? inputField : inputFieldError
+          )}
+        />
+        {formState.errors.NFTSupply && (
+          <p className={`text-red-500 ${errMessage}`}>
+            {formState.errors.NFTSupply.message}
+          </p>
+        )}
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>

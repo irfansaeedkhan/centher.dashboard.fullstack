@@ -26,6 +26,7 @@ import {
   registrationHistory,
   saleQuery,
   topCreatorsQuery,
+  getCollectionMintedNFTs,
 } from "@/subgraph/querys";
 import { QueryNames } from "../enum/query.names.enum";
 import { IQueryStorage } from "../types";
@@ -59,6 +60,7 @@ export class QueryFactory {
     PURCHASE_WITH_NTR: purchaseWithNtrHistory,
     CLAIM_CENTHER_HISTORY: claimCentherHistory,
     REGISTRATION_HISTORY: registrationHistory,
+    GET_COLLECTION_MINTED_NFTS: getCollectionMintedNFTs,
   };
 
   static getQuery(name: QueryNames): string {
