@@ -4,6 +4,8 @@ import { IUploader } from "../interfaces/file.uploader.interface";
 import { safeNameType } from "../interfaces/safe.file.wrapper.interface";
 import { IUploadParam } from "../interfaces/upload.param.interface";
 
+import { create } from "ipfs-http-client";
+
 //Based on https://docs.moralis.io/web3-data-api/evm/how-t;o-upload-a-folder-to-ipfs
 type uploadResult = { path: string };
 type uploaderFunc = (params: any) => Promise<{ result: uploadResult[] }>;
@@ -31,27 +33,54 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
 
   async upload(input: IUploadParam): Promise<string> {
     try {
-      if (!input.content?.length) {
-        throw new Error("asset must contains a name field.");
+      // if (!input.content?.length) {
+      //   throw new Error("asset must contains a name field.");
+      // }
+      // if (!input.path?.length) {
+      //   throw new Error("invalid path.");
+      // }
+      // if (!this._instance) {
+      //   this._instance = await this.initInstance();
+      // }
+      // console.log(input.path);
+      // const uploadResult: { result: uploadResult[] } = await this._instance({
+      //   abi: [input],
+      // });
+      // if (!uploadResult?.result?.filter(Boolean)?.length) {
+      //   throw new Error("upload failed.");
+      // }
+      // const result = this.extractUploadedFilePath(uploadResult.result[0]);
+      // console.log(result);
+      // return result;
+
+      try {
+        const options = {
+          wrapWithDirectory: true,
+          progress: (prog: any) => console.log(`received: ${prog}`),
+        };
+
+        const projectId = "2M2ncIkG7clkEEwlgEJJDr6l4R0";
+        const projectSecret = "4c84123a96cf4c78d8ab769f296cf8ea";
+        const auth =
+          "Basic " +
+          Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+        const ipfs = create({
+          host: "ipfs.infura.io",
+          port: 5001,
+          protocol: "https",
+          headers: {
+            authorization: auth,
+          },
+          timeout: 10000000,
+        });
+
+        const added = await ipfs.add(input, options);
+        return added.cid.toString() + "/" + input.path;
+      } catch (err) {
+        console.log(err);
+        throw err;
       }
-
-      if (!input.path?.length) {
-        throw new Error("invalid path.");
-      }
-
-      if (!this._instance) {
-        this._instance = await this.initInstance();
-      }
-
-      const uploadResult: { result: uploadResult[] } = await this._instance({
-        abi: [input],
-      });
-
-      if (!uploadResult?.result?.filter(Boolean)?.length) {
-        throw new Error("upload failed.");
-      }
-
-      return this.extractUploadedFilePath(uploadResult.result[0]);
     } catch (err) {
       typeof err == "string" ? (err = new Error(err)) : err;
       throw err;

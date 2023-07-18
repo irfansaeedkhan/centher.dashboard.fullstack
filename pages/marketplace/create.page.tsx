@@ -82,10 +82,10 @@ const CreateNFT: NextPageWithLayout = () => {
     let nfdCreated = false;
     try {
       const nftUploader = new NFTUploader(nftRemoteBasePath);
-      const file = await readFileAsync(asset);
+      // const file = await readFileAsync(asset);
       const castedNftData = nftData as INFTData;
       const nftMetadataPath = await nftUploader.uploadNFT(
-        file,
+        asset,
         castedNftData,
         asset as any as safeNameType
       );
@@ -104,6 +104,7 @@ const CreateNFT: NextPageWithLayout = () => {
       );
       nfdCreated = !!result;
     } catch (error) {
+      console.log(error);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );
