@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "@/components/button/final.button";
 
 export const UserNotFound: React.FC = () => {
   return (
@@ -15,11 +16,13 @@ export const UserNotFound: React.FC = () => {
             Seems like the account address you searched for does not exist,
             Please try again.
           </div>
-          <Link
-            href={AppRoutes.feed.index}
-            className="my-7 w-[197px] rounded-lg bg-brand-primary py-2 text-center text-sm font-bold text-black-shade-3 hover:bg-brand-primary-dark"
-          >
-            Back to home
+          <Link href={AppRoutes.feed.index}>
+            <FinalButton
+              title="Back to home"
+              variant="primary"
+              className="mb-3 h-10 w-[150px] text-[14px]"
+              borderRounded="14px"
+            />
           </Link>
         </div>
         <Image

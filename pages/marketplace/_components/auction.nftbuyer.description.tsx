@@ -378,7 +378,7 @@ export const AuctionNFTBuyerDescription = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
-          className="w-full rounded-[14px]"
+          className="w-full rounded-[14px] hover:scale-95"
         />
       ) : (
         <div className="buttonContainer flex items-center">

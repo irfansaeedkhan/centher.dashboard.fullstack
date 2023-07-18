@@ -328,6 +328,7 @@ const AuctionForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="hover:scale-95"
         />
       ) : (
         <FinalButton
@@ -339,7 +340,7 @@ const AuctionForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2"
+          className="mt-2 hover:scale-95"
         />
       )}
       {propertyModal && (

@@ -163,7 +163,7 @@ export const FixedPriceNFTBuyerDescription = ({
             <FinalButton
               title={"Checkout"}
               variant="primary"
-              className="w-full rounded-[14px]"
+              className="hover:scale- w-full rounded-[14px] hover:scale-95"
               onClick={handleBuyNFT}
             />
           </div>
@@ -275,7 +275,7 @@ export const FixedPriceNFTBuyerDescription = ({
               }
               buyNFTStep1Func();
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         ) : (
           <FinalButton
@@ -284,7 +284,7 @@ export const FixedPriceNFTBuyerDescription = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         )}
       </div>

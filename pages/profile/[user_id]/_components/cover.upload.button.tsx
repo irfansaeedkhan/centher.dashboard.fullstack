@@ -30,9 +30,9 @@ const uploadButtonVariants = cva(
   {
     variants: {
       variant: {
-        "upload-cover": `bg-brand-primary hover:bg-brand-primary-dark text-black-shade-3`,
+        "upload-cover": ``,
         "edit-cover": `bg-black bg-opacity-30 text-white`,
-        cancel: `bg-black-shade-3 hover:bg-black-shade-4 text-white`,
+        cancel: ` text-white`,
       },
     },
     defaultVariants: {

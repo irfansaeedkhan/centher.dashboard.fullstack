@@ -17,6 +17,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -231,11 +232,17 @@ export const PostHeader: React.FC<Props> = ({
                 post_id: parentPost._id,
               },
             }}
-            className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
           >
-            {postType === "thread-post-w-parent-header"
-              ? "View Thread"
-              : "View Post"}
+            <FinalButton
+              title={
+                postType === "thread-post-w-parent-header"
+                  ? "View Thread"
+                  : "View Post"
+              }
+              variant="primary"
+              className="h-10 w-[100px] text-[14px] hover:scale-90"
+              borderRounded="14px"
+            />
           </Link>
         )}
     </div>
