@@ -25,12 +25,11 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
       />
       <div className="flex flex-col gap-2">
         <h2 className="text-base font-semibold text-white fsm:text-lg">
-          You are all Set!
+          You are almost done!
         </h2>
         <p className="text-14px font-medium text-gray-shade-14">
-          Congratulations! you have successfully subscribed to{" "}
-          <span className="text-gradient">Centher Passport CITIZEN </span>{" "}
-          Membership. Enjoy the best experience with us.
+          Now you have to complete a couple more steps to set{" "}
+          <span className="text-gradient"> CITIZEN Passport Membership. </span>{" "}
         </p>
       </div>
       <FinalButton
