@@ -1,16 +1,11 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import { CgSpinner } from "react-icons/cg";
 import toast from "react-hot-toast";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
-
-// Current directory imports
+import { updateMe } from "@/lib/user";
 import { InputField } from "./input.field";
 
 interface EditProfileFormProps {
@@ -35,26 +30,23 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
     button.disabled = true;
     setisLoading("loading");
     try {
-      const { data } = await axiosNodeApi.patch("/api/users/me", {
-        pseudonym: updatedUser.pseudonym,
-        first_name: updatedUser.first_name,
-        last_name: updatedUser.last_name,
-        display_name_field: updatedUser.display_name_field,
-        website_url: updatedUser.website_url,
-        twitter_username: updatedUser.twitter_username,
-        profile_bio: updatedUser.profile_bio,
-        facebook_username: updatedUser.facebook_username,
-        instagram_username: updatedUser.instagram_username,
-        tiktok_username: updatedUser.tiktok_username,
-        twitch_username: updatedUser.twitch_username,
-        onlyfans_username: updatedUser.onlyfans_username,
-        youtube_url: updatedUser.youtube_url,
-        telegram_username: updatedUser.telegram_username,
+      const updatedUserRes = await updateMe({
+        social_media: {
+          website_url: updatedUser.social_media.website_url,
+          twitter_username: updatedUser.social_media.twitter_username,
+          facebook_username: updatedUser.social_media.facebook_username,
+          instagram_username: updatedUser.social_media.instagram_username,
+          tiktok_username: updatedUser.social_media.tiktok_username,
+          twitch_username: updatedUser.social_media.twitch_username,
+          onlyfans_username: updatedUser.social_media.onlyfans_username,
+          youtube_url: updatedUser.social_media.youtube_url,
+          telegram_username: updatedUser.social_media.telegram_username,
+        },
       });
 
-      setUpdatedUser(data.user as LoggedInUser);
+      setUpdatedUser(updatedUserRes as LoggedInUser);
 
-      await mutate("/api/users/me", data.user, false);
+      await mutate("/api/users/me", updatedUserRes, false);
 
       toast.success("Social links updated successfully");
       setisLoading("loaded");
@@ -78,11 +70,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="website_url"
           label="Website URL"
           placeholder="e.g. https://stevenpaul.com"
-          value={updatedUser.website_url}
+          value={updatedUser.social_media.website_url}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              website_url: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                website_url: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -92,11 +87,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="twitter_username"
           label="Twitter Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.twitter_username}
+          value={updatedUser.social_media.twitter_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              twitter_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                twitter_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -106,11 +104,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="facebook_username"
           label="Facebook Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.facebook_username}
+          value={updatedUser.social_media.facebook_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              facebook_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                facebook_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -120,11 +121,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="instagram_username"
           label="Instagram Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.instagram_username}
+          value={updatedUser.social_media.instagram_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              instagram_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                instagram_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -134,11 +138,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="tiktok_username"
           label="Tiktok Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.tiktok_username}
+          value={updatedUser.social_media.tiktok_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              tiktok_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                tiktok_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -148,11 +155,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="twitch_username"
           label="Twitch Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.twitch_username}
+          value={updatedUser.social_media.twitch_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              twitch_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                twitch_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -162,11 +172,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="onlyfans_username"
           label="OnlyFans Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.onlyfans_username}
+          value={updatedUser.social_media.onlyfans_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              onlyfans_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                onlyfans_username: e.target.value,
+              },
             });
             setIsModified(true);
           }}
@@ -175,11 +188,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="telegram_username"
           label="Telegram Username"
           placeholder="e.g. stevenpaul"
-          value={updatedUser.telegram_username}
+          value={updatedUser.social_media.telegram_username}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              telegram_username: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                telegram_username: e.target.value,
+              },
             });
           }}
         />
@@ -187,11 +203,14 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           id="youtube_url"
           label="Youtube URL"
           placeholder="e.g. https://youtube.com/stevenpaul"
-          value={updatedUser.youtube_url}
+          value={updatedUser.social_media.youtube_url}
           onChange={(e) => {
             setUpdatedUser({
               ...updatedUser,
-              youtube_url: e.target.value,
+              social_media: {
+                ...updatedUser.social_media,
+                youtube_url: e.target.value,
+              },
             });
             setIsModified(true);
           }}

@@ -2,7 +2,6 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
-
 import { ArchivedPost, CompletedPost } from "@/models/post";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -23,11 +22,11 @@ export const ShowThread: React.FC<Props> = ({ post, shouldShowThread }) => {
         onClick={(e) => {
           e.stopPropagation();
           router.push({
-            pathname: AppRoutes.profile.account_address,
-            query: { account_address: post.user.account_address },
+            pathname: AppRoutes.profile.user_id,
+            query: { user_id: post.user._id },
           });
         }}
-        src={post.user.profile_image.path}
+        src={post.user.profile_image}
         alt={post.user.display_name}
         width={48}
         height={48}

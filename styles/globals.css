@@ -764,7 +764,7 @@
     background-clip: text;
     text-fill-color: transparent;
   }
-  .primary-gradient-btn:hover .primary-gradient-btn-text {
+  /* .primary-gradient-btn:hover .primary-gradient-btn-text {
     background: black;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -792,6 +792,7 @@
     background-clip: text;
     text-fill-color: transparent;
   }
+  } */
   .primary-gradient-btn2 .primary-gradient-btn-text {
     background: linear-gradient(
       270.23deg,

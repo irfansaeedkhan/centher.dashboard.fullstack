@@ -27,16 +27,16 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
       <div className={`flex items-center justify-center gap-3`}>
         <Link
           href={{
-            pathname: AppRoutes.profile.account_address,
+            pathname: AppRoutes.profile.user_id,
             query: {
-              account_address: user.account_address,
+              user_id: user._id,
             },
           }}
           title={user.display_name}
           className="flex"
         >
           <Image
-            src={user.profile_image.path}
+            src={user.profile_image}
             width={44}
             height={44}
             alt="profile pic"
@@ -48,9 +48,9 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
           <div className="flex items-center ">
             <Link
               href={{
-                pathname: AppRoutes.profile.account_address,
+                pathname: AppRoutes.profile.user_id,
                 query: {
-                  account_address: user.account_address,
+                  user_id: user._id,
                 },
               }}
               title={user.display_name}
@@ -75,7 +75,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
           </div>
 
           <h6 className={`text-12px font-ligth text-gray-shade-7`}>
-            {sliceAccountAddress(user.account_address)}
+            {sliceAccountAddress(user._id)}
           </h6>
         </div>
       </div>

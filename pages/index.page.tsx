@@ -1,6 +1,5 @@
-// React, Next, NPM Packages
-import { AppRoutes } from "@/constants/app.routes";
 import { GetServerSideProps, NextPage } from "next";
+import { AppRoutes } from "@/constants/app.routes";
 
 const Home: NextPage = () => {
   return null;

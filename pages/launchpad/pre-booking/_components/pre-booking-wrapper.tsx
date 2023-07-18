@@ -2,12 +2,10 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
-
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import { AppRoutes } from "@/constants/app.routes";
-
 import BookingData from "../../_components/presale-components/booking-data";
 
 interface Props {
@@ -16,9 +14,7 @@ interface Props {
 
 const PreBookingWrapper = ({ children }: Props) => {
   const { user } = useUser();
-  const { loading, preBookingStats } = usePreBookingStats(
-    user?.account_address
-  );
+  const { loading, preBookingStats } = usePreBookingStats(user?._id);
   const router = useRouter();
 
   if (loading === "failed") {

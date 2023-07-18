@@ -1,13 +1,19 @@
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosCIS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
+import { LoggedInUser } from "@/models/user";
 
-export const updateCookiesConsent = async (cookiesConsent: boolean) => {
+export const updateCookiesConsent = async (
+  cookiesConsent: boolean
+): Promise<LoggedInUser> => {
   try {
-    const res = await axiosNodeApi.patch("/api/users/cookies-consent", {
-      consent_given: cookiesConsent,
-    });
+    const { data } = await axiosCIS.patch<LoggedInUser>(
+      "/users/cookies-consent",
+      {
+        consent_given: cookiesConsent,
+      }
+    );
 
-    return res.data;
+    return data;
   } catch (err: any) {
     throw new AppError(
       err,

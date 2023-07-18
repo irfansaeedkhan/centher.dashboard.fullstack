@@ -10,18 +10,18 @@ export const AppRoutes = {
 
   profile: {
     // Authenticated Pages
-    account_address: "/profile/[account_address]",
-    replies: "/profile/[account_address]/replies",
-    following: "/profile/[account_address]/community/following",
-    followers: "/profile/[account_address]/community/followers",
-    referrals: "/profile/[account_address]/community/referrals",
-    archived_posts: "/profile/[account_address]/archived-posts",
+    user_id: "/profile/[user_id]",
+    replies: "/profile/[user_id]/replies",
+    following: "/profile/[user_id]/community/following",
+    followers: "/profile/[user_id]/community/followers",
+    referrals: "/profile/[user_id]/community/referrals",
+    archived_posts: "/profile/[user_id]/archived-posts",
 
-    nfts: "/profile/[account_address]/nfts",
-    owned: "/profile/[account_address]/nfts/owned",
-    listed: "/profile/[account_address]/nfts/listed",
-    created: "/profile/[account_address]/nfts/created",
-    collection: "/profile/[account_address]/nfts/collection",
+    nfts: "/profile/[user_id]/nfts",
+    owned: "/profile/[user_id]/nfts/owned",
+    listed: "/profile/[user_id]/nfts/listed",
+    created: "/profile/[user_id]/nfts/created",
+    collection: "/profile/[user_id]/nfts/collection",
   },
 
   marketplace: {

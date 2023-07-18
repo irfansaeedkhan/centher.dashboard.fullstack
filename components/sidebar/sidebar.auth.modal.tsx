@@ -1,6 +1,5 @@
 import Link from "next/link";
 import React from "react";
-
 import { AppRoutes } from "@/constants/app.routes";
 
 const SidebarAuthModal: React.FC = () => {

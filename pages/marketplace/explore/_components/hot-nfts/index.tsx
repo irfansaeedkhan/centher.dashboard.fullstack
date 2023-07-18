@@ -1,12 +1,10 @@
 import React from "react";
 import clsx from "clsx";
-
 import { SectionTitle } from "@/pages/marketplace/_components";
 import NFTsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
 import { AppRoutes } from "@/constants/app.routes";
 import { HotNftEmptyIcon } from "@/assets/svgs";
-
 import { useHotNFTs } from "./use-hot-nfts";
 
 export const HotNFTs: React.FC = () => {

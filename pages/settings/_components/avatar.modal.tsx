@@ -1,9 +1,6 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { AvatarModalWrapper } from "@/components/modal/avatar.modal.wrapper";
 import { useAvatars } from "@/hooks/use.avatars";
@@ -73,14 +70,14 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
               setSlectedAvatar(null);
             }}
             disabled={!slectedAvatar}
-            className="w-full"
+            className="w-full hover:scale-90"
           />
         ) : (
           <FinalButton
             title="Choose"
             variant="primary"
             disabled={!slectedAvatar}
-            className="w-full"
+            className="w-full hover:scale-90"
           />
         )}
       </div>

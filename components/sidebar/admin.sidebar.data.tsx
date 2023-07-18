@@ -1,4 +1,3 @@
-// App imports
 import {
   NetworkRewards,
   InfluencerDetails,
@@ -9,7 +8,6 @@ import {
   StakingContract,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-
 import { SidebarData } from "./shared";
 
 export const adminSideBarData: SidebarData = {

@@ -1,8 +1,7 @@
 import React from "react";
-
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { ProfilePageWrapper } from "@/pages/profile/[account_address]/_components";
-import { ProfileCommunityTabs } from "@/pages/profile/[account_address]/_components/profile.community.tabs";
+import { ProfilePageWrapper } from "@/pages/profile/[user_id]/_components";
+import { ProfileCommunityTabs } from "@/pages/profile/[user_id]/_components/profile.community.tabs";
 
 interface Props {
   children: React.ReactNode;

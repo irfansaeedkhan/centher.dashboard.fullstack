@@ -1,18 +1,12 @@
-// React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-
-// App imports
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
-import { LogoText } from "@/assets/svgs";
-
-// Current page imports
 import { RegisterForm } from "./_components";
 
 const Register: NextPageWithLayout = () => {

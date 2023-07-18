@@ -20,6 +20,9 @@ module.exports = {
       flg: "1024px",
       fxl: "1280px",
       f2xl: "1440px",
+      "custom-height-oriented": {
+        raw: "((min-height:390px) and (max-height:700px))",
+      },
       ...defaultTheme.screens,
     },
     extend: {
@@ -73,7 +76,7 @@ module.exports = {
           1: "#FED365",
         },
         red: {
-          theme: "#E35259",
+          theme: "#E34048",
           "shade-1": "#FF424D",
         },
         danger: "#EA3943",

@@ -1,14 +1,9 @@
-// React, Next, NPM Packages
 import React from "react";
 import toast from "react-hot-toast";
-
-// App imports
 import useUser from "@/hooks/use.user";
-import { axiosNodeApi } from "@/utils/axios";
+import { logout } from "@/lib/auth";
 import { AppRoutes } from "@/constants/app.routes";
 import { Logout } from "@/assets/svgs";
-
-// Current directory imports
 import { SidebarSections } from "./sidebar.data";
 import { Section } from "./section";
 import SidebarAuthModal from "./sidebar.auth.modal";
@@ -16,28 +11,21 @@ import SidebarAuthModal from "./sidebar.auth.modal";
 export const Sidebar = () => {
   const { user, isLoading: isUserLoading } = useUser();
 
-  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleLogout: React.MouseEventHandler<HTMLButtonElement> = async (
+    e
+  ) => {
     const button = e.currentTarget;
     button.disabled = true;
 
-    axiosNodeApi
-      .post("/api/auth/logout")
-      .then(({ data }) => {
-        button.disabled = false;
-        toast.success(data.message_description ?? "Logged out successfully!");
-        window.location.replace(AppRoutes.auth.login);
-      })
-      .catch((err: any) => {
-        // If user is already logged out, reload the page
-        if (err.response?.data?.message === "unauthenticated") {
-          window.location.replace(AppRoutes.auth.login);
-          return;
-        }
-        button.disabled = false;
-        toast.error(
-          err.response?.data?.message_description ?? "Something went wrong!"
-        );
-      });
+    try {
+      const data = await logout();
+      toast.success(data.message);
+      window.location.replace(AppRoutes.auth.login);
+    } catch (err: any) {
+      toast.error(err.message ?? "Something went wrong!");
+    } finally {
+      button.disabled = false;
+    }
   };
 
   return (

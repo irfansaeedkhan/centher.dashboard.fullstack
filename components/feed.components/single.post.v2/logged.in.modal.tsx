@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-
-import clsx from "clsx";
-import Image from "next/image";
-import { IoClose } from "react-icons/io5";
-
-import { ModalPortal } from "@/components/modal/modal.portal";
 import Link from "next/link";
+import Image from "next/image";
+import clsx from "clsx";
+import { IoClose } from "react-icons/io5";
+import { ModalPortal } from "@/components/modal/modal.portal";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface Props {
   isOpen: boolean;
@@ -54,7 +53,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   Register or login to <b>Centher</b>
                 </h3>
                 <div>
-                  <Link href={"/auth/login"}>
+                  <Link href={AppRoutes.auth.login}>
                     <ActionButton
                       //not confirm yet we need to close the modal or not
                       // onClick={onClose}
@@ -64,7 +63,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     </ActionButton>
                   </Link>
 
-                  <Link href={"/auth/register "}>
+                  <Link href={AppRoutes.auth.register}>
                     <ActionButton
                       //not confirm yet we need to close the modal or not
                       // onClick={onClose}

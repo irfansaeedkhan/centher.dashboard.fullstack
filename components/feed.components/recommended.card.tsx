@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 
 import { RecommendedPeople } from "@/lib/recommended-people";
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import RecommendedPeopleLeftCardSkeleton from "@/components/loading.skeletons/recommended.people.left.card";
 import RecommendedUserCard from "./recommended-user-card";
 
@@ -34,7 +34,7 @@ export const RecommendedCard: React.FC<Props> = ({
         })
       );
 
-      await axiosNodeApi.post("api/socials/follows", {
+      await axiosApiCenther.post("api/socials/followers", {
         following_id,
       });
     } catch (error: any) {

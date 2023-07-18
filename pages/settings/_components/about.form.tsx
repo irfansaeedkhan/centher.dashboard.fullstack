@@ -3,12 +3,11 @@ import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
-
 import FinalButton from "@/components/button/final.button";
 import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
+import { updateMe } from "@/lib/user";
 
 interface EditProfileFormProps {
   user: LoggedInUser;
@@ -32,25 +31,13 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
     button.disabled = true;
     setisLoading("loading");
     try {
-      const { data } = await axiosNodeApi.patch("/api/users/me", {
-        pseudonym: updatedUser.pseudonym,
-        first_name: updatedUser.first_name,
-        last_name: updatedUser.last_name,
-        display_name_field: updatedUser.display_name_field,
-        website_url: updatedUser.website_url,
-        twitter_username: updatedUser.twitter_username,
+      const updatedUserRes = await updateMe({
         profile_bio: updatedUser.profile_bio,
-        facebook_username: updatedUser.facebook_username,
-        instagram_username: updatedUser.instagram_username,
-        tiktok_username: updatedUser.tiktok_username,
-        twitch_username: updatedUser.twitch_username,
-        onlyfans_username: updatedUser.onlyfans_username,
-        youtube_url: updatedUser.youtube_url,
       });
 
-      setUpdatedUser(data.user as LoggedInUser);
+      setUpdatedUser(updatedUserRes);
 
-      await mutate("/api/users/me", data.user, false);
+      await mutate("/api/users/me", updatedUserRes, false);
 
       toast.success("Profile updated successfully");
       setisLoading("loaded");

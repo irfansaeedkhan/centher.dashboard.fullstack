@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   borderRounded?: string;
   backgroundColor?: string;
   isLoading?: boolean;
+  loaderIcon?: React.ReactNode;
 }
 interface CustomCSSProperties extends React.CSSProperties {
   "--border-rounded": string;
@@ -20,6 +21,7 @@ const FinalButton: React.FC<ButtonProps> = ({
   variant = "primary",
   className,
   Icon,
+  loaderIcon,
   borderRounded = "14px",
   backgroundColor = "#17171A",
   isLoading = false,
@@ -46,12 +48,8 @@ const FinalButton: React.FC<ButtonProps> = ({
             ` default-button-styling flex items-center justify-center gap-2`,
             variant === "primary" &&
               `primary-gradient-btn relative bg-gradient-pattern`,
-            variant === "primary" &&
-              !props.disabled &&
-              "hover:before:bg-transparent",
-            variant === "primary" &&
-              props.disabled &&
-              "hover:primary-gradient-btn2",
+            variant === "primary" && !props.disabled && "hover:scale-110",
+            variant === "primary" && props.disabled && "hover::scale-100",
             variant === "secondary" &&
               "border border-[#1E202B] bg-transparent font-semibold text-white ",
             variant === "secondary" &&
@@ -67,7 +65,9 @@ const FinalButton: React.FC<ButtonProps> = ({
           {...props}
         >
           {Icon && Icon}
-          <span className="primary-gradient-btn-text relative">{title}</span>
+          <span className="primary-gradient-btn-text relative">
+            {loaderIcon ? loaderIcon : title}
+          </span>
         </button>
       )}
     </>

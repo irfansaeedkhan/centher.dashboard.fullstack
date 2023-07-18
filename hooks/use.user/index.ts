@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import useSWR from "swr";
-
 import { LoggedInUser } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosCIS } from "@/utils/axios";
+import { updateMe } from "@/lib/user";
 
 const useUser = () => {
   const {
@@ -10,11 +10,11 @@ const useUser = () => {
     error,
     mutate,
   } = useSWR(
-    `/api/users/me`,
+    `/users/me`,
     async (url) => {
       try {
-        const { data } = await axiosNodeApi.get(url);
-        return data.user as LoggedInUser;
+        const { data } = await axiosCIS.get<LoggedInUser>(url);
+        return data;
       } catch (error: any) {
         throw (
           error.response.data ?? {
@@ -48,8 +48,8 @@ const useUser = () => {
   const updateUser = useCallback(
     async (user: Partial<LoggedInUser>) => {
       try {
-        const { data } = await axiosNodeApi.patch(`/api/users/me`, user);
-        mutate(data.user, false);
+        const updatedUser = await updateMe(user);
+        mutate(updatedUser, false);
       } catch (error: any) {
         throw (
           error.response.data ?? {

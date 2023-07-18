@@ -6,7 +6,6 @@ import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
-
 import { receivableTokenAmountToPaymentTokenAmount } from "@/lib/get-pre-bookings-stats";
 import { PreBookingStats } from "@/lib/get-pre-bookings-stats/types";
 import NewButton from "@/components/button/new.button";
@@ -124,7 +123,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       return;
     }
 
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toast.error("Please connect your wallet to correct account!");
       setIsLoading("loaded");
       return;

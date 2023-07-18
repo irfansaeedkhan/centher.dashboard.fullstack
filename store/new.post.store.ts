@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 import { PostMedia } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getPostAndUpdateStores } from "@/utils/create.post";
 import { SocketIoEvents } from "@/constants/socket-io-events";
@@ -304,7 +304,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          const response = await axiosNodeApi.post(`/api/socials/posts`, {
+          const response = await axiosApiCenther.post(`/api/socials/posts`, {
             replying_to: get().parentPostId,
             posts: postArray.map((post) => ({
               uuid: post.uuid,
@@ -342,7 +342,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
             const {
               data: { presignedUrls },
-            } = await axiosNodeApi.post(
+            } = await axiosApiCenther.post(
               `/api/socials/posts/media/presigned-urls`,
               {
                 media_list: mediaList,
@@ -394,6 +394,7 @@ export const useNewPostStore = create<NewPostStore>()(
                     postId: data.first_post_id,
                     newPostsCount: postArray.length,
                     modalType: get().modalType,
+                    isAuthenticated: true,
                   });
                   socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
                   get().closeModal();
@@ -417,6 +418,7 @@ export const useNewPostStore = create<NewPostStore>()(
               postId: postToFetchId,
               newPostsCount: postArray.length,
               modalType: get().modalType,
+              isAuthenticated: true,
             });
             get().closeModal();
           }
@@ -452,7 +454,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
+          await axiosApiCenther.patch(`/api/socials/posts/${postId}/edit`, {
             text: post.post_text,
             deleted_media: post.media
               .filter((file) => file.type === "edit" && file.isDeleted)
@@ -465,6 +467,7 @@ export const useNewPostStore = create<NewPostStore>()(
             parentPostId: get().parentPostId,
             postId,
             newPostsCount: 0, // we are only editing the post, not creating new
+            isAuthenticated: true,
           });
           get().closeModal();
           return;

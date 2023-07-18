@@ -2,7 +2,6 @@ import React from "react";
 import { BiLink, BiUser } from "react-icons/bi";
 import { TbInfoSquare } from "react-icons/tb";
 import { CgLock } from "react-icons/cg";
-
 import { AppRoutes } from "@/constants/app.routes";
 
 export const SettingsSidebarData: SettingsSidebarItem[] = [

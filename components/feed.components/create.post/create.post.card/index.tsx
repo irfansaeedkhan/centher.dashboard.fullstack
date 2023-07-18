@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
-
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
-
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
 import { PostModal } from "../post.modal";
 
@@ -22,7 +20,7 @@ export const CreatePostCard: React.FC<Props> = () => {
     >
       <div className={`mb-2 flex w-full items-center gap-2`}>
         <Image
-          src={user.profile_image.path}
+          src={user.profile_image}
           width={48}
           height={48}
           className={`!h-10 !w-10 rounded-full object-cover md:!h-12 md:!w-12`}

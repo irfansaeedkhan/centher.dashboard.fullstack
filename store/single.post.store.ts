@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 import type { CompletedPost, Post } from "@/models/post";
 import type { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
@@ -22,7 +22,7 @@ export interface SinglePostStore {
   repliesOffset: number;
   updateRepliesOffset: () => void;
 
-  fetchPost: () => Promise<void>;
+  fetchPost: (isAuthenticated: boolean) => Promise<void>;
   fetchReplies: () => Promise<void>;
 
   likePostAPI: (
@@ -72,17 +72,24 @@ export const useSinglePostStore = create<SinglePostStore>()(
       posts: [],
       replies: [],
 
-      fetchPost: async () => {
+      fetchPost: async (isAuthenticated: boolean) => {
         try {
           set({ postLoading: "loading", repliesLoading: "loading" });
 
           const postId = get().postId;
-          const postUrl = `/api/socials/posts/${postId}`;
-          const repliesUrl = `/api/socials/posts/${postId}/replies`;
+          let postUrl = `/api/socials/posts/${postId}`;
+          let repliesUrl = `/api/socials/posts/${postId}/replies`;
+          if (
+            isAuthenticated &&
+            process.env.NEXT_PUBLIC_APP_ENV !== "development"
+          ) {
+            postUrl += "/with-auth";
+            repliesUrl += "/with-auth";
+          }
 
           const promises = [
-            axiosNodeApi.get(postUrl),
-            axiosNodeApi.get(repliesUrl),
+            axiosApiCenther.get(postUrl),
+            axiosApiCenther.get(repliesUrl),
           ];
 
           const [postRes, repliesRes] = await Promise.all(promises);
@@ -118,7 +125,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
           const repliesLimit = 10;
           const repliesUrl = `/api/socials/posts/${postId}/replies?offset=${repliesOffset}&limit=${repliesLimit}`;
 
-          const { data } = await axiosNodeApi.get(repliesUrl);
+          const { data } = await axiosApiCenther.get(repliesUrl);
 
           const _replies = data.posts;
 

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { IUserWithFollow } from "@/components/user.with.follow/types";
 
 export interface SearchResult extends IUserWithFollow {}
@@ -54,7 +54,7 @@ export const useSearchStore = create<SearchStore>()(
 
           const url = `/api/search?q=${q}&limit=${searchLimit}&offset=${searchOffset}`;
 
-          const { data } = await axiosNodeApi.get(url);
+          const { data } = await axiosApiCenther.get(url);
 
           set((state) => {
             const filteredResults = state.searchResults.filter(

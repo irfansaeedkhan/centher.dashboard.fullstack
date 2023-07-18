@@ -5,17 +5,17 @@ import {
   ImageRestriction,
 } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
-
 import { ModalWrapper } from "@/components/modal";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { CropFunctions } from "../crop-functions";
+import FinalButton from "@/components/button/final.button";
 
 interface CropperProps {
   isOpen: boolean;
   user: LoggedInUser;
   profileImageData: UserImage;
   setCropModal: Dispatch<SetStateAction<boolean>>;
-  setProfileImage: Dispatch<SetStateAction<UserImage>>;
+  setProfileImage: Dispatch<SetStateAction<string>>;
   setProfileImageData: Dispatch<SetStateAction<UserImage>>;
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
 }
@@ -38,10 +38,7 @@ const CropProfilePicture: React.FC<CropperProps> = ({
 
     const file: File = await dataUrlToFile(base64 || "", "cropped-image.png");
     setUploadFile(file);
-    setProfileImage((prev) => ({
-      ...prev,
-      path: base64,
-    }));
+    setProfileImage(base64);
     setProfileImageData((prev) => ({
       ...prev,
       path: base64,
@@ -83,12 +80,19 @@ const CropProfilePicture: React.FC<CropperProps> = ({
         <div className="relative mt-5 flex w-full flex-col items-center justify-center">
           <CropFunctions cropperRef={cropperRef} />
           <div className="mt-2 flex w-[82.55px]  flex-shrink-0 justify-center text-center">
-            <button
+            {/* <button
               className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
               onClick={onCrop}
             >
               Crop
-            </button>
+            </button> */}
+
+            <FinalButton
+              title="Crop"
+              variant="primary"
+              className="h-10 w-[150px] text-[14px]"
+              borderRounded="14px"
+            />
           </div>
         </div>
       </div>

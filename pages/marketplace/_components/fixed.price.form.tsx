@@ -7,8 +7,6 @@ import { IoIosClose } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import Joi from "joi";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
@@ -19,7 +17,6 @@ import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
-
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -344,6 +341,7 @@ const FixedPriceForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="hover:scale-95"
         />
       ) : (
         <FinalButton
@@ -359,7 +357,7 @@ const FixedPriceForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2"
+          className="mt-2 hover:scale-95"
         />
       )}
 
@@ -439,8 +437,7 @@ const FixedPriceForm = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

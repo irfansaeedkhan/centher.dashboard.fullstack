@@ -1,9 +1,8 @@
 import React, { useMemo, useState } from "react";
 import clsx from "clsx";
 import { IoClose, IoCrop } from "react-icons/io5";
-
 import { INewPost, useNewPostStore } from "@/store/new.post.store";
-import CropperPostMediaImage from "@/pages/profile/[account_address]/_components/cropper.postmedia.image";
+import CropperPostMediaImage from "@/pages/profile/[user_id]/_components/cropper.postmedia.image";
 
 export type PostImageCropperData = {
   preview: string;

@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { User } from "@/models/user";
 import { ClipboardList, Followers, Following, Referrals } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
 import ProfileModal from "@/components/modal/profile.modal";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
 interface ProfileDetailCardProps {
@@ -39,7 +37,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       <div
         className={`absolute top-0 left-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
         style={{
-          backgroundImage: `url(${user?.cover_image.path})`,
+          backgroundImage: `url(${user?.cover_image})`,
         }}
       ></div>
 
@@ -48,7 +46,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         onClick={handleImageClick}
       >
         <Image
-          src={user.profile_image.path}
+          src={user.profile_image}
           className={`mx-auto h-[60px] w-[60px] cursor-pointer rounded-full object-cover`}
           alt={user.display_name}
           width={60}
@@ -60,9 +58,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       <h3 className={`p-2`}>
         <Link
           href={{
-            pathname: AppRoutes.profile.account_address,
+            pathname: AppRoutes.profile.user_id,
             query: {
-              account_address: user.account_address,
+              user_id: user._id,
             },
           }}
           title={user.display_name}
@@ -158,10 +156,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         </div>
       )}
       {isModalOpen && (
-        <ProfileModal
-          onClose={handleCloseModal}
-          src={user.profile_image.path}
-        />
+        <ProfileModal onClose={handleCloseModal} src={user.profile_image} />
       )}
     </div>
   );

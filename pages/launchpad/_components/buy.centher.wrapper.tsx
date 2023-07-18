@@ -1,12 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { copyText } from "@/utils/copy.text";
 import clsx from "clsx";
-
-import { AppRoutes } from "@/constants/app.routes";
 import { toast } from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
+import { copyText } from "@/utils/copy.text";
+import { AppRoutes } from "@/constants/app.routes";
 
 const BuyCentherWrapper = () => {
   const router = useRouter();

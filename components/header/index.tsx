@@ -1,28 +1,19 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
-import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
-
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 
 const Header = () => {
   const { width } = useWindowSize();
-  const router = useRouter();
   const { user, isLoading: isUserLoading } = useUser();
-  const { user: ver_user } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
   const { connectWallet, disconnectWallet, getConnectedAccount } =
     useConnectWallet();
   const [openModal, setOpenModal] = useState(false);
@@ -45,7 +36,7 @@ const Header = () => {
     const connectedAccount = getConnectedAccount();
     connectedAccount
       .then((_acc) => {
-        if (_acc && _acc.toLowerCase() === user.account_address.toLowerCase()) {
+        if (_acc && _acc.toLowerCase() === user._id.toLowerCase()) {
           connectWallet(false);
         }
       })
@@ -77,12 +68,8 @@ const Header = () => {
       </Link>
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
-        {/* {user && <SearchBar ver_user={ver_user} />} */}
-        {user && ver_user ? (
-          <SearchBar ver_user={ver_user} />
-        ) : (
-          user && <SearchBar ver_user={user} />
-        )}
+        {user && <SearchBar />}
+
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login} className={connectButton}>
             Connect
@@ -99,7 +86,7 @@ const Header = () => {
                 className="h-10 w-10 rounded-full"
               >
                 <Image
-                  src={user.profile_image.path}
+                  src={user.profile_image}
                   alt="userProfile"
                   width={40}
                   height={40}

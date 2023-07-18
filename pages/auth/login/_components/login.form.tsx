@@ -1,20 +1,16 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 import { useSWRConfig } from "swr";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
 import toast from "react-hot-toast";
-import ctl from "@netlify/classnames-template-literals";
-import Image from "next/image";
-
-// App imports
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
 import { SpinIcon3, MetamaskIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import { getNonce, login } from "@/lib/auth";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
@@ -27,65 +23,48 @@ export const LoginForm: React.FC = () => {
   const router = useRouter();
   const { connectWallet } = useConnectWallet();
   const { account, library } = useWeb3React();
-  const [isLoading, setisLoading] = useState<LoadingState>("idle");
+  const [isLoading, setIsLoading] = useState<LoadingState>("idle");
 
   const handleMetamaskLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    if (!account) return;
+
     const button = e.currentTarget;
     button.disabled = true;
 
-    setisLoading("loading");
+    setIsLoading("loading");
 
     // Get Nonce from backend
     try {
-      const { data: nonceData } = await axiosNodeApi.get(
-        `/api/auth/get-nonce/${account}`
-      );
+      const nonceResponse = await getNonce(account);
 
       const signature = await (library as Web3Provider)
         .getSigner()
-        .signMessage(nonceData.auth_nonce);
+        .signMessage(nonceResponse.nonce_with_message);
 
-      const { data: loginData } = await axiosNodeApi.post("/api/auth/login", {
-        account_address: account,
-        signature,
-      });
+      const loginResponse = await login(account, signature);
 
-      toast.success(loginData.message_description);
-      setisLoading("loaded");
+      toast.success(loginResponse.message);
+      setIsLoading("loaded");
 
-      await mutate("/api/users/me", loginData.user, false);
+      await mutate("/api/users/me", loginResponse.user, false);
 
       router.push(AppRoutes.feed.index);
     } catch (error: any) {
-      console.dir(error);
       button.disabled = false;
-      setisLoading("failed");
+      setIsLoading("failed");
       if (error.code === "ACTION_REJECTED") {
         toast.error("Login request rejected.");
         return;
       }
-      if (error?.response?.status === 404) {
-        toast.error("User not found.");
-        return;
-      }
 
-      if (error?.response?.data?.message === "already_logged_in") {
-        window.location.href = AppRoutes.feed.index;
-        return;
-      }
-
-      if (error?.response?.data?.message_description) {
-        toast.error(error.response.data.message_description);
-        return;
-      }
       toast.error(error.message ?? "Something went wrong");
     }
   };
 
   return (
-    <div className={wrapper}>
+    <div className={`flex h-auto w-full flex-col gap-6`}>
       {account ? (
         <>
           <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
@@ -118,7 +97,7 @@ export const LoginForm: React.FC = () => {
         </>
       ) : (
         <button
-          className={connectButton}
+          className={`mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-primary py-3 font-bold text-gray-shade-5 transition-all hover:bg-brand-primary-dark`}
           onClick={async () => await connectWallet()}
         >
           <Image
@@ -150,41 +129,4 @@ export const LoginFormSchema = Joi.object()
   });
 
 // Styles
-const wrapper = ctl(`
-  flex 
-  gap-6
-  w-full 
-  h-auto 
-  flex-col 
-`);
-
-const button = ctl(`
-  mt-2 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  text-gray-shade-5 
-  justify-center 
-  bg-brand-primary 
-  hover:bg-brand-primary-dark
-`);
-
-const connectButton = ctl(`
-  mt-2 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  transition-all 
-  justify-center 
-  bg-brand-primary 
-  text-gray-shade-5 
-  hover:bg-brand-primary-dark
-`);
+const button = `mt-2 py-3 flex gap-2 w-full font-bold rounded-lg items-center text-gray-shade-5 justify-center bg-brand-primary hover:bg-brand-primary-dark`;

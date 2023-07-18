@@ -41,7 +41,7 @@ export interface PostMedia {
 
 export type PostUser = Pick<
   User,
-  "_id" | "account_address" | "display_name" | "profile_image" | "is_verified"
+  "_id" | "display_name" | "profile_image" | "is_verified"
 >;
 
 export interface ParentPost {

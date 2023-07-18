@@ -4,14 +4,14 @@ import { devtools } from "zustand/middleware";
 import { CompletedPost } from "@/models/post";
 import { LoadingState } from "@/models/common";
 import { likePost } from "@/components/feed.components";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 
 import { useFeedStore } from "./feed.store";
 
 export interface MyPostStore {
   posts: CompletedPost[];
-  fetchPosts: () => Promise<void>;
+  fetchPosts: (isAuthenticated: boolean) => Promise<void>;
   userId: string;
 
   addNewPost: (post: CompletedPost) => void;
@@ -47,7 +47,7 @@ export const useMyPostStore = create<MyPostStore>()(
 
       posts: [],
 
-      fetchPosts: async () => {
+      fetchPosts: async (isAuthenticated: boolean) => {
         try {
           set({ loading: "loading" });
 
@@ -55,8 +55,15 @@ export const useMyPostStore = create<MyPostStore>()(
           const offset = get().offset;
           const limit = 15;
 
-          const url = `/api/socials/posts/user/${userId}?offset=${offset}&limit=${limit}`;
-          const { data } = await axiosNodeApi.get(url);
+          let url = `/api/socials/posts/user/${userId}`;
+          if (
+            isAuthenticated &&
+            process.env.NEXT_PUBLIC_APP_ENV !== "development"
+          ) {
+            url += "/with-auth";
+          }
+          url = `${url}?offset=${offset}&limit=${limit}`;
+          const { data } = await axiosApiCenther.get(url);
 
           set((state) => {
             const filteredPosts = state.posts.filter(
