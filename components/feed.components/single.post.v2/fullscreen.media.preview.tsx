@@ -90,7 +90,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
             {/* container node */}
             <div className="flex h-full">
               {media.map((media) => {
-                if (media.type === "image") {
+                if (media.type.includes("image")) {
                   return (
                     // Slide
                     <div
@@ -106,7 +106,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
                       />
                     </div>
                   );
-                } else if (media.type === "video") {
+                } else if (media.type.includes("video")) {
                   return (
                     // Slide
                     <div
