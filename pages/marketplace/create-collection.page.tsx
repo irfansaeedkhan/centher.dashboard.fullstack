@@ -80,16 +80,18 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionsRemoteBasePath
       );
 
-      const assetBuffer = await readFileAsync(profile);
+      // const assetBuffer = await readFileAsync(profile);
       const uploadDto = {
         path: collectionUploader._uploader.makePath(),
-        content: assetBuffer.toString("base64"),
+        content: profile,
+        // content: assetBuffer.toString("base64"),
       };
 
       const profilePath = await collectionUploader._uploader.upload(uploadDto);
-      const coverBuffer = await readFileAsync(cover);
+      // const coverBuffer = await readFileAsync(cover);
       const collectionMetaDataPath = await collectionUploader.uploadCollection(
-        coverBuffer,
+        cover,
+        // coverBuffer,
         collectionData,
         profilePath
       );
