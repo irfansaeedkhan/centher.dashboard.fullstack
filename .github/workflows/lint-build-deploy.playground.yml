@@ -86,6 +86,7 @@ jobs:
           echo "NEXT_PUBLIC_CAPI_HOST=${{ vars.NEXT_PUBLIC_CAPI_HOST }}" >> .env.staging
           echo "NEXT_PUBLIC_CIS_HOST=${{ vars.NEXT_PUBLIC_CIS_HOST }}" >> .env.staging
           echo "NEXT_PUBLIC_CFS_HOST=${{ vars.NEXT_PUBLIC_CFS_HOST }}" >> .env.staging
+          echo "NEXT_PUBLIC_INFURA_AUTH=${{ vars.NEXT_PUBLIC_INFURA_AUTH }}" >> .env.staging
           echo "NEXT_PUBLIC_MORALIS_URL=${{ vars.NEXT_PUBLIC_MORALIS_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_IPFS_GATEWAY_URL=${{ vars.NEXT_PUBLIC_IPFS_GATEWAY_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_PRE_BOOKING_API_URL=${{ vars.NEXT_PUBLIC_PRE_BOOKING_API_URL }}" >> .env.staging
