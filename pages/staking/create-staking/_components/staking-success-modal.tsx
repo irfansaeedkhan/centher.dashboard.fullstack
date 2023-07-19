@@ -1,0 +1,75 @@
+import React, { useRef } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
+import { AppRoutes } from "@/constants/app.routes";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { ModalPortal } from "@/components/modal/modal.portal";
+import FinalButton from "@/components/button/final.button";
+
+interface CustomModalProps {
+  onClickClose: () => void;
+}
+
+export const StakingSuccessModal: React.FC<CustomModalProps> = ({
+  onClickClose,
+}) => {
+  const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
+  const PassportModalRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useOnClickOutside(PassportModalRef, () => {
+    onClickClose();
+  });
+
+  useEventListener(
+    "keydown",
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClickClose();
+      }
+    },
+    htmlBodyRef
+  );
+
+  return (
+    <ModalPortal wrapperId="success-staking-portal">
+      <div
+        className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black-shade-8 font-monto backdrop-blur-[7px] backdrop-filter fsm:bg-transparent`}
+      >
+        <div
+          className={`flex h-full w-full max-w-[422px] flex-col overflow-auto border border-solid  border-[#2a2d3c] bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
+          ref={PassportModalRef}
+        >
+          <div className="flex flex-col gap-8 text-center">
+            <Image
+              src={"/images/success-centher.png"}
+              alt={"sucess image"}
+              width={128}
+              height={107}
+              className="mx-auto"
+            />
+            <div className="flex flex-col gap-2">
+              <h2 className="text-base font-semibold text-white fsm:text-lg">
+                You are all Set!
+              </h2>
+              <p className="text-14px font-medium text-gray-shade-14">
+                Congratulations! you have successfully created the{" "}
+                <span className="text-gradient">staking</span> .Enjoy the best
+                experience with us.
+              </p>
+            </div>
+            <FinalButton
+              onClick={() => {
+                onClickClose();
+              }}
+              title="Continue"
+              variant="primary"
+              className="text-14px  w-full py-3 hover:text-black"
+            />
+          </div>
+        </div>
+      </div>
+    </ModalPortal>
+  );
+};

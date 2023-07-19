@@ -12,8 +12,8 @@ import { TeamMemberIcon } from "@/assets/svgs";
 import { CitizenShipSuccessModal } from "@/components/modal/buy-citizenship-modal/success-modal";
 
 const CitizenshipAddDetails: NextPageWithLayout = () => {
-  // handle dynamic members
   const [showSuccessMsg, setShowSuccessMsg] = useState(false);
+  // handle dynamic members
   const [members, setMembers] = useState<teamMember[]>([]);
   const [memberError, setMemberError] = useState<string | null>(null);
   const [memberData, setMemberData] = useState({
