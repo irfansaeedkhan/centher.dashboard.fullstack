@@ -22,15 +22,18 @@ import {
   PopupUserIcon,
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import FinalButton from "@/components/button/final.button";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
   modalOpenerRef: React.RefObject<HTMLDivElement>;
+  openBuyCitizenshipModal: () => void;
 }
 
 const HeaderProfile: React.FC<HeaderProfileProps> = ({
   onClickOutside,
   modalOpenerRef,
+  openBuyCitizenshipModal,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user: loggedInUser } = useUser();
@@ -64,7 +67,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   return (
     <div
       ref={ref}
-      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-300 overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px]`}
+      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-[364px] overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px]`}
     >
       <div
         className={clsx(
@@ -120,6 +123,24 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             />
           </a>
         </div>
+      </div>
+      <div className="border-b border-gray-shade-border-color p-4 ">
+        <FinalButton
+          title={
+            true ? "Subscribe to Citizen Passport" : "View my Citizen Passport"
+          }
+          onClick={
+            true
+              ? () => {
+                  onClickOutside();
+                  openBuyCitizenshipModal();
+                }
+              : () => {}
+          }
+          variant="primary"
+          className="text-14px hover:scale-105"
+          borderRounded="10px"
+        />
       </div>
       <div className="border-b border-gray-shade-border-color py-3">
         <Link

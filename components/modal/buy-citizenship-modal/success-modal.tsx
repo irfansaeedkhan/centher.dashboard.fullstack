@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "../../button/final.button";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { ModalPortal } from "../modal.portal";
 
 interface CustomModalProps {
   onClickClose: () => void;
@@ -12,35 +14,62 @@ interface CustomModalProps {
 export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
   onClickClose,
 }) => {
+  const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
+  const PassportModalRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
+  useOnClickOutside(PassportModalRef, () => {
+    onClickClose();
+  });
+
+  useEventListener(
+    "keydown",
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClickClose();
+      }
+    },
+    htmlBodyRef
+  );
+
   return (
-    <div className="flex flex-col gap-8 text-center">
-      <Image
-        src={"/images/success-centher.png"}
-        alt={"sucess image"}
-        width={128}
-        height={107}
-        className="mx-auto"
-      />
-      <div className="flex flex-col gap-2">
-        <h2 className="text-base font-semibold text-white fsm:text-lg">
-          You are almost done!
-        </h2>
-        <p className="text-14px font-medium text-gray-shade-14">
-          Now you have to complete a couple more steps to set{" "}
-          <span className="text-gradient"> CITIZEN Passport Membership. </span>{" "}
-        </p>
+    <ModalPortal wrapperId="success-buy-passport-portal">
+      <div
+        className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black-shade-8 font-monto backdrop-blur-[7px] backdrop-filter fsm:bg-transparent`}
+      >
+        <div
+          className={`flex h-full w-full max-w-[422px] flex-col overflow-auto border border-solid  border-[#2a2d3c]   bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
+          ref={PassportModalRef}
+        >
+          <div className="flex flex-col gap-8 text-center">
+            <Image
+              src={"/images/success-centher.png"}
+              alt={"sucess image"}
+              width={128}
+              height={107}
+              className="mx-auto"
+            />
+            <div className="flex flex-col gap-2">
+              <h2 className="text-base font-semibold text-white fsm:text-lg">
+                You are all Set!
+              </h2>
+              <p className="text-14px font-medium text-gray-shade-14">
+                Congratulations! you have successfully subscribed to{" "}
+                <span className="text-gradient"> Centher CITIZEN Passport</span>{" "}
+                Membership. Enjoy the best experience with us.
+              </p>
+            </div>
+            <FinalButton
+              onClick={() => {
+                onClickClose();
+              }}
+              title="Continue"
+              variant="primary"
+              className="text-14px  w-full py-3 hover:text-black"
+            />
+          </div>
+        </div>
       </div>
-      <FinalButton
-        onClick={() => {
-          onClickClose();
-          router.push({ pathname: AppRoutes.settings.citizenship_add_details });
-        }}
-        title="Continue"
-        variant="primary"
-        className="text-14px  w-full py-3 hover:text-black"
-      />
-    </div>
+    </ModalPortal>
   );
 };

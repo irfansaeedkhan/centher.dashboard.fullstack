@@ -12,7 +12,6 @@ import { useWeb3React } from "@web3-react/core";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { CitizenShipSuccessModal } from "./success-modal";
 import { CitizenShipFailureModal } from "./failure-modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "../custom.new.modal";
@@ -20,6 +19,7 @@ import { MetamaskIcon2 } from "@/assets/svgs";
 import useUser from "@/hooks/use.user";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
+import { CitizenShipNextStepModal } from "./next-step-modal";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -107,7 +107,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
     try {
       await buyCitizenShip(library, tab, account as string);
       //TODO => create an appropriate UI for this
-      setshowMsg(<CitizenShipSuccessModal onClickClose={onClickClose} />);
+      setshowMsg(<CitizenShipNextStepModal onClickClose={onClickClose} />);
     } catch (error: any) {
       //TODO => create an appropriate UI for this
       setshowMsg(
@@ -261,14 +261,14 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       onClick={() => {
                         setConnectWalletModal(true);
                       }}
-                      className="text-14px mt-6 w-full py-3 hover:text-black"
+                      className="text-14px mt-6 w-full py-3 hover:!scale-90 hover:text-black"
                     />
                   ) : (
                     <FinalButton
                       onClick={buyMemberShip}
                       title={priceMapper(tab)}
                       variant="primary"
-                      className="text-14px mt-6 w-full py-3 hover:text-black"
+                      className="text-14px mt-6 w-full py-3 hover:!scale-90 hover:text-black"
                       isLoading={
                         updatePricesLoading || buyCitizenShipLoading
                           ? true

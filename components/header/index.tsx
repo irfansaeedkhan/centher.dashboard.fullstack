@@ -7,12 +7,14 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 
 const Header = () => {
   const { width } = useWindowSize();
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
   const { connectWallet, disconnectWallet, getConnectedAccount } =
     useConnectWallet();
@@ -43,6 +45,9 @@ const Header = () => {
       .catch(() => {});
   }, [user, connectWallet, disconnectWallet, getConnectedAccount]);
 
+  const openBuyCitizenshipModal = () => {
+    setShowBuyCitizenshipModal(true);
+  };
   return (
     <div
       className={`fixed top-0 z-[1000] flex h-[60px] w-full items-center justify-between gap-10 border-b-[1.5px] border-gray-shade-border-color bg-black-shade-9 px-5`}
@@ -99,6 +104,7 @@ const Header = () => {
                 <HeaderProfile
                   onClickOutside={() => setOpenModal(false)}
                   modalOpenerRef={modalOpenerRef}
+                  openBuyCitizenshipModal={openBuyCitizenshipModal}
                 />
               )}
             </div>
@@ -121,6 +127,12 @@ const Header = () => {
           openerRef={sidebarOpenerRef}
         />
       </div>
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };

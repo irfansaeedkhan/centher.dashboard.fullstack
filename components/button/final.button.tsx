@@ -48,8 +48,8 @@ const FinalButton: React.FC<ButtonProps> = ({
             ` default-button-styling flex items-center justify-center gap-2`,
             variant === "primary" &&
               `primary-gradient-btn relative bg-gradient-pattern`,
-            variant === "primary" && !props.disabled && "hover:scale-110",
-            variant === "primary" && props.disabled && "hover::scale-100",
+            variant === "primary" && !props.disabled && "hover:scale-105",
+            variant === "primary" && props.disabled && "hover:scale-100",
             variant === "secondary" &&
               "border border-[#1E202B] bg-transparent font-semibold text-white ",
             variant === "secondary" &&

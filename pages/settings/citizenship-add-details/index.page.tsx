@@ -9,9 +9,11 @@ import FinalButton from "@/components/button/final.button";
 
 import { IoClose } from "react-icons/io5";
 import { TeamMemberIcon } from "@/assets/svgs";
+import { CitizenShipSuccessModal } from "@/components/modal/buy-citizenship-modal/success-modal";
 
 const CitizenshipAddDetails: NextPageWithLayout = () => {
   // handle dynamic members
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
   const [members, setMembers] = useState<teamMember[]>([]);
   const [memberError, setMemberError] = useState<string | null>(null);
   const [memberData, setMemberData] = useState({
@@ -130,6 +132,8 @@ const CitizenshipAddDetails: NextPageWithLayout = () => {
       description: "",
     });
     setMembers([]);
+
+    setShowSuccessMsg(true);
   };
 
   return (
@@ -433,6 +437,13 @@ const CitizenshipAddDetails: NextPageWithLayout = () => {
           />
         </div>
       </div>
+      {showSuccessMsg && (
+        <CitizenShipSuccessModal
+          onClickClose={() => {
+            setShowSuccessMsg(false);
+          }}
+        />
+      )}
     </section>
   );
 };
