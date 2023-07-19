@@ -1,8 +1,8 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -20,6 +20,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
+import { customLog } from "@/utils/custom.log";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
@@ -80,7 +81,6 @@ const CreateNFT: NextPageWithLayout = () => {
     let nfdCreated = false;
     try {
       const nftUploader = new NFTUploader(nftRemoteBasePath);
-      // const file = await readFileAsync(asset);
       const castedNftData = nftData as INFTData;
       const nftMetadataPath = await nftUploader.uploadNFT(
         asset,
@@ -101,8 +101,8 @@ const CreateNFT: NextPageWithLayout = () => {
           castedNftData.supply
       );
       nfdCreated = !!result;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      customLog(error, ["development", "staging"]);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );
