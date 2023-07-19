@@ -45,6 +45,7 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
+import FinalButton from "@/components/button/final.button";
 
 export type CoverImageWithFile = {
   path: string;
@@ -314,8 +315,20 @@ const ProfileHeader: React.FC<Props> = ({
                     variant="cancel"
                     onClick={setInitialCoverImage}
                   >
-                    <MdClose className="h-4 w-4" />
-                    <span className="hidden fmd:inline-block">Cancel</span>
+                    <FinalButton
+                      loaderIcon={<MdClose className="h-4 w-4" />}
+                      title=""
+                      variant="secondary"
+                      className="inline-block fmd:hidden"
+                      borderRounded="14px"
+                    />
+                    <FinalButton
+                      Icon={<MdClose className="h-4 w-4" />}
+                      title="Cancel"
+                      variant="secondary"
+                      className=" hidden w-fit fmd:flex"
+                      borderRounded="14px"
+                    />
                   </CoverUploadButton>
                   <CoverUploadButton
                     onClick={handleUploadCoverImage}
@@ -325,12 +338,19 @@ const ProfileHeader: React.FC<Props> = ({
                     <CgSpinner
                       className={`hidden h-4 w-4 animate-spin group-disabled:block`}
                     />
-                    <span className="group flex items-center  rounded-lg bg-brand-primary text-[11px] font-semibold text-black-shade-3 hover:bg-brand-primary-dark fmd:hidden">
-                      Save
-                    </span>
-                    <span className="hidden fmd:inline-block">
-                      Upload Cover
-                    </span>
+                    <FinalButton
+                      title="Save"
+                      variant="primary"
+                      className="group flex fmd:hidden"
+                      borderRounded="14px"
+                    />
+
+                    <FinalButton
+                      title="Upload Cover"
+                      variant="primary"
+                      className="hidden fmd:inline-block"
+                      borderRounded="14px"
+                    />
                   </CoverUploadButton>
                 </div>
               )}

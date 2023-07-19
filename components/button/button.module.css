@@ -1,6 +1,7 @@
 /* Button.module.css */
 .primary-gradient-btn {
   border-radius: var(--border-rounded) !important;
+  transition: all 0.2s linear !important;
 }
 .primary-gradient-btn::before {
   content: "";

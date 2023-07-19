@@ -30,7 +30,8 @@ export class CollectionUploader {
 
     const uploadCoverDto = {
       path: this._uploader.makePath(),
-      content: file.toString("base64"),
+      content: file,
+      // content: file.toString("base64"),
     };
 
     const coverImagePath = await this._uploader.upload(uploadCoverDto);
@@ -43,7 +44,8 @@ export class CollectionUploader {
 
     const uploadMetaDataDto = {
       path: this._uploader.makePath("json"),
-      content: metaDataBuffered.toString("base64"),
+      content: metaDataBuffered,
+      // content: metaDataBuffered.toString("base64"),
     };
 
     const metaDataPath = await this._uploader.upload(uploadMetaDataDto);

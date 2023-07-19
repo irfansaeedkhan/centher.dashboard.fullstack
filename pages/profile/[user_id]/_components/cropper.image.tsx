@@ -3,6 +3,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { ModalWrapper } from "@/components/modal";
 import { CoverImageWithFile } from "./profile.header";
+import FinalButton from "@/components/button/final.button";
 
 interface CropperProps {
   coverImage: CoverImageWithFile;
@@ -70,12 +71,19 @@ const CropperImage: React.FC<CropperProps> = ({
           />
         </div>
         <div className="mt-3 flex w-full justify-center text-center">
-          <button
+          {/* <button
             className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
             onClick={onCrop}
           >
             Crop
-          </button>
+          </button> */}
+          <FinalButton
+            title="Crop"
+            variant="primary"
+            className="h-10 w-[150px] text-[14px]"
+            borderRounded="14px"
+            onClick={onCrop}
+          />
         </div>
       </div>
     </ModalWrapper>

@@ -341,6 +341,7 @@ const FixedPriceForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="hover:scale-95"
         />
       ) : (
         <FinalButton
@@ -356,7 +357,7 @@ const FixedPriceForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2"
+          className="mt-2 hover:scale-95"
         />
       )}
 

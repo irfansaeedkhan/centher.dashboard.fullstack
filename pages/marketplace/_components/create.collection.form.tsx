@@ -329,7 +329,7 @@ export const CreateNFTCollectionForm = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="mt-2 w-full py-4"
+            className="mt-2 w-full py-4 hover:scale-95"
           />
         ) : (
           <FinalButton
@@ -349,7 +349,7 @@ export const CreateNFTCollectionForm = ({
               categoryError
             }
             onClick={handleSubmit(onSubmit)}
-            className="mt-2 w-full py-4"
+            className="mt-2 w-full py-4 hover:scale-95"
           />
         )}
       </div>
