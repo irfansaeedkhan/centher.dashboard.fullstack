@@ -1,12 +1,12 @@
 import axios from "axios";
-import { getBackendUrl } from "@/constants/common";
+import { CAPIBaseURL } from "@/constants/base-urls";
 import {
   registerAuthTokenRequestInterceptor,
   registerAuthTokenResponseInterceptor,
 } from "./auth-tokens-interceptors";
 
 export const axiosApiCenther = axios.create({
-  baseURL: getBackendUrl("http", "frontend-to-backend"),
+  baseURL: CAPIBaseURL,
 });
 
 registerAuthTokenRequestInterceptor(axiosApiCenther);
