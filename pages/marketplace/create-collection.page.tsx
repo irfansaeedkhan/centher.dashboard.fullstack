@@ -1,17 +1,16 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
-// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
-import { readFileAsync } from "@/utils/file.reader.util";
+// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
@@ -80,18 +79,14 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionsRemoteBasePath
       );
 
-      // const assetBuffer = await readFileAsync(profile);
       const uploadDto = {
         path: collectionUploader._uploader.makePath(),
         content: profile,
-        // content: assetBuffer.toString("base64"),
       };
 
       const profilePath = await collectionUploader._uploader.upload(uploadDto);
-      // const coverBuffer = await readFileAsync(cover);
       const collectionMetaDataPath = await collectionUploader.uploadCollection(
         cover,
-        // coverBuffer,
         collectionData,
         profilePath
       );
