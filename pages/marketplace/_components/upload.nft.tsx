@@ -4,11 +4,19 @@ import clsx from "clsx";
 
 // App imports
 
-import { PhotoIcon, GifNew, GifNewWhite } from "@/assets/svgs";
+import {
+  PhotoIcon,
+  GifNew,
+  GifNewWhite,
+  VideosIcon,
+  AudioIcon,
+} from "@/assets/svgs";
 
 // same directory Imports
 import ImageNFTUpload from "./image.nft.upload";
 import GifNFTUpload from "./gif.nft.upload";
+import VideoNFTUpload from "./video.nft.upload";
+import AudioNFTUpload from "./audio.nft.upload";
 
 export interface UploadNFTProps {
   asset: Blob | undefined;
@@ -47,6 +55,7 @@ export const UploadNFT = ({
               assetTab === "Image" && "[&>*]:stroke-white"
             )}
           />
+
           <span>Image</span>
         </label>
         <label
@@ -65,6 +74,40 @@ export const UploadNFT = ({
           )}
           <span>Gif</span>
         </label>
+        <label
+          className={clsx(
+            label,
+            assetTab === "Video" ? "myBox text-white" : "text-[#A0A4BB]"
+          )}
+          onClick={() => {
+            setAssetTab("Video");
+          }}
+        >
+          <VideosIcon
+            className={clsx(
+              "group-hover:[&>*]:stroke-brand-primary",
+              assetTab === "Video" && "[&>*]:stroke-white"
+            )}
+          />
+          <span>Video</span>
+        </label>
+        <label
+          className={clsx(
+            label,
+            assetTab === "Audio" ? "myBox text-white" : "text-[#A0A4BB]"
+          )}
+          onClick={() => {
+            setAssetTab("Audio");
+          }}
+        >
+          <AudioIcon
+            className={clsx(
+              "group-hover:[&>*]:stroke-brand-primary",
+              assetTab === "Audio" && "[&>*]:stroke-white"
+            )}
+          />
+          <span>Audio</span>
+        </label>
       </div>
       {assetTab === "Image" && (
         <ImageNFTUpload
@@ -76,7 +119,7 @@ export const UploadNFT = ({
       {assetTab === "Gif" && (
         <GifNFTUpload asset={asset} setAsset={setAsset} clearForm={clearForm} />
       )}
-      {/* {assetTab === "Video" && (
+      {assetTab === "Video" && (
         <VideoNFTUpload
           asset={asset}
           setAsset={setAsset}
@@ -89,7 +132,7 @@ export const UploadNFT = ({
           setAsset={setAsset}
           clearForm={clearForm}
         />
-      )} */}
+      )}
     </div>
   );
 };

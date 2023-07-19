@@ -6,6 +6,7 @@ import ctl from "@netlify/classnames-template-literals";
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
 import AudioPlayer from "./audio.player";
+import FinalButton from "@/components/button/final.button";
 
 const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
@@ -40,10 +41,10 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
       ) : (
         <div className={uploadBox}>
           <div className={uploadBoxContent}>
-            <span className={formatName}>MPEG, WAV, M4A</span>
+            <span className={formatName}>MPEG, WAV, M4A, MP3</span>
             <div className={uploadBtnContainer}>
-              <label htmlFor="audio-nft" className={chooseFileBtn}>
-                Choose File
+              <label htmlFor="audio-nft">
+                <FinalButton title="Choose File" variant="primary" />
               </label>
               <input
                 type="file"

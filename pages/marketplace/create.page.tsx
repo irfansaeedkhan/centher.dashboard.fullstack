@@ -147,6 +147,7 @@ const CreateNFT: NextPageWithLayout = () => {
       title: "Complete Checkout",
       visibility: true,
       content: (nftData: any) => {
+        console.log(nftData);
         const src = asset ? URL.createObjectURL(asset) : "";
         return (
           <div className={modalBodyWrapper2}>
@@ -306,11 +307,7 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        {/* <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        > */}
         <div className={feedContainer}>{page}</div>
-        {/* </GoogleReCaptchaWrapper> */}
       </div>
     </AllPagesWrapper>
   );
