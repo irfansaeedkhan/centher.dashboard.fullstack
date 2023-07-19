@@ -370,19 +370,6 @@ const FixedPriceForm = ({
         >
           <div className={modalBodyWrapper}>
             <div className={fieldWrapper}>
-              <label className={fieldTitle}>Type</label>
-              <input
-                type="text"
-                name="Type"
-                id="Type"
-                autoComplete="off"
-                placeholder="Character"
-                className={inputFieldModal}
-                onChange={handlePropertyChange}
-                value={propertyDetails.Type}
-              />
-            </div>
-            <div className={fieldWrapper}>
               <label className={fieldTitle}>Name</label>
               <input
                 type="text"
@@ -393,6 +380,19 @@ const FixedPriceForm = ({
                 className={inputFieldModal}
                 onChange={handlePropertyChange}
                 value={propertyDetails.PropertyName}
+              />
+            </div>
+            <div className={fieldWrapper}>
+              <label className={fieldTitle}>Type</label>
+              <input
+                type="text"
+                name="Type"
+                id="Type"
+                autoComplete="off"
+                placeholder="Character"
+                className={inputFieldModal}
+                onChange={handlePropertyChange}
+                value={propertyDetails.Type}
               />
             </div>
             {propertyErr && (
