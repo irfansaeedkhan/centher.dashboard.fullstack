@@ -1,16 +1,15 @@
 import Moralis from "moralis";
 import { v1 as uuidv1 } from "uuid";
+import { create, IPFSHTTPClient } from "ipfs-http-client";
+import { customLog } from "@/utils/custom.log";
 import { IUploader } from "../interfaces/file.uploader.interface";
-import { safeNameType } from "../interfaces/safe.file.wrapper.interface";
 import { IUploadParam } from "../interfaces/upload.param.interface";
 
-import { create } from "ipfs-http-client";
-
-//Based on https://docs.moralis.io/web3-data-api/evm/how-t;o-upload-a-folder-to-ipfs
 type uploadResult = { path: string };
 type uploaderFunc = (params: any) => Promise<{ result: uploadResult[] }>;
 
 export class MoralisUploader implements IUploader<IUploadParam, string> {
+  ipfs: IPFSHTTPClient;
   _moraliseBasePath: string;
   _moralisResponsePathKey: string;
   _instance: uploaderFunc | null = null;
@@ -22,6 +21,16 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
   ) {
     this._moraliseBasePath = moraliseBasePath;
     this._moralisResponsePathKey = moralisResponsePathKey;
+    const auth = "Basic " + process.env.NEXT_PUBLIC_INFURA_AUTH;
+    this.ipfs = create({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https",
+      headers: {
+        authorization: auth,
+      },
+      timeout: 10000000,
+    });
   }
 
   makePath(extention?: string): string {
@@ -33,55 +42,17 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
 
   async upload(input: IUploadParam): Promise<string> {
     try {
-      // if (!input.content?.length) {
-      //   throw new Error("asset must contains a name field.");
-      // }
-      // if (!input.path?.length) {
-      //   throw new Error("invalid path.");
-      // }
-      // if (!this._instance) {
-      //   this._instance = await this.initInstance();
-      // }
-      // console.log(input.path);
-      // const uploadResult: { result: uploadResult[] } = await this._instance({
-      //   abi: [input],
-      // });
-      // if (!uploadResult?.result?.filter(Boolean)?.length) {
-      //   throw new Error("upload failed.");
-      // }
-      // const result = this.extractUploadedFilePath(uploadResult.result[0]);
-      // console.log(result);
-      // return result;
+      const options = {
+        wrapWithDirectory: true,
+        progress: (prog: any) => {
+          customLog(prog, ["development", "staging"]);
+        },
+      };
 
-      try {
-        const options = {
-          wrapWithDirectory: true,
-          progress: (prog: any) => console.log(`received: ${prog}`),
-        };
-
-        const projectId = "2M2ncIkG7clkEEwlgEJJDr6l4R0";
-        const projectSecret = "4c84123a96cf4c78d8ab769f296cf8ea";
-        const auth =
-          "Basic " +
-          Buffer.from(projectId + ":" + projectSecret).toString("base64");
-
-        const ipfs = create({
-          host: "ipfs.infura.io",
-          port: 5001,
-          protocol: "https",
-          headers: {
-            authorization: auth,
-          },
-          timeout: 10000000,
-        });
-
-        const added = await ipfs.add(input, options);
-        return added.cid.toString() + "/" + input.path;
-      } catch (err) {
-        console.log(err);
-        throw err;
-      }
-    } catch (err) {
+      const added = await this.ipfs.add(input, options);
+      return added.cid.toString() + "/" + input.path;
+    } catch (err: any) {
+      customLog(err, ["development", "staging"]);
       typeof err == "string" ? (err = new Error(err)) : err;
       throw err;
     }
@@ -91,43 +62,7 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
     return uuidv1();
   }
 
-  private async initInstance(): Promise<uploaderFunc> {
-    if (!process.env.NEXT_PUBLIC_MORALIS_URL?.length) {
-      throw new Error("Moralis apikey not found in environment variables.");
-    }
-
-    try {
-      await Moralis.start({
-        apiKey: process.env.NEXT_PUBLIC_MORALIS_URL,
-      });
-    } catch (err) {}
-
-    return Moralis.EvmApi.ipfs.uploadFolder;
-  }
-
   private toSnakeCase(str: string): string {
     return str.replace(" ", "_");
-  }
-
-  private extractUploadedFilePath(result: uploadResult): string {
-    if (!result.path.length) {
-      throw new Error("Moralis returned an invalid path.");
-    }
-    return this.getSplittedString(result.path, this._moralisResponsePathKey);
-  }
-
-  private getSplittedString(
-    str: String,
-    key: string,
-    index: number = 2
-  ): string {
-    if (str.indexOf(key) == -1) {
-      throw new Error(`string ${str} is not contains key ${key}.`);
-    }
-    const result = str.split(key);
-    if (!result[index]) {
-      throw new Error("invalid index to get path");
-    }
-    return result[index];
   }
 }
