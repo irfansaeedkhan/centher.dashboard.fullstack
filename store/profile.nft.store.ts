@@ -17,6 +17,7 @@ import {
   isOld,
 } from "@/web3/blockchain/helpers/native.collection.helper";
 import { SwapCollection } from "@/web3/blockchain/config";
+import { blackListedAddresses } from "@/utils/blacklist_addresses/collection_addresses";
 
 const dexaCollection = "0x08b660beec8d1f9a0162e3c04416c84eac8d334b";
 const dexaProfile = "0xa638d0182d075278a9ea6480c1430c6e7fb490c9";
@@ -114,7 +115,11 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
             account
           );
 
-          _collections = _collections.map((collection) => {
+          const filteredCollection = _collections.filter(
+            (e) => !blackListedAddresses.includes(e.collection)
+          );
+
+          _collections = filteredCollection.map((collection) => {
             if (isOld(collection.collection)) {
               return {
                 ...collection,
