@@ -272,38 +272,38 @@ export const collectionsByAccount = `
 `;
 
 export const listedNFTsByAccount = `
-  query($first: Int!, $skip: Int!, $owner: Bytes!) {
-    nfts(
-      first: $first
-      skip: $skip
-      orderBy: tradingVolumn
-      orderDirection: desc
-      where: {owner: $owner}
-    ) {
-        collection
-        createTime
-        creator
-        mintHash
-        id
-        ipfs
-        saleState
-        tokenId
-        price
-        owner
-        unlock
-        listInfo {
-          price
-          bidSize
-        }
-        auctionInfo {
-          endTime
-          highestBidPrice
-          highestBidAddress
-          bidSize
-          startPrice
-        }
+ query ($first: Int!, $skip: Int!, $owner: Bytes!) {
+  nfts(
+    first: $first
+    skip: $skip
+    orderBy: tradingVolumn
+    orderDirection: desc
+    where: {owner: $owner1, price_gt: "0"}
+  ) {
+    collection
+    createTime
+    creator
+    mintHash
+    id
+    ipfs
+    saleState
+    tokenId
+    price
+    owner
+    unlock
+    listInfo {
+      price
+      bidSize
+    }
+    auctionInfo {
+      endTime
+      highestBidPrice
+      highestBidAddress
+      bidSize
+      startPrice
     }
   }
+}
 `;
 
 export const listedUserNFTsByAccount = `
