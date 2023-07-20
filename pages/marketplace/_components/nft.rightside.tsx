@@ -60,11 +60,7 @@ export const NFTRightSideComponent = ({
     toast.success("NFT link copied!");
   };
 
-  const nftOwnerAddress = useGetNFTOwner(
-    data?.collection,
-    data?.nftId,
-    data?.owner
-  );
+  const nftOwnerAddress = useGetNFTOwner(data?.collection, data?.nftId);
   const { user: _nftOwner, loading: _nftOwnerLoading } =
     useGetUser(nftOwnerAddress);
   const verificationTick = useVerificationTick({ user });
