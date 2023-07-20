@@ -5,6 +5,7 @@ import { LoadingState } from "@/models/common";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
 import { getCollections } from "@/lib/get-collections";
+import { blackListedAddresses } from "@/utils/blacklist_addresses/collection_addresses";
 
 export const useHotCollections = () => {
   const [state, setState] = useState<{
@@ -22,7 +23,12 @@ export const useHotCollections = () => {
           limit: 15,
           skip: 0,
         });
-        const hotCollectionsCardDataPromises = hotCollections.map((item) =>
+
+        const filteredCollection = hotCollections.filter(
+          (e) => !blackListedAddresses.includes(e.collection)
+        );
+
+        const hotCollectionsCardDataPromises = filteredCollection.map((item) =>
           getCollectionCardData(item)
         );
 

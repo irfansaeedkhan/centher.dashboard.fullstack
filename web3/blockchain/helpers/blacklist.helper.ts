@@ -11,6 +11,7 @@ export class CollectionBlackList {
           "0xc8f27287373061c993cd9f73f7a4ce87eb1002e7",
           "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
           "0xe9ee190f98af25616d8cd1928a7da2ea3a5c252d",
+          "0x682637978334affef87a612631a269b38c02ac37",
         ]
       : [
           "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
