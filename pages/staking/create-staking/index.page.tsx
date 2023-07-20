@@ -112,7 +112,7 @@ const CreateStaking: NextPageWithLayout = () => {
       <div
         key={index}
         className={clsx(
-          `text-14px mb-6 w-full font-medium text-white md:mb-0 ${
+          `text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0 ${
             index === numLevels - 1 && index % 2 === 0 && "col-span-2"
           }`
         )}
@@ -174,106 +174,6 @@ const CreateStaking: NextPageWithLayout = () => {
     project_metadata?: metaDataType[];
     rewards_level?: levelDataType[];
   }
-  const ListCardData = [
-    {
-      pack: "Pack 1",
-      token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
-      apy: "10%",
-      staking_period: "3 months",
-      claim_period: "Monthly",
-      liquidity_pool_provided: "yes",
-      is_cancelable: "yes",
-      show_on_centher: "yes",
-      charge_fee_on_cancel: 0.8,
-      start_time: "13 jully, 2023, 12 PM",
-      max_staking_amount: 200,
-      min_staking_amount: 10,
-      multilevel_rewards: "level 3",
-      rewards_level: [
-        {
-          level: 1,
-          percent: 10,
-        },
-        {
-          level: 2,
-          percent: 4,
-        },
-        {
-          level: 3,
-          percent: 3,
-        },
-        {
-          level: 4,
-          percent: 0,
-        },
-        {
-          level: 5,
-          percent: 0,
-        },
-        {
-          level: 6,
-          percent: 0,
-        },
-      ],
-      project_metadata: [
-        {
-          title: "Project Name",
-          data: "Centher",
-        },
-      ],
-    },
-    {
-      pack: "Pack 2",
-      token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
-      apy: "10%",
-      staking_period: "6 months",
-      claim_period: "Monthly",
-      liquidity_pool_provided: "no",
-      is_cancelable: "no",
-      show_on_centher: "no",
-      charge_fee_on_cancel: 0.8,
-      start_time: "13 jully, 2023, 12 PM",
-      max_staking_amount: 200,
-      min_staking_amount: 10,
-      multilevel_rewards: "level 6",
-      rewards_level: [
-        {
-          level: 1,
-          percent: 10,
-        },
-        {
-          level: 2,
-          percent: 4,
-        },
-        {
-          level: 3,
-          percent: 3,
-        },
-        {
-          level: 4,
-          percent: 5,
-        },
-        {
-          level: 5,
-          percent: 2,
-        },
-        {
-          level: 6,
-          percent: 9,
-        },
-      ],
-      project_metadata: [
-        {
-          title: "Project 2",
-          data: "Dexa",
-        },
-        {
-          title: "Project 3",
-          data: "Dexa 2",
-        },
-      ],
-    },
-  ];
 
   const stakingFormSchema = Joi.object({
     pack: Joi.string().max(200).label("pack"),
@@ -378,8 +278,8 @@ const CreateStaking: NextPageWithLayout = () => {
           Submit Your Staking Project
         </h1>
         <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-6">
-          <div className="mb-2 grid w-full  gap-6 md:grid-cols-2">
-            <div className="text-14px col-span-2 w-full font-medium text-white">
+          <div className="mb-2 grid w-full gap-6 md:grid-cols-2">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:mb-0">
               <label htmlFor="pack" className="block font-normal tracking-wide">
                 Staking Project Name
               </label>
@@ -397,7 +297,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="token_address"
                 className="block font-normal tracking-wide"
@@ -418,7 +318,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="multilevel_rewards"
                 className="block font-normal tracking-wide"
@@ -458,7 +358,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
             {renderInputFields()}
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label htmlFor="apy" className="block font-normal tracking-wide">
                 APY
               </label>
@@ -476,7 +376,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="staking_period"
                 className="block font-normal tracking-wide"
@@ -505,7 +405,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="start_time"
                 className="block font-normal tracking-wide"
@@ -540,7 +440,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="claim_period"
                 className="block font-normal tracking-wide"
@@ -569,7 +469,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="show_on_centher"
                 className="block font-normal tracking-wide"
@@ -623,7 +523,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="liquidity_pool_provided"
                 className="block font-normal tracking-wide"
@@ -680,7 +580,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="is_cancelable"
                 className="block font-normal tracking-wide"
@@ -734,7 +634,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="charge_fee_on_cancel"
                 className="block font-normal tracking-wide"
@@ -755,7 +655,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="min_staking_amount"
                 className="block font-normal tracking-wide"
@@ -776,7 +676,7 @@ const CreateStaking: NextPageWithLayout = () => {
               )}
             </div>
 
-            <div className="text-14px mb-6 w-full font-medium text-white md:mb-0">
+            <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
               <label
                 htmlFor="max_staking_amount"
                 className="block font-normal tracking-wide"
