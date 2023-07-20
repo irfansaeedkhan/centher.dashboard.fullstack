@@ -28,9 +28,7 @@ const SettingsSidebar = () => {
                 "text-xl",
                 item.link === router.pathname ? "text-white" : "text-[#A0A4BB]"
               )}
-            >
-              {item.icon}
-            </span>
+            ></span>
             <span
               className={clsx(
                 "left-6 text-sm font-medium",

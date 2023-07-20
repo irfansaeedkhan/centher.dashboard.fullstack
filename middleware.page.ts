@@ -100,6 +100,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.index,
   AppRoutes.settings.about,
   AppRoutes.settings.profile,
+  AppRoutes.settings.citizenship,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
   AppRoutes.settings.citizenship_add_details,

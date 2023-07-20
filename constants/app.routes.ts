@@ -38,6 +38,7 @@ export const AppRoutes = {
     index: "/settings",
     about: "/settings/about",
     profile: "/settings/profile",
+    citizenship: "/settings/citizenship",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
     citizenship_add_details: "/settings/citizenship-add-details",

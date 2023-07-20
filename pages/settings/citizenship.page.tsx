@@ -1,13 +1,14 @@
 import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import ProfileSettingSocialLinksSkeleton from "@/components/loading.skeletons/profile.setting.social.links";
+import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setting.skeleton";
 
 import SettingsSidebar from "./_components/settings.sidebar";
-import { SocialLinksForm } from "./_components/social.links.form";
 import { BackButton } from "./_components/back.button";
+import { AboutForm } from "./_components/about.form";
+import CitizenshipUpdateDetails from "./_components/citizenship.form.update";
 
-const SocialLinks: NextPageWithLayout = () => {
+const Citizen: NextPageWithLayout = () => {
   const { user } = useUser();
 
   return (
@@ -15,21 +16,17 @@ const SocialLinks: NextPageWithLayout = () => {
       <BackButton />
 
       <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
-        Social Links
+        CITIZEN Passport Membership.
       </h6>
 
-      {user ? (
-        <SocialLinksForm user={user} />
-      ) : (
-        <ProfileSettingSocialLinksSkeleton />
-      )}
+      {user ? <CitizenshipUpdateDetails /> : <ProfileSettingSkeleton />}
     </div>
   );
 };
 
-SocialLinks.getLayout = (page) => {
+Citizen.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Settings" showSidebar={false}>
+    <AllPagesWrapper pageTitle="Citizen" showSidebar={false}>
       <div className="flex justify-center fsm:gap-5 flg:gap-10">
         <span className="hidden flg:block">
           <SettingsSidebar />
@@ -40,4 +37,4 @@ SocialLinks.getLayout = (page) => {
   );
 };
 
-export default SocialLinks;
+export default Citizen;

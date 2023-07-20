@@ -35,7 +35,7 @@ export const CitizenShipNextStepModal: React.FC<CustomModalProps> = ({
       <FinalButton
         onClick={() => {
           onClickClose();
-          router.push({ pathname: AppRoutes.settings.citizenship_add_details });
+          router.push({ pathname: AppRoutes.settings.citizenship });
         }}
         title="Continue"
         variant="primary"
