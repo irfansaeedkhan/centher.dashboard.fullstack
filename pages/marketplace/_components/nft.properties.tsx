@@ -24,14 +24,14 @@ export const NFTProperties = (props: NFTPropertiesProps) => {
                         className={`gradientborders2 relative mb-[2%] flex h-[98px] w-full flex-col items-center justify-center gap-3 rounded-10px border border-brand-primary bg-background-shade-2 p-[2px] lg:max-w-[32%]`}
                         key={index}
                       >
+                        <h5 className={`text-14px font-semibold text-white`}>
+                          {attribute.PropertyName}
+                        </h5>
                         <h4
                           className={`text-12px font-medium text-brand-primary`}
                         >
                           {attribute.Type}
                         </h4>
-                        <h5 className={`text-14px font-semibold text-white`}>
-                          {attribute.PropertyName}
-                        </h5>
                       </div>
                     ))
                   ) : (
