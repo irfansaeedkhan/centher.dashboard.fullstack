@@ -23,6 +23,7 @@ export interface NFTLockedDetailsProps {
   endTime: number;
   unlock: number;
   external?: boolean;
+  type?: string;
 }
 
 export const getUserByIdFromDB = async (userId: string): Promise<User> => {

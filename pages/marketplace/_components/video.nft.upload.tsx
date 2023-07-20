@@ -6,7 +6,6 @@ import ctl from "@netlify/classnames-template-literals";
 // App imports
 import { CrossIcon } from "@/assets/svgs";
 import { UploadNFTProps } from "./upload.nft";
-import FinalButton from "@/components/button/final.button";
 
 const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
@@ -57,8 +56,8 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
             <div className={uploadBoxContent}>
               <span className={formatName}>MP4, QUICKTIME</span>
               <div className={uploadBtnContainer}>
-                <label htmlFor="video-nft">
-                  <FinalButton title="Choose File" variant="primary" />
+                <label htmlFor="video-nft" className={chooseFileBtn}>
+                  Choose File
                 </label>
                 <input
                   type="file"
@@ -152,8 +151,8 @@ const uploadBtnContainer = ctl(`
   relative w-[132px] h-10
     `);
 const chooseFileBtn = ctl(`
-  z-10 absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
+z-10 absolute w-full h-full text-sm text-white font-bold leading-normal bg-transparent rounded-[14px] border border-gray-shade-3 text-center flex items-center justify-center hover:bg-[#1E202B] cursor-pointer
     `);
 const chooseFileBtn2 = ctl(`
-  absolute w-full h-full  opacity-0
+  absolute w-full h-full opacity-0
     `);
