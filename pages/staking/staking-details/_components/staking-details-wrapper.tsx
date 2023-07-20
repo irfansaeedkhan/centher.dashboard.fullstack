@@ -16,9 +16,7 @@ interface Props {
 
 const StakingDetailsWrapper = ({ children }: Props) => {
   const { user } = useUser();
-  const { loading, preBookingStats } = usePreBookingStats(
-    user?.account_address
-  );
+  const { loading, preBookingStats } = usePreBookingStats(user?._id);
   const router = useRouter();
 
   if (loading === "failed") {
