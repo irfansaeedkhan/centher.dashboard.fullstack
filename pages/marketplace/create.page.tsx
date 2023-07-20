@@ -14,7 +14,6 @@ import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 // import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -31,6 +30,13 @@ enum ModalType {
   proceedFuncModal = "proceedFuncModal",
 }
 
+export enum CreateNftUploadFormType {
+  Image = "Image",
+  Gif = "Gif",
+  Video = "Video",
+  Audio = "Audio",
+}
+
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
   const [clearForm, setClearForm] = useState(false);
@@ -41,7 +47,7 @@ const CreateNFT: NextPageWithLayout = () => {
   });
   // const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
-  const [assetTab, setAssetTab] = useState("Image");
+  const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
 
   const bnbPrice = useBNBPrice();
 
@@ -148,7 +154,6 @@ const CreateNFT: NextPageWithLayout = () => {
       title: "Complete Checkout",
       visibility: true,
       content: (nftData: any) => {
-        console.log(nftData);
         const src = asset ? URL.createObjectURL(asset) : "";
         return (
           <div className={modalBodyWrapper2}>

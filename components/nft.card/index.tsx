@@ -218,7 +218,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             locked && "pointer-events-none"
           )}
         >
-          {data.type.includes("audio") ? (
+          {data.type.includes("audio") || data.type.includes("video") ? (
             <Image
               src={"/images/default-music.png"}
               alt={data.name}

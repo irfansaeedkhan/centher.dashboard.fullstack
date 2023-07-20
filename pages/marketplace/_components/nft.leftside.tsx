@@ -35,6 +35,10 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
           <div>
             {props.type.includes("audio") ? (
               <AudioPlayer src={props.image} />
+            ) : props.type.includes("video") ? (
+              <video controls={true} className={videoStyling}>
+                <source src={props.image} type="video/mp4" />
+              </video>
             ) : (
               <Image
                 className={`absolute h-full w-full rounded-2xl object-cover`}
@@ -58,3 +62,6 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
     </div>
   );
 };
+const videoStyling = `
+w-full h-full absolute rounded-2xl object-contain
+`;

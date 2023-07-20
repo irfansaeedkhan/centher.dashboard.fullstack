@@ -17,6 +17,7 @@ import ImageNFTUpload from "./image.nft.upload";
 import GifNFTUpload from "./gif.nft.upload";
 import VideoNFTUpload from "./video.nft.upload";
 import AudioNFTUpload from "./audio.nft.upload";
+import { CreateNftUploadFormType } from "../create.page";
 
 export interface UploadNFTProps {
   asset: Blob | undefined;
@@ -42,17 +43,19 @@ export const UploadNFT = ({
       <div className="flex w-full border-b border-gray-shade-3 [@media(max-width:600px)]:flex-wrap [@media(max-width:600px)]:justify-between [@media(max-width:600px)]:!gap-0">
         <label
           onClick={() => {
-            setAssetTab("Image");
+            setAssetTab(CreateNftUploadFormType.Image);
           }}
           className={clsx(
             label,
-            assetTab === "Image" ? "myBox text-white" : "text-[#A0A4BB]"
+            assetTab === CreateNftUploadFormType.Image
+              ? "myBox text-white"
+              : "text-[#A0A4BB]"
           )}
         >
           <PhotoIcon
             className={clsx(
               "group-hover:[&>*]:stroke-brand-primary",
-              assetTab === "Image" && "[&>*]:stroke-white"
+              assetTab === CreateNftUploadFormType.Image && "[&>*]:stroke-white"
             )}
           />
 
@@ -61,32 +64,36 @@ export const UploadNFT = ({
         <label
           className={clsx(
             label,
-            assetTab === "Gif" ? "myBox text-white" : "text-[#A0A4BB]"
+            assetTab === CreateNftUploadFormType.Gif
+              ? "myBox text-white"
+              : "text-[#A0A4BB]"
           )}
           onClick={() => {
-            setAssetTab("Gif");
+            setAssetTab(CreateNftUploadFormType.Gif);
           }}
         >
-          {assetTab === "Gif" ? (
+          {assetTab === CreateNftUploadFormType.Gif ? (
             <GifNewWhite />
           ) : (
-            <GifNew className={clsx("")} />
+            <GifNew />
           )}
           <span>Gif</span>
         </label>
         <label
           className={clsx(
             label,
-            assetTab === "Video" ? "myBox text-white" : "text-[#A0A4BB]"
+            assetTab === CreateNftUploadFormType.Video
+              ? "myBox text-white"
+              : "text-[#A0A4BB]"
           )}
           onClick={() => {
-            setAssetTab("Video");
+            setAssetTab(CreateNftUploadFormType.Video);
           }}
         >
           <VideosIcon
             className={clsx(
               "group-hover:[&>*]:stroke-brand-primary",
-              assetTab === "Video" && "[&>*]:stroke-white"
+              assetTab === CreateNftUploadFormType.Video && "[&>*]:stroke-white"
             )}
           />
           <span>Video</span>
@@ -94,39 +101,41 @@ export const UploadNFT = ({
         <label
           className={clsx(
             label,
-            assetTab === "Audio" ? "myBox text-white" : "text-[#A0A4BB]"
+            assetTab === CreateNftUploadFormType.Audio
+              ? "myBox text-white"
+              : "text-[#A0A4BB]"
           )}
           onClick={() => {
-            setAssetTab("Audio");
+            setAssetTab(CreateNftUploadFormType.Audio);
           }}
         >
           <AudioIcon
             className={clsx(
               "group-hover:[&>*]:stroke-brand-primary",
-              assetTab === "Audio" && "[&>*]:stroke-white"
+              assetTab === CreateNftUploadFormType.Audio && "[&>*]:stroke-white"
             )}
           />
           <span>Audio</span>
         </label>
       </div>
-      {assetTab === "Image" && (
+      {assetTab === CreateNftUploadFormType.Image && (
         <ImageNFTUpload
           asset={asset}
           setAsset={setAsset}
           clearForm={clearForm}
         />
       )}
-      {assetTab === "Gif" && (
+      {assetTab === CreateNftUploadFormType.Gif && (
         <GifNFTUpload asset={asset} setAsset={setAsset} clearForm={clearForm} />
       )}
-      {assetTab === "Video" && (
+      {assetTab === CreateNftUploadFormType.Video && (
         <VideoNFTUpload
           asset={asset}
           setAsset={setAsset}
           clearForm={clearForm}
         />
       )}
-      {assetTab === "Audio" && (
+      {assetTab === CreateNftUploadFormType.Audio && (
         <AudioNFTUpload
           asset={asset}
           setAsset={setAsset}
