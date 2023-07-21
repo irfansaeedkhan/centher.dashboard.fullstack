@@ -835,31 +835,30 @@
   .custom-list-bullet li::marker {
     margin: 0;
   }
-  .max-w-list-card {
-    @media screen and (max-width: 1423px) {
-      .max-w-list-card {
-        max-width: 552px;
-        flex-direction: column;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
-    }
 
-    @media screen and (max-width: 1279px) {
-      .max-w-list-card {
-        max-width: 1128px;
-        flex-direction: row;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
+  @media screen and (max-width: 1423px) {
+    .max-w-list-card {
+      max-width: 918px;
+      flex-direction: column;
+      margin-left: auto !important;
+      margin-right: auto !important;
     }
-    @media screen and (max-width: 1178px) {
-      .max-w-list-card {
-        max-width: 552px;
-        flex-direction: column;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
+  }
+
+  @media screen and (max-width: 1279px) {
+    .max-w-list-card {
+      max-width: 1128px;
+      flex-direction: row;
+      margin-left: auto !important;
+      margin-right: auto !important;
+    }
+  }
+  @media screen and (max-width: 490px) {
+    .max-w-list-card {
+      max-width: 90vw;
+      flex-direction: column;
+      margin-left: auto !important;
+      margin-right: auto !important;
     }
   }
 }

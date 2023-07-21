@@ -19,7 +19,7 @@ import { MetamaskIcon2 } from "@/assets/svgs";
 import useUser from "@/hooks/use.user";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
-import { CitizenShipNextStepModal } from "./next-step-modal";
+import { CitizenShipSuccessModal } from "./success-modal";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -100,16 +100,16 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
       +normalizeValue(formatEther2Number(prices[type])) * bnbPrice
     ).toFixed(2)}$ / ${texts[type]}`;
   };
+
   const retryFunc = () => {
     setshowMsg(null);
   };
+
   const buyMemberShip = async () => {
     try {
       await buyCitizenShip(library, tab, account as string);
-      //TODO => create an appropriate UI for this
-      setshowMsg(<CitizenShipNextStepModal onClickClose={onClickClose} />);
+      setshowMsg(<CitizenShipSuccessModal onClickClose={onClickClose} />);
     } catch (error: any) {
-      //TODO => create an appropriate UI for this
       setshowMsg(
         <CitizenShipFailureModal
           onClickClose={onClickClose}

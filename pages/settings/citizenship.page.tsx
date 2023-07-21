@@ -16,7 +16,7 @@ const Citizen: NextPageWithLayout = () => {
       <BackButton />
 
       <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
-        CITIZEN Passport Membership.
+        Set up your Team Members
       </h6>
 
       {user ? <CitizenshipUpdateDetails /> : <ProfileSettingSkeleton />}

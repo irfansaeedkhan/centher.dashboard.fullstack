@@ -1,6 +1,8 @@
 import React from "react";
 import { ListCardDataOBj } from "./list-card-data";
 import clsx from "clsx";
+import Link from "next/link";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface ListCardProps {
   card: ListCardDataOBj;
@@ -8,17 +10,24 @@ interface ListCardProps {
 
 const ListCard: React.FC<ListCardProps> = ({ card }) => {
   return (
-    <div className="flex w-full max-w-[552px] flex-grow flex-col gap-5 rounded-2xl bg-elevation-1 p-8">
+    <div className="flex w-full max-w-[inherit] flex-grow flex-col gap-5 rounded-2xl bg-elevation-1 p-8 fmd:max-w-[552px]">
       <div className="flex w-full items-center justify-between">
         <div>
           <p className={label}>Staking Name</p>
           <p className={value}>DeXa {card.pack}</p>
         </div>
-        <p className="textGradient text-xs font-medium">View project detail</p>
+        <Link
+          href={AppRoutes.staking.staking_details.index}
+          className="textGradient text-xs font-medium"
+        >
+          View project detail
+        </Link>
       </div>
       <div>
         <p className={label}>Token Address</p>
-        <p className={clsx(value, "truncate")}>{card.token_address}</p>
+        <p className={clsx(value, "word-break truncate")}>
+          {card.token_address}
+        </p>
       </div>
       {card.rewards_level && (
         <div className="rounded-xl border border-gray-shade-3 p-4">
@@ -42,7 +51,7 @@ const ListCard: React.FC<ListCardProps> = ({ card }) => {
           </div>
         </div>
       )}
-      <div className="flex w-full flex-wrap gap-10">
+      <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10">
         <div className={section}>
           <p className={label}>APY</p>
           <p className={value}>{card.apy}</p>
@@ -115,4 +124,4 @@ export default ListCard;
 const label = `text-sm text-gray-shade-14 mb-[2px]`;
 const value = `text-sm font-medium text-white`;
 const value2 = `text-sm font-medium text-green-shade-1`;
-const section = `w-[45%]`;
+const section = `col-span-2 fsm:col-span-1`;

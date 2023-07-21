@@ -58,7 +58,6 @@ export const sidebarData: SidebarData = {
         icon: Launchpad,
         activeList: [
           AppRoutes.staking.index,
-          AppRoutes.staking.staking_list,
           AppRoutes.staking.create_staking,
           AppRoutes.staking.staking_details.index,
           AppRoutes.staking.staking_details.rewards,

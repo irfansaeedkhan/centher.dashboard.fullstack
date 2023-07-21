@@ -65,7 +65,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
               }}
               title="Continue"
               variant="primary"
-              className="text-14px  w-full py-3 hover:text-black"
+              className="text-14px w-full py-3 hover:text-black"
             />
           </div>
         </div>
