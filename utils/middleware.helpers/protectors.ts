@@ -4,7 +4,7 @@ import {
   ACCESS_TOKEN_STORAGE_KEY,
   REFRESH_TOKEN_STORAGE_KEY,
 } from "@/lib/auth";
-import { validateRefreshToken } from "./validate-refresh-token";
+import { validateTokens } from "./validate-tokens";
 
 export const isAuthenticated = async (request: NextRequest) => {
   try {
@@ -13,7 +13,7 @@ export const isAuthenticated = async (request: NextRequest) => {
     if (!authTokens) return false;
 
     // Validate Refresh Token
-    const payload = await validateRefreshToken(authTokens);
+    const payload = await validateTokens(authTokens);
 
     return !!payload;
   } catch {
@@ -33,7 +33,7 @@ export const isAdmin = async (request: NextRequest) => {
     if (!authTokens) return false;
 
     // Validate Refresh Token
-    const payload = await validateRefreshToken(authTokens);
+    const payload = await validateTokens(authTokens);
 
     if (!payload) return false;
 
