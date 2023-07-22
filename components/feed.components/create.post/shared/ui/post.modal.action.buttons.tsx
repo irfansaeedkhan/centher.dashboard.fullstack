@@ -62,7 +62,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       // Call the callback function if any
       onClickActionButton && onClickActionButton();
     } catch (err: any) {
-      customLog(err.message, ["development", "staging"]);
+      customLog(["development", "staging"], err.message);
       if (err.code.startsWith("app_")) {
         toast.error(err.message);
       } else {

@@ -43,7 +43,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
         setMutualFollowersData(res.data.mutual_followers);
       })
       .catch((err) => {
-        customLog(err, ["development"]);
+        customLog(["development"], err);
       });
   }, [router.query.user_id]);
 

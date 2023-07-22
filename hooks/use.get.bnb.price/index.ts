@@ -23,7 +23,7 @@ export const useBNBPrice = () => {
 
         _price = tempPrice;
       } catch (error: any) {
-        customLog(error, ["development"]);
+        customLog(["development"], error);
       } finally {
         setBNBPrice(_price);
       }

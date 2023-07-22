@@ -31,7 +31,7 @@ export const refreshTokens =
 
       return data;
     } catch (error: any) {
-      customLog(error, ["development", "staging"]);
+      customLog(["development", "staging"], error);
       throw error;
     }
   };

@@ -401,8 +401,7 @@ export const useNewPostStore = create<NewPostStore>()(
                 } catch (error: any) {
                   socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
                   set({ isPostModalLoading: false });
-                  customLog("Error in create post: ", ["development"]);
-                  customLog(error, ["development"]);
+                  customLog(["development"], "Error in create post: ", error);
                   if (error.response?.data?.message_description) {
                     toast.error(error.response.data.message_description);
                   } else {
@@ -424,8 +423,7 @@ export const useNewPostStore = create<NewPostStore>()(
           }
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in create post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in create post: ", error);
           if (error.response?.data?.message_description) {
             toast.error(error.response.data.message_description);
           } else {
@@ -473,8 +471,7 @@ export const useNewPostStore = create<NewPostStore>()(
           return;
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in edit post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in edit post: ", error);
         }
       },
     }),

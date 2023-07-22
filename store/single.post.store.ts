@@ -112,7 +112,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
             set({ postLoading: "failed", repliesLoading: "failed" });
           }
 
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 
@@ -172,7 +172,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
             postType,
             postId
           );
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 
@@ -255,7 +255,7 @@ export const useSinglePostStore = create<SinglePostStore>()(
             replies: state.replies.filter((reply) => reply._id !== postId),
           }));
         } catch (error: any) {
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 

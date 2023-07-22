@@ -81,7 +81,7 @@ const SearchBar: React.FC<Props> = () => {
           }
         })
         .catch((e) => {
-          customLog(e, ["development"]);
+          customLog(["development"], e);
         });
     }
   };

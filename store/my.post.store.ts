@@ -137,7 +137,7 @@ export const useMyPostStore = create<MyPostStore>()(
             actionType === "like" ? "decrement" : "increment",
             postId
           );
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
       updatePostLikesCount: (actionType, postId) => {

@@ -42,7 +42,7 @@ export async function validateTokens(
 
     return data;
   } catch (err: any) {
-    customLog(err, ["development"]);
+    customLog(["development"], err);
     return null;
   }
 }
