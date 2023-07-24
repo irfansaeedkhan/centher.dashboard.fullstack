@@ -156,8 +156,5 @@ const _notReadyPages: string[] = [
 const notReadyPages = changePaths(_notReadyPages);
 
 // Chat Coming Soon
-const _chatComingSoonPages: string[] = [
-  AppRoutes.chat.index,
-  AppRoutes.chat.single_chat,
-];
+const _chatComingSoonPages: string[] = [];
 const chatComingSoonPages = changePaths(_chatComingSoonPages);
