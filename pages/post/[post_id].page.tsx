@@ -117,7 +117,7 @@ const SinglePostPage: NextPageWithLayout = () => {
         router.replace(AppRoutes.feed.index);
       }
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 
@@ -126,7 +126,7 @@ const SinglePostPage: NextPageWithLayout = () => {
       await createPostView(postId);
       createPostViewInStore(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 

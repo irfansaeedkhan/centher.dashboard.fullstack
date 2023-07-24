@@ -102,7 +102,7 @@ const CreateNFT: NextPageWithLayout = () => {
       );
       nfdCreated = !!result;
     } catch (error: any) {
-      customLog(error, ["development", "staging"]);
+      customLog(["development", "staging"], error);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );

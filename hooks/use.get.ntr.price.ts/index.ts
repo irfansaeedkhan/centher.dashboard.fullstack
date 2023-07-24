@@ -23,7 +23,7 @@ export const useNTRPrice = () => {
 
         _price = tempPrice;
       } catch (error: any) {
-        customLog(error, ["development"]);
+        customLog(["development"], error);
       } finally {
         setNTRPrice(_price);
       }

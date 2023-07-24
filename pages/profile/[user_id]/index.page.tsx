@@ -101,7 +101,7 @@ const Profile: NextPageWithLayout = () => {
       // Decrement post count on profile card
       useProfileCardStore.getState().decrementPostsCount();
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 
@@ -110,7 +110,7 @@ const Profile: NextPageWithLayout = () => {
       await createPostView(postId);
       createPostViewInStore(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 

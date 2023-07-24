@@ -8,5 +8,5 @@ export function logger(error: any, sender?: string): void {
   if (BlockchainConfig.toastErrors) {
     toast.error(error.message);
   }
-  customLog(error, ["development"]);
+  customLog(["development"], error);
 }

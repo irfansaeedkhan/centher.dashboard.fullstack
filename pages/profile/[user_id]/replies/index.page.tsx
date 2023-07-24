@@ -93,7 +93,7 @@ const Replies: NextPageWithLayout = () => {
       await actionFunction(postId);
       removePost(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 
@@ -102,7 +102,7 @@ const Replies: NextPageWithLayout = () => {
       await createPostView(postId);
       createPostViewInStore(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 

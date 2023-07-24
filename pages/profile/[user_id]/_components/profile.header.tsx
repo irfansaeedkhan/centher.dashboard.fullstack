@@ -133,7 +133,7 @@ const ProfileHeader: React.FC<Props> = ({
         const { data } = await axiosApiCenther.get(url);
         setFollow(data.is_followed);
       } catch (error: any) {
-        customLog(error, ["development"]);
+        customLog(["development"], error);
       }
     };
     if (user?._id) {
