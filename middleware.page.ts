@@ -107,7 +107,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.listed,
   AppRoutes.profile.created,
   AppRoutes.profile.collection,
-
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 

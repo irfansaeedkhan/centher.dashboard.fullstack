@@ -10,8 +10,10 @@ import { MenuClose } from "@/assets/svgs";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
+import { useCentherLive } from "@/hooks/chat";
 
 const Header = () => {
+  const { adapter } = useCentherLive();
   const { width } = useWindowSize();
   const { user, isLoading: isUserLoading } = useUser();
   const { connectWallet, disconnectWallet, getConnectedAccount } =

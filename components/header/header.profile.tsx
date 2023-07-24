@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useCallback, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -22,6 +22,7 @@ import {
   PopupUserIcon,
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { useCentherLive } from "@/hooks/chat";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -34,6 +35,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user: loggedInUser } = useUser();
+  const { unreadNotifications } = useCentherLive();
   const { connectWallet, disconnectWallet } = useConnectWallet();
   const { active, account, deactivate } = useWeb3React();
   const matches = useMediaQuery("(min-width: 1024px)");
@@ -173,7 +175,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         >
           <PopupBellIcon />
           <div className="flex flex-col gap-[2px]">
-            <p className="text-sm font-medium">Notifications</p>
+            <p className="text-sm font-medium">
+              {/* //TODO => create UI for this badge */}
+              Notifications {unreadNotifications > 0 ? unreadNotifications : ""}
+            </p>
             <span className="text-xs font-medium text-gray-shade-14">
               Alerts, Notifications
             </span>
