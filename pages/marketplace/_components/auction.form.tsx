@@ -384,7 +384,7 @@ const AuctionForm = ({
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2"
+              className="mt-2 hover:scale-95"
             />
           </div>
         </CustomModal>

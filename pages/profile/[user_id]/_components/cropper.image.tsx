@@ -71,12 +71,6 @@ const CropperImage: React.FC<CropperProps> = ({
           />
         </div>
         <div className="mt-3 flex w-full justify-center text-center">
-          {/* <button
-            className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
-            onClick={onCrop}
-          >
-            Crop
-          </button> */}
           <FinalButton
             title="Crop"
             variant="primary"
