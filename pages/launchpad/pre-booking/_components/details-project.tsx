@@ -1,9 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import { FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
 import { SiBinance } from "react-icons/si";
-
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import {
@@ -12,14 +10,11 @@ import {
   NewCentherIcon,
   Whitepaper,
 } from "@/assets/svgs";
-
 import TeamMembers from "./team-members";
 
 const DetailsProject = () => {
   const { user } = useUser();
-  const { loading, preBookingStats } = usePreBookingStats(
-    user?.account_address
-  );
+  const { loading, preBookingStats } = usePreBookingStats(user?._id);
 
   if (loading === "failed") {
     return (

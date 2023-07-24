@@ -1,8 +1,6 @@
-// React, Next, NPM Packages
 import React from "react";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { AppRoutes } from "@/constants/app.routes";
 import { IBid } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -83,7 +81,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                                   href={{
                                     pathname: AppRoutes.profile.nfts,
                                     query: {
-                                      account_address: item.bidder,
+                                      user_id: item.bidder,
                                     },
                                   }}
                                   className={``}

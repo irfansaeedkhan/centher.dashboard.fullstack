@@ -1,15 +1,10 @@
-// React, Next, NPM Packages
 import React from "react";
-import ctl from "@netlify/classnames-template-literals";
-
-// App imports
-import Button from "@/components/button";
-
-// Current directory imports
-import { StakingPack } from "./admin.coinpack.list";
-import { DeleteIconBtnCoinPack } from "@/assets/svgs";
 import Link from "next/link";
+import ctl from "@netlify/classnames-template-literals";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
+import { DeleteIconBtnCoinPack } from "@/assets/svgs";
+import { StakingPack } from "./admin.coinpack.list";
 
 interface StakingPackCardProps {
   stakingPack: StakingPack;

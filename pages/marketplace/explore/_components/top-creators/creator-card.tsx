@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { User } from "@/models/user";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AppRoutes } from "@/constants/app.routes";
@@ -15,13 +14,13 @@ interface CreatorCardProps {
 }
 
 const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
-  const { user } = useGetUser(data.account_address);
+  const { user } = useGetUser(data._id);
   const verificationTick = useVerificationTick({ user });
 
   return (
     <div className={clsx("flex min-w-max items-center gap-3", className)}>
       <Image
-        src={data.profile_image.path}
+        src={data.profile_image}
         width={48}
         height={48}
         alt={data.display_name}
@@ -31,7 +30,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         href={{
           pathname: AppRoutes.profile.nfts,
           query: {
-            account_address: data.account_address,
+            user_id: data._id,
           },
         }}
         className={clsx(
@@ -61,7 +60,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
 export default CreatorCard;
 
 export interface TopCreatorCardData {
-  account_address: User["account_address"];
+  _id: User["_id"];
   display_name: User["display_name"];
   profile_image: User["profile_image"];
 }

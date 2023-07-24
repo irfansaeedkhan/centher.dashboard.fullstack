@@ -5,7 +5,6 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import {
   ArchivedPost,
@@ -16,9 +15,9 @@ import {
 import { LoggedInUser } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -47,11 +46,8 @@ export const PostHeader: React.FC<Props> = ({
   const [containerWidth, setContainerWidth] = useState(0);
 
   const isPostOwner = useMemo(() => {
-    return (
-      loggedInUser?.account_address.toLowerCase() ===
-      postUser.account_address.toLowerCase()
-    );
-  }, [loggedInUser?.account_address, postUser.account_address]);
+    return loggedInUser?._id.toLowerCase() === postUser._id.toLowerCase();
+  }, [loggedInUser?._id, postUser._id]);
 
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
@@ -122,8 +118,8 @@ export const PostHeader: React.FC<Props> = ({
                 e.stopPropagation();
               }}
               href={{
-                pathname: AppRoutes.profile.account_address,
-                query: { account_address: postUser.account_address },
+                pathname: AppRoutes.profile.user_id,
+                query: { user_id: postUser._id },
               }}
               className={clsx(
                 `word-break flex w-full max-w-max items-center truncate text-sm font-semibold text-white hover:text-brand-primary`
@@ -164,9 +160,9 @@ export const PostHeader: React.FC<Props> = ({
                   e.stopPropagation();
                 }}
                 href={{
-                  pathname: AppRoutes.profile.account_address,
+                  pathname: AppRoutes.profile.user_id,
                   query: {
-                    account_address: parentPost.user.account_address,
+                    user_id: parentPost.user._id,
                   },
                 }}
                 className="word-break group mt-0.5 flex items-center truncate text-xs font-medium text-white"
@@ -236,11 +232,17 @@ export const PostHeader: React.FC<Props> = ({
                 post_id: parentPost._id,
               },
             }}
-            className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
           >
-            {postType === "thread-post-w-parent-header"
-              ? "View Thread"
-              : "View Post"}
+            <FinalButton
+              title={
+                postType === "thread-post-w-parent-header"
+                  ? "View Thread"
+                  : "View Post"
+              }
+              variant="primary"
+              className="h-10 w-[100px] text-[14px] hover:scale-95"
+              borderRounded="14px"
+            />
           </Link>
         )}
     </div>

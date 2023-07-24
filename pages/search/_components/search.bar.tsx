@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { useSearchStore } from "@/store/search.store";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import { IUserWithFollow } from ".";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import Image from "next/image";
+import { IUserWithFollow } from ".";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -54,7 +53,7 @@ const Searchbar = () => {
     if (e.target.value.trim() === "") {
       setOpenPopup(false);
     } else {
-      await axiosNodeApi
+      await axiosApiCenther
         .get(`/api/search?q=${e.target.value}&limit=5&offset=0`)
         .then((res) => {
           setResult(res.data.search_results);
@@ -125,7 +124,10 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
       {/* <SearchIcon /> */}
       <Link
         onClick={onClick}
-        href={`/profile/${item.account_address}`}
+        href={{
+          pathname: AppRoutes.profile.user_id,
+          query: { user_id: item._id },
+        }}
         className={clsx(
           `word-break flex items-center truncate text-sm font-medium text-white hover:text-brand-primary`
         )}

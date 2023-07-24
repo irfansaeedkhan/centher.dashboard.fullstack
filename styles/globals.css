@@ -764,13 +764,13 @@
     background-clip: text;
     text-fill-color: transparent;
   }
-  .primary-gradient-btn:hover .primary-gradient-btn-text {
+  /* .primary-gradient-btn:hover .primary-gradient-btn-text {
     background: black;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-  }
+  } */
   .primary-gradient-btn2 .primary-gradient-btn-text {
     background: linear-gradient(
       270.23deg,
@@ -786,6 +786,46 @@
     text-fill-color: transparent;
   }
 
+  /* chat gradient border */
+  .gradient-chat-box::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background-color: #17171a;
+    border-radius: 10px;
+  }
+  .border-gradient-top {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .border-gradient-left {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
   .centher-social-button:hover span {
     color: white;
   }
@@ -803,6 +843,22 @@
   border: 2px solid linear-gradient(#a9cdff, #72f6d1, #a0ed8d, #fed365, #faa49e) !important;
 }
 
+/*  chat loader */
+.chat-loader div {
+  animation-duration: 0.5s;
+}
+
+.chat-loader div:first-child {
+  animation-delay: 0.1s;
+}
+
+.chat-loader div:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.chat-loader div:nth-child(3) {
+  animation-delay: 0.6s;
+}
 .customloaderModal {
   position: fixed;
   top: 0;
@@ -1334,4 +1390,11 @@ input[type="radio"]:disabled + label:after {
 
 textarea {
   resize: none !important;
+}
+
+.blur-local > .child {
+  filter: blur(5px);
+}
+.blur-local > .not-blur {
+  filter: none;
 }

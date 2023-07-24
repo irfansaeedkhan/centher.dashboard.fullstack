@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
-
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useNewPostStore } from "@/store/new.post.store";
 import { useSinglePostStore } from "@/store/single.post.store";
+import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import {
   FeedPagesWrapper,
@@ -20,10 +20,10 @@ import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import { ArchivedPost, CompletedPost, Post } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
-
 import { BackButton, NoPostMessage } from "./_components";
 
 const SinglePostPage: NextPageWithLayout = () => {
+  const { user: loggedInUser } = useUser();
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
 
@@ -91,13 +91,13 @@ const SinglePostPage: NextPageWithLayout = () => {
   useEffect(() => {
     if (router.query.post_id) {
       resetStore(router.query.post_id.toString().toLowerCase(), "loading");
-      fetchPost();
+      fetchPost(!!loggedInUser);
     }
 
     return () => {
       resetStore("", "idle");
     };
-  }, [router.query.post_id, resetStore, fetchPost]);
+  }, [router.query.post_id, resetStore, fetchPost, loggedInUser]);
 
   const handleAction = async (
     postId: string,
@@ -117,7 +117,7 @@ const SinglePostPage: NextPageWithLayout = () => {
         router.replace(AppRoutes.feed.index);
       }
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 
@@ -126,7 +126,7 @@ const SinglePostPage: NextPageWithLayout = () => {
       await createPostView(postId);
       createPostViewInStore(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 

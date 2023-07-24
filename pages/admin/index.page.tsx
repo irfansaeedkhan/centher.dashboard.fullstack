@@ -1,8 +1,5 @@
-// App imports
-import { NextPageWithLayout } from "@/pages/_app.page";
 import { GetServerSideProps } from "next";
-
-// Current directory imports
+import { NextPageWithLayout } from "@/pages/_app.page";
 import { AppRoutes } from "@/constants/app.routes";
 
 const Admin: NextPageWithLayout = () => {

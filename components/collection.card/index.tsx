@@ -1,10 +1,8 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import clsx from "clsx";
-
 import { formatIPFSUrl } from "@/utils/format.address";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
-
 import useGetUser from "@/hooks/use.get.user";
 import { NFT } from "@/models/nft";
 import { User } from "@/models/user";
@@ -16,8 +15,8 @@ import { BNBIcon, LockedIconBG, HammerIconBG } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { getUTCNow } from "@/web3/utils/utils";
-
 import { LockedNftModal } from "../modal/locked.nft.modal";
+
 export interface NFTCardProps {
   data: NFTCardData;
 }
@@ -27,7 +26,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [imageUrl, setImageUrl] = useState(data.imageUrl);
-  const { user } = useGetUser(data.owner.account_address);
+  const { user } = useGetUser(data.owner._id);
   const verificationTick = useVerificationTick({
     user,
   });
@@ -139,10 +138,15 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
         >
           <div className={`flex items-center gap-2`}>
             {data.owner.is_registered ? (
-              <Link href={`/profile/${data.owner.account_address}`}>
+              <Link
+                href={{
+                  pathname: AppRoutes.profile.user_id,
+                  query: { user_id: data.owner._id },
+                }}
+              >
                 <Image
                   className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
-                  src={data.owner.profile_image.path}
+                  src={data.owner.profile_image}
                   alt={data.owner.display_name}
                   height={28}
                   width={28}
@@ -151,7 +155,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             ) : (
               <Image
                 className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
-                src={data.owner.profile_image.path}
+                src={data.owner.profile_image}
                 alt={data.owner.display_name}
                 height={28}
                 width={28}
@@ -161,11 +165,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               {data.owner.is_registered ? (
                 <Link
                   className="flex w-full  cursor-pointer items-center  text-white"
-                  href={`/profile/${data.owner.account_address}`}
+                  href={{
+                    pathname: AppRoutes.profile.user_id,
+                    query: { user_id: data.owner._id },
+                  }}
                 >
                   <span className={` truncate text-xs font-medium text-white`}>
-                    {data.owner.display_name ??
-                      formatAddress(data.owner.account_address)}
+                    {data.owner.display_name ?? formatAddress(data.owner._id)}
                   </span>
                   {!!verificationTick && (
                     <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
@@ -181,7 +187,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               ) : (
                 <div className="flex items-center text-white">
                   <span className={` truncate text-xs font-medium text-white`}>
-                    {formatAddress(data.owner.account_address)}
+                    {formatAddress(data.owner._id)}
                   </span>
                   {!!verificationTick && (
                     <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
@@ -484,10 +490,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 };
 
 export interface NFTOwner
-  extends Pick<
-    User,
-    "account_address" | "display_name" | "profile_image" | "is_verified"
-  > {
+  extends Pick<User, "_id" | "display_name" | "profile_image" | "membership"> {
   is_registered: boolean;
 }
 

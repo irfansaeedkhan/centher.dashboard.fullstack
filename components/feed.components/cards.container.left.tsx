@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import useUser from "@/hooks/use.user";
-import useGetUserWithPostId from "@/hooks/use.get.user/with.post.id";
+import useGetUser from "@/hooks/use.get.user";
+import { useSinglePostStore } from "@/store/single.post.store";
 import { User } from "@/models/user";
 import { AppRoutes } from "@/constants/app.routes";
 import ProfileDetailCardSkeleton from "@/components/loading.skeletons/profile.detail.card";
@@ -21,7 +22,8 @@ export const CardsContainerLeft: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
-  const { user } = useGetUserWithPostId(router.query.post_id?.toString());
+  const postAuthorId = useSinglePostStore((state) => state.posts[0]?.user._id);
+  const { user } = useGetUser(postAuthorId);
   const [profileCardUser, setProfileCardUser] = useState<User | null>(null);
 
   useEffect(() => {

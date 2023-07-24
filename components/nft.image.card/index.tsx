@@ -6,14 +6,12 @@ import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
 import clsx from "clsx";
-
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
-
+import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
 
@@ -554,8 +552,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h6>
               </div>
             </div>
-            {account?.toLowerCase() ==
-              data.owner?.account_address?.toLowerCase() &&
+            {account?.toLowerCase() == data.owner?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
                 <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7">

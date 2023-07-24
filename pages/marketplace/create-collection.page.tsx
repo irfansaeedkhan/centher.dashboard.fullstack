@@ -1,23 +1,21 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
-// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
-import { readFileAsync } from "@/utils/file.reader.util";
+// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
+import { AppRoutes } from "@/constants/app.routes";
 import { ICollectionData } from "./_components/create.collection.form";
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
@@ -81,18 +79,14 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         collectionsRemoteBasePath
       );
 
-      // const assetBuffer = await readFileAsync(profile);
       const uploadDto = {
         path: collectionUploader._uploader.makePath(),
         content: profile,
-        // content: assetBuffer.toString("base64"),
       };
 
       const profilePath = await collectionUploader._uploader.upload(uploadDto);
-      // const coverBuffer = await readFileAsync(cover);
       const collectionMetaDataPath = await collectionUploader.uploadCollection(
         cover,
-        // coverBuffer,
         collectionData,
         profilePath
       );
@@ -126,7 +120,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       toastError("Please login for creating collection!");
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -182,7 +176,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               title={"Checkout"}
               variant="primary"
               onClick={() => handleCreateCollection(collectionData)}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -238,9 +232,12 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
-                  router.push(`/profile/${account}/nfts/collection`);
+                  router.push({
+                    pathname: AppRoutes.profile.collection,
+                    query: { user_id: account },
+                  });
                 }}
-                className="w-full"
+                className="w-full hover:scale-95"
               />
             )}
           </div>

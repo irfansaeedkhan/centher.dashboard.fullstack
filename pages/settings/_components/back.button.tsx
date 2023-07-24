@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { CgArrowLeft } from "react-icons/cg";
-
 import { AppRoutes } from "@/constants/app.routes";
 
 export const BackButton = () => {

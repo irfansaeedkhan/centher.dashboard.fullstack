@@ -1,9 +1,9 @@
 import { BlockchainRead } from "@/web3/blockchain";
 
-export async function getAllUserGenealogy(account: string): Promise<any[]> {
+export async function getAllUserGenealogy(userId: string): Promise<any[]> {
   let counter = 0;
   const levels: any[] = [];
-  let referrersToFetch = [account];
+  let referrersToFetch = [userId];
   do {
     if (referrersToFetch.length) {
       const result = await BlockchainRead.getGenealogy(referrersToFetch);

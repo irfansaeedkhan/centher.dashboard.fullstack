@@ -1,8 +1,7 @@
 import React from "react";
-
+import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
 
 const ComingSoonPage: NextPageWithLayout = () => {

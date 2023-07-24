@@ -48,23 +48,20 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
   const ntrPrice = useNTRPrice();
   const [reload, setReload] = useState(false);
   const claimableBusd = useGetClaimableBusdForReferral(
-    loggedInUser?.account_address,
+    loggedInUser?._id,
     reload
   );
-  const claimableNtr = useGetClaimableNtrForReferral(
-    loggedInUser?.account_address,
-    reload
-  );
+  const claimableNtr = useGetClaimableNtrForReferral(loggedInUser?._id, reload);
 
   useEffect(() => {
-    if (loggedInUser?.account_address) {
-      fetchReferralClaimsInLaunchpad(loggedInUser?.account_address);
-      fetchReferralRewardsInLaunchpad(loggedInUser?.account_address);
+    if (loggedInUser?._id) {
+      fetchReferralClaimsInLaunchpad(loggedInUser?._id);
+      fetchReferralRewardsInLaunchpad(loggedInUser?._id);
     }
   }, [
     fetchReferralClaimsInLaunchpad,
     fetchReferralRewardsInLaunchpad,
-    loggedInUser?.account_address,
+    loggedInUser?._id,
   ]);
 
   const [roundState, setRoundState] = useState<RoundState>(

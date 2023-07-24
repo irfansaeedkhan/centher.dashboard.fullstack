@@ -1,19 +1,13 @@
-// React, Next, NPM Packages
 import React from "react";
-
-// App imports
+import Link from "next/link";
+import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AuthRight } from "@/components/auth.right";
 import { PageWrapper } from "@/components/page.wrapper";
 import { AboutMember } from "@/components/about.member";
 import { AuthLeft } from "@/components/auth.left";
 import { AppRoutes } from "@/constants/app.routes";
-
-// Current page imports
 import { LoginForm } from "./_components";
-import Image from "next/image";
-import Link from "next/link";
-import { LogoText } from "@/assets/svgs";
 
 const Login: NextPageWithLayout = () => {
   return <LoginForm />;

@@ -1,30 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-
-import { useSearchStore } from "@/store/search.store";
-import { axiosNodeApi } from "@/utils/axios";
-import useGetUser from "@/hooks/use.get.user";
-import { SearchIcon } from "@/assets/svgs";
 import { useOnClickOutside } from "usehooks-ts";
+import { useSearchStore } from "@/store/search.store";
+import { axiosApiCenther } from "@/utils/axios";
+import { SearchIcon } from "@/assets/svgs";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
-import { User } from "@/models/user";
-
 import SearchPopupResult from "./search.popup.result";
 
-interface Props {
-  ver_user: User;
-}
+interface Props {}
 
-const SearchBar: React.FC<Props> = ({ ver_user }) => {
+const SearchBar: React.FC<Props> = () => {
   const router = useRouter();
 
   const { setSearchQuery } = useSearchStore((state) => ({
     setSearchQuery: state.setSearchQuery,
   }));
-  const { user } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
@@ -73,7 +64,7 @@ const SearchBar: React.FC<Props> = ({ ver_user }) => {
 
       searchAbortControllerRef.current = new AbortController();
 
-      await axiosNodeApi
+      await axiosApiCenther
         .get(`/api/search?q=${e.target.value}&limit=5&offset=0`, {
           signal: searchAbortControllerRef.current.signal,
         })
@@ -90,7 +81,7 @@ const SearchBar: React.FC<Props> = ({ ver_user }) => {
           }
         })
         .catch((e) => {
-          customLog(e, ["development"]);
+          customLog(["development"], e);
         });
     }
   };

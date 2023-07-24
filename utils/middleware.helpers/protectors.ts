@@ -1,14 +1,21 @@
 import type { NextRequest } from "next/server";
-
-import { getSessionUser } from "./get.session.user";
+import {
+  AuthTokens,
+  ACCESS_TOKEN_STORAGE_KEY,
+  REFRESH_TOKEN_STORAGE_KEY,
+} from "@/lib/auth";
+import { validateTokens } from "./validate-tokens";
 
 export const isAuthenticated = async (request: NextRequest) => {
   try {
-    const sessionId = request.cookies.get("sid");
-    // Get session user
-    const user = await getSessionUser(sessionId?.value);
+    const authTokens = getAuthTokensFromRequest(request);
 
-    return !!user;
+    if (!authTokens) return false;
+
+    // Validate Refresh Token
+    const payload = await validateTokens(authTokens);
+
+    return !!payload;
   } catch {
     return false;
   }
@@ -21,16 +28,29 @@ const ADMIN_ACCOUNT_ADDRESS =
 
 export const isAdmin = async (request: NextRequest) => {
   try {
-    const sessionId = request.cookies.get("sid");
-    // Get session user
-    const user = await getSessionUser(sessionId?.value);
+    const authTokens = getAuthTokensFromRequest(request);
 
-    if (!user) return false;
+    if (!authTokens) return false;
 
-    return (
-      user.account_address.toLowerCase() === ADMIN_ACCOUNT_ADDRESS.toLowerCase()
-    );
+    // Validate Refresh Token
+    const payload = await validateTokens(authTokens);
+
+    if (!payload) return false;
+
+    return payload.sub.toLowerCase() === ADMIN_ACCOUNT_ADDRESS.toLowerCase();
   } catch {
     return false;
   }
+};
+
+const getAuthTokensFromRequest = (request: NextRequest): AuthTokens | null => {
+  const accessToken = request.cookies.get(ACCESS_TOKEN_STORAGE_KEY);
+  const refreshToken = request.cookies.get(REFRESH_TOKEN_STORAGE_KEY);
+
+  if (!accessToken || !refreshToken) return null;
+
+  return {
+    access_token: accessToken.value,
+    refresh_token: refreshToken.value,
+  };
 };

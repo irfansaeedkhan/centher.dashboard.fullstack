@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 
 export type CountType = "notifications" | "chats" | "none";
 
@@ -32,7 +32,9 @@ export const useCountsStore = create<CountsStore>()(
         try {
           set({ loading: "loading" });
 
-          const { data } = await axiosNodeApi.get(`/api/users/counts`);
+          const { data } = await axiosApiCenther.get(
+            `/api/socials/users/counts`
+          );
 
           set({
             counts: (data.counts as CountsObject) ?? initialCounts,

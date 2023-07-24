@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 
 // App imports
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { AvatarList } from "@/models/avatars";
 import { LoadingState } from "@/models/common";
 
@@ -12,7 +12,7 @@ export const useAvatars = () => {
 
   useEffect(() => {
     setLoading("loading");
-    axiosNodeApi
+    axiosApiCenther
       .get("/api/public/avatars.json")
       .then(({ data }) => {
         setAvatars(data as AvatarList);

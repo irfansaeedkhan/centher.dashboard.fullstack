@@ -1,9 +1,8 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -19,9 +18,9 @@ import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
+import { customLog } from "@/utils/custom.log";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
@@ -82,7 +81,6 @@ const CreateNFT: NextPageWithLayout = () => {
     let nfdCreated = false;
     try {
       const nftUploader = new NFTUploader(nftRemoteBasePath);
-      // const file = await readFileAsync(asset);
       const castedNftData = nftData as INFTData;
       const nftMetadataPath = await nftUploader.uploadNFT(
         asset,
@@ -103,8 +101,8 @@ const CreateNFT: NextPageWithLayout = () => {
           castedNftData.supply
       );
       nfdCreated = !!result;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      customLog(["development", "staging"], error);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );
@@ -122,7 +120,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("Please login for creating NFT!");
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -186,7 +184,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Checkout"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-75"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -223,7 +221,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"View on Profile"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -234,7 +232,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Try Again"}
                 variant="secondary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                 }}

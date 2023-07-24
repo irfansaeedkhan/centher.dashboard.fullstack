@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
 import {
   changePaths,
   checkMatch,
@@ -93,7 +92,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.home,
   AppRoutes.search,
 
-  AppRoutes.profile.account_address,
+  AppRoutes.profile.user_id,
   AppRoutes.profile.replies,
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
@@ -108,7 +107,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.listed,
   AppRoutes.profile.created,
   AppRoutes.profile.collection,
-
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 
@@ -156,8 +156,5 @@ const _notReadyPages: string[] = [
 const notReadyPages = changePaths(_notReadyPages);
 
 // Chat Coming Soon
-const _chatComingSoonPages: string[] = [
-  AppRoutes.chat.index,
-  AppRoutes.chat.single_chat,
-];
+const _chatComingSoonPages: string[] = [];
 const chatComingSoonPages = changePaths(_chatComingSoonPages);

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
-
 import { formatAddress } from "@/utils/format.address";
 import useUser from "@/hooks/use.user";
 import { copyText } from "@/utils/copy.text";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { AppRoutes } from "@/constants/app.routes";
 
 const WalletSection = ({ data }: any) => {
   const { user: loggedInUser } = useUser();
@@ -13,9 +13,9 @@ const WalletSection = ({ data }: any) => {
 
   useEffect(() => {
     setReferralLink(
-      `${window.location.origin}/auth/register?referred_by=${loggedInUser?.account_address}`
+      `${window.location.origin}${AppRoutes.auth.register}?referred_by=${loggedInUser?._id}`
     );
-  }, [loggedInUser?.account_address]);
+  }, [loggedInUser?._id]);
 
   return (
     <div className="flex w-full flex-col gap-6 md:flex-row">
@@ -26,7 +26,7 @@ const WalletSection = ({ data }: any) => {
             <p className="text-right">Total members in your network</p>
           </div>
           <div className="flex items-center justify-between gap-10 text-sm font-semibold leading-6 text-white">
-            <p>{formatAddress(loggedInUser?.account_address)}</p>
+            <p>{formatAddress(loggedInUser?._id)}</p>
             <p>{data.people}</p>
           </div>
         </div>
@@ -58,7 +58,7 @@ const WalletSection = ({ data }: any) => {
               await copyText(
                 window.location.origin +
                   "/auth/register?referred_by=" +
-                  loggedInUser?.account_address
+                  loggedInUser?._id
               );
               toast.success("Referral link copied!");
             }}

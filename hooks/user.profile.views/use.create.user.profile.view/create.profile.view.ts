@@ -1,14 +1,13 @@
-// App imports
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 
 export const createProfileView = async (
-  account_address: string,
+  userId: string,
   abortController: AbortController
 ) => {
-  const { data } = await axiosNodeApi.post(
+  const { data } = await axiosApiCenther.post(
     `/api/socials/analytics/profile-views`,
     {
-      account_address,
+      user_id: userId,
     },
     {
       signal: abortController.signal,

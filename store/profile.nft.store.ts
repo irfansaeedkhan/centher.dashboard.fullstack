@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import { EvmChain } from "@moralisweb3/common-evm-utils";
-
 import { LoadingState } from "@/models/common";
 import { Collection } from "@/models/nft";
 import { MoralisFetcher } from "@/utils/fetch.files.tools/moralis.fetcher.util";
@@ -9,14 +8,14 @@ import { BlockchainRead } from "@/web3/blockchain";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import {
-  NFTLockedDetailsProps,
-  getUsersByAddressesFromDB,
-} from "@/lib/get-user-by-address";
-import {
   getOldName,
   isOld,
 } from "@/web3/blockchain/helpers/native.collection.helper";
 import { SwapCollection } from "@/web3/blockchain/config";
+import {
+  NFTLockedDetailsProps,
+  getUsersByIdsFromDB,
+} from "@/lib/get-user-by-id";
 import { blackListedAddresses } from "@/utils/blacklist_addresses/collection_addresses";
 
 const dexaCollection = "0x08b660beec8d1f9a0162e3c04416c84eac8d334b";
@@ -166,11 +165,9 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               return {
                 ...rest,
                 creator: users.find((e) =>
-                  isAddressesMatch(e.account_address, item.creator)
+                  isAddressesMatch(e._id, item.creator)
                 ),
-                owner: users.find((e) =>
-                  isAddressesMatch(e.account_address, item.owner)
-                ),
+                owner: users.find((e) => isAddressesMatch(e._id, item.owner)),
                 endTime: _endTime,
               };
             });
@@ -223,11 +220,9 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               return {
                 ...rest,
                 creator: users.find((e) =>
-                  isAddressesMatch(e.account_address, item.creator)
+                  isAddressesMatch(e._id, item.creator)
                 ),
-                owner: users.find((e) =>
-                  isAddressesMatch(e.account_address, item.owner)
-                ),
+                owner: users.find((e) => isAddressesMatch(e._id, item.owner)),
                 endTime: _endTime,
               };
             });
@@ -301,17 +296,17 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               );
 
               let creator = users.find((e) =>
-                isAddressesMatch(e.account_address, item.minter_address?._value)
+                isAddressesMatch(e._id, item.minter_address?._value)
               );
 
               if (isAddressesMatch(item.tokenAddress?._value, dexaCollection)) {
                 creator = users.find((e) =>
-                  isAddressesMatch(e.account_address, dexaProfile)
+                  isAddressesMatch(e._id, dexaProfile)
                 );
               }
 
               const owner = users.find((e) =>
-                isAddressesMatch(e.account_address, item.ownerOf?._value)
+                isAddressesMatch(e._id, item.ownerOf?._value)
               );
 
               const internal = isInList(item, allowedCollections);
@@ -378,10 +373,10 @@ export const useProfileNFTStore = create<ProfileNFTStore>()(
               }
 
               const creator = users.find((e) =>
-                isAddressesMatch(e.account_address, item.creator)
+                isAddressesMatch(e._id, item.creator)
               );
               const owner = users.find((e) =>
-                isAddressesMatch(e.account_address, item.owner)
+                isAddressesMatch(e._id, item.owner)
               );
 
               return {
@@ -444,7 +439,7 @@ const getUnlockTime = (lockedNFTs: any[], collection: any, tokenId: any) => {
 };
 
 const getUsers = async (addresses: string[]) => {
-  const result = await getUsersByAddressesFromDB(addresses);
+  const result = await getUsersByIdsFromDB(addresses);
   return result;
 };
 

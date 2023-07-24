@@ -170,7 +170,7 @@ const ChangePriceListModal: React.FC<Props> = ({
         <FinalButton
           title="Complete listing"
           variant="primary"
-          className="mt-2"
+          className="mt-2 hover:scale-95"
           onClick={() => handleAuctionData(auctionData)}
           disabled={changeNFTPrice === null || nftPriceError ? true : false}
         />
@@ -179,7 +179,7 @@ const ChangePriceListModal: React.FC<Props> = ({
           <FinalButton
             title="Complete listing"
             variant="primary"
-            className="mt-2"
+            className="mt-2 hover:scale-95"
             onClick={() => handleListNFT(changeNFTPrice)}
             disabled={changeNFTPrice === null || nftPriceError ? true : false}
           />

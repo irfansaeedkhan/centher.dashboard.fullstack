@@ -63,8 +63,7 @@ export const useGetRoundsInfo = () => {
       }
       setRoundsInfo(_roundInfos);
     } catch (error: any) {
-      customLog("useGetRoundsInfo", ["development"]);
-      customLog(error, ["development"]);
+      customLog(["development"], "useGetRoundsInfo: ", error);
       setRoundsInfo([]);
     }
   }, [presaleContract]);

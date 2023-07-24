@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
@@ -6,8 +5,6 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
@@ -102,7 +99,7 @@ export const FixedPriceNFTBuyerDescription = ({
       ProceedFunc();
       if (!data || !loggedInUser || !library) return;
 
-      const balance = await library.getBalance(loggedInUser.account_address);
+      const balance = await library.getBalance(loggedInUser._id);
 
       if (balance && balance.lt(`${data.listInfo.price}`)) {
         return toast.error("Insufficient balance");
@@ -166,7 +163,7 @@ export const FixedPriceNFTBuyerDescription = ({
             <FinalButton
               title={"Checkout"}
               variant="primary"
-              className="w-full rounded-[14px]"
+              className="hover:scale- w-full rounded-[14px] hover:scale-95"
               onClick={handleBuyNFT}
             />
           </div>
@@ -224,7 +221,7 @@ export const FixedPriceNFTBuyerDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -278,7 +275,7 @@ export const FixedPriceNFTBuyerDescription = ({
               }
               buyNFTStep1Func();
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         ) : (
           <FinalButton
@@ -287,7 +284,7 @@ export const FixedPriceNFTBuyerDescription = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         )}
       </div>
@@ -332,8 +329,7 @@ export const FixedPriceNFTBuyerDescription = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();
