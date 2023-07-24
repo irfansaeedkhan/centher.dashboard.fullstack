@@ -11,7 +11,7 @@ export const getCollectionCreatorData = async (
     return {
       _id: userId,
       display_name: user.display_name,
-      is_verified: user.is_verified,
+      membership: user.membership,
       is_registered: true,
     };
   } catch (error: any) {
@@ -20,7 +20,11 @@ export const getCollectionCreatorData = async (
       return {
         _id: userId,
         display_name: userId,
-        is_verified: false,
+        membership: {
+          last_status: "none",
+          status: "none",
+          endAt: 0,
+        },
         is_registered: false,
       };
     }

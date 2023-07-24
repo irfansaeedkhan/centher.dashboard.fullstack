@@ -3,9 +3,9 @@ import { axiosCIS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 
 export interface IMappedUser {
-  _id: string;
-  display_name: string;
-  is_verified: boolean;
+  _id: User["_id"];
+  display_name: User["display_name"];
+  membership: User["membership"];
   is_registered?: boolean;
 }
 
@@ -72,7 +72,7 @@ function userMapper(user: User | undefined): IMappedUser | null {
   return {
     _id: user._id,
     display_name: user.display_name,
-    is_verified: user.is_verified,
+    membership: user.membership,
     is_registered: true,
   };
 }
