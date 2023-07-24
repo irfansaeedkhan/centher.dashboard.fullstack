@@ -105,7 +105,7 @@ export const SinglePostV2: React.FC<Props> = ({
         try {
           await onPostInViewport();
         } catch (error: any) {
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       }
     })();

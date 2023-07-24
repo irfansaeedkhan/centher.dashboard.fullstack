@@ -278,7 +278,7 @@ export const listedNFTsByAccount = `
     skip: $skip
     orderBy: tradingVolumn
     orderDirection: desc
-    where: {owner: $owner1, price_gt: "0"}
+    where: {owner: $owner, price_gt: "0"}
   ) {
     collection
     createTime
@@ -538,7 +538,7 @@ export const registrationHistory = `
 `;
 
 export const getCollectionMintedNFTs = `query MyQuery($collection: Bytes = "") {
-  nfts(where: {collection: $collection}) {
+  nfts(where: {collection: $collection}, first: 1000) {
     id
   }
 }`;
