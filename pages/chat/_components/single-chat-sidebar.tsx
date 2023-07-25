@@ -249,6 +249,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
         ),
         lastMessage: controlStringLength(lastMessage),
         latestUpdate: getDateDifferent(data.updated_at),
+        needAttention,
       };
 
       needToPlaySound = needAttention;
@@ -336,7 +337,13 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                     </h6>
                     {isPinned && <PinFill />}
                   </div>
-                  <p className="text-xs leading-[17.07px] text-gray-shade-14">
+                  <p
+                    className={
+                      conversationOverView?.needAttention
+                        ? "text-xs font-bold leading-[17.07px] text-gray-shade-14"
+                        : "text-xs leading-[17.07px] text-gray-shade-14"
+                    }
+                  >
                     {isChannel
                       ? channelConversationOverView.description
                       : conversationOverView.lastMessage}
@@ -409,15 +416,18 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                 )}
               </div>
 
-              {conversationOverView?.needAttention ? (
+              {/* {conversationOverView?.needAttention ? (
                 <div className="flex h-[19px] w-[21px] items-center justify-center bg-gradient-pattern text-xs">
-                  {/* 22 */}
+                 
                 </div>
               ) : (
                 <p className="min-w-max text-xs leading-[14.63px] text-gray-shade-14">
                   {conversationOverView?.latestUpdate}
                 </p>
-              )}
+              )} */}
+              <p className="min-w-max text-xs leading-[14.63px] text-gray-shade-14">
+                {conversationOverView?.latestUpdate}
+              </p>
             </div>
           </div>
 

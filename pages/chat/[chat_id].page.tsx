@@ -168,8 +168,6 @@ const SingleChat: NextPageWithLayout = () => {
     }
   }, [adapter, chatId, messageSubscriptionHandler, pageSize]);
 
-  // TODO: => for edit we need a modal like reply
-
   const sendMessage = async () => {
     if (!account) {
       return;

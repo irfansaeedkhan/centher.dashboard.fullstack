@@ -82,7 +82,10 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         setImage(header.image);
         setTitle(header.title);
       } else {
-        setTitle(header.userAddress);
+        if (!title?.length) {
+          setTitle(header.userAddress);
+        }
+
         setLink(header.userAddress);
       }
 
