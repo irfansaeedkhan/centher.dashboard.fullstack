@@ -284,7 +284,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
           }
         >
           <div className="flex w-full items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-grow items-center gap-3">
               {isSelectConversation && (
                 <div
                   className={clsx(

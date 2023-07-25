@@ -290,19 +290,21 @@ const ChatSidebar = () => {
           </div>
         </div>
       )}
-      {!conversationLoading &&
-        filteredConversations.map((item, index) => (
-          <SingleChatSidebar
-            key={index}
-            data={item}
-            users={ConversationsUsers}
-            onClickSelectConversation={onClickSelectConversation}
-            isSelectConversation={isSelectConversation}
-            onDeleteConversation={deleteConversation}
-            pinConversation={pinConversation}
-            unpinConversation={unpinConversation}
-          />
-        ))}
+      <div className="scrollSetLight h-full max-h-[calc(100vh-202px)] overflow-y-auto">
+        {!conversationLoading &&
+          filteredConversations.map((item, index) => (
+            <SingleChatSidebar
+              key={index}
+              data={item}
+              users={ConversationsUsers}
+              onClickSelectConversation={onClickSelectConversation}
+              isSelectConversation={isSelectConversation}
+              onDeleteConversation={deleteConversation}
+              pinConversation={pinConversation}
+              unpinConversation={unpinConversation}
+            />
+          ))}
+      </div>
       {conversationLoading && (
         <div className="mx-auto w-[90%]">
           <ChatFriendListSkeleton />

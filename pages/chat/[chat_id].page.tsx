@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import { BsEmojiSmile } from "react-icons/bs";
@@ -34,6 +35,8 @@ export interface UsersDetails {
 
 const SingleChat: NextPageWithLayout = () => {
   const router = useRouter();
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { account } = useWeb3React();
   const { adapter } = useCentherLive();
   const [messages, setMessages] = useState<any[]>([]);
@@ -51,7 +54,7 @@ const SingleChat: NextPageWithLayout = () => {
   const [play] = useSound("/sounds/send-message.mp3");
 
   const chatId = router.query.chat_id as string;
-
+  useOnClickOutside(emojiPickerRef, () => setShowEmojiPicker(false));
   useEffect(() => {
     setMessages([]);
     setUsersDetails([]);
@@ -188,6 +191,9 @@ const SingleChat: NextPageWithLayout = () => {
         setEditingMessage(null);
       } else {
         const replaingMessageBuffer = replingMessage?.message;
+        if (messagesEndRef.current) {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
         setNewMessage("");
         setShowEmojiPicker(false);
         closeReply();
@@ -305,6 +311,7 @@ const SingleChat: NextPageWithLayout = () => {
             onEditMessage={editMessage}
             onEmojiReaction={sendEmojiForMessage}
             setPageSize={setPageSize}
+            messagesEndRef={messagesEndRef}
           />
         )}
       </div>
@@ -363,7 +370,10 @@ const SingleChat: NextPageWithLayout = () => {
             </div>
           )}
           <div className="focus-within:transparent focus-within:transparent flex w-full items-center gap-2 ring-0">
-            <div className="relative mr-2 flex items-center gap-3">
+            <div
+              className="relative mr-2 flex items-center gap-3"
+              ref={emojiPickerRef}
+            >
               {/* <BsPlusCircleFill className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
               <BsImage className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" /> */}
               <button onClick={toggleEmojiPicker}>

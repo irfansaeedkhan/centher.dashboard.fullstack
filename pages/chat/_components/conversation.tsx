@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { Message } from "@/models/chat";
@@ -18,6 +18,7 @@ const Conversation: React.FC<{
     usersDetails: UsersDetails[];
   };
   setPageSize: React.Dispatch<React.SetStateAction<number>>;
+  messagesEndRef: React.RefObject<HTMLDivElement>;
 }> = ({
   data,
   openModalReply,
@@ -25,16 +26,20 @@ const Conversation: React.FC<{
   onEditMessage,
   onEmojiReaction,
   setPageSize,
+  messagesEndRef,
 }) => {
   const { account } = useWeb3React();
-  const messagesEndRef = useRef<any>(null);
   const [showBlur, setShowBlur] = useState<string>();
 
-  useEffect(() => {
+  const messageRefCallback = useCallback(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
+  }, [messagesEndRef]);
+
+  useEffect(() => {
+    messageRefCallback();
+  }, [messageRefCallback]);
 
   return (
     <div className={clsx(`flex flex-col gap-2 py-8 px-6`, showBlur)}>
