@@ -289,7 +289,7 @@ const ChatSidebar = () => {
           </div>
         </div>
       )}
-      <div className="scrollSetLight h-full max-h-[calc(100vh-202px)] overflow-y-auto">
+      <div className="scrollSetLight h-auto max-h-[calc(100vh-202px)] overflow-y-auto">
         {!conversationLoading &&
           filteredConversations.map((item, index) => (
             <SingleChatSidebar

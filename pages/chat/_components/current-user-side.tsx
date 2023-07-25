@@ -39,6 +39,7 @@ const CurrentUserSide: React.FC<{
   const { account } = useWeb3React();
   const belowMobile = useMediaQuery("(max-width: 560px)");
   const [showNonBlur, setNonShowBlur] = useState<string>();
+  const [showBackground, setShowBackground] = useState<boolean>();
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
@@ -88,6 +89,7 @@ const CurrentUserSide: React.FC<{
     if (hoverRef.current) {
       hoverRef.current.style.display = "none";
       setEmojiBar(false);
+      setShowBackground(false);
       setShowBlur("");
       setNonShowBlur("");
     }
@@ -167,6 +169,7 @@ const CurrentUserSide: React.FC<{
 
   const handleSetData = () => {
     setEmojiBarMobile(false);
+    setShowBackground(false);
     setShowBlur("");
     setNonShowBlur("");
   };
@@ -176,6 +179,7 @@ const CurrentUserSide: React.FC<{
     if (hoverRef.current) {
       hoverRef.current.style.display = "block";
       setShowBlur("blur-local");
+      setShowBackground(true);
       setNonShowBlur("not-blur");
       setEmojiBarMobile(true);
     }
@@ -311,7 +315,8 @@ const CurrentUserSide: React.FC<{
           // onTouchCancel={handleTouchCancel}
           className={clsx(
             `child ${showNonBlur} relative flex gap-2`,
-            `${emoji?.length > 0 && "mb-5"}`
+            `${emoji?.length > 0 && "mb-5"}`,
+            showBackground && "bg-black/50 p-2"
           )}
         >
           {emoji?.length > 0 && (
