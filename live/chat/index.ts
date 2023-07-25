@@ -17,6 +17,7 @@ import { CentherLive } from "..";
 export class ChatHandler {
   private static _messageObserver: any;
   private static _conversationObserver: any;
+  private static _conversationsObserver: any;
   static async sendMessage(
     connection: IApolloProvider,
     message: ISendMessage
@@ -94,6 +95,10 @@ export class ChatHandler {
     sdk: CentherLive
   ): Promise<void> {
     try {
+      if (this._conversationsObserver) {
+        return;
+      }
+
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.subToConversations);
       const result = await connection?.subscribe({
@@ -101,7 +106,7 @@ export class ChatHandler {
         variables: { _eq: filters.user },
       });
 
-      result?.subscribe(async (data) => {
+      this._conversationsObserver = result?.subscribe(async (data) => {
         const conversations = data.data.conversations;
         handler(sdk, conversations, filters.user);
       });

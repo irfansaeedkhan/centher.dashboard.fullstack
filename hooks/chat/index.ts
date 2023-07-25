@@ -35,13 +35,6 @@ export const useCentherLive = () => {
 
   const token = getAuthTokens()?.access_token;
 
-  const isMessageFetchedByMe = (message: any) => {
-    const result = message.activities.find(
-      (e: any) => e.type == "fetched" && eqAddress(e.user_address, account)
-    );
-    return !!result;
-  };
-
   const conversationSubscriptionHander = useCallback(
     async (
       adapter: CentherLive,
@@ -56,7 +49,6 @@ export const useCentherLive = () => {
       //     }
       //   });
       // }
-
       const hasUnreadMessages =
         newConversations
           .map((e) => e.user_conversations)

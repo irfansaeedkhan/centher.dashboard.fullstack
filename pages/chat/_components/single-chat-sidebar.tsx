@@ -50,7 +50,7 @@ type IChannelConversationOverview = {
   needAttention?: boolean;
 };
 
-const defaultImageForUsers = "";
+const defaultImageForUsers = "/images/chat-profile.png";
 const defaultImageForChannles = "";
 
 const defaultChannelInfo = {
@@ -184,7 +184,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
       setIsChannel(true);
     }
 
-    if (data && !data.is_channel && users?.length) {
+    if (data && !data.is_channel) {
       const oppositUser = data.user_conversations.find(
         (e) => !eqAddress(e.user_address, account)
       );

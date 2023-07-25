@@ -30,7 +30,6 @@ const ChatSidebar = () => {
   const { conversations, conversationLoading, adapter } = useCentherLive();
   const [filteredConversations, setFilteredConversations] =
     useState<IConversation[]>(conversations);
-
   const [loading, setLoading] = useState<boolean>(false);
   const [showConversationModal, setShowConversationModal] =
     useState<boolean>(false);
