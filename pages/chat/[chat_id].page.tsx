@@ -282,7 +282,6 @@ const SingleChat: NextPageWithLayout = () => {
   };
 
   const sendEmojiForMessage = async (msg: any, code: string) => {
-    //----------------------------------------------------------------------
     await adapter?.addEmojiToMessage(msg.id, code);
   };
 

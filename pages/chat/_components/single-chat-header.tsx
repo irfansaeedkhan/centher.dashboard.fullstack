@@ -33,6 +33,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
   const [typingUsers, setTypingUsers] = useState<string | null>();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [link, setLink] = useState<string>("");
 
   const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -82,6 +83,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         setTitle(header.title);
       } else {
         setTitle(header.userAddress);
+        setLink(header.userAddress);
       }
 
       setHeader(header);
@@ -196,7 +198,10 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
 
   return (
     <div className="flex h-14 w-full items-center justify-between gap-2 border border-gray-shade-3 bg-elevation-1 px-6">
-      <div className="flex w-full items-center gap-2">
+      <div
+        className="flex w-full cursor-pointer items-center gap-2"
+        onClick={() => router.push(`/profile/${link}`)}
+      >
         {/* TODO=> for channel use cover photo */}
         {image ? (
           <Image

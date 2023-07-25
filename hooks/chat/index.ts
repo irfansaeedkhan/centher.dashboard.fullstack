@@ -12,8 +12,10 @@ import {
 import { getAuthTokens } from "@/lib/auth";
 import { customLog } from "@/utils/custom.log";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 export const useCentherLive = () => {
+  const router = useRouter();
   const { adapter, setAdapter } = useCentherLiveStore((state) => ({
     adapter: state.adapter,
     setAdapter: state.setAdapter,
@@ -33,6 +35,13 @@ export const useCentherLive = () => {
 
   const token = getAuthTokens()?.access_token;
 
+  const isMessageFetchedByMe = (message: any) => {
+    const result = message.activities.find(
+      (e: any) => e.type == "fetched" && eqAddress(e.user_address, account)
+    );
+    return !!result;
+  };
+
   const conversationSubscriptionHander = useCallback(
     async (
       adapter: CentherLive,
@@ -47,6 +56,25 @@ export const useCentherLive = () => {
       //     }
       //   });
       // }
+
+      const hasUnreadMessages =
+        newConversations
+          .map((e) => e.user_conversations)
+          .flat()
+          .filter((e) => !eqAddress(e.user_address, account))
+          .map((e) => e.messages)
+          .flat()
+          .filter((e) => {
+            return (
+              e.activities.filter(
+                (a) => eqAddress(account, a.user_address) && a.type == "fetched"
+              )?.length == 0
+            );
+          })?.length > 0;
+
+      if (!router.pathname?.includes("chat") && hasUnreadMessages) {
+        toast(`You have a new message`);
+      }
 
       const pinnedConversations: IConversation[] = [];
       const unpinnedConversation: IConversation[] = [];

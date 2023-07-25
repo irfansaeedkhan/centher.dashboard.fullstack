@@ -12,6 +12,7 @@ import { UsersDetails } from "../[chat_id].page";
 import CurrentUserHoveredList from "./current-user-hovered-list";
 import CurrentUserHoveredListMobile from "./current-user-hovered-list-mobile";
 import EmojiSenderList from "./emoji-sender-list";
+import { urlify } from "@/live/utils/tools";
 
 const CurrentUserSide: React.FC<{
   openModalReply: (msg: any) => void;
@@ -271,13 +272,15 @@ const CurrentUserSide: React.FC<{
                   </p>
                 </div>
               </div>
-              <p
+
+              <div
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`
                 )}
-              >
-                {data.message.content}
-              </p>
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
             </div>
             <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
               <span className="min-w-max">{time}</span>
@@ -384,13 +387,21 @@ const CurrentUserSide: React.FC<{
               onTouchEnd={handleTouchEnd}
               //onMouseLeave={handleMouseLeaveMobile}
             >
-              <p
+              {/* <p
                 className={clsx(
                   `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`
                 )}
               >
-                {data.message.content}
-              </p>
+                {urlify(data.message.content)}
+              </p> */}
+              <div
+                className={clsx(
+                  `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
               <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
                 <span className="min-w-max">{time}</span>
                 <span>

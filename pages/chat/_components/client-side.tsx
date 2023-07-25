@@ -12,6 +12,7 @@ import EmojiSenderList from "./emoji-sender-list";
 import ProfileImgPlaceholder from "./profile-img-placeholder";
 import ClientHoveredList from "./client-hovered-list";
 import ClientHoveredListMobile from "./client-hovered-list-mobile";
+import { urlify } from "@/live/utils/tools";
 
 const defaultImage = "/images/chat-profile.png";
 
@@ -230,13 +231,15 @@ const ClientSide: React.FC<{
                   </p>
                 </div>
               </div>
-              <p
+
+              <div
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`
                 )}
-              >
-                {data.message.content}
-              </p>
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
             </div>
             <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
               <span className="min-w-max">{time}</span>
@@ -332,13 +335,20 @@ const ClientSide: React.FC<{
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            <p
+            {/* <p
               className={clsx(
                 `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
               )}
             >
-              {data.message.content}
-            </p>
+            </p> */}
+            <div
+              className={clsx(
+                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
+              )}
+              dangerouslySetInnerHTML={{
+                __html: urlify(data.message.content),
+              }}
+            ></div>
             <span className="min-w-max text-[10px] text-gray-shade-14">
               {time}
             </span>
