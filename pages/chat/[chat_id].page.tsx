@@ -310,6 +310,7 @@ const SingleChat: NextPageWithLayout = () => {
             onEmojiReaction={sendEmojiForMessage}
             setPageSize={setPageSize}
             messagesEndRef={messagesEndRef}
+            pageSize={pageSize}
           />
         )}
       </div>

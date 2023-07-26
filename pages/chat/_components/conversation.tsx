@@ -19,6 +19,7 @@ const Conversation: React.FC<{
   };
   setPageSize: React.Dispatch<React.SetStateAction<number>>;
   messagesEndRef: React.RefObject<HTMLDivElement>;
+  pageSize: number;
 }> = ({
   data,
   openModalReply,
@@ -27,6 +28,7 @@ const Conversation: React.FC<{
   onEmojiReaction,
   setPageSize,
   messagesEndRef,
+  pageSize,
 }) => {
   const { account } = useWeb3React();
   const [showBlur, setShowBlur] = useState<string>();
@@ -45,7 +47,7 @@ const Conversation: React.FC<{
     <div className={clsx(`flex flex-col gap-2 py-8 px-6`, showBlur)}>
       {!!data.messages.length ? (
         <>
-          {data.messages.length >= 25 && (
+          {data.messages.length >= 25 && pageSize <= data.messages.length && (
             <button
               className="text-sm text-gray-400 underline underline-offset-[3px]"
               onClick={() => setPageSize(data.messages.length + 25)}
