@@ -18,9 +18,8 @@ const defaultImage = "/images/chat-profile.png";
 const ClientSide: React.FC<{
   openModalReply: (msg: any) => void;
   onEmojiReaction: (msg: any, code: string) => void;
-  setShowBlur: (value: string) => void;
   data: { message: any; users: UsersDetails[] | null };
-}> = ({ data, openModalReply, onEmojiReaction, setShowBlur }) => {
+}> = ({ data, openModalReply, onEmojiReaction }) => {
   const [time, setTime] = useState<string>("");
   const [emoji, setEmoji] = useState<{ code: string; sender: string }[]>([]);
   const [emojiBar, setEmojiBar] = useState<boolean>(true);
@@ -30,7 +29,6 @@ const ClientSide: React.FC<{
   const [replyDate, setReplyData] = useState<any>(null);
   const { account } = useWeb3React();
   const [image, setImage] = useState<string>(defaultImage);
-  const [showNonBlur, setNonShowBlur] = useState<string>();
   const belowMobile = useMediaQuery("(max-width: 560px)");
 
   const hoverRef = useRef<HTMLDivElement>(null);
@@ -93,6 +91,7 @@ const ClientSide: React.FC<{
       hoverRef.current.style.display = "none";
       setEmojiBar(false);
       handleSetData();
+      setEmojiBarMobile(false);
     }
   };
 
@@ -149,16 +148,12 @@ const ClientSide: React.FC<{
 
   const handleSetData = () => {
     setEmojiBarMobile(false);
-    setShowBlur("");
-    setNonShowBlur("");
   };
 
   const openPopup = () => {
     // Implement your logic to open the pop-up here
-    if (hoverRef.current) {
+    if (hoverRef.current && belowMobile) {
       hoverRef.current.style.display = "block";
-      setShowBlur("blur-local");
-      setNonShowBlur("not-blur");
       setEmojiBarMobile(true);
     }
   };
@@ -170,12 +165,16 @@ const ClientSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={clsx(
-            `child relative flex w-full items-center gap-2 ${showNonBlur}`,
-            `${emoji?.length > 0 && "mb-5"}`
+            `relative flex w-full items-center gap-2`,
+            `${emoji?.length > 0 && "mb-5"}`,
+            `${emojiBarMobile && " bg-[#262323b8] p-1"}`
           )}
         >
           <div
-            className="flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]"
+            className={clsx(
+              `flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]`,
+              `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+            )}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -232,7 +231,8 @@ const ClientSide: React.FC<{
               </div>
               <p
                 className={clsx(
-                  `word-break text-14px  z-10 leading-[17.07px] text-white`
+                  `word-break text-14px  z-10 leading-[17.07px] text-white`,
+                  `${emojiBarMobile && "bg-[#262323b8]"}`
                 )}
               >
                 {data.message.content}
@@ -271,8 +271,9 @@ const ClientSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={clsx(
-            `child relative flex items-center gap-2 ${showNonBlur}`,
-            `${emoji?.length > 0 && "mb-5"}`
+            `relative flex items-center gap-2`,
+            `${emoji?.length > 0 && "mb-5"}`,
+            `${emojiBarMobile && " bg-[#262323b8] p-1"}`
           )}
         >
           {emoji.length > 0 && (
@@ -328,13 +329,17 @@ const ClientSide: React.FC<{
           )}
 
           <div
-            className="flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]"
+            className={clsx(
+              `flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]`,
+              `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+            )}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             <p
               className={clsx(
-                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
+                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`,
+                `${emojiBarMobile && "bg-[#262323b8]"}`
               )}
             >
               {data.message.content}

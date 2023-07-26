@@ -28,7 +28,6 @@ const Conversation: React.FC<{
 }) => {
   const { account } = useWeb3React();
   const messagesEndRef = useRef<any>(null);
-  const [showBlur, setShowBlur] = useState<string>();
 
   useEffect(() => {
     if (messagesEndRef.current) {
@@ -37,7 +36,7 @@ const Conversation: React.FC<{
   }, []);
 
   return (
-    <div className={clsx(`flex flex-col gap-2 py-8 px-6`, showBlur)}>
+    <div className={clsx(`b flex flex-col gap-2 py-8 px-6`)}>
       {!!data.messages.length ? (
         <>
           {data.messages.length >= 25 && (
@@ -62,7 +61,6 @@ const Conversation: React.FC<{
                   onDeleteMessage={onDeleteMessage}
                   onEditMessage={onEditMessage}
                   onEmojiReaction={onEmojiReaction}
-                  setShowBlur={setShowBlur}
                 />
               );
             } else {
@@ -75,7 +73,6 @@ const Conversation: React.FC<{
                   }}
                   openModalReply={openModalReply}
                   onEmojiReaction={onEmojiReaction}
-                  setShowBlur={setShowBlur}
                 />
               );
             }
