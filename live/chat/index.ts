@@ -26,6 +26,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getUserConversationId);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: { _eq: message.conversationId, _eq1: message.user },
       });
@@ -158,6 +159,7 @@ export class ChatHandler {
       const query = QueryFactory.getQuery(QueryNames.createNewPrivateChat);
       const result = await connection?.mutate({
         mutation: query,
+
         variables: {
           user_address: input.user,
           created_at: new Date(),
@@ -202,6 +204,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.findConversationByUsers);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _eq: userOne,
@@ -333,6 +336,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getChatPaticipants);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _eq: conversationId,
@@ -610,6 +614,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getlastFetchedMessage);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _ilike: userAddress,
@@ -635,6 +640,7 @@ export class ChatHandler {
         QueryNames.getAllConversationMessageToFetch
       );
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _nilike: userAddress,
@@ -661,6 +667,7 @@ export class ChatHandler {
         QueryNames.getMessagesToCreateFetchedActivity
       );
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _gt: DateTime,
@@ -691,6 +698,7 @@ export class ChatHandler {
     try {
       const query = QueryFactory.getQuery(QueryNames.checkActivityExist);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _ilike: user,
