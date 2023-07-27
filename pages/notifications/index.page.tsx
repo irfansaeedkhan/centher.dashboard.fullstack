@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import clsx from "clsx";
 
@@ -12,10 +12,41 @@ import {
   SingleNotification,
   useMarkNotificationsPageAsSeen,
 } from "./_components";
+import { useCentherLive } from "@/hooks/chat";
+import { Notify } from "@/live/types/notification";
+import { customLog } from "@/utils/custom.log";
+import { useWeb3React } from "@web3-react/core";
 
 const Notifications: NextPageWithLayout = () => {
   // Mark notifications page as seen
   useMarkNotificationsPageAsSeen();
+  const { adapter } = useCentherLive();
+  const [notifys, setNotifys] = useState<Notify[]>();
+  const { account } = useWeb3React();
+  //TODO=> notifys is containes notifications, use it in UI, we can consider topic for notif type
+  useEffect(() => {
+    const getNotificationHistory = async (
+      account: string,
+      limit: number,
+      skip: number
+    ) => {
+      const notifications = await adapter?.getNotificationList(
+        account,
+        limit,
+        skip
+      );
+      setNotifys(notifications);
+    };
+
+    const limit = 100;
+    const skip = 0;
+
+    if (account?.length) {
+      getNotificationHistory(account, limit, skip).catch((e) =>
+        customLog(["development", "staging"], "error in seen messages", e)
+      );
+    }
+  }, [adapter, account]);
 
   const {
     notifications,

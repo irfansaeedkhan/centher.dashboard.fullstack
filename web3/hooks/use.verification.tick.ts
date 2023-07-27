@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { User } from "@/models/user";
 
 interface Params {
-  user?: { is_verified: boolean } | null;
+  user?: { membership: User["membership"] } | null;
   shouldAnimate?: boolean;
 }
 
@@ -21,12 +22,14 @@ export const useVerificationTick = (
 
     if (!params.shouldAnimate) {
       setVerificationIcon(
-        params.user.is_verified ? "/images/rainbow-last-frame.png" : null
+        params.user.membership.status === "verified"
+          ? "/images/rainbow-last-frame.png"
+          : null
       );
       return;
     }
 
-    if (params.user.is_verified) {
+    if (params.user.membership.status === "verified") {
       const timeout1 = setTimeout(function () {
         setVerificationIcon("/images/rainbow-1.gif");
       }, 3000);

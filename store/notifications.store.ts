@@ -5,6 +5,7 @@ import moment from "moment";
 import { axiosApiCenther } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { Notification } from "@/assets/svgs";
+import { User } from "@/models/user";
 
 export interface NotificationsStore {
   notifications: Notification[];
@@ -151,10 +152,10 @@ interface NotificationPost {
 }
 
 interface NotificationBy {
-  _id: string;
-  display_name: string;
-  profile_image: string;
-  is_verified: boolean;
+  _id: User["_id"];
+  display_name: User["display_name"];
+  profile_image: User["profile_image"];
+  membership: User["membership"];
 }
 
 interface BaseNotification {
@@ -228,7 +229,7 @@ interface PresaleBookingNotification extends BaseNotification {
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];
-    is_verified: NotificationBy["is_verified"];
+    membership: NotificationBy["membership"];
   };
 }
 
@@ -242,7 +243,7 @@ interface PresaleBookingReferralNotification extends BaseNotification {
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];
-    is_verified: NotificationBy["is_verified"];
+    membership: NotificationBy["membership"];
   };
 }
 

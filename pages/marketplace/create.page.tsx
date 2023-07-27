@@ -221,7 +221,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"View on Profile"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -232,7 +232,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Try Again"}
                 variant="secondary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                 }}

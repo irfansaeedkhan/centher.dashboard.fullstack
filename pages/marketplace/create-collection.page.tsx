@@ -237,7 +237,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                     query: { user_id: account },
                   });
                 }}
-                className="w-full"
+                className="w-full hover:scale-95"
               />
             )}
           </div>

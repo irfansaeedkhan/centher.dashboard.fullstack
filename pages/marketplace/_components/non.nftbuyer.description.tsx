@@ -244,7 +244,7 @@ export const NonNFTBuyerDescription = ({
             <FinalButton
               title={"View item"}
               variant="primary"
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
               onClick={() => {
                 modal.dismissModal();
               }}

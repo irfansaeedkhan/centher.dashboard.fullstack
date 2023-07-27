@@ -275,7 +275,7 @@ export const AuctionNftDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
             {/* </Link> */}
           </div>
@@ -398,7 +398,7 @@ export const AuctionNftDescription = ({
             title={"Cancel Auction"}
             variant="primary"
             onClick={cancelAuctionFunc}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         )}
         {nowTime > endTime && (

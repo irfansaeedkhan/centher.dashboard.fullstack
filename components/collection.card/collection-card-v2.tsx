@@ -21,7 +21,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
   const [profileImageUrl, setProfileImageUrl] = useState(data.profileImage);
   const verificationTick = useVerificationTick({
     user: {
-      is_verified: data.creator.is_verified,
+      membership: data.creator.membership,
     },
   });
 
@@ -105,7 +105,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             <span className="block max-w-[238px] truncate break-words">
               {sliceDisplayName(data.creator.display_name)}
             </span>
-            {data.creator.is_verified && (
+            {data.creator.membership.status === "verified" && (
               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                 <Image
                   src={"/images/rainbow-last-frame.png"}
@@ -136,7 +136,7 @@ export interface CollectionCardData {
   creator: {
     _id: User["_id"];
     display_name: User["display_name"];
-    is_verified: User["is_verified"];
+    membership: User["membership"];
     is_registered: boolean;
   };
 }

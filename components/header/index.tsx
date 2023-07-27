@@ -11,8 +11,10 @@ import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
+import { useCentherLive } from "@/hooks/chat";
 
 const Header = () => {
+  const { adapter } = useCentherLive();
   const { width } = useWindowSize();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();

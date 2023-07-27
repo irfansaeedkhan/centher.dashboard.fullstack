@@ -371,7 +371,7 @@ export const FixedPriceNFTDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -423,7 +423,7 @@ export const FixedPriceNFTDescription = ({
           title={"Cancel Listing"}
           variant="secondary"
           onClick={setupCancelItemPriceModal}
-          className="w-full rounded-[14px]"
+          className="w-full rounded-[14px] hover:scale-95"
         />
         <FinalButton
           title={"Edit"}
@@ -431,7 +431,7 @@ export const FixedPriceNFTDescription = ({
             setupBidNftModal();
           }}
           variant="primary"
-          className="w-full"
+          className="w-full hover:scale-95"
         />
       </div>
 

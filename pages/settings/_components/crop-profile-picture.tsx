@@ -92,6 +92,7 @@ const CropProfilePicture: React.FC<CropperProps> = ({
               variant="primary"
               className="h-10 w-[150px] text-[14px]"
               borderRounded="14px"
+              onClick={onCrop}
             />
           </div>
         </div>

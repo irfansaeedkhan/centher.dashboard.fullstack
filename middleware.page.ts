@@ -109,7 +109,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.listed,
   AppRoutes.profile.created,
   AppRoutes.profile.collection,
-
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 
@@ -163,8 +164,5 @@ const _notReadyPages: string[] = [
 const notReadyPages = changePaths(_notReadyPages);
 
 // Chat Coming Soon
-const _chatComingSoonPages: string[] = [
-  AppRoutes.chat.index,
-  AppRoutes.chat.single_chat,
-];
+const _chatComingSoonPages: string[] = [];
 const chatComingSoonPages = changePaths(_chatComingSoonPages);

@@ -441,7 +441,7 @@ export const NonNFTDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full"
+              className="w-full hover:scale-95"
             />
           </div>
         </div>

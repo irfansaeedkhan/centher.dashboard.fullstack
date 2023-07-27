@@ -252,7 +252,7 @@ export const AuctionNFTBuyerDescription = ({
             onClick={() => {
               modal.dismissModal();
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         </div>
       ),

@@ -490,7 +490,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 };
 
 export interface NFTOwner
-  extends Pick<User, "_id" | "display_name" | "profile_image" | "is_verified"> {
+  extends Pick<User, "_id" | "display_name" | "profile_image" | "membership"> {
   is_registered: boolean;
 }
 
