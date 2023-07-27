@@ -24,7 +24,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({ user_id }) => {
           router.pathname === AppRoutes.profile.user_id
             ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
             : "text-gray-shade-7",
-          "min-w-max cursor-pointer py-2 px-4"
+          "min-w-max cursor-pointer px-4 py-2"
         )}
       >
         Posts
@@ -39,7 +39,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({ user_id }) => {
             router.pathname === AppRoutes.profile.replies
               ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
               : "text-gray-shade-7",
-            "min-w-max cursor-pointer py-2 px-4"
+            "min-w-max cursor-pointer px-4 py-2"
           )}
         >
           Replies
@@ -57,7 +57,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({ user_id }) => {
             router.pathname === AppRoutes.profile.collection
             ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
             : "text-gray-shade-7",
-          "min-w-max cursor-pointer py-2 px-4"
+          "min-w-max cursor-pointer px-4 py-2"
         )}
       >
         NFTs
@@ -74,7 +74,7 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({ user_id }) => {
               router.pathname === AppRoutes.profile.referrals
               ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
               : "text-gray-shade-7",
-            "min-w-max cursor-pointer py-2 px-4"
+            "min-w-max cursor-pointer px-4 py-2"
           )}
         >
           Community

@@ -36,7 +36,7 @@ const CreatorCard: React.FC<CreatorCardProps> = ({ data, className }) => {
         className={clsx(
           `!flex items-center text-sm  font-medium text-white hover:text-brand-primary`,
           data.display_name.includes(" ")
-            ? "text-ellipsis line-clamp-1"
+            ? "line-clamp-1 text-ellipsis"
             : "block w-full max-w-full overflow-hidden truncate"
         )}
         title={data.display_name}

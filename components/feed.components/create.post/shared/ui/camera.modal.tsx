@@ -160,7 +160,7 @@ const CameraModal = ({ onClose }: Props) => {
             {hasBackCamera && (
               <button
                 onClick={switchCamera}
-                className="absolute top-4 right-4 z-[100] flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-lg bg-black/5 backdrop-filter"
+                className="absolute right-4 top-4 z-[100] flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded-lg bg-black/5 backdrop-filter"
               >
                 <MdOutlineCameraswitch className="h-5 w-5 text-white" />
               </button>

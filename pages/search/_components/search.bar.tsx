@@ -84,7 +84,7 @@ const Searchbar = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md">
+          <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md">
             <div>
               {result.map((item) => {
                 return (

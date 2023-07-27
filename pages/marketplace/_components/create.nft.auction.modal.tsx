@@ -59,7 +59,7 @@ const CreateNFTAuctionModal = ({
           autoComplete="off"
           {...auctionForm.register("AuctionEndTime")}
           placeholder="Set Auction End Time"
-          className="h-[48px] w-full rounded-lg !border-0 bg-transparent !bg-black-shade-3 text-white !ring-0"
+          className="h-[48px] w-full rounded-lg !border-0 !bg-black-shade-3 bg-transparent text-white !ring-0"
         />
         {auctionForm.formState.errors.AuctionEndTime && (
           <p className={`text-red-500 ${errMessage}`}>

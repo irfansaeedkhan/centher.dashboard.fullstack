@@ -185,7 +185,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
         </h2>
         <h3 className="font-14px font-semibold text-white">{data.round + 1}</h3>
       </div>
-      <div className="cardBody py-6 px-5">
+      <div className="cardBody px-5 py-6">
         <div className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-3">
             <label className="label text-14px text-gray-shade-7">BUSD</label>
@@ -237,7 +237,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setStartTime(e.target.value);
                 }}
                 type="datetime-local"
-                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
@@ -252,7 +252,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 type="datetime-local"
-                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
@@ -267,7 +267,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   value={lockMonths}
                   onChange={(e) => setLockMonths(Number(e.target.value))}
                   type="number"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
                 />
               </div>
               <label className="label text-14px text-gray-shade-7">
@@ -290,7 +290,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                       : setCentherPriceForNtr(Number(e.target.value))
                   }
                   type="number"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
                 />
               </div>
               <label className="label text-14px text-gray-shade-7">
@@ -310,7 +310,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setMaxCentherAmountToSell(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
@@ -328,7 +328,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMinNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
@@ -346,13 +346,13 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMaxNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
         </div>
       </div>
-      <div className="cardFooter px-5 pt-4 pb-7">
+      <div className="cardFooter px-5 pb-7 pt-4">
         <button
           className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
           onClick={handleUpdateContract}

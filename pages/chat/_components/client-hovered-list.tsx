@@ -48,7 +48,7 @@ const ClientHoveredList: React.FC<ClientHoveredListProps> = ({
           />
           {isEmojiOpen && emojiBar && (
             <div
-              className="text-14px absolute right-0  left-[50%] top-[-20px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="text-14px absolute left-[50%]  right-0 top-[-20px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
               onMouseLeave={handleMouseLeave}
             >
               <span className="translate-[-50%] absolute bottom-[-10%] left-[50%] h-5 w-5 translate-y-[50%] scale-x-[3] text-black-shade-12">
@@ -125,14 +125,14 @@ const ClientHoveredList: React.FC<ClientHoveredListProps> = ({
           {isOpen && (
             <div className="text-14px absolute right-0 top-[40px] z-[500] rounded-10px bg-black-shade-12">
               <span
-                className={`absolute top-[-3px] right-[-10px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
+                className={`absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `}
               >
                 &#9650;
               </span>
               <button
                 onClick={() => openModalReply("current message hardcode")}
-                className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
+                className="flex w-full items-center justify-start gap-3 px-7 py-4 text-white hover:bg-[#202025]"
               >
                 <HiOutlineReply className="h-[18px] w-[18px] " />
                 <span className="min-w-max">Reply</span>

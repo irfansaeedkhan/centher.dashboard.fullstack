@@ -68,7 +68,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
         </div>
         <div className={`max-h-[600px] overflow-y-auto`}>
           <div className="mt-7 text-white">
-            <div className="flex w-full items-center rounded-xl bg-black-shade-3 py-2 px-4 focus-within:border focus-within:border-brand-primary">
+            <div className="flex w-full items-center rounded-xl bg-black-shade-3 px-4 py-2 focus-within:border focus-within:border-brand-primary">
               <SearchIcon />
               <input
                 type="text"
@@ -82,7 +82,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
                 showingNetwork.map((e, i) => (
                   <div
                     key={i}
-                    className="mt-2 flex cursor-pointer items-center gap-2 py-4 px-6 hover:bg-[#141416]"
+                    className="mt-2 flex cursor-pointer items-center gap-2 px-6 py-4 hover:bg-[#141416]"
                     onClick={() => createNewPrivateConversation(e._id)}
                   >
                     <Image

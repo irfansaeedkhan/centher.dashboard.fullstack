@@ -32,7 +32,7 @@ const Profile3DotsMenu: React.FC<Props> = ({ isOwnProfile, loggedInUser }) => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+4px)] right-0 w-[200px] overflow-hidden rounded-10px bg-black-shade-12">
+        <div className="absolute right-0 top-[calc(100%+4px)] w-[200px] overflow-hidden rounded-10px bg-black-shade-12">
           <Link
             href={{
               pathname: AppRoutes.profile.archived_posts,
