@@ -176,74 +176,80 @@ const ClientSide: React.FC<{
           )}
         >
           <div
-            className="flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]"
+            className="gradient-border-4 flex h-auto w-fit rounded-[10px] bg-background-shade-3 p-[1px] fmd:max-w-[50%]"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {emoji?.length > 0 && (
-              <div
-                className="absolute bottom-[5px] left-[35px] z-30 flex translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3  p-1"
-                onMouseLeave={handleMouseLeaveEmojiList}
-              >
+            <div className="flex items-end justify-between gap-2 px-4 py-[10px]">
+              {emoji?.length > 0 && (
                 <div
-                  className="flex items-center justify-center gap-2 rounded-full bg-elevation-3 p-[6px]"
-                  onClick={handleMouseClickEmojiList}
+                  className="absolute bottom-[5px] left-[35px] z-30 flex translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3  p-1"
+                  onMouseLeave={handleMouseLeaveEmojiList}
                 >
-                  {emoji.length > 0 &&
-                    emoji.slice(0, 2).map((emoji, index) => {
-                      return (
-                        <Image
-                          key={index}
-                          src={emoji ? emojiMapper[emoji.code as Emojies] : ""}
-                          alt="reaction icon"
-                          width={13}
-                          height={13}
-                          sizes="13px"
-                          className={`h-[13px] w-[13px]`}
-                        />
-                      );
-                    })}
-                  {emoji.length > 2 && (
-                    <span className="text-[10px] text-gray-shade-14">+2</span>
-                  )}
+                  <div
+                    className="flex items-center justify-center gap-2 rounded-full bg-elevation-3 p-[6px]"
+                    onClick={handleMouseClickEmojiList}
+                  >
+                    {emoji.length > 0 &&
+                      emoji.slice(0, 2).map((emoji, index) => {
+                        return (
+                          <Image
+                            key={index}
+                            src={
+                              emoji ? emojiMapper[emoji.code as Emojies] : ""
+                            }
+                            alt="reaction icon"
+                            width={13}
+                            height={13}
+                            sizes="13px"
+                            className={`h-[13px] w-[13px]`}
+                          />
+                        );
+                      })}
+                    {emoji.length > 2 && (
+                      <span className="text-[10px] text-gray-shade-14">+2</span>
+                    )}
+                  </div>
+                  <div ref={clickEmojiRef} className="hidden">
+                    {emojiSenderListBar && (
+                      <EmojiSenderList
+                        openModalReply={onReplayCalled}
+                        setEmojiPlaceholder={setEmojiPlaceholder}
+                        emojiSenderListBar={emojiSenderListBar}
+                        clientSide={true}
+                        users={data.users}
+                        emojis={emoji}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div ref={clickEmojiRef} className="hidden">
-                  {emojiSenderListBar && (
-                    <EmojiSenderList
-                      openModalReply={onReplayCalled}
-                      setEmojiPlaceholder={setEmojiPlaceholder}
-                      emojiSenderListBar={emojiSenderListBar}
-                      clientSide={true}
-                      users={data.users}
-                      emojis={emoji}
-                    />
-                  )}
+              )}
+              <div className="flex flex-col gap-3">
+                <div className="flex w-[98%] gap-3">
+                  <div className="w-[1px] bg-gradient-pattern"></div>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="text-gradient text-xs">
+                      {replyDate.sender}
+                    </h4>
+                    <p className="text-xs text-gray-shade-14">
+                      {replyDate.content}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-            <div className="flex flex-col gap-3">
-              <div className="flex w-[98%] gap-3">
-                <div className="w-[1px] bg-gradient-pattern"></div>
-                <div className="flex flex-col gap-1">
-                  <h4 className="text-gradient text-xs">{replyDate.sender}</h4>
-                  <p className="text-xs text-gray-shade-14">
-                    {replyDate.content}
-                  </p>
-                </div>
-              </div>
 
-              <div
-                className={clsx(
-                  `word-break text-14px  z-10 leading-[17.07px] text-white`
-                )}
-                dangerouslySetInnerHTML={{
-                  __html: urlify(data.message.content),
-                }}
-              ></div>
+                <div
+                  className={clsx(
+                    `word-break text-14px  z-10 leading-[17.07px] text-white`
+                  )}
+                  dangerouslySetInnerHTML={{
+                    __html: urlify(data.message.content),
+                  }}
+                ></div>
+              </div>
+              <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
+                <span className="min-w-max">{time}</span>
+              </p>
             </div>
-            <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
-              <span className="min-w-max">{time}</span>
-            </p>
           </div>
 
           {belowMobile ? (
@@ -331,7 +337,7 @@ const ClientSide: React.FC<{
           )}
 
           <div
-            className="flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]"
+            className="gradient-border-4 flex h-auto w-fit rounded-[10px] border bg-background-shade-3 p-[1px] fmd:max-w-[50%]"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -341,17 +347,19 @@ const ClientSide: React.FC<{
               )}
             >
             </p> */}
-            <div
-              className={clsx(
-                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
-              )}
-              dangerouslySetInnerHTML={{
-                __html: urlify(data.message.content),
-              }}
-            ></div>
-            <span className="min-w-max text-[10px] text-gray-shade-14">
-              {time}
-            </span>
+            <div className="flex items-end justify-between gap-2 px-4 py-[10px]">
+              <div
+                className={clsx(
+                  `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
+              <span className="min-w-max text-[10px] text-gray-shade-14">
+                {time}
+              </span>
+            </div>
           </div>
           {belowMobile ? (
             <div ref={hoverRef} className="hidden">

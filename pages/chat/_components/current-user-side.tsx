@@ -222,7 +222,7 @@ const CurrentUserSide: React.FC<{
             </div>
           )}
           <div
-            className="gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]
+            className="gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern-current px-4 py-[10px] fmd:max-w-[50%]
         "
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -268,7 +268,7 @@ const CurrentUserSide: React.FC<{
             )}
             <div className="z-10 flex flex-col gap-3">
               <div className="flex w-[98%] gap-3">
-                <div className="w-[1px] bg-gradient-pattern"></div>
+                <div className="w-[1px] bg-gradient-pattern-current"></div>
                 <div className="flex flex-col gap-1">
                   <h4 className="text-gradient text-xs">{replyDate?.sender}</h4>
                   <p className="text-xs text-gray-shade-14">
@@ -387,7 +387,7 @@ const CurrentUserSide: React.FC<{
               </div>
             )}
             <div
-              className={`  gradient-chat-box relative flex h-auto  items-end gap-2 rounded-[10px] bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]`}
+              className={`gradient-chat-box relative flex h-auto items-end gap-2 rounded-[10px] bg-gradient-pattern-current px-4 py-[10px] fmd:max-w-[50%]`}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               //onMouseLeave={handleMouseLeaveMobile}

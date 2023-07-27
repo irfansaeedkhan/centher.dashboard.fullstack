@@ -192,7 +192,12 @@ const ChatSidebar = () => {
     }
   };
 
-  const createNewPrivateConversation = async (user: string) => {
+  const createNewPrivateConversation = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user: string
+  ) => {
+    const button = e.currentTarget as HTMLButtonElement;
+    button.disabled = true;
     try {
       if (adapter) {
         const result = await adapter.createNewPrivateConversation({
@@ -206,6 +211,7 @@ const ChatSidebar = () => {
       toast.error(err?.message ? err?.message : "Can not start chat");
     } finally {
       setShowConversationModal(false);
+      button.disabled = false;
     }
   };
 
