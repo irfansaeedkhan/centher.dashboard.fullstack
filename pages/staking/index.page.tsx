@@ -2,17 +2,18 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 
 import { NextPageWithLayout } from "@/pages/_app.page";
+import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import FinalButton from "@/components/button/final.button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
-import StakingListContainer from "./_components/staking-list-container";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import StakingListContainer from "./_components/staking-list-container";
 
 const Staking: NextPageWithLayout = () => {
+  const { user: loggedInUser } = useUser();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
-  const [isCitizen, setIsCitizen] = useState(true);
-  const [stakingList, setStakingList] = useState(true);
+  const [stakingList, setStakingList] = useState(false);
 
   const router = useRouter();
 
@@ -25,7 +26,7 @@ const Staking: NextPageWithLayout = () => {
         <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
           <NoStakingIcon className="mb-6" />
           <h3 className="text-16px font-semibold text-white ">
-            No any Staking yet
+            No Staking Projects yet!
           </h3>
           <p className="text-14px font-normal text-gray-shade-14">
             There are currently no Staking Projects available. Create one
@@ -35,7 +36,7 @@ const Staking: NextPageWithLayout = () => {
           <FinalButton
             title="Create New"
             onClick={
-              isCitizen
+              loggedInUser?.membership.status === "citizen"
                 ? () =>
                     router.push({
                       pathname: AppRoutes.staking.create_staking,

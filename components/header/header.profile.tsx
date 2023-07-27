@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useCallback, useState } from "react";
+import React, { useRef, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -37,6 +38,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   openBuyCitizenshipModal,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications } = useCentherLive();
   const { connectWallet, disconnectWallet } = useConnectWallet();
@@ -129,15 +131,21 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       <div className="border-b border-gray-shade-border-color p-4 ">
         <FinalButton
           title={
-            true ? "Subscribe to Citizen Passport" : "View my Citizen Passport"
+            loggedInUser?.membership.status !== "citizen"
+              ? "Subscribe to Citizen Passport"
+              : "View my Citizen Passport"
           }
           onClick={
-            true
+            loggedInUser?.membership.status !== "citizen"
               ? () => {
                   onClickOutside();
                   openBuyCitizenshipModal();
                 }
-              : () => {}
+              : () => {
+                  router.push({
+                    pathname: AppRoutes.settings.citizenship,
+                  });
+                }
           }
           variant="primary"
           className="text-14px hover:scale-105"
