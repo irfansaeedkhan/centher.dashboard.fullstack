@@ -300,13 +300,13 @@ const ChatSidebar = () => {
         {!conversationLoading &&
           filteredConversations
             .sort((a, b) => {
-              if (newConversationId) {
+              if (newConversationId && a.updated_at === null) {
                 if (a.id === newConversationId) {
                   return -1;
                 }
                 return 0;
               } else {
-                if (a.id === router.query?.chat_id) {
+                if (a.id === router.query?.chat_id && a.updated_at === null) {
                   return -1;
                 }
                 return 0;
