@@ -35,7 +35,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const { user: loggedInUser } = useUser();
-  const { unreadNotifications } = useCentherLive();
+  const { unreadNotifications, unreadConversations } = useCentherLive();
   const { connectWallet, disconnectWallet } = useConnectWallet();
   const { active, account, deactivate } = useWeb3React();
   const matches = useMediaQuery("(min-width: 1024px)");
@@ -162,7 +162,12 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         >
           <PopupMessageIcon />
           <div className="flex flex-col gap-[2px]">
-            <p className="text-sm font-medium">Chat</p>
+            <p className="text-sm font-medium">
+              Chat{" "}
+              <span className="text-xs text-yellow-400">
+                &nbsp;{unreadConversations > 0 ? unreadConversations : ""}
+              </span>
+            </p>
             <span className="text-xs font-medium text-gray-shade-14">
               Groups, Conversations
             </span>
@@ -176,8 +181,10 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           <PopupBellIcon />
           <div className="flex flex-col gap-[2px]">
             <p className="text-sm font-medium">
-              {/* //TODO => create UI for this badge */}
-              Notifications {unreadNotifications > 0 ? unreadNotifications : ""}
+              Notifications{" "}
+              <span className="text-xs text-yellow-400">
+                &nbsp;{unreadNotifications > 0 ? unreadNotifications : ""}
+              </span>
             </p>
             <span className="text-xs font-medium text-gray-shade-14">
               Alerts, Notifications

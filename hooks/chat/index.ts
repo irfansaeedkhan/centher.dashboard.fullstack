@@ -32,6 +32,7 @@ export const useCentherLive = () => {
   const [conversationLoading, setConversationLoading] =
     useState<boolean>(false);
   const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
+  const [unreadConversations, setUnreadConversations] = useState<number>(0);
 
   const token = getAuthTokens()?.access_token;
 
@@ -49,21 +50,19 @@ export const useCentherLive = () => {
       //     }
       //   });
       // }
-      const hasUnreadMessages =
-        newConversations
-          .map((e) => e.user_conversations)
-          .flat()
-          .filter((e) => !eqAddress(e.user_address, account))
-          .map((e) => e.messages)
-          .flat()
-          .filter((e) => {
-            return (
-              e.activities.filter(
-                (a) => eqAddress(account, a.user_address) && a.type == "fetched"
-              )?.length == 0
-            );
-          })?.length > 0;
+      const hasUnreadMessages = getConversationWithMessageStatus(
+        newConversations,
+        "fetched",
+        account
+      );
 
+      const unseenMessages = getConversationWithMessageStatus(
+        newConversations,
+        "seen",
+        account
+      );
+
+      setUnreadConversations(unseenMessages);
       if (!router.pathname?.includes("chat") && hasUnreadMessages) {
         toast(`You have a new message`);
       }
@@ -157,5 +156,31 @@ export const useCentherLive = () => {
     notificationCallback,
   ]);
 
-  return { adapter, conversations, conversationLoading, unreadNotifications };
+  return {
+    adapter,
+    conversations,
+    conversationLoading,
+    unreadNotifications,
+    unreadConversations,
+  };
 };
+
+function getConversationWithMessageStatus(
+  conversations: IConversation[],
+  status: string,
+  account: string
+): number {
+  return conversations
+    .map((e) => e.user_conversations)
+    .flat()
+    .filter((e) => !eqAddress(e.user_address, account))
+    .map((e) => e.messages)
+    .flat()
+    .filter((e) => {
+      return (
+        e.activities.filter(
+          (a) => eqAddress(account, a.user_address) && a.type == status
+        )?.length == 0
+      );
+    }).length;
+}
