@@ -38,6 +38,7 @@ const ChatSidebar = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSelectConversation, setIsSelectConversation] =
     useState<boolean>(false);
+  const [newConversationId, setNewConversationId] = useState<string>("");
 
   const [ConversationsUsers, setConvesationUsers] = useState<UsersDetails[]>(
     []
@@ -191,12 +192,18 @@ const ChatSidebar = () => {
     }
   };
 
-  const createNewPrivateConversation = async (user: string) => {
+  const createNewPrivateConversation = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user: string
+  ) => {
+    const button = e.currentTarget as HTMLButtonElement;
+    button.disabled = true;
     try {
       if (adapter) {
         const result = await adapter.createNewPrivateConversation({
           targetUser: user.toLowerCase(),
         });
+        setNewConversationId(result);
         router.push(`/chat/${result}`);
       } else throw new Error("Invalid stream handler instance");
     } catch (err: any) {
@@ -204,6 +211,7 @@ const ChatSidebar = () => {
       toast.error(err?.message ? err?.message : "Can not start chat");
     } finally {
       setShowConversationModal(false);
+      button.disabled = false;
     }
   };
 
@@ -296,18 +304,32 @@ const ChatSidebar = () => {
         )}
       >
         {!conversationLoading &&
-          filteredConversations.map((item, index) => (
-            <SingleChatSidebar
-              key={index}
-              data={item}
-              users={ConversationsUsers}
-              onClickSelectConversation={onClickSelectConversation}
-              isSelectConversation={isSelectConversation}
-              onDeleteConversation={deleteConversation}
-              pinConversation={pinConversation}
-              unpinConversation={unpinConversation}
-            />
-          ))}
+          filteredConversations
+            .sort((a, b) => {
+              if (newConversationId && a.updated_at === null) {
+                if (a.id === newConversationId) {
+                  return -1;
+                }
+                return 0;
+              } else {
+                if (a.id === router.query?.chat_id && a.updated_at === null) {
+                  return -1;
+                }
+                return 0;
+              }
+            })
+            .map((item, index) => (
+              <SingleChatSidebar
+                key={index}
+                data={item}
+                users={ConversationsUsers}
+                onClickSelectConversation={onClickSelectConversation}
+                isSelectConversation={isSelectConversation}
+                onDeleteConversation={deleteConversation}
+                pinConversation={pinConversation}
+                unpinConversation={unpinConversation}
+              />
+            ))}
       </div>
       {conversationLoading && (
         <div className="mx-auto w-[90%]">

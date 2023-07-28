@@ -6,7 +6,10 @@ import { IoClose } from "react-icons/io5";
 
 interface ComponentProp {
   onClose: () => void;
-  createNewPrivateConversation: (prop: any) => void;
+  createNewPrivateConversation: (
+    e: React.MouseEvent<HTMLButtonElement>,
+    prop: any
+  ) => void;
   networkData: any;
   loading: any;
 }
@@ -80,10 +83,12 @@ const NewConversationModal: React.FC<ComponentProp> = ({
             <div className="mt-6">
               {loading &&
                 showingNetwork.map((e, i) => (
-                  <div
+                  <button
                     key={i}
-                    className="mt-2 flex cursor-pointer items-center gap-2 py-4 px-6 hover:bg-[#141416]"
-                    onClick={() => createNewPrivateConversation(e._id)}
+                    className="mt-2 flex w-full cursor-pointer items-center gap-2 py-4 px-6 hover:bg-[#141416]"
+                    onClick={(event) =>
+                      createNewPrivateConversation(event, e._id)
+                    }
                   >
                     <Image
                       src={
@@ -99,7 +104,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
                     <p className="text-sm font-medium text-white">
                       {e.display_name?.length ? e.display_name : e._id}
                     </p>
-                  </div>
+                  </button>
                 ))}
 
               {loading && networkData.length == 0 && <p> No any contact</p>}
