@@ -25,8 +25,8 @@ const RadioButton: React.FC<RadioButtonProps> = ({
     <div className="flex items-center">
       <div
         className={clsx({
-          gradient: "radio-container h-2 w-2",
-          checked: "checked",
+          "radio-container h-2 w-2": gradient,
+          checked: checked,
         })}
       >
         <input
@@ -42,7 +42,7 @@ const RadioButton: React.FC<RadioButtonProps> = ({
       <label
         htmlFor={id}
         className={clsx(`text-sm font-medium leading-6 text-white`, {
-          gradient: "ml-4",
+          "ml-4": gradient,
         })}
       >
         {label}
