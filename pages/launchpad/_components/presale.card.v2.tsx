@@ -28,12 +28,12 @@ export const PresaleCardV2: React.FC<PresaleCardProps> = ({ roundInfo }) => {
               <SnakeArrow />
             </span>
             <div
-              className={`w-full max-w-[190px] rounded-10px border border-solid border-white/20 bg-white/20 py-1 px-2.5 text-center text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
+              className={`w-full max-w-[190px] rounded-10px border border-solid border-white/20 bg-white/20 px-2.5 py-1 text-center text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
             >
               1 BUSD = {roundInfo?.priceForBusd} DXC
             </div>
             <div
-              className={`w-full max-w-[190px] rounded-10px border border-solid border-white/20 bg-white/20 py-1 px-2.5 text-center text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
+              className={`w-full max-w-[190px] rounded-10px border border-solid border-white/20 bg-white/20 px-2.5 py-1 text-center text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
             >
               {roundInfo?.lockMonths} Months Lock Period
             </div>

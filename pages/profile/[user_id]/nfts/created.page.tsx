@@ -8,6 +8,7 @@ import { HotNftEmptyIcon } from "@/assets/svgs";
 import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
+import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
 const CreatedNFTS: NextPageWithLayout = () => {
   const router = useRouter();
@@ -31,13 +32,17 @@ const CreatedNFTS: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (loadingCreatedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([...createdNfts]);
+      setDisplayNFTs([
+        ...createdNfts.filter(
+          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
+        ),
+      ]);
     }
   }, [loadingCreatedNFTs, createdNfts]);
 
   return (
     <>
-      {loadingCreatedNFTs == LoadingStatus.loaded && displayNFTs?.length ? (
+      {loadingCreatedNFTs == LoadingStatus.loaded && displayNFTs.length ? (
         <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
           {displayNFTs.map((nft) => (
             <NFTImageCard data={nft} key={nft.id} />

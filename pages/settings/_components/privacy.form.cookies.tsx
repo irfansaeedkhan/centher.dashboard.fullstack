@@ -30,6 +30,7 @@ const PrivacyFormCookies: React.FC<Props> = ({
           value="allow"
           label="Allow"
           checked={selectedState === "allow"}
+          gradient={true}
           onChange={handleOptionChange}
         />
         <RadioButton
@@ -38,6 +39,7 @@ const PrivacyFormCookies: React.FC<Props> = ({
           value="decline"
           label="Decline"
           checked={selectedState === "decline"}
+          gradient={true}
           onChange={handleOptionChange}
         />
       </div>

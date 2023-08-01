@@ -1363,7 +1363,51 @@ input[type="radio"]:disabled + label:after {
   box-shadow: 0 0 0 3px #febf32 inset, var(--focus-shadow, 0 0),
     calc(100rem * -1 - 0.6rem) 0 0 100rem;
 }
+/* radio gradient */
+.radio-container {
+  position: relative;
+  display: inline-block;
+  padding: 2px;
+}
+.radio-container input[type="radio"] {
+  display: block;
+  opacity: 0;
+}
+.radio-container::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(
+    270.23deg,
+    #5691ff -9.34%,
+    #72f6d1 17.09%,
+    #76e268 48.54%,
+    #ffd505 78.11%,
+    #ff5e52 107.63%
+  );
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0; /* Initially set to transparent */
+}
 
+.radio-container.checked::before {
+  opacity: 1; /* Show the gradient outline when the radio button is checked */
+}
+
+.radio-container::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  right: -7px;
+  bottom: -7px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  z-index: -2;
+}
 .myBox {
   text-align: center;
   border-left: transparent;

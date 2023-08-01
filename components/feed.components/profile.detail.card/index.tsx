@@ -35,7 +35,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       )}
     >
       <div
-        className={`absolute top-0 left-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
+        className={`absolute left-0 top-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
         style={{
           backgroundImage: `url(${user?.cover_image})`,
         }}
@@ -71,7 +71,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               `text-sm font-semibold text-white`,
               !user.display_name.includes(" ") && user.display_name.length > 20
                 ? "block w-full max-w-full overflow-hidden truncate"
-                : "w-fit text-ellipsis line-clamp-1"
+                : "line-clamp-1 w-fit text-ellipsis"
             )}
             title={user.display_name}
           >
@@ -91,7 +91,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       </h3>
 
       <div
-        className={`flex flex-col items-center justify-center gap-2 bg-elevation-1 py-3 px-4`}
+        className={`flex flex-col items-center justify-center gap-2 bg-elevation-1 px-4 py-3`}
       >
         <div className="flex w-full items-center justify-between gap-10">
           <div className="flex w-1/2 flex-col items-start">

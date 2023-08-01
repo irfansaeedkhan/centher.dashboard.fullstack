@@ -49,7 +49,7 @@ const PreSale: NextPageWithLayout = () => {
 
   return (
     <div className="h-auto w-full overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
-      <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 py-6 px-4 font-semibold text-white fsm:gap-8 fsm:px-8">
+      <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 px-4 py-6 font-semibold text-white fsm:gap-8 fsm:px-8">
         <button
           onClick={() => {
             router.push({

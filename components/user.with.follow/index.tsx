@@ -59,7 +59,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
                 alt=""
                 width={40}
                 height={40}
-                className="absolute top-[50%] left-[50%] !m-0 h-10 w-10 translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 object-cover sm:!h-12 sm:!w-12"
+                className="absolute left-[50%] top-[50%] !m-0 h-10 w-10 translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 object-cover sm:!h-12 sm:!w-12"
                 sizes={"256px"}
               />
             </div>

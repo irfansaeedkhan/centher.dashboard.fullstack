@@ -235,7 +235,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-14px text-ellipsis font-semibold text-white line-clamp-1 hover:text-brand-primary-dark"
+                  "text-14px line-clamp-1 text-ellipsis font-semibold text-white hover:text-brand-primary-dark"
                 }
               >
                 {formatAddress(data?.collection)}

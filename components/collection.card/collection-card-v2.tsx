@@ -118,7 +118,7 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
           </span>
         )}
         <p
-          className={`mt-4 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14 line-clamp-1`}
+          className={`mt-4 line-clamp-1 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14`}
         >
           {data.description}
         </p>
