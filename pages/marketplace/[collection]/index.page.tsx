@@ -475,11 +475,11 @@ const topDetais = ctl(`
  flex flex-col items-center justify-center text-center lg:text-left lg:flex-row gap-5 lg:items-baseline lg:justify-between
 `);
 const collectionName = ctl(`
-text-white text-20px font-semibold
+text-white text-20px font-semibold word-break
 `);
 
 const profileDescription = ctl(`
-text-14px font-normal leading-6 text-gray-shade-16
+text-14px font-normal leading-6 text-gray-shade-16 word-break
 `);
 const collectionProfileImage = ctl(`
  h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7 
