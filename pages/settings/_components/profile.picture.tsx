@@ -183,7 +183,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
           <FinalButton
             title="Choose Image"
             variant="primary"
-            className={connectButton}
+            className="text-14px"
             onClick={() => setIsMenuOpen(true)}
           />
         )}
@@ -276,6 +276,3 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 export default ProfilePicture;
 
 const fieldTitle = `relative text-sm flex flex-col text-white`;
-
-const connectButton = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
-const connectButtonDiscard = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-brand-primary bg-gray-shade-3 transition-all`;
