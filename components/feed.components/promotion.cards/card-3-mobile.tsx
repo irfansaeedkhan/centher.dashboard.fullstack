@@ -18,7 +18,7 @@ export const PromotionCard3Mobile: React.FC<Props> = ({
       )}
       {...props}
     >
-      <div className="mt-3 mb-[6px] flex flex-col items-center justify-center gap-4 text-center">
+      <div className="mb-[6px] mt-3 flex flex-col items-center justify-center gap-4 text-center">
         <span>
           <h2 className="!text-[24px] font-extrabold leading-[26px] text-white">
             NFT

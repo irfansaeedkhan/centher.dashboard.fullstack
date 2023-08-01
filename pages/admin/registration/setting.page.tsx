@@ -98,7 +98,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
               <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (With referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
                   {`${normalizeValue(
                     registrationDetail.registrationFees.feeWithReferrer
@@ -110,7 +110,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
               <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (Without referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
                   {`${normalizeValue(
                     registrationDetail.registrationFees.feeWithoutReferrer
@@ -122,7 +122,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
               <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Status
               </div>
-              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
                 <p className="text-white">
                   {registrationDetail.isActive ? "Active" : "Paused"}
                 </p>
@@ -146,9 +146,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
               <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (With referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
                 <input
-                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 py-3 px-4 text-white focus:outline-none focus:ring-brand-primary"
+                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 px-4 py-3 text-white focus:outline-none focus:ring-brand-primary"
                   type="number"
                   value={updateRegistrationFeeWithReferral}
                   onChange={(e) =>
@@ -161,9 +161,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
               <div className="text-xs font-semibold uppercase text-gray-shade-7">
                 Registration Fee (Without referral link)
               </div>
-              <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+              <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
                 <input
-                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 py-3 px-4 text-white focus:outline-none focus:ring-brand-primary"
+                  className="mt-2  rounded-[10px] border-0 bg-black-shade-3 px-4 py-3 text-white focus:outline-none focus:ring-brand-primary"
                   type="number"
                   value={updateRegistrationFeeWithoutReferral}
                   onChange={(e) =>

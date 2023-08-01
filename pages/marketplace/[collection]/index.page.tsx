@@ -375,7 +375,7 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className={`mt-6 mb-4`}>
+              <div className={`mb-4 mt-6`}>
                 <p className={profileDescription}>{metadata?.description}</p>
               </div>
             </div>
@@ -390,7 +390,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"All"}
                   variant={filter === "All" ? "v1" : "v2"}
-                  className="py-2 px-4  fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2  fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("All");
                   }}
@@ -398,7 +398,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"Listed For Sale"}
                   variant={filter === "List" ? "v1" : "v2"}
-                  className="py-2 px-4 fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2 fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("List");
                   }}

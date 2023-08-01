@@ -165,7 +165,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
   };
 
   return (
-    <div className="h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-4 pt-[22px] pb-10 fsm:px-6 flg:px-8 fxl:px-10">
+    <div className="h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-4 pb-10 pt-[22px] fsm:px-6 flg:px-8 fxl:px-10">
       <div className="flex w-full flex-col gap-10 fmd:flex-row">
         <div className="mt-8 flex w-full flex-shrink-0 flex-col justify-between gap-6 fmd:w-[276px] fmd:flex-col fmd:justify-start">
           <div className="flex flex-col">
@@ -190,7 +190,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               alt="timer"
               width={275}
               height={56}
-              className="absolute top-0 left-0 m-auto fmd:inset-0"
+              className="absolute left-0 top-0 m-auto fmd:inset-0"
             />
             <p className="text-sm font-medium text-gray-shade-14">
               The presale will start in
@@ -265,7 +265,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </span>
           </p>
           {is_sold_out ? (
-            <div className="mt-4 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] py-3 px-4 text-sm text-[#E5535A]">
+            <div className="mt-4 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] px-4 py-3 text-sm text-[#E5535A]">
               All tokens have been booked! wait for Presale rounds to start in
               order to claim your tokens.
             </div>
@@ -320,7 +320,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                 )}
               </div>
               {isLoading === "loading" ? (
-                <button className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7 flg:max-w-[210px]">
+                <button className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7 flg:max-w-[210px]">
                   <CgSpinner className="h-5 w-5 animate-spin" />
                 </button>
               ) : (
@@ -379,7 +379,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
           title="Pre-booking Confirmation"
           onClose={() => setIsModalOpen(false)}
         >
-          <div className="mt-10 mb-4 flex flex-col items-center space-y-2">
+          <div className="mb-4 mt-10 flex flex-col items-center space-y-2">
             <GreenTick />
             <p className="text-center text-base font-semibold text-white fmd:text-lg">
               Your payment for {receivable_token_name} pre-booking is successful

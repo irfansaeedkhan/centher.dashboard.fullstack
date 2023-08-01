@@ -21,7 +21,7 @@ const RepliesProfileSkeletons: React.FC = () => {
         </div>
       </div>
 
-      <div className="z-10 mt-5 mb-3 w-full items-center justify-between gap-2 px-4">
+      <div className="z-10 mb-3 mt-5 w-full items-center justify-between gap-2 px-4">
         <div className="flex w-full gap-3">
           <div className="h-[48px] min-w-[48px] max-w-[48px] animate-pulse cursor-pointer rounded-full bg-[#3C3F4A]"></div>
           <div className="flex flex-grow flex-col">

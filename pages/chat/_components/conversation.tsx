@@ -37,7 +37,7 @@ const Conversation: React.FC<{
   }, []);
 
   return (
-    <div className={clsx(`flex flex-col gap-2 py-8 px-6`, showBlur)}>
+    <div className={clsx(`flex flex-col gap-2 px-6 py-8`, showBlur)}>
       {!!data.messages.length ? (
         <>
           {data.messages.length >= 25 && (

@@ -102,7 +102,7 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
             )}
           >
             <CloseButton
-              className="absolute top-1 right-1 z-10"
+              className="absolute right-1 top-1 z-10"
               onClick={() => {
                 if (modalType === "edit") {
                   removeEditPostFile(file.uuid);
@@ -113,7 +113,7 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
             />
             {file.original.type.startsWith("image") && file.type === "new" && (
               <CropButton
-                className="absolute top-1 left-1 z-10"
+                className="absolute left-1 top-1 z-10"
                 onClick={() => {
                   setCropImageSrc({
                     preview: URL.createObjectURL(file.original),

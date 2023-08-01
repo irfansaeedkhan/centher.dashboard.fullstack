@@ -279,8 +279,8 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
         <div
           className={
             isSelected
-              ? "border-gradient-top flex h-20 w-full items-center gap-2 bg-background-shade-3 py-4 px-6"
-              : "flex h-20 w-full items-center gap-2 py-4 px-6"
+              ? "border-gradient-top flex h-20 w-full items-center gap-2 bg-background-shade-3 px-6 py-4"
+              : "flex h-20 w-full items-center gap-2 px-6 py-4"
           }
         >
           <div className="flex w-full items-center justify-between">
@@ -352,17 +352,17 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   onClick={() => setIsOpen((prev) => !prev)}
                 />
                 {isOpen && (
-                  <div className="text-14px absolute top-[30px] right-0 z-[500]  rounded-10px bg-black-shade-12">
+                  <div className="text-14px absolute right-0 top-[30px] z-[500]  rounded-10px bg-black-shade-12">
                     <span
                       className={clsx(
-                        `absolute top-[-3px] right-[-10px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
+                        `absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `
                       )}
                     >
                       &#9650;
                     </span>
                     <button
-                      className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
+                      className="flex w-full items-center justify-start gap-3 px-7 py-4 text-white hover:bg-[#202025]"
                       onClick={onClicktogglePin}
                     >
                       {isPinned ? (
@@ -400,7 +400,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                     </button> */}
                     <button
                       onClick={() => setIsDeleteModalOpen(true)}
-                      className="flex w-full items-center justify-start gap-3 py-4 px-7 text-red-theme hover:bg-[#202025]"
+                      className="flex w-full items-center justify-start gap-3 px-7 py-4 text-red-theme hover:bg-[#202025]"
                     >
                       <FiTrash2 className="h-auto w-[20px] stroke-red-theme" />
                       <span className="min-w-max">Delete conversation</span>

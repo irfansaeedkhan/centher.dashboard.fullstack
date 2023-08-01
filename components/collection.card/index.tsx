@@ -32,7 +32,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
     }
   }, [data]);
   return (
-    <div className="py-1 px-2">
+    <div className="px-2 py-1">
       <Link
         href={{
           pathname: AppRoutes.marketplace.collection,
