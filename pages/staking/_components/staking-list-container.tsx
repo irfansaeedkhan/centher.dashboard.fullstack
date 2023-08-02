@@ -5,9 +5,11 @@ import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { ListCardData } from "./list-card-data";
-import ListCard from "./list-card";
 import { LayoutGrid } from "@/assets/svgs";
 import { AiOutlineUnorderedList } from "react-icons/ai";
+import GridLayoutCard from "./list-card";
+import clsx from "clsx";
+import ListLayoutTable from "./list-layout-table";
 
 const StakingListContainer: FC = () => {
   const [layout, setLayout] = useState<"grid" | "list">("grid");
@@ -27,20 +29,38 @@ const StakingListContainer: FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <div className="flex h-9 items-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
-            <div>
-              <LayoutGrid className="cursor-pointer stroke-gray-shade-14 hover:stroke-white" />
+            <div onClick={() => setLayout("grid")}>
+              <LayoutGrid
+                className={clsx(
+                  "cursor-pointer",
+                  layout === "grid"
+                    ? "stroke-white"
+                    : "stroke-gray-shade-14 hover:stroke-white"
+                )}
+              />
             </div>
-            <div>
-              <AiOutlineUnorderedList className="cursor-pointer text-2xl text-gray-shade-14 hover:text-white" />
+            <div onClick={() => setLayout("list")}>
+              <AiOutlineUnorderedList
+                className={clsx(
+                  "cursor-pointer text-2xl",
+                  layout === "list"
+                    ? "text-white"
+                    : "text-gray-shade-14 hover:text-white"
+                )}
+              />
             </div>
           </div>
         </div>
       </div>
-      <div className="max-w-list-card mt-7 mb-2 grid h-full min-h-[682px] w-full gap-6 flg:grid-cols-2">
-        {ListCardData.map((card, index) => (
-          <ListCard key={index} card={card} />
-        ))}
-      </div>
+      {layout === "grid" ? (
+        <div className="mt-7 mb-2 flex h-full w-full max-w-full flex-col gap-6">
+          {ListCardData.map((card, index) => (
+            <GridLayoutCard key={index} card={card} />
+          ))}
+        </div>
+      ) : layout === "list" ? (
+        <ListLayoutTable card={ListCardData} />
+      ) : null}
     </div>
   );
 };
