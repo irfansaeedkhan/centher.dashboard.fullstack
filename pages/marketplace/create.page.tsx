@@ -291,7 +291,6 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
-            setClearForm(true);
           }}
           title={ModalModel.title as string}
           disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
