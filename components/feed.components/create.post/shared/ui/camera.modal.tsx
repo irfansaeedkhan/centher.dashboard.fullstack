@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import Webcam from "react-webcam";
-
-import NewButton from "@/components/button/new.button";
-import { CameraCustomModal } from "@/components/modal/camera-modal";
-import { useNewPostStore } from "@/store/new.post.store";
 import { toast } from "react-hot-toast";
 import { MdOutlineCameraswitch } from "react-icons/md";
+import Image from "next/image";
+import Webcam from "react-webcam";
+import { CameraCustomModal } from "@/components/modal/camera-modal";
+import { useNewPostStore } from "@/store/new.post.store";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   onClose: () => void;
@@ -184,59 +183,65 @@ const CameraModal = ({ onClose }: Props) => {
       </div>
       <div className="mt-10 space-y-2 px-6">
         {videoUrl || picture ? (
-          <NewButton
+          <FinalButton
             title={"Save and continue"}
-            variant={"v1"}
-            disabled={!fileData ? true : false}
-            className="mt-3 max-w-full"
             onClick={() => saveSelectedFile(fileData)}
+            disabled={!fileData ? true : false}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            borderRounded="14px"
           />
         ) : (
           !isRecording && (
-            <NewButton
+            <FinalButton
               title={"Capture"}
-              variant="v1"
-              className="max-w-full hover:bg-brand-primary-dark"
               onClick={(e) => {
                 e.preventDefault();
                 capture();
               }}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+              borderRounded="14px"
             />
           )
         )}
         {videoUrl ? (
-          <NewButton
+          <FinalButton
             title={"Record Again"}
-            variant="v9"
-            className="max-w-full"
             onClick={(e) => {
               e.preventDefault();
               handleResetClick();
             }}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            borderRounded="14px"
           />
         ) : picture ? (
-          <NewButton
+          <FinalButton
             title={"Retake"}
-            variant="v9"
-            className="max-w-full"
             onClick={(e) => {
               e.preventDefault();
               handleResetClick();
             }}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            borderRounded="14px"
           />
         ) : isRecording ? (
-          <NewButton
+          <FinalButton
             title={"Stop Video"}
-            variant={"v9"}
-            className="max-w-full hover:bg-brand-primary hover:text-black-shade-3"
             onClick={() => startnStop?.stop()}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            borderRounded="14px"
           />
         ) : (
-          <NewButton
+          <FinalButton
             title={"Record Video"}
-            variant={"v9"}
-            className="max-w-full hover:bg-brand-primary hover:text-black-shade-3"
             onClick={handleRecordClick}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            borderRounded="14px"
           />
         )}
       </div>

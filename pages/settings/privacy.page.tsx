@@ -5,17 +5,15 @@ import ProfileSettingPrivacySkeleton from "@/components/loading.skeletons/profil
 
 import SettingsSidebar from "./_components/settings.sidebar";
 import { PrivacyForm } from "./_components/privacy.form";
-import { BackButton } from "./_components/back.button";
+import SettingsTopBar from "./_components/settings.topbar";
 
 const Privacy: NextPageWithLayout = () => {
   const { user } = useUser();
 
   return (
-    <div className="w-full max-w-[884px] px-3 fsm:px-5 fmd:px-0">
-      <BackButton />
-
+    <div className="w-full max-w-[640px] px-3 fsm:px-5 fmd:px-0">
       <h6 className="mb-10 text-xl font-semibold leading-7 text-white">
-        Privacy
+        Privacy Settings
       </h6>
 
       {user ? (
@@ -34,9 +32,12 @@ const Privacy: NextPageWithLayout = () => {
 Privacy.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Settings" showSidebar={false}>
-      <div className="flex justify-center fsm:gap-5 flg:gap-10">
+      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
         <span className="hidden flg:block">
           <SettingsSidebar />
+        </span>
+        <span className="block flg:hidden">
+          <SettingsTopBar />
         </span>
         {page}
       </div>

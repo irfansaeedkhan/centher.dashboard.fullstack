@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
-import toast from "react-hot-toast";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { LoadingState } from "@/models/common";
-import { SpinIcon3, MetamaskIcon } from "@/assets/svgs";
+import { MetamaskIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { getNonce, login } from "@/lib/auth";
+import FinalButton from "@/components/button/final.button";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
@@ -84,30 +84,26 @@ export const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          <button className={button} onClick={handleMetamaskLogin}>
-            {isLoading === "loading" ? (
-              <>
-                <SpinIcon3 className="animate-spin" />
-                {ButtonsText.loading}
-              </>
-            ) : (
-              ButtonsText.login_metamask
-            )}
-          </button>
+          <FinalButton
+            title={
+              isLoading === "loading"
+                ? ButtonsText.loading
+                : ButtonsText.login_metamask
+            }
+            onClick={handleMetamaskLogin}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
         </>
       ) : (
-        <button
-          className={`mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-brand-primary py-3 font-bold text-gray-shade-5 transition-all hover:bg-brand-primary-dark`}
+        <FinalButton
+          title={ButtonsText.connect_metamask}
           onClick={async () => await connectWallet()}
-        >
-          <Image
-            src="/images/metamask_icon.png"
-            alt="metamask_icon.png"
-            width={20}
-            height={20}
-          />
-          <p>{ButtonsText.connect_metamask}</p>
-        </button>
+          variant="primary"
+          className="flex h-11 w-full items-center justify-center text-[14px]"
+          borderRounded="14px"
+        />
       )}
     </div>
   );

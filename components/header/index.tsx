@@ -8,10 +8,11 @@ import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
+import FinalButton from "../button/final.button";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
-import { useCentherLive } from "@/hooks/chat";
 
 const Header = () => {
   const { adapter } = useCentherLive();
@@ -78,8 +79,13 @@ const Header = () => {
         {user && <SearchBar />}
 
         {!user && !isUserLoading && (
-          <Link href={AppRoutes.auth.login} className={connectButton}>
-            Connect
+          <Link href={AppRoutes.auth.login}>
+            <FinalButton
+              title={"Connect"}
+              variant="primary"
+              className="h-9 w-[98px] text-[14px]"
+              borderRounded="14px"
+            />
           </Link>
         )}
 
@@ -140,5 +146,3 @@ const Header = () => {
 };
 
 export default Header;
-
-const connectButton = `w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;
