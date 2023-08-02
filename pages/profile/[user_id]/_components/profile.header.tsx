@@ -387,20 +387,22 @@ const ProfileHeader: React.FC<Props> = ({
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
             <div className="absolute -top-[45px] right-4 hidden w-full max-w-[122px] fmd:block">
               {loadingState ? (
-                <button
-                  className={clsx(
-                    `text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl px-2 py-2 font-bold`,
-                    follow ? "bg-gray-shade-20" : "bg-brand-primary "
-                  )}
-                >
-                  <CgSpinner className="animate-spin text-2xl" />
-                </button>
+                <FinalButton
+                  title=""
+                  loaderIcon={
+                    <CgSpinner className="animate-spin text-2xl text-white" />
+                  }
+                  variant="primary"
+                  className="flex h-11 w-full items-center justify-center text-[14px]"
+                  borderRounded="14px"
+                />
               ) : (
-                <Button
+                <FinalButton
                   title={follow ? "Following" : "Follow"}
-                  variant={follow ? "v5" : "v1"}
-                  className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                   onClick={() => followUser(user._id)}
+                  variant="primary"
+                  className="flex h-11 w-full items-center justify-center text-[14px]"
+                  borderRounded="14px"
                 />
               )}
             </div>
@@ -429,17 +431,6 @@ const ProfileHeader: React.FC<Props> = ({
                 <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px]  fsm:ml-1">
-                    <Image
-                      src={verificationTick}
-                      alt={"Verified"}
-                      width={22}
-                      height={22}
-                      className="mt-[5px]"
-                    />
-                  </span>
-                )}
               </h5>
             </div>
           </div>

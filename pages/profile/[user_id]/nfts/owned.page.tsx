@@ -8,6 +8,7 @@ import { HotNftEmptyIcon } from "@/assets/svgs";
 import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
+import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
 const OwnedNFTS: NextPageWithLayout = () => {
   const router = useRouter();
@@ -32,7 +33,11 @@ const OwnedNFTS: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (loadingOwnedNFTs == LoadingStatus.loaded) {
-      setDisplayNFTs([...ownedNfts]);
+      setDisplayNFTs([
+        ...ownedNfts.filter(
+          (nft) => !GlobalTokenBlackList.isBlocked(nft.collection, +nft.tokenId)
+        ),
+      ]);
     }
   }, [loadingOwnedNFTs, ownedNfts]);
 

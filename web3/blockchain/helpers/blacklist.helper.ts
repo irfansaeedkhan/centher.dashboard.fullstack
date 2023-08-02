@@ -488,3 +488,30 @@ export class TokenBlackList {
     );
   }
 }
+
+export class GlobalTokenBlackList {
+  private static blackList: { collection: string; tokenId: string }[] =
+    process.env.NEXT_PUBLIC_APP_ENV === "production"
+      ? [
+          {
+            collection: "0x08b660beec8d1f9a0162e3c04416c84eac8d334b",
+            tokenId: "1",
+          },
+        ]
+      : [
+          {
+            collection: "0x4c971b621e15dc8abfc03ce3dcccf6cb63a848ae",
+            tokenId: "7",
+          },
+        ];
+
+  static isBlocked(address: string, tokenId: number): boolean {
+    return (
+      this.blackList.findIndex(
+        (e) =>
+          e.collection.toLowerCase().trim() === address.toLowerCase().trim() &&
+          +e.tokenId == tokenId
+      ) != -1
+    );
+  }
+}

@@ -55,7 +55,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
           {options.map((option) => (
             <div
               key={option.value}
-              className={`cursor-pointer rounded-2xl px-4 py-2 hover:bg-black-shade-9 ${
+              className={`word-break cursor-pointer rounded-2xl px-4 py-2 hover:bg-black-shade-9 ${
                 option.value === selectedValue
                   ? "bg-black-shade-9 font-bold"
                   : ""
