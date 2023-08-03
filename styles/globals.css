@@ -443,6 +443,27 @@
     background-clip: text;
     width: fit-content;
   }
+
+  /* background: var(--gradient-1, linear-gradient(270deg, #5691FF 0%, #72F6D1 21.88%, #76E268 47.92%, #FFD505 72.40%, #FF5E52 96.83%));
+background-clip: text;
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent; */
+
+  .textGradient2 {
+    animation: animate 2s linear infinite;
+    background: linear-gradient(
+      270deg,
+      #5691ff 0%,
+      #72f6d1 0%,
+      #76e268 100%,
+      #ffd505 100%,
+      #ff5e52 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    width: fit-content;
+  }
   input[type="checkbox"] {
     -webkit-appearance: none;
     appearance: none;
@@ -545,6 +566,21 @@
     animation: animate 2s linear infinite;
     border: 2px transparent;
     border-radius: 100%;
+    background-image: linear-gradient(#1b1c22, #1b1c22),
+      radial-gradient(
+        circle at top right,
+        #5691ff -9.34%,
+        #72f6d1 17.09%,
+        #76e268 48.54%,
+        #ffd505 78.11%,
+        #ff5e52 107.63%
+      );
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+  }
+  .gradient-border-4 {
+    animation: animate 2s linear infinite;
+    border: 2px transparent;
     background-image: linear-gradient(#1b1c22, #1b1c22),
       radial-gradient(
         circle at top right,

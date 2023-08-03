@@ -17,17 +17,25 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
   return (
     <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
       <div className="relative h-[200px] w-full rounded-2xl bg-[url(/images/profile-header-cover.jpg)] bg-cover bg-center">
-        <div
-          className={clsx(
-            "absolute right-6 top-5 w-fit rounded-[10px] bg-black-shade-3 py-[6px] px-3 text-xs font-semibold",
-            card.liquidity_pool_provided === "yes"
-              ? "text-[#76E268]"
-              : "text-brand-primary"
-          )}
-        >
-          {card.liquidity_pool_provided === "yes" ? "Active" : "Unbalanced"}
+        <div className="absolute right-6 top-5 flex items-center gap-4">
+          <Link
+            href={AppRoutes.staking.staking_details.index}
+            className="textGradient text-xs font-medium"
+          >
+            View project detail
+          </Link>
+          <div
+            className={clsx(
+              "w-fit rounded-[10px] bg-black-shade-3 py-[6px] px-3 text-xs font-semibold",
+              card.liquidity_pool_provided === "yes"
+                ? "text-[#76E268]"
+                : "text-brand-primary"
+            )}
+          >
+            {card.liquidity_pool_provided === "yes" ? "Active" : "Unbalanced"}
+          </div>
         </div>
-        <div className="absolute left-6 bottom-14 my-auto fsm:bottom-6">
+        <div className="absolute left-6 bottom-6 my-auto">
           <div className="flex items-center gap-4">
             <Image
               src="/images/profile-header-cover.jpg"
@@ -38,14 +46,6 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
             />
             <p className="text-xl font-bold text-white">DeXa {card.pack}</p>
           </div>
-        </div>
-        <div className="absolute right-6 bottom-6">
-          <Link
-            href={AppRoutes.staking.staking_details.index}
-            className="textGradient text-xs font-medium"
-          >
-            View project detail
-          </Link>
         </div>
       </div>
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
