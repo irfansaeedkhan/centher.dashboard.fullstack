@@ -71,7 +71,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               `text-sm font-semibold text-white`,
               !user.display_name.includes(" ") && user.display_name.length > 20
                 ? "block w-full max-w-full overflow-hidden truncate"
-                : "line-clamp-1 w-fit text-ellipsis"
+                : "w-fit text-ellipsis line-clamp-1"
             )}
             title={user.display_name}
           >

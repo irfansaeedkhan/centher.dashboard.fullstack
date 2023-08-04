@@ -70,7 +70,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
             className={clsx(
               `mt-1 text-sm font-semibold text-white`,
               user?.display_name.includes(" ")
-                ? "line-clamp-1 text-ellipsis"
+                ? "text-ellipsis line-clamp-1"
                 : " block w-full max-w-full overflow-hidden truncate"
             )}
             title={user?.display_name}
@@ -78,7 +78,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
             {user && sliceDisplayName(user.display_name)}
           </span>
           <p
-            className={`mt-2 line-clamp-3 whitespace-pre-wrap text-center text-xs font-medium text-gray-shade-14`}
+            className={`mt-2 whitespace-pre-wrap text-center text-xs font-medium text-gray-shade-14 line-clamp-3`}
           >
             {description}
           </p>
