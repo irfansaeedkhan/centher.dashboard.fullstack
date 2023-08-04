@@ -184,7 +184,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Checkout"}
                 variant="primary"
-                className="w-full hover:scale-75"
+                className="w-full hover:scale-90"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>

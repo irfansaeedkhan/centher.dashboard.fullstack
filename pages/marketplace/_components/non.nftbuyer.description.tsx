@@ -184,7 +184,7 @@ export const NonNFTBuyerDescription = ({
               title={"Checkout"}
               variant="primary"
               onClick={handleBuyNFT}
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px] hover:scale-90"
             />
           </div>
         </div>
@@ -296,7 +296,7 @@ export const NonNFTBuyerDescription = ({
             variant={data?.saleState === "NON" ? "primary" : "primary"}
             disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
-            className="w-full hover:scale-95"
+            className="w-full hover:scale-90"
           />
         </div>
       ) : (
