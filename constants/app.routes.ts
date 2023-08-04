@@ -69,6 +69,7 @@ export const AppRoutes = {
       rewards: "/staking/staking-details/rewards",
       referrals: "/staking/staking-details/referrals",
     },
+    faqs: "/staking/faqs",
   },
 
   // Not ready pages

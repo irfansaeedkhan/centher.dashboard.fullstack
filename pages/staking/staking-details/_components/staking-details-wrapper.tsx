@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 
 import FinalButton from "@/components/button/final.button";
 import useUser from "@/hooks/use.user";
@@ -9,7 +10,8 @@ import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import { AppRoutes } from "@/constants/app.routes";
 import Booking from "./booking";
 import Details from "./details";
-import { AiOutlineInfoCircle } from "react-icons/ai";
+import PageButtons from "./page-buttons";
+import PageButtonsWrapper from "./page-buttons";
 
 interface Props {
   children?: React.ReactNode;
@@ -37,7 +39,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   }
 
   return preBookingStats ? (
-    <div className="mx-auto w-full max-w-[1144px] space-y-6">
+    <PageButtonsWrapper>
       <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-10 pt-10 pb-8">
         <Details />
         <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
@@ -113,7 +115,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         </Link>
       </div>
       {children}
-    </div>
+    </PageButtonsWrapper>
   ) : null;
 };
 
