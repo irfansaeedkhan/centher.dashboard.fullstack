@@ -162,6 +162,9 @@ export { default as PopupMessageIcon } from "./popup-message-icon.svg";
 export { default as PopupBellIcon } from "./popup-bell-icon.svg";
 export { default as PopupSettingIcon } from "./popup-setting-icon.svg";
 export { default as LoaderSpinner } from "./loader.spinner.svg";
+export { default as LayoutGrid } from "./layout-grid.svg";
+export { default as LayoutList } from "./layout-list.svg";
+export { default as WarningGradient } from "./warning-gradient.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

@@ -3,6 +3,8 @@ export const ListCardData: ListCardData = [
     pack: "Pack 1",
     token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
     apy: "10%",
+    price: "200 BNB",
+    sybmol: "DPI",
     staking_period: "3 months",
     claim_period: "Monthly",
     liquidity_pool_provided: "yes",
@@ -50,6 +52,8 @@ export const ListCardData: ListCardData = [
     pack: "Pack 2",
     token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
     apy: "10%",
+    price: "200 BNB",
+    sybmol: "DPI",
     staking_period: "6 months",
     claim_period: "Monthly",
     liquidity_pool_provided: "no",
@@ -101,6 +105,8 @@ export const ListCardData: ListCardData = [
 
 type ListCardData = {
   pack: string;
+  price: string;
+  sybmol: string;
   token_address: string;
   apy: string;
   staking_period: string;
@@ -121,6 +127,8 @@ type ListCardData = {
 }[];
 export type ListCardDataOBj = {
   pack: string;
+  price: string;
+  sybmol: string;
   token_address: string;
   apy: string;
   staking_period: string;

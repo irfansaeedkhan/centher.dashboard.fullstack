@@ -19,8 +19,8 @@ const Booking: React.FC<Props> = ({ preBookingStats }) => {
   const receivableTokenCollectionPercentage = 57;
   const receivableTokensCollected = 57;
   return (
-    <div className="max-w-[628px] py-8 fmd:flex-grow">
-      <div className="mt-3 h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
+    <div className="w-full max-w-[512px] flex-shrink-0">
+      <div className="h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
         <div className="flex items-center justify-between gap-10">
           <h6 className="text-xl font-semibold text-white">Staked</h6>
         </div>
@@ -61,7 +61,16 @@ const Booking: React.FC<Props> = ({ preBookingStats }) => {
           to claim your tokens.
         </div>
       ) : (
-        <div className="mt-4 flex flex-col items-center gap-8 fmd:flex-row fmd:gap-4">
+        <div className="mt-4 flex flex-col gap-2">
+          <p className="text-sm text-white">
+            Referrals<span className="text-gray-shade-14">(Optional)</span>
+          </p>
+          <input
+            type="text"
+            placeholder="Add referrals here"
+            className="w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm text-white focus:ring-1 focus:ring-brand-primary"
+          />
+          <p className="text-sm text-white">Add Value</p>
           <div className="relative flex h-12 w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 p-3 focus-within:ring-1 focus-within:ring-brand-primary flg:max-w-full">
             <CustomNumberInput
               name={payment_token_symbol}
@@ -91,20 +100,12 @@ const Booking: React.FC<Props> = ({ preBookingStats }) => {
               <p className="text-xs font-semibold text-white">DeXa</p>
             </div>
           </div>
-          {/* {isLoading === "loading" ? (
-            <button className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7 flg:max-w-[210px]">
-              <CgSpinner className="h-5 w-5 animate-spin" />
-            </button>
-          ) : ( */}
           <FinalButton
             variant={"primary"}
             title="Stake Now"
             borderRounded={"14px"}
-            className={clsx(
-              "h-12 w-full text-sm fsm:flex-shrink-0 fmd:max-w-[130px]"
-            )}
+            className={clsx("h-12 w-full text-sm")}
           />
-          {/* )} */}
         </div>
       )}
     </div>
