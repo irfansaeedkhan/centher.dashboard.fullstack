@@ -13,7 +13,7 @@ import StakingListContainer from "./_components/staking-list-container";
 const Staking: NextPageWithLayout = () => {
   const { user: loggedInUser } = useUser();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
-  const [stakingList, setStakingList] = useState(false);
+  const [stakingList, setStakingList] = useState(true);
 
   const router = useRouter();
 

@@ -226,16 +226,16 @@ const CreateStaking: NextPageWithLayout = () => {
       .label("liquidity pool provided"),
     is_cancelable: Joi.string().max(10).label("is cancelable"),
     charge_fee_on_cancel: Joi.number()
-      .max(9999999999999999999)
+      .max(9999999999999999999999999999999999999999999)
       .label("charge fee on cancel"),
     min_staking_amount: Joi.number()
-      .max(9999999999999999999)
+      .max(9999999999999999999999999999999999999999999999999999999999999999999)
       .label("min staking amount"),
     max_staking_amount: Joi.number()
-      .max(9999999999999999999)
+      .max(9999999999999999999999999999999999999999999999999999999999999999999)
       .label("max staking amount"),
     total_supply: Joi.number()
-      .max(9999999999999999999)
+      .max(9999999999999999999999999999999999999999999999999999999999999999999)
       .label("max staking amount"),
     websiteUrl: Joi.string().max(150).label("websiteUrl"),
     facebook: Joi.string().max(150).optional().allow("").label("facebook"),
@@ -610,14 +610,14 @@ const CreateStaking: NextPageWithLayout = () => {
                     {!showProfileImage ? (
                       <div className={clsx("relative mt-5 h-10 w-[132px]")}>
                         <label
-                          htmlFor="collection-profile-image"
+                          htmlFor="staking-profile-image"
                           className=" absolute z-10 flex h-full w-full cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3 bg-transparent text-center text-sm font-bold leading-normal text-white hover:bg-[#1E202B]"
                         >
                           Choose File
                         </label>
                         <input
                           type="file"
-                          id="collection-profile-image"
+                          id="staking-profile-image"
                           className="absolute h-full w-full opacity-0"
                           onChange={uploadProfileFile}
                           accept="image/png, image/jpeg, image/webp, image/gif"
@@ -632,14 +632,14 @@ const CreateStaking: NextPageWithLayout = () => {
                         }}
                       >
                         <label
-                          htmlFor="collection-profile-image"
+                          htmlFor="staking-profile-image"
                           className=" absolute z-10 flex h-full w-full cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3 bg-transparent text-center text-sm font-bold leading-normal text-white hover:bg-[#1E202B]"
                         >
                           Choose File
                         </label>
                         <input
                           type="file"
-                          id="collection-profile-image"
+                          id="staking-profile-image"
                           className="absolute h-full w-full opacity-0"
                           onChange={uploadProfileFile}
                           accept="image/png, image/jpeg, image/webp, image/gif"
@@ -653,7 +653,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Upload banner image <span className="text-gradient">*</span>
                   </h4>
                   <p className="w-full max-w-[544px] text-xs font-normal leading-6 text-[#A0A4BB]">
-                    This image will appear at the top of your collection page.
+                    This image will appear at the top of your staking page.
                     Avoid including too much text in this banner image, 1400 x
                     350 recommended.
                   </p>
@@ -690,14 +690,14 @@ const CreateStaking: NextPageWithLayout = () => {
                           </span>
                           <div className="relative h-10 w-[132px]">
                             <label
-                              htmlFor="collection-banner-image"
+                              htmlFor="staking-banner-image"
                               className="absolute z-10 flex h-full w-full cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3 bg-transparent text-center text-sm font-bold leading-normal text-white hover:bg-[#1E202B]"
                             >
                               Choose File
                             </label>
                             <input
                               type="file"
-                              id="collection-banner-image"
+                              id="staking-banner-image"
                               className="absolute h-full w-full opacity-0"
                               onChange={uploadCoverFile}
                               accept="image/png, image/jpeg, image/webp, image/gif"
