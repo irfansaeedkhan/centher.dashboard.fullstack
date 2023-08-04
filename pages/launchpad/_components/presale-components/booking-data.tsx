@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { useIsClient } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
-import { toast } from "react-hot-toast";
-import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
-import { receivableTokenAmountToPaymentTokenAmount } from "@/lib/get-pre-bookings-stats";
+import { CgSpinner } from "react-icons/cg";
+import { toast } from "react-hot-toast";
+import { useWeb3React } from "@web3-react/core";
 import { PreBookingStats } from "@/lib/get-pre-bookings-stats/types";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -216,27 +215,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </div>
             <div
               className={clsx(
-                "relative mt-[22px] h-3 w-full overflow-hidden rounded-3xl",
-                receivableTokenCollectionPercentage < 75 &&
-                  `bg-[#76E268]/[0.16]`,
-                receivableTokenCollectionPercentage >= 75 &&
-                  receivableTokenCollectionPercentage < 100 &&
-                  `bg-[#FEBF32]/[0.16]`,
-                (receivableTokenCollectionPercentage === 100 || is_sold_out) &&
-                  `bg-[#E5535A]/[0.16]`
+                "relative mt-[22px] h-3 w-full overflow-hidden rounded-3xl bg-[#76e268]/[0.16]"
               )}
             >
               <div
                 style={{ width: `${receivableTokenCollectionPercentage}%` }}
                 className={clsx(
-                  receivableTokenCollectionPercentage < 75 && `bg-[#76E268]`,
-                  receivableTokenCollectionPercentage >= 75 &&
-                    receivableTokenCollectionPercentage < 100 &&
-                    `bg-brand-primary`,
-                  (receivableTokenCollectionPercentage === 100 ||
-                    is_sold_out) &&
-                    `bg-[#EA3943]`,
-                  `absolute top-0 z-50 h-3 rounded-3xl`
+                  `absolute top-0 z-50 h-3 rounded-3xl bg-[#76E268]`
                 )}
               ></div>
             </div>

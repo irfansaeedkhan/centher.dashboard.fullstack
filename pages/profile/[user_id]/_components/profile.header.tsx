@@ -58,14 +58,9 @@ export type CoverImageWithFile = {
 interface Props {
   mutualFollowersData: MutualFollowersData | null;
   user: User;
-  mutateUser: (userPartial: Partial<User>) => Promise<void>;
 }
 
-const ProfileHeader: React.FC<Props> = ({
-  mutualFollowersData,
-  user,
-  mutateUser,
-}) => {
+const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const router = useRouter();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
@@ -431,6 +426,17 @@ const ProfileHeader: React.FC<Props> = ({
                 <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
+                {!!verificationTick && (
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px]  fsm:ml-1">
+                    <Image
+                      src={verificationTick}
+                      alt={"Verified"}
+                      width={22}
+                      height={22}
+                      className="mt-[5px]"
+                    />
+                  </span>
+                )}
               </h5>
             </div>
           </div>
