@@ -9,16 +9,21 @@ import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import StakingListContainer from "./_components/staking-list-container";
+import clsx from "clsx";
 
 const Staking: NextPageWithLayout = () => {
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const [stakingList, setStakingList] = useState(true);
 
-  const router = useRouter();
-
   return (
-    <section className="flex min-h-[calc(100vh-120px)] w-full items-center justify-center">
+    <section
+      className={clsx(
+        "flex w-full justify-center",
+        !stakingList && "min-h-[calc(100vh-120px)] items-center"
+      )}
+    >
       {/* show if user already have stakings */}
       {stakingList ? (
         <StakingListContainer />
