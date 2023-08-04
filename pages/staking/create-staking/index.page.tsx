@@ -36,6 +36,7 @@ const CreateStaking: NextPageWithLayout = () => {
   const [profileErr, setProfileErr] = useState(false);
   const [coverErr, setCoverErr] = useState(false);
   const [clearForm, setClearForm] = useState(false);
+
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
     var allowedExtensions = [
@@ -98,6 +99,7 @@ const CreateStaking: NextPageWithLayout = () => {
       [name]: limitedValue,
     }));
   };
+
   const addNewMetaDataFunc = () => {
     if (
       metaDataDetails?.title === null ||
@@ -120,6 +122,7 @@ const CreateStaking: NextPageWithLayout = () => {
       data: "",
     });
   };
+
   const handleMetaDataRemove = (prop: any) => {
     setMetaDataList(metaDataList.filter((item: any) => item?.title != prop));
   };
@@ -351,10 +354,13 @@ const CreateStaking: NextPageWithLayout = () => {
       description: data.description,
       members: members,
     };
+
     console.log(finalData);
+
     if (finalData) {
       previewBox(finalData);
     }
+
     stakingForm.reset({
       staking_name: "",
       token_address: "",
@@ -383,6 +389,7 @@ const CreateStaking: NextPageWithLayout = () => {
       category: "",
       description: "",
     });
+
     setMetaDataList([]);
     setInputValues([]);
     setSelectedValue("");
@@ -503,6 +510,7 @@ const CreateStaking: NextPageWithLayout = () => {
   const previewBox = (data: stakingFormInterface) => {
     console.log(data);
   };
+
   const handleStaking = async (data: stakingFormInterface) => {
     try {
       setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
