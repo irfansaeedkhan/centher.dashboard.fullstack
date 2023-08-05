@@ -286,7 +286,7 @@ const ChatSidebar = () => {
         </div>
       ) : (
         <div className="px-6">
-          <div className="mb-3 flex h-10 w-full items-center gap-2 rounded-xl bg-elevation-1 py-2 px-3 focus-within:ring-1 focus-within:ring-brand-primary">
+          <div className="mb-3 flex h-10 w-full items-center gap-2 rounded-xl bg-elevation-1 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary">
             <SearchIcon />
             <input
               type="search"

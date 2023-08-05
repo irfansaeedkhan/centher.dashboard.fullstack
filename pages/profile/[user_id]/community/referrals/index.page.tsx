@@ -71,7 +71,7 @@ const Referrals: NextPageWithLayout = () => {
 
   return (
     <div className="w-full">
-      <div className="customScrollbar flex w-full gap-3 overflow-auto pl-1 pr-2 pb-4">
+      <div className="customScrollbar flex w-full gap-3 overflow-auto pb-4 pl-1 pr-2">
         {!!genealogies?.length ? (
           <>
             {genealogies &&

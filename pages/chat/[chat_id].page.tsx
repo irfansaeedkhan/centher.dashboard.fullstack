@@ -314,8 +314,8 @@ const SingleChat: NextPageWithLayout = () => {
           />
         )}
       </div>
-      <div className="min-h-[60px] w-full border-t border-gray-shade-3 py-3 px-4">
-        <div className="flex w-full flex-col gap-2 rounded-lg  bg-background-shade-3 py-2 px-3 ring-0 focus-within:ring-1 focus-within:ring-brand-primary">
+      <div className="min-h-[60px] w-full border-t border-gray-shade-3 px-4 py-3">
+        <div className="flex w-full flex-col gap-2 rounded-lg  bg-background-shade-3 px-3 py-2 ring-0 focus-within:ring-1 focus-within:ring-brand-primary">
           {replyModal && (
             <div className="flex items-center justify-between bg-background-shade-3 py-2">
               <div className="flex w-full items-center justify-end">

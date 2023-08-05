@@ -71,7 +71,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
         </div>
         <div className={`max-h-[600px] overflow-y-auto`}>
           <div className="mt-7 text-white">
-            <div className="flex w-full items-center rounded-xl bg-black-shade-3 py-2 px-4 focus-within:border focus-within:border-brand-primary">
+            <div className="flex w-full items-center rounded-xl bg-black-shade-3 px-4 py-2 focus-within:border focus-within:border-brand-primary">
               <SearchIcon />
               <input
                 type="text"

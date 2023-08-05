@@ -248,7 +248,7 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
     <div className="relative mt-4">
       {/* {roundInfo?.status === "not-started" && ( */}
       <div
-        className={`absolute top-0 left-0 z-10 flex h-full w-full items-center justify-center`}
+        className={`absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center`}
       >
         <div className={`flex flex-col items-center justify-center gap-10`}>
           <LockedIcon className="h-[80px] w-[80px]" />
@@ -323,7 +323,7 @@ export const PurchaseCentherCardV2: React.FC<Props> = ({
 
             {roundInfo?.status === "ended" && (
               <div
-                className={`mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 py-2 px-5 text-center lg:mt-12`}
+                className={`mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 px-5 py-2 text-center lg:mt-12`}
               >
                 <p
                   className={`text-sm font-semibold text-[#E6535A] fsm:text-base fmd:text-base`}

@@ -127,28 +127,28 @@ const CurrentUserHoveredList: React.FC<CurrentUserHoveredListProps> = ({
           {isOpen && (
             <div className="text-14px max-w-screen-md:left-0 absolute top-[40px] z-[500] rounded-10px bg-black-shade-12  fmd:right-0">
               <span
-                className={`absolute top-[-3px] right-[-10px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
+                className={`absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `}
               >
                 &#9650;
               </span>
               <button
                 onClick={() => openModalReply()}
-                className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
+                className="flex w-full items-center justify-start gap-3 px-7 py-4 text-white hover:bg-[#202025]"
               >
                 <HiOutlineReply className="h-[18px] w-[18px] " />
                 <span className="min-w-max">Reply</span>
               </button>
               <button
                 onClick={() => onMessageEdit()}
-                className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
+                className="flex w-full items-center justify-start gap-3 px-7 py-4 text-white hover:bg-[#202025]"
               >
                 <FiEdit className="h-[18px] w-[18px] text-white" />
                 <span className="min-w-max">Edit message</span>
               </button>
               <button
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="flex w-full items-center justify-start gap-3 py-4 px-7 text-red-theme hover:bg-[#202025]"
+                className="flex w-full items-center justify-start gap-3 px-7 py-4 text-red-theme hover:bg-[#202025]"
               >
                 <FiTrash2 className="h-[18px] w-[18px] stroke-red-theme" />
                 <span className="min-w-max">Delete message</span>

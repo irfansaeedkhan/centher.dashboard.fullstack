@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import NewButton from "@/components/button/new.button";
+import FinalButton from "@/components/button/final.button";
 
 const AuctionBidModal = ({ onSubmit, onClose }: any) => {
   const [bidPrice, setBidPrice] = useState<string>("");
@@ -62,14 +63,15 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
             </p>
           )}
         </div>
-        <NewButton
-          title={"Place bid "}
-          variant={bidPriceErr ? "v10" : "v1"}
+        <FinalButton
+          title={"Place Bid"}
+          variant={bidPriceErr ? "danger" : "primary"}
           disabled={bidPriceErr}
+          className="mt-2 hover:scale-90"
+          borderRounded="14px"
           onClick={() => {
             onSubmit(bidPrice);
           }}
-          className="mt-2 "
         />
       </div>
     </CustomModal>

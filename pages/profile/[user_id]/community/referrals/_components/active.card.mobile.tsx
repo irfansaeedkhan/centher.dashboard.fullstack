@@ -101,7 +101,7 @@ export const ActiveCardMobile = ({ activeParent, handleMobileBack }: any) => {
         </div>
       </div>
       <svg
-        className="absolute left-[50%] -bottom-[14px] translate-x-[-50%] rotate-90 "
+        className="absolute -bottom-[14px] left-[50%] translate-x-[-50%] rotate-90 "
         width="10"
         height="21"
         viewBox="0 0 10 21"

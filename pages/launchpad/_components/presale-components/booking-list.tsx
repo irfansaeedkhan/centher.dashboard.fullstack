@@ -9,6 +9,45 @@ interface Props {
   rounds: PreBookingRounds;
 }
 
+// TODO: Move this function to library file
+const Check_PreBooking_Form_TransactionHash = (booking: Booking) => {
+  if (booking.trx_hash.includes("SEED")) {
+    return <p>SEED TRX</p>;
+  } else if (booking.trx_hash.includes("Apex")) {
+    return (
+      <a
+        href={`https://app.centher.io/profile/0x571bc57d15e319b926b3b8fc67710c90a7591e63`}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="hover:text-brand-primary"
+      >
+        {booking.trx_hash.slice(0, 6)}...
+        {booking.trx_hash.endsWith("-1")
+          ? booking.trx_hash.slice(-6, -2)
+          : booking.trx_hash.slice(-4)}
+      </a>
+    );
+  } else {
+    return (
+      <a
+        href={`${BlockchainConfig.scanner.url}/tx/${
+          booking.trx_hash.endsWith("-1")
+            ? booking.trx_hash.slice(0, -2)
+            : booking.trx_hash
+        }`}
+        target="_blank"
+        rel="noreferrer noopener"
+        className="hover:text-brand-primary"
+      >
+        {booking.trx_hash.slice(0, 6)}...
+        {booking.trx_hash.endsWith("-1")
+          ? booking.trx_hash.slice(-6, -2)
+          : booking.trx_hash.slice(-4)}
+      </a>
+    );
+  }
+};
+
 export const BookingList: React.FC<Props> = ({
   recievableTokenSymbol,
   bookings,
@@ -73,21 +112,7 @@ export const BookingList: React.FC<Props> = ({
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">{booking.round}</td>
                 <td className="whitespace-nowrap px-4 py-2">
-                  <a
-                    href={`${BlockchainConfig.scanner.url}/tx/${
-                      booking.trx_hash.endsWith("-1")
-                        ? booking.trx_hash.slice(0, -2)
-                        : booking.trx_hash
-                    }`}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="hover:text-brand-primary"
-                  >
-                    {booking.trx_hash.slice(0, 6)}...
-                    {booking.trx_hash.endsWith("-1")
-                      ? booking.trx_hash.slice(-6, -2)
-                      : booking.trx_hash.slice(-4)}
-                  </a>
+                  {Check_PreBooking_Form_TransactionHash(booking)}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
                   {new Date(booking.createdAt * 1000).toLocaleDateString()}

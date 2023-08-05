@@ -21,7 +21,7 @@ export const CameraCustomModal: React.FC<CustomModalProps> = (props) => {
       >
         {/*header*/}
         <div
-          className={`relative flex h-[64px] items-center justify-center rounded-t py-[14px] px-4`}
+          className={`relative flex h-[64px] items-center justify-center rounded-t px-4 py-[14px]`}
         >
           <span
             className={`text-[16px] font-semibold text-white fmd:text-[20px]`}
@@ -30,7 +30,7 @@ export const CameraCustomModal: React.FC<CustomModalProps> = (props) => {
           </span>
           {props.disable === "yes" ? null : (
             <button
-              className={`absolute top-[50%] right-4 translate-y-[-50%] bg-transparent font-semibold leading-none text-white opacity-100 outline-none focus:outline-none`}
+              className={`absolute right-4 top-[50%] translate-y-[-50%] bg-transparent font-semibold leading-none text-white opacity-100 outline-none focus:outline-none`}
               onClick={props.onClose}
             >
               <IoClose className="h-6 w-6" />

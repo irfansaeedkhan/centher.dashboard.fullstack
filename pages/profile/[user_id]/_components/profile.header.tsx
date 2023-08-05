@@ -61,14 +61,9 @@ export type CoverImageWithFile = {
 interface Props {
   mutualFollowersData: MutualFollowersData | null;
   user: User;
-  mutateUser: (userPartial: Partial<User>) => Promise<void>;
 }
 
-const ProfileHeader: React.FC<Props> = ({
-  mutualFollowersData,
-  user,
-  mutateUser,
-}) => {
+const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const router = useRouter();
   const { adapter } = useCentherLive();
   const profileCardDetails = useGetProfileCardDetails(user);
@@ -304,7 +299,7 @@ const ProfileHeader: React.FC<Props> = ({
       >
         {isOwnProfile && (
           <>
-            <div className="absolute right-2 bottom-2 flex items-center gap-x-3 fsm:right-4 fsm:bottom-3">
+            <div className="absolute bottom-2 right-2 flex items-center gap-x-3 fsm:bottom-3 fsm:right-4">
               <input
                 type="file"
                 ref={coverImageInputRef}
@@ -378,7 +373,7 @@ const ProfileHeader: React.FC<Props> = ({
         )}
 
         <div
-          className={`absolute left-[50%] -bottom-12 h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
+          className={`absolute -bottom-12 left-[50%] h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer`}
         >
           <div
             className="relative h-[112px] !w-[112px]"
@@ -389,7 +384,7 @@ const ProfileHeader: React.FC<Props> = ({
               alt={user.display_name}
               width={112}
               height={112}
-              className="absolute top-[50%] left-[50%] !m-0 !h-[112px] !w-[112px] translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
+              className="absolute left-[50%] top-[50%] !m-0 !h-[112px] !w-[112px] translate-x-[-50%] translate-y-[-50%] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
               sizes={"256px"}
             />
           </div>
@@ -407,20 +402,22 @@ const ProfileHeader: React.FC<Props> = ({
                 <ChatProfile />
               </div>
               {loadingState ? (
-                <button
-                  className={clsx(
-                    `text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl py-2 px-2 font-bold`,
-                    follow ? "bg-gray-shade-20" : "bg-brand-primary "
-                  )}
-                >
-                  <CgSpinner className="animate-spin text-2xl" />
-                </button>
+                <FinalButton
+                  title=""
+                  loaderIcon={
+                    <CgSpinner className="animate-spin text-2xl text-white" />
+                  }
+                  variant="primary"
+                  className="flex h-11 w-full items-center justify-center text-[14px]"
+                  borderRounded="14px"
+                />
               ) : (
-                <Button
+                <FinalButton
                   title={follow ? "Following" : "Follow"}
-                  variant={follow ? "v5" : "v1"}
-                  className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                   onClick={() => followUser(user._id)}
+                  variant="primary"
+                  className="flex h-11 w-full items-center justify-center text-[14px]"
+                  borderRounded="14px"
                 />
               )}
             </div>
@@ -495,7 +492,7 @@ const ProfileHeader: React.FC<Props> = ({
                   {loadingState ? (
                     <button
                       className={clsx(
-                        `!text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl py-2 px-2 font-bold`,
+                        `!text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl px-2 py-2 font-bold`,
                         follow ? "bg-gray-shade-20" : "bg-brand-primary "
                       )}
                     >

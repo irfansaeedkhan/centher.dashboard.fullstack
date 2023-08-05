@@ -20,7 +20,7 @@ const ChatComingSoon: NextPageWithLayout = () => {
               className="absolute inset-0 top-0 mx-auto"
             />
           </div>
-          <div className="text-center text-[22px] font-medium text-white fsm:tracking-[1rem] sm:text-[30px] md:text-[34px] md:tracking-[1.4rem]">
+          <div className="text-center text-[22px] font-medium text-white sm:text-[30px] fsm:tracking-[1rem] md:text-[34px] md:tracking-[1.4rem]">
             CHAT COMING SOON
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">

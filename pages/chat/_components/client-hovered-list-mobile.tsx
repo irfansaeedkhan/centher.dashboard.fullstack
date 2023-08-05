@@ -133,7 +133,7 @@ const ClientHoveredListMobile: React.FC<ClientHoveredListMobile> = ({
               </span>
               <button
                 onClick={() => openModalReply("current message hardcode")}
-                className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
+                className="flex w-full items-center justify-start gap-3 px-7 py-4 text-white hover:bg-[#202025]"
               >
                 <HiOutlineReply className="h-[18px] w-[18px] " />
                 <span className="min-w-max">Reply</span>

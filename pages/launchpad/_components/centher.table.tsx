@@ -227,7 +227,7 @@ const TableCell: React.FC<TableCellProps> = ({
     return (
       <th
         className={clsx(
-          `min-w-[157px] py-4 px-5 font-semibold flg:py-7 flg:px-3`,
+          `min-w-[157px] px-5 py-4 font-semibold flg:px-3 flg:py-7`,
           className
         )}
         {...props}
@@ -236,7 +236,7 @@ const TableCell: React.FC<TableCellProps> = ({
   }
   return (
     <td
-      className={clsx(`py-2 px-5 font-medium flg:py-5 flg:px-3`, className)}
+      className={clsx(`px-5 py-2 font-medium flg:px-3 flg:py-5`, className)}
       {...props}
     />
   );

@@ -34,7 +34,7 @@ export const PostTextCounter: React.FC<Props> = ({
     <div className={clsx(`relative`, className)}>
       <div
         className={clsx(
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform",
+          "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform",
           {
             "text-red-500": thresholdReached,
             "text-brand-primary": !thresholdReached,

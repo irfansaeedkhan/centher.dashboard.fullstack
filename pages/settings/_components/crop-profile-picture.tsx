@@ -80,13 +80,6 @@ const CropProfilePicture: React.FC<CropperProps> = ({
         <div className="relative mt-5 flex w-full flex-col items-center justify-center">
           <CropFunctions cropperRef={cropperRef} />
           <div className="mt-2 flex w-[82.55px]  flex-shrink-0 justify-center text-center">
-            {/* <button
-              className="flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
-              onClick={onCrop}
-            >
-              Crop
-            </button> */}
-
             <FinalButton
               title="Crop"
               variant="primary"

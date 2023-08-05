@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = ({
         variant === "v6" && "bg-black-shade-6 text-gray-shade-7",
         variant === "v7" && "border border-danger bg-transparent text-danger",
         variant === "v8" && "bg-black-shade-3 text-gray-shade-7",
-        `flex w-full items-center justify-center gap-3 rounded-xl py-2 px-2 text-sm font-bold`,
+        `flex w-full items-center justify-center gap-3 rounded-xl px-2 py-2 text-sm font-bold`,
         className && className
       )}
       {...props}

@@ -229,7 +229,7 @@ const CurrentUserSide: React.FC<{
           >
             {emoji.length > 0 && (
               <div
-                className="absolute bottom-[5px] right-[38px] z-30 flex translate-y-[100%] translate-x-[50%] items-center justify-center rounded-full bg-black-shade-3 p-1"
+                className="absolute bottom-[5px] right-[38px] z-30 flex translate-x-[50%] translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3 p-1"
                 onMouseLeave={handleMouseLeaveEmojiList}
               >
                 <div
@@ -321,7 +321,7 @@ const CurrentUserSide: React.FC<{
         >
           {emoji?.length > 0 && (
             <div
-              className="absolute bottom-[5px] right-[38px] z-30 flex translate-y-[100%] translate-x-[50%] items-center justify-center rounded-full bg-black-shade-3 p-1"
+              className="absolute bottom-[5px] right-[38px] z-30 flex translate-x-[50%] translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3 p-1"
               onMouseLeave={handleMouseLeaveEmojiList}
             >
               <div
