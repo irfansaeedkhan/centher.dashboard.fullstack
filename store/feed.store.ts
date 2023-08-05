@@ -156,7 +156,7 @@ export const useFeedStore = create<FeedStore>()(
             actionType === "like" ? "decrement" : "increment",
             postId
           );
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 

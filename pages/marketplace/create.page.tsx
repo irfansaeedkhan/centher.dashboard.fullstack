@@ -108,7 +108,7 @@ const CreateNFT: NextPageWithLayout = () => {
       );
       nfdCreated = !!result;
     } catch (error: any) {
-      customLog(error, ["development", "staging"]);
+      customLog(["development", "staging"], error);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );
@@ -190,7 +190,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Checkout"}
                 variant="primary"
-                className="w-full hover:scale-75"
+                className="w-full hover:scale-90"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -227,7 +227,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"View on Profile"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -238,7 +238,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Try Again"}
                 variant="secondary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                 }}
@@ -297,7 +297,6 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
-            setClearForm(true);
           }}
           title={ModalModel.title as string}
           disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}

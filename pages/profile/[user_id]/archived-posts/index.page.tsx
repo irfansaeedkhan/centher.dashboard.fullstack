@@ -64,7 +64,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
         }
       }
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 
@@ -73,7 +73,7 @@ const ArchivedPosts: NextPageWithLayout = () => {
       await deletePost(postId);
       removePost(postId);
     } catch (error: any) {
-      customLog(error, ["development"]);
+      customLog(["development"], error);
     }
   };
 

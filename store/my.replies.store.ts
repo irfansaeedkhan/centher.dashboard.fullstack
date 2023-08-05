@@ -117,7 +117,7 @@ export const useMyRepliesStore = create<RepliesStore>()(
             actionType === "like" ? "decrement" : "increment",
             postId
           );
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 

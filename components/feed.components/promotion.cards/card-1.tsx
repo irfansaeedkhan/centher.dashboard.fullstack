@@ -15,7 +15,7 @@ export const PromotionCard1 = () => {
         height={30}
         className="!h-[30px] !max-w-[220px] object-cover"
       />
-      <div className="mt-3 mb-[6px] flex flex-col items-center justify-center">
+      <div className="mb-[6px] mt-3 flex flex-col items-center justify-center">
         <h2 className="animationTextHeading !text-[21px] font-extrabold leading-[26px]">
           CENTHER DAO
         </h2>

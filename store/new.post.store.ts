@@ -381,36 +381,53 @@ export const useNewPostStore = create<NewPostStore>()(
 
             await Promise.all(mediaUploadPromises);
 
-            const socket = useSocketIOStore.getState().socket;
-
-            if (!socket) return;
-
-            socket.on(
-              SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
-              async (data: { first_post_id: string }) => {
-                try {
-                  await getPostAndUpdateStores({
-                    parentPostId: get().parentPostId,
-                    postId: data.first_post_id,
-                    newPostsCount: postArray.length,
-                    modalType: get().modalType,
-                    isAuthenticated: true,
-                  });
-                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
-                  get().closeModal();
-                } catch (error: any) {
-                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
-                  set({ isPostModalLoading: false });
-                  customLog("Error in create post: ", ["development"]);
-                  customLog(error, ["development"]);
-                  if (error.response?.data?.message_description) {
-                    toast.error(error.response.data.message_description);
-                  } else {
-                    toast.error("Something went wrong, please try again later");
-                  }
-                }
+            // FIXME: this is quick fix, need to find a better way to do this
+            const postToFetchId = response.data.posts[0]._id;
+            let count = 0;
+            const interval = setInterval(async () => {
+              count++;
+              const isDone = await getPostAndUpdateStores({
+                parentPostId: get().parentPostId,
+                postId: postToFetchId,
+                newPostsCount: postArray.length,
+                modalType: get().modalType,
+                isAuthenticated: true,
+              });
+              if (isDone || count >= 5) {
+                get().closeModal();
+                clearInterval(interval);
               }
-            );
+            }, 5000);
+
+            // const socket = useSocketIOStore.getState().socket;
+
+            // if (!socket) return;
+
+            // socket.on(
+            //   SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
+            //   async (data: { first_post_id: string }) => {
+            //     try {
+            //       await getPostAndUpdateStores({
+            //         parentPostId: get().parentPostId,
+            //         postId: data.first_post_id,
+            //         newPostsCount: postArray.length,
+            //         modalType: get().modalType,
+            //         isAuthenticated: true,
+            //       });
+            //       socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+            //       get().closeModal();
+            //     } catch (error: any) {
+            //       socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+            //       set({ isPostModalLoading: false });
+            //       customLog(["development"], "Error in create post: ", error);
+            //       if (error.response?.data?.message_description) {
+            //         toast.error(error.response.data.message_description);
+            //       } else {
+            //         toast.error("Something went wrong, please try again later");
+            //       }
+            //     }
+            //   }
+            // );
           } else {
             const postToFetchId = response.data.posts[0]._id;
             await getPostAndUpdateStores({
@@ -424,8 +441,7 @@ export const useNewPostStore = create<NewPostStore>()(
           }
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in create post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in create post: ", error);
           if (error.response?.data?.message_description) {
             toast.error(error.response.data.message_description);
           } else {
@@ -473,8 +489,7 @@ export const useNewPostStore = create<NewPostStore>()(
           return;
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in edit post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in edit post: ", error);
         }
       },
     }),

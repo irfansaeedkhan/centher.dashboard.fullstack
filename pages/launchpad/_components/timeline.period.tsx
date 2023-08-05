@@ -113,7 +113,7 @@ const TimelinePeriod: React.FC<Props> = ({
 
           return (
             <div className="relative" key={index}>
-              <div className="absolute top-[-46px] left-[22px] h-[68px] border-l bg-yellow-shade-1"></div>
+              <div className="absolute left-[22px] top-[-46px] h-[68px] border-l bg-yellow-shade-1"></div>
               <Timeline
                 index={index}
                 title={title}
@@ -129,7 +129,7 @@ const TimelinePeriod: React.FC<Props> = ({
         }
       )}
       <div className="relative">
-        <div className="absolute top-[-46px] left-[22px] h-[68px] border-l bg-yellow-shade-1"></div>
+        <div className="absolute left-[22px] top-[-46px] h-[68px] border-l bg-yellow-shade-1"></div>
         <TimelineTotal
           title1={`Total ${contributionInfo.totalClaimableTokenAmountForBusd} DXC will be released in`}
           title2="Lock period already finished."

@@ -24,7 +24,7 @@ export const useGetProfileCardDetails = (user: User) => {
           res.profileCardDetails.total_referrees = users.flat().length || 0;
           setProfileCard(res.profileCardDetails);
         } catch (error: any) {
-          customLog(error, ["development"]);
+          customLog(["development"], error);
           setProfileCard(initialProfileCard);
         }
       })();

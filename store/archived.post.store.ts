@@ -56,7 +56,7 @@ export const useArchivedPostsStore = create<ArchivedPostsStore>()(
           });
         } catch (error: any) {
           set({ loading: "failed" });
-          customLog(error, ["development"]);
+          customLog(["development"], error);
         }
       },
 

@@ -4,6 +4,7 @@ import "react-advanced-cropper/dist/style.css";
 import { PostImageCropperData } from "@/components/feed.components/create.post/post.modal/files.preview";
 import { FileWithID } from "@/store/new.post.store";
 import { PostCropModalContainer } from "@/components/feed.components/create.post/post.modal/post.crop.modal";
+import FinalButton from "@/components/button/final.button";
 
 interface CropperProps {
   cropImageSrc: PostImageCropperData;
@@ -52,12 +53,13 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
           />
         </div>
         <div className="bottom-0 mt-3 flex w-full justify-center text-center [@media(max-width:600px)]:absolute">
-          <button
-            className="mb-3 flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
+          <FinalButton
+            title="Crop"
+            variant="primary"
+            className="h-8 w-[100px] text-[14px] hover:scale-90"
+            borderRounded="14px"
             onClick={cropImageFunc}
-          >
-            Crop
-          </button>
+          />
         </div>
       </div>
     </PostCropModalContainer>

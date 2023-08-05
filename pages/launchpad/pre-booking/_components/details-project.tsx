@@ -144,7 +144,7 @@ const DetailsProject = () => {
             </div>
           </div>
         </div>
-        <div className="mt-3 mb-2  flex flex-col gap-3">
+        <div className="mb-2 mt-3  flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Team</div>
           <TeamMembers />
         </div>

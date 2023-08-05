@@ -312,14 +312,14 @@ const FixedPriceForm = ({
       {propertyList?.length > 0 && (
         <div
           className={
-            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 py-6 px-5"
+            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 px-5 py-6"
           }
         >
           {propertyList.map((item: any, index: number) => {
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
+                  className="absolute right-[-4px] top-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
@@ -402,7 +402,7 @@ const FixedPriceForm = ({
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2"
+              className="mt-2 hover:scale-95"
             />
           </div>
         </CustomModal>
@@ -421,7 +421,7 @@ const FixedPriceForm = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">

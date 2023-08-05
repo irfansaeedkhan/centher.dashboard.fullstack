@@ -43,12 +43,12 @@ export const AllPagesWrapper: React.FC<AllPagesWrapperProps> = (props) => {
       {props.pageTitle === "Coming Soon" ||
       props.pageTitle === "404 Not Found" ? (
         loggedInUser && (
-          <div className="fixed top-[60px] bottom-0 left-0 hidden w-[15.5rem] fxl:block">
+          <div className="fixed bottom-0 left-0 top-[60px] hidden w-[15.5rem] fxl:block">
             <Sidebar />
           </div>
         )
       ) : props.showSidebar === false ? null : (
-        <div className="fixed top-[60px] bottom-0 left-0 hidden w-[15.5rem] fxl:block">
+        <div className="fixed bottom-0 left-0 top-[60px] hidden w-[15.5rem] fxl:block">
           <Sidebar />
         </div>
       )}

@@ -16,6 +16,6 @@ export class AppError extends Error {
 
   log(environment: AppEnvironment[] = ["development"]) {
     //  Log the error to the console only in development
-    customLog(this, environment);
+    customLog(environment, this);
   }
 }

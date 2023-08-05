@@ -240,7 +240,7 @@ export const PostHeader: React.FC<Props> = ({
                   : "View Post"
               }
               variant="primary"
-              className="h-10 w-[100px] text-[14px] hover:scale-90"
+              className="h-10 w-[100px] text-[14px] hover:scale-95"
               borderRounded="14px"
             />
           </Link>

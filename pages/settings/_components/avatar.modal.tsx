@@ -70,14 +70,14 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
               setSlectedAvatar(null);
             }}
             disabled={!slectedAvatar}
-            className="w-full hover:scale-90"
+            className="w-full hover:scale-95"
           />
         ) : (
           <FinalButton
             title="Choose"
             variant="primary"
             disabled={!slectedAvatar}
-            className="w-full hover:scale-90"
+            className="w-full hover:scale-95"
           />
         )}
       </div>

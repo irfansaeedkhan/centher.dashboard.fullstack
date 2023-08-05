@@ -176,7 +176,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
               title={"Checkout"}
               variant="primary"
               onClick={() => handleCreateCollection(collectionData)}
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px] hover:scale-90"
             />
           </div>
         </div>
@@ -237,7 +237,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                     query: { user_id: account },
                   });
                 }}
-                className="w-full"
+                className="w-full hover:scale-95"
               />
             )}
           </div>

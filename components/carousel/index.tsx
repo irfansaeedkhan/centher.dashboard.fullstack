@@ -72,7 +72,7 @@ export const EmblaCarousel: React.FC<Props> = ({ items }) => {
       {/* navigation next*/}
       {items!.length > 1 && selectedIndex < items!.length - 1 && (
         <button
-          className="absolute right-0 top-1/2 -translate-y-1/2 -translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2"
+          className="absolute right-0 top-1/2 -translate-x-1 -translate-y-1/2 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2"
           onClick={scrollNext}
         >
           <MdNavigateNext className="h-3 w-3 fill-white fsm:h-4 fsm:w-4" />

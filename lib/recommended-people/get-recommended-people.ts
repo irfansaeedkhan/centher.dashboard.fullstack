@@ -6,7 +6,7 @@ export interface RecommendedPeople {
   _id: User["_id"];
   display_name: User["display_name"];
   profile_image: User["profile_image"];
-  is_verified: User["is_verified"];
+  membership: User["membership"];
   is_followed_by_loggedin_user: boolean;
 }
 

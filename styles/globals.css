@@ -786,6 +786,46 @@
     text-fill-color: transparent;
   }
 
+  /* chat gradient border */
+  .gradient-chat-box::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background-color: #17171a;
+    border-radius: 10px;
+  }
+  .border-gradient-top {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .border-gradient-left {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
   .centher-social-button:hover span {
     color: white;
   }
@@ -803,6 +843,22 @@
   border: 2px solid linear-gradient(#a9cdff, #72f6d1, #a0ed8d, #fed365, #faa49e) !important;
 }
 
+/*  chat loader */
+.chat-loader div {
+  animation-duration: 0.5s;
+}
+
+.chat-loader div:first-child {
+  animation-delay: 0.1s;
+}
+
+.chat-loader div:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.chat-loader div:nth-child(3) {
+  animation-delay: 0.6s;
+}
 .customloaderModal {
   position: fixed;
   top: 0;
@@ -1307,7 +1363,51 @@ input[type="radio"]:disabled + label:after {
   box-shadow: 0 0 0 3px #febf32 inset, var(--focus-shadow, 0 0),
     calc(100rem * -1 - 0.6rem) 0 0 100rem;
 }
+/* radio gradient */
+.radio-container {
+  position: relative;
+  display: inline-block;
+  padding: 2px;
+}
+.radio-container input[type="radio"] {
+  display: block;
+  opacity: 0;
+}
+.radio-container::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  background: linear-gradient(
+    270.23deg,
+    #5691ff -9.34%,
+    #72f6d1 17.09%,
+    #76e268 48.54%,
+    #ffd505 78.11%,
+    #ff5e52 107.63%
+  );
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0; /* Initially set to transparent */
+}
 
+.radio-container.checked::before {
+  opacity: 1; /* Show the gradient outline when the radio button is checked */
+}
+
+.radio-container::after {
+  content: "";
+  position: absolute;
+  top: -7px;
+  left: -7px;
+  right: -7px;
+  bottom: -7px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  z-index: -2;
+}
 .myBox {
   text-align: center;
   border-left: transparent;
@@ -1334,4 +1434,11 @@ input[type="radio"]:disabled + label:after {
 
 textarea {
   resize: none !important;
+}
+
+.blur-local > .child {
+  filter: blur(5px);
+}
+.blur-local > .not-blur {
+  filter: none;
 }

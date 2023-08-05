@@ -61,9 +61,9 @@ export const ConversionTokenBox: React.FC<Props> = ({
             </button>
 
             {isDropdownOpen && (
-              <div className="absolute top-[calc(100%+6px)] -left-1 z-50 w-full rounded-10px bg-popup-0 text-xs font-medium text-white fmd:text-sm">
+              <div className="absolute -left-1 top-[calc(100%+6px)] z-50 w-full rounded-10px bg-popup-0 text-xs font-medium text-white fmd:text-sm">
                 <div
-                  className="flex cursor-pointer items-center border-b border-gray-shade-border-color py-3 px-5"
+                  className="flex cursor-pointer items-center border-b border-gray-shade-border-color px-5 py-3"
                   onClick={() => {
                     onChangeSelectedToken("BUSD");
                     setIsDropdownOpen(false);
@@ -73,7 +73,7 @@ export const ConversionTokenBox: React.FC<Props> = ({
                   <span className="ml-3 inline-block">BUSD</span>
                 </div>
                 <div
-                  className="flex cursor-pointer items-center py-3 px-5"
+                  className="flex cursor-pointer items-center px-5 py-3"
                   onClick={() => {
                     onChangeSelectedToken("NTR");
                     setIsDropdownOpen(false);

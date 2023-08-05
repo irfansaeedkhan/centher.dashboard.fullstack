@@ -81,7 +81,7 @@ const SearchBar: React.FC<Props> = () => {
           }
         })
         .catch((e) => {
-          customLog(e, ["development"]);
+          customLog(["development"], e);
         });
     }
   };
@@ -106,7 +106,7 @@ const SearchBar: React.FC<Props> = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
+          <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
             <div>
               {result.map((item: any, i) => (
                 <SearchPopupResult

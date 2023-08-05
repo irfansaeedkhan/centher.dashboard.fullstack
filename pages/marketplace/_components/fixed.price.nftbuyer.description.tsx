@@ -163,7 +163,7 @@ export const FixedPriceNFTBuyerDescription = ({
             <FinalButton
               title={"Checkout"}
               variant="primary"
-              className="hover:scale- w-full rounded-[14px] hover:scale-95"
+              className="hover:scale- w-full rounded-[14px] hover:scale-90"
               onClick={handleBuyNFT}
             />
           </div>
@@ -221,7 +221,7 @@ export const FixedPriceNFTBuyerDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -275,7 +275,7 @@ export const FixedPriceNFTBuyerDescription = ({
               }
               buyNFTStep1Func();
             }}
-            className="w-full rounded-[14px] hover:scale-95"
+            className="w-full rounded-[14px] hover:scale-90"
           />
         ) : (
           <FinalButton
@@ -313,7 +313,7 @@ export const FixedPriceNFTBuyerDescription = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">

@@ -25,7 +25,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
           </h3>
           <Link
             href={AppRoutes.launchpad_pre_booking.index}
-            className="mt-3 w-fit rounded-lg bg-brand-primary py-2 px-4 text-sm font-semibold text-black-shade-3"
+            className="mt-3 w-fit rounded-lg bg-brand-primary px-4 py-2 text-sm font-semibold text-black-shade-3"
           >
             Book Now
           </Link>

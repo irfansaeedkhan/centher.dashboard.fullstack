@@ -3,7 +3,11 @@ export interface User {
   display_name: string;
   profile_image: string;
   cover_image: string;
-  is_verified: boolean;
+  membership: {
+    last_status: "citizen" | "verified" | "none";
+    status: "citizen" | "verified" | "none";
+    endAt: number;
+  };
   profile_bio: string;
   social_media: SocialMedia;
   createdAt: string;

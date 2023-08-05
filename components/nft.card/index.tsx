@@ -132,7 +132,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
       >
         <div
           className={clsx(
-            `absolute top-0 left-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]`,
+            `absolute left-0 top-0 w-full rounded-t-[10px] bg-gray-shade-15 px-[18px] py-4 backdrop-blur-[20px]`,
             locked && "pointer-events-none"
           )}
         >
@@ -238,7 +238,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-[70px] right-5 flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
+              className={`absolute right-5 top-[70px] flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
             >
               <div className="flex items-center gap-[6px]">
                 <LockedIconBG className="inline-block h-4 w-4 scale-[2]" />
@@ -248,7 +248,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {auction && (
             <div
-              className={`absolute top-[70px] right-5 flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
+              className={`absolute right-5 top-[70px] flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}
             >
               <div className="flex items-center gap-[6px]">
                 <HammerIconBG className="inline-block h-4 w-4" />
@@ -257,7 +257,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             </div>
           )}
           {auction && (
-            <div className="absolute top-[54%] left-[50%] h-[56px] w-[90%] translate-x-[-50%] overflow-hidden rounded-xl border border-solid border-black/10 bg-gray-800 bg-opacity-25 bg-center bg-no-repeat px-[6px] backdrop-blur-[20px]">
+            <div className="absolute left-[50%] top-[54%] h-[56px] w-[90%] translate-x-[-50%] overflow-hidden rounded-xl border border-solid border-black/10 bg-gray-800 bg-opacity-25 bg-center bg-no-repeat px-[6px] backdrop-blur-[20px]">
               <div
                 className={`text-12px flex h-full w-full items-center justify-center rounded-xl text-white `}
               >
@@ -356,7 +356,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           </div>
         ) : (
           <div
-            className={`flex h-[56px] flex-col gap-2 rounded-b-[10px] border-t border-t-gray-shade-3 bg-background-shade-3 py-5 px-2`}
+            className={`flex h-[56px] flex-col gap-2 rounded-b-[10px] border-t border-t-gray-shade-3 bg-background-shade-3 px-2 py-5`}
           >
             <div className={`flex items-center justify-between gap-2`}>
               <span
@@ -500,7 +500,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
 };
 
 export interface NFTOwner
-  extends Pick<User, "_id" | "display_name" | "profile_image" | "is_verified"> {
+  extends Pick<User, "_id" | "display_name" | "profile_image" | "membership"> {
   is_registered: boolean;
 }
 

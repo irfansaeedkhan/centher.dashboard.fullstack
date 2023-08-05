@@ -1616,7 +1616,6 @@ export class BlockchainWrite {
         return tx;
       }
     } catch (error: any) {
-      console.log(error);
       logger(error, "callTransferNftToCurrentMarketplace");
       throw error;
     }
@@ -1716,7 +1715,6 @@ export class BlockchainWrite {
       await tx.wait();
       return tx.hash;
     } catch (error) {
-      console.log(error);
       throw new Error("cannot swap token");
     }
   }

@@ -45,14 +45,14 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
       const options = {
         wrapWithDirectory: true,
         progress: (prog: any) => {
-          customLog(prog, ["development", "staging"]);
+          customLog(["development", "staging"], prog);
         },
       };
 
       const added = await this.ipfs.add(input, options);
       return added.cid.toString() + "/" + input.path;
     } catch (err: any) {
-      customLog(err, ["development", "staging"]);
+      customLog(["development", "staging"], err);
       typeof err == "string" ? (err = new Error(err)) : err;
       throw err;
     }

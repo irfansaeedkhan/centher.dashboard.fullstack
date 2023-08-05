@@ -5,6 +5,7 @@ import {
   checkMatch,
   isAdmin,
   isAuthenticated,
+  isNFTBlacklisted,
 } from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -33,6 +34,12 @@ export async function middleware(request: NextRequest) {
       url.pathname = AppRoutes.chat_coming_soon;
       return NextResponse.redirect(url);
     }
+  }
+
+  // Check if the URL collection and tokenId are blacklisted
+  if (isNFTBlacklisted(request.nextUrl.pathname)) {
+    const url = request.nextUrl.origin + "/not-found";
+    return NextResponse.redirect(url);
   }
 
   if (checkMatch(request.nextUrl, adminPages)) {
@@ -107,7 +114,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.listed,
   AppRoutes.profile.created,
   AppRoutes.profile.collection,
-
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 
@@ -155,8 +163,5 @@ const _notReadyPages: string[] = [
 const notReadyPages = changePaths(_notReadyPages);
 
 // Chat Coming Soon
-const _chatComingSoonPages: string[] = [
-  AppRoutes.chat.index,
-  AppRoutes.chat.single_chat,
-];
+const _chatComingSoonPages: string[] = [];
 const chatComingSoonPages = changePaths(_chatComingSoonPages);

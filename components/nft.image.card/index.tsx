@@ -237,7 +237,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex items-center gap-[6px]">
                 <LockIcon className="w-[28%]" />
@@ -247,7 +247,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {auction && (
             <div
-              className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex items-center gap-[6px]">
                 <HammerIconBG className="w-[28%]" />
@@ -323,7 +323,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-[50%] left-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
+              className={`absolute left-[50%] top-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
               text-white backdrop-blur-[20px] fsm:hidden`}
             >
               <LockVector />
@@ -331,7 +331,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {auction && (
             <div
-              className={`absolute top-[50%] left-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
+              className={`absolute left-[50%] top-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
               text-white backdrop-blur-[20px] fsm:hidden`}
             >
               <HammerIconBG />
@@ -556,7 +556,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
             {account?.toLowerCase() == data.owner?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
-                <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7">
+                <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7">
                   <CgSpinner className="h-5 animate-spin" />
                 </button>
               ) : (
