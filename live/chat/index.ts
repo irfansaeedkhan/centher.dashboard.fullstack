@@ -620,7 +620,6 @@ export class ChatHandler {
           _ilike: userAddress,
           _eq: conversationId,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.users[0].activities[0]?.message?.created_at;
@@ -646,7 +645,6 @@ export class ChatHandler {
           _nilike: userAddress,
           _eq: conversationId,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.messages.map((e: any) => e.id);
@@ -674,7 +672,6 @@ export class ChatHandler {
           _eq: conversationId,
           _nilike: userAddress,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.messages.map((e: any) => e.id);
@@ -705,7 +702,6 @@ export class ChatHandler {
           _message_id: msgId,
           _type: type,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.activities.length > 0;
