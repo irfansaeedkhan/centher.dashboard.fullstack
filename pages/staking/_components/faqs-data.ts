@@ -1,34 +1,35 @@
 export const faqsData: Faq[] = [
   {
     id: 1,
-    question: "How to choose an NFT staking platform?",
+    question: "How to stake your Tokens?",
     answer:
-      "Here are a number of different NFT staking platforms available, so you'll need to choose one that supports the NFTs you want to stake.Create a crypto wallet. You'll need a crypto wallet to store your NFTs and stake them. Some popular crypto wallets include MetaMask, Trust Wallet, and Coinbase Wallet.Connect your crypto wallet to the NFT staking platform. Once you've created a crypto wallet, you'll need to connect it to the NFT staking platform. This will allow you to send your NFTs to the platform and start staking them",
+      "On Centher, navigate to Staking page and choose the Staking Project you want to invest in, click on it to open the main project page and insert the amount of token you want to stake. All the details about your rewards and lock period can be found on the project details page. You can only stake tokens you have already purchased or received and have in your wallet.",
   },
   {
     id: 2,
-    question: "How to Stake your NFTs?",
+    question: "Which advantages do I get by staking in more than one project?",
     answer:
-      "Staking your NFTs is a simple process. Here's how it works:Connect your crypto wallet to the NFT staking platform. Once you've created a crypto wallet, you'll need to connect it to the NFT staking platform. This will allow you to send your NFTs to the platform and start staking them",
+      "Each project gives different rewards based on Token APY, Staking / Reward Token Price Ratio and claim period. Diversifying your portfolio gives you higher chances at having successful staking with great earnings from different projects.",
   },
   {
     id: 3,
-    question: "What advantages do I have by Staking more than one Packs?",
-    answer: "You will get more rewards by staking more packs.",
+    question: "What if not all tokens or NFTs are eligible for staking?",
+    answer:
+      "Only the NFTs and tokens marked as stakable by the projects owners will be eligible for staking. In case your assets are eligible for staking, go to Staking page and choose the Staking Project you want to invest in.",
   },
   {
     id: 4,
-    question: "what if i Not all NFTs are eligible for staking?",
+    question: "What will the staking rewards depend on?",
     answer:
-      "Not all NFTs are eligible for staking. Some NFTs are not eligible for staking because they are too rare or too valuable. If you have an NFT that is not eligible for staking, you can still stake it by using a proxy NFT. A proxy NFT is an NFT that represents another NFT. For example, if you have an NFT that is not eligible for staking, you can create a proxy NFT that represents that NFT. You can then stake the proxy NFT and earn rewards for staking it.",
+      "The staking rewards will depend mainly on APY and Staking / Reward Token Price Ratio. Each project will have different claiming periods and of course the initial staked amount will affect the kind of profit you can make on daily, weekly, monthly basis.",
   },
-  {
-    id: 5,
-    question:
-      "Will the staking rewards you earning depend on the platform and the NFTs you stake?",
-    answer:
-      "Yes, the staking rewards you earning depend on the platform and the NFTs you stake. Some platforms offer higher staking rewards than others. Some NFTs offer higher staking rewards than others.",
-  },
+  // {
+  //   id: 5,
+  //   question:
+  //     "Will the staking rewards you earning depend on the platform and the NFTs you stake?",
+  //   answer:
+  //     "Yes, the staking rewards you earning depend on the platform and the NFTs you stake. Some platforms offer higher staking rewards than others. Some NFTs offer higher staking rewards than others.",
+  // },
 ];
 
 export type Faq = {
