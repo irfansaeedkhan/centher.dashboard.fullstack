@@ -62,7 +62,7 @@ const TimelineTotal: React.FC<TimelineTotalProps> = ({
           nowTime > endTime ? "border-yellow-shade-1" : "border-gray-shade-2"
         }`}
       ></div>
-      <div className="scrollSetLight2 flex h-[88px] max-w-full flex-grow justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 py-5 px-6 ">
+      <div className="scrollSetLight2 flex h-[88px] max-w-full flex-grow justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 px-6 py-5 ">
         <div className="min-w-[350px]">
           <h4 className="font-semibold text-white">
             {nowTime < endTime ? title1 : title2}

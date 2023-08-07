@@ -29,7 +29,7 @@ export const CustomNewModal: React.FC<CustomModalProps> = (props) => {
           </span>
           {props.disable === "yes" ? null : (
             <button
-              className={`absolute top-[50%] right-4 translate-y-[-50%] text-white`}
+              className={`absolute right-4 top-[50%] translate-y-[-50%] text-white`}
               onClick={props.onClose}
             >
               <IoClose className="h-6 w-6" />

@@ -101,7 +101,7 @@ const ChangePriceListModal: React.FC<Props> = ({
           Price
         </label>
         <div
-          className={`flex h-[48px] w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 !p-0 py-3 !px-3 text-sm font-semibold text-gray-shade-17 focus-within:ring-1 focus-within:ring-brand-primary focus:outline-none active:!ring-brand-primary`}
+          className={`flex h-[48px] w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 !p-0 !px-3 py-3 text-sm font-semibold text-gray-shade-17 focus-within:ring-1 focus-within:ring-brand-primary focus:outline-none active:!ring-brand-primary`}
         >
           <BNBIcon className="h-4 w-4" />
           <CustomNumberInput

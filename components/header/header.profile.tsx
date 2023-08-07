@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useCallback, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiArrowUpRight, FiCopy } from "react-icons/fi";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
+import { useOnClickOutside } from "usehooks-ts";
 import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -38,7 +38,6 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const { unreadNotifications } = useCentherLive();
   const { connectWallet, disconnectWallet } = useConnectWallet();
   const { active, account, deactivate } = useWeb3React();
-  const matches = useMediaQuery("(min-width: 1024px)");
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -132,7 +131,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             },
           }}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] px-4 py-2.5 text-white hover:bg-black-shade-9"
         >
           <PopupUserIcon />
           <div className="flex flex-col gap-[2px]">
@@ -145,7 +144,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <Link
           href={{ pathname: AppRoutes.feed.index }}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] px-4 py-2.5 text-white hover:bg-black-shade-9"
         >
           <PopupFeedIcon />
           <div className="flex flex-col gap-[2px]">
@@ -158,7 +157,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <Link
           href={{ pathname: AppRoutes.chat.index }}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] px-4 py-2.5 text-white hover:bg-black-shade-9"
         >
           <PopupMessageIcon />
           <div className="flex flex-col gap-[2px]">
@@ -171,7 +170,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         <Link
           href={{ pathname: AppRoutes.notifications }}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] px-4 py-2.5 text-white hover:bg-black-shade-9"
         >
           <PopupBellIcon />
           <div className="flex flex-col gap-[2px]">
@@ -185,9 +184,9 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </div>
         </Link>
         <Link
-          href={matches ? AppRoutes.settings.profile : AppRoutes.settings.index}
+          href={AppRoutes.settings.profile}
           onClick={onClickOutside}
-          className="flex items-center gap-[14px] stroke-[#B7BBCC] py-2.5 px-4 text-white hover:bg-black-shade-9"
+          className="flex items-center gap-[14px] stroke-[#B7BBCC] px-4 py-2.5 text-white hover:bg-black-shade-9"
         >
           <PopupSettingIcon />
           <div className="flex flex-col gap-[2px]">

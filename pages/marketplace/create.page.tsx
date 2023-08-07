@@ -184,7 +184,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Checkout"}
                 variant="primary"
-                className="w-full hover:scale-75"
+                className="w-full hover:scale-90"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -291,7 +291,6 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
-            setClearForm(true);
           }}
           title={ModalModel.title as string}
           disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}

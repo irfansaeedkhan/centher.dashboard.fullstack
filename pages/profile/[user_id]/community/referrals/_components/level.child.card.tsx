@@ -21,7 +21,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         // childData.level !== "06" && setActiveCard(true);
       }}
     >
-      <div className="flex items-center gap-3 py-4 px-3 ">
+      <div className="flex items-center gap-3 px-3 py-4 ">
         {user ? (
           <Image
             src={user.profile_image}
@@ -100,7 +100,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
       </div>
       {childData.active && (
         <svg
-          className="absolute top-[50%] -right-[10px] translate-y-[-50%] "
+          className="absolute -right-[10px] top-[50%] translate-y-[-50%] "
           width="10"
           height="21"
           viewBox="0 0 10 21"

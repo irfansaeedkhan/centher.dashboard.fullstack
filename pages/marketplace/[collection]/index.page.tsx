@@ -18,6 +18,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
@@ -136,6 +137,11 @@ const Collection: NextPageWithLayout = () => {
   const toggleMobileMenu = async () => {
     setIsMobileMenuVisible((prev) => !prev);
   };
+
+  // Remove the blacklisted nft from the nfts data array
+  const filteredNFTs = nfts.filter((item) => {
+    return !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId);
+  });
 
   return (
     <div className={dashboardContentContainer}>
@@ -375,7 +381,7 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className={`mt-6 mb-4`}>
+              <div className={`mb-4 mt-6`}>
                 <p className={profileDescription}>{metadata?.description}</p>
               </div>
             </div>
@@ -390,7 +396,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"All"}
                   variant={filter === "All" ? "v1" : "v2"}
-                  className="py-2 px-4  fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2  fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("All");
                   }}
@@ -398,7 +404,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"Listed For Sale"}
                   variant={filter === "List" ? "v1" : "v2"}
-                  className="py-2 px-4 fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2 fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("List");
                   }}
@@ -416,7 +422,7 @@ const Collection: NextPageWithLayout = () => {
           </div>
           <div className="tabsContent mt-10">
             <div className={`${nftCardWrapper} nftCardContainer`}>
-              {nfts.map((data) => {
+              {filteredNFTs.map((data) => {
                 return <NFTCard data={data} key={data.id} />;
               })}
               {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
@@ -429,7 +435,7 @@ const Collection: NextPageWithLayout = () => {
               <div ref={lastNotiRef} />
             </div>
 
-            {loadingNFTs === "loaded" && nfts.length === 0 && (
+            {loadingNFTs === "loaded" && filteredNFTs.length === 0 && (
               <div>
                 <div className="mt-[48px] flex justify-center">
                   <HotNftEmptyIcon />
@@ -475,11 +481,11 @@ const topDetais = ctl(`
  flex flex-col items-center justify-center text-center lg:text-left lg:flex-row gap-5 lg:items-baseline lg:justify-between
 `);
 const collectionName = ctl(`
-text-white text-20px font-semibold
+text-white text-20px font-semibold word-break
 `);
 
 const profileDescription = ctl(`
-text-14px font-normal leading-6 text-gray-shade-16
+text-14px font-normal leading-6 text-gray-shade-16 word-break
 `);
 const collectionProfileImage = ctl(`
  h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7 
@@ -505,7 +511,7 @@ const inputField = ctl(`
   fsm:max-w-max
 `);
 const nftCardWrapper = ctl(
-  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)]  fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
+  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
 );
 const shareBtn = ctl(`
 text-14px absolute right-6 bottom-4

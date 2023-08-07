@@ -121,7 +121,7 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
               setIsModified(true);
             }}
             value={updatedUser.display_name_field}
-            className={`w-full rounded-lg border-0 bg-[#1E1E21] py-3 px-5 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
+            className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
           >
             <option value="pseudonym">Pseudonym</option>
             <option value="real_name">Real Name</option>

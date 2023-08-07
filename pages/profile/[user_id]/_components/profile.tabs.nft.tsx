@@ -22,7 +22,7 @@ export const ProfileTabsNFT: React.FC<ProfileProps> = ({ userId }) => {
           router.pathname === AppRoutes.profile.nfts
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "cursor-pointer py-[10px] px-4"
+          "cursor-pointer px-4 py-[10px]"
         )}
       >
         Owned
@@ -37,7 +37,7 @@ export const ProfileTabsNFT: React.FC<ProfileProps> = ({ userId }) => {
           router.pathname === AppRoutes.profile.collection
             ? "border-b-2 text-white"
             : "text-gray-shade-7",
-          "cursor-pointer py-[10px] px-4"
+          "cursor-pointer px-4 py-[10px]"
         )}
       >
         Collections

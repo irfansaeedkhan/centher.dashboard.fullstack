@@ -24,7 +24,7 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
           </h1>
           <div className="flex justify-center gap-x-2 flg:justify-start">
             <div
-              className={`rounded-10px border border-solid border-white/20 bg-white/20 py-1 px-2.5 text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
+              className={`rounded-10px border border-solid border-white/20 bg-white/20 px-2.5 py-1 text-[10px] font-bold text-white backdrop-blur-lg fsm:text-xs flg:text-sm`}
             >
               1 CTHR = {roundInfo.priceForBusd} BUSD
             </div>

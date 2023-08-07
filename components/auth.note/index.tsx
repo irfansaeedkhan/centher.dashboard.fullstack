@@ -17,8 +17,8 @@ export const AuthNote: React.FC<AuthNoteProps> = (props) => {
   border 
   border-gray-shade-5 
   bg-gray-shade-6 
-  py-3 
   px-4 
+  py-3 
 `}
     >
       <div
