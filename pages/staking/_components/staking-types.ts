@@ -11,6 +11,11 @@ export const multilevel: multilevel[] = [
   "multilevel3",
 ];
 
+export interface CategoryOption {
+  value: string;
+  label: string;
+}
+
 export interface stakingFormInterface {
   staking_name: string;
   token_address: string;
@@ -22,6 +27,7 @@ export interface stakingFormInterface {
     | "";
 
   apy: number | null;
+  staking_reward_token_price_ratio: number | null;
   staking_period: string;
   start_date: string;
   claim_period: string;
@@ -35,7 +41,8 @@ export interface stakingFormInterface {
   total_supply: number | null;
   project_metadata?: metaDataType[];
   rewards_level?: levelDataType[];
-  websiteUrl: string;
+  website_url: string;
+  whitepaper: string;
   facebook: string;
   twitter: string;
   github: string;
@@ -44,9 +51,14 @@ export interface stakingFormInterface {
   discord: string;
   reddit: string;
   explorers: string;
-  category: string;
+  category: CategoryOption[] | [];
   description: string;
   members?: teamMember[];
+}
+
+export interface stakingFormInterfaceUpdated extends stakingFormInterface {
+  cover_image: Blob | undefined;
+  profile_image: Blob | undefined;
 }
 
 export type metaDataType = {

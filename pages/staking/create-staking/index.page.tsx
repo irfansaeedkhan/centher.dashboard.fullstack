@@ -1,32 +1,45 @@
 import React, { useState, ChangeEvent, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
-import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
-import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import Joi from "joi";
+import Image from "next/image";
 import clsx from "clsx";
+import Joi from "joi";
+import { useForm, Controller } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { motion } from "framer-motion";
+import { toast } from "react-hot-toast";
+import Select, { StylesConfig } from "react-select";
+import { IoClose } from "react-icons/io5";
+import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
 
-import { CustomModal } from "@/components/modal/custom.modal";
-import { IoIosClose } from "react-icons/io";
-import FinalButton from "@/components/button/final.button";
+import { cn } from "@/utils/cn/cn";
+import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
+import { CustomModal } from "@/components/modal/custom.modal";
+import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { StakingSuccessModal } from "./_components/staking-success-modal";
 import {
   levelDataType,
   metaDataType,
   stakingFormInterface,
+  stakingFormInterfaceUpdated,
   teamMember,
 } from "../_components/staking-types";
 import { StakingFailureModal } from "./_components/staking-failure-modal";
-import { cn } from "@/utils/cn/cn";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import { toast } from "react-hot-toast";
+import { StakingReviewModal } from "./_components/staking-review-modal";
+
+const categoryOptions = [
+  { value: "Metaverse", label: "Metaverse" },
+  { value: "Real Estate", label: "Real Estate" },
+  { value: "Decentralised Finance", label: "Decentralised Finance" },
+  { value: "Artificial Intelligence", label: "Artificial Intelligence" },
+];
 
 const CreateStaking: NextPageWithLayout = () => {
-  // upload images and videos
+  const [formStep, setFormStep] = useState(0);
+  const [showMsg, setshowMsg] = useState<any>(null);
+
+  // start upload images and videos
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
     false
@@ -78,11 +91,9 @@ const CreateStaking: NextPageWithLayout = () => {
       setCover(undefined);
     }
   }, [clearForm, setCover, setProfile]);
+  // end upload images and videos
 
-  // steps state
-  const [formStep, setFormStep] = useState(0);
-  // form1 start
-  // handle dynamic metadata
+  // start handle metadata
   const [metaDataDetails, setMetaDataDetails] = useState<metaDataType>({
     title: "",
     data: "",
@@ -126,8 +137,9 @@ const CreateStaking: NextPageWithLayout = () => {
   const handleMetaDataRemove = (prop: any) => {
     setMetaDataList(metaDataList.filter((item: any) => item?.title != prop));
   };
+  // end handle metadata
 
-  // level system
+  // start handle level system
   const [selectedValue, setSelectedValue] = useState<string>("");
   const [inputValues, setInputValues] = useState<levelDataType[]>([]);
 
@@ -209,13 +221,24 @@ const CreateStaking: NextPageWithLayout = () => {
       </div>
     ));
   };
+  // end handle level system
 
+  // start joi validation
   const stakingFormSchema = Joi.object({
     staking_name: Joi.string().max(200).label("staking_name"),
     token_address: Joi.string().max(200).label("token address"),
-    reward_token_address: Joi.string().max(200).label("reward token address"),
+    reward_token_address: Joi.string()
+      .max(200)
+      .optional()
+      .allow("")
+      .label("reward token address"),
     multilevel_rewards: Joi.string().max(100).label("multilevel rewards"),
     apy: Joi.number().max(9999999999999999999).label("apy"),
+    staking_reward_token_price_ratio: Joi.number()
+      .max(9999999999999999999)
+      .optional()
+      .allow("")
+      .label("staking Reward Token Price Ratio"),
     staking_period: Joi.string().max(150).label("staking period"),
     start_date: Joi.string().max(150).label("start date"),
     claim_period: Joi.string().max(150).label("claim period"),
@@ -224,20 +247,20 @@ const CreateStaking: NextPageWithLayout = () => {
     liquidity_pool_provided: Joi.string()
       .max(10)
       .label("liquidity pool provided"),
-    is_cancelable: Joi.string().max(10).label("is cancelable"),
-    charge_fee_on_cancel: Joi.number()
-      .max(9999999999999999999999999999999999999999999)
-      .label("charge fee on cancel"),
-    min_staking_amount: Joi.number()
-      .max(9999999999999999999999999999999999999999999999999999999999999999999)
-      .label("min staking amount"),
-    max_staking_amount: Joi.number()
-      .max(9999999999999999999999999999999999999999999999999999999999999999999)
-      .label("max staking amount"),
-    total_supply: Joi.number()
-      .max(9999999999999999999999999999999999999999999999999999999999999999999)
-      .label("max staking amount"),
-    websiteUrl: Joi.string().max(150).label("websiteUrl"),
+    is_cancelable: Joi.string().valid("yes", "no").label("is cancelable"),
+    charge_fee_on_cancel: Joi.when("is_cancelable", {
+      is: "yes",
+      then: Joi.number().required().label("charge fee on cancel"),
+      otherwise: Joi.number()
+        .optional()
+        .allow("")
+        .label("charge fee on cancel"),
+    }),
+    min_staking_amount: Joi.number().label("min staking amount"),
+    max_staking_amount: Joi.number().label("max staking amount"),
+    total_supply: Joi.number().label("max staking amount"),
+    website_url: Joi.string().max(150).label("website_url"),
+    whitepaper: Joi.string().max(150).label("whitepaper"),
     facebook: Joi.string().max(150).optional().allow("").label("facebook"),
     twitter: Joi.string().max(150).optional().allow("").label("twitter"),
     github: Joi.string().max(150).optional().allow("").label("github"),
@@ -246,7 +269,19 @@ const CreateStaking: NextPageWithLayout = () => {
     discord: Joi.string().max(150).optional().allow("").label("discord"),
     reddit: Joi.string().max(150).optional().allow("").label("reddit"),
     explorers: Joi.string().max(150).label("explorers"),
-    category: Joi.string().max(150).label("category"),
+    category: Joi.array()
+      .items(
+        Joi.object({
+          value: Joi.string(),
+          label: Joi.string(),
+        })
+      )
+      .min(1)
+      .required()
+      .label("Category")
+      .messages({
+        "array.min": "At least one category must be selected",
+      }),
     description: Joi.string()
       .max(550)
       .required()
@@ -274,20 +309,18 @@ const CreateStaking: NextPageWithLayout = () => {
       show_on_centher: "no",
       liquidity_pool_provided: "no",
       is_cancelable: "no",
+      category: [],
     },
   });
 
-  // form1 end
-
   // form2 start
-  // handle dynamic members
+  // handle adding members
   const [members, setMembers] = useState<teamMember[]>([]);
   const [memberError, setMemberError] = useState<string | null>(null);
   const [memberData, setMemberData] = useState({
     jobTitle: "",
     walletAddress: "",
   });
-
   const handleMemberInputChange = (
     event: ChangeEvent<HTMLInputElement>
   ): void => {
@@ -316,10 +349,11 @@ const CreateStaking: NextPageWithLayout = () => {
   const handleRemoveMember = (index: number): void => {
     setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
   };
+  // ending handle adding members
 
-  //  validations
+  //  functions to get and submit data
 
-  const handleDetails = (data: stakingFormInterface) => {
+  const submitForm = (data: stakingFormInterface) => {
     let finalData = {
       profile_image: profile,
       cover_image: cover,
@@ -328,6 +362,7 @@ const CreateStaking: NextPageWithLayout = () => {
       reward_token_address: data.reward_token_address,
       multilevel_rewards: data.multilevel_rewards,
       apy: data.apy,
+      staking_reward_token_price_ratio: data.staking_reward_token_price_ratio,
       staking_period: data.staking_period,
       start_date: data.start_date,
       claim_period: data.claim_period,
@@ -341,7 +376,8 @@ const CreateStaking: NextPageWithLayout = () => {
       total_supply: data.total_supply,
       project_metadata: metaDataList,
       rewards_level: inputValues,
-      websiteUrl: data.websiteUrl,
+      website_url: data.website_url,
+      whitepaper: data.whitepaper,
       facebook: data.facebook,
       twitter: data.twitter,
       github: data.github,
@@ -354,53 +390,11 @@ const CreateStaking: NextPageWithLayout = () => {
       description: data.description,
       members: members,
     };
-
-    console.log(finalData);
-
+    console.log("submitForm data:", data);
     if (finalData) {
-      previewBox(finalData);
+      previewBoxModalFunc(finalData);
     }
-
-    stakingForm.reset({
-      staking_name: "",
-      token_address: "",
-      multilevel_rewards: "",
-      apy: null,
-      staking_period: "",
-      start_date: "",
-      claim_period: "",
-      rewards_release_start: "",
-      show_on_centher: "no",
-      liquidity_pool_provided: "no",
-      is_cancelable: "no",
-      charge_fee_on_cancel: null,
-      min_staking_amount: null,
-      max_staking_amount: null,
-      total_supply: null,
-      websiteUrl: "",
-      facebook: "",
-      twitter: "",
-      github: "",
-      telegram: "",
-      instagram: "",
-      discord: "",
-      reddit: "",
-      explorers: "",
-      category: "",
-      description: "",
-    });
-
-    setMetaDataList([]);
-    setInputValues([]);
-    setSelectedValue("");
-    setMemberError(null);
-    setMembers([]);
-    setClearForm(true);
-    setFormStep(0);
   };
-
-  // form2 end
-  const [showMsg, setshowMsg] = useState<any>(null);
 
   const retryFunc = () => {
     setshowMsg(null);
@@ -442,6 +436,7 @@ const CreateStaking: NextPageWithLayout = () => {
       "reward_token_address",
       "multilevel_rewards",
       "apy",
+      "staking_reward_token_price_ratio",
       "staking_period",
       "start_date",
       "claim_period",
@@ -462,6 +457,9 @@ const CreateStaking: NextPageWithLayout = () => {
     );
     const multilevel_rewards = stakingForm.getFieldState("multilevel_rewards");
     const apy = stakingForm.getFieldState("apy");
+    const staking_reward_token_price_ratio = stakingForm.getFieldState(
+      "staking_reward_token_price_ratio"
+    );
     const staking_period = stakingForm.getFieldState("staking_period");
     const start_date = stakingForm.getFieldState("start_date");
     const claim_period = stakingForm.getFieldState("claim_period");
@@ -486,6 +484,7 @@ const CreateStaking: NextPageWithLayout = () => {
       reward_token_address.invalid ||
       multilevel_rewards.invalid ||
       apy.invalid ||
+      staking_reward_token_price_ratio.invalid ||
       staking_period.invalid ||
       start_date.invalid ||
       claim_period.invalid ||
@@ -498,7 +497,6 @@ const CreateStaking: NextPageWithLayout = () => {
       max_staking_amount.invalid ||
       total_supply.invalid
     ) {
-      console.log("trst1");
       return;
     } else {
       setProfileErr(false);
@@ -507,13 +505,58 @@ const CreateStaking: NextPageWithLayout = () => {
     }
   };
 
-  const previewBox = (data: stakingFormInterface) => {
-    console.log(data);
+  const previewBoxModalFunc = async (data: stakingFormInterfaceUpdated) => {
+    await setshowMsg(
+      <StakingReviewModal
+        data={data}
+        onClickClose={onClickClose}
+        createStaking={createStaking}
+      />
+    );
   };
 
-  const handleStaking = async (data: stakingFormInterface) => {
+  const createStaking = async (data: stakingFormInterfaceUpdated) => {
+    console.log("final data", data);
     try {
       setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
+      stakingForm.reset({
+        staking_name: "",
+        token_address: "",
+        multilevel_rewards: "",
+        apy: null,
+        staking_reward_token_price_ratio: null,
+        staking_period: "",
+        start_date: "",
+        claim_period: "",
+        rewards_release_start: "",
+        show_on_centher: "no",
+        liquidity_pool_provided: "no",
+        is_cancelable: "no",
+        charge_fee_on_cancel: null,
+        min_staking_amount: null,
+        max_staking_amount: null,
+        total_supply: null,
+        website_url: "",
+        whitepaper: "",
+        facebook: "",
+        twitter: "",
+        github: "",
+        telegram: "",
+        instagram: "",
+        discord: "",
+        reddit: "",
+        explorers: "",
+        category: [],
+        description: "",
+      });
+
+      setMetaDataList([]);
+      setInputValues([]);
+      setSelectedValue("");
+      setMemberError(null);
+      setMembers([]);
+      setClearForm(true);
+      setFormStep(0);
     } catch (error: any) {
       setshowMsg(
         <StakingFailureModal
@@ -524,9 +567,66 @@ const CreateStaking: NextPageWithLayout = () => {
     }
   };
 
+  // styles for multiple select dropdown
+  const customStyles: StylesConfig = {
+    control: (provided, state) => ({
+      ...provided,
+      background: "#17171a",
+      boxShadow: state.isFocused ? "0 0 0 1px #febf32" : "0 0 0 1px #17171a",
+      borderColor: state.isFocused ? "#febf32" : "#17171a",
+      borderRadius: "8px",
+      cursor: "pointer",
+      padding: "2px 5px",
+      ":hover": {
+        borderColor: "#febf32",
+      },
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      background: state.isFocused ? "#17171a" : "#141416",
+      color: state.isFocused ? "#febf32" : "white",
+      cursor: "pointer",
+    }),
+    menu: (provided, state) => ({
+      ...provided,
+      background: "#17171a",
+      zIndex: 2,
+      color: "white",
+    }),
+    menuList: (provided, state) => ({
+      ...provided,
+      background: "17171a",
+      color: "white",
+    }),
+    multiValue: (provided, state) => ({
+      ...provided,
+      background: "#1e212b",
+      borderColor: state.isFocused ? "yellow" : "red",
+      borderRadius: "8px",
+      color: "white",
+    }),
+    multiValueLabel: (provided, state) => ({
+      ...provided,
+      color: "white",
+    }),
+    multiValueRemove: (provided, state) => ({
+      ...provided,
+      color: "white",
+      backgroundColor: "transparent",
+      borderRadius: "50%",
+      ":hover": {
+        color: "#febf32",
+        backgroundColor: "transparent",
+      },
+    }),
+    clearIndicator: (provided, state) => ({
+      ...provided,
+      color: state.isFocused ? "#febf32" : "white",
+    }),
+  };
   return (
-    <section className="flex  w-full">
-      <div className=" flex flex-grow flex-col ">
+    <section className="flex w-full">
+      <div className=" flex flex-grow flex-col">
         <div className="flex items-center gap-3 pb-6">
           <button
             onClick={() => {
@@ -559,8 +659,13 @@ const CreateStaking: NextPageWithLayout = () => {
           >
             <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-6">
               {/* logo and cover  */}
+
               <div className="flex w-full flex-col gap-6">
                 <div className="w-full  max-w-[340px]">
+                  <p className="text-gradient pb-4 text-xs font-normal">
+                    <span className="text-gradient">( * )</span>{" "}
+                    <span className="text-gradient">is required</span>
+                  </p>
                   <h4 className="text-14px pb-2 font-semibold text-white">
                     Upload Logo Image <span className="text-gradient">*</span>
                   </h4>
@@ -585,7 +690,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -673,7 +778,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
@@ -711,7 +816,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
               <div className="mb-2 grid w-full gap-6 md:grid-cols-2">
                 {/* staking name */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1">
+                <div className="text-14px col-span-2  w-full font-medium text-white md:col-span-2">
                   <label
                     htmlFor="staking_name"
                     className="block font-normal tracking-wide"
@@ -761,7 +866,6 @@ const CreateStaking: NextPageWithLayout = () => {
                     className="block font-normal tracking-wide"
                   >
                     Reward Token Address
-                    <span className="text-gradient ml-[2px]">*</span>
                   </label>
                   <input
                     type="text"
@@ -824,7 +928,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     <p
                       className={`text-12px text-gradient pb-2 pt-1 font-medium`}
                     >
-                      Referrer rewards are claimable once per claim duration
+                      Referral rewards are claimable according to Claim Period
                     </p>
                   )}
                   {stakingForm.formState.errors.multilevel_rewards && (
@@ -833,29 +937,34 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {renderInputFields()}
-                {/* APY */}
+                {/* Staking / Reward Token Price Ratio */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
-                    htmlFor="apy"
+                    htmlFor="staking_reward_token_price_ratio"
                     className="block font-normal tracking-wide"
                   >
-                    APY
-                    <span className="text-gradient ml-[2px]">*</span>
+                    Staking / Reward Token Price Ratio
                   </label>
                   <input
                     type="number"
-                    {...stakingForm.register("apy")}
-                    id="apy"
-                    placeholder="For example: 2%"
+                    {...stakingForm.register(
+                      "staking_reward_token_price_ratio"
+                    )}
+                    id="staking_reward_token_price_ratio"
+                    placeholder="only numbers"
                     className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
-                  {stakingForm.formState.errors.apy && (
+                  {stakingForm.formState.errors
+                    .staking_reward_token_price_ratio && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.apy.message}
+                      {
+                        stakingForm.formState.errors
+                          .staking_reward_token_price_ratio.message
+                      }
                     </p>
                   )}
                 </div>
+                {renderInputFields()}
                 {/* Staking Period */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -883,6 +992,107 @@ const CreateStaking: NextPageWithLayout = () => {
                   {stakingForm.formState.errors.staking_period && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
                       {stakingForm.formState.errors.staking_period.message}
+                    </p>
+                  )}
+                </div>
+                {/*  Is Cancelable */}
+                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                  <label
+                    htmlFor="is_cancelable"
+                    className="block font-normal tracking-wide"
+                  >
+                    Is Cancelable
+                  </label>
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                    <label
+                      htmlFor="is_cancelable"
+                      className="block font-normal tracking-wide"
+                    >
+                      Is Cancelable
+                    </label>
+                    <div className=" flex flex-wrap gap-5">
+                      <div className=" flex items-center">
+                        <input
+                          id="red-radio3"
+                          type="radio"
+                          value="no"
+                          {...stakingForm.register("is_cancelable")}
+                          className="red-radio text-14px h-4 w-4"
+                        />
+                        <label
+                          htmlFor="red-radio3"
+                          className="text-sm font-medium text-white"
+                        >
+                          No
+                        </label>
+                      </div>
+                      <div className=" flex items-center">
+                        <input
+                          id="green-radio3"
+                          type="radio"
+                          value="yes"
+                          {...stakingForm.register("is_cancelable")}
+                          className="green-radio text-14px h-4 w-4"
+                        />
+                        <label
+                          htmlFor="green-radio3"
+                          className="text-sm font-medium text-white"
+                        >
+                          Yes
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  {stakingForm.formState.errors.is_cancelable && (
+                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      {stakingForm.formState.errors.is_cancelable.message}
+                    </p>
+                  )}
+                </div>
+                {/*   Charge Fee on Cancel */}
+                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                  <label
+                    htmlFor="charge_fee_on_cancel"
+                    className="block font-normal tracking-wide"
+                  >
+                    Charge Fee on Cancel
+                    <span className="text-gradient ml-[2px]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    {...stakingForm.register("charge_fee_on_cancel")}
+                    id="charge_fee_on_cancel"
+                    placeholder="0%"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                  />
+                  {stakingForm.formState.errors.charge_fee_on_cancel && (
+                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      {
+                        stakingForm.formState.errors.charge_fee_on_cancel
+                          .message
+                      }
+                    </p>
+                  )}
+                </div>
+                {/* APY */}
+                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                  <label
+                    htmlFor="apy"
+                    className="block font-normal tracking-wide"
+                  >
+                    APY
+                    <span className="text-gradient ml-[2px]">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    {...stakingForm.register("apy")}
+                    id="apy"
+                    placeholder="For example: 2%"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                  />
+                  {stakingForm.formState.errors.apy && (
+                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      {stakingForm.formState.errors.apy.message}
                     </p>
                   )}
                 </div>
@@ -1101,107 +1311,6 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/*  Is Cancelable */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="is_cancelable"
-                    className="block font-normal tracking-wide"
-                  >
-                    Is Cancelable
-                  </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
-                    <label
-                      htmlFor="is_cancelable"
-                      className="block font-normal tracking-wide"
-                    >
-                      Is Cancelable
-                    </label>
-                    <div className=" flex flex-wrap gap-5">
-                      <div className=" flex items-center">
-                        <input
-                          id="red-radio3"
-                          type="radio"
-                          value="no"
-                          {...stakingForm.register("is_cancelable")}
-                          className="red-radio text-14px h-4 w-4"
-                        />
-                        <label
-                          htmlFor="red-radio3"
-                          className="text-sm font-medium text-white"
-                        >
-                          No
-                        </label>
-                      </div>
-                      <div className=" flex items-center">
-                        <input
-                          id="green-radio3"
-                          type="radio"
-                          value="yes"
-                          {...stakingForm.register("is_cancelable")}
-                          className="green-radio text-14px h-4 w-4"
-                        />
-                        <label
-                          htmlFor="green-radio3"
-                          className="text-sm font-medium text-white"
-                        >
-                          Yes
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  {stakingForm.formState.errors.is_cancelable && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.is_cancelable.message}
-                    </p>
-                  )}
-                </div>
-                {/*   Charge Fee on Cancel */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="charge_fee_on_cancel"
-                    className="block font-normal tracking-wide"
-                  >
-                    Charge Fee on Cancel
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("charge_fee_on_cancel")}
-                    id="charge_fee_on_cancel"
-                    placeholder="0%"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.charge_fee_on_cancel && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {
-                        stakingForm.formState.errors.charge_fee_on_cancel
-                          .message
-                      }
-                    </p>
-                  )}
-                </div>
-                {/* Maximum Stakable Amount */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="max_staking_amount"
-                    className="block font-normal tracking-wide"
-                  >
-                    Maximum Stakable Amount
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("max_staking_amount")}
-                    id="max_staking_amount"
-                    placeholder="Only numbers here"
-                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none"
-                  />
-                  {stakingForm.formState.errors.max_staking_amount && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.max_staking_amount.message}
-                    </p>
-                  )}
-                </div>
                 {/*    Minimum Stakable Amount */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -1231,6 +1340,29 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
+                {/* Maximum Stakable Amount */}
+                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                  <label
+                    htmlFor="max_staking_amount"
+                    className="block font-normal tracking-wide"
+                  >
+                    Maximum Stakable Amount
+                    <span className="text-gradient ml-[2px]">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    {...stakingForm.register("max_staking_amount")}
+                    id="max_staking_amount"
+                    placeholder="Only numbers here"
+                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none"
+                  />
+
+                  {stakingForm.formState.errors.max_staking_amount && (
+                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      {stakingForm.formState.errors.max_staking_amount.message}
+                    </p>
+                  )}
+                </div>
                 {/* Total Supply */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -1253,7 +1385,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-
+                {/*  Metadata */}
                 <div className="text-14px col-span-2 w-full font-medium text-white">
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
@@ -1281,7 +1413,6 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-
                 {metaDataList?.length > 0 && (
                   <div className="col-span-2 flex w-full rounded-lg bg-black-shade-3 px-6 py-5">
                     <div
@@ -1315,11 +1446,6 @@ const CreateStaking: NextPageWithLayout = () => {
                     </div>
                   </div>
                 )}
-                <p className="text-14px col-span-2 font-normal text-gray-shade-14">
-                  <span className="text-white">Note:</span> For create each
-                  project you will pay a fee of{" "}
-                  <span className="text-gradient"> 1.00 BNB</span>
-                </p>
               </div>
               <FinalButton
                 title="Next"
@@ -1330,7 +1456,6 @@ const CreateStaking: NextPageWithLayout = () => {
                 onClick={handleNext}
               />
             </div>
-
             {metaDataModal && (
               <CustomModal
                 onClose={() => {
@@ -1395,239 +1520,278 @@ const CreateStaking: NextPageWithLayout = () => {
           >
             <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-6">
               <div className="mb-2 grid w-full gap-6 md:grid-cols-2">
-                <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="websiteUrl"
-                    className="block font-normal tracking-wide"
-                  >
-                    Website URL
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    {...stakingForm.register("websiteUrl")}
-                    type="text"
-                    id="websiteUrl"
-                    placeholder="Example: yourweb.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.websiteUrl && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.websiteUrl.message}
-                    </p>
-                  )}
+                <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
+                  <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="whitepaper"
+                      className="block font-normal tracking-wide"
+                    >
+                      Whitepaper
+                      <span className="text-gradient ml-[2px]">*</span>
+                    </label>
+                    <input
+                      {...stakingForm.register("whitepaper")}
+                      type="text"
+                      id="whitepaper"
+                      placeholder="Example: yourweb.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.whitepaper && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.whitepaper.message}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="website_url"
+                      className="block font-normal tracking-wide"
+                    >
+                      Website URL
+                      <span className="text-gradient ml-[2px]">*</span>
+                    </label>
+                    <input
+                      {...stakingForm.register("website_url")}
+                      type="text"
+                      id="website_url"
+                      placeholder="Example: yourweb.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.website_url && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.website_url.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="facebook"
-                    className="block font-normal tracking-wide"
-                  >
-                    Facebook
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("facebook")}
-                    id="facebook"
-                    placeholder="Example: yourlogo.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.facebook && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.facebook.message}
-                    </p>
-                  )}
+                <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="facebook"
+                      className="block font-normal tracking-wide"
+                    >
+                      Facebook
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("facebook")}
+                      id="facebook"
+                      placeholder="Example: yourlogo.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.facebook && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.facebook.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="twitter"
+                      className="block font-normal tracking-wide"
+                    >
+                      Twitter
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("twitter")}
+                      id="twitter"
+                      placeholder="Example: t.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.twitter && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.twitter.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="github"
+                      className="block font-normal tracking-wide"
+                    >
+                      Github
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("github")}
+                      id="github"
+                      placeholder="Example: github.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.github && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.github.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="telegram"
+                      className="block font-normal tracking-wide"
+                    >
+                      Telegram
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("telegram")}
+                      id="telegram"
+                      placeholder="Example: yourtel.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.telegram && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.telegram.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="instagram"
+                      className="block font-normal tracking-wide"
+                    >
+                      Instagram
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("instagram")}
+                      id="instagram"
+                      placeholder="Example: instagram.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.instagram && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.instagram.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="discord"
+                      className="block font-normal tracking-wide"
+                    >
+                      Discord
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("discord")}
+                      id="discord"
+                      placeholder="Example: yourweb.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.discord && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.discord.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="reddit"
+                      className="block font-normal tracking-wide"
+                    >
+                      Reddit
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("reddit")}
+                      id="reddit"
+                      placeholder="Example: reddit.com/"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.reddit && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.reddit.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="twitter"
-                    className="block font-normal tracking-wide"
-                  >
-                    Twitter
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("twitter")}
-                    id="twitter"
-                    placeholder="Example: t.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.twitter && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.twitter.message}
-                    </p>
-                  )}
-                </div>
+                <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="explorers"
+                      className="block font-normal tracking-wide"
+                    >
+                      Explorers
+                      <span className="text-gradient ml-[1px]">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      {...stakingForm.register("explorers")}
+                      id="explorers"
+                      placeholder="Example: BscScan"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.explorers && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.explorers.message}
+                      </p>
+                    )}
+                  </div>
 
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="github"
-                    className="block font-normal tracking-wide"
-                  >
-                    Github
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("github")}
-                    id="github"
-                    placeholder="Example: github.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.github && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.github.message}
+                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                    <label
+                      htmlFor="category"
+                      className="block font-normal tracking-wide"
+                    >
+                      Category
+                      <span className="text-gradient ml-[1px]">*</span>
+                    </label>
+                    <Controller
+                      name="category"
+                      control={stakingForm.control}
+                      render={({ field, fieldState }) => (
+                        <Select
+                          {...field}
+                          options={categoryOptions}
+                          styles={customStyles} // Apply the custom styles
+                          isMulti
+                          className="mt-1 py-1"
+                          classNamePrefix="select"
+                        />
+                      )}
+                    />
+                    <p
+                      className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                    >
+                      You can select multiple as categories
                     </p>
-                  )}
-                </div>
+                    {stakingForm.formState.errors.category && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.category.message}
+                      </p>
+                    )}
+                  </div>
 
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="telegram"
-                    className="block font-normal tracking-wide"
-                  >
-                    Telegram
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("telegram")}
-                    id="telegram"
-                    placeholder="Example: yourtel.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.telegram && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.telegram.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="instagram"
-                    className="block font-normal tracking-wide"
-                  >
-                    Instagram
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("instagram")}
-                    id="instagram"
-                    placeholder="Example: instagram.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.instagram && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.instagram.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="discord"
-                    className="block font-normal tracking-wide"
-                  >
-                    Discord
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("discord")}
-                    id="discord"
-                    placeholder="Example: yourweb.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.discord && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.discord.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="reddit"
-                    className="block font-normal tracking-wide"
-                  >
-                    Reddit
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("reddit")}
-                    id="reddit"
-                    placeholder="Example: reddit.com/"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.reddit && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.reddit.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="explorers"
-                    className="block font-normal tracking-wide"
-                  >
-                    Explorers
-                    <span className="text-gradient ml-[1px]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("explorers")}
-                    id="explorers"
-                    placeholder="Example: BscScan"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.explorers && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.explorers.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
-                  <label
-                    htmlFor="category"
-                    className="block font-normal tracking-wide"
-                  >
-                    Category
-                    <span className="text-gradient ml-[1px]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("category")}
-                    id="category"
-                    placeholder="Example: Decentralised Finance"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.category && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.category.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="text-14px col-span-2 w-full font-medium text-white">
-                  <label
-                    htmlFor="description"
-                    className="block font-normal tracking-wide"
-                  >
-                    Description
-                    <span className="text-gradient ml-[1px]">*</span>
-                  </label>
-                  <textarea
-                    {...stakingForm.register("description")}
-                    id="description"
-                    rows={4}
-                    placeholder="Example: This is the best project"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.description && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.description.message}
-                    </p>
-                  )}
+                  <div className="text-14px col-span-2 w-full font-medium text-white">
+                    <label
+                      htmlFor="description"
+                      className="block font-normal tracking-wide"
+                    >
+                      Description
+                      <span className="text-gradient ml-[1px]">*</span>
+                    </label>
+                    <textarea
+                      {...stakingForm.register("description")}
+                      id="description"
+                      rows={4}
+                      placeholder="Example: This is the best project"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    />
+                    {stakingForm.formState.errors.description && (
+                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                        {stakingForm.formState.errors.description.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <div className="text-14px col-span-2 w-full font-medium text-white">
@@ -1724,8 +1888,8 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
 
               <FinalButton
-                title="Submit Now"
-                onClick={stakingForm.handleSubmit(handleDetails)}
+                title="Review and Submit"
+                onClick={stakingForm.handleSubmit(submitForm)}
                 variant="primary"
                 className={cn("text-14px mx-auto mt-5 w-[45%]", {
                   hidden: formStep == 0,
