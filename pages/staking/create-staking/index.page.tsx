@@ -569,7 +569,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
   // styles for multiple select dropdown
   const customStyles: StylesConfig = {
-    control: (provided, state) => ({
+    control: (provided: any, state: any) => ({
       ...provided,
       background: "#17171a",
       boxShadow: state.isFocused ? "0 0 0 1px #febf32" : "0 0 0 1px #17171a",
@@ -581,35 +581,35 @@ const CreateStaking: NextPageWithLayout = () => {
         borderColor: "#febf32",
       },
     }),
-    option: (provided, state) => ({
+    option: (provided: any, state: any) => ({
       ...provided,
       background: state.isFocused ? "#17171a" : "#141416",
       color: state.isFocused ? "#febf32" : "white",
       cursor: "pointer",
     }),
-    menu: (provided, state) => ({
+    menu: (provided: any, state: any) => ({
       ...provided,
       background: "#17171a",
       zIndex: 2,
       color: "white",
     }),
-    menuList: (provided, state) => ({
+    menuList: (provided: any, state: any) => ({
       ...provided,
       background: "17171a",
       color: "white",
     }),
-    multiValue: (provided, state) => ({
+    multiValue: (provided: any, state: any) => ({
       ...provided,
       background: "#1e212b",
       borderColor: state.isFocused ? "yellow" : "red",
       borderRadius: "8px",
       color: "white",
     }),
-    multiValueLabel: (provided, state) => ({
+    multiValueLabel: (provided: any, state: any) => ({
       ...provided,
       color: "white",
     }),
-    multiValueRemove: (provided, state) => ({
+    multiValueRemove: (provided: any, state: any) => ({
       ...provided,
       color: "white",
       backgroundColor: "transparent",
@@ -619,7 +619,7 @@ const CreateStaking: NextPageWithLayout = () => {
         backgroundColor: "transparent",
       },
     }),
-    clearIndicator: (provided, state) => ({
+    clearIndicator: (provided: any, state: any) => ({
       ...provided,
       color: state.isFocused ? "#febf32" : "white",
     }),
