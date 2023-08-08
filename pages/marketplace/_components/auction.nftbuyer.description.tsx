@@ -157,9 +157,9 @@ export const AuctionNFTBuyerDescription = ({
         toast.error("Insufficient BNB Balance in your wallet.");
         return;
       }
+
       setBidModal(false);
       ProceedFunc();
-      let success = false;
       try {
         if (library && data) {
           const result = await BlockchainWrite.callBidOnAuction(
@@ -171,14 +171,11 @@ export const AuctionNFTBuyerDescription = ({
 
           if (result?.length) {
             setNftData();
-            success = true;
-          }
+            SuccessFunc(true, "Bid placed successfully on auctioned on");
+          } else throw new Error();
         }
       } catch (error) {
-        toast.error("something went wrong, please try again later.");
         SuccessFunc(false, "Something went wrong, auction failed");
-      } finally {
-        SuccessFunc(success, "Bid placed successfully on auctioned on");
       }
     },
     [SuccessFunc, bnbBalance, data, library, price]
@@ -191,10 +188,12 @@ export const AuctionNFTBuyerDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result, "Auction has ended for ");
-      setNftData();
+      if (result?.length) {
+        setNftData();
+        SuccessFunc(true, "Auction has ended for ");
+      } else throw new Error();
     } catch (err: any) {
-      toastError(err);
+      SuccessFunc(false, "Something went wrong ");
     }
   };
   const modalTemplateCollection: TemplateCollection = {
