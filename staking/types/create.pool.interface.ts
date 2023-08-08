@@ -1,4 +1,12 @@
-export interface CreatePoolMetadata {}
+export interface CreatePoolMetadata {
+  library: { key: string; value: string };
+  banner: string;
+  log: string;
+  socialMedias: { name: string; link: string }[];
+  categories: string[];
+  description: string;
+  team: { address: string; position: string }[];
+}
 
 export interface CreatePoolInput {
   stakeToken: string;
