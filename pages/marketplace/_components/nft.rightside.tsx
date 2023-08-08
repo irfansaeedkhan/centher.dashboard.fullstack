@@ -75,8 +75,10 @@ export const NFTRightSideComponent = ({
   const verificationOwnerTick = useVerificationTick({ user: _nftOwner });
 
   // FIXME: This is a quick fix for the case when the nft owner is not in the database
-  let nftOwner: Pick<User, "_id" | "display_name" | "profile_image"> | null =
-    null;
+  let nftOwner: Pick<
+    User,
+    "_id" | "display_name" | "profile_image" | "membership"
+  > | null = null;
 
   if (
     !_nftOwner &&
@@ -86,6 +88,11 @@ export const NFTRightSideComponent = ({
       _id: nftOwnerAddress,
       display_name: nftOwnerAddress,
       profile_image: "https://static.centher.io/avatars/avatar-1.png",
+      membership: {
+        last_status: "none",
+        status: "none",
+        endAt: 0,
+      },
     };
   } else {
     nftOwner = _nftOwner;
@@ -173,13 +180,17 @@ export const NFTRightSideComponent = ({
                 <span className="block truncate break-words">
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {!!verificationTick && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationTick && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTick}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        user.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}
@@ -217,13 +228,17 @@ export const NFTRightSideComponent = ({
                 <span className="block truncate break-words ">
                   {sliceDisplayName(nftOwner.display_name)}
                 </span>
-                {!!verificationOwnerTick && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationOwnerTick && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationOwnerTick}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        nftOwner.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}

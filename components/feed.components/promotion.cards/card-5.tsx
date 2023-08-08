@@ -1,9 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import clsx from "clsx";
-
-import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "@/components/button/final.button";
+import { AppRoutes } from "@/constants/app.routes";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -25,7 +24,7 @@ export const PromotionCard5: React.FC<Props> = ({ className, ...props }) => {
       </div>
       <Link
         href={{
-          pathname: AppRoutes.staking_coming_soon,
+          pathname: AppRoutes.citizenship,
         }}
       >
         <FinalButton

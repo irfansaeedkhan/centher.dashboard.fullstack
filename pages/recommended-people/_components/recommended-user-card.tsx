@@ -61,14 +61,17 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
                 {sliceDisplayName(user.display_name)}
               </h5>
             </Link>
-
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+            {verificationTick && (
+              <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                 <Image
                   src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
+                  alt={
+                    user.membership.status === "citizen"
+                      ? "Citizen"
+                      : "Verified"
+                  }
+                  width={16}
+                  height={16}
                 />
               </span>
             )}

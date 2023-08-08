@@ -142,9 +142,11 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
           <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
             <Image
               src={verificationTick}
-              alt={"Verified"}
-              width={20}
-              height={20}
+              alt={
+                item.membership.status === "citizen" ? "Citizen" : "Verified"
+              }
+              width={16}
+              height={16}
             />
           </span>
         )}

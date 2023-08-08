@@ -20,35 +20,10 @@ export const useVerificationTick = (
       return;
     }
 
-    if (!params.shouldAnimate) {
-      setVerificationIcon(
-        params.user.membership.status === "verified"
-          ? "/images/rainbow-last-frame.png"
-          : null
-      );
-      return;
-    }
-
     if (params.user.membership.status === "verified") {
-      const timeout1 = setTimeout(function () {
-        setVerificationIcon("/images/rainbow-1.gif");
-      }, 3000);
-      const timeout2 = setTimeout(function () {
-        setVerificationIcon("/images/rainbow-2.gif");
-      }, 4600);
-      const interval1 = setInterval(() => {
-        setVerificationIcon("/images/rainbow-last-frame.png");
-      }, 9200);
-      const interval2 = setInterval(() => {
-        setVerificationIcon("/images/rainbow-2.gif");
-      }, 20000);
-
-      return () => {
-        clearTimeout(timeout1);
-        clearTimeout(timeout2);
-        clearInterval(interval1);
-        clearInterval(interval2);
-      };
+      setVerificationIcon("/images/verified-icon.svg");
+    } else if (params.user.membership.status === "citizen") {
+      setVerificationIcon("/images/citizen-icon.svg");
     } else {
       setVerificationIcon(null);
     }

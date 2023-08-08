@@ -9,6 +9,7 @@ type ValidateTokenResponse = {
   sub: string;
   roles: string[];
   token_family: string;
+  membership: "citizen" | "verified" | "none";
 };
 
 // Validate Tokens from CIS

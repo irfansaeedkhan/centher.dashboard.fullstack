@@ -42,14 +42,15 @@ const SearchPopupResult: React.FC<Props> = ({
         >
           {user && sliceDisplayName(user.display_name)}
         </span>
-        {!!verificationTick && (
-          <span className="verifiedIcon ml-0.5 h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
+        {verificationTick && (
+          <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
             <Image
               src={verificationTick}
-              alt={"Verified"}
-              width={20}
-              height={20}
-              className="mt-[1px]"
+              alt={
+                user.membership.status === "citizen" ? "Citizen" : "Verified"
+              }
+              width={16}
+              height={16}
             />
           </span>
         )}

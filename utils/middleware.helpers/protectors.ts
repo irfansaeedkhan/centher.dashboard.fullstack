@@ -21,6 +21,23 @@ export const isAuthenticated = async (request: NextRequest) => {
   }
 };
 
+export const isCitizen = async (request: NextRequest) => {
+  try {
+    const authTokens = getAuthTokensFromRequest(request);
+
+    if (!authTokens) return false;
+
+    // Validate Refresh Token
+    const payload = await validateTokens(authTokens);
+
+    if (!payload) return false;
+
+    return payload.membership === "citizen";
+  } catch {
+    return false;
+  }
+};
+
 const ADMIN_ACCOUNT_ADDRESS =
   process.env.NEXT_PUBLIC_APP_ENV === "production"
     ? "0x6BE98e964CdEfB66Dbc724aF25B4Bdcc8075D801"

@@ -11,10 +11,12 @@ import { User } from "@/models/user";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   user: User | null;
+  loggedInUser: User | null;
 }
 
 export const CardsContainerLeft: React.FC<Props> = ({
   user,
+  loggedInUser,
   className,
   ...props
 }) => {
@@ -26,7 +28,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
       {user ? (
         <>
           <ProfileDetailCard user={user} />
-          <PromotionCard5 />
+          {loggedInUser?.membership.status !== "citizen" && <PromotionCard5 />}
           <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>
