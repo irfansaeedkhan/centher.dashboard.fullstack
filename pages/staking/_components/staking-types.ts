@@ -11,9 +11,15 @@ export const multilevel: multilevel[] = [
   "multilevel3",
 ];
 
+export interface CategoryOption {
+  value: string;
+  label: string;
+}
+
 export interface stakingFormInterface {
-  pack: string;
+  staking_name: string;
   token_address: string;
+  reward_token_address: string;
   multilevel_rewards:
     | "No referral"
     | "Recurring Return (0 to 6 levels)"
@@ -21,17 +27,38 @@ export interface stakingFormInterface {
     | "";
 
   apy: number | null;
+  staking_reward_token_price_ratio: number | null;
   staking_period: string;
-  start_time: string;
+  start_date: string;
   claim_period: string;
+  rewards_release_start: string;
   show_on_centher: "yes" | "no";
   liquidity_pool_provided: "yes" | "no";
   is_cancelable: "yes" | "no";
   charge_fee_on_cancel: number | null;
   min_staking_amount: number | null;
   max_staking_amount: number | null;
+  total_supply: number | null;
   project_metadata?: metaDataType[];
   rewards_level?: levelDataType[];
+  website_url: string;
+  whitepaper: string;
+  facebook: string;
+  twitter: string;
+  github: string;
+  telegram: string;
+  instagram: string;
+  discord: string;
+  reddit: string;
+  explorers: string;
+  category: CategoryOption[] | [];
+  description: string;
+  members?: teamMember[];
+}
+
+export interface stakingFormInterfaceUpdated extends stakingFormInterface {
+  cover_image: Blob | undefined;
+  profile_image: Blob | undefined;
 }
 
 export type metaDataType = {
@@ -48,17 +75,4 @@ export type teamMember = {
   walletAddress: string;
 };
 
-export interface citizenshipFormInterface {
-  websiteUrl: string;
-  facebook: string;
-  twitter: string;
-  github: string;
-  telegram: string;
-  instagram: string;
-  discord: string;
-  reddit: string;
-  explorers: string;
-  category: string;
-  description: string;
-  members?: teamMember[];
-}
+export interface citizenshipFormInterface {}

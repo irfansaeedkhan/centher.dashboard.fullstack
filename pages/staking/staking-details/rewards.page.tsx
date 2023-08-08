@@ -1,11 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import RewardsTable from "./_components/rewards-table";
+import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import StakeRewardModal from "./_components/stake-reward-modal";
+import UnstakeModal from "./_components/unstake-modal";
+
+enum ModalType {
+  stakeRewardsModal = "stakeRewardsModal",
+  cancelStakingModal = "cancelStakingModal",
+}
 
 const ClaimRewards: NextPageWithLayout = () => {
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
+
+  const rewardsModal: TemplateCollection = {
+    stakeRewardsModal: {
+      title: "Cancel Staking project",
+      visibility: true,
+      content: () => (
+        <StakeRewardModal
+          onClose={() => modal.dismissModal()}
+          onConfirm={() => modal.createModal(ModalType.cancelStakingModal)}
+        />
+      ),
+    },
+    cancelStakingModal: {
+      title: "Unstake",
+      visibility: true,
+      content: () => <UnstakeModal />,
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, rewardsModal);
   return (
     <>
       <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
@@ -24,18 +58,24 @@ const ClaimRewards: NextPageWithLayout = () => {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <FinalButton
               className="h-9"
-              title="Stake Rewards"
-              borderRounded="10px"
-            />
-            <FinalButton
-              className="h-9"
               title="Claim Rewards"
               borderRounded="10px"
+              onClick={() => modal.createModal(ModalType.stakeRewardsModal)}
             />
           </div>
         </div>
       </div>
       <RewardsTable />
+      {ModalModel.visibility && (
+        <CustomModal
+          onClose={() => {
+            modal.dismissModal();
+          }}
+          title={ModalModel.title as string}
+        >
+          {ModalModel.content}
+        </CustomModal>
+      )}
     </>
   );
 };

@@ -144,6 +144,9 @@ export { default as EyeIcon } from "./eye-icon.svg";
 export { default as GradientTick } from "./gradient-tick.svg";
 export { default as ChatUserIcon } from "./chat-user-icon.svg";
 export { default as NewCentherIcon } from "./centher.new.svg";
+export { default as NewFacebookIcon } from "./new-facebook-icon.svg";
+export { default as NewDiscordIcon } from "./new-discord-icon.svg";
+export { default as NewRedditIcon } from "./new-reddit-icon.svg";
 export { default as ClipboardList } from "./clipboard-list.svg";
 export { default as Referrals } from "./referrals.svg";
 export { default as Followers } from "./followers.svg";
@@ -162,6 +165,9 @@ export { default as PopupMessageIcon } from "./popup-message-icon.svg";
 export { default as PopupBellIcon } from "./popup-bell-icon.svg";
 export { default as PopupSettingIcon } from "./popup-setting-icon.svg";
 export { default as LoaderSpinner } from "./loader.spinner.svg";
+export { default as LayoutGrid } from "./layout-grid.svg";
+export { default as LayoutList } from "./layout-list.svg";
+export { default as WarningGradient } from "./warning-gradient.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

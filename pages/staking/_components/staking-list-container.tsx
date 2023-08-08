@@ -1,30 +1,127 @@
-import React from "react";
+import React, { FC, useState } from "react";
 import Link from "next/link";
+import { AiOutlineUnorderedList } from "react-icons/ai";
 
+import { LayoutGrid } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 
 import { ListCardData } from "./list-card-data";
-import ListCard from "./list-card";
+import GridLayoutCard from "./list-card";
+import clsx from "clsx";
+import ListLayoutTable from "./list-layout-table";
+import StakingDropdown from "./dropdown-for-staking";
 
-const StakingListContainer: React.FC = () => {
+const sortOptions = [
+  { label: "Sort by", value: "0" },
+  {
+    label: "A-Z",
+    value: "1",
+  },
+  {
+    label: "a-z",
+    value: "2",
+  },
+];
+
+const StakingListContainer: FC = () => {
+  const [layout, setLayout] = useState<"grid" | "list">("grid");
+  const [showItems, setShowItems] = useState<string>("0");
+
   return (
     <div className="mx-auto w-full max-w-[1128px]">
+      <p className="textGradient block w-full pb-8 pt-7 text-center text-xs font-medium fsm:hidden">
+        Last updated 17 mints ago
+      </p>
       <div className="flex items-center justify-between gap-10">
-        <h5 className="textGradient text-2xl font-semibold">Staking</h5>
-        <Link href={AppRoutes.staking.create_staking}>
-          <FinalButton
-            className="text-14px                       "
-            title="Create New"
-            variant="primary"
+        <div className="flex w-full items-center justify-between gap-5 fsm:w-fit fsm:justify-start flg:gap-6">
+          <h5 className="textGradient text-2xl font-semibold">Staking</h5>
+          <Link href={AppRoutes.staking.create_staking}>
+            <FinalButton
+              className="text-14px h-8 flg:h-9"
+              title="Create New Project"
+              variant="primary"
+              borderRounded="10px"
+            />
+          </Link>
+        </div>
+        <div className="hidden items-center gap-2 fsm:flex">
+          <p className="textGradient text-xs font-medium">
+            Last updated 17 mints ago
+          </p>
+          <div className="hidden items-center gap-3 flg:flex">
+            <div className="flex h-9 items-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
+              <div onClick={() => setLayout("grid")}>
+                <LayoutGrid
+                  className={clsx(
+                    "cursor-pointer",
+                    layout === "grid"
+                      ? "stroke-white"
+                      : "stroke-gray-shade-14 hover:stroke-white"
+                  )}
+                />
+              </div>
+              <div onClick={() => setLayout("list")}>
+                <AiOutlineUnorderedList
+                  className={clsx(
+                    "cursor-pointer text-2xl",
+                    layout === "list"
+                      ? "text-white"
+                      : "text-gray-shade-14 hover:text-white"
+                  )}
+                />
+              </div>
+            </div>
+            <div className="w-[162px]">
+              <StakingDropdown
+                options={sortOptions}
+                selectedValue={showItems}
+                onSelect={setShowItems}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-6 flex items-center gap-3 flg:hidden">
+        <div className="flex h-9 w-full items-center justify-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
+          <div onClick={() => setLayout("grid")}>
+            <LayoutGrid
+              className={clsx(
+                "cursor-pointer",
+                layout === "grid"
+                  ? "stroke-white"
+                  : "stroke-gray-shade-14 hover:stroke-white"
+              )}
+            />
+          </div>
+          <div onClick={() => setLayout("list")}>
+            <AiOutlineUnorderedList
+              className={clsx(
+                "cursor-pointer text-2xl",
+                layout === "list"
+                  ? "text-white"
+                  : "text-gray-shade-14 hover:text-white"
+              )}
+            />
+          </div>
+        </div>
+        <div className="w-full">
+          <StakingDropdown
+            options={sortOptions}
+            selectedValue={showItems}
+            onSelect={setShowItems}
           />
-        </Link>
+        </div>
       </div>
-      <div className="max-w-list-card mt-7 mb-2 grid h-full min-h-[682px] w-full gap-6 flg:grid-cols-2">
-        {ListCardData.map((card, index) => (
-          <ListCard key={index} card={card} />
-        ))}
-      </div>
+      {layout === "grid" ? (
+        <div className="mt-7 mb-2 flex h-full w-full max-w-full flex-col gap-6">
+          {ListCardData.map((card, index) => (
+            <GridLayoutCard key={index} card={card} />
+          ))}
+        </div>
+      ) : layout === "list" ? (
+        <ListLayoutTable card={ListCardData} />
+      ) : null}
     </div>
   );
 };
