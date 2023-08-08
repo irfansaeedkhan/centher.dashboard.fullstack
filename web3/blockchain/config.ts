@@ -78,6 +78,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       56: "0x8B2825469a27980462E6cf05117aC967eb50b6bA",
       5: "0xC8DA70cF9625C710D34b97927a5b3a80EF298a1d",
     },
+    STAKING: {
+      56: "0x0000000000000000000000000000000000000000",
+      5: "0x0000000000000000000000000000000000000000",
+    },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -102,6 +106,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     ERC721: ERC721Abi,
     DXC: dxcAbi,
     NFT_ADAPTER: nftadapter,
+    STAKING: null,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),
