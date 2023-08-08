@@ -27,6 +27,7 @@ import {
 } from "../_components/staking-types";
 import { StakingFailureModal } from "./_components/staking-failure-modal";
 import { StakingReviewModal } from "./_components/staking-review-modal";
+import { StakingProgressModal } from "./_components/staking-progress-modal";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -516,6 +517,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
+    await setshowMsg(<StakingProgressModal onClickClose={onClickClose} />);
     console.log("final data", data);
     try {
       setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
@@ -624,6 +626,7 @@ const CreateStaking: NextPageWithLayout = () => {
       color: state.isFocused ? "#febf32" : "white",
     }),
   };
+
   return (
     <section className="flex w-full">
       <div className=" flex flex-grow flex-col">
@@ -690,7 +693,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -778,7 +781,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);

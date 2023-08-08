@@ -1615,3 +1615,6 @@ textarea {
 .blur-local > .not-blur {
   filter: none;
 }
+.spinner-2s {
+  animation: spin 2s linear infinite;
+}
