@@ -26,6 +26,10 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
+import { BlockchainConfig } from "@/web3/blockchain/config";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { eqAddress } from "@/live/utils/address.utils";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -55,7 +59,16 @@ export const NFTRightSideComponent = ({
     toast.success("NFT link copied!");
   };
 
-  const nftOwnerAddress = useGetNFTOwner(data?.collection, data?.nftId);
+  let nftOwnerAddress = useGetNFTOwner(data?.collection, data?.nftId);
+  if (
+    eqAddress(
+      nftOwnerAddress,
+      AddressFactory.getContractAddress(SmartContractName.MARKETPALCE)
+    )
+  ) {
+    nftOwnerAddress = data?.owner as string;
+  }
+
   const { user: _nftOwner, loading: _nftOwnerLoading } =
     useGetUser(nftOwnerAddress);
   const verificationTick = useVerificationTick({ user });
@@ -80,10 +93,7 @@ export const NFTRightSideComponent = ({
 
   useEffect(() => {
     if (data) {
-      if (
-        account &&
-        account.toLocaleLowerCase() === nftOwnerAddress.toLocaleLowerCase()
-      ) {
+      if (account && eqAddress(account, nftOwnerAddress)) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
         else if (data.saleState === "NON") setNftState("nonNFT");
