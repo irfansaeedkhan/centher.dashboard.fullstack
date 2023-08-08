@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "@/components/button/final.button";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 const ArbitrageComingSoon: NextPageWithLayout = () => {
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
+
   return (
     <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
       <div className="relative flex h-full w-full items-center justify-center bg-[url('/images/comingsoon.png')] bg-top bg-no-repeat">
@@ -33,12 +36,12 @@ const ArbitrageComingSoon: NextPageWithLayout = () => {
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Only for Centher Citizens. You {"haven't"} gotten your Centher
             Passport yet?{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship_subscription_coming_soon}
+            <span
+              className="cursor-pointer text-brand-primary hover:text-brand-primary-dark"
+              onClick={() => setShowBuyCitizenshipModal(true)}
             >
               Click Here
-            </Link>
+            </span>{" "}
           </div>
           <Link href={AppRoutes.feed.index}>
             <FinalButton
@@ -50,6 +53,12 @@ const ArbitrageComingSoon: NextPageWithLayout = () => {
           </Link>
         </div>
       </div>
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };

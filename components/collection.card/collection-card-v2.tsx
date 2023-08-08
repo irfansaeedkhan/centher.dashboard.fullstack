@@ -84,15 +84,14 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             <span className="block max-w-[238px] truncate break-words">
               {sliceDisplayName(data.creator.display_name)}
             </span>
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
-                <Image
-                  src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
-                />
-              </span>
+            {verificationTick && (
+              <Image
+                src={verificationTick}
+                alt={"Verified"}
+                width={16}
+                height={16}
+                className="ml-0.5"
+              />
             )}
           </span>
         ) : (
@@ -105,20 +104,10 @@ export const CollectionCardV2: React.FC<CollectionCardProps> = ({
             <span className="block max-w-[238px] truncate break-words">
               {sliceDisplayName(data.creator.display_name)}
             </span>
-            {data.creator.membership.status === "verified" && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
-                <Image
-                  src={"/images/rainbow-last-frame.png"}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
-                />
-              </span>
-            )}
           </span>
         )}
         <p
-          className={`mt-4 line-clamp-1 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14`}
+          className={`mt-4 flex-grow whitespace-pre-wrap break-all text-center text-xs font-medium text-gray-shade-14 line-clamp-1`}
         >
           {data.description}
         </p>

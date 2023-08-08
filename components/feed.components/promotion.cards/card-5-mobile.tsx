@@ -28,7 +28,7 @@ export const PromotionCard5Mobile: React.FC<Props> = ({
       </div>
       <Link
         href={{
-          pathname: AppRoutes.staking_coming_soon,
+          pathname: AppRoutes.citizenship,
         }}
       >
         <FinalButton

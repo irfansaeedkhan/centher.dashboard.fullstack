@@ -11,6 +11,7 @@ import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
 import { ZeroAddress } from "../constants/common";
+import { CitizenShipType } from "@/store/citizen.store";
 
 export class BlockchainRead {
   static async getReferrers(
@@ -619,6 +620,40 @@ export class BlockchainRead {
     );
 
     return result[0];
+  }
+
+  static async isCitizen(
+    library: Web3Provider,
+    address: string
+  ): Promise<string> {
+    const signer = getSigner(library);
+    const registrationContract = SmartContractProvider.getContract(
+      SmartContractName.REGISTRATION,
+      signer
+    );
+
+    const result = await registrationContract.functions.isCitizen(address);
+
+    return ethers.BigNumber.from(result[0]).toString();
+  }
+
+  static async getCitizenPrice(
+    library: Web3Provider,
+    type: CitizenShipType
+  ): Promise<string[]> {
+    const signer = getSigner(library);
+    const registrationContract = SmartContractProvider.getContract(
+      SmartContractName.REGISTRATION,
+      signer
+    );
+
+    const result = await registrationContract.functions[type]();
+
+    if (!result) {
+      throw new Error("Invalid CitizenshipType");
+    }
+
+    return [type, ethers.BigNumber.from(result[0]).toString()];
   }
 
   static async getCollectionMintedTokensCount(
@@ -1716,6 +1751,30 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error) {
       throw new Error("cannot swap token");
+    }
+  }
+
+  static async buyCitizenShip(
+    value: number,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+
+      await registrationContract.callStatic.buyMemberShip({ value });
+
+      const tx = await registrationContract.functions.buyMemberShip({ value });
+
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "buyCitizenShip");
+      throw error;
     }
   }
 }

@@ -71,19 +71,21 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
               `text-sm font-semibold text-white`,
               !user.display_name.includes(" ") && user.display_name.length > 20
                 ? "block w-full max-w-full overflow-hidden truncate"
-                : "line-clamp-1 w-fit text-ellipsis"
+                : "w-fit text-ellipsis line-clamp-1"
             )}
             title={user.display_name}
           >
             {user && sliceDisplayName(user.display_name)}
           </span>
-          {!!verificationTick && (
-            <span className="verifiedIcon ml-1 h-5 w-5  min-w-[1.25rem]">
+          {verificationTick && (
+            <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
               <Image
                 src={verificationTick}
-                alt={"Verified"}
-                width={20}
-                height={20}
+                alt={
+                  user.membership.status === "citizen" ? "Citizen" : "Verified"
+                }
+                width={16}
+                height={16}
               />
             </span>
           )}

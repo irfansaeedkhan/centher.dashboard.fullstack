@@ -26,6 +26,10 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
+import { BlockchainConfig } from "@/web3/blockchain/config";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { eqAddress } from "@/live/utils/address.utils";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -55,15 +59,26 @@ export const NFTRightSideComponent = ({
     toast.success("NFT link copied!");
   };
 
-  const nftOwnerAddress = useGetNFTOwner(data?.collection, data?.nftId);
+  let nftOwnerAddress = useGetNFTOwner(data?.collection, data?.nftId);
+  if (
+    eqAddress(
+      nftOwnerAddress,
+      AddressFactory.getContractAddress(SmartContractName.MARKETPALCE)
+    )
+  ) {
+    nftOwnerAddress = data?.owner as string;
+  }
+
   const { user: _nftOwner, loading: _nftOwnerLoading } =
     useGetUser(nftOwnerAddress);
   const verificationTick = useVerificationTick({ user });
   const verificationOwnerTick = useVerificationTick({ user: _nftOwner });
 
   // FIXME: This is a quick fix for the case when the nft owner is not in the database
-  let nftOwner: Pick<User, "_id" | "display_name" | "profile_image"> | null =
-    null;
+  let nftOwner: Pick<
+    User,
+    "_id" | "display_name" | "profile_image" | "membership"
+  > | null = null;
 
   if (
     !_nftOwner &&
@@ -73,6 +88,11 @@ export const NFTRightSideComponent = ({
       _id: nftOwnerAddress,
       display_name: nftOwnerAddress,
       profile_image: "https://static.centher.io/avatars/avatar-1.png",
+      membership: {
+        last_status: "none",
+        status: "none",
+        endAt: 0,
+      },
     };
   } else {
     nftOwner = _nftOwner;
@@ -80,10 +100,7 @@ export const NFTRightSideComponent = ({
 
   useEffect(() => {
     if (data) {
-      if (
-        account &&
-        account.toLocaleLowerCase() === nftOwnerAddress.toLocaleLowerCase()
-      ) {
+      if (account && eqAddress(account, nftOwnerAddress)) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
         else if (data.saleState === "NON") setNftState("nonNFT");
@@ -163,13 +180,17 @@ export const NFTRightSideComponent = ({
                 <span className="block truncate break-words">
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {!!verificationTick && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationTick && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTick}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        user.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}
@@ -207,13 +228,17 @@ export const NFTRightSideComponent = ({
                 <span className="block truncate break-words ">
                   {sliceDisplayName(nftOwner.display_name)}
                 </span>
-                {!!verificationOwnerTick && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationOwnerTick && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationOwnerTick}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        nftOwner.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}
@@ -235,7 +260,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-14px line-clamp-1 text-ellipsis font-semibold text-white hover:text-brand-primary-dark"
+                  "text-14px text-ellipsis font-semibold text-white line-clamp-1 hover:text-brand-primary-dark"
                 }
               >
                 {formatAddress(data?.collection)}

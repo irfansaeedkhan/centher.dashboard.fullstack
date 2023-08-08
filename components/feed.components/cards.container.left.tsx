@@ -52,7 +52,7 @@ export const CardsContainerLeft: React.FC<Props> = ({
       {profileCardUser ? (
         <>
           <ProfileDetailCard user={profileCardUser} />
-          <PromotionCard5 />
+          {loggedInUser?.membership.status !== "citizen" && <PromotionCard5 />}
           <PromotionCard4 />
           <PromotionCard2 className="sticky top-[84px]" />
         </>

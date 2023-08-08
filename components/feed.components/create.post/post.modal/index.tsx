@@ -67,7 +67,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
               className={clsx(
                 `text-14px font-semibold text-white`,
                 user.display_name.includes(" ")
-                  ? "line-clamp-1 text-ellipsis"
+                  ? "text-ellipsis line-clamp-1"
                   : "block w-full max-w-full overflow-hidden truncate"
               )}
               title={user.display_name}
