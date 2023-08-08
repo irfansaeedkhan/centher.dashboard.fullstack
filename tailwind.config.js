@@ -134,6 +134,9 @@ module.exports = {
         popup: {
           0: "#0B0B0B",
         },
+        "green-shade": {
+          1: "#76E268",
+        },
       },
     },
   },

@@ -107,6 +107,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.index,
   AppRoutes.settings.about,
   AppRoutes.settings.profile,
+  AppRoutes.settings.citizenship,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
   AppRoutes.profile.nfts,
@@ -133,6 +134,12 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.launchpad,
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
+
+  AppRoutes.staking.index,
+  AppRoutes.staking.create_staking,
+  AppRoutes.staking.staking_details.index,
+  AppRoutes.staking.staking_details.rewards,
+  AppRoutes.staking.staking_details.referrals,
   AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);

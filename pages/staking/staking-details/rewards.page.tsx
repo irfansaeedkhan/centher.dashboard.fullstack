@@ -1,0 +1,51 @@
+import React from "react";
+import { NextPageWithLayout } from "@/pages/_app.page";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import FinalButton from "@/components/button/final.button";
+import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import RewardsTable from "./_components/rewards-table";
+
+const ClaimRewards: NextPageWithLayout = () => {
+  return (
+    <>
+      <div className="flex w-full flex-col gap-5 rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
+        <div className="text-[min(10vw, 20px)] textGradient font-semibold">
+          Claim Rewards
+        </div>
+        <div className="flex flex-col justify-between gap-5 rounded-xl bg-elevation-1 p-6 md:flex-row md:items-center md:gap-10">
+          <div>
+            <p className="text-xs font-medium text-gray-shade-14">My Rewards</p>
+            <div className="text-[min(10vw, 20px)] mt-[6px] flex items-center gap-1 font-semibold text-white">
+              <p>1156</p>
+              <p>BUSD</p>
+              <p className="text-gray-shade-14">($ 1,469.74)</p>
+            </div>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <FinalButton
+              className="h-9"
+              title="Stake Rewards"
+              borderRounded="10px"
+            />
+            <FinalButton
+              className="h-9"
+              title="Claim Rewards"
+              borderRounded="10px"
+            />
+          </div>
+        </div>
+      </div>
+      <RewardsTable />
+    </>
+  );
+};
+
+ClaimRewards.getLayout = (page) => {
+  return (
+    <AllPagesWrapper pageTitle="Staking Details">
+      <StakingDetailsWrapper>{page}</StakingDetailsWrapper>
+    </AllPagesWrapper>
+  );
+};
+
+export default ClaimRewards;
