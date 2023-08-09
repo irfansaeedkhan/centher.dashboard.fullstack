@@ -74,7 +74,7 @@ export class StakingUploader {
       const metaDataPath = await this._uploader.upload(
         uploadMetaDataDto,
         (prog) => {
-          statusController(CreatePoolStepsEnum.metaData, prog);
+          statusController(CreatePoolStepsEnum.metadata, prog);
         }
       );
 

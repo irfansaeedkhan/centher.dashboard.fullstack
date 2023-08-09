@@ -52,9 +52,9 @@ export class CentherStaking {
 
     try {
       // contract callstatic
-      statusController(CreatePoolStepsEnum.preFlight, 0);
+      statusController(CreatePoolStepsEnum.preflight, 0);
       await BlockchainWrite.createStakingPool(library, mappedData, true);
-      statusController(CreatePoolStepsEnum.preFlight, 100);
+      statusController(CreatePoolStepsEnum.preflight, 100);
     } catch (error: any) {
       throw new CreatePoolCallStaticError(
         error instanceof Error ? error.message : error
@@ -74,14 +74,14 @@ export class CentherStaking {
 
     try {
       // call contract
-      statusController(CreatePoolStepsEnum.contractCall, 0);
+      statusController(CreatePoolStepsEnum.contract, 0);
       const hash = await BlockchainWrite.createStakingPool(
         library,
         mappedData,
         true
       );
 
-      statusController(CreatePoolStepsEnum.contractCall, 100);
+      statusController(CreatePoolStepsEnum.contract, 100);
 
       return {
         success: !!hash?.length,

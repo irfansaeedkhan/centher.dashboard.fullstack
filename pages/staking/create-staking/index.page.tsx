@@ -55,7 +55,7 @@ const claimPeriodOptions = [
   { title: "90 Days", value: 90 * 24 * 60 * 60 },
   { title: "120 Days", value: 120 * 24 * 60 * 60 },
   { title: "180 Days", value: 180 * 24 * 60 * 60 },
-  { title: "Anytime", value: -1 },
+  { title: "Anytime", value: 0 },
 ];
 const firstReward = [
   { title: "15 Days", value: 15 * 24 * 60 * 60 },
@@ -69,9 +69,13 @@ const stakingPeriodOptions = [
   { title: "30 Days", value: 30 * 24 * 60 * 60 },
   { title: "90 Days", value: 90 * 24 * 60 * 60 },
   { title: "180 Days", value: 180 * 24 * 60 * 60 },
-  { title: "365 Days", value: 365 * 24 * 60 * 60 },
-  { title: "Inifinite", value: -1 },
+  { title: "1 year", value: 1 * 365 * 24 * 60 * 60 },
+  { title: "2 years", value: 2 * 365 * 24 * 60 * 60 },
+  { title: "3 years", value: 3 * 365 * 24 * 60 * 60 },
+  { title: "4 years", value: 4 * 365 * 24 * 60 * 60 },
+  { title: "5 years", value: 5 * 365 * 24 * 60 * 60 },
 ];
+
 const CreateStaking: NextPageWithLayout = () => {
   const [formStep, setFormStep] = useState(0);
   const [showMsg, setshowMsg] = useState<any>(null);
@@ -449,7 +453,10 @@ const CreateStaking: NextPageWithLayout = () => {
       },
     ];
 
-    if (!data.reward_token_address?.length) {
+    if (
+      data.reward_token_address?.length &&
+      data.reward_token_address != data.token_address
+    ) {
       initialProgress.push({
         title: CreatePoolStepsEnum.reward_approval,
         status: ProgressStatus.pending,
@@ -526,7 +533,7 @@ const CreateStaking: NextPageWithLayout = () => {
           ? 0
           : data.multilevel_rewards == "Fix Commission (0 to 6 levels)"
           ? 1
-          : 2, //need to match with contract enum indexes
+          : 2,
       firstReward: data.rewards_release_start ? +data.rewards_release_start : 0,
       maxStakableAmount: data.total_supply ? data.total_supply : 0,
       cancellationFees: data.charge_fee_on_cancel
@@ -874,7 +881,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -962,7 +969,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
