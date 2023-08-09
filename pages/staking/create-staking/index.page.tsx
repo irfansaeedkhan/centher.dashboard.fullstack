@@ -348,6 +348,7 @@ const CreateStaking: NextPageWithLayout = () => {
       liquidity_pool_provided: "no",
       is_cancelable: "no",
       category: [],
+      start_date: new Date().toISOString().slice(0, 10),
     },
   });
 
@@ -584,10 +585,6 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const handleNext = async () => {
-    if (metaDataList?.length < 1) {
-      setMetaDataErr("add atleast one meta data");
-      return;
-    }
     if (!profile) {
       setProfileErr(true);
       return;
@@ -684,6 +681,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const previewBoxModalFunc = async (data: stakingFormInterfaceUpdated) => {
+    console.log("data in review modal", data);
     await setshowMsg(
       <StakingReviewModal
         data={data}
@@ -694,6 +692,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
+    console.log("data in submit", data);
     try {
       await afterSubmitMapper(data);
       console.log("--------------->", progress);
@@ -1570,7 +1569,6 @@ const CreateStaking: NextPageWithLayout = () => {
                 <div className="text-14px col-span-2 w-full font-medium text-white">
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
-                    <span className="text-gradient ml-[2px]">*</span>
                   </label>
                   <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                     <span className="text-14px text-gray-shade-17">
