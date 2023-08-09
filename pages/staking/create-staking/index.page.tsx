@@ -27,6 +27,13 @@ import {
 } from "../_components/staking-types";
 import { StakingFailureModal } from "./_components/staking-failure-modal";
 import { StakingReviewModal } from "./_components/staking-review-modal";
+import {
+  AddAffiliateSettingsInput,
+  CreatePoolInput,
+  CreatePoolMetadata,
+  OptionalType,
+  StakingFiles,
+} from "@/staking/types";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -44,8 +51,8 @@ const CreateStaking: NextPageWithLayout = () => {
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
     false
   );
-  const [profile, setProfile] = useState<Blob | undefined>(undefined);
-  const [cover, setCover] = useState<Blob | undefined>(undefined);
+  const [profile, setProfile] = useState<OptionalType<Blob>>(undefined);
+  const [cover, setCover] = useState<OptionalType<Blob>>(undefined);
   const [profileErr, setProfileErr] = useState(false);
   const [coverErr, setCoverErr] = useState(false);
   const [clearForm, setClearForm] = useState(false);
@@ -390,10 +397,90 @@ const CreateStaking: NextPageWithLayout = () => {
       description: data.description,
       members: members,
     };
-    console.log("submitForm data:", data);
+
     if (finalData) {
       previewBoxModalFunc(finalData);
     }
+  };
+
+  const afterSubmitMapper = (data: stakingFormInterface) => {
+    const metadata: CreatePoolMetadata = {
+      library: metaDataList,
+      banner: "",
+      icon: "",
+      socialMedias: [
+        { name: "website_url", link: data.website_url },
+        { name: "whitepaper", link: data.whitepaper },
+        { name: "facebook", link: data.facebook },
+        { name: "twitter", link: data.twitter },
+        { name: "github", link: data.github },
+        { name: "telegram", link: data.telegram },
+        { name: "instagram", link: data.instagram },
+        { name: "discord", link: data.discord },
+        { name: "reddit", link: data.reddit },
+        { name: "explorers", link: data.explorers },
+      ],
+      categories: data.category,
+      description: data.description,
+      team: members,
+    };
+
+    const input: CreatePoolInput = {
+      name: data.staking_name,
+      startTime: data.start_date,
+      ownerAddress: "",
+      stakeToken: data.token_address,
+      rewardToken: data.reward_token_address,
+      rate: data.staking_reward_token_price_ratio
+        ? +data.staking_reward_token_price_ratio
+        : 0,
+      annualStakingRewardRate: data.apy ? data.apy : 0,
+      minStakeAmount: data.min_staking_amount ? data.min_staking_amount : 0,
+      maxStakeAmount: data.max_staking_amount ? data.max_staking_amount : 0,
+      stakingDurationPeriod: data.staking_period ? +data.staking_period : 0,
+      claimDuration: data.claim_period ? +data.claim_period : 0,
+      rewardModeForRef:
+        data.multilevel_rewards == "No referral"
+          ? 0
+          : data.multilevel_rewards == "Fix Commission (0 to 6 levels)"
+          ? 1
+          : 2, //need to match with contract enum indexes
+      firstReward: data.rewards_release_start ? +data.rewards_release_start : 0,
+      maxStakableAmount: data.total_supply ? data.total_supply : 0,
+      cancellationFees: data.charge_fee_on_cancel
+        ? data.charge_fee_on_cancel
+        : 0,
+      poolMetadata: metadata,
+      metaDataUrl: "",
+      isUnstakable: data.is_cancelable == "yes" ? true : false,
+      isLP: data.liquidity_pool_provided == "yes" ? true : false,
+      showOnCenther: data.show_on_centher == "yes" ? true : false,
+    };
+
+    const files: StakingFiles = {
+      banner: cover,
+      logo: profile,
+    };
+
+    if (data.multilevel_rewards != "No referral") {
+      const levelOne = inputValues.find((e) => e.level == 1);
+      const levelTwo = inputValues.find((e) => e.level == 2);
+      const levelThree = inputValues.find((e) => e.level == 3);
+      const levelFour = inputValues.find((e) => e.level == 4);
+      const levelFive = inputValues.find((e) => e.level == 5);
+      const levelSix = inputValues.find((e) => e.level == 6);
+
+      const affiliateSetting: AddAffiliateSettingsInput = {
+        levelOne: levelOne ? levelOne.percent : 0,
+        levelTwo: levelTwo ? levelTwo.percent : 0,
+        levelThree: levelThree ? levelThree.percent : 0,
+        levelFour: levelFour ? levelFour.percent : 0,
+        levelFive: levelFive ? levelFive.percent : 0,
+        levelSix: levelSix ? levelSix.percent : 0,
+      };
+      console.log(affiliateSetting);
+    }
+    console.log(input);
   };
 
   const retryFunc = () => {
@@ -516,8 +603,8 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
-    console.log("final data", data);
     try {
+      afterSubmitMapper(data);
       setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
       stakingForm.reset({
         staking_name: "",

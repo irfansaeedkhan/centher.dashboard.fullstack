@@ -1,3 +1,5 @@
+import { OptionalType } from "@/staking/types";
+
 export type multilevel =
   | "Select Any"
   | "multilevel1"
@@ -57,8 +59,8 @@ export interface stakingFormInterface {
 }
 
 export interface stakingFormInterfaceUpdated extends stakingFormInterface {
-  cover_image: Blob | undefined;
-  profile_image: Blob | undefined;
+  cover_image: OptionalType<Blob>;
+  profile_image: OptionalType<Blob>;
 }
 
 export type metaDataType = {

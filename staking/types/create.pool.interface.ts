@@ -1,14 +1,25 @@
+import { CreatePoolStepsEnum } from "../enum/create-pool-steps.enum";
+import { OptionalType } from "./general";
+
 export interface CreatePoolMetadata {
-  library: { key: string; value: string };
+  library: { title: string; data: string }[];
   banner: string;
-  log: string;
+  icon: string;
   socialMedias: { name: string; link: string }[];
-  categories: string[];
+  categories: { value: string; label: string }[];
   description: string;
-  team: { address: string; position: string }[];
+  team: { jobTitle: string; walletAddress: string }[];
+}
+
+export interface StakingFiles {
+  banner: OptionalType<Blob>;
+  logo: OptionalType<Blob>;
 }
 
 export interface CreatePoolInput {
+  ownerAddress: string;
+  name: string;
+  startTime: string;
   stakeToken: string;
   rewardToken: string;
   rate: number;
@@ -22,6 +33,7 @@ export interface CreatePoolInput {
   maxStakableAmount: number;
   cancellationFees: number;
   poolMetadata: CreatePoolMetadata;
+  metaDataUrl: string;
   isUnstakable: boolean;
   isLP: boolean;
   showOnCenther: boolean;
@@ -45,3 +57,8 @@ export interface AddAffiliateSettingsResult {
   success: boolean;
   trxHash: string;
 }
+
+export type ProgressCallback = (
+  processName: CreatePoolStepsEnum,
+  progress: number
+) => void;

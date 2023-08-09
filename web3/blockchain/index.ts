@@ -12,6 +12,7 @@ import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
 import { ZeroAddress } from "../constants/common";
 import { CitizenShipType } from "@/store/citizen.store";
+import { InsufficientFundError } from "@/staking/errors/params.error";
 
 export class BlockchainRead {
   static async getReferrers(
@@ -1774,6 +1775,62 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "buyCitizenShip");
+      throw error;
+    }
+  }
+
+  static async createStakingPool(
+    library: Web3Provider,
+    data: any,
+    preflight: boolean
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.createPool(data);
+
+      if (!preflight) {
+        const tx = await stakingContract.functions.createPool(data);
+        await tx.wait();
+        return tx.hash;
+      }
+
+      return "";
+    } catch (error: any) {
+      logger(error, "createPool");
+      throw error;
+    }
+  }
+
+  static async SetApprovalForWallet(
+    library: Web3Provider,
+    tokenAddress: string,
+    userAddress: string,
+    spenderAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
+      );
+
+      const balance = await tokenContract.functions.balanceOf(userAddress);
+      if (balance == 0) {
+        throw new InsufficientFundError(
+          "theres nothing for approval, balance is 0"
+        );
+      }
+
+      const tx = await tokenContract.functions.approve(spenderAddress, balance);
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "SetApprovalForWallet");
       throw error;
     }
   }
