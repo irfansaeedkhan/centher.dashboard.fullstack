@@ -38,6 +38,12 @@ export interface CollectionInfo {
   collection: string;
 }
 
+export interface CollectionAdditionalInfo {
+  listedPercent: number;
+  minPrice: number;
+  ownerIncome: number;
+}
+
 export const categories = [
   "All",
   "Premium",
