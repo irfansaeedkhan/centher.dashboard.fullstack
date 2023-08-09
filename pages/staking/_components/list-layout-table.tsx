@@ -14,7 +14,7 @@ interface Props {
 const ListLayoutTable: React.FC<Props> = ({ card }) => {
   console.log(card);
   return (
-    <div className="mt-6 h-[500px] rounded-[14px] border border-gray-shade-3 pt-16">
+    <div className="mt-6 h-[500px] w-full overflow-auto rounded-[14px] border border-gray-shade-3 pt-16">
       <table className={`w-full max-w-full table-auto`}>
         <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
           <tr>

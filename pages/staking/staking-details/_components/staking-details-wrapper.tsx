@@ -40,7 +40,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   return preBookingStats ? (
     <PageButtonsWrapper>
-      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-10 pt-10 pb-8">
+      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-5 pt-5 pb-4 fmd:px-10 fmd:pt-10 fmd:pb-8">
         <Details />
         <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
           {preBookingStats && <Booking preBookingStats={preBookingStats} />}
@@ -88,7 +88,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 ? "primary"
                 : "secondary"
             }
-            className="rounded-[10px]"
+            className="text-14px rounded-[10px]"
           />
         </Link>
         <Link href={AppRoutes.staking.staking_details.rewards}>
@@ -99,7 +99,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 ? "primary"
                 : "secondary"
             }
-            className="rounded-[10px]"
+            className="text-14px rounded-[10px]"
           />
         </Link>
         <Link href={AppRoutes.staking.staking_details.referrals}>
@@ -110,7 +110,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 ? "primary"
                 : "secondary"
             }
-            className="rounded-[10px]"
+            className="text-14px rounded-[10px]"
           />
         </Link>
       </div>

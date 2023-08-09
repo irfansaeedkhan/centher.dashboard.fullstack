@@ -133,7 +133,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
         className={`fixed inset-0 z-[1050] flex items-center justify-center overflow-y-auto overflow-x-hidden bg-background-shade-3 font-monto backdrop-blur-[7px] backdrop-filter fsm:bg-transparent`}
       >
         <div
-          className={`flex h-full w-full max-w-[80%] flex-col overflow-auto  border border-solid border-[#2a2d3c] bg-background-shade-3 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
+          className={`flex h-full w-full max-w-[100%] flex-col overflow-auto border  border-solid border-[#2a2d3c] bg-background-shade-3 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0 fmd:max-w-[80%]`}
           ref={PassportModalRef}
         >
           <div className="flex flex-col gap-8 text-left">
@@ -190,8 +190,8 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     </div>
                   </div>
                 </div>
-                <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-                  <div className={section}>
+                <div className="grid w-full grid-cols-2 gap-6 border-b border-gray-shade-3 pb-4 fsm:gap-10 fsm:border-none fsm:pb-0 fmd:grid-cols-3 flg:grid-cols-4">
+                  <div className="col-span-1">
                     <p className={label}>Token Address</p>
                     <p
                       className={clsx(
@@ -215,21 +215,21 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       />
                     </p>
                   </div>
-                  <div className={section}>
+                  <div className="col-span-1">
                     <p className={label}>Project Name</p>
                     <p className={value}>name here</p>
                   </div>
-                  <div className={section}>
+                  <div className="col-span-1">
                     <p className={label}>Price</p>
                     <p className={value}>price here</p>
                   </div>
-                  <div className={section}>
+                  <div className="col-span-1">
                     <p className={label}>Symbol</p>
                     <p className={value}>symbol here</p>
                   </div>
                 </div>
-                <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-                  <div className={section}>
+                <div className="grid w-full grid-cols-2 gap-6 border-b border-gray-shade-3 pb-4 fsm:gap-10 fsm:border-none fsm:pb-0 fmd:grid-cols-3 flg:grid-cols-4">
+                  <div className="col-span-1">
                     <p className={label}>Rewards Token Address</p>
                     <p
                       className={clsx(
@@ -257,15 +257,15 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   </div>
                   {data?.reward_token_address !== data?.token_address && (
                     <>
-                      <div className={section}>
+                      <div className="col-span-1">
                         <p className={label}>Project Name</p>
                         <p className={value}>DeXa name here</p>
                       </div>
-                      <div className={section}>
+                      <div className="col-span-1">
                         <p className={label}>Price</p>
                         <p className={value}>price here</p>
                       </div>
-                      <div className={section}>
+                      <div className="col-span-1">
                         <p className={label}>Symbol</p>
                         <p className={value}>symbol here</p>
                       </div>

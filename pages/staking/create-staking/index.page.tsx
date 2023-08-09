@@ -660,7 +660,7 @@ const CreateStaking: NextPageWithLayout = () => {
               translateX: `-${formStep * 100}%`,
             }}
           >
-            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-6">
+            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-3 fmd:p-6">
               {/* logo and cover  */}
 
               <div className="flex w-full flex-col gap-6">
@@ -817,7 +817,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className="mb-2 grid w-full gap-6 md:grid-cols-2">
+              <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 {/* staking name */}
                 <div className="text-14px col-span-2  w-full font-medium text-white md:col-span-2">
                   <label
@@ -904,7 +904,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("multilevel_rewards")}
                     id="multilevel_rewards"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-black-shade-7 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                     value={selectedValue}
                     onChange={handleChange}
                   >
@@ -980,7 +980,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("staking_period")}
                     id="staking_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-black-shade-7 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1013,8 +1013,8 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Is Cancelable
                     </label>
-                    <div className=" flex flex-wrap gap-5">
-                      <div className=" flex items-center">
+                    <div className="flex gap-3 fmd:gap-5">
+                      <div className="flex items-center">
                         <input
                           id="red-radio3"
                           type="radio"
@@ -1029,7 +1029,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           No
                         </label>
                       </div>
-                      <div className=" flex items-center">
+                      <div className="flex items-center">
                         <input
                           id="green-radio3"
                           type="radio"
@@ -1133,7 +1133,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("rewards_release_start")}
                     id="rewards_release_start"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-black-shade-7 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1178,7 +1178,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("claim_period")}
                     id="claim_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-black-shade-7 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1211,8 +1211,8 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Show on Centher
                     </label>
-                    <div className=" flex flex-wrap gap-5">
-                      <div className=" flex items-center">
+                    <div className="flex gap-3 fmd:gap-5">
+                      <div className="flex items-center">
                         <input
                           id="red-radio1"
                           type="radio"
@@ -1227,7 +1227,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           No
                         </label>
                       </div>
-                      <div className=" flex items-center">
+                      <div className="flex items-center">
                         <input
                           id="green-radio1"
                           type="radio"
@@ -1272,8 +1272,8 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Liquidity Pool Provided
                     </label>
-                    <div className=" flex flex-wrap gap-5">
-                      <div className=" flex items-center">
+                    <div className="flex gap-3 fmd:gap-5">
+                      <div className="flex items-center">
                         <input
                           id="red-radio2"
                           type="radio"
@@ -1288,7 +1288,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           No
                         </label>
                       </div>
-                      <div className=" flex items-center">
+                      <div className="flex items-center">
                         <input
                           id="green-radio2"
                           type="radio"
@@ -1453,7 +1453,7 @@ const CreateStaking: NextPageWithLayout = () => {
               <FinalButton
                 title="Next"
                 variant="primary"
-                className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                className={cn("text-14px mx-auto mt-5 w-[90%] fmd:w-[45%]", {
                   hidden: formStep == 1,
                 })}
                 onClick={handleNext}
@@ -1521,8 +1521,8 @@ const CreateStaking: NextPageWithLayout = () => {
               translateX: `${100 - formStep * 100}%`,
             }}
           >
-            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9 p-6">
-              <div className="mb-2 grid w-full gap-6 md:grid-cols-2">
+            <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9  p-3 fmd:p-6">
+              <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
                   <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
                     <label
@@ -1894,7 +1894,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 title="Review and Submit"
                 onClick={stakingForm.handleSubmit(submitForm)}
                 variant="primary"
-                className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                className={cn("text-14px mx-auto mt-5 w-[90%] fmd:w-[45%]", {
                   hidden: formStep == 0,
                 })}
                 disabled={!stakingForm.formState.isValid}

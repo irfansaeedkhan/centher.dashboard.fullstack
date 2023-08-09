@@ -15,7 +15,7 @@ export interface ListCardProps {
 
 const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
   return (
-    <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
+    <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-4 fsm:p-8">
       <div className="relative h-[200px] w-full rounded-2xl bg-[url(/images/profile-header-cover.jpg)] bg-cover bg-center">
         <div className="absolute right-6 top-5 flex items-center gap-4">
           <Link
