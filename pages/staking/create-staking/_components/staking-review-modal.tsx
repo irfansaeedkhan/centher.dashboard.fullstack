@@ -164,9 +164,11 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                 <div
                   className="relative h-[200px] w-full rounded-2xl bg-cover bg-center"
                   style={{
-                    backgroundImage: data?.cover_image
-                      ? URL.createObjectURL(data?.cover_image)
-                      : "",
+                    backgroundImage: `url(${
+                      data?.cover_image
+                        ? URL.createObjectURL(data?.cover_image)
+                        : ""
+                    })`,
                   }}
                 >
                   <div className="absolute left-6 bottom-6 my-auto">

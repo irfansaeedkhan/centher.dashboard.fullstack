@@ -34,6 +34,13 @@ import {
   OptionalType,
   StakingFiles,
 } from "@/staking/types";
+import { StakingProgressModal } from "./_components/staking-progress-modal";
+import { eqAddress } from "@/live/utils/address.utils";
+import {
+  CreatePoolStepsEnum,
+  ProgressStatus,
+} from "@/staking/enum/create-pool-steps.enum";
+import { ProgressModal } from "./dto/progress-modal.dto";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -41,7 +48,30 @@ const categoryOptions = [
   { value: "Decentralised Finance", label: "Decentralised Finance" },
   { value: "Artificial Intelligence", label: "Artificial Intelligence" },
 ];
-
+const claimPeriodOptions = [
+  { title: "15 Days", value: 15 * 24 * 60 * 60 },
+  { title: "30 Days", value: 30 * 24 * 60 * 60 },
+  { title: "45 Days", value: 45 * 24 * 60 * 60 },
+  { title: "90 Days", value: 90 * 24 * 60 * 60 },
+  { title: "120 Days", value: 120 * 24 * 60 * 60 },
+  { title: "180 Days", value: 180 * 24 * 60 * 60 },
+  { title: "Anytime", value: -1 },
+];
+const firstReward = [
+  { title: "15 Days", value: 15 * 24 * 60 * 60 },
+  { title: "30 Days", value: 30 * 24 * 60 * 60 },
+  { title: "90 Days", value: 90 * 24 * 60 * 60 },
+  { title: "180 Days", value: 180 * 24 * 60 * 60 },
+  { title: "According to claim period", value: -1 },
+];
+const stakingPeriodOptions = [
+  { title: "15 Days", value: 15 * 24 * 60 * 60 },
+  { title: "30 Days", value: 30 * 24 * 60 * 60 },
+  { title: "90 Days", value: 90 * 24 * 60 * 60 },
+  { title: "180 Days", value: 180 * 24 * 60 * 60 },
+  { title: "365 Days", value: 365 * 24 * 60 * 60 },
+  { title: "Inifinite", value: -1 },
+];
 const CreateStaking: NextPageWithLayout = () => {
   const [formStep, setFormStep] = useState(0);
   const [showMsg, setshowMsg] = useState<any>(null);
@@ -56,6 +86,7 @@ const CreateStaking: NextPageWithLayout = () => {
   const [profileErr, setProfileErr] = useState(false);
   const [coverErr, setCoverErr] = useState(false);
   const [clearForm, setClearForm] = useState(false);
+  const [progress, setProgress] = useState<ProgressModal[]>([]);
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -399,11 +430,62 @@ const CreateStaking: NextPageWithLayout = () => {
     };
 
     if (finalData) {
+      console.log(finalData);
       previewBoxModalFunc(finalData);
     }
   };
 
   const afterSubmitMapper = (data: stakingFormInterface) => {
+    let initialProgress = [
+      {
+        title: CreatePoolStepsEnum.preflight,
+        status: ProgressStatus.inProgress,
+        value: 0,
+      },
+      {
+        title: CreatePoolStepsEnum.stake_approval,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+    ];
+
+    if (!data.reward_token_address?.length) {
+      initialProgress.push({
+        title: CreatePoolStepsEnum.reward_approval,
+        status: ProgressStatus.pending,
+        value: 0,
+      });
+    }
+
+    initialProgress = [
+      ...initialProgress,
+      {
+        title: CreatePoolStepsEnum.examinate,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+      {
+        title: CreatePoolStepsEnum.banner,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+      {
+        title: CreatePoolStepsEnum.logo,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+      {
+        title: CreatePoolStepsEnum.metadata,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+      {
+        title: CreatePoolStepsEnum.contract,
+        status: ProgressStatus.pending,
+        value: 0,
+      },
+    ];
+
     const metadata: CreatePoolMetadata = {
       library: metaDataList,
       banner: "",
@@ -478,8 +560,17 @@ const CreateStaking: NextPageWithLayout = () => {
         levelFive: levelFive ? levelFive.percent : 0,
         levelSix: levelSix ? levelSix.percent : 0,
       };
+
+      initialProgress.push({
+        title: CreatePoolStepsEnum.affiliate,
+        status: ProgressStatus.pending,
+        value: 0,
+      });
+
       console.log(affiliateSetting);
     }
+    setProgress(initialProgress);
+
     console.log(input);
   };
 
@@ -604,46 +695,51 @@ const CreateStaking: NextPageWithLayout = () => {
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
     try {
-      afterSubmitMapper(data);
-      setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
-      stakingForm.reset({
-        staking_name: "",
-        token_address: "",
-        multilevel_rewards: "",
-        apy: null,
-        staking_reward_token_price_ratio: null,
-        staking_period: "",
-        start_date: "",
-        claim_period: "",
-        rewards_release_start: "",
-        show_on_centher: "no",
-        liquidity_pool_provided: "no",
-        is_cancelable: "no",
-        charge_fee_on_cancel: null,
-        min_staking_amount: null,
-        max_staking_amount: null,
-        total_supply: null,
-        website_url: "",
-        whitepaper: "",
-        facebook: "",
-        twitter: "",
-        github: "",
-        telegram: "",
-        instagram: "",
-        discord: "",
-        reddit: "",
-        explorers: "",
-        category: [],
-        description: "",
-      });
+      await afterSubmitMapper(data);
+      console.log("--------------->", progress);
+      await setshowMsg(
+        <StakingProgressModal data={progress} onClickClose={onClickClose} />
+      );
 
-      setMetaDataList([]);
-      setInputValues([]);
-      setSelectedValue("");
-      setMemberError(null);
-      setMembers([]);
-      setClearForm(true);
-      setFormStep(0);
+      // setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
+      // stakingForm.reset({
+      //   staking_name: "",
+      //   token_address: "",
+      //   multilevel_rewards: "",
+      //   apy: null,
+      //   staking_reward_token_price_ratio: null,
+      //   staking_period: "",
+      //   start_date: "",
+      //   claim_period: "",
+      //   rewards_release_start: "",
+      //   show_on_centher: "no",
+      //   liquidity_pool_provided: "no",
+      //   is_cancelable: "no",
+      //   charge_fee_on_cancel: null,
+      //   min_staking_amount: null,
+      //   max_staking_amount: null,
+      //   total_supply: null,
+      //   website_url: "",
+      //   whitepaper: "",
+      //   facebook: "",
+      //   twitter: "",
+      //   github: "",
+      //   telegram: "",
+      //   instagram: "",
+      //   discord: "",
+      //   reddit: "",
+      //   explorers: "",
+      //   category: [],
+      //   description: "",
+      // });
+
+      // setMetaDataList([]);
+      // setInputValues([]);
+      // setSelectedValue("");
+      // setMemberError(null);
+      // setMembers([]);
+      // setClearForm(true);
+      // setFormStep(0);
     } catch (error: any) {
       setshowMsg(
         <StakingFailureModal
@@ -711,6 +807,7 @@ const CreateStaking: NextPageWithLayout = () => {
       color: state.isFocused ? "#febf32" : "white",
     }),
   };
+
   return (
     <section className="flex w-full">
       <div className=" flex flex-grow flex-col">
@@ -777,7 +874,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -865,7 +962,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
@@ -1069,12 +1166,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
                     </option>
-                    <option className="bg-black text-white" value="15 days">
-                      15 days
-                    </option>
-                    <option className="bg-black text-white" value="30 days">
-                      30 days
-                    </option>
+                    {stakingPeriodOptions.map((e, i) => (
+                      <option
+                        className="bg-black text-white"
+                        value={e.value}
+                        key={i}
+                      >
+                        {e.title}
+                      </option>
+                    ))}
                   </select>
                   {stakingForm.formState.errors.staking_period && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1222,24 +1322,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
                     </option>
-                    <option
-                      className="bg-black text-white"
-                      value="after 15 days"
-                    >
-                      after 15 days
-                    </option>
-                    <option
-                      className="bg-black text-white"
-                      value="after 30 days"
-                    >
-                      after 30 days
-                    </option>
-                    <option
-                      className="bg-black text-white"
-                      value="according to claim period"
-                    >
-                      according to claim period
-                    </option>
+                    {firstReward.map((e, i) => (
+                      <option
+                        className="bg-black text-white"
+                        value={e.value}
+                        key={i}
+                      >
+                        {e.title}
+                      </option>
+                    ))}
                   </select>
                   {stakingForm.formState.errors.rewards_release_start && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1267,12 +1358,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
                     </option>
-                    <option className="bg-black text-white" value="15 days">
-                      15 days
-                    </option>
-                    <option className="bg-black text-white" value="30 days">
-                      30 days
-                    </option>
+                    {claimPeriodOptions.map((e, i) => (
+                      <option
+                        className="bg-black text-white"
+                        value={e.value}
+                        key={i}
+                      >
+                        {e.title}
+                      </option>
+                    ))}
                   </select>
                   {stakingForm.formState.errors.claim_period && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>

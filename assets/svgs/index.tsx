@@ -168,6 +168,7 @@ export { default as LoaderSpinner } from "./loader.spinner.svg";
 export { default as LayoutGrid } from "./layout-grid.svg";
 export { default as LayoutList } from "./layout-list.svg";
 export { default as WarningGradient } from "./warning-gradient.svg";
+export { default as MultiColorLoader } from "./loader-multi-color.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
