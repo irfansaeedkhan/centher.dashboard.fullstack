@@ -3,8 +3,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
+import { User } from "@/models/user";
 
-export const ProfileCommunityTabs: React.FC = ({}) => {
+interface Props {
+  user: User | null;
+}
+
+export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
   const router = useRouter();
 
   return (
@@ -43,6 +48,25 @@ export const ProfileCommunityTabs: React.FC = ({}) => {
           className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
         />
       </Link>
+      {user?.membership.status === "citizen" && (
+        <Link
+          href={{
+            pathname: AppRoutes.profile.team_members,
+            query: { user_id: router.query.user_id },
+          }}
+          className="w-full max-w-max"
+        >
+          <FinalButton
+            title="Team Members"
+            variant={`${
+              router.pathname === AppRoutes.profile.team_members
+                ? "primary"
+                : "secondary"
+            }`}
+            className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
+          />
+        </Link>
+      )}{" "}
       <Link
         href={{
           pathname: AppRoutes.profile.referrals,
