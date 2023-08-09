@@ -4,7 +4,7 @@ import { devtools } from "zustand/middleware";
 
 // App imports
 import { LoadingState } from "@/models/common";
-import { CollectionInfo, NFT } from "@/models/nft";
+import { CollectionAdditionalInfo, CollectionInfo, NFT } from "@/models/nft";
 import { BlockchainRead } from "@/web3/blockchain";
 
 import { NFTCardData } from "@/components/nft.card";
@@ -34,6 +34,8 @@ export interface CollectionStore {
   limit: number;
   loadingCollectionInfo: LoadingState;
   loadingNFTs: LoadingState;
+  collectionAdditionalDetails: CollectionAdditionalInfo | undefined;
+  updateCollectionAdditionalInfo: (collection: string, user: string) => void;
 }
 
 enum OrderBy {
@@ -51,6 +53,7 @@ export const useCollectionStore = create<CollectionStore>()(
       limit: 20,
       loadingCollectionInfo: "idle",
       loadingNFTs: "idle",
+      collectionAdditionalDetails: undefined,
       updateOffset: () =>
         set((state) => ({
           offset: state.nfts.length,
@@ -110,7 +113,6 @@ export const useCollectionStore = create<CollectionStore>()(
       ) => {
         try {
           set({ loadingNFTs: "loading" });
-
           let _nfts: NFT[] = [];
           let result;
           if (saleState === "All") {
@@ -151,6 +153,7 @@ export const useCollectionStore = create<CollectionStore>()(
               };
             });
           }
+
           const nftCardDataPromises = _nfts.map((nft) => getNFTCardData(nft));
 
           const nftCardDataResults = (
@@ -164,6 +167,7 @@ export const useCollectionStore = create<CollectionStore>()(
             (nft) =>
               !get().nfts.some((stateNFT) => stateNFT.id === nft.value.id)
           );
+
           set((state) => ({
             ...state,
             nfts: [...state.nfts, ...filteredNFTs.map((nft) => nft.value)],
@@ -174,6 +178,42 @@ export const useCollectionStore = create<CollectionStore>()(
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
         }
+      },
+      updateCollectionAdditionalInfo: async (
+        collection: string,
+        user: string
+      ) => {
+        const { nfts: result, history } =
+          await BlockchainRead.getCollectionAdditionalInfo(collection, user);
+
+        const listedItems = result.filter(
+          (e: any) =>
+            e.saleState.toLowerCase() == "auction" ||
+            e.saleState.toLowerCase() == "list"
+        );
+        const listedItemCount = listedItems.length;
+        const minPrice =
+          listedItemCount > 0
+            ? Math.min(...listedItems.map((e: any) => e.price))
+            : 0;
+        const totalNftCount = result.length;
+        const listedPercent = ((listedItemCount / totalNftCount) * 100).toFixed(
+          2
+        );
+
+        const ownerIncome = history.reduce(
+          (a: number, b: any) => a + +b.price,
+          0
+        );
+
+        set((state) => ({
+          ...state,
+          collectionAdditionalDetails: {
+            minPrice: +minPrice,
+            listedPercent: +listedPercent,
+            ownerIncome: +ownerIncome,
+          },
+        }));
       },
     }),
     { name: "ExploreStore" }
