@@ -55,6 +55,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
       ReceiverAddress: data.ReceiverAddress,
       LockEndTime: +lock,
     };
+    handleSend(finalData);
   };
 
   return (
