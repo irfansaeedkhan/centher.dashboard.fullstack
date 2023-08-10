@@ -2,6 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "@/components/button/final.button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -14,7 +15,7 @@ export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
       )}
       {...props}
     >
-      <div className="mt-3 mb-[6px] flex flex-col items-center justify-center gap-4 text-center">
+      <div className="mb-[6px] mt-3 flex flex-col items-center justify-center gap-4 text-center">
         <span>
           <h2 className="!text-[24px] font-extrabold leading-[26px] text-white">
             NFT
@@ -35,9 +36,13 @@ export const PromotionCard3: React.FC<Props> = ({ className, ...props }) => {
           href={{
             pathname: AppRoutes.marketplace.explore,
           }}
-          className={`flex w-fit items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark `}
         >
-          Check it out
+          <FinalButton
+            title="Check it out"
+            variant="primary"
+            borderRounded="10px"
+            className="mt-4"
+          />
         </Link>
       </div>
     </div>

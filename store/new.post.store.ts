@@ -5,7 +5,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 import { PostMedia } from "@/models/post";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getPostAndUpdateStores } from "@/utils/create.post";
 import { SocketIoEvents } from "@/constants/socket-io-events";
@@ -118,7 +118,9 @@ export const useNewPostStore = create<NewPostStore>()(
       },
       addSelectedFiles: (files) =>
         set((state) => {
-          const mediaFiles: MediaFile[] = files.map((file, i) => {
+          let mediaFiles: MediaFile[] = [];
+
+          mediaFiles = files.map((file, i) => {
             if (file.type === "new") {
               return {
                 type: "new",
@@ -138,14 +140,33 @@ export const useNewPostStore = create<NewPostStore>()(
           });
 
           // Add files to the last post
-          const posts = state.posts.map((post, index) =>
-            index === state.posts.length - 1
-              ? {
-                  ...post,
-                  media: [...post.media, ...mediaFiles],
-                }
-              : post
-          );
+          const posts = state.posts.map((post, index) => {
+            if (index !== state.posts.length - 1) {
+              return post;
+            }
+            if (
+              mediaFiles[0].original.type.startsWith("video") &&
+              post.media[0]?.original.type.startsWith("video")
+            ) {
+              return {
+                ...post,
+                media: [mediaFiles[0]],
+              };
+            }
+            if (post.media[0]?.original.type.startsWith("video")) {
+              return post;
+            }
+            if (
+              mediaFiles[0].original.type.startsWith("video") &&
+              post.media[0]?.original.type.startsWith("image")
+            ) {
+              return post;
+            }
+            return {
+              ...post,
+              media: [...post.media, ...mediaFiles],
+            };
+          });
           return { posts };
         }),
 
@@ -212,6 +233,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
       addNewPost: () => {
         // Check if the last post is empty
+
         if (
           get().posts.at(-1)?.post_text.trim() === "" &&
           get().posts.at(-1)?.media.length === 0
@@ -282,7 +304,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          const response = await axiosNodeApi.post(`/api/socials/posts`, {
+          const response = await axiosApiCenther.post(`/api/socials/posts`, {
             replying_to: get().parentPostId,
             posts: postArray.map((post) => ({
               uuid: post.uuid,
@@ -320,7 +342,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
             const {
               data: { presignedUrls },
-            } = await axiosNodeApi.post(
+            } = await axiosApiCenther.post(
               `/api/socials/posts/media/presigned-urls`,
               {
                 media_list: mediaList,
@@ -359,35 +381,53 @@ export const useNewPostStore = create<NewPostStore>()(
 
             await Promise.all(mediaUploadPromises);
 
-            const socket = useSocketIOStore.getState().socket;
-
-            if (!socket) return;
-
-            socket.on(
-              SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
-              async (data: { first_post_id: string }) => {
-                try {
-                  await getPostAndUpdateStores({
-                    parentPostId: get().parentPostId,
-                    postId: data.first_post_id,
-                    newPostsCount: postArray.length,
-                    modalType: get().modalType,
-                  });
-                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
-                  get().closeModal();
-                } catch (error: any) {
-                  socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
-                  set({ isPostModalLoading: false });
-                  customLog("Error in create post: ", ["development"]);
-                  customLog(error, ["development"]);
-                  if (error.response?.data?.message_description) {
-                    toast.error(error.response.data.message_description);
-                  } else {
-                    toast.error("Something went wrong, please try again later");
-                  }
-                }
+            // FIXME: this is quick fix, need to find a better way to do this
+            const postToFetchId = response.data.posts[0]._id;
+            let count = 0;
+            const interval = setInterval(async () => {
+              count++;
+              const isDone = await getPostAndUpdateStores({
+                parentPostId: get().parentPostId,
+                postId: postToFetchId,
+                newPostsCount: postArray.length,
+                modalType: get().modalType,
+                isAuthenticated: true,
+              });
+              if (isDone || count >= 5) {
+                get().closeModal();
+                clearInterval(interval);
               }
-            );
+            }, 5000);
+
+            // const socket = useSocketIOStore.getState().socket;
+
+            // if (!socket) return;
+
+            // socket.on(
+            //   SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE,
+            //   async (data: { first_post_id: string }) => {
+            //     try {
+            //       await getPostAndUpdateStores({
+            //         parentPostId: get().parentPostId,
+            //         postId: data.first_post_id,
+            //         newPostsCount: postArray.length,
+            //         modalType: get().modalType,
+            //         isAuthenticated: true,
+            //       });
+            //       socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+            //       get().closeModal();
+            //     } catch (error: any) {
+            //       socket.off(SocketIoEvents.POST_MEDIA_UPLOAD_COMPLETE);
+            //       set({ isPostModalLoading: false });
+            //       customLog(["development"], "Error in create post: ", error);
+            //       if (error.response?.data?.message_description) {
+            //         toast.error(error.response.data.message_description);
+            //       } else {
+            //         toast.error("Something went wrong, please try again later");
+            //       }
+            //     }
+            //   }
+            // );
           } else {
             const postToFetchId = response.data.posts[0]._id;
             await getPostAndUpdateStores({
@@ -395,13 +435,13 @@ export const useNewPostStore = create<NewPostStore>()(
               postId: postToFetchId,
               newPostsCount: postArray.length,
               modalType: get().modalType,
+              isAuthenticated: true,
             });
             get().closeModal();
           }
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in create post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in create post: ", error);
           if (error.response?.data?.message_description) {
             toast.error(error.response.data.message_description);
           } else {
@@ -430,7 +470,7 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
-          await axiosNodeApi.patch(`/api/socials/posts/${postId}/edit`, {
+          await axiosApiCenther.patch(`/api/socials/posts/${postId}/edit`, {
             text: post.post_text,
             deleted_media: post.media
               .filter((file) => file.type === "edit" && file.isDeleted)
@@ -443,13 +483,13 @@ export const useNewPostStore = create<NewPostStore>()(
             parentPostId: get().parentPostId,
             postId,
             newPostsCount: 0, // we are only editing the post, not creating new
+            isAuthenticated: true,
           });
           get().closeModal();
           return;
         } catch (error: any) {
           set({ isPostModalLoading: false });
-          customLog("Error in edit post: ", ["development"]);
-          customLog(error, ["development"]);
+          customLog(["development"], "Error in edit post: ", error);
         }
       },
     }),

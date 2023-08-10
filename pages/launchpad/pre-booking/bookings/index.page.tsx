@@ -2,22 +2,18 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
-
 import { BookingList } from "../../_components/presale-components/booking-list";
 import { RewardsList } from "../../_components/presale-components/rewards-list";
 import PreBookingWrapper from "../_components/pre-booking-wrapper";
 
 const PreSale: NextPageWithLayout = () => {
   const { user } = useUser();
-  const { loading, preBookingStats } = usePreBookingStats(
-    user?.account_address
-  );
+  const { loading, preBookingStats } = usePreBookingStats(user?._id);
   const router = useRouter();
   const [bookingsTab, setBookingsTab] = useState<
     "recent-bookings" | "my-bookings" | "my-rewards"
@@ -53,7 +49,7 @@ const PreSale: NextPageWithLayout = () => {
 
   return (
     <div className="h-auto w-full overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
-      <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 py-6 px-4 font-semibold text-white fsm:gap-8 fsm:px-8">
+      <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 px-4 py-6 font-semibold text-white fsm:gap-8 fsm:px-8">
         <button
           onClick={() => {
             router.push({

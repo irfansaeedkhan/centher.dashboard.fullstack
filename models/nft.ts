@@ -1,5 +1,3 @@
-import { User } from "./user";
-
 export interface NFT {
   id: string;
   collection: string;
@@ -38,6 +36,12 @@ export interface CollectionInfo {
   creator: string;
   createHash: string;
   collection: string;
+}
+
+export interface CollectionAdditionalInfo {
+  listedPercent: number;
+  minPrice: number;
+  ownerIncome: number;
 }
 
 export const categories = [

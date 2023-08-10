@@ -1,38 +1,33 @@
-// React, Next, NPM Packages
 import { useCallback, useEffect, useState } from "react";
-
-// App imports
 import { User } from "@/models/user";
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosCIS } from "@/utils/axios";
 
-const useGetNftOwnerDb = (account_address?: string) => {
+const useGetNftOwnerDb = (userId?: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<LoadingState>("idle");
   const [notRegistered, setNotRegistered] = useState<string>("");
   const [imgSrc, setImgSrc] = useState<string>("");
 
   useEffect(() => {
-    if (account_address) {
+    if (userId) {
       setNotRegistered("");
       setImgSrc("");
       setLoading("loading");
       (async () => {
         try {
-          const { data } = await axiosNodeApi.get(
-            `/api/users/${account_address}`
-          );
-          setUser(data.user as User);
+          const { data } = await axiosCIS.get<User>(`/users/${userId}`);
+          setUser(data);
           setLoading("loaded");
         } catch (error) {
-          setNotRegistered(account_address);
+          setNotRegistered(userId);
           setImgSrc("/images/a1.png");
           setUser(null);
           setLoading("failed");
         }
       })();
     }
-  }, [account_address]);
+  }, [userId]);
 
   const mutateUser = useCallback(
     async (userPartial: Partial<User>) => {

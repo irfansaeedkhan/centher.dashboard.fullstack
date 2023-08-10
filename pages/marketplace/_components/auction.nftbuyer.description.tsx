@@ -1,11 +1,7 @@
-// React, Next, NPM Packages
 import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
-
-// App imports
 import { IModalProps } from "@/components/modal/standard.modal";
 import FinalButton from "@/components/button/final.button";
 import {
@@ -32,8 +28,6 @@ import useUser from "@/hooks/use.user";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-
-// same directory
 import AuctionBidModal from "./auction.bid.modal";
 
 interface AuctionNFTBuyerDescriptionProps {
@@ -163,9 +157,9 @@ export const AuctionNFTBuyerDescription = ({
         toast.error("Insufficient BNB Balance in your wallet.");
         return;
       }
+
       setBidModal(false);
       ProceedFunc();
-      let success = false;
       try {
         if (library && data) {
           const result = await BlockchainWrite.callBidOnAuction(
@@ -177,14 +171,11 @@ export const AuctionNFTBuyerDescription = ({
 
           if (result?.length) {
             setNftData();
-            success = true;
-          }
+            SuccessFunc(true, "Bid placed successfully on auctioned on");
+          } else throw new Error();
         }
       } catch (error) {
-        toast.error("something went wrong, please try again later.");
         SuccessFunc(false, "Something went wrong, auction failed");
-      } finally {
-        SuccessFunc(success, "Bid placed successfully on auctioned on");
       }
     },
     [SuccessFunc, bnbBalance, data, library, price]
@@ -197,10 +188,12 @@ export const AuctionNFTBuyerDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(!!result, "Auction has ended for ");
-      setNftData();
+      if (result?.length) {
+        setNftData();
+        SuccessFunc(true, "Auction has ended for ");
+      } else throw new Error();
     } catch (err: any) {
-      toastError(err);
+      SuccessFunc(false, "Something went wrong ");
     }
   };
   const modalTemplateCollection: TemplateCollection = {
@@ -258,7 +251,7 @@ export const AuctionNFTBuyerDescription = ({
             onClick={() => {
               modal.dismissModal();
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         </div>
       ),
@@ -384,7 +377,7 @@ export const AuctionNFTBuyerDescription = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
-          className="w-full rounded-[14px]"
+          className="w-full rounded-[14px] hover:scale-95"
         />
       ) : (
         <div className="buttonContainer flex items-center">
@@ -455,7 +448,7 @@ export const AuctionNFTBuyerDescription = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
@@ -471,8 +464,7 @@ export const AuctionNFTBuyerDescription = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

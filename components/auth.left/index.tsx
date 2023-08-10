@@ -1,11 +1,7 @@
-// React, Next, NPM Packages
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-// App imports
 import { AppRoutes } from "@/constants/app.routes";
-import { LogoText } from "@/assets/svgs";
 
 interface SignupProps {
   title: string;
@@ -17,7 +13,7 @@ export const AuthLeft: React.FC<SignupProps> = (props) => {
   if (props.variant === "desktop") {
     return (
       <section
-        className={`hidden w-1/2 flex-col gap-10 bg-background-shade-1 py-11 px-12 md:flex `}
+        className={`hidden w-1/2 flex-col gap-10 bg-background-shade-1 px-12 py-11 md:flex `}
       >
         <div className={`w-fit`}>
           <Link href={AppRoutes.home}>

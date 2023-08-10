@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
 import { useWeb3React } from "@web3-react/core";
-import { toast } from "react-hot-toast";
-
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "@/components/button/final.button";
 import {
   SpinIcon2,
   Successfully,
   WalletIconModal,
   MetamaskIcon,
 } from "@/assets/svgs";
-
 import { InputField } from "./input.field";
 import { SignupState, FeeModalState } from "./form.fields.data";
 import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
-import Link from "next/link";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -127,19 +125,13 @@ export const RegisterForm: React.FC = () => {
             </div>
           </>
         ) : (
-          <button
-            className={connectButton}
-            type="button"
+          <FinalButton
+            title={"Connect"}
             onClick={() => connectWallet()}
-          >
-            <Image
-              src="/images/metamask_icon.png"
-              alt="metamask_icon.png"
-              width={20}
-              height={20}
-            />
-            <p>Connect</p>
-          </button>
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
         )}
 
         <InputField
@@ -180,13 +172,21 @@ export const RegisterForm: React.FC = () => {
         </div>
 
         {isChecked ? (
-          <button type="button" onClick={openFeeModal} className={button}>
-            Register
-          </button>
+          <FinalButton
+            title={"Register"}
+            onClick={openFeeModal}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
         ) : (
-          <button type="button" className={buttonDisabled} disabled>
-            Register
-          </button>
+          <FinalButton
+            title={"Register"}
+            disabled
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
         )}
 
         <ModalWrapper
@@ -243,15 +243,22 @@ export const RegisterForm: React.FC = () => {
             </div>
             <div>
               {feeModal.status === "start" ? (
-                <button className={button} type="submit">
-                  {Number(feeModal.fee) === 0 ? "Join For Free" : "Pay"}
-                </button>
+                <FinalButton
+                  title={Number(feeModal.fee) === 0 ? "Join For Free" : "Pay"}
+                  variant="primary"
+                  className="flex h-11 w-full items-center justify-center text-[14px]"
+                  borderRounded="14px"
+                />
               ) : (
                 (feeModal.status === "progress" ||
                   feeModal.status === "end") && (
-                  <button className={button2} type="button" disabled>
-                    Ok
-                  </button>
+                  <FinalButton
+                    title={"Ok"}
+                    disabled
+                    variant="primary"
+                    className="flex h-11 w-full items-center justify-center text-[14px]"
+                    borderRounded="14px"
+                  />
                 )
               )}
             </div>
@@ -268,66 +275,6 @@ const wrapper = ctl(`
   w-full 
   h-auto 
   flex-col 
-`);
-
-const button = ctl(`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-gray-shade-5
-  justify-center 
-  !bg-brand-primary 
-  hover:!bg-brand-primary-dark
-  transition-all 
-`);
-
-const buttonDisabled = ctl(`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-gray-shade-7
-  justify-center 
-  !bg-gray-shade-3
-  cursor-not-allowed
-  transition-all 
-`);
-
-const connectButton = ctl(`
-  mt-6 
-  py-3 
-  flex
-  gap-2
-  w-full 
-  font-bold 
-  rounded-lg 
-  items-center 
-  transition-all 
-  justify-center 
-  !bg-brand-primary 
-  text-gray-shade-5 
-  hover:!bg-brand-primary-dark
-`);
-
-const button2 = ctl(`
-  mt-2 
-  py-3 
-  flex 
-  w-full 
-  font-bold 
-  rounded-lg
-  items-center 
-  text-[#7C81A2] 
-  justify-center 
-  !bg-black-shade-7
-  cursor-not-allowed
 `);
 
 const feeWrapper = ctl(`

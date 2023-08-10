@@ -1,5 +1,4 @@
 import { INFTData } from "@/pages/marketplace/_components/create.nft.form";
-
 import { INFTDetails } from "./interfaces/nft.details.interface";
 import { NFTMetaData } from "./interfaces/nft.metadata.interface";
 import { IUploader } from "./interfaces/file.uploader.interface";
@@ -30,7 +29,7 @@ export class NFTUploader {
 
     const uploadImageDto = {
       path: this._uploader.makePath(),
-      content: file.toString("base64"),
+      content: file,
     };
 
     const imagePath = await this._uploader.upload(uploadImageDto);
@@ -38,7 +37,7 @@ export class NFTUploader {
     const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
     const uploadMetaDataDto = {
       path: this._uploader.makePath("json"),
-      content: metaDataBuffered.toString("base64"),
+      content: metaDataBuffered,
     };
 
     const metaDataPath = await this._uploader.upload(uploadMetaDataDto);

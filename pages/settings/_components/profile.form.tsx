@@ -2,12 +2,10 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-
 import FinalButton from "@/components/button/final.button";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
-
+import { updateMe } from "@/lib/user";
 import { InputField } from "./input.field";
 import ProfilePicture from "./profile.picture";
 
@@ -33,25 +31,16 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
     button.disabled = true;
     setisLoading("loading");
     try {
-      const { data } = await axiosNodeApi.patch("/api/users/me", {
+      const updatedUserRes = await updateMe({
         pseudonym: updatedUser.pseudonym,
         first_name: updatedUser.first_name,
         last_name: updatedUser.last_name,
         display_name_field: updatedUser.display_name_field,
-        website_url: updatedUser.website_url,
-        twitter_username: updatedUser.twitter_username,
-        profile_bio: updatedUser.profile_bio,
-        facebook_username: updatedUser.facebook_username,
-        instagram_username: updatedUser.instagram_username,
-        tiktok_username: updatedUser.tiktok_username,
-        twitch_username: updatedUser.twitch_username,
-        onlyfans_username: updatedUser.onlyfans_username,
-        youtube_url: updatedUser.youtube_url,
       });
 
-      setUpdatedUser(data.user as LoggedInUser);
+      setUpdatedUser(updatedUserRes as LoggedInUser);
 
-      await mutate("/api/users/me", data.user, false);
+      await mutate("/api/users/me", updatedUserRes, false);
 
       toast.success("Profile updated successfully");
       setisLoading("loaded");
@@ -72,6 +61,26 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
     <div className="flex items-center justify-center">
       <div className="flex w-full flex-col gap-6">
         <ProfilePicture user={props.user} />
+
+        <div className="flex flex-col gap-2">
+          <label className={`text-sm text-white`}>Display Name Field</label>
+          <select
+            onChange={(e) => {
+              setUpdatedUser({
+                ...updatedUser,
+                display_name_field: e.target
+                  .value as LoggedInUser["display_name_field"],
+              });
+              setIsModified(true);
+            }}
+            value={updatedUser.display_name_field}
+            className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
+          >
+            <option value="pseudonym">Pseudonym</option>
+            <option value="real_name">Real Name</option>
+            <option value="account_address">Account Address</option>
+          </select>
+        </div>
 
         <InputField
           id="pseudonym"
@@ -118,26 +127,6 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
               }}
             />
           </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <label className={`text-sm text-white`}>Display Name Field</label>
-          <select
-            onChange={(e) => {
-              setUpdatedUser({
-                ...updatedUser,
-                display_name_field: e.target
-                  .value as LoggedInUser["display_name_field"],
-              });
-              setIsModified(true);
-            }}
-            value={updatedUser.display_name_field}
-            className={`w-full rounded-lg border-0 bg-[#1E1E21] py-3 px-5 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
-          >
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
-          </select>
         </div>
 
         <FinalButton

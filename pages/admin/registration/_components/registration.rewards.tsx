@@ -43,7 +43,7 @@ const RegistrationRewards = ({
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Total earnings
           </div>
-          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">
               {`${normalizeValue(
                 formatNum2DispNum(claimableBNB + claimedBNB)
@@ -55,7 +55,7 @@ const RegistrationRewards = ({
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimed
           </div>
-          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">
               {`${normalizeValue(formatNum2DispNum(claimedBNB))} (BNB)`}
             </p>
@@ -65,7 +65,7 @@ const RegistrationRewards = ({
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimable
           </div>
-          <div className="mt-4 mb-3 flex items-center justify-between gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">
               {`${normalizeValue(formatNum2DispNum(claimableBNB))} (BNB)`}
             </p>

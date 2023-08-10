@@ -1,12 +1,11 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { copyText } from "@/utils/copy.text";
 import clsx from "clsx";
-
-import { AppRoutes } from "@/constants/app.routes";
 import { toast } from "react-hot-toast";
 import { FiCopy } from "react-icons/fi";
+import { copyText } from "@/utils/copy.text";
+import { AppRoutes } from "@/constants/app.routes";
 
 const BuyCentherWrapper = () => {
   const router = useRouter();
@@ -23,7 +22,7 @@ const BuyCentherWrapper = () => {
             },
           }}
           className={clsx(
-            `min-w-fit max-w-max rounded-10px py-2 px-4 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
+            `min-w-fit max-w-max rounded-10px px-4 py-2 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
             router.query.round === "0"
               ? `bg-brand-primary text-black-shade-3`
               : `bg-transparent text-gray-shade-7`
@@ -40,7 +39,7 @@ const BuyCentherWrapper = () => {
             },
           }}
           className={clsx(
-            `pointer-events-none min-w-fit max-w-max rounded-10px py-2 px-4 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
+            `pointer-events-none min-w-fit max-w-max rounded-10px px-4 py-2 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
             router.query.round === "1"
               ? `bg-brand-primary text-black-shade-3`
               : `bg-transparent text-gray-shade-7`
@@ -57,7 +56,7 @@ const BuyCentherWrapper = () => {
             },
           }}
           className={clsx(
-            `pointer-events-none min-w-fit max-w-max rounded-10px py-2 px-4 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
+            `pointer-events-none min-w-fit max-w-max rounded-10px px-4 py-2 text-center text-sm font-bold transition-all duration-100 hover:bg-brand-primary hover:text-black-shade-3`,
             router.query.round === "2"
               ? `bg-brand-primary text-black-shade-3`
               : `bg-transparent text-gray-shade-7`

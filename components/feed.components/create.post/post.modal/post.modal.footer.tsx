@@ -1,11 +1,12 @@
 import React from "react";
 import clsx from "clsx";
-import { CgSpinner } from "react-icons/cg";
 
 import { useNewPostStore } from "@/store/new.post.store";
 
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
 import { PostTextCounter } from "./post.text.counter";
+import FinalButton from "@/components/button/final.button";
+import { LoaderSpinner } from "@/assets/svgs";
 
 const PostModalFooter: React.FC = () => {
   const {
@@ -63,13 +64,14 @@ const PostModalFooter: React.FC = () => {
           </button>
         )}
       </div>
-      <button
-        className={clsx(
-          `text-14px block select-none rounded-xl bg-brand-primary py-2 px-8 text-center font-bold text-black-shade-3 fsm:col-span-1`,
-          {
-            "col-span-full mt-4 fsm:mt-0": modalType !== "edit",
-          }
-        )}
+      <FinalButton
+        loaderIcon={
+          isPostModalLoading &&
+          ((
+            <LoaderSpinner className="inline-block h-4 w-4 animate-spin" />
+          ) as any)
+        }
+        title={modalType === "edit" ? "Save" : "Post"}
         onClick={() => {
           if (isPostModalLoading) return; // using this to prevent multiple clicks because button disabled method is not working
           if (modalType === "edit") {
@@ -80,15 +82,15 @@ const PostModalFooter: React.FC = () => {
             return;
           }
         }}
-      >
-        {isPostModalLoading ? (
-          <CgSpinner className="inline-block h-4 w-4 animate-spin" />
-        ) : modalType === "edit" ? (
-          "Save"
-        ) : (
-          "Post"
+        variant="primary"
+        className={clsx(
+          `text-14px block select-none rounded-xl px-8 py-2 text-center fsm:col-span-1`,
+          {
+            "col-span-full mt-4 fsm:mt-0": modalType !== "edit",
+          }
         )}
-      </button>
+        borderRounded="14px"
+      />
     </div>
   );
 };

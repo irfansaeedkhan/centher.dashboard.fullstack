@@ -2,13 +2,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { User } from "@/models/user";
+import { ClipboardList, Followers, Following, Referrals } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
 import ProfileModal from "@/components/modal/profile.modal";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { useGetProfileCardDetails } from "./use.get.profile.card.details";
 
 interface ProfileDetailCardProps {
@@ -31,14 +30,14 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   return (
     <div
       className={clsx(
-        `relative w-11/12 overflow-hidden rounded-10px bg-background-shade-3 pt-12 text-center fsm:w-[272px]`,
+        `relative h-auto w-11/12 overflow-hidden rounded-10px bg-background-shade-3 pt-12 text-center fsm:w-[272px]`,
         !!profileCardDetails.posts_views_count && `pb-4`
       )}
     >
       <div
-        className={`absolute top-0 left-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
+        className={`absolute left-0 top-0 h-[84px] w-full  bg-cover bg-center bg-no-repeat`}
         style={{
-          backgroundImage: `url(${user?.cover_image.path})`,
+          backgroundImage: `url(${user?.cover_image})`,
         }}
       ></div>
 
@@ -47,7 +46,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         onClick={handleImageClick}
       >
         <Image
-          src={user.profile_image.path}
+          src={user.profile_image}
           className={`mx-auto h-[60px] w-[60px] cursor-pointer rounded-full object-cover`}
           alt={user.display_name}
           width={60}
@@ -59,9 +58,9 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       <h3 className={`p-2`}>
         <Link
           href={{
-            pathname: AppRoutes.profile.account_address,
+            pathname: AppRoutes.profile.user_id,
             query: {
-              account_address: user.account_address,
+              user_id: user._id,
             },
           }}
           title={user.display_name}
@@ -78,13 +77,15 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
           >
             {user && sliceDisplayName(user.display_name)}
           </span>
-          {!!verificationTick && (
-            <span className="verifiedIcon ml-1 h-5 w-5  min-w-[1.25rem]">
+          {verificationTick && (
+            <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
               <Image
                 src={verificationTick}
-                alt={"Verified"}
-                width={20}
-                height={20}
+                alt={
+                  user.membership.status === "citizen" ? "Citizen" : "Verified"
+                }
+                width={16}
+                height={16}
               />
             </span>
           )}
@@ -92,37 +93,45 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       </h3>
 
       <div
-        className={`flex items-center justify-center gap-2 bg-background-shade-2 py-3 px-7`}
+        className={`flex flex-col items-center justify-center gap-2 bg-elevation-1 px-4 py-3`}
       >
-        <div>
-          <div>
-            <h4 className={clsx(label, `mb-2`)}>Posts</h4>
+        <div className="flex w-full items-center justify-between gap-10">
+          <div className="flex w-1/2 flex-col items-start">
+            <div className="mb-2 flex items-center gap-[6px]">
+              <ClipboardList />
+              <h4 className={clsx(label)}>Posts</h4>
+            </div>
             <h5 className={clsx(count)}>
               {profileCardDetails.posts_count ?? "--"}
             </h5>
           </div>
+          <div className="flex w-1/2 flex-col items-start">
+            <div className="mb-2 flex items-center gap-[6px]">
+              <Referrals />
+              <h4 className={clsx(label)}>Referrals</h4>
+            </div>
+            <h5 className={clsx(count)}>
+              {profileCardDetails.total_referrees ?? "--"}
+            </h5>
+          </div>
         </div>
-        <div>
-          <div>
-            <h4 className={clsx(label, `mb-2`)}>Followers</h4>
+        <div className="flex w-full items-center justify-between gap-10">
+          <div className="flex w-1/2 flex-col items-start">
+            <div className="mb-2 flex items-center gap-[6px]">
+              <Followers />
+              <h4 className={clsx(label)}>Followers</h4>
+            </div>
             <h5 className={clsx(count)}>
               {profileCardDetails.followers_count ?? "--"}
             </h5>
           </div>
-        </div>
-        <div>
-          <div>
-            <h4 className={clsx(label, `mb-2`)}>Following</h4>
+          <div className="flex w-1/2 flex-col items-start">
+            <div className="mb-2 flex items-center gap-[6px]">
+              <Following />
+              <h4 className={clsx(label)}>Following</h4>
+            </div>
             <h5 className={clsx(count)}>
               {profileCardDetails.following_count ?? "--"}
-            </h5>
-          </div>
-        </div>
-        <div>
-          <div>
-            <h4 className={clsx(label, `mb-2`)}>Referrals</h4>
-            <h5 className={clsx(count)}>
-              {profileCardDetails.total_referrees ?? "--"}
             </h5>
           </div>
         </div>
@@ -131,7 +140,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       {(profileCardDetails.profile_views_count === 0 ||
         profileCardDetails.profile_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
-          <h5 className={clsx(label)}>Your Profile Viewed By</h5>
+          <h5 className={clsx(label)}>Your Profile viewed by</h5>
           <h6 className={clsx(countBrand)}>
             {profileCardDetails.profile_views_count}
           </h6>
@@ -141,7 +150,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
       {(profileCardDetails.posts_views_count === 0 ||
         profileCardDetails.posts_views_count) && (
         <div className={`flex items-center justify-between px-4 py-2`}>
-          <h5 className={clsx(label)}>Your Posts Views</h5>
+          <h5 className={clsx(label)}>Your Posts views</h5>
           <h6 className={clsx(countBrand)}>
             {" "}
             {profileCardDetails.posts_views_count}
@@ -149,10 +158,7 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
         </div>
       )}
       {isModalOpen && (
-        <ProfileModal
-          onClose={handleCloseModal}
-          src={user.profile_image.path}
-        />
+        <ProfileModal onClose={handleCloseModal} src={user.profile_image} />
       )}
     </div>
   );
@@ -160,4 +166,4 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
 
 const label = `text-12px font-medium text-gray-shade-7`;
 const count = `text-14px font-semibold text-white`;
-const countBrand = `text-12px font-semibold text-brand-primary`;
+const countBrand = `text-12px font-semibold textGradient`;

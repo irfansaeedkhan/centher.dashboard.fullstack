@@ -1,13 +1,12 @@
 import { useEffect } from "react";
 import { io } from "socket.io-client";
-
 import { useSocketIOStore } from "@/store/socket.io.store";
 import { useCountsStore } from "@/store/counts.store";
 import useUser from "@/hooks/use.user";
-import { getBackendUrl } from "@/constants/common";
 import { SocketIoEvents } from "@/constants/socket-io-events";
+import { CAPIBaseURL } from "@/constants/base-urls";
 
-const BACKEND_WS_URL = getBackendUrl("ws", "frontend-to-backend");
+const BACKEND_WS_URL = CAPIBaseURL.split("http").join("ws");
 
 export const useCreateSocketIOConnection = () => {
   const { user, updateUser } = useUser();

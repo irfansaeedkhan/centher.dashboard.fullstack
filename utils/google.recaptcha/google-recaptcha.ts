@@ -8,10 +8,10 @@ export const useRecaptcha = () => {
 
   const submitRecaptcha = useCallback(async (): Promise<boolean> => {
     if (!executeRecaptcha) {
-      customLog("Execute recaptcha not yet available", [
-        "development",
-        "staging",
-      ]);
+      customLog(
+        ["development", "staging"],
+        "Execute recaptcha not yet available"
+      );
       return false;
     }
 

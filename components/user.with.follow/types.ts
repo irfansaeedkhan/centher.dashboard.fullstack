@@ -1,11 +1,9 @@
+import { User } from "@/models/user";
+
 export interface IUserWithFollow {
-  _id: string;
-  display_name: string;
-  account_address: string;
-  profile_image: {
-    path: string;
-    object_name: string;
-  };
+  _id: User["_id"];
+  display_name: User["display_name"];
+  profile_image: User["profile_image"];
+  membership: User["membership"];
   is_followed_by_loggedin_user: boolean;
-  is_verified: boolean;
 }

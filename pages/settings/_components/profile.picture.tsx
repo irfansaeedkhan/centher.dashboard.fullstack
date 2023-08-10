@@ -1,17 +1,13 @@
 import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { useSWRConfig } from "swr";
 import axios from "axios";
 import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-
+import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import FinalButton from "@/components/button/final.button";
 import { LoggedInUser, UserImage } from "@/models/user";
-import { axiosNodeApi } from "@/utils/axios";
-import { updateUserImage } from "@/utils/user.helpers";
 import { AvatarIcon, UploadIcon } from "@/assets/svgs";
-
 import AvatarModal from "./avatar.modal";
 import SelfieModal from "./selfie.modal";
 import CropProfilePicture from "./crop-profile-picture";
@@ -21,7 +17,6 @@ interface ProfilePictureProps {
 }
 
 const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
-  const { mutate } = useSWRConfig();
   const [isLoading, setIsLoading] = useState("idle");
   const [cropModal, setCropModal] = useState(false);
   const [profileImage, setProfileImage] = useState(user.profile_image);
@@ -42,11 +37,10 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
   useOnClickOutside(ref, handleClickOutside);
 
   const handleSelectAvatar = (avatar: UserImage) => {
-    setProfileImage(avatar);
+    setProfileImage(avatar.path);
     updateUserImage({
       type: "profile_image",
       object_name: avatar.object_name,
-      path: avatar.path,
     });
     toast.success("Profile image updated successfully");
   };
@@ -73,11 +67,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     });
 
     // Update profile image in state with base64 image
-
-    setProfileImage({
-      path: URL.createObjectURL(file),
-      object_name: file.name,
-    });
+    setProfileImage(URL.createObjectURL(file));
     setUploadFile(file);
   };
 
@@ -91,15 +81,19 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 
     try {
       // Get pre-signed URL from API
-      const { data } = await axiosNodeApi.get(
-        "/api/s3-upload/user-image?filename=" + profileImage.object_name
+      const data = await getUserImageUploadUrl(
+        profileImageData.object_name,
+        "profile_image"
       );
 
       // Create form data
       const presignedPostData = data.presignedPostData;
       const formData = new FormData();
       Object.keys(presignedPostData.fields).forEach((key) => {
-        formData.append(key, presignedPostData.fields[key]);
+        formData.append(
+          key,
+          presignedPostData.fields[key as keyof typeof presignedPostData.fields]
+        );
       });
       formData.append("file", uploadFile);
 
@@ -112,14 +106,8 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       updateUserImage({
         type: "profile_image",
         object_name: data.objectName,
-        path: profileImageData.path,
       });
 
-      await mutate(
-        "/api/users/me",
-        { ...user, profile_image: profileImageData },
-        false
-      );
       toast.success("Profile picture updated successfully!");
       setProfileImageData({
         path: "",
@@ -149,7 +137,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
     <div className="">
       <div className="flex  items-center gap-2">
         <Image
-          src={profileImage.path}
+          src={profileImage}
           width={80}
           height={80}
           alt="display-picture"
@@ -195,7 +183,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
           <FinalButton
             title="Choose Image"
             variant="primary"
-            className={connectButton}
+            className="text-14px"
             onClick={() => setIsMenuOpen(true)}
           />
         )}
@@ -288,6 +276,3 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
 export default ProfilePicture;
 
 const fieldTitle = `relative text-sm flex flex-col text-white`;
-
-const connectButton = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-black bg-brand-primary hover:bg-brand-primary-dark transition-all`;
-const connectButtonDiscard = `mt-2 py-2 px-3 flex w-fit font-semibold text-sm rounded-lg justify-center text-brand-primary bg-gray-shade-3 transition-all`;

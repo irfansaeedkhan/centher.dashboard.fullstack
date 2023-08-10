@@ -11,6 +11,7 @@ export class CollectionBlackList {
           "0xc8f27287373061c993cd9f73f7a4ce87eb1002e7",
           "0xdf0c0d515aa8c73fe50eef65afecef425a6450f6",
           "0xe9ee190f98af25616d8cd1928a7da2ea3a5c252d",
+          "0x682637978334affef87a612631a269b38c02ac37",
         ]
       : [
           "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
@@ -483,6 +484,33 @@ export class TokenBlackList {
     return (
       this.blackList.findIndex(
         (e) => e.collection == address && +e.tokenId == tokenId
+      ) != -1
+    );
+  }
+}
+
+export class GlobalTokenBlackList {
+  private static blackList: { collection: string; tokenId: string }[] =
+    process.env.NEXT_PUBLIC_APP_ENV === "production"
+      ? [
+          {
+            collection: "0x08b660beec8d1f9a0162e3c04416c84eac8d334b",
+            tokenId: "1",
+          },
+        ]
+      : [
+          {
+            collection: "0x4c971b621e15dc8abfc03ce3dcccf6cb63a848ae",
+            tokenId: "7",
+          },
+        ];
+
+  static isBlocked(address: string, tokenId: number): boolean {
+    return (
+      this.blackList.findIndex(
+        (e) =>
+          e.collection.toLowerCase().trim() === address.toLowerCase().trim() &&
+          +e.tokenId == tokenId
       ) != -1
     );
   }

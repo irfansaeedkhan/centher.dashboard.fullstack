@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import clsx from "clsx";
-
 import { useSearchStore } from "@/store/search.store";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import { IUserWithFollow } from ".";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import Image from "next/image";
+import { IUserWithFollow } from ".";
 
 const Searchbar = () => {
   const router = useRouter();
@@ -54,7 +53,7 @@ const Searchbar = () => {
     if (e.target.value.trim() === "") {
       setOpenPopup(false);
     } else {
-      await axiosNodeApi
+      await axiosApiCenther
         .get(`/api/search?q=${e.target.value}&limit=5&offset=0`)
         .then((res) => {
           setResult(res.data.search_results);
@@ -85,7 +84,7 @@ const Searchbar = () => {
           <SearchIcon />
         </button>
         {openPopup && (
-          <div className="absolute top-12 left-0 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md">
+          <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md">
             <div>
               {result.map((item) => {
                 return (
@@ -125,7 +124,10 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
       {/* <SearchIcon /> */}
       <Link
         onClick={onClick}
-        href={`/profile/${item.account_address}`}
+        href={{
+          pathname: AppRoutes.profile.user_id,
+          query: { user_id: item._id },
+        }}
         className={clsx(
           `word-break flex items-center truncate text-sm font-medium text-white hover:text-brand-primary`
         )}
@@ -140,9 +142,11 @@ const SearchResultItem: React.FC<SearchResultItemProps> = ({
           <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
             <Image
               src={verificationTick}
-              alt={"Verified"}
-              width={20}
-              height={20}
+              alt={
+                item.membership.status === "citizen" ? "Citizen" : "Verified"
+              }
+              width={16}
+              height={16}
             />
           </span>
         )}

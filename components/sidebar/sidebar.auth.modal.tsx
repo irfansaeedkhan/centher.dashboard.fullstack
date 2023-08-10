@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
-
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "../button/final.button";
 
 const SidebarAuthModal: React.FC = () => {
   return (
@@ -11,17 +11,21 @@ const SidebarAuthModal: React.FC = () => {
       <div className={`text-2xl font-semibold text-white`}>
         Get in to trading
       </div>
-      <Link
-        href={AppRoutes.auth.register}
-        className={`w-full rounded-[10px] bg-brand-primary py-1 text-center font-semibold text-black-shade-7 hover:bg-brand-primary-dark`}
-      >
-        Register
+      <Link href={AppRoutes.auth.register}>
+        <FinalButton
+          title={"Register"}
+          variant="primary"
+          className="h-10 w-[98px] text-[14px]"
+          borderRounded="14px"
+        />
       </Link>
-      <Link
-        href={AppRoutes.auth.login}
-        className={`w-full rounded-[10px] bg-black-shade-3 py-1 text-center font-semibold text-gray-shade-7`}
-      >
-        Connect
+      <Link href={AppRoutes.auth.login}>
+        <FinalButton
+          title={"Connect"}
+          variant="primary"
+          className="h-10 w-[98px] text-[14px]"
+          borderRounded="14px"
+        />
       </Link>
     </div>
   );

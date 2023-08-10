@@ -2,9 +2,10 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import moment from "moment";
 
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosApiCenther } from "@/utils/axios";
 import { LoadingState } from "@/models/common";
 import { Notification } from "@/assets/svgs";
+import { User } from "@/models/user";
 
 export interface NotificationsStore {
   notifications: Notification[];
@@ -41,7 +42,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
           const url = `/api/notifications?offset=${offset}&limit=${limit}`;
 
-          const { data } = await axiosNodeApi.get(url);
+          const { data } = await axiosApiCenther.get(url);
 
           set((state) => {
             const filteredNotifications = state.notifications.filter(
@@ -76,7 +77,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
       fetchNewNotifications: async () => {
         try {
           const limit = get().limit;
-          const { data } = await axiosNodeApi.get(
+          const { data } = await axiosApiCenther.get(
             `/api/notifications?limit=${limit}`
           );
 
@@ -118,7 +119,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       markAsRead: async (id) => {
         try {
-          await axiosNodeApi.patch(`/api/notifications/${id}`);
+          await axiosApiCenther.patch(`/api/notifications/${id}`);
           set((state) => ({
             notifications: state.notifications.map((notification) =>
               notification._id === id
@@ -134,7 +135,7 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
       markAllAsRead: async () => {
         try {
-          await axiosNodeApi.patch(`/api/notifications`);
+          await axiosApiCenther.patch(`/api/notifications`);
         } catch (error) {
           process.env.NEXT_PUBLIC_APP_ENV !== "production" &&
             console.error(error);
@@ -147,21 +148,14 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
 interface NotificationPost {
   _id: string;
-  user: {
-    _id: string;
-    account_address: string;
-  };
+  user_id: string;
 }
 
 interface NotificationBy {
-  _id: string;
-  display_name: string;
-  profile_image: {
-    path: string;
-    object_name: string;
-  };
-  account_address: string;
-  is_verified: boolean;
+  _id: User["_id"];
+  display_name: User["display_name"];
+  profile_image: User["profile_image"];
+  membership: User["membership"];
 }
 
 interface BaseNotification {
@@ -235,7 +229,7 @@ interface PresaleBookingNotification extends BaseNotification {
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];
-    is_verified: NotificationBy["is_verified"];
+    membership: NotificationBy["membership"];
   };
 }
 
@@ -249,7 +243,7 @@ interface PresaleBookingReferralNotification extends BaseNotification {
   by: {
     display_name: NotificationBy["display_name"];
     profile_image: NotificationBy["profile_image"];
-    is_verified: NotificationBy["is_verified"];
+    membership: NotificationBy["membership"];
   };
 }
 

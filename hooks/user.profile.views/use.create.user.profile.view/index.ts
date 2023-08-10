@@ -1,8 +1,5 @@
-// React, Next, NPM Packages
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
-// Current directory imports
 import { createProfileView } from "./create.profile.view";
 
 export const useCreateUserProfileView = () => {
@@ -13,13 +10,11 @@ export const useCreateUserProfileView = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const account_address = router.query.account_address
-      ?.toString()
-      ?.toLowerCase();
-    if (account_address) {
+    const user_id = router.query.user_id?.toString()?.toLowerCase();
+    if (user_id) {
       (async () => {
         try {
-          const res = await createProfileView(account_address, controller);
+          const res = await createProfileView(user_id, controller);
           setUserProfileViews(res.views_count);
         } catch (error: any) {
           process.env.NODE_ENV !== "production" && console.dir(error);
@@ -31,7 +26,7 @@ export const useCreateUserProfileView = () => {
     return () => {
       controller?.abort();
     };
-  }, [router.query.account_address]);
+  }, [router.query.user_id]);
 
   return {
     userProfileViews,

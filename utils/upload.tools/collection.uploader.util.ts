@@ -1,10 +1,8 @@
 import { ICollectionData } from "@/pages/marketplace/_components/create.collection.form";
-
 import { INFTDetails } from "./interfaces/nft.details.interface";
 import { IUploader } from "./interfaces/file.uploader.interface";
 import { MoralisUploader } from "./uploaders/moralis.upload.util";
 import { ICollectionMetaData } from "./interfaces/collection.metadata.interface";
-import { readFileAsync } from "../file.reader.util";
 
 export class CollectionUploader {
   _uploader: IUploader;
@@ -30,7 +28,7 @@ export class CollectionUploader {
 
     const uploadCoverDto = {
       path: this._uploader.makePath(),
-      content: file.toString("base64"),
+      content: file,
     };
 
     const coverImagePath = await this._uploader.upload(uploadCoverDto);
@@ -43,7 +41,7 @@ export class CollectionUploader {
 
     const uploadMetaDataDto = {
       path: this._uploader.makePath("json"),
-      content: metaDataBuffered.toString("base64"),
+      content: metaDataBuffered,
     };
 
     const metaDataPath = await this._uploader.upload(uploadMetaDataDto);

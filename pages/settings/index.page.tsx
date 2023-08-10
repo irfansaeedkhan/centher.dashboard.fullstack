@@ -1,11 +1,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "usehooks-ts";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AppRoutes } from "@/constants/app.routes";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-
 import SettingsSidebar from "./_components/settings.sidebar";
 
 const Setting: NextPageWithLayout = () => {

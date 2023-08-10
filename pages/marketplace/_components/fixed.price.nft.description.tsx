@@ -187,18 +187,15 @@ export const FixedPriceNFTDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
-      }
+        setupSuccessModal(
+          success,
+          "Congratulations! You have successfully canceled your listing of NFT "
+        );
+      } else throw new Error();
     } catch (error) {
-      toast.error("something went wrong, please try again later");
       setupSuccessModal(
         false,
         "Something went wrong. canceling your listing failed. please refresh the page or try later."
-      );
-    } finally {
-      setupSuccessModal(
-        success,
-        "Congratulations! You have successfully canceled your listing of NFT "
       );
     }
   };
@@ -206,7 +203,6 @@ export const FixedPriceNFTDescription = ({
   const handleEditPrice = async (newPrice: any) => {
     let result;
     setupWaitingModal();
-    let success = false;
     try {
       validateProvider();
       if (!data?.collection || !data?.nftId || !newPrice) {
@@ -224,18 +220,17 @@ export const FixedPriceNFTDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
+        setupSuccessModal(
+          true,
+          "Congratulations! You have successfully updated price of your NFT "
+        );
+      } else {
+        throw new Error();
       }
     } catch (err) {
-      toast.error("something went wrong, please try again later");
       setupSuccessModal(
         false,
         "Something went wrong. please refresh the page or try later."
-      );
-    } finally {
-      setupSuccessModal(
-        success,
-        "Congratulations! You have successfully updated price of your NFT "
       );
     }
   };
@@ -371,7 +366,7 @@ export const FixedPriceNFTDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -423,7 +418,7 @@ export const FixedPriceNFTDescription = ({
           title={"Cancel Listing"}
           variant="secondary"
           onClick={setupCancelItemPriceModal}
-          className="w-full rounded-[14px]"
+          className="w-full rounded-[14px] hover:scale-95"
         />
         <FinalButton
           title={"Edit"}
@@ -431,7 +426,7 @@ export const FixedPriceNFTDescription = ({
             setupBidNftModal();
           }}
           variant="primary"
-          className="w-full"
+          className="w-full hover:scale-95"
         />
       </div>
 

@@ -12,23 +12,21 @@ import { useInView } from "react-intersection-observer";
 import { TiSocialFacebook, TiSocialTwitter } from "react-icons/ti";
 import { RiShareForwardLine } from "react-icons/ri";
 import { TbWorld } from "react-icons/tb";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { Filter, useCollectionStore } from "@/store/collection.store";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import Button from "@/components/button";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
-
 import {
   DotsIcon,
   FacebookCircleIcon,
@@ -71,6 +69,8 @@ const Collection: NextPageWithLayout = () => {
     limit,
     loadingCollectionInfo,
     loadingNFTs,
+    collectionAdditionalDetails,
+    updateCollectionAdditionalInfo,
   } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,
@@ -83,6 +83,8 @@ const Collection: NextPageWithLayout = () => {
     limit: state.limit,
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
+    collectionAdditionalDetails: state.collectionAdditionalDetails,
+    updateCollectionAdditionalInfo: state.updateCollectionAdditionalInfo,
   }));
 
   const { user } = useGetUser(info?.creator);
@@ -127,7 +129,14 @@ const Collection: NextPageWithLayout = () => {
     if (collection) {
       fetchCollectionInfo(collection as string);
     }
-  }, [collection, fetchCollectionInfo]);
+
+    if (collection && info?.creator) {
+      updateCollectionAdditionalInfo(
+        collection as string,
+        info.creator as string
+      );
+    }
+  }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo, info]);
 
   useOnClickOutside(menuRef, () => {
     setIsMenuVisible(false);
@@ -139,6 +148,23 @@ const Collection: NextPageWithLayout = () => {
   const toggleMobileMenu = async () => {
     setIsMobileMenuVisible((prev) => !prev);
   };
+
+  // Remove the blacklisted nft from the nfts data array
+  const filteredNFTs = nfts.filter((item) => {
+    return !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId);
+  });
+
+  function formatNumber(number?: number | string) {
+    if (typeof number === "number") {
+      const formatter = new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        maximumSignificantDigits: 4,
+      });
+      return formatter.format(number);
+    } else {
+      return "N/A";
+    }
+  }
 
   return (
     <div className={dashboardContentContainer}>
@@ -326,7 +352,7 @@ const Collection: NextPageWithLayout = () => {
                       href={{
                         pathname: AppRoutes.profile.nfts,
                         query: {
-                          account_address: info?.creator,
+                          user_id: info?.creator,
                         },
                       }}
                       className={clsx(
@@ -338,12 +364,16 @@ const Collection: NextPageWithLayout = () => {
                         {user && sliceDisplayName(user?.display_name)}
                       </span>
                       {!!verificationTick && (
-                        <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                        <span className="verifiedIcon ml-1 inline-flex h-5 w-5 min-w-[1.25rem]">
                           <Image
                             src={verificationTick}
-                            alt={"Verified"}
-                            width={20}
-                            height={20}
+                            alt={
+                              user?.membership.status === "citizen"
+                                ? "Citizen"
+                                : "Verified"
+                            }
+                            width={16}
+                            height={16}
                           />
                         </span>
                       )}
@@ -351,34 +381,66 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
                 <div className={detailsCard}>
-                  <div className="text-center">
+                  <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Items</h4>
                     <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
                   </div>
-                  {/* <div className="text-center">
-                  <h4 className={detailsCardTitle}>Owner</h4>
-                  <h5 className={detailsCardValue}>2.1k</h5>
-                </div>
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Floor Price</h4>
-                  <h5 className={detailsCardValue}>$108.56</h5>
-                </div> */}
-                  {/* <div className="text-center">
-                  <h4 className={detailsCardTitle}>Market Price</h4>
-                  <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
-                </div> */}
-                  <div className="text-center">
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Listed</h4>
+                    <h5 className={detailsCardValue}>
+                      {collectionAdditionalDetails?.listedPercent}%
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Owner</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {collectionAdditionalDetails?.ownerIncome &&
+                      collectionAdditionalDetails?.ownerIncome > 0
+                        ? formatNumber(
+                            formatBNB2USD(
+                              collectionAdditionalDetails?.ownerIncome,
+                              bnbPrice
+                            )
+                          )
+                        : 0}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Floor Price</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {collectionAdditionalDetails?.minPrice &&
+                      collectionAdditionalDetails?.minPrice > 0
+                        ? formatNumber(
+                            formatBNB2USD(
+                              collectionAdditionalDetails?.minPrice,
+                              bnbPrice
+                            )
+                          )
+                        : 0}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Market Price</h4>
+                    <h5 className={detailsCardValue}>
+                      ${formatNumber(Number(info?.tradingVolumn))}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Total Volume</h4>
                     <h5 className={detailsCardValue}>
                       $
-                      {info?.tradingVolumn
-                        ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
-                        : 0}
+                      {formatNumber(
+                        info?.tradingVolumn && info?.tradingVolumn > 0
+                          ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
+                          : 0
+                      )}
                     </h5>
                   </div>
                 </div>
               </div>
-              <div className={`mt-6 mb-4`}>
+              <div className={`mb-4 mt-6`}>
                 <p className={profileDescription}>{metadata?.description}</p>
               </div>
             </div>
@@ -393,7 +455,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"All"}
                   variant={filter === "All" ? "v1" : "v2"}
-                  className="py-2 px-4  fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2  fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("All");
                   }}
@@ -401,7 +463,7 @@ const Collection: NextPageWithLayout = () => {
                 <Button
                   title={"Listed For Sale"}
                   variant={filter === "List" ? "v1" : "v2"}
-                  className="py-2 px-4 fsm:max-w-fit fsm:py-4"
+                  className="px-4 py-2 fsm:max-w-fit fsm:py-4"
                   onClick={() => {
                     setFilter("List");
                   }}
@@ -419,7 +481,7 @@ const Collection: NextPageWithLayout = () => {
           </div>
           <div className="tabsContent mt-10">
             <div className={`${nftCardWrapper} nftCardContainer`}>
-              {nfts.map((data) => {
+              {filteredNFTs.map((data) => {
                 return <NFTCard data={data} key={data.id} />;
               })}
               {(loadingNFTs === "loading" || loadingNFTs === "idle") && (
@@ -432,7 +494,7 @@ const Collection: NextPageWithLayout = () => {
               <div ref={lastNotiRef} />
             </div>
 
-            {loadingNFTs === "loaded" && nfts.length === 0 && (
+            {loadingNFTs === "loaded" && filteredNFTs.length === 0 && (
               <div>
                 <div className="mt-[48px] flex justify-center">
                   <HotNftEmptyIcon />
@@ -478,11 +540,11 @@ const topDetais = ctl(`
  flex flex-col items-center justify-center text-center lg:text-left lg:flex-row gap-5 lg:items-baseline lg:justify-between
 `);
 const collectionName = ctl(`
-text-white text-20px font-semibold
+text-white text-20px font-semibold word-break
 `);
 
 const profileDescription = ctl(`
-text-14px font-normal leading-6 text-gray-shade-16
+text-14px font-normal leading-6 text-gray-shade-16 word-break
 `);
 const collectionProfileImage = ctl(`
  h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7 
@@ -508,13 +570,13 @@ const inputField = ctl(`
   fsm:max-w-max
 `);
 const nftCardWrapper = ctl(
-  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)]  fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
+  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
 );
 const shareBtn = ctl(`
 text-14px absolute right-6 bottom-4
 `);
 const detailsCard = ctl(`
-min-w-max flex flex-row flex-wrap w-full items-center justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit
+fmd:min-w-max flex flex-row w-full items-center justify-start fmd:justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit flex-wrap
 `);
 const detailsCardTitle = ctl(`
 text-12px font-semibold text-gray-shade-7 mb-2

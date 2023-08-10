@@ -1,7 +1,7 @@
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { ProfilePageWrapper } from "@/pages/profile/[account_address]/_components";
-import { ProfileNFTCollectionTabs } from "@/pages/profile/[account_address]/_components/profile.nft.collection.tabs";
 import React from "react";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { ProfilePageWrapper } from "@/pages/profile/[user_id]/_components";
+import { ProfileNFTCollectionTabs } from "@/pages/profile/[user_id]/_components/profile.nft.collection.tabs";
 
 interface Props {
   children: React.ReactNode;

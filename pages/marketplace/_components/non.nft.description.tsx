@@ -144,18 +144,14 @@ export const NonNFTDescription = ({
     if (library && data) {
       try {
         if (!isApproved) {
-          try {
-            const approveResult =
-              await BlockchainWrite.callApproveNFTToMarketplace(
-                library,
-                data.collection
-              );
+          const approveResult =
+            await BlockchainWrite.callApproveNFTToMarketplace(
+              library,
+              data.collection
+            );
 
-            if (!approveResult?.length) {
-              throw new Error("something went wrong");
-            }
-          } catch (error) {
-            toastError("something went wrong");
+          if (!approveResult?.length) {
+            throw new Error();
           }
         }
 
@@ -165,12 +161,14 @@ export const NonNFTDescription = ({
           data.nftId,
           listingPrice
         );
+
         if (result?.length) {
           setNftData();
+          SuccessFunc(true, "Congratulations! You have successfully listed ");
+        } else {
+          throw new Error();
         }
-        SuccessFunc(!!result, "Congratulations! You have successfully listed ");
       } catch (error) {
-        toastError("something went wrong with listing");
         SuccessFunc(false, "something went wrong with listing");
       }
     } else {
@@ -200,22 +198,18 @@ export const NonNFTDescription = ({
     validateProvider();
     ProceedFunc();
 
-    let success = false;
+    let response = { success: false, message: "" };
     try {
       if (library && data) {
         if (!isApproved) {
-          try {
-            const approveResult =
-              await BlockchainWrite.callApproveNFTToMarketplace(
-                library,
-                data.collection
-              );
+          const approveResult =
+            await BlockchainWrite.callApproveNFTToMarketplace(
+              library,
+              data.collection
+            );
 
-            if (!approveResult?.length) {
-              throw new Error("something went wrong");
-            }
-          } catch (error) {
-            toastError(error);
+          if (!approveResult?.length) {
+            throw new Error("something went wrong");
           }
         }
 
@@ -228,37 +222,33 @@ export const NonNFTDescription = ({
         );
         if (result?.length) {
           setNftData();
-          success = true;
+          response.success = true;
+          response.message = "Congratulations! You have successfully auctioned";
         }
       }
     } catch (err) {
-      success = false;
-      SuccessFunc(false, "something went wrong with auction");
+      response.success = false;
+      response.message = "something went wrong with auction";
     } finally {
-      SuccessFunc(success, "Congratulations! You have successfully auctioned ");
+      SuccessFunc(response.success, response.message);
     }
   };
   const handleSendNFT = async (input: {
     ReceiverAddress: string;
     LockEndTime: number;
   }) => {
-    let success = false;
     ProceedFunc();
     if (library && data) {
       try {
         if (!isApproved) {
-          try {
-            const approveResult =
-              await BlockchainWrite.callApproveNFTToMarketplace(
-                library,
-                data.collection
-              );
+          const approveResult =
+            await BlockchainWrite.callApproveNFTToMarketplace(
+              library,
+              data.collection
+            );
 
-            if (!approveResult?.length) {
-              throw new Error("something went wrong");
-            }
-          } catch (error) {
-            toastError("failed to send nft");
+          if (!approveResult?.length) {
+            throw new Error("something went wrong");
           }
         }
 
@@ -272,10 +262,11 @@ export const NonNFTDescription = ({
 
         if (result?.length) {
           setNftData();
+          SuccessFunc(true, "Congratulations! You have successfully sent ");
+        } else {
+          throw new Error();
         }
-        SuccessFunc(!!result, "Congratulations! You have successfully sent ");
       } catch (error) {
-        toastError("failed to send nft");
         SuccessFunc(false, "failed to send nft");
       }
     } else {
@@ -432,7 +423,7 @@ export const NonNFTDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full"
+              className="w-full hover:scale-95"
             />
           </div>
         </div>

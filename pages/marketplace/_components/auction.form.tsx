@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { useWeb3React } from "@web3-react/core";
 import { IoIosClose } from "react-icons/io";
@@ -9,8 +8,6 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
 import Joi from "joi";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
@@ -20,7 +17,6 @@ import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
-
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -304,14 +300,14 @@ const AuctionForm = ({
       {propertyList?.length > 0 && (
         <div
           className={
-            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 py-6 px-5"
+            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 px-5 py-6"
           }
         >
           {propertyList.map((item: any, index: number) => {
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
+                  className="absolute right-[-4px] top-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
@@ -332,6 +328,7 @@ const AuctionForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="hover:scale-95"
         />
       ) : (
         <FinalButton
@@ -343,7 +340,7 @@ const AuctionForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2"
+          className="mt-2 hover:scale-95"
         />
       )}
       {propertyModal && (
@@ -354,19 +351,6 @@ const AuctionForm = ({
           title={"Add new properties"}
         >
           <div className={modalBodyWrapper}>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Type</label>
-              <input
-                type="text"
-                name="Type"
-                id="Type"
-                autoComplete="off"
-                placeholder="Character"
-                className={inputFieldModal}
-                onChange={handlePropertyChange}
-                value={propertyDetails.Type}
-              />
-            </div>
             <div className={fieldWrapper}>
               <label className={fieldTitle}>Name</label>
               <input
@@ -380,6 +364,19 @@ const AuctionForm = ({
                 value={propertyDetails.PropertyName}
               />
             </div>
+            <div className={fieldWrapper}>
+              <label className={fieldTitle}>Type</label>
+              <input
+                type="text"
+                name="Type"
+                id="Type"
+                autoComplete="off"
+                placeholder="Character"
+                className={inputFieldModal}
+                onChange={handlePropertyChange}
+                value={propertyDetails.Type}
+              />
+            </div>
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
             )}
@@ -387,7 +384,7 @@ const AuctionForm = ({
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2"
+              className="mt-2 hover:scale-95"
             />
           </div>
         </CustomModal>
@@ -406,7 +403,7 @@ const AuctionForm = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
@@ -422,8 +419,7 @@ const AuctionForm = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

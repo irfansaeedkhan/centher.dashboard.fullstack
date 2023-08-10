@@ -1,10 +1,8 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
 import clsx from "clsx";
-
 import { formatIPFSUrl } from "@/utils/format.address";
 import useGetUser from "@/hooks/use.get.user";
 import { Collection } from "@/models/nft";
@@ -34,7 +32,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
     }
   }, [data]);
   return (
-    <div className="py-1 px-2">
+    <div className="px-2 py-1">
       <Link
         href={{
           pathname: AppRoutes.marketplace.collection,

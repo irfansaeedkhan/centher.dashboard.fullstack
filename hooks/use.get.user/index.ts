@@ -1,23 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
-
 import { User } from "@/models/user";
 import { LoadingState } from "@/models/common";
-import { axiosNodeApi } from "@/utils/axios";
+import { axiosCIS } from "@/utils/axios";
 import { ZeroAddress } from "@/web3/constants/common";
 
-const useGetUser = (account_address?: string) => {
+const useGetUser = (userId?: string) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   useEffect(() => {
-    if (account_address && account_address !== ZeroAddress) {
+    if (userId && userId !== ZeroAddress) {
       setLoading("loading");
       (async () => {
         try {
-          const { data } = await axiosNodeApi.get(
-            `/api/users/${account_address}`
-          );
-          setUser(data.user as User);
+          const { data } = await axiosCIS.get<User>(`/users/${userId}`);
+          setUser(data);
           setLoading("loaded");
         } catch (error) {
           setUser(null);
@@ -25,7 +22,7 @@ const useGetUser = (account_address?: string) => {
         }
       })();
     }
-  }, [account_address]);
+  }, [userId]);
 
   const mutateUser = useCallback(
     async (userPartial: Partial<User>) => {

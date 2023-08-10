@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import Joi from "joi";
@@ -8,7 +7,6 @@ import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { FiTwitter, FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
-
 import FinalButton from "@/components/button/final.button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
@@ -16,7 +14,6 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
 import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
 import { MetamaskIcon2 } from "@/assets/svgs";
-
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -332,7 +329,7 @@ export const CreateNFTCollectionForm = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="mt-2 w-full py-4"
+            className="mt-2 w-full py-4 hover:scale-95"
           />
         ) : (
           <FinalButton
@@ -352,7 +349,7 @@ export const CreateNFTCollectionForm = ({
               categoryError
             }
             onClick={handleSubmit(onSubmit)}
-            className="mt-2 w-full py-4"
+            className="mt-2 w-full py-4 hover:scale-95"
           />
         )}
       </div>
@@ -370,7 +367,7 @@ export const CreateNFTCollectionForm = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
@@ -386,8 +383,7 @@ export const CreateNFTCollectionForm = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

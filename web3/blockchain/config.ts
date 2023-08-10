@@ -110,7 +110,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   fee:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? {
-          createItemFeeForMarketplace: 0.0072,
+          createItemFeeForMarketplace: 0.0,
           createItemFeeForCreator: 0.0,
           createCollectionFee: 0.0026,
           buyItemFeeForMarketplace: 1.5,
@@ -152,7 +152,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/rezahssini/new-subgraph"
+      ? "https://api.thegraph.com/subgraphs/name/rezahssini/centher-production"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
 };
 

@@ -6,14 +6,12 @@ import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
 import clsx from "clsx";
-
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
-import { NFTLockedDetailsProps } from "@/lib/get-user-by-address";
-
+import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
 
@@ -238,7 +236,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex items-center gap-[6px]">
                 <LockIcon className="w-[28%]" />
@@ -248,7 +246,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {auction && (
             <div
-              className={`absolute top-4 right-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
             >
               <div className="flex items-center gap-[6px]">
                 <HammerIconBG className="w-[28%]" />
@@ -324,7 +322,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {locked && (
             <div
-              className={`absolute top-[50%] left-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
+              className={`absolute left-[50%] top-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
               text-white backdrop-blur-[20px] fsm:hidden`}
             >
               <LockVector />
@@ -332,7 +330,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {auction && (
             <div
-              className={`absolute top-[50%] left-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
+              className={`absolute left-[50%] top-[50%] flex h-[27px]  w-[27px] translate-x-[-50%] translate-y-[-50%] items-center justify-center rounded-md bg-black/20  bg-opacity-20 bg-gradient-to-tl from-black via-[95.53deg] to-transparent 
               text-white backdrop-blur-[20px] fsm:hidden`}
             >
               <HammerIconBG />
@@ -554,11 +552,10 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h6>
               </div>
             </div>
-            {account?.toLowerCase() ==
-              data.owner?.account_address?.toLowerCase() &&
+            {account?.toLowerCase() == data.owner?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
-                <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7">
+                <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7">
                   <CgSpinner className="h-5 animate-spin" />
                 </button>
               ) : (

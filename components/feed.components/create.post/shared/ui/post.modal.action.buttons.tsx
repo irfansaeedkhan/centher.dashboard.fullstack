@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import toast from "react-hot-toast";
 import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
@@ -8,7 +8,6 @@ import EmojiPicker, {
   EmojiStyle,
   Theme,
 } from "emoji-picker-react";
-import { FiCamera } from "react-icons/fi";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
@@ -30,12 +29,16 @@ export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { appendPostText, getLastPost, addNewPost } = useNewPostStore();
+  const { appendPostText, getLastPost, addNewPost, posts, isModalOpen } =
+    useNewPostStore();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
   const belowMobile = useMediaQuery("(max-width: 560px)");
-
+  const [activeBtn, setActiveBtn] = useState({
+    image: false,
+    video: false,
+  });
   useOnClickOutside(emojiPickerContainerRef, () => {
     setShowEmojiPicker(false);
   });
@@ -55,10 +58,11 @@ export const PostModalActionButtons: React.FC<Props> = ({
       }
       // Can throw error if validation fails
       validateSelectedFiles(event, fileType);
+
       // Call the callback function if any
       onClickActionButton && onClickActionButton();
     } catch (err: any) {
-      customLog(err.message, ["development", "staging"]);
+      customLog(["development", "staging"], err.message);
       if (err.code.startsWith("app_")) {
         toast.error(err.message);
       } else {
@@ -66,6 +70,33 @@ export const PostModalActionButtons: React.FC<Props> = ({
       }
     }
   };
+
+  useEffect(() => {
+    if (posts[0]?.media[0]?.original?.type?.startsWith("image")) {
+      setActiveBtn({
+        image: false,
+        video: true,
+      });
+    }
+    if (posts[0]?.media[0]?.original?.type?.startsWith("video")) {
+      setActiveBtn({
+        image: true,
+        video: false,
+      });
+    }
+    if (posts[0]?.media.length == 0) {
+      setActiveBtn({
+        image: false,
+        video: false,
+      });
+    }
+    if (isModalOpen === false) {
+      setActiveBtn({
+        image: false,
+        video: false,
+      });
+    }
+  }, [posts, isModalOpen]);
 
   return (
     <div
@@ -79,7 +110,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
     >
       <label
         className={clsx(
-          `group select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-150 hover:border-brand-primary/30 hover:bg-brand-primary/20`,
+          `group select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-150 hover:border-brand-primary/30 hover:bg-brand-primary/20`,
+          activeBtn.image && "pointer-events-none",
           buttonVariants({ color: "primary", placement })
         )}
       >
@@ -105,7 +137,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
       </label>
       <label
         className={clsx(
-          `group select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#76E268]/30 hover:bg-[#76E268]/20`,
+          `group select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#76E268]/30 hover:bg-[#76E268]/20`,
           buttonVariants({ color: "light_green", placement })
         )}
         onClick={() => {
@@ -130,7 +162,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
 
       <label
         className={clsx(
-          `group  select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#5F97FF]/30 hover:bg-[#5F97FF]/20`,
+          `group  select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#5F97FF]/30 hover:bg-[#5F97FF]/20`,
+          activeBtn.video && "pointer-events-none",
           buttonVariants({ color: "blue", placement })
         )}
       >
@@ -150,14 +183,13 @@ export const PostModalActionButtons: React.FC<Props> = ({
           name="videos-file"
           accept={SUPPORTED_VIDEO_TYPES}
           style={{ display: "none" }}
-          multiple
           onChange={(e) => handleSelectFiles(e, "video")}
         />
       </label>
 
       <label
         className={clsx(
-          `group mr-2 hidden select-none rounded-md border border-transparent py-[5px] px-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20 flg:flex`,
+          `group mr-2 hidden select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20 flg:flex`,
           buttonVariants({ color: "green", placement })
         )}
         onClick={() => {
@@ -184,7 +216,7 @@ export const PostModalActionButtons: React.FC<Props> = ({
         <div
           ref={emojiPickerContainerRef}
           className={clsx(
-            `absolute top-[170%] -right-6 pb-2 fsm:top-[120%] fsm:right-0 `,
+            `absolute -right-6 top-[170%] pb-2 fsm:right-0 fsm:top-[120%] `,
             showEmojiPicker && "z-50 !block"
           )}
         >

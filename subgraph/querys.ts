@@ -272,38 +272,38 @@ export const collectionsByAccount = `
 `;
 
 export const listedNFTsByAccount = `
-  query($first: Int!, $skip: Int!, $owner: Bytes!) {
-    nfts(
-      first: $first
-      skip: $skip
-      orderBy: tradingVolumn
-      orderDirection: desc
-      where: {owner: $owner}
-    ) {
-        collection
-        createTime
-        creator
-        mintHash
-        id
-        ipfs
-        saleState
-        tokenId
-        price
-        owner
-        unlock
-        listInfo {
-          price
-          bidSize
-        }
-        auctionInfo {
-          endTime
-          highestBidPrice
-          highestBidAddress
-          bidSize
-          startPrice
-        }
+ query ($first: Int!, $skip: Int!, $owner: Bytes!) {
+  nfts(
+    first: $first
+    skip: $skip
+    orderBy: tradingVolumn
+    orderDirection: desc
+    where: {owner: $owner, price_gt: "0"}
+  ) {
+    collection
+    createTime
+    creator
+    mintHash
+    id
+    ipfs
+    saleState
+    tokenId
+    price
+    owner
+    unlock
+    listInfo {
+      price
+      bidSize
+    }
+    auctionInfo {
+      endTime
+      highestBidPrice
+      highestBidAddress
+      bidSize
+      startPrice
     }
   }
+}
 `;
 
 export const listedUserNFTsByAccount = `
@@ -536,3 +536,27 @@ export const registrationHistory = `
     }
   }
 `;
+
+export const getCollectionMintedNFTs = `query MyQuery($collection: Bytes = "") {
+  nfts(where: {collection: $collection}, first: 1000) {
+    id
+  }
+}`;
+
+export const GET_COLLECTION_ADDITIONAL_INFO = `query MyQuery($collection: Bytes = "") {
+  nfts(where: {collection: $collection}, first: 1000) {
+    saleState
+    price
+  }
+}
+`;
+
+export const GET_USER_TOTAL_SOLD_NFTS = `query MyQuery2($collection: Bytes = "", $seller: Bytes = "") {
+  marketplaceSaleHistories(
+    first: 1000
+    where: {collection: $collection, buyer_not: "0x0000000000000000000000000000000000000000", seller: $seller, price_gt: "0"}
+  ) {
+    price
+    type
+  }
+}`;

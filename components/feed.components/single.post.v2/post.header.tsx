@@ -5,7 +5,6 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
-
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import {
   ArchivedPost,
@@ -14,9 +13,9 @@ import {
   PostUser,
 } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
+import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
 
@@ -47,11 +46,8 @@ export const PostHeader: React.FC<Props> = ({
   const [containerWidth, setContainerWidth] = useState(0);
 
   const isPostOwner = useMemo(() => {
-    return (
-      loggedInUser?.account_address.toLowerCase() ===
-      postUser.account_address.toLowerCase()
-    );
-  }, [loggedInUser?.account_address, postUser.account_address]);
+    return loggedInUser?._id.toLowerCase() === postUser._id.toLowerCase();
+  }, [loggedInUser?._id, postUser._id]);
 
   const isBefore15Minutes = useMemo(() => {
     return dayjs().diff(dayjs(post.createdAt), "minute") < 15;
@@ -122,8 +118,8 @@ export const PostHeader: React.FC<Props> = ({
                 e.stopPropagation();
               }}
               href={{
-                pathname: AppRoutes.profile.account_address,
-                query: { account_address: postUser.account_address },
+                pathname: AppRoutes.profile.user_id,
+                query: { user_id: postUser._id },
               }}
               className={clsx(
                 `word-break flex w-full max-w-max items-center truncate text-sm font-semibold text-white hover:text-brand-primary`
@@ -133,13 +129,17 @@ export const PostHeader: React.FC<Props> = ({
               <span className={clsx(`block truncate break-words`)}>
                 {postUser && sliceDisplayName(postUser.display_name)}
               </span>
-              {!!verificationTickPostCreator && (
-                <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+              {verificationTickPostCreator && (
+                <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                   <Image
                     src={verificationTickPostCreator}
-                    alt={"Verified"}
-                    width={20}
-                    height={20}
+                    alt={
+                      postUser.membership.status === "citizen"
+                        ? "Citizen"
+                        : "Verified"
+                    }
+                    width={16}
+                    height={16}
                   />
                 </span>
               )}
@@ -164,9 +164,9 @@ export const PostHeader: React.FC<Props> = ({
                   e.stopPropagation();
                 }}
                 href={{
-                  pathname: AppRoutes.profile.account_address,
+                  pathname: AppRoutes.profile.user_id,
                   query: {
-                    account_address: parentPost.user.account_address,
+                    user_id: parentPost.user._id,
                   },
                 }}
                 className="word-break group mt-0.5 flex items-center truncate text-xs font-medium text-white"
@@ -183,13 +183,17 @@ export const PostHeader: React.FC<Props> = ({
                 >
                   {post && sliceDisplayName(parentPost.user.display_name)}
                 </span>
-                {!!verificationTickReplyingTo && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationTickReplyingTo && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTickReplyingTo}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        parentPost.user.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}
@@ -236,11 +240,17 @@ export const PostHeader: React.FC<Props> = ({
                 post_id: parentPost._id,
               },
             }}
-            className="flex min-w-max items-center rounded-xl bg-black-shade-7 py-1.5 px-3 text-xs text-white"
           >
-            {postType === "thread-post-w-parent-header"
-              ? "View Thread"
-              : "View Post"}
+            <FinalButton
+              title={
+                postType === "thread-post-w-parent-header"
+                  ? "View Thread"
+                  : "View Post"
+              }
+              variant="primary"
+              className="h-10 w-[100px] text-[14px] hover:scale-95"
+              borderRounded="14px"
+            />
           </Link>
         )}
     </div>

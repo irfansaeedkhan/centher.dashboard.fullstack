@@ -1,4 +1,3 @@
-// App imports
 import {
   Feed,
   Chat,
@@ -6,40 +5,37 @@ import {
   Explore,
   Notification,
   Launchpad,
-  NetworkGenealogy,
-  NetworkRewards,
   CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-
 import { SidebarData } from "./shared";
 
 export const sidebarData: SidebarData = {
-  social_network: {
-    label: "SOCIAL NETWORK",
-    items: [
-      {
-        label: "Feed",
-        url: AppRoutes.feed.index,
-        icon: Feed,
-        activeList: [AppRoutes.feed.index, AppRoutes.feed.single_post],
-      },
-      {
-        label: "Notifications",
-        url: AppRoutes.notifications,
-        icon: Notification,
-        countType: "notifications",
-        activeList: [AppRoutes.notifications],
-      },
-      {
-        label: "Chat",
-        url: AppRoutes.chat,
-        icon: Chat,
-        countType: "chats",
-        activeList: [AppRoutes.chat],
-      },
-    ],
-  },
+  // social_network: {
+  //   label: "SOCIAL NETWORK",
+  //   items: [
+  //     {
+  //       label: "Feed",
+  //       url: AppRoutes.feed.index,
+  //       icon: Feed,
+  //       activeList: [AppRoutes.feed.index, AppRoutes.feed.single_post],
+  //     },
+  //     {
+  //       label: "Notifications",
+  //       url: AppRoutes.notifications,
+  //       icon: Notification,
+  //       countType: "notifications",
+  //       activeList: [AppRoutes.notifications],
+  //     },
+  //     {
+  //       label: "Chat",
+  //       url: AppRoutes.chat.index,
+  //       icon: Chat,
+  //       countType: "chats",
+  //       activeList: [AppRoutes.chat.index, AppRoutes.chat.single_chat],
+  //     },
+  //   ],
+  // },
   nft_marketplace: {
     label: "NFT MARKETPLACE",
     items: [
@@ -47,6 +43,7 @@ export const sidebarData: SidebarData = {
         label: "Explore",
         url: AppRoutes.marketplace.explore,
         icon: Explore,
+        available_for: "all",
         activeList: [
           AppRoutes.marketplace.explore,
           AppRoutes.marketplace.nfts,
@@ -60,12 +57,14 @@ export const sidebarData: SidebarData = {
         url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
         activeList: [AppRoutes.marketplace.create_collection],
+        available_for: "citizen",
       },
       {
         label: "Create NFT",
         url: AppRoutes.marketplace.create_nft,
         icon: CreateNFT,
         activeList: [AppRoutes.marketplace.create_nft],
+        available_for: "citizen",
       },
     ],
   },
@@ -76,6 +75,7 @@ export const sidebarData: SidebarData = {
         label: "Launchpad",
         url: AppRoutes.launchpad_pre_booking.index,
         icon: Launchpad,
+        available_for: "all",
         activeList: [
           AppRoutes.launchpad_pre_booking.index,
           AppRoutes.launchpad,
@@ -87,7 +87,7 @@ export const sidebarData: SidebarData = {
 };
 
 export const SidebarSections = [
-  sidebarData.social_network,
+  // sidebarData.social_network,
   sidebarData.nft_marketplace,
   sidebarData.dao_government,
 ];

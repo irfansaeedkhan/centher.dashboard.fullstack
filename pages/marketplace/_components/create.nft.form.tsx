@@ -42,7 +42,7 @@ export const CreateNFTForm = ({
 
   return (
     <div
-      className={`relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 py-8 px-6`}
+      className={`relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-6 py-8`}
     >
       <div className={`flex w-full max-w-[290px] gap-4`}>
         <FinalButton

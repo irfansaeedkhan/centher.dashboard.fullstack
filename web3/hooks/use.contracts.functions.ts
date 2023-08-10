@@ -12,7 +12,6 @@ import {
   RoundState,
   RoundStatus,
 } from "../constants/types";
-import { ZeroAddress } from "../constants/common";
 import { AddressFactory } from "../blockchain/providers/address.provider";
 import { SmartContractName } from "../blockchain/enum/smart.contract.name.enum";
 import { SmartContractProvider } from "../blockchain/providers/smart.contract.provider";
@@ -64,8 +63,7 @@ export const useGetRoundsInfo = () => {
       }
       setRoundsInfo(_roundInfos);
     } catch (error: any) {
-      customLog("useGetRoundsInfo", ["development"]);
-      customLog(error, ["development"]);
+      customLog(["development"], "useGetRoundsInfo: ", error);
       setRoundsInfo([]);
     }
   }, [presaleContract]);
@@ -319,29 +317,20 @@ export const useGetApprovedForAll = (
 
 export const useGetNFTOwner = (
   collection: string | undefined,
-  tokenId: number | undefined,
-  ownerOfListed: string | undefined
+  tokenId: number | undefined
 ) => {
   const [owner, setOwner] = useState("");
 
   useEffect(() => {
-    const fetchOwner = async (
-      tokenId: number,
-      collection: string,
-      ownerOfListed: string
-    ) => {
-      if (ownerOfListed === ZeroAddress) {
-        const nftContract = SmartContractProvider.getNFTContract(collection);
-        const _owner = await nftContract.ownerOf(tokenId);
-        setOwner(_owner);
-      } else {
-        setOwner(ownerOfListed);
-      }
+    const fetchOwner = async (tokenId: number, collection: string) => {
+      const nftContract = SmartContractProvider.getNFTContract(collection);
+      const _owner = await nftContract.ownerOf(tokenId);
+      setOwner(_owner);
     };
 
-    if (tokenId && collection && ownerOfListed) {
-      fetchOwner(tokenId, collection, ownerOfListed);
+    if (tokenId && collection) {
+      fetchOwner(tokenId, collection);
     }
-  }, [tokenId, collection, ownerOfListed]);
+  }, [tokenId, collection]);
   return owner;
 };

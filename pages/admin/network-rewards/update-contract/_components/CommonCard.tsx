@@ -77,7 +77,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           Set Referral Rate
         </h2>
       </div>
-      <div className="cardBody py-6 px-5">
+      <div className="cardBody px-5 py-6">
         <div className="flex flex-col gap-5">
           {rates &&
             rates.map((item: any, index: number) => {
@@ -98,7 +98,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                           handleSetRate(e.target.value, index);
                         }}
                         type="number"
-                        className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                        className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
                       />
                       <h6 className="text-14px text-gray-shade-7">%</h6>
                     </div>
@@ -107,7 +107,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
               );
             })}
 
-          <div className="cardFooter px-5 pt-4 pb-7">
+          <div className="cardFooter px-5 pb-7 pt-4">
             <button
               className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleReferralRate}
@@ -152,12 +152,12 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={companyAddress}
                   onChange={(e) => setCompanyAddress(e.target.value)}
                   type="text"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
-          <div className="cardFooter px-5 pt-4 pb-7">
+          <div className="cardFooter px-5 pb-7 pt-4">
             <button
               className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleCompanyAddress}
@@ -179,12 +179,12 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={coreTeamAddress}
                   onChange={(e) => setCoreTeamAddress(e.target.value)}
                   type="text"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 py-3 px-3 font-semibold text-white focus:outline-none"
+                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
-          <div className="cardFooter px-5 pt-4 pb-7">
+          <div className="cardFooter px-5 pb-7 pt-4">
             <button
               className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
               onClick={handleCoreTeamAddress}

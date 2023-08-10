@@ -105,6 +105,7 @@ export const NonNFTBuyerDescription = ({
       clearInterval(updateTime);
     };
   }, [library, data]);
+
   const buyNFTStep1Func = () => {
     try {
       validateProvider();
@@ -116,7 +117,6 @@ export const NonNFTBuyerDescription = ({
   };
   const handleBuyNFT = async () => {
     ProceedFunc();
-    let success = false;
     try {
       if (!library || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
@@ -128,16 +128,10 @@ export const NonNFTBuyerDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
-      }
+        SuccessFunc(true, "Congratulations! You have successfully bought the ");
+      } else throw new Error();
     } catch (error) {
-      toastError("something went wrong");
       SuccessFunc(false, "Unable to buy NFT");
-    } finally {
-      SuccessFunc(
-        success,
-        "Congratulations! You have successfully bought the "
-      );
     }
   };
   const ProceedFunc = () => {
@@ -184,7 +178,7 @@ export const NonNFTBuyerDescription = ({
               title={"Checkout"}
               variant="primary"
               onClick={handleBuyNFT}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-90"
             />
           </div>
         </div>
@@ -244,7 +238,7 @@ export const NonNFTBuyerDescription = ({
             <FinalButton
               title={"View item"}
               variant="primary"
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -296,7 +290,7 @@ export const NonNFTBuyerDescription = ({
             variant={data?.saleState === "NON" ? "primary" : "primary"}
             disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
-            className="w-full"
+            className="w-full hover:scale-90"
           />
         </div>
       ) : (

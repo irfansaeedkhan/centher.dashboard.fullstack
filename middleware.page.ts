@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-
 import {
   changePaths,
   checkMatch,
   isAdmin,
   isAuthenticated,
+  isNFTBlacklisted,
+  isCitizen,
 } from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -24,14 +25,21 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
   }
-  if (checkMatch(request.nextUrl, notReadyPagesv2)) {
-    if (
-      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
-      process.env.NEXT_PUBLIC_APP_ENV === "staging"
-    ) {
-      const url = request.nextUrl.clone();
-      url.pathname = AppRoutes.coming_soon_v2;
-      return NextResponse.redirect(url);
+
+  // Check if the URL collection and tokenId are blacklisted
+  if (isNFTBlacklisted(request.nextUrl.pathname)) {
+    const url = request.nextUrl.origin + "/not-found";
+    return NextResponse.redirect(url);
+  }
+
+  // Citizen Only Pages
+  if (checkMatch(request.nextUrl, citizenOnlyPages)) {
+    if (!(await isCitizen(request))) {
+      return NextResponse.redirect(
+        `${request.nextUrl.origin}${AppRoutes.citizenship}`
+      );
+    } else {
+      return NextResponse.next();
     }
   }
 
@@ -92,7 +100,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.home,
   AppRoutes.search,
 
-  AppRoutes.profile.account_address,
+  AppRoutes.profile.user_id,
   AppRoutes.profile.replies,
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
@@ -102,12 +110,14 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.profile,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
+  AppRoutes.settings.citizenship,
   AppRoutes.profile.nfts,
   AppRoutes.profile.owned,
   AppRoutes.profile.listed,
   AppRoutes.profile.created,
   AppRoutes.profile.collection,
-
+  AppRoutes.chat.index,
+  AppRoutes.chat.single_chat,
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 
@@ -119,14 +129,20 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
 
   AppRoutes.launchpad,
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
+  AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
+
+// Citizen only pages
+const _citizenOnlyPages: string[] = [
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+];
+const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
 // Coming soon pages - redirect to feed page
 const _notReadyPages: string[] = [
@@ -135,7 +151,6 @@ const _notReadyPages: string[] = [
   AppRoutes.referral.network_rewards,
   AppRoutes.referral.liscense,
 
-  AppRoutes.chat,
   AppRoutes.profits_dashboard,
   AppRoutes.voting_chain,
   AppRoutes.staking_packs,
@@ -153,7 +168,3 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.network_rewards_marketplace,
 ];
 const notReadyPages = changePaths(_notReadyPages);
-
-// Coming soon v2 pages - redirect to feed page
-const _notReadyPagesv2: string[] = [];
-const notReadyPagesv2 = changePaths(_notReadyPagesv2);

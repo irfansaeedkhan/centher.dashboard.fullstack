@@ -7,8 +7,6 @@ import { IoIosClose } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import Joi from "joi";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
@@ -19,7 +17,6 @@ import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
-
 import CustomDropdown from "./custom.dropdown";
 
 // form validations
@@ -32,6 +29,7 @@ const schema = Joi.object({
     "string.empty": `Description Required`,
     "any.required": `Required Field`,
   }),
+  NFTSupply: Joi.number(),
 });
 interface FixedPriceFormProps {
   createNFT: any;
@@ -45,6 +43,7 @@ interface FormFields {
   Description: String;
   NFTAmount: number | null;
   NFTPrice: number | null;
+  NFTSupply: number | null;
   Collection: String;
 }
 // TODO: Kindly fix any types
@@ -87,6 +86,7 @@ const FixedPriceForm = ({
       defaultValues: {
         NFTName: "",
         Description: "",
+        NFTSupply: 1,
         // NFTPrice: null,
         // Collection: "",
       },
@@ -135,10 +135,11 @@ const FixedPriceForm = ({
       setNFTPriceError("Field Required");
       return;
     }
+
     let finalizedData = {
       name: data.NFTName,
       description: data.Description,
-      supply: 1,
+      supply: data.NFTSupply,
       collection: selectedOption,
       isAuction: false,
       price: changeNFTPrice,
@@ -155,6 +156,7 @@ const FixedPriceForm = ({
       reset({
         NFTName: "",
         Description: "",
+        NFTSupply: 1,
       });
       setSelectedOption(collections[0].collection);
       setPropertyList([]);
@@ -269,6 +271,26 @@ const FixedPriceForm = ({
       </div>
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
+          Supply <span className="text-red-500">*</span>{" "}
+        </label>
+        <input
+          type="number"
+          id="NFTSupply"
+          autoComplete="off"
+          {...register("NFTSupply")}
+          placeholder="eg. 1"
+          className={clsx(
+            !formState.errors.NFTSupply ? inputField : inputFieldError
+          )}
+        />
+        {formState.errors.NFTSupply && (
+          <p className={`text-red-500 ${errMessage}`}>
+            {formState.errors.NFTSupply.message}
+          </p>
+        )}
+      </div>
+      <div className={fieldWrapper}>
+        <label className={fieldTitle}>
           Properties{"  "}
           <span className="text-14px  font-normal text-gray-shade-7">
             (optional)
@@ -290,14 +312,14 @@ const FixedPriceForm = ({
       {propertyList?.length > 0 && (
         <div
           className={
-            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 py-6 px-5"
+            "flex flex-wrap gap-[2%] rounded-[14px] bg-black-shade-3 px-5 py-6"
           }
         >
           {propertyList.map((item: any, index: number) => {
             return (
               <div key={index} className={properyCard}>
                 <button
-                  className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
+                  className="absolute right-[-4px] top-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                   onClick={() => {
                     handlePropertyRemove(item.PropertyName);
                   }}
@@ -319,6 +341,7 @@ const FixedPriceForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
+          className="hover:scale-95"
         />
       ) : (
         <FinalButton
@@ -334,7 +357,7 @@ const FixedPriceForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2"
+          className="mt-2 hover:scale-95"
         />
       )}
 
@@ -346,19 +369,6 @@ const FixedPriceForm = ({
           title={"Add new properties"}
         >
           <div className={modalBodyWrapper}>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Type</label>
-              <input
-                type="text"
-                name="Type"
-                id="Type"
-                autoComplete="off"
-                placeholder="Character"
-                className={inputFieldModal}
-                onChange={handlePropertyChange}
-                value={propertyDetails.Type}
-              />
-            </div>
             <div className={fieldWrapper}>
               <label className={fieldTitle}>Name</label>
               <input
@@ -372,6 +382,19 @@ const FixedPriceForm = ({
                 value={propertyDetails.PropertyName}
               />
             </div>
+            <div className={fieldWrapper}>
+              <label className={fieldTitle}>Type</label>
+              <input
+                type="text"
+                name="Type"
+                id="Type"
+                autoComplete="off"
+                placeholder="Character"
+                className={inputFieldModal}
+                onChange={handlePropertyChange}
+                value={propertyDetails.Type}
+              />
+            </div>
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
             )}
@@ -379,7 +402,7 @@ const FixedPriceForm = ({
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2"
+              className="mt-2 hover:scale-95"
             />
           </div>
         </CustomModal>
@@ -398,7 +421,7 @@ const FixedPriceForm = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
@@ -414,8 +437,7 @@ const FixedPriceForm = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

@@ -1,28 +1,24 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useWindowSize } from "usehooks-ts";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
-
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
-import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
-
+import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
+import FinalButton from "../button/final.button";
+import { BuyCitizenshipModal } from "../modal/buy-citizenship-modal";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 
 const Header = () => {
+  const { adapter } = useCentherLive();
   const { width } = useWindowSize();
-  const router = useRouter();
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const { user, isLoading: isUserLoading } = useUser();
-  const { user: ver_user } = useGetUser(
-    router.query.account_address?.toString()?.toLowerCase()
-  );
   const { connectWallet, disconnectWallet, getConnectedAccount } =
     useConnectWallet();
   const [openModal, setOpenModal] = useState(false);
@@ -45,13 +41,16 @@ const Header = () => {
     const connectedAccount = getConnectedAccount();
     connectedAccount
       .then((_acc) => {
-        if (_acc && _acc.toLowerCase() === user.account_address.toLowerCase()) {
+        if (_acc && _acc.toLowerCase() === user._id.toLowerCase()) {
           connectWallet(false);
         }
       })
       .catch(() => {});
   }, [user, connectWallet, disconnectWallet, getConnectedAccount]);
 
+  const openBuyCitizenshipModal = () => {
+    setShowBuyCitizenshipModal(true);
+  };
   return (
     <div
       className={`fixed top-0 z-[1000] flex h-[60px] w-full items-center justify-between gap-10 border-b-[1.5px] border-gray-shade-border-color bg-black-shade-9 px-5`}
@@ -77,15 +76,16 @@ const Header = () => {
       </Link>
 
       <div className={`flex flex-grow items-center justify-end gap-6`}>
-        {/* {user && <SearchBar ver_user={ver_user} />} */}
-        {user && ver_user ? (
-          <SearchBar ver_user={ver_user} />
-        ) : (
-          user && <SearchBar ver_user={user} />
-        )}
+        {user && <SearchBar />}
+
         {!user && !isUserLoading && (
-          <Link href={AppRoutes.auth.login} className={connectButton}>
-            Connect
+          <Link href={AppRoutes.auth.login}>
+            <FinalButton
+              title={"Connect"}
+              variant="primary"
+              className="h-9 w-[98px] text-[14px]"
+              borderRounded="14px"
+            />
           </Link>
         )}
 
@@ -99,7 +99,7 @@ const Header = () => {
                 className="h-10 w-10 rounded-full"
               >
                 <Image
-                  src={user.profile_image.path}
+                  src={user.profile_image}
                   alt="userProfile"
                   width={40}
                   height={40}
@@ -112,6 +112,7 @@ const Header = () => {
                 <HeaderProfile
                   onClickOutside={() => setOpenModal(false)}
                   modalOpenerRef={modalOpenerRef}
+                  openBuyCitizenshipModal={openBuyCitizenshipModal}
                 />
               )}
             </div>
@@ -134,10 +135,14 @@ const Header = () => {
           openerRef={sidebarOpenerRef}
         />
       </div>
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };
 
 export default Header;
-
-const connectButton = `w-max px-6 py-2 flex text-sm rounded-lg items-center font-semibold bg-brand-primary text-black-shade-2 hover:bg-brand-primary-dark`;

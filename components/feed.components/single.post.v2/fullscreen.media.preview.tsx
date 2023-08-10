@@ -76,7 +76,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
           }}
         >
           {/* Close Icon */}
-          <div className="absolute top-4 right-4 z-10">
+          <div className="absolute right-4 top-4 z-10">
             <button
               className="rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:p-1.5"
               onClick={() => onClose(selectedIndex)}
@@ -90,7 +90,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
             {/* container node */}
             <div className="flex h-full">
               {media.map((media) => {
-                if (media.type === "image") {
+                if (media.type.includes("image")) {
                   return (
                     // Slide
                     <div
@@ -106,7 +106,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
                       />
                     </div>
                   );
-                } else if (media.type === "video") {
+                } else if (media.type.includes("video")) {
                   return (
                     // Slide
                     <div
@@ -139,7 +139,7 @@ export const FullscreenMediaPreview: React.FC<Props> = ({
           {/* navigation next*/}
           {media!.length > 1 && selectedIndex < media!.length - 1 && (
             <button
-              className="absolute right-0 top-1/2 hidden -translate-y-1/2 -translate-x-1 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2 fmd:block"
+              className="absolute right-0 top-1/2 hidden -translate-x-1 -translate-y-1/2 transform rounded-full bg-gray-900/50 p-1 hover:bg-gray-900 fsm:-translate-x-2 fmd:block"
               onClick={scrollNext}
             >
               <MdNavigateNext className="h-4 w-4 fill-white fsm:h-5 fsm:w-5" />

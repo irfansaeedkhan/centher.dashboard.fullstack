@@ -1,9 +1,8 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
-import toast from "react-hot-toast";
-
 import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -12,17 +11,17 @@ import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
-import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
+// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
-import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import { customLog } from "@/utils/custom.log";
+// import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -40,7 +39,7 @@ const CreateNFT: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  const { submitRecaptcha } = useRecaptcha();
+  // const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
@@ -72,20 +71,19 @@ const CreateNFT: NextPageWithLayout = () => {
     }
   };
   const handleCreateCollection = async (nftData: any) => {
-    const success = await submitRecaptcha();
-    if (!success) {
-      toastError("Please verify you are not a robot");
-      return;
-    }
+    // const success = await submitRecaptcha();
+    // if (!success) {
+    //   toastError("Please verify you are not a robot");
+    //   return;
+    // }
 
     ProceedFunc();
     let nfdCreated = false;
     try {
       const nftUploader = new NFTUploader(nftRemoteBasePath);
-      const file = await readFileAsync(asset);
       const castedNftData = nftData as INFTData;
       const nftMetadataPath = await nftUploader.uploadNFT(
-        file,
+        asset,
         castedNftData,
         asset as any as safeNameType
       );
@@ -103,7 +101,8 @@ const CreateNFT: NextPageWithLayout = () => {
           castedNftData.supply
       );
       nfdCreated = !!result;
-    } catch (error) {
+    } catch (error: any) {
+      customLog(["development", "staging"], error);
       toastError(
         `Something went wrong during the process, please check your data again and make sure you have enough gas fee for the transaction and try again in a few moments.`
       );
@@ -121,7 +120,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("Please login for creating NFT!");
       return;
     }
-    if (user.account_address.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== account.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -185,7 +184,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Checkout"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-90"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -222,7 +221,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"View on Profile"}
                 variant="primary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -233,7 +232,7 @@ const CreateNFT: NextPageWithLayout = () => {
               <FinalButton
                 title={"Try Again"}
                 variant="secondary"
-                className="w-full"
+                className="w-full hover:scale-95"
                 onClick={() => {
                   modal.dismissModal();
                 }}
@@ -292,7 +291,6 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
-            setClearForm(true);
           }}
           title={ModalModel.title as string}
           disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
@@ -308,11 +306,11 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        <GoogleReCaptchaWrapper
+        {/* <GoogleReCaptchaWrapper
           reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        >
-          <div className={feedContainer}>{page}</div>
-        </GoogleReCaptchaWrapper>
+        > */}
+        <div className={feedContainer}>{page}</div>
+        {/* </GoogleReCaptchaWrapper> */}
       </div>
     </AllPagesWrapper>
   );

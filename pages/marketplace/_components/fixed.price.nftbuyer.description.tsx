@@ -1,4 +1,3 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
@@ -6,8 +5,6 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-
-// App imports
 import FinalButton from "@/components/button/final.button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
@@ -96,17 +93,17 @@ export const FixedPriceNFTBuyerDescription = ({
     }
   };
   const handleBuyNFT = async () => {
-    let success = false;
-
     try {
       ProceedFunc();
       if (!data || !loggedInUser || !library) return;
 
-      const balance = await library.getBalance(loggedInUser.account_address);
+      const balance = await library.getBalance(loggedInUser._id);
 
       if (balance && balance.lt(`${data.listInfo.price}`)) {
-        return toast.error("Insufficient balance");
+        SuccessFunc(false, "Insufficient balance");
+        return;
       }
+
       const result = await BlockchainWrite.callBuyListedItem(
         library,
         (data as INFTDetailData).collection,
@@ -116,13 +113,10 @@ export const FixedPriceNFTBuyerDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
-      }
+        SuccessFunc(true, "Congratulations! You have successfully bought ");
+      } else throw new Error();
     } catch (error) {
-      toastError("something went wrong");
       SuccessFunc(false, "Something went wrong. Unable to buy ");
-    } finally {
-      SuccessFunc(success, "Congratulations! You have successfully bought ");
     }
   };
 
@@ -166,7 +160,7 @@ export const FixedPriceNFTBuyerDescription = ({
             <FinalButton
               title={"Checkout"}
               variant="primary"
-              className="w-full rounded-[14px]"
+              className="hover:scale- w-full rounded-[14px] hover:scale-90"
               onClick={handleBuyNFT}
             />
           </div>
@@ -224,7 +218,7 @@ export const FixedPriceNFTBuyerDescription = ({
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px]"
+              className="w-full rounded-[14px] hover:scale-95"
             />
           </div>
         </div>
@@ -278,7 +272,7 @@ export const FixedPriceNFTBuyerDescription = ({
               }
               buyNFTStep1Func();
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-90"
           />
         ) : (
           <FinalButton
@@ -287,7 +281,7 @@ export const FixedPriceNFTBuyerDescription = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px]"
+            className="w-full rounded-[14px] hover:scale-95"
           />
         )}
       </div>
@@ -316,7 +310,7 @@ export const FixedPriceNFTBuyerDescription = ({
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">
@@ -332,8 +326,7 @@ export const FixedPriceNFTBuyerDescription = ({
                   }
                   const _account = await connectWallet();
                   if (
-                    loggedInUser.account_address.toLowerCase() !==
-                    _account?.toLowerCase()
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
                     deactivate();

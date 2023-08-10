@@ -83,13 +83,17 @@ jobs:
       - name: Setup build time public environment variables from vars context and store in .env.staging
         run: |
           echo "NEXT_PUBLIC_APP_ENV=${{ vars.NEXT_PUBLIC_APP_ENV }}" >> .env.staging
-          echo "NEXT_PUBLIC_NODE_API_HOST=${{ vars.NEXT_PUBLIC_NODE_API_HOST }}" >> .env.staging
+          echo "NEXT_PUBLIC_CAPI_HOST=${{ vars.NEXT_PUBLIC_CAPI_HOST }}" >> .env.staging
+          echo "NEXT_PUBLIC_CIS_HOST=${{ vars.NEXT_PUBLIC_CIS_HOST }}" >> .env.staging
+          echo "NEXT_PUBLIC_CFS_HOST=${{ vars.NEXT_PUBLIC_CFS_HOST }}" >> .env.staging
+          echo "NEXT_PUBLIC_INFURA_AUTH=${{ vars.NEXT_PUBLIC_INFURA_AUTH }}" >> .env.staging
           echo "NEXT_PUBLIC_MORALIS_URL=${{ vars.NEXT_PUBLIC_MORALIS_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_IPFS_GATEWAY_URL=${{ vars.NEXT_PUBLIC_IPFS_GATEWAY_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_PRE_BOOKING_API_URL=${{ vars.NEXT_PUBLIC_PRE_BOOKING_API_URL }}" >> .env.staging
           echo "NEXT_PUBLIC_GOOGLE_SITE_KEY=${{ vars.NEXT_PUBLIC_GOOGLE_SITE_KEY }}" >> .env.staging
           echo "NEXT_PUBLIC_RECAPTCHA_SERVICE_API_HOST=${{ vars.NEXT_PUBLIC_RECAPTCHA_SERVICE_API_HOST }}" >> .env.staging
           echo "NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}" >> .env.staging
+          echo "NEXT_PUBLIC_HASURA_URL=${{ vars.NEXT_PUBLIC_HASURA_URL }}" >> .env.staging
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16

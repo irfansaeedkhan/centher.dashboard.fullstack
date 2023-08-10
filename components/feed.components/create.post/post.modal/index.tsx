@@ -1,11 +1,9 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
 import useUser from "@/hooks/use.user";
 import { useNewPostStore } from "@/store/new.post.store";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-
 import { PostModalContainer } from "./post.modal.container";
 import { FilesPreview } from "./files.preview";
 import PostPreview from "./post.preview";
@@ -58,7 +56,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
         >
           <div className={`flex items-center gap-3`}>
             <Image
-              src={user.profile_image.path}
+              src={user.profile_image}
               width={44}
               height={44}
               className="h-[44px] w-[44px] rounded-full object-cover"

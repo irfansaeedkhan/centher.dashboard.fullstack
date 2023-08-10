@@ -1,10 +1,8 @@
+import React, { useEffect } from "react";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import LaunchpadSkeleton from "@/components/loading.skeletons/launchpad.skeleton";
-import NetworkDownlineSkeleton from "@/components/loading.skeletons/network.overview.downline";
 import WalletSectionSkeleton from "@/components/loading.skeletons/network.overview.wallet";
 import useUser from "@/hooks/use.user";
 import { useGenealogyStore } from "@/store/network.genealogy";
-import React, { useEffect } from "react";
 import { NextPageWithLayout } from "../../_app.page";
 import NetworkDownline from "../_components/network.downline";
 import NetworkTabs from "../_components/network.tabs";
@@ -25,10 +23,10 @@ const NetworkRewards: NextPageWithLayout = () => {
     const fetchGeealogyBaseData = async (account: string) => {
       await fetchGenealogy(account);
     };
-    if (loggedInUser?.account_address) {
-      fetchGeealogyBaseData(loggedInUser?.account_address);
+    if (loggedInUser?._id) {
+      fetchGeealogyBaseData(loggedInUser?._id);
     }
-  }, [fetchGenealogy, loggedInUser?.account_address]);
+  }, [fetchGenealogy, loggedInUser?._id]);
 
   return (
     <div>

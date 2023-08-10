@@ -1,10 +1,12 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "@/components/button/final.button";
+import useUser from "@/hooks/use.user";
 
 export const Banner = () => {
+  const { user } = useUser();
   return (
     <div className="relative rounded-2xl bg-elevation-1">
       <div className="relative z-50 max-w-[294px] p-4 fsm:max-w-[360px] fsm:p-6 fmd:max-w-[500px] fmd:p-10 fxl:max-w-[620px]">
@@ -16,11 +18,20 @@ export const Banner = () => {
         <p className="mt-3 text-[11px] font-medium text-gray-shade-18 fsm:text-sm fmd:text-base">
           Enjoy Your Time, Become a Creator NOW!
         </p>
+
         <Link
-          href={AppRoutes.marketplace.create_nft}
-          className={`mt-6 inline-block w-fit rounded-lg bg-brand-primary px-4 py-2 text-xs font-semibold text-black-shade-2 hover:bg-brand-primary-dark fsm:px-6 fsm:text-sm`}
+          href={
+            user?.membership.status === "citizen"
+              ? AppRoutes.marketplace.create_nft
+              : AppRoutes.citizenship
+          }
         >
-          Create NFT
+          <FinalButton
+            title="Create Nft"
+            variant="primary"
+            className="mt-6 h-10 w-[150px] text-[14px]"
+            borderRounded="14px"
+          />
         </Link>
       </div>
       <Image

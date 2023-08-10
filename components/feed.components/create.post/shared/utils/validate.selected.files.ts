@@ -42,7 +42,8 @@ export const validateSelectedFiles = (
       })
     );
 
-    // Only add files in store if there are less than 5 files
+    // Only add files in store if there are less than 4 files
+
     if (
       lastPost &&
       lastPost.media.length < 4 &&

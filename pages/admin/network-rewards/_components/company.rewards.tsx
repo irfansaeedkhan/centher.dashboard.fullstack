@@ -43,7 +43,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Total earnings
           </div>
-          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.totalEarning.busd} (BUSD)</p>
           </div>
           <div className="flex items-center gap-2 text-sm font-semibold">
@@ -54,7 +54,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimed
           </div>
-          <div className="mt-4 mb-3 flex items-center gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimed.busd} (BUSD)</p>
           </div>
           <div className="flex items-center gap-2 text-sm font-semibold">
@@ -65,7 +65,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
           <div className="text-xs font-semibold uppercase text-gray-shade-7">
             Claimable
           </div>
-          <div className="mt-4 mb-3 flex items-center justify-between gap-2 text-sm font-semibold">
+          <div className="mb-3 mt-4 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimable.busd} (BUSD)</p>
             <button
               className="text-12px font-semibold text-brand-primary "

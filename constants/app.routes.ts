@@ -10,18 +10,18 @@ export const AppRoutes = {
 
   profile: {
     // Authenticated Pages
-    account_address: "/profile/[account_address]",
-    replies: "/profile/[account_address]/replies",
-    following: "/profile/[account_address]/community/following",
-    followers: "/profile/[account_address]/community/followers",
-    referrals: "/profile/[account_address]/community/referrals",
-    archived_posts: "/profile/[account_address]/archived-posts",
+    user_id: "/profile/[user_id]",
+    replies: "/profile/[user_id]/replies",
+    following: "/profile/[user_id]/community/following",
+    followers: "/profile/[user_id]/community/followers",
+    referrals: "/profile/[user_id]/community/referrals",
+    archived_posts: "/profile/[user_id]/archived-posts",
 
-    nfts: "/profile/[account_address]/nfts",
-    owned: "/profile/[account_address]/nfts/owned",
-    listed: "/profile/[account_address]/nfts/listed",
-    created: "/profile/[account_address]/nfts/created",
-    collection: "/profile/[account_address]/nfts/collection",
+    nfts: "/profile/[user_id]/nfts",
+    owned: "/profile/[user_id]/nfts/owned",
+    listed: "/profile/[user_id]/nfts/listed",
+    created: "/profile/[user_id]/nfts/created",
+    collection: "/profile/[user_id]/nfts/collection",
   },
 
   marketplace: {
@@ -40,6 +40,7 @@ export const AppRoutes = {
     profile: "/settings/profile",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
+    citizenship: "/settings/citizenship",
   },
 
   feed: {
@@ -54,6 +55,7 @@ export const AppRoutes = {
   coming_soon: "/coming-soon",
   coming_soon_v2: "/coming-soon-v2",
   notifications: "/notifications",
+  recommended: "/recommended-people",
   launchpad: "/launchpad/[token_address]/[round]",
   launchpad_pre_booking: {
     index: "/launchpad/pre-booking",
@@ -68,7 +70,7 @@ export const AppRoutes = {
     liscense: "/network-rewards/liscense",
   },
 
-  chat: "/chat",
+  chat: { index: "/chat", single_chat: "/chat/[chat_id]" },
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   staking_packs: "/staking-packs",
@@ -89,4 +91,6 @@ export const AppRoutes = {
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
   },
+  staking_coming_soon: "/staking-coming-soon",
+  citizenship: "/citizenship",
 } as const;

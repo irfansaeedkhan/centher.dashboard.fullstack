@@ -1,10 +1,8 @@
 import React, { useRef } from "react";
 import { BsArrowLeftShort, BsArrowRightShort } from "react-icons/bs";
 import clsx from "clsx";
-
 import { SectionTitle } from "@/pages/marketplace/_components";
 import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
-
 import { useTopCreators } from "./use-top-creators";
 import CreatorCard from "./creator-card";
 import styles from "./styles.module.css";
@@ -47,7 +45,7 @@ export const TopCreators = () => {
               return (
                 <CreatorCard
                   data={creator}
-                  key={creator.account_address}
+                  key={creator._id}
                   className="ml-4 last:mr-4 fmd:first:ml-12 fmd:last:mr-12"
                 />
               );
