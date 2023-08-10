@@ -41,7 +41,6 @@ export const AppRoutes = {
     citizenship: "/settings/citizenship",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
-    citizenship: "/settings/citizenship",
   },
 
   feed: {

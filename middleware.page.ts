@@ -135,11 +135,6 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
 
-  AppRoutes.staking.index,
-  AppRoutes.staking.create_staking,
-  AppRoutes.staking.staking_details.index,
-  AppRoutes.staking.staking_details.rewards,
-  AppRoutes.staking.staking_details.referrals,
   AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
@@ -148,6 +143,11 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _citizenOnlyPages: string[] = [
   AppRoutes.marketplace.create_nft,
   AppRoutes.marketplace.create_collection,
+  AppRoutes.staking.index,
+  AppRoutes.staking.create_staking,
+  AppRoutes.staking.staking_details.index,
+  AppRoutes.staking.staking_details.rewards,
+  AppRoutes.staking.staking_details.referrals,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 

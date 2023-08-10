@@ -64,6 +64,7 @@ export const sidebarData: SidebarData = {
           AppRoutes.staking.staking_details.rewards,
           AppRoutes.staking.staking_details.referrals,
         ],
+        available_for: "citizen",
       },
       {
         label: "Create Collection",
