@@ -39,9 +39,25 @@ export interface CreatePoolInput {
   showOnCenther: boolean;
 }
 
-export interface CreatePoolResult {
-  success: boolean;
-  trxHash: string;
+export interface MappedCreatePoolInput {
+  name: string;
+  startTime: string;
+  stakeToken: string;
+  rewardToken: string;
+  rate: number;
+  annualStakingRewardRate: number;
+  minStakeAmount: string;
+  maxStakeAmount: string;
+  stakingDurationPeriod: number;
+  claimDuration: number;
+  rewardModeForRef: number;
+  firstReward: number;
+  maxStakableAmount: string;
+  cancellationFees: number;
+  poolMetadata: string;
+  isUnstakable: boolean;
+  isLP: boolean;
+  showOnCenther: boolean;
 }
 
 export interface AddAffiliateSettingsInput {
@@ -51,11 +67,6 @@ export interface AddAffiliateSettingsInput {
   levelFour: number;
   levelFive: number;
   levelSix: number;
-}
-
-export interface AddAffiliateSettingsResult {
-  success: boolean;
-  trxHash: string;
 }
 
 export type ProgressCallback = (

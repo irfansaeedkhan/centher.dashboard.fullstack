@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { clsx } from "clsx";
@@ -21,6 +21,9 @@ import { copyText } from "@/utils/copy.text";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import FinalButton from "@/components/button/final.button";
 import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import useUser from "@/hooks/use.user";
+import { useWeb3React } from "@web3-react/core";
 
 interface CustomModalProps {
   data: stakingFormInterfaceUpdated;
@@ -111,6 +114,12 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
   createStaking,
   data,
 }) => {
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { connectWallet } = useConnectWallet();
+  const { user: loggedInUser } = useUser();
+  const { deactivate, library, account } = useWeb3React();
+
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(PassportModalRef, () => {
@@ -126,6 +135,12 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
     },
     htmlBodyRef
   );
+
+  useEffect(() => {
+    if (library && account?.length) {
+      setIsConnected(true);
+    } else setIsConnected(false);
+  }, [library, account]);
 
   return (
     <ModalPortal wrapperId="review-staking-portal">
@@ -143,20 +158,33 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   Review your project
                 </h3>
                 <div className="flex items-center gap-2">
-                  <FinalButton
-                    title="Edit"
-                    onClick={() => {
-                      onClickClose();
-                    }}
-                    variant="secondary"
-                    className="text-xs"
-                  />
-                  <FinalButton
-                    title="Submit"
-                    onClick={() => createStaking(data)}
-                    variant="primary"
-                    className="text-xs"
-                  />
+                  {!isConnected ? (
+                    <FinalButton
+                      title={"Connect Wallet"}
+                      variant="primary"
+                      onClick={() => {
+                        setConnectWalletModal(true);
+                      }}
+                      className="text-14px mx-auto mt-5 w-[45%]"
+                    />
+                  ) : (
+                    <>
+                      <FinalButton
+                        title="Edit"
+                        onClick={() => {
+                          onClickClose();
+                        }}
+                        variant="secondary"
+                        className="text-xs"
+                      />
+                      <FinalButton
+                        title="Submit"
+                        onClick={() => createStaking(data)}
+                        variant="primary"
+                        className="text-xs"
+                      />
+                    </>
+                  )}
                 </div>
               </div>
               {/* top */}

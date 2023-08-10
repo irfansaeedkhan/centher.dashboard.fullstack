@@ -13,6 +13,7 @@ import ntrAbi from "../abis/ntr.json";
 import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
 import nftadapter from "../abis/nftadapter.json";
+import stakingAbi from "../abis/staking.json";
 
 import { BigNumber } from "ethers";
 
@@ -80,7 +81,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     STAKING: {
       56: "0x0000000000000000000000000000000000000000",
-      5: "0x0000000000000000000000000000000000000000",
+      5: "0x1f61019bb765e32C4191DcF74290B632E6169Bdb",
     },
   },
   network:
@@ -106,7 +107,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     ERC721: ERC721Abi,
     DXC: dxcAbi,
     NFT_ADAPTER: nftadapter,
-    STAKING: null,
+    STAKING: stakingAbi,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),
@@ -159,6 +160,10 @@ export const BlockchainConfig: IBlockchainConfig = {
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/rezahssini/new-subgraph"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/withcitizenship",
+  stakingSubgraphUrl:
+    process.env.NEXT_PUBLIC_APP_ENV === "production"
+      ? ""
+      : "https://thegraph.com/studio/subgraph/centher-staking/playground",
 };
 
 export const SwapCollection =

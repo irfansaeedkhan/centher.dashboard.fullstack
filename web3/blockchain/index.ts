@@ -1,6 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
@@ -13,6 +13,10 @@ import { BlockchainConfig } from "./config";
 import { ZeroAddress } from "../constants/common";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
+import {
+  AddAffiliateSettingsInput,
+  MappedCreatePoolInput,
+} from "@/staking/types";
 
 export class BlockchainRead {
   static async getReferrers(
@@ -1781,7 +1785,8 @@ export class BlockchainWrite {
 
   static async createStakingPool(
     library: Web3Provider,
-    data: any,
+    data: MappedCreatePoolInput,
+    ownerAddress: string,
     preflight: boolean
   ): Promise<string> {
     try {
@@ -1791,17 +1796,41 @@ export class BlockchainWrite {
         signer
       );
 
-      await stakingContract.callStatic.createPool(data);
+      if (data.showOnCenther) {
+        const balance = await library.getBalance(ownerAddress);
+        const price = await stakingContract.functions.platformFees();
 
-      if (!preflight) {
-        const tx = await stakingContract.functions.createPool(data);
-        await tx.wait();
-        return tx.hash;
+        if (+balance.toString() < +price.toString()) {
+          throw new InsufficientFundError(
+            `Not enough balance for pay fee, balance: ${balance.toString()}, fee: ${price.toString()}`
+          );
+        }
+
+        await stakingContract.callStatic.createPool(data, {
+          value: price.toString(),
+        });
+
+        if (!preflight) {
+          const tx = await stakingContract.functions.createPool(data, {
+            value: price.toString(),
+          });
+          await tx.wait();
+          return tx.hash;
+        }
+
+        return "done";
+      } else {
+        await stakingContract.callStatic.createPool(data);
+        if (!preflight) {
+          const tx = await stakingContract.functions.createPool(data);
+          await tx.wait();
+          return tx.hash;
+        }
+
+        return "done";
       }
-
-      return "";
     } catch (error: any) {
-      logger(error, "createPool");
+      logger(error, "createStakingPool");
       throw error;
     }
   }
@@ -1820,17 +1849,68 @@ export class BlockchainWrite {
       );
 
       const balance = await tokenContract.functions.balanceOf(userAddress);
+
       if (balance == 0) {
         throw new InsufficientFundError(
           "theres nothing for approval, balance is 0"
         );
       }
 
-      const tx = await tokenContract.functions.approve(spenderAddress, balance);
+      // const currentAllowence = await tokenContract.functions.allowance(
+      //   userAddress,
+      //   spenderAddress
+      // );
+
+      const tx = await tokenContract.functions.approve(
+        spenderAddress,
+        balance.toString()
+      );
+
       await tx.wait();
       return tx.hash;
     } catch (error: any) {
       logger(error, "SetApprovalForWallet");
+      throw error;
+    }
+  }
+
+  static async setStakingPoolAffiliateSettings(
+    library: Web3Provider,
+    data: AddAffiliateSettingsInput,
+    poolId: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.setAffiliateSetting(poolId, data);
+      const tx = await stakingContract.functions.setAffiliateSetting(
+        poolId,
+        data
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "setStakingPoolAffiliateSettings");
+      throw error;
+    }
+  }
+
+  static async getCurrentStakingPoolId(library: Web3Provider): Promise<number> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      const result = await stakingContract.functions.poolIds();
+      return +result.toString();
+    } catch (error: any) {
+      logger(error, "createPool");
       throw error;
     }
   }

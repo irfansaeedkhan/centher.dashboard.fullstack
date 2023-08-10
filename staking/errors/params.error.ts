@@ -1,10 +1,16 @@
 export class CreatePoolParamsError<T> extends Error {
   constructor(field: keyof T, message: string) {
     super(message);
-    this.field = field;
+    this.field = field.toString();
   }
 
-  field: keyof T;
+  field: string;
+}
+
+export class WalletConnectedError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
 }
 
 export class CreatePoolCallStaticError extends Error {
@@ -44,6 +50,12 @@ export class InsufficientFundError extends Error {
 }
 
 export class WalletApprovalError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
+export class InvalidAffiliateSystemSettings extends Error {
   constructor(message: string) {
     super(message);
   }

@@ -89,7 +89,8 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
                         >
                           <div
                             style={{
-                              width: `40%`,
+                              width: `${e.value}%`,
+                              transition: "2s",
                             }}
                             className={clsx(
                               `absolute top-0 z-50 h-3 rounded-3xl bg-[#76E268]`

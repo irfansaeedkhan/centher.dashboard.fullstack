@@ -34,14 +34,15 @@ export class StakingUploader {
     }
 
     try {
+      statusController(CreatePoolStepsEnum.banner, 0);
       const uploadBannerDto = {
         path: this._uploader.makePath(),
         content: banner,
       };
 
-      info.banner = await this._uploader.upload(uploadBannerDto, (prog) => {
-        statusController(CreatePoolStepsEnum.banner, prog);
-      });
+      statusController(CreatePoolStepsEnum.banner, 20);
+      info.banner = await this._uploader.upload(uploadBannerDto);
+      statusController(CreatePoolStepsEnum.banner, 100);
     } catch (error: any) {
       throw new CreatePoolUploadBannerError(
         error instanceof Error ? error.message : error
@@ -49,14 +50,14 @@ export class StakingUploader {
     }
 
     try {
+      statusController(CreatePoolStepsEnum.logo, 0);
       const uploadIconDto = {
         path: this._uploader.makePath(),
         content: icon,
       };
-
-      info.icon = await this._uploader.upload(uploadIconDto, (prog) => {
-        statusController(CreatePoolStepsEnum.logo, prog);
-      });
+      statusController(CreatePoolStepsEnum.logo, 20);
+      info.icon = await this._uploader.upload(uploadIconDto);
+      statusController(CreatePoolStepsEnum.logo, 100);
     } catch (error: any) {
       throw new CreatePoolUploadLogoError(
         error instanceof Error ? error.message : error
@@ -64,21 +65,18 @@ export class StakingUploader {
     }
 
     try {
+      statusController(CreatePoolStepsEnum.metadata, 0);
       const metaDataBuffered = this.toBuffer(JSON.stringify(info));
-
+      statusController(CreatePoolStepsEnum.metadata, 5);
       const uploadMetaDataDto = {
         path: this._uploader.makePath("json"),
         content: metaDataBuffered,
       };
 
-      const metaDataPath = await this._uploader.upload(
-        uploadMetaDataDto,
-        (prog) => {
-          statusController(CreatePoolStepsEnum.metadata, prog);
-        }
-      );
-
-      return metaDataPath;
+      statusController(CreatePoolStepsEnum.metadata, 20);
+      const metaDataPath = await this._uploader.upload(uploadMetaDataDto);
+      statusController(CreatePoolStepsEnum.metadata, 100);
+      return `ipfs:${metaDataPath}`;
     } catch (error: any) {
       throw new CreatePoolUploadMetadataError(
         error instanceof Error ? error.message : error

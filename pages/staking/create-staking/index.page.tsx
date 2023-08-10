@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useCallback } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import Joi from "joi";
@@ -12,7 +12,7 @@ import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
 
 import { cn } from "@/utils/cn/cn";
-import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
+import { CrossIcon, MetamaskIcon2, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
@@ -41,6 +41,24 @@ import {
   ProgressStatus,
 } from "@/staking/enum/create-pool-steps.enum";
 import { ProgressModal } from "./dto/progress-modal.dto";
+import { CentherStaking } from "@/staking";
+import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import useUser from "@/hooks/use.user";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import {
+  CreatePoolCallContractError,
+  CreatePoolCallStaticError,
+  CreatePoolParamsError,
+  CreatePoolUploadBannerError,
+  CreatePoolUploadLogoError,
+  CreatePoolUploadMetadataError,
+  InsufficientFundError,
+  WalletApprovalError,
+  WalletConnectedError,
+} from "@/staking/errors/params.error";
+import { isAddress } from "ethers/lib/utils";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -79,7 +97,6 @@ const stakingPeriodOptions = [
 const CreateStaking: NextPageWithLayout = () => {
   const [formStep, setFormStep] = useState(0);
   const [showMsg, setshowMsg] = useState<any>(null);
-
   // start upload images and videos
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
   const [showProfileImage, setShowProfileImage] = useState<boolean | null>(
@@ -90,7 +107,12 @@ const CreateStaking: NextPageWithLayout = () => {
   const [profileErr, setProfileErr] = useState(false);
   const [coverErr, setCoverErr] = useState(false);
   const [clearForm, setClearForm] = useState(false);
-  const [progress, setProgress] = useState<ProgressModal[]>([]);
+  const [progressModel, setProgressModel] = useState<ProgressModal[]>([]);
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { connectWallet } = useConnectWallet();
+  const { user: loggedInUser } = useUser();
+  const { deactivate, library, account } = useWeb3React();
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -124,6 +146,12 @@ const CreateStaking: NextPageWithLayout = () => {
     setProfile(previewUrl);
     setShowProfileImage(true);
   };
+
+  useEffect(() => {
+    if (library && account?.length) {
+      setIsConnected(true);
+    } else setIsConnected(false);
+  }, [library, account]);
 
   useEffect(() => {
     if (clearForm) {
@@ -352,7 +380,9 @@ const CreateStaking: NextPageWithLayout = () => {
       liquidity_pool_provided: "no",
       is_cancelable: "no",
       category: [],
-      start_date: new Date().toISOString().slice(0, 10),
+      start_date: new Date(+new Date() + 24 * 60 * 60 * 1000)
+        .toISOString()
+        .slice(0, 10),
     },
   });
 
@@ -435,16 +465,46 @@ const CreateStaking: NextPageWithLayout = () => {
     };
 
     if (finalData) {
-      console.log(finalData);
       previewBoxModalFunc(finalData);
     }
   };
 
-  const afterSubmitMapper = (data: stakingFormInterface) => {
+  const progressCallbackHandler = useCallback(
+    async (title: CreatePoolStepsEnum, value: number) => {
+      if (progressModel?.length) {
+        const updatedProgress = progressModel.map((e) => {
+          if (e.title == title) {
+            if (value == 100) {
+              e.status = ProgressStatus.done;
+            }
+
+            if (value == 0) {
+              e.status = ProgressStatus.inProgress;
+            }
+
+            e.value = value;
+
+            return e;
+          } else return e;
+        });
+
+        await setProgressModel(updatedProgress);
+      }
+    },
+    [progressModel, setProgressModel]
+  );
+
+  const afterSubmitMapper = async (data: stakingFormInterface) => {
+    if (!library || !account?.length) {
+      throw new WalletConnectedError("connect you wallet");
+    }
+
+    setshowMsg(null);
+
     let initialProgress = [
       {
         title: CreatePoolStepsEnum.preflight,
-        status: ProgressStatus.inProgress,
+        status: ProgressStatus.pending,
         value: 0,
       },
       {
@@ -456,6 +516,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
     if (
       data.reward_token_address?.length &&
+      isAddress(data.reward_token_address) &&
       data.reward_token_address != data.token_address
     ) {
       initialProgress.push({
@@ -518,7 +579,7 @@ const CreateStaking: NextPageWithLayout = () => {
     const input: CreatePoolInput = {
       name: data.staking_name,
       startTime: data.start_date,
-      ownerAddress: "",
+      ownerAddress: account as string,
       stakeToken: data.token_address,
       rewardToken: data.reward_token_address,
       rate: data.staking_reward_token_price_ratio
@@ -528,7 +589,11 @@ const CreateStaking: NextPageWithLayout = () => {
       minStakeAmount: data.min_staking_amount ? data.min_staking_amount : 0,
       maxStakeAmount: data.max_staking_amount ? data.max_staking_amount : 0,
       stakingDurationPeriod: data.staking_period ? +data.staking_period : 0,
-      claimDuration: data.claim_period ? +data.claim_period : 0,
+      claimDuration: data.claim_period
+        ? +data.claim_period == -1
+          ? +data.staking_period
+          : +data.claim_period
+        : 0,
       rewardModeForRef:
         data.multilevel_rewards == "No referral"
           ? 0
@@ -552,6 +617,8 @@ const CreateStaking: NextPageWithLayout = () => {
       logo: profile,
     };
 
+    let affiliateSetting: OptionalType<AddAffiliateSettingsInput> = null;
+
     if (data.multilevel_rewards != "No referral") {
       const levelOne = inputValues.find((e) => e.level == 1);
       const levelTwo = inputValues.find((e) => e.level == 2);
@@ -560,7 +627,7 @@ const CreateStaking: NextPageWithLayout = () => {
       const levelFive = inputValues.find((e) => e.level == 5);
       const levelSix = inputValues.find((e) => e.level == 6);
 
-      const affiliateSetting: AddAffiliateSettingsInput = {
+      affiliateSetting = {
         levelOne: levelOne ? levelOne.percent : 0,
         levelTwo: levelTwo ? levelTwo.percent : 0,
         levelThree: levelThree ? levelThree.percent : 0,
@@ -574,12 +641,20 @@ const CreateStaking: NextPageWithLayout = () => {
         status: ProgressStatus.pending,
         value: 0,
       });
-
-      console.log(affiliateSetting);
     }
-    setProgress(initialProgress);
 
-    console.log(input);
+    await setProgressModel(initialProgress);
+    const stakingHandler = new CentherStaking();
+    await stakingHandler.createPool(
+      library,
+      input,
+      files,
+      affiliateSetting,
+      (title: CreatePoolStepsEnum, value: number) => {
+        progressCallbackHandler(title, value);
+      }
+    );
+    await setProgressModel([]);
   };
 
   const retryFunc = () => {
@@ -588,7 +663,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const onClickClose = () => {
-    setshowMsg(null);
+    setProgressModel([]);
   };
 
   const handleNext = async () => {
@@ -688,7 +763,6 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const previewBoxModalFunc = async (data: stakingFormInterfaceUpdated) => {
-    console.log("data in review modal", data);
     await setshowMsg(
       <StakingReviewModal
         data={data}
@@ -699,58 +773,92 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const createStaking = async (data: stakingFormInterfaceUpdated) => {
-    console.log("data in submit", data);
     try {
       await afterSubmitMapper(data);
-      console.log("--------------->", progress);
-      await setshowMsg(
-        <StakingProgressModal data={progress} onClickClose={onClickClose} />
-      );
+      setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
+      stakingForm.reset({
+        staking_name: "",
+        token_address: "",
+        multilevel_rewards: "",
+        apy: null,
+        staking_reward_token_price_ratio: null,
+        staking_period: "",
+        start_date: "",
+        claim_period: "",
+        rewards_release_start: "",
+        show_on_centher: "no",
+        liquidity_pool_provided: "no",
+        is_cancelable: "no",
+        charge_fee_on_cancel: null,
+        min_staking_amount: null,
+        max_staking_amount: null,
+        total_supply: null,
+        website_url: "",
+        whitepaper: "",
+        facebook: "",
+        twitter: "",
+        github: "",
+        telegram: "",
+        instagram: "",
+        discord: "",
+        reddit: "",
+        explorers: "",
+        category: [],
+        description: "",
+      });
 
-      // setshowMsg(<StakingSuccessModal onClickClose={onClickClose} />);
-      // stakingForm.reset({
-      //   staking_name: "",
-      //   token_address: "",
-      //   multilevel_rewards: "",
-      //   apy: null,
-      //   staking_reward_token_price_ratio: null,
-      //   staking_period: "",
-      //   start_date: "",
-      //   claim_period: "",
-      //   rewards_release_start: "",
-      //   show_on_centher: "no",
-      //   liquidity_pool_provided: "no",
-      //   is_cancelable: "no",
-      //   charge_fee_on_cancel: null,
-      //   min_staking_amount: null,
-      //   max_staking_amount: null,
-      //   total_supply: null,
-      //   website_url: "",
-      //   whitepaper: "",
-      //   facebook: "",
-      //   twitter: "",
-      //   github: "",
-      //   telegram: "",
-      //   instagram: "",
-      //   discord: "",
-      //   reddit: "",
-      //   explorers: "",
-      //   category: [],
-      //   description: "",
-      // });
-
-      // setMetaDataList([]);
-      // setInputValues([]);
-      // setSelectedValue("");
-      // setMemberError(null);
-      // setMembers([]);
-      // setClearForm(true);
-      // setFormStep(0);
+      setMetaDataList([]);
+      setInputValues([]);
+      setSelectedValue("");
+      setMemberError(null);
+      setMembers([]);
+      setClearForm(true);
+      setFormStep(0);
     } catch (error: any) {
+      let message = "";
+      if (error instanceof CreatePoolParamsError) {
+        message = `${error.field}:  ${error.message}`;
+      }
+
+      if (error instanceof CreatePoolCallStaticError) {
+        message = `Examinate network:  ${error.message}`;
+      }
+
+      if (error instanceof CreatePoolCallContractError) {
+        message = `Contract call:  ${error.message}`;
+      }
+
+      if (error instanceof CreatePoolUploadBannerError) {
+        message = `Upload banner:  ${error.message}`;
+      }
+
+      if (error instanceof CreatePoolUploadLogoError) {
+        message = `Upload logo:  ${error.message}`;
+      }
+
+      if (error instanceof CreatePoolUploadMetadataError) {
+        message = `Create metadata:  ${error.message}`;
+      }
+
+      if (error instanceof InsufficientFundError) {
+        message = `Wallet balance :  ${error.message}`;
+      }
+
+      if (error instanceof WalletApprovalError) {
+        message = `Wallet approval:  ${error.message}`;
+      }
+
+      if (error instanceof WalletConnectedError) {
+        message = `Wallet:  ${error.message}`;
+      }
+
+      await setProgressModel([]);
+
       setshowMsg(
         <StakingFailureModal
           onClickClose={onClickClose}
           retryFunc={retryFunc}
+          message={message}
         />
       );
     }
@@ -880,7 +988,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -968,7 +1076,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
@@ -1633,14 +1741,25 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 )}
               </div>
-              <FinalButton
-                title="Next"
-                variant="primary"
-                className={cn("text-14px mx-auto mt-5 w-[45%]", {
-                  hidden: formStep == 1,
-                })}
-                onClick={handleNext}
-              />
+              {!isConnected ? (
+                <FinalButton
+                  title={"Connect Wallet"}
+                  variant="primary"
+                  onClick={() => {
+                    setConnectWalletModal(true);
+                  }}
+                  className="text-14px mx-auto mt-5 w-[45%]"
+                />
+              ) : (
+                <FinalButton
+                  title="Next"
+                  variant="primary"
+                  className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                    hidden: formStep == 1,
+                  })}
+                  onClick={handleNext}
+                />
+              )}
             </div>
             {metaDataModal && (
               <CustomModal
@@ -2073,21 +2192,81 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <FinalButton
-                title="Review and Submit"
-                onClick={stakingForm.handleSubmit(submitForm)}
-                variant="primary"
-                className={cn("text-14px mx-auto mt-5 w-[45%]", {
-                  hidden: formStep == 0,
-                })}
-                disabled={!stakingForm.formState.isValid}
-              />
+              {!isConnected ? (
+                <FinalButton
+                  title={"Connect Wallet"}
+                  variant="primary"
+                  onClick={() => {
+                    setConnectWalletModal(true);
+                  }}
+                  className="text-14px mx-auto mt-5 w-[45%]"
+                />
+              ) : (
+                <FinalButton
+                  title="Review and Submit"
+                  onClick={stakingForm.handleSubmit(submitForm)}
+                  variant="primary"
+                  className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                    hidden: formStep == 0,
+                  })}
+                  disabled={!stakingForm.formState.isValid}
+                />
+              )}
             </div>
           </motion.div>
         </div>
       </div>
-
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setConnectWalletModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!loggedInUser) {
+                    toast.error("Please login to buy this membership");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (
+                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
+                  ) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
+      )}
       {showMsg && showMsg}
+      {progressModel?.length > 0 && (
+        <StakingProgressModal
+          data={progressModel}
+          onClickClose={onClickClose}
+        />
+      )}
     </section>
   );
 };

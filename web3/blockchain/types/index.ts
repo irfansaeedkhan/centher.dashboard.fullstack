@@ -55,4 +55,5 @@ export type IBlockchainConfig = {
   scanner: Explorer;
   ipfsUrl: string;
   subgraphUrl: string;
+  stakingSubgraphUrl: string;
 };

@@ -2,12 +2,12 @@ import { Web3Provider } from "@ethersproject/providers";
 import { ICentherStakingConfig } from "./types/config.interface";
 import {
   AddAffiliateSettingsInput,
-  AddAffiliateSettingsResult,
   CreatePoolInput,
-  CreatePoolResult,
   CreatePoolMetadata,
   StakingFiles,
   ProgressCallback,
+  MappedCreatePoolInput,
+  OptionalType,
 } from "./types";
 
 import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
@@ -19,42 +19,58 @@ import {
   CreatePoolCallContractError,
   CreatePoolCallStaticError,
   InsufficientFundError,
+  InvalidAffiliateSystemSettings,
   WalletApprovalError,
 } from "./errors/params.error";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { eqAddress } from "@/live/utils/address.utils";
+import { ZeroAddress } from "@/web3/constants/common";
 
 export class CentherStaking {
-  constructor(options: ICentherStakingConfig) {}
+  constructor(options?: ICentherStakingConfig) {}
 
   @CatchError()
   async createPool(
     library: Web3Provider,
     input: CreatePoolInput,
     files: StakingFiles,
+    affiliateSettings: OptionalType<AddAffiliateSettingsInput>,
     statusController: ProgressCallback
-  ): Promise<CreatePoolResult> {
+  ): Promise<void> {
     let mappedData;
     try {
       // map data to solidity extractable data types
+      statusController(CreatePoolStepsEnum.preflight, 0);
       mappedData = setupCreatePoolData(input);
+      statusController(CreatePoolStepsEnum.preflight, 100);
     } catch (error) {
       throw error;
     }
 
     try {
       // set approval
-      await this.handleTokenApprovals(library, input);
+      await this.handleTokenApprovals(
+        library,
+        mappedData,
+        input.ownerAddress,
+        statusController
+      );
     } catch (error: any) {
       throw error;
     }
 
     try {
       // contract callstatic
-      statusController(CreatePoolStepsEnum.preflight, 0);
-      await BlockchainWrite.createStakingPool(library, mappedData, true);
-      statusController(CreatePoolStepsEnum.preflight, 100);
+      statusController(CreatePoolStepsEnum.examinate, 0);
+      await BlockchainWrite.createStakingPool(
+        library,
+        mappedData,
+        input.ownerAddress,
+        true
+      );
+
+      statusController(CreatePoolStepsEnum.examinate, 100);
     } catch (error: any) {
       throw new CreatePoolCallStaticError(
         error instanceof Error ? error.message : error
@@ -63,7 +79,7 @@ export class CentherStaking {
 
     try {
       // upload files
-      mappedData = await this.uploadPoolMetadata(
+      mappedData.poolMetadata = await this.uploadPoolMetadata(
         files,
         input.poolMetadata,
         statusController
@@ -78,28 +94,45 @@ export class CentherStaking {
       const hash = await BlockchainWrite.createStakingPool(
         library,
         mappedData,
-        true
+        input.ownerAddress,
+        false
       );
 
       statusController(CreatePoolStepsEnum.contract, 100);
-
-      return {
-        success: !!hash?.length,
-        trxHash: hash,
-      };
     } catch (error: any) {
       throw new CreatePoolCallContractError(
         error instanceof Error ? error.message : error
       );
     }
+
+    const poolId = await BlockchainWrite.getCurrentStakingPoolId(library);
+    if (affiliateSettings) {
+      statusController(CreatePoolStepsEnum.affiliate, 0);
+      await this.addAffiliateSettings(library, affiliateSettings, poolId);
+      statusController(CreatePoolStepsEnum.affiliate, 100);
+    } else if (mappedData.rewardModeForRef != 0) {
+      throw new InvalidAffiliateSystemSettings(
+        "Invalid affiliate system settings"
+      );
+    }
   }
 
-  @CatchError()
-  async addAffiliateSettings(
+  private async addAffiliateSettings(
     library: Web3Provider,
-    input: AddAffiliateSettingsInput
-  ): Promise<AddAffiliateSettingsResult> {
-    throw new Error("Not Implemented");
+    input: AddAffiliateSettingsInput,
+    poolId: number
+  ): Promise<void> {
+    try {
+      await BlockchainWrite.setStakingPoolAffiliateSettings(
+        library,
+        input,
+        poolId
+      );
+    } catch (error: any) {
+      throw new InvalidAffiliateSystemSettings(
+        error instanceof Error ? error.message : error
+      );
+    }
   }
 
   private async uploadPoolMetadata(
@@ -118,40 +151,57 @@ export class CentherStaking {
 
   private async handleTokenApprovals(
     library: Web3Provider,
-    input: CreatePoolInput
+    input: MappedCreatePoolInput,
+    ownerAddress: string,
+    statusController: ProgressCallback
   ): Promise<void> {
     try {
+      statusController(CreatePoolStepsEnum.stake_approval, 0);
+      statusController(CreatePoolStepsEnum.stake_approval, 20);
+
       await BlockchainWrite.SetApprovalForWallet(
         library,
         input.stakeToken,
-        input.ownerAddress,
+        ownerAddress,
         AddressFactory.getContractAddress(SmartContractName.STAKING)
       );
-    } catch (error) {
+
+      statusController(CreatePoolStepsEnum.stake_approval, 100);
+    } catch (error: any) {
       let message = "";
       if (error instanceof InsufficientFundError) {
         message = "Staking token balance is 0";
       } else {
-        message = "Set approval for staking token failed";
+        message = error instanceof Error ? error.message : error;
       }
+
       throw new WalletApprovalError(message);
     }
 
-    if (!eqAddress(input.stakeToken, input.rewardToken)) {
+    if (
+      ZeroAddress != input.rewardToken &&
+      !eqAddress(input.stakeToken, input.rewardToken)
+    ) {
       try {
+        statusController(CreatePoolStepsEnum.reward_approval, 0);
+        statusController(CreatePoolStepsEnum.reward_approval, 20);
+
         await BlockchainWrite.SetApprovalForWallet(
           library,
           input.rewardToken,
-          input.ownerAddress,
+          ownerAddress,
           AddressFactory.getContractAddress(SmartContractName.STAKING)
         );
-      } catch (error) {
+
+        statusController(CreatePoolStepsEnum.reward_approval, 100);
+      } catch (error: any) {
         let message = "";
         if (error instanceof InsufficientFundError) {
           message = "Reward token balance is 0";
         } else {
-          message = "Set approval for reward token failed";
+          message = error instanceof Error ? error.message : error;
         }
+
         throw new WalletApprovalError(message);
       }
     }
