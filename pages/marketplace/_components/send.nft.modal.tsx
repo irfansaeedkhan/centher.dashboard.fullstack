@@ -28,7 +28,6 @@ interface SendNFTModalProps {
 interface sendFormInterface {
   LockEndTime: number;
   ReceiverAddress: string;
-  message?: string;
 }
 
 const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
@@ -41,9 +40,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
     LockEndTime: Joi.number().required().label("LockEndTime").messages({
       "any.required": `Required Field`,
     }),
-    message: Joi.string().optional().allow("").label("message").messages({
-      "any.required": `Required Field`,
-    }),
   });
 
   const nftForm = useForm<sendFormInterface>({
@@ -51,7 +47,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
     defaultValues: {
       ReceiverAddress: "",
       LockEndTime: 0,
-      message: "",
     },
   });
 
@@ -59,7 +54,6 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
     let finalData = {
       ReceiverAddress: data.ReceiverAddress,
       LockEndTime: +lock,
-      message: data.message,
     };
   };
 
@@ -149,7 +143,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
                 </p>
               )}
             </div>
-            <div className={fieldWrapper}>
+            {/* <div className={fieldWrapper}>
               <label className={fieldTitle}>Write message to your friend</label>
               <div className="relative rounded-lg !bg-black-shade-3">
                 <textarea
@@ -163,7 +157,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
                   )}
                 ></textarea>
               </div>
-            </div>
+            </div> */}
             <div className={fieldWrapper}>
               <div className="flex items-center justify-between gap-10">
                 <label className={fieldTitle}>Set Lock End Time</label>
