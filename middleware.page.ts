@@ -6,6 +6,7 @@ import {
   isAdmin,
   isAuthenticated,
   isNFTBlacklisted,
+  isCitizen,
 } from "@/utils/middleware.helpers";
 import { AppRoutes } from "@/constants/app.routes";
 
@@ -25,21 +26,21 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (checkMatch(request.nextUrl, chatComingSoonPages)) {
-    if (
-      process.env.NEXT_PUBLIC_APP_ENV === "production" ||
-      process.env.NEXT_PUBLIC_APP_ENV === "staging"
-    ) {
-      const url = request.nextUrl.clone();
-      url.pathname = AppRoutes.chat_coming_soon;
-      return NextResponse.redirect(url);
-    }
-  }
-
   // Check if the URL collection and tokenId are blacklisted
   if (isNFTBlacklisted(request.nextUrl.pathname)) {
     const url = request.nextUrl.origin + "/not-found";
     return NextResponse.redirect(url);
+  }
+
+  // Citizen Only Pages
+  if (checkMatch(request.nextUrl, citizenOnlyPages)) {
+    if (!(await isCitizen(request))) {
+      return NextResponse.redirect(
+        `${request.nextUrl.origin}${AppRoutes.citizenship}`
+      );
+    } else {
+      return NextResponse.next();
+    }
   }
 
   if (checkMatch(request.nextUrl, adminPages)) {
@@ -110,6 +111,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.citizenship,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
+  AppRoutes.settings.citizenship,
   AppRoutes.profile.nfts,
   AppRoutes.profile.owned,
   AppRoutes.profile.listed,
@@ -128,8 +130,6 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
   AppRoutes.marketplace.collection,
-  AppRoutes.marketplace.create_nft,
-  AppRoutes.marketplace.create_collection,
 
   AppRoutes.launchpad,
   AppRoutes.launchpad_pre_booking.index,
@@ -143,6 +143,13 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.recommended,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
+
+// Citizen only pages
+const _citizenOnlyPages: string[] = [
+  AppRoutes.marketplace.create_nft,
+  AppRoutes.marketplace.create_collection,
+];
+const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
 // Coming soon pages - redirect to feed page
 const _notReadyPages: string[] = [
@@ -168,7 +175,3 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.network_rewards_marketplace,
 ];
 const notReadyPages = changePaths(_notReadyPages);
-
-// Chat Coming Soon
-const _chatComingSoonPages: string[] = [];
-const chatComingSoonPages = changePaths(_chatComingSoonPages);

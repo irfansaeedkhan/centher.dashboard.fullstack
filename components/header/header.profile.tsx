@@ -93,18 +93,20 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             className="flex max-w-[215px] items-center  text-sm font-semibold text-white fsm:text-base"
             title={loggedInUser?.display_name}
           >
-            <span
-              className={clsx(` block max-w-full overflow-hidden truncate`)}
-            >
+            <span className={clsx(`block max-w-full overflow-hidden truncate`)}>
               {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
             </span>
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+            {verificationTick && (
+              <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                 <Image
                   src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
+                  alt={
+                    loggedInUser?.membership.status === "citizen"
+                      ? "Citizen"
+                      : "Verified"
+                  }
+                  width={16}
+                  height={16}
                 />
               </span>
             )}

@@ -41,6 +41,7 @@ export const AppRoutes = {
     citizenship: "/settings/citizenship",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
+    citizenship: "/settings/citizenship",
   },
 
   feed: {
@@ -101,8 +102,6 @@ export const AppRoutes = {
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
   },
-  chat_coming_soon: "/chat-coming-soon",
   staking_coming_soon: "/staking-coming-soon",
-  citizenship_coming_soon: "/citizenship-coming-soon",
-  citizenship_subscription_coming_soon: "/citizenship-subscription-coming-soon",
+  citizenship: "/citizenship",
 } as const;

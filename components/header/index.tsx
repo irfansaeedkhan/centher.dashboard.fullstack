@@ -11,6 +11,7 @@ import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import FinalButton from "../button/final.button";
+import { BuyCitizenshipModal } from "../modal/buy-citizenship-modal";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 

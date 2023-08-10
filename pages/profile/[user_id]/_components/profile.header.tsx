@@ -33,6 +33,8 @@ import { MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import Button from "@/components/button";
 import ProfileModal from "@/components/modal/profile.modal";
+import FinalButton from "@/components/button/final.button";
+import CitizenLabel from "@/components/citizen/citizen.label";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -45,7 +47,6 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
-import FinalButton from "@/components/button/final.button";
 
 export type CoverImageWithFile = {
   path: string;
@@ -426,17 +427,19 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                 <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px]  fsm:ml-1">
+                {user.membership.status === "citizen" ? (
+                  <CitizenLabel />
+                ) : user.membership.status === "verified" &&
+                  verificationTick ? (
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] pt-1 fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
                       width={22}
                       height={22}
-                      className="mt-[5px]"
                     />
                   </span>
-                )}
+                ) : null}
               </h5>
             </div>
           </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import { AppRoutes } from "@/constants/app.routes";
 
 export const SettingsSidebarData: SettingsSidebarItem[] = [
@@ -17,6 +16,10 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
   {
     label: "Social Links",
     link: AppRoutes.settings.social_links,
+  },
+  {
+    label: "Citizen membership",
+    link: AppRoutes.settings.citizenship,
   },
   {
     label: "Privacy",

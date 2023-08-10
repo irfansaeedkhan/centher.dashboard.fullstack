@@ -157,8 +157,6 @@ export { default as ArrowDownGradient } from "./arrow-down-gradient.svg";
 export { default as ArrowUpGradient } from "./arrow-up-gradient.svg";
 export { default as ClaimableReward } from "./claimable-reward.svg";
 export { default as StakingUsers } from "./staking-users.svg";
-export { default as TeamMemberIcon } from "./team-member-icon.svg";
-export { default as IconFailure } from "./icon-failure.svg";
 export { default as PopupUserIcon } from "./popup-user-icon.svg";
 export { default as PopupFeedIcon } from "./popup-feed-icon.svg";
 export { default as PopupMessageIcon } from "./popup-message-icon.svg";
@@ -169,6 +167,8 @@ export { default as LayoutGrid } from "./layout-grid.svg";
 export { default as LayoutList } from "./layout-list.svg";
 export { default as WarningGradient } from "./warning-gradient.svg";
 export { default as MultiColorLoader } from "./loader-multi-color.svg";
+export { default as TeamMemberIcon } from "./team-member-icon.svg";
+export { default as IconFailure } from "./icon-failure.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

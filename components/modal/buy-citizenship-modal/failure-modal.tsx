@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 import FinalButton from "../../button/final.button";
 import { IconFailure } from "@/assets/svgs";

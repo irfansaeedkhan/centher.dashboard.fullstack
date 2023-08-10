@@ -1,113 +1,100 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-
+import { IoClose } from "react-icons/io5";
+import {
+  OrgMember,
+  addOrgMember,
+  getOrgMembers,
+  removeOrgMembers,
+} from "@/lib/org-team-members";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import FinalButton from "@/components/button/final.button";
-
-import { IoClose } from "react-icons/io5";
 import { TeamMemberIcon } from "@/assets/svgs";
 
 const CitizenshipUpdateDetails: NextPageWithLayout = () => {
-  const [initialData, setInitialData] = useState<teamMember[] | null>(null);
-
-  // handle dynamic members
-  const [members, setMembers] = useState<teamMember[]>([]);
-  const [memberError, setMemberError] = useState<string | null>(null);
-  const [memberData, setMemberData] = useState({
-    jobTitle: "",
-    walletAddress: "",
+  const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
+  const [newOrgMember, setNewOrgMember] = useState<
+    Pick<OrgMember, "user_id" | "title">
+  >({
+    title: "",
+    user_id: "",
   });
+  const [newMemberError, setNewMemberError] = useState<string | null>(null);
 
-  const handleMemberInputChange = (
+  const fetchOrgMembers = useCallback(async () => {
+    try {
+      const _orgMembers = await getOrgMembers();
+      setOrgMembers(_orgMembers);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrgMembers();
+  }, [fetchOrgMembers]);
+
+  const handleNewMemberInputChange = (
     event: ChangeEvent<HTMLInputElement>
   ): void => {
     const { name, value } = event.target;
-    setMemberData((prevMemberData) => ({ ...prevMemberData, [name]: value }));
+    setNewOrgMember((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddMember = (): void => {
+  const handleAddMember = async (): Promise<void> => {
+    if (!newOrgMember.user_id.trim() || !newOrgMember.title.trim()) {
+      setNewMemberError("All fields are required.");
+      return;
+    }
+
+    if (newOrgMember.title.trim().length > 100) {
+      setNewMemberError("Title must be at most 100 characters.");
+      return;
+    }
+
     if (
-      memberData.jobTitle.length > 50 ||
-      memberData.walletAddress.length > 200
+      !newOrgMember.user_id.trim().startsWith("0x") ||
+      newOrgMember.user_id.trim().length !== 42
     ) {
-      setMemberError("member details lenght is exceeding maximum length");
+      setNewMemberError("Account address is incorrect.");
       return;
     }
-    if (memberData.jobTitle && memberData.walletAddress) {
-      setMemberError(null);
-      setMembers((prevMembers) => [...prevMembers, memberData]);
-      setMemberData({
-        jobTitle: "",
-        walletAddress: "",
+
+    setNewMemberError(null);
+
+    try {
+      const newlyAddedMember = await addOrgMember(newOrgMember);
+
+      setOrgMembers((prevMembers) => {
+        const members = prevMembers.concat(newlyAddedMember);
+        // Remove duplicates
+        const uniqueMembers = members.filter(
+          (member, index, self) =>
+            index === self.findIndex((m) => m.user_id === member.user_id)
+        );
+        return uniqueMembers;
       });
+
+      setNewOrgMember({
+        user_id: "",
+        title: "",
+      });
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
-  const handleRemoveMember = (index: number): void => {
-    setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
-  };
-
-  //  validations
-  type teamMember = {
-    jobTitle: string;
-    walletAddress: string;
-  };
-
-  const handleSubmit = async () => {
-    if (members.length < 1) {
-      setMemberError("add members please");
-      return;
+  const handleRemoveOrgMember = async (user_id: string) => {
+    try {
+      await removeOrgMembers(user_id);
+      setOrgMembers((members) =>
+        members.filter((mem) => mem.user_id !== user_id)
+      );
+    } catch (err: any) {
+      toast.error(err.message);
     }
-    toast.success("Members Added !");
-    // dummy setting so user can see its data
-    setInitialData(members);
   };
-
-  const handleUpdate = async () => {
-    if (members.length < 1) {
-      setMemberError("add members please");
-      return;
-    }
-    let finalUpdatedData = {
-      members: members,
-    };
-
-    console.log("updatedData:", finalUpdatedData);
-    toast.success("Form Updated!");
-  };
-
-  let initialDummyData = [
-    {
-      jobTitle: "CEO",
-      walletAddress: "Ricky",
-    },
-    {
-      jobTitle: "CTO",
-      walletAddress: "Shivam",
-    },
-  ];
-
-  // let initialDummyData: teamMember[] | null = null;
-
-  useEffect(() => {
-    const fetchDataForEdit = async () => {
-      try {
-        // Fetch the initial data for editing here
-        if (initialDummyData) {
-          // Set the initial data to populate the form fields for editing
-          setInitialData(initialDummyData);
-          if (initialDummyData) {
-            setMembers(initialDummyData);
-          }
-          // Reset the form to clear any previous validation errors
-        }
-      } catch (error) {
-        console.error("Error fetching data for edit:", error);
-      }
-    };
-    fetchDataForEdit();
-  }, []);
 
   return (
     <section className="flex w-full">
@@ -120,46 +107,46 @@ const CitizenshipUpdateDetails: NextPageWithLayout = () => {
               </label>
               <div className="mt-4 w-full rounded-lg border-[1px] border-gray-shade-3">
                 <div className="grid gap-6 p-6 pb-0  md:grid-cols-2">
-                  {/* Job title input */}
+                  {/* Title input */}
                   <div className="text-14px w-full font-medium text-white">
                     <label
-                      htmlFor="jobTitle"
+                      htmlFor="title"
                       className="block font-normal tracking-wide"
                     >
-                      Job title
+                      Title
                     </label>
                     <input
                       type="text"
-                      name="jobTitle"
-                      id="jobTitle"
+                      name="title"
+                      id="title"
                       placeholder="Example: CEO, CTO, COO etc"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      value={memberData.jobTitle}
-                      onChange={handleMemberInputChange}
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      value={newOrgMember.title}
+                      onChange={handleNewMemberInputChange}
                     />
                   </div>
 
-                  {/* Wallet public address input */}
+                  {/* User account address input */}
                   <div className="text-14px w-full font-medium text-white">
                     <label
-                      htmlFor="walletAddress"
+                      htmlFor="user_id"
                       className="block font-normal tracking-wide"
                     >
-                      Wallet public address
+                      Account Address
                     </label>
                     <input
                       type="text"
-                      name="walletAddress"
-                      id="walletAddress"
-                      placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      value={memberData.walletAddress}
-                      onChange={handleMemberInputChange}
+                      name="user_id"
+                      id="user_id"
+                      placeholder="Example: 0x1234567890123456789012345678901234567890"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      value={newOrgMember.user_id}
+                      onChange={handleNewMemberInputChange}
                     />
                   </div>
-                  {memberError && (
+                  {newMemberError && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {memberError}
+                      {newMemberError}
                     </p>
                   )}
                 </div>
@@ -167,32 +154,33 @@ const CitizenshipUpdateDetails: NextPageWithLayout = () => {
                 {/* Button aligned to the right */}
                 <div className="flex justify-end px-6 py-5">
                   <FinalButton
-                    title="Add Members"
+                    title="Add Member"
                     onClick={handleAddMember}
                     variant="primary"
                     className="text-14px max-w-fit"
-                    disabled={!memberData.jobTitle || !memberData.walletAddress}
+                    disabled={!newOrgMember.title || !newOrgMember.user_id}
                   />
                 </div>
-                {/* Display added members */}
+
+                {/* Display org members */}
                 {
-                  <div className=" ">
-                    {members.map((member, index) => (
+                  <div>
+                    {orgMembers.map((member) => (
                       <div
-                        key={index}
-                        className="flex items-center justify-between border-t-[1px] border-gray-shade-3 py-4 px-6 text-white"
+                        key={member.user_id}
+                        className="flex items-center justify-between border-t-[1px] border-gray-shade-3 px-6 py-4 text-white"
                       >
                         <div className="flex items-center gap-1">
                           <TeamMemberIcon />
-                          <span>{member.jobTitle}</span>
+                          <span>{member.title}</span>
                           <span>-</span>
-                          <span>{member.walletAddress}</span>
+                          <span>{member.display_name}</span>
                         </div>
                         <button
                           className="ml-2 text-red-500"
-                          onClick={() => handleRemoveMember(index)}
+                          onClick={() => handleRemoveOrgMember(member.user_id)}
                         >
-                          <IoClose className="ioCLose h-5 w-5 fill-[#E34048]" />
+                          <IoClose className="h-5 w-5 fill-[#E34048]" />
                         </button>
                       </div>
                     ))}
@@ -201,13 +189,6 @@ const CitizenshipUpdateDetails: NextPageWithLayout = () => {
               </div>
             </div>
           </div>
-
-          <FinalButton
-            title="Submit Now"
-            onClick={initialData ? () => handleUpdate() : () => handleSubmit()}
-            variant="primary"
-            className=" text-14px mx-auto mt-5 w-[45%]"
-          />
         </div>
       </div>
     </section>

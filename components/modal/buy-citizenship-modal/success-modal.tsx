@@ -1,37 +1,11 @@
-import React, { useRef } from "react";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/router";
-
-import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "../../button/final.button";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "../modal.portal";
 
-interface CustomModalProps {
-  onClickClose: () => void;
-}
+interface CustomModalProps {}
 
-export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
-  onClickClose,
-}) => {
-  const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
-  const PassportModalRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
-
-  useOnClickOutside(PassportModalRef, () => {
-    onClickClose();
-  });
-
-  useEventListener(
-    "keydown",
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClickClose();
-      }
-    },
-    htmlBodyRef
-  );
-
+export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
   return (
     <ModalPortal wrapperId="success-buy-passport-portal">
       <div
@@ -39,7 +13,6 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
       >
         <div
           className={`flex h-full w-full max-w-[422px] flex-col overflow-auto border border-solid  border-[#2a2d3c]   bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
-          ref={PassportModalRef}
         >
           <div className="flex flex-col gap-8 text-center">
             <Image
@@ -61,7 +34,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = ({
             </div>
             <FinalButton
               onClick={() => {
-                onClickClose();
+                window.location.href = window.location.origin;
               }}
               title="Continue"
               variant="primary"

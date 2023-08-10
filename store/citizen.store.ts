@@ -30,7 +30,7 @@ export interface CitizenStore {
     library: Web3Provider,
     type: CitizenShipType,
     account: string
-  ) => void;
+  ) => Promise<void>;
 }
 
 export const useCitizenStore = create<CitizenStore>()(
