@@ -1,19 +1,21 @@
 import React from "react";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 
 interface Props {
   item: IListHistory;
 }
 
 export const NFTListingSingle: React.FC<Props> = ({ item }) => {
-  const router = useRouter();
   const { user: buyer } = useGetUser(item.buyer);
   const { user: seller } = useGetUser(item.seller);
+  const verificationTickSeller = useVerificationTick({ user: seller });
+  const verificationTickBuyer = useVerificationTick({ user: buyer });
 
   let prefix = "Listed";
   if (item.type === "ListForSale") {
@@ -57,12 +59,28 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
               >
                 {" "}
                 {buyer?.display_name ? (
-                  <span
-                    title={buyer.display_name}
-                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
-                  >
-                    {sliceDisplayName(buyer.display_name)}
-                  </span>
+                  <div className="flex items-center">
+                    <span
+                      title={buyer.display_name}
+                      className={`block w-auto max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
+                    >
+                      {sliceDisplayName(buyer.display_name)}
+                    </span>
+                    {verificationTickBuyer && (
+                      <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                        <Image
+                          src={verificationTickBuyer}
+                          alt={
+                            buyer.membership.status === "citizen"
+                              ? "Citizen"
+                              : "Verified"
+                          }
+                          width={16}
+                          height={16}
+                        />
+                      </span>
+                    )}
+                  </div>
                 ) : (
                   <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>
                 )}
@@ -77,12 +95,28 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                 }}
               >
                 {seller?.display_name ? (
-                  <span
-                    title={seller.display_name}
-                    className={`block w-full max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
-                  >
-                    {sliceDisplayName(seller.display_name)}
-                  </span>
+                  <div className="flex items-center">
+                    <span
+                      title={seller.display_name}
+                      className={`block w-auto max-w-[140px] overflow-hidden truncate break-words [@media(min-width:400px)]:max-w-[205px] [@media(min-width:500px)]:max-w-[345px]`}
+                    >
+                      {sliceDisplayName(seller.display_name)}
+                    </span>
+                    {verificationTickSeller && (
+                      <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                        <Image
+                          src={verificationTickSeller}
+                          alt={
+                            seller.membership.status === "citizen"
+                              ? "Citizen"
+                              : "Verified"
+                          }
+                          width={16}
+                          height={16}
+                        />
+                      </span>
+                    )}
+                  </div>
                 ) : (
                   <div className="!h-4 !w-[50px] animate-pulse rounded-sm bg-gray-shade-3"></div>
                 )}

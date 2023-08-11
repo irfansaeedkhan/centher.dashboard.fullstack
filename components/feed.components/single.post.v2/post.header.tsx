@@ -13,11 +13,11 @@ import {
   PostUser,
 } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
+import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { PostActionMenu } from "./post.action.meu";
 import { PostType } from "./main";
-import FinalButton from "@/components/button/final.button";
 
 interface Props {
   post: CompletedPost | ArchivedPost;
@@ -129,13 +129,17 @@ export const PostHeader: React.FC<Props> = ({
               <span className={clsx(`block truncate break-words`)}>
                 {postUser && sliceDisplayName(postUser.display_name)}
               </span>
-              {!!verificationTickPostCreator && (
-                <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+              {verificationTickPostCreator && (
+                <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                   <Image
                     src={verificationTickPostCreator}
-                    alt={"Verified"}
-                    width={20}
-                    height={20}
+                    alt={
+                      postUser.membership.status === "citizen"
+                        ? "Citizen"
+                        : "Verified"
+                    }
+                    width={16}
+                    height={16}
                   />
                 </span>
               )}
@@ -179,13 +183,17 @@ export const PostHeader: React.FC<Props> = ({
                 >
                   {post && sliceDisplayName(parentPost.user.display_name)}
                 </span>
-                {!!verificationTickReplyingTo && (
-                  <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                {verificationTickReplyingTo && (
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                     <Image
                       src={verificationTickReplyingTo}
-                      alt={"Verified"}
-                      width={20}
-                      height={20}
+                      alt={
+                        parentPost.user.membership.status === "citizen"
+                          ? "Citizen"
+                          : "Verified"
+                      }
+                      width={16}
+                      height={16}
                     />
                   </span>
                 )}

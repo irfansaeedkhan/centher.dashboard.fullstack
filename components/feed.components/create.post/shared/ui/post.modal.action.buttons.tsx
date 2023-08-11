@@ -8,7 +8,6 @@ import EmojiPicker, {
   EmojiStyle,
   Theme,
 } from "emoji-picker-react";
-import { FiCamera } from "react-icons/fi";
 
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
@@ -30,7 +29,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { appendPostText, getLastPost, addNewPost, posts } = useNewPostStore();
+  const { appendPostText, getLastPost, addNewPost, posts, isModalOpen } =
+    useNewPostStore();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
@@ -90,7 +90,13 @@ export const PostModalActionButtons: React.FC<Props> = ({
         video: false,
       });
     }
-  }, [posts]);
+    if (isModalOpen === false) {
+      setActiveBtn({
+        image: false,
+        video: false,
+      });
+    }
+  }, [posts, isModalOpen]);
 
   return (
     <div
