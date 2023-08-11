@@ -177,8 +177,8 @@ const CurrentUserSide: React.FC<{
         <div
           className={clsx(
             `relative flex w-full items-center justify-end gap-2`,
-            `${emoji?.length > 0 && "mb-5"}`,
-            `${emojiBarMobile && " bg-[#262323b8] p-1"}`
+            emoji?.length > 0 && "mb-5",
+            emojiBarMobile && "bg-[#262323b8] p-1"
           )}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -211,9 +211,8 @@ const CurrentUserSide: React.FC<{
           )}
           <div
             className={clsx(
-              `gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]
-        `,
-              `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+              `gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]`,
+              emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
             )}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -270,7 +269,7 @@ const CurrentUserSide: React.FC<{
               <p
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`,
-                  `${emojiBarMobile && "bg-[#262323b8]"}`
+                  emojiBarMobile && "bg-[#262323b8]"
                 )}
               >
                 {data.message.content}
@@ -303,10 +302,7 @@ const CurrentUserSide: React.FC<{
           // onTouchStart={handleTouchStart}
           // onTouchEnd={handleTouchEnd}
           // onTouchCancel={handleTouchCancel}
-          className={clsx(
-            `relative flex 		gap-2`,
-            `${emoji?.length > 0 && "mb-5"}`
-          )}
+          className={clsx(`relative flex gap-2`, emoji?.length > 0 && "mb-5")}
         >
           {emoji?.length > 0 && (
             <div
@@ -350,12 +346,12 @@ const CurrentUserSide: React.FC<{
 
           <div
             className={clsx(
-              `flex w-full items-center justify-end gap-2 `,
-              `${emojiBarMobile && " bg-[#262323b8] p-1"}`
+              `flex w-full items-center justify-end gap-2`,
+              emojiBarMobile && "bg-[#262323b8] p-1"
             )}
           >
             {belowMobile ? (
-              <div ref={hoverRef} className={`hidden `}>
+              <div ref={hoverRef} className={`hidden`}>
                 {emojiBarMobile && (
                   <CurrentUserHoveredListMobile
                     openModalReply={onReplayCalled}
@@ -382,17 +378,17 @@ const CurrentUserSide: React.FC<{
             )}
             <div
               className={clsx(
-                `  gradient-chat-box relative flex h-auto  items-end gap-2 rounded-[10px] bg-gradient-pattern px-4 py-[10px]  fmd:max-w-[50%]`,
-                `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+                `gradient-chat-box relative flex h-auto items-end gap-2 rounded-[10px] bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]`,
+                emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
               )}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              //onMouseLeave={handleMouseLeaveMobile}
+              // onMouseLeave={handleMouseLeaveMobile}
             >
               <p
                 className={clsx(
                   `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`,
-                  `${emojiBarMobile && "bg-[#262323b8]"}`
+                  emojiBarMobile && "bg-[#262323b8]"
                 )}
               >
                 {data.message.content}

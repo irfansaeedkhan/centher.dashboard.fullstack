@@ -166,14 +166,14 @@ const ClientSide: React.FC<{
           onMouseLeave={handleMouseLeave}
           className={clsx(
             `relative flex w-full items-center gap-2`,
-            `${emoji?.length > 0 && "mb-5"}`,
-            `${emojiBarMobile && " bg-[#262323b8] p-1"}`
+            emoji?.length > 0 && "mb-5",
+            emojiBarMobile && " bg-[#262323b8] p-1"
           )}
         >
           <div
             className={clsx(
               `flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]`,
-              `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+              emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
             )}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -232,7 +232,7 @@ const ClientSide: React.FC<{
               <p
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`,
-                  `${emojiBarMobile && "bg-[#262323b8]"}`
+                  emojiBarMobile && "bg-[#262323b8]"
                 )}
               >
                 {data.message.content}
@@ -272,8 +272,8 @@ const ClientSide: React.FC<{
           onMouseLeave={handleMouseLeave}
           className={clsx(
             `relative flex items-center gap-2`,
-            `${emoji?.length > 0 && "mb-5"}`,
-            `${emojiBarMobile && " bg-[#262323b8] p-1"}`
+            emoji?.length > 0 && "mb-5",
+            emojiBarMobile && " bg-[#262323b8] p-1"
           )}
         >
           {emoji.length > 0 && (
@@ -331,7 +331,7 @@ const ClientSide: React.FC<{
           <div
             className={clsx(
               `flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] border border-gray-shade-3 bg-background-shade-3 px-4 py-[10px] fmd:max-w-[50%]`,
-              `${emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"}`
+              emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
             )}
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
@@ -339,7 +339,7 @@ const ClientSide: React.FC<{
             <p
               className={clsx(
                 `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`,
-                `${emojiBarMobile && "bg-[#262323b8]"}`
+                emojiBarMobile && "bg-[#262323b8]"
               )}
             >
               {data.message.content}
