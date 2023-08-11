@@ -111,38 +111,42 @@ const CitizenshipUpdateDetails: NextPageWithLayout = () => {
                   <div className="text-14px w-full font-medium text-white">
                     <label
                       htmlFor="title"
-                      className="block font-normal tracking-wide"
+                      className="mb-2 block font-normal tracking-wide"
                     >
                       Title
                     </label>
-                    <input
-                      type="text"
-                      name="title"
-                      id="title"
-                      placeholder="Example: CEO, CTO, COO etc"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      value={newOrgMember.title}
-                      onChange={handleNewMemberInputChange}
-                    />
+                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        placeholder="Example: CEO, CTO, COO etc"
+                        className="text-14px block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        value={newOrgMember.title}
+                        onChange={handleNewMemberInputChange}
+                      />
+                    </div>
                   </div>
 
                   {/* User account address input */}
                   <div className="text-14px w-full font-medium text-white">
                     <label
                       htmlFor="user_id"
-                      className="block font-normal tracking-wide"
+                      className="mb-2 block font-normal tracking-wide"
                     >
                       Account Address
                     </label>
-                    <input
-                      type="text"
-                      name="user_id"
-                      id="user_id"
-                      placeholder="Example: 0x1234567890123456789012345678901234567890"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      value={newOrgMember.user_id}
-                      onChange={handleNewMemberInputChange}
-                    />
+                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        name="user_id"
+                        id="user_id"
+                        placeholder="Example: 0x1234567890123... "
+                        className="text-14px block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        value={newOrgMember.user_id}
+                        onChange={handleNewMemberInputChange}
+                      />
+                    </div>
                   </div>
                   {newMemberError && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>

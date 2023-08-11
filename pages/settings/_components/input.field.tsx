@@ -9,12 +9,14 @@ export const InputField = React.forwardRef<HTMLInputElement, PasswordFormProps>(
     return (
       <div className={fieldWrapper}>
         <label className={fieldTitle}>{label}</label>
-        <input
-          id={id}
-          className={!error ? inputField : inputFieldError}
-          {...props}
-          ref={ref}
-        />
+        <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+          <input
+            id={id}
+            className={!error ? inputField : inputFieldError}
+            {...props}
+            ref={ref}
+          />
+        </div>
         {error && <ErrorMessage message={error.message} />}
       </div>
     );
@@ -46,7 +48,7 @@ export type FieldName =
   | "youtube_url"
   | "telegram_username";
 
-const fieldWrapper = `flex  gap-2 flex-col`;
+const fieldWrapper = `flex gap-2 flex-col`;
 
 const fieldTitle = `text-sm text-white`;
 
