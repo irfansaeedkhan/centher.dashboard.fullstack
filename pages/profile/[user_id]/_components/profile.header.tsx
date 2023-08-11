@@ -467,20 +467,22 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
               loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
                 <div className="mt-2 flex w-full max-w-[122px] justify-center fmd:hidden">
                   {loadingState ? (
-                    <button
-                      className={clsx(
-                        `!text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl px-2 py-2 font-bold`,
-                        follow ? "bg-gray-shade-20" : "bg-brand-primary "
-                      )}
-                    >
-                      <CgSpinner className="animate-spin text-2xl" />
-                    </button>
+                    <FinalButton
+                      title=""
+                      loaderIcon={
+                        <CgSpinner className="animate-spin text-2xl text-white" />
+                      }
+                      variant="primary"
+                      className="flex h-11 w-full items-center justify-center text-[14px]"
+                      borderRounded="14px"
+                    />
                   ) : (
-                    <Button
+                    <FinalButton
                       title={follow ? "Following" : "Follow"}
-                      variant={follow ? "v5" : "v1"}
-                      className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                       onClick={() => followUser(user._id)}
+                      variant="primary"
+                      className="flex h-11 w-full items-center justify-center text-[14px]"
+                      borderRounded="14px"
                     />
                   )}
                 </div>
