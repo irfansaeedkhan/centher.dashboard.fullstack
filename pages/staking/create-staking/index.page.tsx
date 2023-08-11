@@ -422,9 +422,6 @@ const CreateStaking: NextPageWithLayout = () => {
   const handleRemoveMember = (index: number): void => {
     setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
   };
-  // ending handle adding members
-
-  //  functions to get and submit data
 
   const submitForm = (data: stakingFormInterface) => {
     let finalData = {
@@ -628,12 +625,12 @@ const CreateStaking: NextPageWithLayout = () => {
       const levelSix = inputValues.find((e) => e.level == 6);
 
       affiliateSetting = {
-        levelOne: levelOne ? levelOne.percent : 0,
-        levelTwo: levelTwo ? levelTwo.percent : 0,
-        levelThree: levelThree ? levelThree.percent : 0,
-        levelFour: levelFour ? levelFour.percent : 0,
-        levelFive: levelFive ? levelFive.percent : 0,
-        levelSix: levelSix ? levelSix.percent : 0,
+        levelOne: levelOne ? levelOne.percent * 100 : 0,
+        levelTwo: levelTwo ? levelTwo.percent * 100 : 0,
+        levelThree: levelThree ? levelThree.percent * 100 : 0,
+        levelFour: levelFour ? levelFour.percent * 100 : 0,
+        levelFive: levelFive ? levelFive.percent * 100 : 0,
+        levelSix: levelSix ? levelSix.percent * 100 : 0,
       };
 
       initialProgress.push({
@@ -988,7 +985,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -1076,7 +1073,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);

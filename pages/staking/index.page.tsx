@@ -16,6 +16,8 @@ const Staking: NextPageWithLayout = () => {
   const { user: loggedInUser } = useUser();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
   const [stakingList, setStakingList] = useState(true);
+  const [coinsDetails, setCoinsDetails] = useState([]);
+  const [userDetails, setUserDetails] = useState([]);
 
   return (
     <section

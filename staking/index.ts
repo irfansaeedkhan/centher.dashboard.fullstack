@@ -91,7 +91,7 @@ export class CentherStaking {
     try {
       // call contract
       statusController(CreatePoolStepsEnum.contract, 0);
-      const hash = await BlockchainWrite.createStakingPool(
+      await BlockchainWrite.createStakingPool(
         library,
         mappedData,
         input.ownerAddress,
