@@ -14,7 +14,7 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
     link: AppRoutes.settings.social_links,
   },
   {
-    label: "Citizen membership",
+    label: "Team Members",
     link: AppRoutes.settings.citizenship,
   },
   {
