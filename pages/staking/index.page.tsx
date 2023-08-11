@@ -19,6 +19,7 @@ const Staking: NextPageWithLayout = () => {
   const [stakingList, setStakingList] = useState(true);
   const [coinsDetails, setCoinsDetails] = useState([]);
   const [userDetails, setUserDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <section
@@ -63,7 +64,7 @@ const Staking: NextPageWithLayout = () => {
           onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
-      <PreLoader />
+      {isLoading && <PreLoader />}
     </section>
   );
 };

@@ -59,6 +59,7 @@ import {
   WalletConnectedError,
 } from "@/staking/errors/params.error";
 import { isAddress } from "ethers/lib/utils";
+import { PreLoader } from "@/components/pre.loader";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -113,6 +114,7 @@ const CreateStaking: NextPageWithLayout = () => {
   const { connectWallet } = useConnectWallet();
   const { user: loggedInUser } = useUser();
   const { deactivate, library, account } = useWeb3React();
+  const [isLoading, setIsLoading] = useState(false);
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -2264,6 +2266,7 @@ const CreateStaking: NextPageWithLayout = () => {
           onClickClose={onClickClose}
         />
       )}
+      {isLoading && <PreLoader />}
     </section>
   );
 };

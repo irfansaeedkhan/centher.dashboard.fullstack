@@ -81,26 +81,13 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
                       <h5 className="text-14px font-medium text-white">
                         {e.title}
                       </h5>
-                      <div className="value w-40">
-                        <div
-                          className={clsx(
-                            "relative mt-2 h-3 w-full overflow-hidden rounded-3xl bg-[#76E268]/[0.16]"
-                          )}
-                        >
-                          <div
-                            style={{
-                              width: `${e.value}%`,
-                              transition: "2s",
-                            }}
-                            className={clsx(
-                              `absolute top-0 z-50 h-3 rounded-3xl bg-[#76E268]`
-                            )}
-                          ></div>
-                        </div>
+                      <div className="value">
+                        <MultiColorLoader className="spinner-2s mx-auto w-10" />
                       </div>
                     </div>
                   );
                 }
+
                 if (e.status == ProgressStatus.done) {
                   return (
                     <div className="flex items-center justify-between" key={i}>
