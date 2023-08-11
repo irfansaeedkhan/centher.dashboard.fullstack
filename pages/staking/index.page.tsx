@@ -10,6 +10,7 @@ import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import StakingListContainer from "./_components/staking-list-container";
 import clsx from "clsx";
+import { PreLoader } from "@/components/pre.loader";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();
@@ -60,6 +61,7 @@ const Staking: NextPageWithLayout = () => {
           onClickClose={() => setShowBuyCitizenshipModal(false)}
         />
       )}
+      <PreLoader />
     </section>
   );
 };
