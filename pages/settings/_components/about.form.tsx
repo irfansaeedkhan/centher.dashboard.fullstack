@@ -61,23 +61,25 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
           <label htmlFor="textarea" className={fieldTitle}>
             Profile bio
           </label>
-          <textarea
-            onChange={(e) => {
-              setUpdatedUser({
-                ...updatedUser,
-                profile_bio: e.target.value,
-              });
-              setIsModified(true);
-            }}
-            value={updatedUser.profile_bio}
-            placeholder="Enter Your bio!"
-            name=""
-            id=""
-            cols={30}
-            rows={5}
-            maxLength={160}
-            className={clsx(inputField, "scrollSetLight2 overflow-auto")}
-          ></textarea>
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <textarea
+              onChange={(e) => {
+                setUpdatedUser({
+                  ...updatedUser,
+                  profile_bio: e.target.value,
+                });
+                setIsModified(true);
+              }}
+              value={updatedUser.profile_bio}
+              placeholder="Enter Your bio!"
+              name=""
+              id=""
+              cols={30}
+              rows={5}
+              maxLength={160}
+              className={clsx(inputField, "scrollSetLight2 overflow-auto")}
+            ></textarea>
+          </div>
           {updatedUser.profile_bio.length > 0 && (
             <div className="absolute bottom-2 right-2 z-[100] ml-4 h-7 w-7 fsm:ml-0">
               <PostTextCounter
@@ -107,4 +109,4 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
 
 const fieldTitle = `text-sm text-white`;
 
-const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-brand-primary text-sm font-medium leading-6`;
+const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-0 text-sm font-medium leading-6`;

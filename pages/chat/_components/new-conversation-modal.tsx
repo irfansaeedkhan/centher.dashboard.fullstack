@@ -71,14 +71,16 @@ const NewConversationModal: React.FC<ComponentProp> = ({
         </div>
         <div className={`max-h-[600px] overflow-y-auto`}>
           <div className="mt-7 text-white">
-            <div className="flex w-full items-center rounded-xl bg-black-shade-3 px-4 py-2 focus-within:border focus-within:border-brand-primary">
-              <SearchIcon />
-              <input
-                type="text"
-                className="w-full border-0 bg-transparent focus:ring-0"
-                placeholder="Search"
-                onChange={onSearchBoxUsing}
-              />
+            <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+              <div className="flex w-full items-center rounded-xl bg-black-shade-3 px-4 py-2">
+                <SearchIcon />
+                <input
+                  type="text"
+                  className="w-full border-0 bg-transparent focus:ring-0"
+                  placeholder="Search"
+                  onChange={onSearchBoxUsing}
+                />
+              </div>
             </div>
             <div className="mt-6">
               {loading &&

@@ -841,6 +841,26 @@
   .centher-social-button:hover svg g path {
     fill: #ffffff;
   }
+  /* custom bullets */
+  .list-item-with-image {
+    position: relative;
+    padding-left: 24px;
+  }
+  .list-item-with-image::before {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url("/images/check-success-fill.png");
+    background-size: cover;
+  }
+  .custom-list-bullet li::marker {
+    margin: 0;
+  }
 }
 
 @layer utilities {

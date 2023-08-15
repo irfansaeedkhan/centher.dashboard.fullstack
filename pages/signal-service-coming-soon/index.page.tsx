@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -41,11 +41,11 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
             Only for Centher Citizens. You {"haven't"} gotten your Centher
             Passport yet?{" "}
             <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship_subscription_coming_soon}
+              href={AppRoutes.citizenship}
+              className="cursor-pointer text-brand-primary hover:text-brand-primary-dark"
             >
               Click Here
-            </Link>
+            </Link>{" "}
           </div>
           <Link href={AppRoutes.feed.index}>
             <FinalButton

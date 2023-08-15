@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "@/components/button/final.button";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+import useUser from "@/hooks/use.user";
 
-const CitizenshipComingSoon: NextPageWithLayout = () => {
+const Citizenship: NextPageWithLayout = () => {
+  const { user: loggedInUser } = useUser();
+  const router = useRouter();
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
+
+  const handleShowBuyCitizenshipModal = () => {
+    if (loggedInUser?.membership.status === "citizen") {
+      router.push(AppRoutes.settings.citizenship);
+      return;
+    }
+    setShowBuyCitizenshipModal(true);
+  };
+
   return (
     <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
       <div className="relative flex h-full w-full items-center justify-center bg-[url('/images/comingsoon.png')] bg-top bg-no-repeat">
@@ -38,14 +53,7 @@ const CitizenshipComingSoon: NextPageWithLayout = () => {
             >
               Staking as a Service
             </Link>
-            ,{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.marketplace.create_collection}
-            >
-              Create Collections
-            </Link>
-            , Bulk messaging via{" "}
+            , Create Collections, Bulk messaging via{" "}
             <Link
               className="text-brand-primary hover:text-brand-primary-dark"
               href={AppRoutes.chat.index}
@@ -54,44 +62,43 @@ const CitizenshipComingSoon: NextPageWithLayout = () => {
             </Link>
             , Advertising and much, much more!
           </div>
-          <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
-            Get your Passport now{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship_subscription_coming_soon}
-            >
-              here
-            </Link>{" "}
-            and become a{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship_coming_soon}
-            >
-              Centher Citizen
-            </Link>{" "}
-            to power up your business!
-          </div>
+          {loggedInUser?.membership.status !== "citizen" && (
+            <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
+              Get your Passport now and become a{" "}
+              <span className="text-brand-primary hover:text-brand-primary-dark">
+                Centher Citizen
+              </span>{" "}
+              to power up your business!
+            </div>
+          )}
 
-          <Link href={AppRoutes.citizenship_subscription_coming_soon}>
-            <FinalButton
-              title="Get your passport"
-              variant="primary"
-              className="h-10 w-[200px] text-[14px]"
-              borderRounded="14px"
-            />
-          </Link>
+          <FinalButton
+            title={
+              loggedInUser?.membership.status !== "citizen"
+                ? "Get your passport"
+                : "View your passport"
+            }
+            variant="primary"
+            className="h-10 w-[200px] text-[14px]"
+            borderRounded="14px"
+            onClick={handleShowBuyCitizenshipModal}
+          />
         </div>
       </div>
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };
 
-CitizenshipComingSoon.getLayout = (page) => {
+Citizenship.getLayout = (page) => {
   return (
-    <AllPagesWrapper pageTitle="Centher Citizenship Coming Soon">
-      {page}
-    </AllPagesWrapper>
+    <AllPagesWrapper pageTitle="Centher Citizenship">{page}</AllPagesWrapper>
   );
 };
 
-export default CitizenshipComingSoon;
+export default Citizenship;

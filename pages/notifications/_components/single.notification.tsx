@@ -122,10 +122,14 @@ const getNotificationMessage = (
           <span className="verifiedIcon inline-block h-[15px] w-[20px] min-w-[20px] fsm:h-[20px]">
             <Image
               src={verificationTick}
-              alt={"Verified"}
-              width={20}
-              height={20}
-              className="fsm:mt-[5px]"
+              alt={
+                notification.by.membership.status === "citizen"
+                  ? "Citizen"
+                  : "Verified"
+              }
+              width={16}
+              height={16}
+              className="ml-0.5 mt-0.5 fsm:mt-[6px]"
             />
           </span>
         ) : null}

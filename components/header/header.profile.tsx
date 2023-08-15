@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -23,17 +24,21 @@ import {
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
+import FinalButton from "../button/final.button";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
   modalOpenerRef: React.RefObject<HTMLDivElement>;
+  openBuyCitizenshipModal: () => void;
 }
 
 const HeaderProfile: React.FC<HeaderProfileProps> = ({
   onClickOutside,
   modalOpenerRef,
+  openBuyCitizenshipModal,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
   const { connectWallet, disconnectWallet } = useConnectWallet();
@@ -88,18 +93,20 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             className="flex max-w-[215px] items-center  text-sm font-semibold text-white fsm:text-base"
             title={loggedInUser?.display_name}
           >
-            <span
-              className={clsx(` block max-w-full overflow-hidden truncate`)}
-            >
+            <span className={clsx(`block max-w-full overflow-hidden truncate`)}>
               {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
             </span>
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+            {verificationTick && (
+              <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                 <Image
                   src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
+                  alt={
+                    loggedInUser?.membership.status === "citizen"
+                      ? "Citizen"
+                      : "Verified"
+                  }
+                  width={16}
+                  height={16}
                 />
               </span>
             )}
@@ -121,6 +128,30 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             />
           </a>
         </div>
+      </div>
+      <div className="border-b border-gray-shade-border-color p-4 ">
+        <FinalButton
+          title={
+            loggedInUser?.membership.status !== "citizen"
+              ? "Subscribe to Citizen Passport"
+              : "View my Citizen Passport"
+          }
+          onClick={
+            loggedInUser?.membership.status !== "citizen"
+              ? () => {
+                  onClickOutside();
+                  openBuyCitizenshipModal();
+                }
+              : () => {
+                  router.push({
+                    pathname: AppRoutes.settings.citizenship,
+                  });
+                }
+          }
+          variant="primary"
+          className="text-14px hover:scale-105"
+          borderRounded="10px"
+        />
       </div>
       <div className="border-b border-gray-shade-border-color py-3">
         <Link

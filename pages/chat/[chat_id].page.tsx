@@ -315,113 +315,116 @@ const SingleChat: NextPageWithLayout = () => {
         )}
       </div>
       <div className="min-h-[60px] w-full border-t border-gray-shade-3 px-4 py-3">
-        <div className="flex w-full flex-col gap-2 rounded-lg  bg-background-shade-3 px-3 py-2 ring-0 focus-within:ring-1 focus-within:ring-brand-primary">
-          {replyModal && (
-            <div className="flex items-center justify-between bg-background-shade-3 py-2">
-              <div className="flex w-full items-center justify-end">
-                <div className="pr-3">
-                  <ReplyGradientIcon className="min-w-[20px]" />
-                </div>
-                <div className="flex w-[98%] gap-3">
-                  <div className="w-1 bg-gradient-pattern"></div>
-                  <div className="flex flex-col gap-1">
-                    <h4 className="text-gradient text-xs">
-                      {replingMessage?.user
-                        ? replingMessage?.user.display_name
-                        : replingMessage?.message.sender}
-                    </h4>
-                    <p className="text-xs text-white">
-                      {replingMessage?.message.content}
-                    </p>
+        <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+          <div className="flex w-full flex-col gap-2 rounded-lg  bg-background-shade-3 px-3 py-2 ring-0">
+            {replyModal && (
+              <div className="flex items-center justify-between bg-background-shade-3 py-2">
+                <div className="flex w-full items-center justify-end">
+                  <div className="pr-3">
+                    <ReplyGradientIcon className="min-w-[20px]" />
                   </div>
-                </div>
-                <CrossIcon
-                  className="mx-auto min-w-[20px] cursor-pointer [&>*]:stroke-gray-shade-14 [&>*]:hover:stroke-white"
-                  onClick={() => {
-                    closeReply();
-                  }}
-                />
-              </div>
-            </div>
-          )}
-          {editModal && (
-            <div className="flex items-center justify-between bg-background-shade-3 py-2">
-              <div className="flex w-full items-center justify-end">
-                <div className="pr-3">
-                  <EditGradientIcon className="min-w-[20px]" />
-                </div>
-                <div className="flex w-[98%] gap-3">
-                  <div className="w-1 bg-gradient-pattern"></div>
-                  <div className="flex flex-col gap-1">
-                    <h4 className="text-gradient text-xs">Edit Message</h4>
-                    <p className="text-xs text-white">
-                      {editingMessage?.content}
-                    </p>
+                  <div className="flex w-[98%] gap-3">
+                    <div className="w-1 bg-gradient-pattern"></div>
+                    <div className="flex flex-col gap-1">
+                      <h4 className="text-gradient text-xs">
+                        {replingMessage?.user
+                          ? replingMessage?.user.display_name
+                          : replingMessage?.message.sender}
+                      </h4>
+                      <p className="text-xs text-white">
+                        {replingMessage?.message.content}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <CrossIcon
-                  className="mx-auto min-w-[20px] cursor-pointer [&>*]:stroke-gray-shade-14 [&>*]:hover:stroke-white"
-                  onClick={() => {
-                    closeEdit();
-                  }}
-                />
-              </div>
-            </div>
-          )}
-          <div className="focus-within:transparent focus-within:transparent flex w-full items-center gap-2 ring-0">
-            <div
-              className="relative mr-2 flex items-center gap-3"
-              ref={emojiPickerRef}
-            >
-              {/* <BsPlusCircleFill className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
-              <BsImage className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" /> */}
-              <button onClick={toggleEmojiPicker}>
-                <BsEmojiSmile className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
-              </button>
-              {showEmojiPicker && (
-                <div className="absolute bottom-[2rem] z-[100]">
-                  <Picker
-                    data={data}
-                    onEmojiSelect={handleEmojiSelect}
-                    previewPosition={"top"}
-                    theme="dark"
-                    noCountryFlags={true}
+                  <CrossIcon
+                    className="mx-auto min-w-[20px] cursor-pointer [&>*]:stroke-gray-shade-14 [&>*]:hover:stroke-white"
+                    onClick={() => {
+                      closeReply();
+                    }}
                   />
                 </div>
-              )}
-            </div>
-            <input
-              type="text"
-              placeholder="Type a message"
-              className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
-              onChange={onNewMessage}
-              value={newMessage}
-              onKeyUp={keyboardHandler}
-            />
-            {editModal ? (
-              <div className="flex w-full flex-col-reverse items-center gap-3 fsm:w-auto fsm:flex-row">
-                <FinalButton
-                  title="Cancel"
-                  variant="secondary"
-                  className="text-14px w-full rounded-[8px] border-gray-shade-7 px-2 py-1 leading-[14px] fsm:w-auto"
-                  onClick={() => {
-                    closeEdit();
-                  }}
-                />
-                <FinalButton
-                  title="Save"
-                  variant="primary"
-                  className="text-14px w-full rounded-[8px] px-2 py-1 leading-[14px] fsm:w-auto"
-                  borderRounded="8px"
+              </div>
+            )}
+            {editModal && (
+              <div className="flex items-center justify-between bg-background-shade-3 py-2">
+                <div className="flex w-full items-center justify-end">
+                  <div className="pr-3">
+                    <EditGradientIcon className="min-w-[20px]" />
+                  </div>
+                  <div className="flex w-[98%] gap-3">
+                    <div className="w-1 bg-gradient-pattern"></div>
+                    <div className="flex flex-col gap-1">
+                      <h4 className="text-gradient text-xs">Edit Message</h4>
+                      <p className="text-xs text-white">
+                        {editingMessage?.content}
+                      </p>
+                    </div>
+                  </div>
+                  <CrossIcon
+                    className="mx-auto min-w-[20px] cursor-pointer [&>*]:stroke-gray-shade-14 [&>*]:hover:stroke-white"
+                    onClick={() => {
+                      closeEdit();
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="focus-within:transparent flex w-full items-center gap-2 ring-0">
+              <div
+                className="relative mr-2 flex items-center gap-3"
+                ref={emojiPickerRef}
+              >
+                {/* <BsPlusCircleFill className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
+              <BsImage className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" /> */}
+                <button onClick={toggleEmojiPicker}>
+                  <BsEmojiSmile className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
+                </button>
+                {showEmojiPicker && (
+                  <div className="absolute bottom-[2rem] z-[100]">
+                    <Picker
+                      data={data}
+                      onEmojiSelect={handleEmojiSelect}
+                      previewPosition={"top"}
+                      theme="dark"
+                      noCountryFlags={true}
+                    />
+                  </div>
+                )}
+              </div>
+              <input
+                type="text"
+                placeholder="Type a message"
+                className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
+                onChange={onNewMessage}
+                value={newMessage}
+                onKeyUp={keyboardHandler}
+              />
+              {editModal ? (
+                <div className="flex w-full flex-col-reverse items-center gap-3 fsm:w-auto fsm:flex-row">
+                  <FinalButton
+                    title="Cancel"
+                    variant="secondary"
+                    className="text-14px w-full rounded-[8px] border-gray-shade-7 px-2 py-1 leading-[14px] fsm:w-auto"
+                    onClick={() => {
+                      closeEdit();
+                    }}
+                  />
+                  <FinalButton
+                    title="Save"
+                    variant="primary"
+                    className="text-14px w-full rounded-[8px] px-2 py-1 leading-[14px] fsm:w-auto"
+                    borderRounded="8px"
+                    onClick={sendMessage}
+                  />
+                </div>
+              ) : (
+                <SendChatIcon
+                  className="h-5 w-5 flex-shrink-0 cursor-pointer text-gray-shade-3 hover:text-white"
                   onClick={sendMessage}
                 />
-              </div>
-            ) : (
-              <SendChatIcon
-                className="h-5 w-5 flex-shrink-0 cursor-pointer text-gray-shade-3 hover:text-white"
-                onClick={sendMessage}
-              />
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>

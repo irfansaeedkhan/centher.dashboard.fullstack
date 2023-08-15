@@ -10,6 +10,11 @@ export interface User {
   };
   profile_bio: string;
   social_media: SocialMedia;
+  organization: {
+    org_id: string;
+    title: string;
+    joined_at: string;
+  } | null;
   createdAt: string;
   updatedAt: string;
 }

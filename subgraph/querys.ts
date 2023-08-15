@@ -542,3 +542,21 @@ export const getCollectionMintedNFTs = `query MyQuery($collection: Bytes = "") {
     id
   }
 }`;
+
+export const GET_COLLECTION_ADDITIONAL_INFO = `query MyQuery($collection: Bytes = "") {
+  nfts(where: {collection: $collection}, first: 1000) {
+    saleState
+    price
+  }
+}
+`;
+
+export const GET_USER_TOTAL_SOLD_NFTS = `query MyQuery2($collection: Bytes = "", $seller: Bytes = "") {
+  marketplaceSaleHistories(
+    first: 1000
+    where: {collection: $collection, buyer_not: "0x0000000000000000000000000000000000000000", seller: $seller, price_gt: "0"}
+  ) {
+    price
+    type
+  }
+}`;

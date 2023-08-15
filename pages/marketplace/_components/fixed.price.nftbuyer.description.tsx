@@ -93,8 +93,6 @@ export const FixedPriceNFTBuyerDescription = ({
     }
   };
   const handleBuyNFT = async () => {
-    let success = false;
-
     try {
       ProceedFunc();
       if (!data || !loggedInUser || !library) return;
@@ -102,8 +100,10 @@ export const FixedPriceNFTBuyerDescription = ({
       const balance = await library.getBalance(loggedInUser._id);
 
       if (balance && balance.lt(`${data.listInfo.price}`)) {
-        return toast.error("Insufficient balance");
+        SuccessFunc(false, "Insufficient balance");
+        return;
       }
+
       const result = await BlockchainWrite.callBuyListedItem(
         library,
         (data as INFTDetailData).collection,
@@ -113,13 +113,10 @@ export const FixedPriceNFTBuyerDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
-      }
+        SuccessFunc(true, "Congratulations! You have successfully bought ");
+      } else throw new Error();
     } catch (error) {
-      toastError("something went wrong");
       SuccessFunc(false, "Something went wrong. Unable to buy ");
-    } finally {
-      SuccessFunc(success, "Congratulations! You have successfully bought ");
     }
   };
 
@@ -284,7 +281,7 @@ export const FixedPriceNFTBuyerDescription = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px] hover:scale-95"
+            className="w-full rounded-[14px] hover:scale-75"
           />
         )}
       </div>

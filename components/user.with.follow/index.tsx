@@ -78,19 +78,23 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               <span
                 title={_result.display_name}
                 className={clsx(
-                  `inline-block items-center text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
+                  `inline-block max-w-max items-center text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
                   `block w-full overflow-hidden truncate break-words`
                 )}
               >
                 {_result && sliceDisplayName(_result.display_name)}
               </span>
-              {!!verificationTick && (
-                <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem] fsm:ml-1">
+              {verificationTick && (
+                <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                   <Image
                     src={verificationTick}
-                    alt={"Verified"}
-                    width={20}
-                    height={20}
+                    alt={
+                      _result.membership.status === "citizen"
+                        ? "Citizen"
+                        : "Verified"
+                    }
+                    width={16}
+                    height={16}
                   />
                 </span>
               )}

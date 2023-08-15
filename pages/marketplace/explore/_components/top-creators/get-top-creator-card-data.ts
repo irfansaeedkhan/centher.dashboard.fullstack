@@ -13,6 +13,8 @@ export const getTopCreatorCardData = async (
       _id: topCreator.publicKey,
       display_name: user.display_name,
       profile_image: user.profile_image,
+      membership: user.membership,
+      is_registered: true,
     };
   } catch (error: any) {
     // If user is not registered, we will return a default user data
@@ -21,6 +23,12 @@ export const getTopCreatorCardData = async (
         _id: topCreator.publicKey,
         display_name: topCreator.publicKey,
         profile_image: "https://static.centher.io/avatars/avatar-1.png",
+        membership: {
+          last_status: "none",
+          status: "none",
+          endAt: 0,
+        },
+        is_registered: false,
       };
     }
 

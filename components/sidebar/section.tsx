@@ -1,10 +1,11 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import clsx from "clsx";
-
 import { useCountsStore } from "@/store/counts.store";
 import { LoggedInUser } from "@/models/user";
-
+import useUser from "@/hooks/use.user";
+import { AppRoutes } from "@/constants/app.routes";
 import { SidebarSection } from "./shared";
 
 export interface SectionProps {
@@ -14,6 +15,7 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = (props) => {
+  const { user } = useUser();
   const router = useRouter();
   const counts = useCountsStore((state) => state.counts);
 
@@ -51,7 +53,13 @@ export const Section: React.FC<SectionProps> = (props) => {
                   )}
                 />
                 <Link
-                  href={item.url}
+                  href={
+                    item.available_for === "citizen"
+                      ? user?.membership.status === "citizen"
+                        ? item.url
+                        : AppRoutes.citizenship
+                      : item.url
+                  }
                   onClick={props.onClose}
                   className={
                     item.activeList.indexOf(router.pathname) !== -1
@@ -59,7 +67,16 @@ export const Section: React.FC<SectionProps> = (props) => {
                       : `text-sm font-medium text-gray-shade-7`
                   }
                 >
-                  {item.label}
+                  <span>{item.label}</span>
+                  {item.available_for === "citizen" && (
+                    <Image
+                      src="/images/citizen-icon.svg"
+                      alt="Citizen"
+                      width={16}
+                      height={16}
+                      className="ml-1 inline-block"
+                    />
+                  )}
                 </Link>
               </div>
               {!!count && props.user && (

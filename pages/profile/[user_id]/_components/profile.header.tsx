@@ -31,8 +31,9 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import useUser from "@/hooks/use.user";
 import { MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
-import Button from "@/components/button";
 import ProfileModal from "@/components/modal/profile.modal";
+import FinalButton from "@/components/button/final.button";
+import CitizenLabel from "@/components/citizen/citizen.label";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -45,9 +46,7 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
-import FinalButton from "@/components/button/final.button";
 import { ChatProfile } from "@/assets/svgs";
-import { ChatHandler } from "@/live/chat";
 import { useCentherLive } from "@/hooks/chat";
 
 export type CoverImageWithFile = {
@@ -446,17 +445,19 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                 <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {!!verificationTick && (
-                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px]  fsm:ml-1">
+                {user.membership.status === "citizen" ? (
+                  <CitizenLabel />
+                ) : user.membership.status === "verified" &&
+                  verificationTick ? (
+                  <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] pt-1 fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={"Verified"}
                       width={22}
                       height={22}
-                      className="mt-[5px]"
                     />
                   </span>
-                )}
+                ) : null}
               </h5>
             </div>
           </div>
@@ -490,20 +491,22 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     <ChatProfile />
                   </div>
                   {loadingState ? (
-                    <button
-                      className={clsx(
-                        `!text-14px flex h-[36px] w-full max-w-[122px] items-center justify-center rounded-xl px-2 py-2 font-bold`,
-                        follow ? "bg-gray-shade-20" : "bg-brand-primary "
-                      )}
-                    >
-                      <CgSpinner className="animate-spin text-2xl" />
-                    </button>
+                    <FinalButton
+                      title=""
+                      loaderIcon={
+                        <CgSpinner className="animate-spin text-2xl text-white" />
+                      }
+                      variant="primary"
+                      className="flex h-11 w-full items-center justify-center text-[14px]"
+                      borderRounded="14px"
+                    />
                   ) : (
-                    <Button
+                    <FinalButton
                       title={follow ? "Following" : "Follow"}
-                      variant={follow ? "v5" : "v1"}
-                      className={`flex w-full max-w-[122px] items-center justify-center gap-3 !px-4`}
                       onClick={() => followUser(user._id)}
+                      variant="primary"
+                      className="flex h-11 w-full items-center justify-center text-[14px]"
+                      borderRounded="14px"
                     />
                   )}
                 </div>

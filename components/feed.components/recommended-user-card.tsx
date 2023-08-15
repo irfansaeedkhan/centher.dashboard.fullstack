@@ -30,15 +30,26 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
             },
           }}
           title={user.display_name}
-          className="flex"
+          className="relative flex h-10 w-10"
         >
           <Image
             src={user.profile_image}
-            width={44}
-            height={44}
+            width={40}
+            height={40}
             alt="profile pic"
-            className="h-11 w-11 flex-shrink-0 rounded-full object-cover"
+            className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
           />
+          {verificationTick && (
+            <div className="absolute right-[-5px] top-[-1px] flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-background-shade-3 ">
+              <Image
+                src={verificationTick}
+                width={12}
+                height={12}
+                alt="member icon"
+                className="h-3 w-3 flex-shrink-0 object-contain"
+              />
+            </div>
+          )}
         </Link>
 
         <div>
@@ -58,17 +69,6 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
                 {sliceDisplayName(user.display_name)}
               </h5>
             </Link>
-
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
-                <Image
-                  src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
-                />
-              </span>
-            )}
           </div>
 
           <h6 className={`text-12px font-ligth text-gray-shade-7`}>
