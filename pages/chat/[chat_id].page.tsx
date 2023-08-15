@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { BsEmojiSmile } from "react-icons/bs";
 import useSound from "use-sound";
 import data from "@emoji-mart/data";
@@ -22,6 +21,7 @@ import {
   ReplyGradientIcon,
   SendChatIcon,
 } from "@/assets/svgs";
+import useUser from "@/hooks/use.user";
 
 import ChatSidebar from "./_components/chat.sidebar";
 import SingleChatHeader from "./_components/single-chat-header";
@@ -35,9 +35,9 @@ export interface UsersDetails {
 
 const SingleChat: NextPageWithLayout = () => {
   const router = useRouter();
+  const { user } = useUser();
   const emojiPickerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { account } = useWeb3React();
   const { adapter } = useCentherLive();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
@@ -66,11 +66,11 @@ const SingleChat: NextPageWithLayout = () => {
         router.push("/chat");
       }
 
-      if (account) {
+      if (user) {
         let msgs: any[] = [];
-        msgs = mapMessages(args, account);
+        msgs = mapMessages(args, user._id);
         try {
-          const messagesReceipts = findUnSeenMessages(msgs, account);
+          const messagesReceipts = findUnSeenMessages(msgs, user._id);
           if (messagesReceipts?.length) {
             await connection?.seenMessage({
               message_id: messagesReceipts,
@@ -90,7 +90,7 @@ const SingleChat: NextPageWithLayout = () => {
         customLog(["development", "staging"], "Not Logged In!");
       }
     },
-    [account, router]
+    [user, router]
   );
 
   useEffect(() => {
@@ -169,7 +169,7 @@ const SingleChat: NextPageWithLayout = () => {
   }, [adapter, chatId, messageSubscriptionHandler, pageSize]);
 
   const sendMessage = async () => {
-    if (!account) {
+    if (!user) {
       return;
     }
 
@@ -201,7 +201,7 @@ const SingleChat: NextPageWithLayout = () => {
           conversationId: chatId,
           content: buffer,
           type: MessageTypeEnum.text,
-          user: account.toLowerCase(),
+          user: user._id.toLowerCase(),
           repliedTo: replaingMessageBuffer ? replaingMessageBuffer.id : null,
         });
       }
@@ -212,7 +212,7 @@ const SingleChat: NextPageWithLayout = () => {
     const newMessage = {
       create_at: new Date(),
       id: null,
-      sender: account?.toLowerCase(),
+      sender: user?._id?.toLowerCase(),
       content: content,
       type: "text",
       medias: [],

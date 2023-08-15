@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 import { CentherLive } from "@/live";
 import { centherLiveoptions } from "@/live/config";
 import { IConversation } from "@/live/types";
@@ -11,10 +12,10 @@ import {
 } from "@/store/centher.live";
 import { getAuthTokens } from "@/lib/auth";
 import { customLog } from "@/utils/custom.log";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
+import useUser from "../use.user";
 
 export const useCentherLive = () => {
+  const { user } = useUser();
   const router = useRouter();
   const { adapter, setAdapter } = useCentherLiveStore((state) => ({
     adapter: state.adapter,
@@ -28,7 +29,6 @@ export const useCentherLive = () => {
     })
   );
 
-  const { account } = useWeb3React();
   const [conversationLoading, setConversationLoading] =
     useState<boolean>(false);
   const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
@@ -95,7 +95,7 @@ export const useCentherLive = () => {
       setConversations(finalArray);
       setConversationLoading(false);
     },
-    [setConversations]
+    [setConversations, router.pathname]
   );
 
   const notificationCallback = useCallback(async (e: any) => {
@@ -124,10 +124,10 @@ export const useCentherLive = () => {
       await adapter.subToConversations(adapter, handler);
     };
 
-    if (account?.length && !adapter && token) {
+    if (user && !adapter && token) {
       const config: ICentherLiveOptions = {
         ...centherLiveoptions,
-        userAddress: account,
+        userAddress: user._id,
         userToken: token,
         eventHandlers: {
           OnNotificationReceived: notificationCallback,
@@ -148,7 +148,8 @@ export const useCentherLive = () => {
         .catch((e) => customLog(["development", "staging"], e));
     }
   }, [
-    account,
+    handleUnreadNotification,
+    user,
     adapter,
     setAdapter,
     conversationSubscriptionHander,

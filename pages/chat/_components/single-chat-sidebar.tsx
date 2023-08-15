@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { useOnClickOutside } from "usehooks-ts";
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash2 } from "react-icons/fi";
@@ -13,6 +12,7 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { getDateDifferent } from "@/live/utils/time.utils";
 import { AppRoutes } from "@/constants/app.routes";
 import { User } from "@/models/user";
+import useUser from "@/hooks/use.user";
 import { GradientTick, PinFill, PinIcon, UnpinIcon } from "@/assets/svgs";
 import { ChatModal } from "./chat-modal";
 
@@ -82,7 +82,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
   unpinConversation,
 }) => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { user } = useUser();
   const [conversationOverView, setConversationOverView] =
     useState<IConversationOverView>(defaultPrivateInfo);
   const [channelConversationOverView, setChannelConversationOverView] =
@@ -111,7 +111,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
   const isMessageSeenByMe = (message: any) => {
     const result = message.activities.find(
-      (e: any) => e.type == "seen" && eqAddress(e.user_address, account)
+      (e: any) => e.type == "seen" && eqAddress(e.user_address, user?._id)
     );
     return !!result;
   };
@@ -155,7 +155,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
     let needToPlaySound = false;
     if (data && data.is_channel) {
       const myUser = data.user_conversations.find((e) =>
-        eqAddress(e.user_address, account)
+        eqAddress(e.user_address, user?._id)
       );
 
       if (myUser?.is_pinned) {
@@ -164,7 +164,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
       const needAttention =
         data.user_conversations
-          .filter((e) => !eqAddress(e.user_address, account))
+          .filter((e) => !eqAddress(e.user_address, user?._id))
           .map((e) => e.messages)
           .flat()
           .filter((e) => !isMessageSeenByMe(e))?.length > 0;
@@ -186,11 +186,11 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
     if (data && !data.is_channel) {
       const oppositUser = data.user_conversations.find(
-        (e) => !eqAddress(e.user_address, account)
+        (e) => !eqAddress(e.user_address, user?._id)
       );
 
       const myUser = data.user_conversations.find((e) =>
-        eqAddress(e.user_address, account)
+        eqAddress(e.user_address, user?._id)
       );
 
       if (myUser?.is_pinned) {
@@ -265,7 +265,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
         // play();
       }
     }
-  }, [data, account]);
+  }, [data, user?._id]);
 
   useEffect(() => {
     setIsSelected(false);
