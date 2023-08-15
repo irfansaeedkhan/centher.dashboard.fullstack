@@ -33,7 +33,6 @@ const Staking: NextPageWithLayout = () => {
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
-  const [userDetails, setUserDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { sdk } = useStaking();
   useEffect(() => {

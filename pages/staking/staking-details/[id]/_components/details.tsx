@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiInstagram, FiTwitter } from "react-icons/fi";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiBinance } from "react-icons/si";
@@ -9,13 +9,17 @@ import {
   NewTelegramIcon,
   Whitepaper,
 } from "@/assets/svgs";
-import TeamMembers from "@/pages/launchpad/pre-booking/_components/team-members";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { OptionalType } from "@/staking/types";
+import { Memb } from "@/pages/staking/create-staking/_components/staking-review-modal";
+import { fetchUsers } from "@/hooks/user.get.multi.users";
+import { eqAddress } from "@/live/utils/address.utils";
+import TeamMembers from "@/pages/staking/create-staking/_components/team.memeber";
 
 const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
   data,
 }) => {
+  const [users, setUsers] = useState<Memb[]>([]);
   const findLink = (name: string) => {
     try {
       const result = data?.metadata.socialMedias.find(
@@ -29,6 +33,33 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
       return "/#";
     }
   };
+
+  useEffect(() => {
+    const getUsers = async (walletAddresses: string[]) => {
+      const users = await fetchUsers(walletAddresses);
+      return users;
+    };
+
+    if (data && data?.metadata?.team?.length && !users?.length) {
+      const addresses = data?.metadata?.team.map((e: any) => e.walletAddress);
+      if (addresses?.length) {
+        getUsers(addresses).then((users) => {
+          const mappedUsers = users.map((e) => {
+            return {
+              userImage: e.profile_image,
+              userDisplayName: e.display_name,
+              title: data?.metadata?.team.find((e: any) =>
+                eqAddress(e.walletAddress, e._id)
+              ).jobTitle,
+              address: e._id,
+            };
+          });
+
+          setUsers(mappedUsers);
+        });
+      }
+    }
+  }, [data]);
 
   return (
     <div className="flex flex-col gap-6 border-b border-gray-shade-3 pb-8">
@@ -144,10 +175,10 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
             )}
           </div>
         </div>
-        {data?.metadata?.team?.length ? (
+        {users && users.length > 0 ? (
           <div className="mt-3 mb-2  flex flex-col gap-3">
             <div className="text-sm font-semibold text-white">Team</div>
-            <TeamMembers data={data?.metadata?.team} />
+            <TeamMembers teamMemberList={users} />
           </div>
         ) : (
           ""

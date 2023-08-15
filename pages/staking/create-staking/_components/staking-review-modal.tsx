@@ -22,97 +22,26 @@ import { ModalPortal } from "@/components/modal/modal.portal";
 import FinalButton from "@/components/button/final.button";
 import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import useUser from "@/hooks/use.user";
 import { useWeb3React } from "@web3-react/core";
 import { eqAddress } from "@/live/utils/address.utils";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { ZeroAddress } from "@/web3/constants/common";
 import { useStaking } from "@/hooks/staking";
+import { fetchUsers } from "@/hooks/user.get.multi.users";
+
+export interface Memb {
+  title: string | undefined;
+  userImage: string;
+  userDisplayName: string;
+  address: string;
+}
 
 interface CustomModalProps {
   data: stakingFormInterfaceUpdated;
   onClickClose: () => void;
   createStaking: (data: stakingFormInterfaceUpdated) => void;
 }
-
-// dummy data
-let card = {
-  pack: "Pack 1",
-  token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
-  reward_token_address: "0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028",
-  apy: "10%",
-  price: "200 BNB",
-  sybmol: "DPI",
-  staking_period: "3 months",
-  claim_period: "Monthly",
-  liquidity_pool_provided: "yes",
-  is_cancelable: "yes",
-  show_on_centher: "yes",
-  charge_fee_on_cancel: 0.8,
-  start_time: "13 jully, 2023, 12 PM",
-  max_staking_amount: 200,
-  min_staking_amount: 10,
-  multilevel_rewards: "level 3",
-  rewards_level: [
-    {
-      level: 1,
-      percent: 10,
-    },
-    {
-      level: 2,
-      percent: 4,
-    },
-    {
-      level: 3,
-      percent: 3,
-    },
-    {
-      level: 4,
-      percent: 0,
-    },
-    {
-      level: 5,
-      percent: 0,
-    },
-    {
-      level: 6,
-      percent: 0,
-    },
-  ],
-  project_metadata: [
-    {
-      title: "Project Name",
-      data: "Centher",
-    },
-  ],
-  team_member_list: [
-    {
-      name: "Antonio Marseglia",
-      title: "Chief Metaverse Officer",
-      image: "/images/antonio-marseglia.png",
-      url: "https://app.centher.io/profile/0x8a437ec0843d57abbff57bf5a77f0cd88f1b0e7a",
-    },
-    {
-      name: "Antonio De Rosa",
-      title: "Chief Marketing Officer",
-      image: "/images/antonio-de-rosa.png",
-      url: "https://app.centher.io/profile/0x12fdc603d1a702b878d3757a348cd8e30abf754c",
-    },
-    {
-      name: "Antonio Monaco",
-      title: "Chief Technology Officer",
-      image: "/images/antonio-monaco.png",
-      url: "https://app.centher.io/profile/0x5e377fcf96c8280891aa84e6b3b4698c2cc5229a",
-    },
-    {
-      name: "Jayant Khanuja",
-      title: "Environment and Lands Designer",
-      image: "/images/jayant-khanuja.png",
-      url: "https://app.centher.io/profile/0x7e8b98369ce4afa606b32652bbf9ca37ab20e294",
-    },
-  ],
-};
 
 export const StakingReviewModal: React.FC<CustomModalProps> = ({
   onClickClose,
@@ -123,11 +52,11 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const { connectWallet } = useConnectWallet();
-  const { user: loggedInUser } = useUser();
   const { deactivate, library, account } = useWeb3React();
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
+  const [memberDetails, setMemberDetails] = useState<Memb[]>([]);
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
@@ -158,6 +87,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
 
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
+
   useOnClickOutside(PassportModalRef, () => {
     onClickClose();
   });
@@ -177,6 +107,46 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
       setIsConnected(true);
     } else setIsConnected(false);
   }, [library, account]);
+
+  const handleMembers = async (users: any, data: any) => {
+    const combinedArray = [];
+
+    for (const member of data.members) {
+      const walletAddress = member.walletAddress;
+      const user = users.find((u: any) => eqAddress(u._id, walletAddress));
+
+      if (user) {
+        const profileImage = user.profile_image;
+        const displayName = user.display_name;
+        const jobTitle = member.jobTitle;
+        const address = user._id;
+
+        combinedArray.push({
+          title: jobTitle,
+          userImage: profileImage,
+          userDisplayName: displayName,
+          address,
+        });
+      }
+    }
+
+    setMemberDetails(combinedArray);
+  };
+
+  useEffect(() => {
+    const getUsers = async (walletAddresses: string[]) => {
+      const users = await fetchUsers(walletAddresses);
+      return users;
+    };
+
+    if (!memberDetails?.length && data) {
+      const walletAddresses =
+        data?.members?.map((item) => item.walletAddress) || [];
+      getUsers(walletAddresses).then((users) => {
+        handleMembers(users, data);
+      });
+    }
+  }, [data]);
 
   return (
     <ModalPortal wrapperId="review-staking-portal">
@@ -698,19 +668,17 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                 <div className="mt-3 mb-2 flex flex-col gap-3">
                   <div className="text-sm font-semibold text-white">Team</div>
                   <div className="flex flex-wrap items-center gap-2">
-                    {data?.members &&
-                      data?.members.length > 0 &&
-                      data?.members.map((member, key) => (
+                    {memberDetails &&
+                      memberDetails.length > 0 &&
+                      memberDetails.map((member: Memb, key: any) => (
                         <Link
-                          href={
-                            "https://app.centher.io/profile/0x8a437ec0843d57abbff57bf5a77f0cd88f1b0e7a"
-                          }
+                          href={`https://app.centher.io/profile/${member.address}`}
                           key={key}
                           target="_blank"
                           className="flex items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2"
                         >
                           <Image
-                            src={"/images/antonio-marseglia.png"}
+                            src={member.userImage}
                             alt="team member image"
                             width={50}
                             height={50}
@@ -719,7 +687,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           <div className={`space-y-1`}>
                             <div className="flex max-w-[215px] items-center text-sm font-semibold text-white">
                               <span className="block max-w-full overflow-hidden truncate text-xs">
-                                name :{member.walletAddress}
+                                {member.userDisplayName}
                               </span>
                               <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
                                 <Image
@@ -731,7 +699,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                               </span>
                             </div>
                             <span className={`text-xs text-gray-shade-14`}>
-                              {member.jobTitle}
+                              {member.title}
                             </span>
                           </div>
                         </Link>
