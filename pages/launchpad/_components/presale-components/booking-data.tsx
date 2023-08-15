@@ -256,12 +256,12 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             </div>
           ) : (
             <div className="mt-4 flex flex-col items-center gap-8 fmd:flex-row fmd:gap-4">
-              <div className="relative flex h-12 w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 p-3 focus-within:ring-1 focus-within:ring-brand-primary flg:max-w-full">
+              <div className="focus-within:gradient-border-3 relative flex h-12 w-full items-center justify-between gap-2 !rounded-lg bg-black-shade-3 p-[1px] flg:max-w-full">
                 <CustomNumberInput
                   name={payment_token_symbol}
                   id={payment_token_symbol}
                   placeholder="00"
-                  className="foucs:outline-none w-full border-0 bg-transparent p-0 text-white focus:ring-0"
+                  className="foucs:outline-none w-full border-0 bg-transparent p-0 px-2 text-white focus:ring-0"
                   value={paymentForm.paymentTokenAmount}
                   min={0}
                   onChange={(e) => {
@@ -293,7 +293,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     <p className="text-xs font-semibold text-white">NTR</p>
                   </div>
                 ) : (
-                  <div className="flex w-full max-w-[65px] items-center gap-2">
+                  <div className="mr-2 flex w-full max-w-[65px] items-center gap-2">
                     {/* TODO: Change this hard-coded icon to icon url coming from backend */}
                     <span className="h-5 w-5 flex-shrink-0 object-cover">
                       <BUSDNEW />
@@ -304,6 +304,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   </div>
                 )}
               </div>
+
               {isLoading === "loading" ? (
                 <button className="flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7 flg:max-w-[210px]">
                   <CgSpinner className="h-5 w-5 animate-spin" />

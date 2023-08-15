@@ -179,15 +179,17 @@ const AuctionForm = ({
         <label className={fieldTitle}>
           Name Your NFT <span className="text-red-500">*</span>{" "}
         </label>
-        <input
-          type="text"
-          id="NFTName"
-          maxLength={150}
-          autoComplete="off"
-          {...register("NFTName")}
-          placeholder="eg. &#34;big skull&#34;"
-          className={!formState.errors.NFTName ? inputField : inputFieldError}
-        />
+        <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+          <input
+            type="text"
+            id="NFTName"
+            maxLength={150}
+            autoComplete="off"
+            {...register("NFTName")}
+            placeholder="eg. &#34;big skull&#34;"
+            className={!formState.errors.NFTName ? inputField : inputFieldError}
+          />
+        </div>
         {formState.errors.NFTName && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.NFTName.message}
@@ -198,18 +200,20 @@ const AuctionForm = ({
         <label className={fieldTitle}>
           Description <span className="text-red-500">*</span>{" "}
         </label>
-        <textarea
-          id="Description"
-          autoComplete="off"
-          {...register("Description")}
-          placeholder="Write some details about your NFT"
-          className={clsx(
-            !formState.errors.Description ? inputField : inputFieldError,
-            "customScrollbar2"
-          )}
-          cols={20}
-          rows={6}
-        ></textarea>
+        <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+          <textarea
+            id="Description"
+            autoComplete="off"
+            {...register("Description")}
+            placeholder="Write some details about your NFT"
+            className={clsx(
+              !formState.errors.Description ? inputField : inputFieldError,
+              "customScrollbar2"
+            )}
+            cols={20}
+            rows={6}
+          ></textarea>
+        </div>
         {formState.errors.Description && (
           <p className={`text-red-500 ${errMessage}`}>
             {formState.errors.Description.message}
@@ -251,16 +255,20 @@ const AuctionForm = ({
           <span className="text-14px  absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
             BNB
           </span>
-          <CustomNumberInput
-            {...register("StartingNFTPrice")}
-            id="StartingNFTPrice"
-            autoComplete="off"
-            placeholder="Enter NFT Price"
-            className={
-              !formState.errors.StartingNFTPrice ? inputField : inputFieldError
-            }
-            min={0}
-          />
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <CustomNumberInput
+              {...register("StartingNFTPrice")}
+              id="StartingNFTPrice"
+              autoComplete="off"
+              placeholder="Enter NFT Price"
+              className={
+                !formState.errors.StartingNFTPrice
+                  ? inputField
+                  : inputFieldError
+              }
+              min={0}
+            />
+          </div>
         </div>
         {formState.errors.StartingNFTPrice && (
           <p className={`text-red-500 ${errMessage}`}>
@@ -328,7 +336,7 @@ const AuctionForm = ({
           onClick={() => {
             setConnectWalletModal(true);
           }}
-          className="hover:scale-95"
+          className="hover:scale-75"
         />
       ) : (
         <FinalButton
@@ -353,29 +361,33 @@ const AuctionForm = ({
           <div className={modalBodyWrapper}>
             <div className={fieldWrapper}>
               <label className={fieldTitle}>Name</label>
-              <input
-                type="text"
-                name="PropertyName"
-                id="PropertyName"
-                autoComplete="off"
-                placeholder="Male"
-                className={inputFieldModal}
-                onChange={handlePropertyChange}
-                value={propertyDetails.PropertyName}
-              />
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <input
+                  type="text"
+                  name="PropertyName"
+                  id="PropertyName"
+                  autoComplete="off"
+                  placeholder="Male"
+                  className={inputFieldModal}
+                  onChange={handlePropertyChange}
+                  value={propertyDetails.PropertyName}
+                />
+              </div>
             </div>
             <div className={fieldWrapper}>
               <label className={fieldTitle}>Type</label>
-              <input
-                type="text"
-                name="Type"
-                id="Type"
-                autoComplete="off"
-                placeholder="Character"
-                className={inputFieldModal}
-                onChange={handlePropertyChange}
-                value={propertyDetails.Type}
-              />
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <input
+                  type="text"
+                  name="Type"
+                  id="Type"
+                  autoComplete="off"
+                  placeholder="Character"
+                  className={inputFieldModal}
+                  onChange={handlePropertyChange}
+                  value={propertyDetails.Type}
+                />
+              </div>
             </div>
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
@@ -384,7 +396,7 @@ const AuctionForm = ({
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2 hover:scale-95"
+              className="mt-2 hover:scale-75"
             />
           </div>
         </CustomModal>
@@ -452,7 +464,7 @@ const fieldTitle = `
   text-14px text-start font-normal text-white
 `;
 const inputField = `
-  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-brand-primary active:!ring-brand-primary
+  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-0 active:!ring-brand-primary
 `;
 const inputFieldError = `
   ${inputField}
@@ -475,5 +487,5 @@ const Type = `
 text-14px font-semibold text-white
 `;
 const inputFieldModal = `
-  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-brand-primary active:!ring-brand-primary
+  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-0 active:!ring-brand-primary
 `;
