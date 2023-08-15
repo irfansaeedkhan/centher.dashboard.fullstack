@@ -33,7 +33,9 @@ export const useTopCreators = () => {
 
         setState((state) => ({
           ...state,
-          topCreators: topCreatorsCardData.map((item) => item.value),
+          topCreators: topCreatorsCardData
+            .map((item) => item.value)
+            .filter((creator) => creator.membership.status === "citizen"),
           loading: "loaded",
         }));
       } catch (error: any) {

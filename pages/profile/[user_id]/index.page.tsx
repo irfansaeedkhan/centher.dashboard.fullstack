@@ -170,11 +170,15 @@ const Profile: NextPageWithLayout = () => {
               </div>
             )}
             {(index + 1) / 6 === 1 && (
-              <div className="block flg:hidden">
-                <AdsWrapper>
-                  <PromotionCard5Mobile />
-                </AdsWrapper>
-              </div>
+              <>
+                {loggedInUser?.membership.status !== "citizen" && (
+                  <div className={`mt-4 flex flg:hidden`}>
+                    <AdsWrapper>
+                      <PromotionCard5Mobile />
+                    </AdsWrapper>
+                  </div>
+                )}
+              </>
             )}
 
             {(index + 1) / 8 === 1 && (
@@ -230,11 +234,13 @@ const Profile: NextPageWithLayout = () => {
               <PromotionCard2Mobile />
             </AdsWrapper>
           </div>
-          <div className={`mt-4 flex flg:hidden`}>
-            <AdsWrapper>
-              <PromotionCard5Mobile />
-            </AdsWrapper>
-          </div>
+          {loggedInUser?.membership.status !== "citizen" && (
+            <div className={`mt-4 flex flg:hidden`}>
+              <AdsWrapper>
+                <PromotionCard5Mobile />
+              </AdsWrapper>
+            </div>
+          )}
           <div className={`mt-4 flex f2xl:hidden`}>
             <AdsWrapper>
               <PromotionCard6Mobile />

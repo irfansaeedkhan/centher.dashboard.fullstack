@@ -9,9 +9,12 @@ export type SidebarData = {
       url: string;
       icon: React.FC<IconProps>;
       activeList: string[];
+      available_for: "all" | "citizen" | "verified";
       countType?: CountType;
     }[];
   };
 };
 
 export type SidebarSection = SidebarData[keyof SidebarData];
+
+export type SidebarItem = SidebarSection["items"][number];

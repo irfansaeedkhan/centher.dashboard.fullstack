@@ -55,12 +55,16 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
                 {sliceDisplayName(user.display_name, "cropname")}
               </h5>
               {verificationTick && (
-                <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                <span className="verifiedIcon ml-1 inline-flex h-5 w-5 min-w-[1.25rem]">
                   <Image
                     src={verificationTick}
-                    alt={"Verified"}
-                    width={20}
-                    height={20}
+                    alt={
+                      user.membership.status === "citizen"
+                        ? "Citizen"
+                        : "Verified"
+                    }
+                    width={16}
+                    height={16}
                   />
                 </span>
               )}

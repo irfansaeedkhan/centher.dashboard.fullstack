@@ -143,6 +143,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                   pathname: AppRoutes.profile.user_id,
                   query: { user_id: data.owner._id },
                 }}
+                className="shrink-0"
               >
                 <Image
                   className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
@@ -154,7 +155,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               </Link>
             ) : (
               <Image
-                className="!h-7 !w-7 cursor-pointer rounded-full object-cover"
+                className="!h-7 !w-7 shrink-0 cursor-pointer rounded-full object-cover"
                 src={data.owner.profile_image}
                 alt={data.owner.display_name}
                 height={28}
@@ -164,41 +165,35 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             <div className="flex items-center truncate">
               {data.owner.is_registered ? (
                 <Link
-                  className="flex w-full  cursor-pointer items-center  text-white"
+                  className="flex w-full cursor-pointer items-center text-white"
                   href={{
                     pathname: AppRoutes.profile.user_id,
                     query: { user_id: data.owner._id },
                   }}
                 >
-                  <span className={` truncate text-xs font-medium text-white`}>
+                  <span className={`truncate text-xs font-medium text-white`}>
                     {data.owner.display_name ?? formatAddress(data.owner._id)}
                   </span>
-                  {!!verificationTick && (
-                    <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+                  {verificationTick && (
+                    <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                       <Image
-                        src={"/images/rainbow-last-frame.png"}
-                        alt={"Verified"}
-                        width={20}
-                        height={20}
+                        src={verificationTick}
+                        alt={
+                          data.owner.membership.status === "citizen"
+                            ? "Citizen"
+                            : "Verified"
+                        }
+                        width={16}
+                        height={16}
                       />
                     </span>
                   )}
                 </Link>
               ) : (
                 <div className="flex items-center text-white">
-                  <span className={` truncate text-xs font-medium text-white`}>
+                  <span className={`truncate text-xs font-medium text-white`}>
                     {formatAddress(data.owner._id)}
                   </span>
-                  {!!verificationTick && (
-                    <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
-                      <Image
-                        src={"/images/rainbow-last-frame.png"}
-                        alt={"Verified"}
-                        width={20}
-                        height={20}
-                      />
-                    </span>
-                  )}
                 </div>
               )}
             </div>

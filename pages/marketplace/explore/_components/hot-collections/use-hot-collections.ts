@@ -40,7 +40,11 @@ export const useHotCollections = () => {
 
         setState((state) => ({
           ...state,
-          hotCollections: hotCollectionsCardData.map((item) => item.value),
+          hotCollections: hotCollectionsCardData
+            .map((item) => item.value)
+            .filter(
+              (collection) => collection.creator.membership.status === "citizen"
+            ),
           loading: "loaded",
         }));
       } catch (error: any) {

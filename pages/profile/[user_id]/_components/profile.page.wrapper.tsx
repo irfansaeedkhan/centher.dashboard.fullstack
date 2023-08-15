@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { SuggestedCard } from "@/components/feed.components";
 import { PromotionCard3 } from "@/components/feed.components/promotion.cards/card-3";
 import UserProfileHeaderSkeleton from "@/components/loading.skeletons/user.profile.header";
+import { PromotionCard6 } from "@/components/feed.components/promotion.cards/card-6";
+import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
@@ -11,7 +13,6 @@ import { MutualFollowersData } from "@/models/user";
 import ProfileHeader from "./profile.header";
 import { CardsContainerLeft } from "./cards.container.left";
 import { UserNotFound } from "./user.not.found";
-import { PromotionCard6 } from "@/components/feed.components/promotion.cards/card-6";
 
 interface AllPagesWrapperProps {
   children: React.ReactNode;
@@ -26,11 +27,10 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
 }) => {
   const router = useRouter();
 
-  const {
-    user,
-    mutateUser,
-    loading: loadingGetUser,
-  } = useGetUser(router.query.user_id?.toString()?.toLowerCase());
+  const { user: loggedInUser } = useUser();
+  const { user, loading: loadingGetUser } = useGetUser(
+    router.query.user_id?.toString()?.toLowerCase()
+  );
 
   const [mutualFollowersData, setMutualFollowersData] =
     useState<MutualFollowersData | null>(null);
@@ -76,6 +76,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
 
           <CardsContainerLeft
             user={user}
+            loggedInUser={loggedInUser ?? null}
             className="flg:col-span-1 flg:col-start-2 flg:row-start-2 f2xl:col-start-1 f2xl:row-start-1 f2xl:row-end-3"
           />
 

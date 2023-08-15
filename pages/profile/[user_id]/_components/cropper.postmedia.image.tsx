@@ -56,7 +56,7 @@ const CropperPostMediaImage: React.FC<CropperProps> = ({
           <FinalButton
             title="Crop"
             variant="primary"
-            className="h-8 w-[100px] text-[14px] hover:scale-90"
+            className="mb-4 h-8 w-[100px] text-[14px] hover:scale-90"
             borderRounded="14px"
             onClick={cropImageFunc}
           />
