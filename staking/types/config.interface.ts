@@ -1,1 +1,3 @@
-export interface ICentherStakingConfig {}
+export interface ICentherStakingConfig {
+  subgraphUrl: string;
+}

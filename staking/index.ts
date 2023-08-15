@@ -11,7 +11,7 @@ import {
 } from "./types";
 
 import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
-import { BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { setupCreatePoolData } from "./helpers/mappers.helper";
 import { CreatePoolStepsEnum } from "./enum/create-pool-steps.enum";
 import { CatchError } from "./decorators/catch-error.decorator";
@@ -26,9 +26,31 @@ import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { eqAddress } from "@/live/utils/address.utils";
 import { ZeroAddress } from "@/web3/constants/common";
+import {
+  GetStakingProjectInput,
+  StakingProject,
+} from "./types/get.projects.interface";
+import { QueryFactory } from "./lib/query.factory";
+import { QueryNames } from "./enum/query.name.enum";
+import { IApolloProvider } from "@/live/types/apollo.provider";
+import { getConnection } from "./lib/connection";
+import {
+  ClaimedRewards,
+  GetClaimedRewardsInput,
+  RewardsStat,
+} from "./types/rewards.interface";
+import { GetRefRewardInput, RefReward } from "./types/ref.rewards.interface";
+import { GetReferralsInput, Referral } from "./types/referrals.interface";
+import { BigNumber } from "ethers";
 
 export class CentherStaking {
-  constructor(options?: ICentherStakingConfig) {}
+  private _connection: IApolloProvider = null;
+  private _config: OptionalType<ICentherStakingConfig> = null;
+
+  constructor(options?: ICentherStakingConfig) {
+    this.initConnection(options?.subgraphUrl as string);
+    this._config = options;
+  }
 
   @CatchError()
   async createPool(
@@ -115,6 +137,382 @@ export class CentherStaking {
         "Invalid affiliate system settings"
       );
     }
+  }
+
+  @CatchError()
+  async getProjects(input: GetStakingProjectInput): Promise<StakingProject[]> {
+    const query = QueryFactory.getQuery(QueryNames.GET_PROJECTS);
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        skip: input.getPage(),
+        first: input.getPageSize(),
+      },
+    });
+
+    return result?.data.pools;
+  }
+
+  @CatchError()
+  async getProject(poolId: number): Promise<StakingProject> {
+    const query = QueryFactory.getQuery(QueryNames.GET_PROJECT);
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        id: poolId + "",
+      },
+    });
+
+    return result?.data.pools[0];
+  }
+
+  @CatchError()
+  async getUserStakes(
+    library: Web3Provider,
+    poolId: number,
+    userAddress: string
+  ): Promise<RewardsStat> {
+    const result = await BlockchainRead.getUserStakingRewards(
+      library,
+      poolId,
+      userAddress
+    );
+
+    return {
+      totalClaimableReward: BigNumber.from(
+        result.totalClaimableReward
+      ).toString(),
+      totalReward: BigNumber.from(result.totalReward).toString(),
+      totalStakeAmount: BigNumber.from(result.totalStakeAmount).toString(),
+      totolUnclaimableReward: BigNumber.from(
+        result.totolUnclaimableReward
+      ).toString(),
+    };
+  }
+
+  @CatchError()
+  async getUserClaimableRewards(
+    library: Web3Provider,
+    poolId: number,
+    user: string
+  ): Promise<string> {
+    const result = await BlockchainRead.getUserClaimableStakingRewards(
+      library,
+      poolId,
+      user
+    );
+
+    return result;
+  }
+
+  @CatchError()
+  async getUserClaimedRewards(
+    input: GetClaimedRewardsInput
+  ): Promise<ClaimedRewards[]> {
+    const query = QueryFactory.getQuery(QueryNames.GET_USER_CLAIMED_REWARDS);
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        poolId: input.poolId,
+        user: input.user,
+        first: input.getPageSize(),
+        skip: input.getPage(),
+      },
+    });
+
+    return result?.data.rewardClaimeds;
+  }
+
+  @CatchError()
+  async getTotalClaimedRefReward(
+    poolId: string,
+    user: string
+  ): Promise<string> {
+    const query = QueryFactory.getQuery(
+      QueryNames.GET_USER_TOTAL_CLAIMED_REF_REWARDS
+    );
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        poolId,
+        referrer: user,
+      },
+    });
+
+    return result?.data.refRewardPaids.reduce(
+      (a: number, b: { reward: string }) => a + +b.reward,
+      0
+    );
+  }
+
+  @CatchError()
+  async getClaimedRefRewards(input: GetRefRewardInput): Promise<RefReward[]> {
+    const query = QueryFactory.getQuery(
+      QueryNames.GET_USER_CLAIMED_REF_REWARDS
+    );
+
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        poolId: input.poolId,
+        referrer: input.user,
+        first: input.getPageSize(),
+        skip: input.getPage(),
+      },
+    });
+
+    return result?.data.refRewardPaids;
+  }
+
+  @CatchError()
+  async getUserReferrals(
+    library: Web3Provider,
+    input: GetReferralsInput
+  ): Promise<{ count: number; data: Referral[]; totalRewards: number }> {
+    let firstLevel: Referral[] = [];
+    let secondLevels: Referral[] = [];
+    let thirdLevels: Referral[] = [];
+    let fourthLevels: Referral[] = [];
+    let fivethLevels: Referral[] = [];
+    let sixthLevels: Referral[] = [];
+
+    if (input.levels >= 1 && input.user?.length) {
+      firstLevel = await this.getUserLevelReferrals(
+        input.poolId,
+        input.user,
+        1
+      );
+    }
+
+    if (input.levels >= 2 && firstLevel?.length > 0) {
+      const secondLevelsPromise = firstLevel.map((e) =>
+        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 2)
+      );
+
+      secondLevels = (await Promise.all(secondLevelsPromise)).flat();
+    }
+
+    if (input.levels >= 3 && secondLevels?.length > 0) {
+      const thirdLevelsPromise = secondLevels.map((e) =>
+        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 3)
+      );
+
+      thirdLevels = (await Promise.all(thirdLevelsPromise)).flat();
+    }
+
+    if (input.levels >= 4 && thirdLevels?.length > 0) {
+      const forthLevelsPromise = thirdLevels.map((e) =>
+        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 4)
+      );
+
+      fourthLevels = (await Promise.all(forthLevelsPromise)).flat();
+    }
+
+    if (input.levels >= 5 && fourthLevels?.length > 0) {
+      const fivethLevelsPromise = fourthLevels.map((e) =>
+        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 5)
+      );
+
+      fivethLevels = (await Promise.all(fivethLevelsPromise)).flat();
+    }
+
+    if (input.levels == 6 && fivethLevels?.length > 0) {
+      const sixthLevelsPromise = fivethLevels.map((e) =>
+        this.getUserLevelReferrals(input.poolId, e.id.split("-")[0], 6)
+      );
+
+      sixthLevels = (await Promise.all(sixthLevelsPromise)).flat();
+    }
+
+    let finalResult = [
+      ...firstLevel,
+      ...secondLevels,
+      ...thirdLevels,
+      ...fourthLevels,
+      ...fivethLevels,
+      ...sixthLevels,
+    ].sort((a, b) => +b.joinedAt - +a.joinedAt);
+
+    let start = 0;
+    let end = finalResult.length - 1;
+
+    if (input.page && input.pageSize) {
+      start = input.page == 0 ? 0 : input.page - 1 * input.pageSize;
+      end = input.page * input.pageSize;
+    }
+
+    if (finalResult.length) {
+      const getUsersStakes = finalResult.map((e) =>
+        this.calcStakedAmount(e, input.poolId, library)
+      );
+
+      finalResult = await Promise.all(getUsersStakes);
+    }
+
+    if (finalResult.length) {
+      const getUserRefRewards = finalResult.map((e) =>
+        this.getUserLevelRefRewards(e, input.poolId, library)
+      );
+
+      finalResult = await Promise.all(getUserRefRewards);
+    }
+
+    const totalRewards = finalResult.reduce((a: number, b: Referral) => {
+      if (b.claimableReward) {
+        return a + +b.claimableReward;
+      } else return a;
+    }, 0);
+
+    return {
+      count: finalResult.length,
+      data: finalResult.slice(start, end),
+      totalRewards,
+    };
+  }
+
+  @CatchError()
+  async stake(
+    library: Web3Provider,
+    poolId: number,
+    referrer: string,
+    amount: string
+  ): Promise<void> {
+    try {
+      const result = await BlockchainWrite.stake(
+        library,
+        poolId + "",
+        amount,
+        referrer
+      );
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @CatchError()
+  async claimReward(library: Web3Provider, poolId: number): Promise<void> {
+    try {
+      const result = await BlockchainWrite.claimReward(library, poolId + "");
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @CatchError()
+  async claimRefReward(
+    library: Web3Provider,
+    poolId: number,
+    user: string
+  ): Promise<void> {
+    try {
+      const result = await BlockchainWrite.claimRefReward(
+        library,
+        poolId + "",
+        user
+      );
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @CatchError()
+  async unstake(
+    library: Web3Provider,
+    poolId: number,
+    amount: string
+  ): Promise<void> {
+    try {
+      const result = await BlockchainWrite.unstake(
+        library,
+        poolId + "",
+        amount
+      );
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getReferralClaimableReward(
+    library: Web3Provider,
+    user: string,
+    poolId: number
+  ): Promise<string> {
+    const result = await BlockchainRead.getRefClaimableReward(
+      library,
+      poolId,
+      user
+    );
+
+    return result;
+  }
+
+  private async getUserLevelRefRewards(
+    input: Referral,
+    poolId: string,
+    library: Web3Provider
+  ): Promise<Referral> {
+    const result = await this.getReferralClaimableReward(
+      library,
+      input.id.split("-")[0],
+      +poolId
+    );
+    input.claimableReward = result;
+    return input;
+  }
+
+  private async getUserLevelReferrals(
+    poolId: string,
+    user: string,
+    level: number
+  ): Promise<Referral[]> {
+    const query = QueryFactory.getQuery(QueryNames.GET_USER_REFERRALS);
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        referrer: user,
+        pool: poolId,
+      },
+    });
+
+    return result?.data.users.map((e: Partial<Referral>) => {
+      return {
+        referrer: e.referrer,
+        joinedAt: e.joinedAt,
+        id: e.id,
+        level,
+      };
+    });
+  }
+
+  private async calcStakedAmount(
+    input: Referral,
+    poolId: string,
+    library: Web3Provider
+  ): Promise<Referral> {
+    const data = await this.getUserStakes(
+      library,
+      +poolId,
+      input.id.split("-")[0]
+    );
+
+    input.stakedAmount = data.totalStakeAmount;
+    return input;
   }
 
   private async addAffiliateSettings(
@@ -205,5 +603,9 @@ export class CentherStaking {
         throw new WalletApprovalError(message);
       }
     }
+  }
+
+  private initConnection(url: string): void {
+    this._connection = getConnection(url);
   }
 }

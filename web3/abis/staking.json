@@ -322,11 +322,38 @@
       { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
       { "internalType": "address", "name": "_user", "type": "address" }
     ],
-    "name": "calculateReward",
+    "name": "calculateClaimableRewardForRef",
     "outputs": [
       {
         "internalType": "uint256",
         "name": "claimableReward",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "poolId", "type": "uint256" },
+      { "internalType": "address", "name": "user", "type": "address" }
+    ],
+    "name": "calculateTotalReward",
+    "outputs": [
+      { "internalType": "uint256", "name": "totalReward", "type": "uint256" },
+      {
+        "internalType": "uint256",
+        "name": "totalClaimableReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totolUnclaimableReward",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalStakeAmount",
         "type": "uint256"
       }
     ],

@@ -3,7 +3,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { faqsData } from "./_components/faqs-data";
 import SingleFaq from "./_components/single-faq";
 import { NextPageWithLayout } from "../_app.page";
-import PageButtonsWrapper from "./staking-details/_components/page-buttons";
+import PageButtonsWrapper from "./staking-details/[id]/_components/page-buttons";
 
 const Faqs: NextPageWithLayout = () => {
   return (

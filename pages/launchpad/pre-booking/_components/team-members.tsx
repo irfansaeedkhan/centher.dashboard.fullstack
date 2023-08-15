@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { OptionalType } from "@/staking/types";
 
 const teamMemberList = [
   {
@@ -29,7 +30,7 @@ const teamMemberList = [
   },
 ];
 
-const TeamMembers = () => {
+const TeamMembers: React.FC<{ data: OptionalType<string> }> = ({ data }) => {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {teamMemberList?.map((member, key) => (

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 import { NextPageWithLayout } from "@/pages/_app.page";
@@ -11,15 +11,84 @@ import { AppRoutes } from "@/constants/app.routes";
 import StakingListContainer from "./_components/staking-list-container";
 import clsx from "clsx";
 import { PreLoader } from "@/components/pre.loader";
+import { useStaking } from "@/hooks/staking";
+import {
+  GetStakingProjectInput,
+  StakingProject,
+} from "@/staking/types/get.projects.interface";
+import { ListCardDataOBj } from "./_components/list-card-data";
+import { ZeroAddress } from "@/web3/constants/common";
+import { setupUiModels } from "@/staking/helpers/mappers.helper";
+import axios from "axios";
+import { formatIPFSUrl } from "@/utils/format.address";
+import { CoinDetails } from "@/staking/types/coin.info.interface";
+import { OptionalType } from "@/staking/types";
+import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
-  const [stakingList, setStakingList] = useState(true);
-  const [coinsDetails, setCoinsDetails] = useState([]);
+  const [stakingList, setStakingList] = useState<ListCardDataOBj[]>([]);
+  const [coinsDetails, setCoinsDetails] = useState<
+    Array<CoinDetails | undefined>
+  >([]);
   const [userDetails, setUserDetails] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const { sdk } = useStaking();
+  useEffect(() => {
+    const getCoinDetails = async (tokens: string[]) => {
+      const list: string[] = [];
+      tokens.forEach((e) => {
+        if (e != ZeroAddress && list.indexOf(e) == -1) {
+          list.push(e);
+        }
+      });
+
+      const details = await fetchTokenMetadata(list);
+      const tokenDetails = details.map((e: any) => e.token._value);
+      setCoinsDetails(
+        tokenDetails.map((e: any) => {
+          return {
+            ...e,
+            contractAddress: e.contractAddress._value,
+            chain: e.chain._value,
+          };
+        })
+      );
+    };
+
+    const getPoolMetadata = async (address: string) => {
+      try {
+        const metadata = await axios.get(formatIPFSUrl(address));
+        const buff = stakingList.find((e) => e.metadataUrl == address);
+        if (buff) {
+          buff.metadata = metadata.data;
+          setStakingList([...stakingList, buff]);
+        }
+      } catch (error) {}
+    };
+
+    if (sdk) {
+      setIsLoading(true);
+      const filters = new GetStakingProjectInput(0, 20);
+      sdk.getProjects(filters).then((pools) => {
+        if (pools?.length && !coinsDetails?.length) {
+          getCoinDetails(
+            pools.map((e) => [e.stakeToken, e.rewardToken]).flat()
+          ).then();
+
+          const mappedPools = setupUiModels(pools);
+          setStakingList(mappedPools);
+          for (const e of mappedPools) {
+            getPoolMetadata(e.metadataUrl).then();
+          }
+        }
+
+        setIsLoading(false);
+      });
+    }
+  }, [sdk]);
 
   return (
     <section
@@ -30,7 +99,11 @@ const Staking: NextPageWithLayout = () => {
     >
       {/* show if user already have stakings */}
       {stakingList ? (
-        <StakingListContainer />
+        <StakingListContainer
+          pools={stakingList}
+          fetchTime={+new Date()}
+          coins={coinsDetails}
+        />
       ) : (
         <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
           <NoStakingIcon className="mb-6" />

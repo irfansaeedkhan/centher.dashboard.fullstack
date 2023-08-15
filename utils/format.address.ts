@@ -38,6 +38,8 @@ export const formatIPFSUrl = (hash: string | undefined) => {
         BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(7, hash.length)
       );
     else return hash;
+  } else if (hash.substring(0, 5) === "ipfs:") {
+    return BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(5, hash.length);
   } else {
     const splitHash = hash.split("/Qm");
     if (splitHash.length >= 2) {

@@ -160,10 +160,6 @@ export const BlockchainConfig: IBlockchainConfig = {
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/rezahssini/new-subgraph"
       : "https://api.thegraph.com/subgraphs/name/rezahssini/withcitizenship",
-  stakingSubgraphUrl:
-    process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? ""
-      : "https://thegraph.com/studio/subgraph/centher-staking/playground",
 };
 
 export const SwapCollection =

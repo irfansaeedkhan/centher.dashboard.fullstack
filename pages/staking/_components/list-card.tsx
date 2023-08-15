@@ -7,19 +7,33 @@ import { copyText } from "@/utils/copy.text";
 import { ListCardDataOBj } from "./list-card-data";
 import Image from "next/image";
 import Link from "next/link";
-import { AppRoutes } from "@/constants/app.routes";
+import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { formatIPFSUrl } from "@/utils/format.address";
+import { formatUnits } from "ethers/lib/utils";
+import { metaDataType } from "./staking-types";
+import { CoinDetails } from "@/staking/types/coin.info.interface";
+import { eqAddress } from "@/live/utils/address.utils";
 
 export interface ListCardProps {
   card: ListCardDataOBj;
+  coins: Array<CoinDetails | undefined>;
 }
 
-const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
+const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
   return (
     <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
-      <div className="relative h-[200px] w-full rounded-2xl bg-[url(/images/profile-header-cover.jpg)] bg-cover bg-center">
+      <div
+        className="relative h-[200px] w-full rounded-2xl bg-[url(/images/profile-header-cover.jpg)] bg-cover bg-center"
+        style={{
+          backgroundImage: card.metadata?.banner?.length
+            ? `url(${formatIPFSUrl("ipfs:" + card.metadata.banner)})`
+            : "url(/images/profile-header-cover.jpg)",
+        }}
+      >
         <div className="absolute right-6 top-5 flex items-center gap-4">
           <Link
-            href={AppRoutes.staking.staking_details.index}
+            href={"/staking/staking-details/" + card.id}
             className="textGradient text-xs font-medium"
           >
             View project detail
@@ -27,24 +41,26 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
           <div
             className={clsx(
               "w-fit rounded-[10px] bg-black-shade-3 py-[6px] px-3 text-xs font-semibold",
-              card.liquidity_pool_provided === "yes"
-                ? "text-[#76E268]"
-                : "text-brand-primary"
+              card.is_active ? "text-[#76E268]" : "text-brand-primary"
             )}
           >
-            {card.liquidity_pool_provided === "yes" ? "Active" : "Unbalanced"}
+            {card.is_active ? "Active" : "Unbalanced"}
           </div>
         </div>
         <div className="absolute left-6 bottom-6 my-auto">
           <div className="flex items-center gap-4">
             <Image
-              src="/images/profile-header-cover.jpg"
+              src={
+                card.metadata
+                  ? formatIPFSUrl("ipfs:" + card.metadata.icon)
+                  : "/images/profile-header-cover.jpg"
+              }
               alt="token-address-symbol"
               width={44}
               height={44}
               className="h-11 w-11 rounded-full object-cover"
             />
-            <p className="text-xl font-bold text-white">DeXa {card.pack}</p>
+            <p className="text-xl font-bold text-white">{card.pack}</p>
           </div>
         </div>
       </div>
@@ -58,12 +74,20 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
             )}
           >
             <Image
-              src="/images/token-address-symbol.png"
+              src={
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, card.token_address)
+                )?.logo
+                  ? (coins.find((e) =>
+                      eqAddress(e?.contractAddress, card.token_address)
+                    )?.logo as string)
+                  : "/images/token-address-symbol.png"
+              }
               alt="token-address-symbol"
               width={20}
               height={20}
             />
-            <span>{sliceAccountAddress(card.token_address)}</span>
+            <span>{sliceAccountAddress(card.token_address)} </span>
             <FiCopy
               className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
               onClick={async () => {
@@ -75,18 +99,87 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
         </div>
         <div className={section}>
           <p className={label}>Project Name</p>
-          <p className={value}>DeXa {card.pack}</p>
-        </div>
-        <div className={section}>
-          <p className={label}>Price</p>
-          <p className={value}>{card.price}</p>
+          <p className={value}>
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, card.token_address)
+              )?.name
+            }
+          </p>
         </div>
         <div className={section}>
           <p className={label}>Symbol</p>
-          <p className={value}>{card.sybmol}</p>
+          <p className={value}>
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, card.token_address)
+              )?.symbol
+            }
+          </p>
         </div>
       </div>
-
+      {card.token_address != card.reward_token_address ? (
+        <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
+          <div className={section}>
+            <p className={label}>Token Address</p>
+            <p
+              className={clsx(
+                value,
+                "word-break flex items-center gap-2 truncate"
+              )}
+            >
+              <Image
+                src={
+                  coins.find((e) =>
+                    eqAddress(e?.contractAddress, card.reward_token_address)
+                  )?.logo
+                    ? (coins.find((e) =>
+                        eqAddress(e?.contractAddress, card.reward_token_address)
+                      )?.logo as string)
+                    : "/images/token-address-symbol.png"
+                }
+                alt="token-address-symbol"
+                width={20}
+                height={20}
+              />
+              <span>{sliceAccountAddress(card.reward_token_address)}</span>
+              <FiCopy
+                className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
+                onClick={async () => {
+                  await copyText(card.reward_token_address ?? "");
+                  toast.success("Token address copied!");
+                }}
+              />
+            </p>
+          </div>
+          <div className={section}>
+            <p className={label}>Project Name</p>
+            <p className={value}>
+              {
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, card.reward_token_address)
+                )?.name
+              }
+            </p>
+          </div>
+          {/* <div className={section}>
+            <p className={label}>Price</p>
+            <p className={value}>{coins.find(e=>e?.contractAddress == card.token_address)?.decimals}</p>
+          </div> */}
+          <div className={section}>
+            <p className={label}>Symbol</p>
+            <p className={value}>
+              {
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, card.reward_token_address)
+                )?.symbol
+              }
+            </p>
+          </div>
+        </div>
+      ) : (
+        ""
+      )}
       {card.rewards_level && (
         <div className="gradient-border-3 rounded-xl p-[1px]">
           <div className="p-5">
@@ -121,11 +214,21 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
         </div>
         <div className={section}>
           <p className={label}>Staking Period</p>
-          <p className={value}>{card.staking_period}</p>
+          <p className={value}>
+            {
+              stakingPeriodOptions.find((e) => e.value == +card.staking_period)
+                ?.title
+            }
+          </p>
         </div>
         <div className={section}>
           <p className={label}>Claim Period</p>
-          <p className={value}>{card.claim_period}</p>
+          <p className={value}>
+            {
+              claimPeriodOptions.find((e) => e.value == +card.claim_period)
+                ?.title
+            }
+          </p>
         </div>
         {card.liquidity_pool_provided === "yes" && (
           <div className={section}>
@@ -139,34 +242,40 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card }) => {
             <p className={value2}>{card.is_cancelable}</p>
           </div>
         )}
-        {card.show_on_centher === "yes" && (
-          <div className={section}>
-            <p className={label}>Show on Centher</p>
-            <p className={value2}>{card.show_on_centher}</p>
-          </div>
-        )}
+        <div className={section}>
+          <p className={label}>Total Supply</p>
+          <p className={value2}>
+            {normalizeValue(formatUnits(card.supply, 18).toString())}
+          </p>
+        </div>
         <div className={section}>
           <p className={label}>Charge Fee on Cancel</p>
-          <p className={value}>{card.charge_fee_on_cancel}</p>
+          <p className={value}>{card.charge_fee_on_cancel} %</p>
         </div>
         <div className={section}>
           <p className={label}>Start Time</p>
-          <p className={value}>{card.start_time}</p>
+          <p className={value}>
+            {new Date(+card.start_time * 1000).toDateString()}
+          </p>
         </div>
         <div className={section}>
           <p className={label}>Maximum Stakable Amount</p>
-          <p className={value}>{card.max_staking_amount}</p>
+          <p className={value}>
+            {normalizeValue(formatUnits(card.max_staking_amount, 18))}
+          </p>
         </div>
         <div className={section}>
           <p className={label}>Minimum Stakable Amount</p>
-          <p className={value}>{card.min_staking_amount}</p>
+          <p className={value}>
+            {normalizeValue(formatUnits(card.min_staking_amount, 18))}
+          </p>
         </div>
       </div>
-      {card.project_metadata && (
+      {card.metadata?.library?.length && (
         <div>
           <p className={label}>Project Metadata</p>
           <div className="grid w-full items-center gap-5 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-            {card.project_metadata.map((data, index) => (
+            {card.metadata.library.map((data: metaDataType, index: number) => (
               <div
                 className="gradient-border-3 col-span-2 mt-[6px] flex h-[72px] flex-col items-center justify-center rounded-[10px] p-[1px] fsm:col-span-1"
                 key={index}

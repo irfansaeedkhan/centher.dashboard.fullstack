@@ -65,9 +65,9 @@ export const AppRoutes = {
     index: "/staking",
     create_staking: "/staking/create-staking",
     staking_details: {
-      index: "/staking/staking-details",
-      rewards: "/staking/staking-details/rewards",
-      referrals: "/staking/staking-details/referrals",
+      index: "/staking/staking-details/[id]",
+      rewards: "/staking/staking-details/[id]/rewards",
+      referrals: "/staking/staking-details/[id]/referrals",
     },
     faqs: "/staking/faqs",
   },

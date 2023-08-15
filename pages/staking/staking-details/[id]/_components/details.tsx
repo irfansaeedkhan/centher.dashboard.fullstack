@@ -10,17 +10,35 @@ import {
   Whitepaper,
 } from "@/assets/svgs";
 import TeamMembers from "@/pages/launchpad/pre-booking/_components/team-members";
+import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
+import { OptionalType } from "@/staking/types";
 
-const Details = () => {
+const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
+  data,
+}) => {
+  const findLink = (name: string) => {
+    try {
+      const result = data?.metadata.socialMedias.find(
+        (e: any) => e.name == name
+      )?.link;
+
+      if (result) {
+        return result;
+      } else throw new Error();
+    } catch (error) {
+      return "/#";
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 border-b border-gray-shade-3 pb-8">
-      <p className="text-xl font-semibold text-white">About DeXa Pack 1</p>
+      <p className="text-xl font-semibold text-white">{data?.pack}</p>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Official Links</div>
           <div className="flex items-center gap-2">
             <a
-              href="https://dexagon.io/"
+              href={findLink("website_url")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -29,7 +47,7 @@ const Details = () => {
               <span>Website</span>
             </a>
             <a
-              href="https://dexagon.io/wp-content/uploads/2023/04/Dexagon-White-Paper-1.pdf"
+              href={findLink("whitepaper")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -43,7 +61,7 @@ const Details = () => {
           <div className="text-sm font-semibold text-white">Social Links</div>
           <div className="flex flex-wrap items-center gap-2">
             <a
-              href="https://twitter.com/officialdexagon"
+              href={findLink("twitter")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -52,7 +70,7 @@ const Details = () => {
               <span>Twitter</span>
             </a>
             <a
-              href="https://youtube.com/@officialdexagon"
+              href={findLink("facebook")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -61,7 +79,7 @@ const Details = () => {
               <span>Facebook</span>
             </a>
             <a
-              href="https://instagram.com/dexagonofficial"
+              href={findLink("instagram")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -70,7 +88,7 @@ const Details = () => {
               <span>Instagram</span>
             </a>
             <a
-              href="https://t.me/officialdexagon"
+              href={findLink("telegram")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -79,7 +97,7 @@ const Details = () => {
               <span>Telegram</span>
             </a>
             <a
-              href="https://app.centher.io/profile/0xa638d0182d075278a9ea6480c1430c6e7fb490c9"
+              href={findLink("centher")}
               target="_blank"
               rel="noreferrer noopener"
               className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
@@ -93,7 +111,7 @@ const Details = () => {
           <div className="text-sm font-semibold text-white">Explorers</div>
           <div className="flex items-center gap-2">
             <a
-              href="https://bscscan.com/address/0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c"
+              href={findLink("explorers")}
               target="_blank"
               rel="noreferrer noopener"
               className={button}
@@ -106,39 +124,41 @@ const Details = () => {
         <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Category</div>
           <div className="flex flex-wrap items-center gap-2">
-            <div className={button}>
-              <span>Metaverse</span>
-            </div>
-            <div className={button}>
-              <span>Real Estate</span>
-            </div>
-            <div className={button}>
-              <span>Decentralized Finance</span>
-            </div>
-            <div className={button}>
-              <span>Artificial Intelligence</span>
-            </div>
+            {data?.metadata?.categories?.length ? (
+              data?.metadata.categories.map((e: any, i: number) => (
+                <div className={button} key={i}>
+                  <a
+                    href={e.value}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className={button}
+                  >
+                    <span>{e.label}</span>
+                  </a>
+                </div>
+              ))
+            ) : (
+              <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
+                No Category
+              </p>
+            )}
           </div>
         </div>
-        <div className="mt-3 mb-2  flex flex-col gap-3">
-          <div className="text-sm font-semibold text-white">Team</div>
-          <TeamMembers />
-        </div>
+        {data?.metadata?.team?.length ? (
+          <div className="mt-3 mb-2  flex flex-col gap-3">
+            <div className="text-sm font-semibold text-white">Team</div>
+            <TeamMembers data={data?.metadata?.team} />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <div className="flex flex-col gap-4">
         <div className="text-sm font-semibold text-white">Description</div>
         <p className="whitespace-pre-wrap text-xs font-medium text-gray-shade-14 md:text-sm">
-          At Dexagon we want to open the gates to the Virtual Life on the
-          metaverse, revealing a new way of approaching the virtual world.{" "}
-          <br />
-          It&apos;s a new approach that involves all the senses, bringing you in
-          a complete different experience: the immersiverse.
-          <br />
-          Dexagon is a massive interoperable metaverse project based on custom
-          hardware technology (Diogene VR visor and ring) and utility token to
-          use inside multiple metaverse platforms. <br />
-          The metaverse of Dexagon is all based on decentralization, where DeFi
-          and real estate operations are possible!
+          {data?.metadata?.description
+            ? data?.metadata?.description
+            : "No Description"}
         </p>
       </div>
     </div>

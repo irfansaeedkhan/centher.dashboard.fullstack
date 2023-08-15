@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 
@@ -6,11 +6,12 @@ import { LayoutGrid } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 
-import { ListCardData } from "./list-card-data";
+import { ListCardDataOBj } from "./list-card-data";
 import GridLayoutCard from "./list-card";
 import clsx from "clsx";
 import ListLayoutTable from "./list-layout-table";
 import StakingDropdown from "./dropdown-for-staking";
+import { CoinDetails } from "@/staking/types/coin.info.interface";
 
 const sortOptions = [
   { label: "Sort by", value: "0" },
@@ -24,7 +25,17 @@ const sortOptions = [
   },
 ];
 
-const StakingListContainer: FC = () => {
+interface ComponentProp {
+  pools: ListCardDataOBj[];
+  fetchTime: number;
+  coins: Array<CoinDetails | undefined>;
+}
+
+const StakingListContainer: FC<ComponentProp> = ({
+  pools,
+  fetchTime,
+  coins,
+}) => {
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [showItems, setShowItems] = useState<string>("0");
 
@@ -115,12 +126,12 @@ const StakingListContainer: FC = () => {
       </div>
       {layout === "grid" ? (
         <div className="mt-7 mb-2 flex h-full w-full max-w-full flex-col gap-6">
-          {ListCardData.map((card, index) => (
-            <GridLayoutCard key={index} card={card} />
+          {pools.map((card, index) => (
+            <GridLayoutCard key={index} card={card} coins={coins} />
           ))}
         </div>
       ) : layout === "list" ? (
-        <ListLayoutTable card={ListCardData} />
+        <ListLayoutTable card={pools} coins={coins} />
       ) : null}
     </div>
   );

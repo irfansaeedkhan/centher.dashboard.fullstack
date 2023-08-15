@@ -24,6 +24,11 @@ import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { useWeb3React } from "@web3-react/core";
+import { eqAddress } from "@/live/utils/address.utils";
+import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
+import { CoinDetails } from "@/staking/types/coin.info.interface";
+import { ZeroAddress } from "@/web3/constants/common";
+import { useStaking } from "@/hooks/staking";
 
 interface CustomModalProps {
   data: stakingFormInterfaceUpdated;
@@ -114,11 +119,42 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
   createStaking,
   data,
 }) => {
+  const { sdk } = useStaking();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const { connectWallet } = useConnectWallet();
   const { user: loggedInUser } = useUser();
   const { deactivate, library, account } = useWeb3React();
+  const [coinsDetails, setCoinsDetails] = useState<
+    Array<CoinDetails | undefined>
+  >([]);
+
+  useEffect(() => {
+    const getCoinDetails = async (tokens: string[]) => {
+      const list: string[] = [];
+      tokens.forEach((e) => {
+        if (e != ZeroAddress && list.indexOf(e) == -1) {
+          list.push(e);
+        }
+      });
+
+      const details = await fetchTokenMetadata(list);
+      const tokenDetails = details.map((e: any) => e.token._value);
+      setCoinsDetails(
+        tokenDetails.map((e: any) => {
+          return {
+            ...e,
+            contractAddress: e.contractAddress._value,
+            chain: e.chain._value,
+          };
+        })
+      );
+    };
+
+    if (sdk && !coinsDetails?.length) {
+      getCoinDetails([data.token_address, data.reward_token_address]).then();
+    }
+  }, [sdk]);
 
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
@@ -218,6 +254,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     </div>
                   </div>
                 </div>
+
                 <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
                   <div className={section}>
                     <p className={label}>Token Address</p>
@@ -228,7 +265,18 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       )}
                     >
                       <Image
-                        src="/images/token-address-symbol.png"
+                        src={
+                          coinsDetails.find((e) =>
+                            eqAddress(data.token_address, e?.contractAddress)
+                          )?.logo
+                            ? (coinsDetails.find((e) =>
+                                eqAddress(
+                                  data.token_address,
+                                  e?.contractAddress
+                                )
+                              )?.logo as string)
+                            : "/images/token-address-symbol.png"
+                        }
                         alt="token-address-symbol"
                         width={20}
                         height={20}
@@ -245,18 +293,101 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   </div>
                   <div className={section}>
                     <p className={label}>Project Name</p>
-                    <p className={value}>name here</p>
-                  </div>
-                  <div className={section}>
-                    <p className={label}>Price</p>
-                    <p className={value}>price here</p>
+                    <p className={value}>
+                      {
+                        coinsDetails.find((e) =>
+                          eqAddress(data.token_address, e?.contractAddress)
+                        )?.name
+                      }
+                    </p>
                   </div>
                   <div className={section}>
                     <p className={label}>Symbol</p>
-                    <p className={value}>symbol here</p>
+                    <p className={value}>
+                      {
+                        coinsDetails.find((e) =>
+                          eqAddress(data.token_address, e?.contractAddress)
+                        )?.symbol
+                      }
+                    </p>
                   </div>
                 </div>
-                <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
+
+                {!eqAddress(data.token_address, data.reward_token_address) ? (
+                  <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
+                    <div className={section}>
+                      <p className={label}>Token Address</p>
+                      <p
+                        className={clsx(
+                          value,
+                          "word-break flex items-center gap-2 truncate"
+                        )}
+                      >
+                        <Image
+                          src={
+                            coinsDetails.find((e) =>
+                              eqAddress(
+                                data.reward_token_address,
+                                e?.contractAddress
+                              )
+                            )?.logo
+                              ? (coinsDetails.find((e) =>
+                                  eqAddress(
+                                    data.reward_token_address,
+                                    e?.contractAddress
+                                  )
+                                )?.logo as string)
+                              : "/images/token-address-symbol.png"
+                          }
+                          alt="token-address-symbol"
+                          width={20}
+                          height={20}
+                        />
+                        <span>
+                          {sliceAccountAddress(data?.reward_token_address)}
+                        </span>
+                        <FiCopy
+                          className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
+                          onClick={async () => {
+                            await copyText(data?.token_address ?? "");
+                            toast.success("Token address copied!");
+                          }}
+                        />
+                      </p>
+                    </div>
+                    <div className={section}>
+                      <p className={label}>Project Name</p>
+                      <p className={value}>
+                        {" "}
+                        {
+                          coinsDetails.find((e) =>
+                            eqAddress(
+                              data.reward_token_address,
+                              e?.contractAddress
+                            )
+                          )?.name
+                        }
+                      </p>
+                    </div>
+                    <div className={section}>
+                      <p className={label}>Symbol</p>
+                      <p className={value}>
+                        {" "}
+                        {
+                          coinsDetails.find((e) =>
+                            eqAddress(
+                              data.reward_token_address,
+                              e?.contractAddress
+                            )
+                          )?.symbol
+                        }
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                {/* <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
                   <div className={section}>
                     <p className={label}>Rewards Token Address</p>
                     <p
@@ -299,7 +430,8 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       </div>
                     </>
                   )}
-                </div>
+                </div> */}
+
                 {data?.multilevel_rewards !== "No referral" &&
                   data?.rewards_level &&
                   data?.rewards_level.length > 0 && (

@@ -60,39 +60,18 @@ import {
 } from "@/staking/errors/params.error";
 import { isAddress } from "ethers/lib/utils";
 import { PreLoader } from "@/components/pre.loader";
+import { useStaking } from "@/hooks/staking";
+import {
+  claimPeriodOptions,
+  firstReward,
+  stakingPeriodOptions,
+} from "../constants";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
   { value: "Real Estate", label: "Real Estate" },
   { value: "Decentralised Finance", label: "Decentralised Finance" },
   { value: "Artificial Intelligence", label: "Artificial Intelligence" },
-];
-const claimPeriodOptions = [
-  { title: "15 Days", value: 15 * 24 * 60 * 60 },
-  { title: "30 Days", value: 30 * 24 * 60 * 60 },
-  { title: "45 Days", value: 45 * 24 * 60 * 60 },
-  { title: "90 Days", value: 90 * 24 * 60 * 60 },
-  { title: "120 Days", value: 120 * 24 * 60 * 60 },
-  { title: "180 Days", value: 180 * 24 * 60 * 60 },
-  { title: "Anytime", value: 0 },
-];
-const firstReward = [
-  { title: "15 Days", value: 15 * 24 * 60 * 60 },
-  { title: "30 Days", value: 30 * 24 * 60 * 60 },
-  { title: "90 Days", value: 90 * 24 * 60 * 60 },
-  { title: "180 Days", value: 180 * 24 * 60 * 60 },
-  { title: "According to claim period", value: -1 },
-];
-const stakingPeriodOptions = [
-  { title: "15 Days", value: 15 * 24 * 60 * 60 },
-  { title: "30 Days", value: 30 * 24 * 60 * 60 },
-  { title: "90 Days", value: 90 * 24 * 60 * 60 },
-  { title: "180 Days", value: 180 * 24 * 60 * 60 },
-  { title: "1 year", value: 1 * 365 * 24 * 60 * 60 },
-  { title: "2 years", value: 2 * 365 * 24 * 60 * 60 },
-  { title: "3 years", value: 3 * 365 * 24 * 60 * 60 },
-  { title: "4 years", value: 4 * 365 * 24 * 60 * 60 },
-  { title: "5 years", value: 5 * 365 * 24 * 60 * 60 },
 ];
 
 const CreateStaking: NextPageWithLayout = () => {
@@ -115,6 +94,7 @@ const CreateStaking: NextPageWithLayout = () => {
   const { user: loggedInUser } = useUser();
   const { deactivate, library, account } = useWeb3React();
   const [isLoading, setIsLoading] = useState(false);
+  const { sdk } = useStaking();
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -498,6 +478,10 @@ const CreateStaking: NextPageWithLayout = () => {
       throw new WalletConnectedError("connect you wallet");
     }
 
+    if (!sdk) {
+      throw new Error("reload the page");
+    }
+
     setshowMsg(null);
 
     let initialProgress = [
@@ -643,8 +627,7 @@ const CreateStaking: NextPageWithLayout = () => {
     }
 
     await setProgressModel(initialProgress);
-    const stakingHandler = new CentherStaking();
-    await stakingHandler.createPool(
+    await sdk.createPool(
       library,
       input,
       files,
@@ -987,7 +970,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -1075,7 +1058,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);

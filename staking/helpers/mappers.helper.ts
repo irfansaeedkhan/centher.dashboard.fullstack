@@ -3,6 +3,8 @@ import { ZeroAddress } from "@/web3/constants/common";
 import { isAddress, parseEther } from "ethers/lib/utils";
 import { CreatePoolParamsError } from "../errors/params.error";
 import { eqAddress } from "@/live/utils/address.utils";
+import { StakingProject } from "../types/get.projects.interface";
+import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 
 export function setupCreatePoolData(
   input: CreatePoolInput
@@ -77,4 +79,49 @@ export function setupCreatePoolData(
     isLP: input.isLP,
     showOnCenther: input.showOnCenther,
   };
+}
+
+export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
+  return input.map((e) => {
+    return {
+      id: e.id + "",
+      pack: e.name,
+      price: "100",
+      sybmol: "dxc",
+      token_address: e.stakeToken,
+      reward_token_address: e.rewardToken,
+      apy: e.annualStakingRewardRate + "",
+      staking_period: e.stakingDurationPeriod + "",
+      claim_period: e.claimDuration + "",
+      liquidity_pool_provided: e.isLP ? "yes" : "no",
+      is_cancelable: e.isUnstakable ? "yes" : "no",
+      show_on_centher: "yes",
+      charge_fee_on_cancel: e.cancellationFees + "",
+      start_time: e.startTime + "",
+      max_staking_amount: e.maxStakeAmount,
+      min_staking_amount: e.minStakeAmount,
+      supply: e.maxStakableAmount,
+      is_active: e.isActive,
+      totalStakedAmount: e.totalStakedAmount + "",
+      totalPaidReward: e.totalPaidReward + "",
+      multilevel_rewards:
+        e.rewardModeForRef == 0
+          ? "No referral"
+          : e.rewardModeForRef == 1
+          ? "Fix Commission (0 to 6 levels)"
+          : "Recurring Return (0 to 6 levels)",
+      rewards_level: [
+        { level: 1, percent: e.levelOne },
+        { level: 2, percent: e.levelTwo },
+        { level: 3, percent: e.levelThree },
+        { level: 4, percent: e.levelFour },
+        { level: 5, percent: e.levelFive },
+        { level: 6, percent: e.levelSix },
+      ],
+      metadata: null,
+      metadataUrl: e.metadataUri,
+      users: e.users,
+      transfers: e.transfers,
+    };
+  });
 }

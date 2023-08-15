@@ -21,13 +21,15 @@ const lockOptions = [
   },
 ];
 
-const PaginationDropdown = () => {
-  const [showItems, setShowItems] = useState<string>("10");
+const PaginationDropdown: React.FC<{
+  pageSize: string;
+  setPageSize: (val: string) => void;
+}> = ({ pageSize, setPageSize }) => {
   return (
     <CustomDropdown
       options={lockOptions}
-      selectedValue={showItems}
-      onSelect={setShowItems}
+      selectedValue={pageSize}
+      onSelect={setPageSize}
     />
   );
 };
