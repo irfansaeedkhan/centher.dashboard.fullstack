@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
-import { FiTwitter, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
 import FinalButton from "@/components/button/final.button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
-import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import CustomDropdown from "./custom.dropdown";
 
@@ -317,13 +317,14 @@ export const CreateNFTCollectionForm = ({
             <div>
               <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
                 <div className={linkInputContainer}>
-                  <FiTwitter className={linkIcon} />
+                  <XLogo className={linkIcon} />
+
                   <input
                     type="text"
                     id="twitter"
                     autoComplete="off"
                     {...register("twitter")}
-                    placeholder="eg. https://Twitter.com/your profile"
+                    placeholder="eg. https://X.com/username"
                     className={
                       !formState.errors.twitter ? linkField : linkFieldError
                     }
@@ -450,7 +451,7 @@ const linkInputContainer = `
 inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0 relative
 `;
 const linkIcon = `
-z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] w-5 h-5
+z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] h-5 w-5
 `;
 const linkListContainer = `
 flex flex-col gap-5
