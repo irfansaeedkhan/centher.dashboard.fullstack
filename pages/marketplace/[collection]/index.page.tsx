@@ -69,6 +69,8 @@ const Collection: NextPageWithLayout = () => {
     limit,
     loadingCollectionInfo,
     loadingNFTs,
+    collectionAdditionalDetails,
+    updateCollectionAdditionalInfo,
   } = useCollectionStore((state) => ({
     info: state.info,
     nfts: state.nfts,
@@ -81,6 +83,8 @@ const Collection: NextPageWithLayout = () => {
     limit: state.limit,
     loadingCollectionInfo: state.loadingCollectionInfo,
     loadingNFTs: state.loadingNFTs,
+    collectionAdditionalDetails: state.collectionAdditionalDetails,
+    updateCollectionAdditionalInfo: state.updateCollectionAdditionalInfo,
   }));
 
   const { user } = useGetUser(info?.creator);
@@ -125,7 +129,14 @@ const Collection: NextPageWithLayout = () => {
     if (collection) {
       fetchCollectionInfo(collection as string);
     }
-  }, [collection, fetchCollectionInfo]);
+
+    if (collection && info?.creator) {
+      updateCollectionAdditionalInfo(
+        collection as string,
+        info.creator as string
+      );
+    }
+  }, [collection, fetchCollectionInfo, updateCollectionAdditionalInfo, info]);
 
   useOnClickOutside(menuRef, () => {
     setIsMenuVisible(false);
@@ -142,6 +153,18 @@ const Collection: NextPageWithLayout = () => {
   const filteredNFTs = nfts.filter((item) => {
     return !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId);
   });
+
+  function formatNumber(number?: number | string) {
+    if (typeof number === "number") {
+      const formatter = new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        maximumSignificantDigits: 4,
+      });
+      return formatter.format(number);
+    } else {
+      return "N/A";
+    }
+  }
 
   return (
     <div className={dashboardContentContainer}>
@@ -358,29 +381,61 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
                 <div className={detailsCard}>
-                  <div className="text-center">
+                  <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Items</h4>
                     <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
                   </div>
-                  {/* <div className="text-center">
-                  <h4 className={detailsCardTitle}>Owner</h4>
-                  <h5 className={detailsCardValue}>2.1k</h5>
-                </div>
-                <div className="text-center">
-                  <h4 className={detailsCardTitle}>Floor Price</h4>
-                  <h5 className={detailsCardValue}>$108.56</h5>
-                </div> */}
-                  {/* <div className="text-center">
-                  <h4 className={detailsCardTitle}>Market Price</h4>
-                  <h5 className={detailsCardValue}>${info?.tradingVolumn}</h5>
-                </div> */}
-                  <div className="text-center">
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Listed</h4>
+                    <h5 className={detailsCardValue}>
+                      {collectionAdditionalDetails?.listedPercent}%
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Owner</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {collectionAdditionalDetails?.ownerIncome &&
+                      collectionAdditionalDetails?.ownerIncome > 0
+                        ? formatNumber(
+                            formatBNB2USD(
+                              collectionAdditionalDetails?.ownerIncome,
+                              bnbPrice
+                            )
+                          )
+                        : 0}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Floor Price</h4>
+                    <h5 className={detailsCardValue}>
+                      $
+                      {collectionAdditionalDetails?.minPrice &&
+                      collectionAdditionalDetails?.minPrice > 0
+                        ? formatNumber(
+                            formatBNB2USD(
+                              collectionAdditionalDetails?.minPrice,
+                              bnbPrice
+                            )
+                          )
+                        : 0}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
+                    <h4 className={detailsCardTitle}>Market Price</h4>
+                    <h5 className={detailsCardValue}>
+                      ${formatNumber(Number(info?.tradingVolumn))}
+                    </h5>
+                  </div>
+                  <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Total Volume</h4>
                     <h5 className={detailsCardValue}>
                       $
-                      {info?.tradingVolumn
-                        ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
-                        : 0}
+                      {formatNumber(
+                        info?.tradingVolumn && info?.tradingVolumn > 0
+                          ? formatBNB2USD(info?.tradingVolumn, bnbPrice)
+                          : 0
+                      )}
                     </h5>
                   </div>
                 </div>
@@ -521,7 +576,7 @@ const shareBtn = ctl(`
 text-14px absolute right-6 bottom-4
 `);
 const detailsCard = ctl(`
-min-w-max flex flex-row flex-wrap w-full items-center justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit
+fmd:min-w-max flex flex-row w-full items-center justify-start fmd:justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit flex-wrap
 `);
 const detailsCardTitle = ctl(`
 text-12px font-semibold text-gray-shade-7 mb-2

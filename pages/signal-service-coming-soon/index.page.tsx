@@ -5,11 +5,8 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
 import FinalButton from "@/components/button/final.button";
-import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 
 const SignalServiceComingSoon: NextPageWithLayout = () => {
-  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
-
   return (
     <div className="flex min-h-[calc(100vh-60px-64px)] w-full items-center">
       <div className="relative flex h-full w-full items-center justify-center bg-[url('/images/comingsoon.png')] bg-top bg-no-repeat">
@@ -43,12 +40,12 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Only for Centher Citizens. You {"haven't"} gotten your Centher
             Passport yet?{" "}
-            <span
+            <Link
+              href={AppRoutes.citizenship}
               className="cursor-pointer text-brand-primary hover:text-brand-primary-dark"
-              onClick={() => setShowBuyCitizenshipModal(true)}
             >
               Click Here
-            </span>{" "}
+            </Link>{" "}
           </div>
           <Link href={AppRoutes.feed.index}>
             <FinalButton
@@ -60,12 +57,6 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
           </Link>
         </div>
       </div>
-      {showBuyCitizenshipModal && (
-        <BuyCitizenshipModal
-          isOpen={showBuyCitizenshipModal}
-          onClickClose={() => setShowBuyCitizenshipModal(false)}
-        />
-      )}
     </div>
   );
 };

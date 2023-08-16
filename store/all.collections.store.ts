@@ -52,7 +52,8 @@ export const useAllCollectionsStore = create<AllCollectionsStore>()(
             (col) =>
               !get().collections.some(
                 (stateCollection) =>
-                  stateCollection.address === col.value.address
+                  stateCollection.address === col.value.address &&
+                  col.value.creator.membership.status === "citizen"
               )
           );
 

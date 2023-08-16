@@ -232,7 +232,7 @@ const CameraModal = ({ onClose }: Props) => {
             title={"Stop Video"}
             onClick={() => startnStop?.stop()}
             variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="mb-2 flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
             borderRounded="14px"
           />
         ) : (
