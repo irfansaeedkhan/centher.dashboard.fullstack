@@ -41,7 +41,7 @@ export const useHotNFTs = () => {
             return (
               item.type.startsWith("image") &&
               !GlobalTokenBlackList.isBlocked(item.collection, +item.tokenId) &&
-              item.owner.membership.status === "citizen"
+              item.creator.membership.status === "citizen"
             );
           });
 
