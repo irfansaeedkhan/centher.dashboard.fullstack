@@ -7,10 +7,9 @@ import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
 import { copyText } from "@/utils/copy.text";
-import { LinkIcon, WorldIcon, XProfile } from "@/assets/svgs";
+import { LinkIcon, WorldIcon, XLogo } from "@/assets/svgs";
 
 import { PostType } from "./main";
-import Image from "next/image";
 
 interface SinglePostProps extends HTMLAttributes<HTMLDivElement> {
   post: CompletedPost | ArchivedPost;
@@ -96,7 +95,7 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
           >
-            <XProfile className="fill-white" />
+            <XLogo className="h-5 w-5 fill-white" />
             <span>X.com</span>
           </TwitterShareButton>
         </div>

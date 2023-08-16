@@ -12,7 +12,7 @@ import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
-import { GreyWorldIcon, GreyFBIcon, XCollection } from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import CustomDropdown from "./custom.dropdown";
 
@@ -317,14 +317,14 @@ export const CreateNFTCollectionForm = ({
             <div>
               <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
                 <div className={linkInputContainer}>
-                  <XCollection className={linkIcon} />
+                  <XLogo className={linkIcon} />
 
                   <input
                     type="text"
                     id="twitter"
                     autoComplete="off"
                     {...register("twitter")}
-                    placeholder="eg. https://X.com/your profile"
+                    placeholder="eg. https://X.com/username"
                     className={
                       !formState.errors.twitter ? linkField : linkFieldError
                     }

@@ -39,13 +39,13 @@ import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { XLogo } from "@/assets/svgs";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
-import { XProfile } from "@/assets/svgs";
 
 export type CoverImageWithFile = {
   path: string;
@@ -568,7 +568,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <XProfile className="fill-white hover:fill-brand-primary" />
+                <XLogo className="h-5 w-5 fill-white hover:fill-brand-primary" />
               </a>
             )}
             {user.social_media.youtube_url && (

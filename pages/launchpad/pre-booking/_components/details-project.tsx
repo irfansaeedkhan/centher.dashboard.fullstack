@@ -9,7 +9,7 @@ import {
   NewTelegramIcon,
   NewCentherIcon,
   Whitepaper,
-  XLaunchpad,
+  XLogo,
 } from "@/assets/svgs";
 import TeamMembers from "./team-members";
 
@@ -73,7 +73,7 @@ const DetailsProject = () => {
               rel="noreferrer noopener"
               className={button}
             >
-              <XLaunchpad className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <XLogo className="h-5 w-5 group-hover:[&>*]:stroke-white" />
               <span>X.com</span>
             </a>
             <a
