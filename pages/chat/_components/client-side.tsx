@@ -30,6 +30,7 @@ const ClientSide: React.FC<{
   const { account } = useWeb3React();
   const [image, setImage] = useState<string>(defaultImage);
   const belowMobile = useMediaQuery("(max-width: 560px)");
+  const [preventSelect, setPreventSelect] = useState(false);
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
@@ -148,10 +149,12 @@ const ClientSide: React.FC<{
 
   const handleSetData = () => {
     setEmojiBarMobile(false);
+    setPreventSelect(false);
   };
 
   const openPopup = () => {
     // Implement your logic to open the pop-up here
+    setPreventSelect(true);
     if (hoverRef.current && belowMobile) {
       hoverRef.current.style.display = "block";
       setEmojiBarMobile(true);
@@ -232,7 +235,8 @@ const ClientSide: React.FC<{
               <p
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`,
-                  emojiBarMobile && "bg-[#262323b8]"
+                  emojiBarMobile && "bg-[#262323b8]",
+                  `${preventSelect && "prevent-select"}`
                 )}
               >
                 {data.message.content}
@@ -278,7 +282,7 @@ const ClientSide: React.FC<{
         >
           {emoji.length > 0 && (
             <div
-              className="absolute bottom-[5px] left-[35px] z-30 flex translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3  p-1"
+              className="absolute bottom-[5px] left-[35px] z-30 flex translate-y-[100%] translate-x-[50%] items-center justify-center rounded-full  bg-black-shade-3 p-1"
               onMouseLeave={handleMouseLeaveEmojiList}
             >
               <div
@@ -339,7 +343,8 @@ const ClientSide: React.FC<{
             <p
               className={clsx(
                 `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`,
-                emojiBarMobile && "bg-[#262323b8]"
+                emojiBarMobile && "bg-[#262323b8]",
+                `${preventSelect && "prevent-select"}`
               )}
             >
               {data.message.content}
