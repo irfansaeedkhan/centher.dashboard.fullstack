@@ -1,5 +1,5 @@
 import React from "react";
-import { FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
+import { FiInstagram, FiYoutube } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
 import { SiBinance } from "react-icons/si";
 import useUser from "@/hooks/use.user";
@@ -9,6 +9,7 @@ import {
   NewTelegramIcon,
   NewCentherIcon,
   Whitepaper,
+  XLaunchpad,
 } from "@/assets/svgs";
 import TeamMembers from "./team-members";
 
@@ -72,8 +73,8 @@ const DetailsProject = () => {
               rel="noreferrer noopener"
               className={button}
             >
-              <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>Twitter</span>
+              <XLaunchpad className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              <span>X.com</span>
             </a>
             <a
               href="https://youtube.com/@officialdexagon"

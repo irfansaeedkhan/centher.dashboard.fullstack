@@ -21,7 +21,6 @@ import {
   FiCopy,
   FiInstagram,
   FiTwitch,
-  FiTwitter,
   FiYoutube,
 } from "react-icons/fi";
 import dayjs from "dayjs";
@@ -31,7 +30,6 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import useUser from "@/hooks/use.user";
 import { MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
-import Button from "@/components/button";
 import ProfileModal from "@/components/modal/profile.modal";
 import FinalButton from "@/components/button/final.button";
 import CitizenLabel from "@/components/citizen/citizen.label";
@@ -47,6 +45,7 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
+import { XProfile } from "@/assets/svgs";
 
 export type CoverImageWithFile = {
   path: string;
@@ -569,7 +568,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <FiTwitter className={socialLinks} />
+                <XProfile className="fill-white hover:fill-brand-primary" />
               </a>
             )}
             {user.social_media.youtube_url && (
