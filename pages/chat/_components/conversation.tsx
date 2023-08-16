@@ -44,7 +44,7 @@ const Conversation: React.FC<{
   }, [messageRefCallback]);
 
   return (
-    <div className={clsx(`flex flex-col gap-2 px-6 py-8`, showBlur)}>
+    <div className={clsx(`flex flex-col gap-2 px-6 pb-8 pt-16`, showBlur)}>
       {!!data.messages.length ? (
         <>
           {data.messages.length >= 25 && pageSize <= data.messages.length && (
