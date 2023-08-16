@@ -281,7 +281,7 @@ export const FixedPriceNFTBuyerDescription = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px] hover:scale-95"
+            className="w-full rounded-[14px] hover:scale-75"
           />
         )}
       </div>
