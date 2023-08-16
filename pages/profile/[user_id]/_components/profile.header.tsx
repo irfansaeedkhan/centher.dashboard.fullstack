@@ -76,6 +76,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const { user: loggedInUser } = useUser();
 
   const { imagePosition } = useDragCoverImage();
+  const [coverImageLoading, setCoverImageLoading] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     path: user?.cover_image,
     object_name: "",
@@ -174,7 +175,9 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const handleUploadCoverImage = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
+    setCoverImageLoading(true);
     if (!coverImage.blob) {
+      setCoverImageLoading(false);
       return;
     }
 
@@ -223,8 +226,10 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
       }));
 
       button.disabled = false;
+      setCoverImageLoading(false);
     } catch (error: any) {
       button.disabled = false;
+      setCoverImageLoading(false);
       process.env.NODE_ENV !== "production" && console.dir(error);
       let errorMsg = "Error uploading image";
       if (
@@ -330,9 +335,6 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     className={`group`}
                     variant="upload-cover"
                   >
-                    <CgSpinner
-                      className={`hidden h-4 w-4 animate-spin group-disabled:block`}
-                    />
                     <FinalButton
                       title="Save"
                       variant="primary"
@@ -343,8 +345,15 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     <FinalButton
                       title="Upload Cover"
                       variant="primary"
-                      className="hidden fmd:inline-block"
+                      className="hidden h-9 w-[124px] fmd:inline-block"
                       borderRounded="14px"
+                      loaderIcon={
+                        coverImageLoading && (
+                          <CgSpinner
+                            className={`mx-auto h-4 w-4 animate-spin text-center text-white`}
+                          />
+                        )
+                      }
                     />
                   </CoverUploadButton>
                 </div>
