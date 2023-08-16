@@ -260,6 +260,7 @@ const SingleChat: NextPageWithLayout = () => {
 
   const openModalReply = (message: any) => {
     setReplyingMessage(message);
+    setEditModal(false);
     setReplyModal(true);
   };
 
@@ -274,6 +275,7 @@ const SingleChat: NextPageWithLayout = () => {
   };
 
   const editMessage = (msg: any) => {
+    setReplyModal(false);
     setEditModal(true);
     setEditingMessage(msg.message);
     setNewMessage(msg.message.content);
