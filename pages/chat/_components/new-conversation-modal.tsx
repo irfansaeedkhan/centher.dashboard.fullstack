@@ -69,7 +69,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
           </span>
           <div className=""></div>
         </div>
-        <div className={`max-h-[600px] overflow-y-auto`}>
+        <div className={`scrollSetLight max-h-[600px] overflow-y-auto`}>
           <div className="mt-7 text-white">
             <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
               <div className="flex w-full items-center rounded-xl bg-black-shade-3 px-4 py-2">
