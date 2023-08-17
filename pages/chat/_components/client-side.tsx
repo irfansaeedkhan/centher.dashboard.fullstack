@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useMediaQuery } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { getMessageTime } from "@/live/utils/time.utils";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -13,6 +12,7 @@ import ProfileImgPlaceholder from "./profile-img-placeholder";
 import ClientHoveredList from "./client-hovered-list";
 import ClientHoveredListMobile from "./client-hovered-list-mobile";
 import { urlify } from "@/live/utils/tools";
+import useUser from "@/hooks/use.user";
 
 const defaultImage = "/images/chat-profile.png";
 
@@ -22,6 +22,7 @@ const ClientSide: React.FC<{
   setShowBlur: (value: string) => void;
   data: { message: any; users: UsersDetails[] | null };
 }> = ({ data, openModalReply, onEmojiReaction, setShowBlur }) => {
+  const { user } = useUser();
   const [time, setTime] = useState<string>("");
   const [emoji, setEmoji] = useState<{ code: string; sender: string }[]>([]);
   const [emojiBar, setEmojiBar] = useState<boolean>(true);
@@ -29,13 +30,20 @@ const ClientSide: React.FC<{
   const [emojiSenderListBar, setEmojiSenderListBar] = useState<boolean>(true);
   const [isReply, setIsReply] = useState<boolean>(false);
   const [replyDate, setReplyData] = useState<any>(null);
-  const { account } = useWeb3React();
   const [image, setImage] = useState<string>(defaultImage);
   const [showNonBlur, setNonShowBlur] = useState<string>();
   const belowMobile = useMediaQuery("(max-width: 560px)");
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
+
+  const updateImage = useCallback(() => {
+    const user = data.users?.find((e) => eqAddress(data.message.sender, e._id));
+
+    if (user) {
+      setImage(user.profile_image);
+    }
+  }, [data]);
 
   useEffect(() => {
     setEmoji([]);
@@ -49,7 +57,7 @@ const ClientSide: React.FC<{
       );
 
       let displayName = sender?.display_name;
-      if (eqAddress(sender?._id, account)) {
+      if (eqAddress(sender?._id, user?._id)) {
         displayName = "You";
       }
 
@@ -72,15 +80,7 @@ const ClientSide: React.FC<{
     }
 
     updateImage();
-  }, [data]);
-
-  const updateImage = () => {
-    const user = data.users?.find((e) => eqAddress(data.message.sender, e._id));
-
-    if (user) {
-      setImage(user.profile_image);
-    }
-  };
+  }, [updateImage, data, user?._id]);
 
   const handleMouseEnter = () => {
     if (hoverRef.current) {

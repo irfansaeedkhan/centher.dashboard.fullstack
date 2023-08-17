@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useMediaQuery } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { eqAddress } from "@/live/utils/address.utils";
 import { getMessageTime } from "@/live/utils/time.utils";
 import { emojiMapper } from "@/live/utils/emoji.mapper";
+import useUser from "@/hooks/use.user";
+import { urlify } from "@/live/utils/tools";
 import { Emojies } from "@/live/enums/emojis.enum";
 import { Delivered, Pending, Seen, Sent } from "@/assets/svgs";
 import { UsersDetails } from "../[chat_id].page";
 import CurrentUserHoveredList from "./current-user-hovered-list";
 import CurrentUserHoveredListMobile from "./current-user-hovered-list-mobile";
 import EmojiSenderList from "./emoji-sender-list";
-import { urlify } from "@/live/utils/tools";
 
 const CurrentUserSide: React.FC<{
   openModalReply: (msg: any) => void;
@@ -30,13 +30,13 @@ const CurrentUserSide: React.FC<{
   setShowBlur,
 }) => {
   const [time, setTime] = useState<string>("");
+  const { user } = useUser();
   const [emoji, setEmoji] = useState<{ code: string; sender: string }[]>([]);
   const [emojiBar, setEmojiBar] = useState<boolean>(true);
   const [emojiBarMobile, setEmojiBarMobile] = useState<boolean>(false);
   const [emojiSenderListBar, setEmojiSenderListBar] = useState<boolean>(true);
   const [isReply, setIsReply] = useState<boolean>(false);
   const [replyDate, setReplyData] = useState<any>(null);
-  const { account } = useWeb3React();
   const belowMobile = useMediaQuery("(max-width: 560px)");
   const [showNonBlur, setNonShowBlur] = useState<string>();
   const [showBackground, setShowBackground] = useState<boolean>();
@@ -56,7 +56,7 @@ const CurrentUserSide: React.FC<{
       );
 
       let displayName = sender?.display_name;
-      if (eqAddress(sender?._id, account)) {
+      if (eqAddress(sender?._id, user?._id)) {
         displayName = "You";
       }
 
@@ -76,7 +76,7 @@ const CurrentUserSide: React.FC<{
     if (data.message.reactions.length) {
       setEmoji(data.message.reactions);
     }
-  }, [data]);
+  }, [data, user?._id]);
 
   const handleMouseEnter = () => {
     if (hoverRef.current) {
