@@ -91,11 +91,11 @@ const SearchBar: React.FC<Props> = () => {
       className="relative hidden w-full max-w-[528px] md:block"
       onSubmit={submitData}
     >
-      <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-        <div
-          ref={ref}
-          className="flex items-center gap-2 rounded-xl bg-[#1E212B] px-3 py-2 "
-        >
+      <div
+        ref={ref}
+        className="focus-within:gradient-border-3 !rounded-lg p-[1px]"
+      >
+        <div className="flex items-center gap-2 rounded-xl bg-[#1E212B] px-3 py-2 ">
           <input
             type="text"
             placeholder="Search"

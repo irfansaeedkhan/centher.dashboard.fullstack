@@ -21,7 +21,6 @@ import {
   FiCopy,
   FiInstagram,
   FiTwitch,
-  FiTwitter,
   FiYoutube,
 } from "react-icons/fi";
 import dayjs from "dayjs";
@@ -31,7 +30,6 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import useUser from "@/hooks/use.user";
 import { MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
-import Button from "@/components/button";
 import ProfileModal from "@/components/modal/profile.modal";
 import FinalButton from "@/components/button/final.button";
 import CitizenLabel from "@/components/citizen/citizen.label";
@@ -41,6 +39,7 @@ import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
+import { XLogo } from "@/assets/svgs";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
@@ -569,7 +568,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <FiTwitter className={socialLinks} />
+                <XLogo className="h-5 w-5 fill-white hover:fill-brand-primary" />
               </a>
             )}
             {user.social_media.youtube_url && (
