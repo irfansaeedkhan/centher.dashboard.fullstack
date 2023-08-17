@@ -25,9 +25,23 @@ import {
 } from "@/staking/types/referrals.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import { CustomModal } from "@/components/modal/custom.modal";
+import SuccessModalContent from "./_components/success-modal-content";
+import FailedModalContent from "./_components/failed-modal-content";
+
+enum ModalType {
+  successFuncModal = "successFuncModal",
+  failedFuncModal = "failedFuncModal",
+}
 
 const StakingReferrals: NextPageWithLayout = () => {
   const { library } = useWeb3React();
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -126,12 +140,29 @@ const StakingReferrals: NextPageWithLayout = () => {
       if (isAddress(user) && sdk && poolId) {
         await sdk.claimRefReward(library, +poolId, user);
         //TODO=> show success modal
+        modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {
       //TODO=> show erro modal
       console.log(error);
+      modal.createModal(ModalType.failedFuncModal);
     }
   };
+
+  const modalTemplateCollection: TemplateCollection = {
+    successFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <SuccessModalContent />,
+    },
+    failedFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <FailedModalContent />,
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   return (
     <>
@@ -227,6 +258,16 @@ const StakingReferrals: NextPageWithLayout = () => {
         pool={stakingPool}
         coins={coinsDetails}
       />
+      {ModalModel.visibility && (
+        <CustomModal
+          title={ModalModel.title as string}
+          onClose={() => {
+            modal.dismissModal();
+          }}
+        >
+          {ModalModel.content}
+        </CustomModal>
+      )}
     </>
   );
 };

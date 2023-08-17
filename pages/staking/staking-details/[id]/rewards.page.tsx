@@ -25,10 +25,14 @@ import {
 } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
+import SuccessModalContent from "./_components/success-modal-content";
+import FailedModalContent from "./_components/failed-modal-content";
 
 enum ModalType {
   stakeRewardsModal = "stakeRewardsModal",
   cancelStakingModal = "cancelStakingModal",
+  successFuncModal = "successFuncModal",
+  failedFuncModal = "failedFuncModal",
 }
 
 const ClaimRewards: NextPageWithLayout = () => {
@@ -82,10 +86,12 @@ const ClaimRewards: NextPageWithLayout = () => {
       if (sdk && poolId) {
         await sdk.unstake(library, +poolId, cancelAmount + "");
         //TODO=> success modal
+        modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {
       console.log(error);
       //TODO=> show error modal
+      modal.createModal(ModalType.failedFuncModal);
     }
   };
 
@@ -110,6 +116,16 @@ const ClaimRewards: NextPageWithLayout = () => {
           errors={cancelErrors}
         />
       ),
+    },
+    successFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <SuccessModalContent />,
+    },
+    failedFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <FailedModalContent />,
     },
   };
 

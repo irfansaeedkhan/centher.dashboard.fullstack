@@ -24,6 +24,11 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
+import { CustomModal } from "@/components/modal/custom.modal";
+import { ModalWrapper } from "@/components/modal";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import SuccessModalContent from "./success-modal-content";
+import FailedModalContent from "./failed-modal-content";
 
 const oneYearInSec = 365 * 24 * 60 * 60;
 
@@ -31,8 +36,18 @@ interface Props {
   children?: React.ReactNode;
 }
 
+enum ModalType {
+  successFuncModal = "successFuncModal",
+  failedFuncModal = "failedFuncModal",
+}
+
 const StakingDetailsWrapper = ({ children }: Props) => {
   const { library } = useWeb3React();
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const { sdk } = useStaking();
   const [poolId, setPoolId] = useState("0");
   const [activeTab, setActiveTab] = useState("index");
@@ -163,14 +178,31 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
         await sdk.stake(library, +poolId, referrer, stakingValue + "");
         //TODO=> show success modal
+        modal.createModal(ModalType.successFuncModal);
       } else {
         throw new Error("Invalid params");
       }
     } catch (error) {
       console.log(error);
       //TODO=> show error modal
+      modal.createModal(ModalType.failedFuncModal);
     }
   };
+
+  const modalTemplateCollection: TemplateCollection = {
+    successFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <SuccessModalContent />,
+    },
+    failedFuncModal: {
+      title: "Creating Staking Pack",
+      visibility: true,
+      content: () => <FailedModalContent />,
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   return stakingStat ? (
     <PageButtonsWrapper>
@@ -315,6 +347,16 @@ const StakingDetailsWrapper = ({ children }: Props) => {
       </div>
       {children}
       {isLoading && <PreLoader />}
+      {ModalModel.visibility && (
+        <CustomModal
+          title={ModalModel.title as string}
+          onClose={() => {
+            modal.dismissModal();
+          }}
+        >
+          {ModalModel.content}
+        </CustomModal>
+      )}
     </PageButtonsWrapper>
   ) : null;
 };
