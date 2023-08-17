@@ -156,6 +156,7 @@ export { default as PopupSettingIcon } from "./popup-setting-icon.svg";
 export { default as LoaderSpinner } from "./loader.spinner.svg";
 export { default as TeamMemberIcon } from "./team-member-icon.svg";
 export { default as IconFailure } from "./icon-failure.svg";
+export { default as XLogo } from "./x-logo.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

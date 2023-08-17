@@ -2,13 +2,12 @@ import React, { HTMLAttributes, useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { BsWhatsapp } from "react-icons/bs";
-import { FiTwitter } from "react-icons/fi";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";
 import { copyText } from "@/utils/copy.text";
-import { LinkIcon, WorldIcon } from "@/assets/svgs";
+import { LinkIcon, WorldIcon, XLogo } from "@/assets/svgs";
 
 import { PostType } from "./main";
 
@@ -96,8 +95,8 @@ export const ShareMenu: React.FC<SinglePostProps> = ({
             resetButtonStyle={false}
             className={clsx(shareBtnClasses)}
           >
-            <FiTwitter className={`h-5 w-5`} />
-            <span>Twitter</span>
+            <XLogo className="h-5 w-5 fill-white" />
+            <span>X.com</span>
           </TwitterShareButton>
         </div>
       )}

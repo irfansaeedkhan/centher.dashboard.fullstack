@@ -49,7 +49,8 @@ export const useAllNFTsStore = create<AllNFTsStore>()(
           // Remove nfts that are already in the store
           const filteredNFTs = nftCardDataResults.filter(
             (nft) =>
-              !get().nfts.some((stateNFT) => stateNFT.id === nft.value.id)
+              !get().nfts.some((stateNFT) => stateNFT.id === nft.value.id) &&
+              nft.value.creator.membership.status === "citizen"
           );
 
           set((state) => ({
