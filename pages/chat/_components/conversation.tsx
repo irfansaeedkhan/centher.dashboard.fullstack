@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { Message } from "@/models/chat";
 import { eqAddress } from "@/live/utils/address.utils";
+import useUser from "@/hooks/use.user";
 import { ChatMessageSkeleton } from "@/components/loading.skeletons/chat.skeletons";
 import ClientSide from "./client-side";
 import CurrentUserSide from "./current-user-side";
@@ -30,7 +30,7 @@ const Conversation: React.FC<{
   messagesEndRef,
   pageSize,
 }) => {
-  const { account } = useWeb3React();
+  const { user } = useUser();
   const [showBlur, setShowBlur] = useState<string>();
 
   const messageRefCallback = useCallback(() => {
@@ -57,7 +57,7 @@ const Conversation: React.FC<{
           )}
 
           {data.messages.map((e, i) => {
-            if (eqAddress(e.sender, account)) {
+            if (eqAddress(e.sender, user?._id)) {
               return (
                 <CurrentUserSide
                   key={i}
