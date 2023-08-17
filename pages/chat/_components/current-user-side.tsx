@@ -36,6 +36,7 @@ const CurrentUserSide: React.FC<{
   const { account } = useWeb3React();
   const belowMobile = useMediaQuery("(max-width: 560px)");
   const [preventSelect, setPreventSelect] = useState(false);
+  const [t, sett] = useState("");
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
@@ -83,12 +84,14 @@ const CurrentUserSide: React.FC<{
 
   const handleMouseLeave = () => {
     console.log("leave mouse");
+    sett(t + "leave mouse");
     if (hoverRef.current) {
       hoverRef.current.style.display = "none";
       setEmojiBar(false);
       setEmojiBarMobile(false);
       console.log("check");
     }
+    sett(t + "check");
   };
 
   const handleMouseClickEmojiList = () => {
@@ -99,7 +102,9 @@ const CurrentUserSide: React.FC<{
   };
 
   const handleMouseLeaveEmojiList = () => {
+    sett("handle leve mobile");
     if (clickEmojiRef.current) {
+      sett("handle leve mobile current");
       clickEmojiRef.current.style.display = "none";
       setEmojiSenderListBar(false);
     }
@@ -178,6 +183,7 @@ const CurrentUserSide: React.FC<{
   };
   return (
     <>
+      <p className="text-white">{t}</p>
       {isReply ? (
         <div
           className={clsx(
@@ -401,7 +407,7 @@ const CurrentUserSide: React.FC<{
                 {data.message.content}
               </p>
               <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
-                <span className="min-w-max">{time}</span>
+                <span className="min-w-max">{time}</span>{" "}
                 <span>
                   {data.message.isSent ? (
                     data.message.isSeen ? (
