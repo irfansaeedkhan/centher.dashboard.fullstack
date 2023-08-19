@@ -6,8 +6,17 @@ export type FetchParam = {
   chain: EvmChain;
 };
 
+export type GetTokenMetadaInput = {
+  chain: EvmChain;
+  addresses: string[];
+};
+
 export type TokenPriceResult = Awaited<
   ReturnType<typeof Moralis.EvmApi.token.getTokenPrice>
+>;
+
+export type TokenMetadataResult = Awaited<
+  ReturnType<typeof Moralis.EvmApi.token.getTokenMetadata>
 >;
 
 export type WalletNftsResult = Awaited<
@@ -15,6 +24,11 @@ export type WalletNftsResult = Awaited<
 >;
 
 export type FetchFuncWrapper = {
-  token: { getTokenPrice: (param: FetchParam) => Promise<TokenPriceResult> };
+  token: {
+    getTokenPrice: (param: FetchParam) => Promise<TokenPriceResult>;
+    getTokenMetadata: (
+      param: GetTokenMetadaInput
+    ) => Promise<TokenMetadataResult>;
+  };
   nft: { getWalletNFTs: (param: FetchParam) => Promise<WalletNftsResult> };
 };

@@ -27,6 +27,10 @@ export class AddressFactory {
     return BlockchainConfig.abis.ERC721;
   }
 
+  static getERC20TokenAbi(): any {
+    return BlockchainConfig.abis.BUSD;
+  }
+
   static getBlockchainNetwork(): Networks {
     return BlockchainConfig.network;
   }

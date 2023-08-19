@@ -7,6 +7,10 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
     available_for: "all",
   },
   {
+    label: "Citizen membership",
+    link: AppRoutes.settings.citizenship,
+  },
+  {
     label: "About Me",
     link: AppRoutes.settings.about,
     available_for: "all",

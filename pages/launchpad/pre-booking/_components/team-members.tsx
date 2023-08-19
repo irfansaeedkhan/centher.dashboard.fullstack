@@ -1,35 +1,36 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { OptionalType } from "@/staking/types";
 
-const TeamMembers = () => {
-  const teamMemberList = [
-    {
-      name: "Antonio Marseglia",
-      title: "Chief Metaverse Officer",
-      image: "/images/antonio-marseglia.png",
-      url: "https://app.centher.io/profile/0x8a437ec0843d57abbff57bf5a77f0cd88f1b0e7a",
-    },
-    {
-      name: "Antonio De Rosa",
-      title: "Chief Marketing Officer",
-      image: "/images/antonio-de-rosa.png",
-      url: "https://app.centher.io/profile/0x12fdc603d1a702b878d3757a348cd8e30abf754c",
-    },
-    {
-      name: "Antonio Monaco",
-      title: "Chief Technology Officer",
-      image: "/images/antonio-monaco.png",
-      url: "https://app.centher.io/profile/0x5e377fcf96c8280891aa84e6b3b4698c2cc5229a",
-    },
-    {
-      name: "Jayant Khanuja",
-      title: "Environment and Lands Designer",
-      image: "/images/jayant-khanuja.png",
-      url: "https://app.centher.io/profile/0x7e8b98369ce4afa606b32652bbf9ca37ab20e294",
-    },
-  ];
+const teamMemberList = [
+  {
+    name: "Antonio Marseglia",
+    title: "Chief Metaverse Officer",
+    image: "/images/antonio-marseglia.png",
+    url: "https://app.centher.io/profile/0x8a437ec0843d57abbff57bf5a77f0cd88f1b0e7a",
+  },
+  {
+    name: "Antonio De Rosa",
+    title: "Chief Marketing Officer",
+    image: "/images/antonio-de-rosa.png",
+    url: "https://app.centher.io/profile/0x12fdc603d1a702b878d3757a348cd8e30abf754c",
+  },
+  {
+    name: "Antonio Monaco",
+    title: "Chief Technology Officer",
+    image: "/images/antonio-monaco.png",
+    url: "https://app.centher.io/profile/0x5e377fcf96c8280891aa84e6b3b4698c2cc5229a",
+  },
+  {
+    name: "Jayant Khanuja",
+    title: "Environment and Lands Designer",
+    image: "/images/jayant-khanuja.png",
+    url: "https://app.centher.io/profile/0x7e8b98369ce4afa606b32652bbf9ca37ab20e294",
+  },
+];
 
+const TeamMembers: React.FC<{ data: OptionalType<string> }> = ({ data }) => {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {teamMemberList?.map((member, key) => (
