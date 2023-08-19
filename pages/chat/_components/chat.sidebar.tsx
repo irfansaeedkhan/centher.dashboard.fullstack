@@ -279,12 +279,14 @@ const ChatSidebar = () => {
         </div>
       ) : (
         <div className="px-6">
-          <div className="mb-3 flex h-10 w-full items-center gap-2 rounded-xl bg-elevation-1 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary">
-            <SearchIcon />
+          <div className="focus-within:gradient-border-3 mb-3 flex h-10 w-full items-center gap-2 !rounded-xl bg-elevation-1 p-[1px]">
+            <span className="ml-3">
+              <SearchIcon />
+            </span>
             <input
               type="search"
               placeholder="Search"
-              className="w-full rounded-xl border-0 bg-transparent p-0 text-sm text-white focus:outline-none focus:ring-0"
+              className="mr-3 w-full rounded-xl border-0 bg-transparent p-0 text-sm text-white focus:outline-none focus:ring-0"
               onChange={(e) => filterConversations(e.target.value)}
             />
           </div>
