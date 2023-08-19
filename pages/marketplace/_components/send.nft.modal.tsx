@@ -122,7 +122,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
           >
             <div className={fieldWrapper}>
               <label className={fieldTitle}>Transfer NFT to*</label>
-              <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
+              <div className="focus-within:gradient-border-3 relative h-[48px] !rounded-lg !bg-black-shade-3 p-[1px]">
                 <input
                   type="text"
                   id="ReceiverAddress"
@@ -130,10 +130,10 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
                   {...nftForm.register("ReceiverAddress")}
                   placeholder="Example: 0x1ed.. or destination"
                   className={clsx(
-                    "h-full w-full rounded-lg !border-0 bg-transparent text-white focus:ring-1",
+                    "h-full w-full rounded-lg !border-0 bg-transparent text-white focus:ring-0",
                     nftForm.formState.errors.ReceiverAddress
                       ? "focus:ring-danger"
-                      : "focus:ring-brand-primary"
+                      : "focus:ring-0"
                   )}
                 />
               </div>
