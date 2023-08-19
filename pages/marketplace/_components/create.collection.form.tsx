@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
-import { FiTwitter, FiArrowRight } from "react-icons/fi";
+import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
 import FinalButton from "@/components/button/final.button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
-import { GreyWorldIcon, GreyFBIcon } from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import CustomDropdown from "./custom.dropdown";
 
@@ -163,15 +163,17 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>
             Name Your Collection <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="name"
-            maxLength={150}
-            autoComplete="off"
-            {...register("name")}
-            placeholder="eg. ‘big skull collection’ "
-            className={!formState.errors.name ? inputField : inputFieldError}
-          />
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <input
+              type="text"
+              id="name"
+              maxLength={150}
+              autoComplete="off"
+              {...register("name")}
+              placeholder="eg. ‘big skull collection’ "
+              className={!formState.errors.name ? inputField : inputFieldError}
+            />
+          </div>
           {formState.errors.name && (
             <p className={`text-red-500 ${errMessage}`}>
               {formState.errors.name.message}
@@ -182,15 +184,19 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>
             Symbol <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="symbol"
-            maxLength={150}
-            autoComplete="off"
-            {...register("symbol")}
-            placeholder="eg. ‘NTD’ "
-            className={!formState.errors.symbol ? inputField : inputFieldError}
-          />
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <input
+              type="text"
+              id="symbol"
+              maxLength={150}
+              autoComplete="off"
+              {...register("symbol")}
+              placeholder="eg. ‘NTD’ "
+              className={
+                !formState.errors.symbol ? inputField : inputFieldError
+              }
+            />
+          </div>
           {formState.errors.symbol && (
             <p className={`text-red-500 ${errMessage}`}>
               {formState.errors.symbol.message}
@@ -205,18 +211,20 @@ export const CreateNFTCollectionForm = ({
             The description will be included in the collection page underneath
             its image.{" "}
           </span>
-          <textarea
-            id="description"
-            autoComplete="off"
-            {...register("description")}
-            placeholder="Write some details about your NFTs collection"
-            className={clsx(
-              !formState.errors.description ? inputField : inputFieldError,
-              "customScrollbar2"
-            )}
-            cols={20}
-            rows={6}
-          ></textarea>
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <textarea
+              id="description"
+              autoComplete="off"
+              {...register("description")}
+              placeholder="Write some details about your NFTs collection"
+              className={clsx(
+                !formState.errors.description ? inputField : inputFieldError,
+                "customScrollbar2"
+              )}
+              cols={20}
+              rows={6}
+            ></textarea>
+          </div>
           {formState.errors.description && (
             <p className={`text-red-500 ${errMessage}`}>
               {formState.errors.description.message}
@@ -241,14 +249,16 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>
             URL <span className="text-gray-shade-17"> (optional)</span>
           </label>
-          <input
-            type="text"
-            id="url"
-            autoComplete="off"
-            {...register("url")}
-            placeholder="eg. https://centher.io/collection/ skull- Price"
-            className={!formState.errors.url ? inputField : inputFieldError}
-          />
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <input
+              type="text"
+              id="url"
+              autoComplete="off"
+              {...register("url")}
+              placeholder="eg. https://centher.io/collection/ skull- Price"
+              className={!formState.errors.url ? inputField : inputFieldError}
+            />
+          </div>
           {formState.errors.url && (
             <p className={`text-red-500 ${errMessage}`}>
               {formState.errors.url.message}
@@ -261,18 +271,20 @@ export const CreateNFTCollectionForm = ({
           </label>
           <div className={linkListContainer}>
             <div>
-              <div className={linkInputContainer}>
-                <GreyWorldIcon className={linkIcon} />
-                <input
-                  type="text"
-                  id="yoursite"
-                  autoComplete="off"
-                  {...register("yoursite")}
-                  placeholder="eg. https://yoursite.io"
-                  className={
-                    !formState.errors.yoursite ? linkField : linkFieldError
-                  }
-                />
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <div className={linkInputContainer}>
+                  <GreyWorldIcon className={linkIcon} />
+                  <input
+                    type="text"
+                    id="yoursite"
+                    autoComplete="off"
+                    {...register("yoursite")}
+                    placeholder="eg. https://yoursite.io"
+                    className={
+                      !formState.errors.yoursite ? linkField : linkFieldError
+                    }
+                  />
+                </div>
               </div>
               {formState.errors.yoursite && (
                 <p className={`text-red-500 ${errMessage}`}>
@@ -281,18 +293,20 @@ export const CreateNFTCollectionForm = ({
               )}
             </div>
             <div>
-              <div className={linkInputContainer}>
-                <GreyFBIcon className={linkIcon} />
-                <input
-                  type="text"
-                  id="facebook"
-                  autoComplete="off"
-                  {...register("facebook")}
-                  placeholder="eg. https://facebook.com/your profile"
-                  className={
-                    !formState.errors.facebook ? linkField : linkFieldError
-                  }
-                />
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <div className={linkInputContainer}>
+                  <GreyFBIcon className={linkIcon} />
+                  <input
+                    type="text"
+                    id="facebook"
+                    autoComplete="off"
+                    {...register("facebook")}
+                    placeholder="eg. https://facebook.com/your profile"
+                    className={
+                      !formState.errors.facebook ? linkField : linkFieldError
+                    }
+                  />
+                </div>
               </div>
               {formState.errors.facebook && (
                 <p className={`text-red-500 ${errMessage}`}>
@@ -301,18 +315,21 @@ export const CreateNFTCollectionForm = ({
               )}
             </div>
             <div>
-              <div className={linkInputContainer}>
-                <FiTwitter className={linkIcon} />
-                <input
-                  type="text"
-                  id="twitter"
-                  autoComplete="off"
-                  {...register("twitter")}
-                  placeholder="eg. https://Twitter.com/your profile"
-                  className={
-                    !formState.errors.twitter ? linkField : linkFieldError
-                  }
-                />
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <div className={linkInputContainer}>
+                  <XLogo className={linkIcon} />
+
+                  <input
+                    type="text"
+                    id="twitter"
+                    autoComplete="off"
+                    {...register("twitter")}
+                    placeholder="eg. https://X.com/username"
+                    className={
+                      !formState.errors.twitter ? linkField : linkFieldError
+                    }
+                  />
+                </div>
               </div>
               {formState.errors.twitter && (
                 <p className={`text-red-500 ${errMessage}`}>
@@ -329,7 +346,7 @@ export const CreateNFTCollectionForm = ({
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="mt-2 w-full py-4 hover:scale-95"
+            className="mt-2 w-full py-4 hover:scale-75"
           />
         ) : (
           <FinalButton
@@ -417,24 +434,24 @@ const fieldTitle = `
   text-14px  font-normal text-white
 `;
 const inputField = `
-  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary
+  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0
 `;
 const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
 `;
 const linkField = `
-absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary
+absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0
 `;
 const linkFieldError = `
   ${linkField}
    focus:!ring-red-500
 `;
 const linkInputContainer = `
-inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary relative
+inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0 relative
 `;
 const linkIcon = `
-z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] w-5 h-5
+z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] h-5 w-5
 `;
 const linkListContainer = `
 flex flex-col gap-5

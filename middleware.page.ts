@@ -141,6 +141,7 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _citizenOnlyPages: string[] = [
   AppRoutes.marketplace.create_nft,
   AppRoutes.marketplace.create_collection,
+  AppRoutes.settings.citizenship,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
