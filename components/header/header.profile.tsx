@@ -199,7 +199,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               </span>
             </p>
             <span className="text-xs font-medium text-gray-shade-14">
-              Groups, Conversations
+              Private Conversations
             </span>
           </div>
         </Link>

@@ -269,7 +269,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
   useEffect(() => {
     setIsSelected(false);
-    if (router.query.chat_id && router.query.chat_id == data.id) {
+    if (router.query.chat_id && router.query.chat_id === data.id) {
       setIsSelected(true);
     }
   }, [router, data]);
@@ -326,7 +326,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   alt="profile image"
                   width={48}
                   height={48}
-                  className="rounded-full object-cover"
+                  className="!h-12 !w-12 flex-shrink-0 rounded-full object-cover"
                 />
                 <div className="flex flex-grow flex-col gap-1">
                   <div className="flex items-center gap-2">

@@ -262,6 +262,11 @@ const SingleChat: NextPageWithLayout = () => {
     setReplyingMessage(message);
     setEditModal(false);
     setReplyModal(true);
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 500);
   };
 
   const closeReply = () => {
@@ -277,6 +282,11 @@ const SingleChat: NextPageWithLayout = () => {
   const editMessage = (msg: any) => {
     setReplyModal(false);
     setEditModal(true);
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 500);
     setEditingMessage(msg.message);
     setNewMessage(msg.message.content);
   };
