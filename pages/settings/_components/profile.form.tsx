@@ -64,22 +64,24 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
 
         <div className="flex flex-col gap-2">
           <label className={`text-sm text-white`}>Display Name Field</label>
-          <select
-            onChange={(e) => {
-              setUpdatedUser({
-                ...updatedUser,
-                display_name_field: e.target
-                  .value as LoggedInUser["display_name_field"],
-              });
-              setIsModified(true);
-            }}
-            value={updatedUser.display_name_field}
-            className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
-          >
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
-          </select>
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <select
+              onChange={(e) => {
+                setUpdatedUser({
+                  ...updatedUser,
+                  display_name_field: e.target
+                    .value as LoggedInUser["display_name_field"],
+                });
+                setIsModified(true);
+              }}
+              value={updatedUser.display_name_field}
+              className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-0`}
+            >
+              <option value="pseudonym">Pseudonym</option>
+              <option value="real_name">Real Name</option>
+              <option value="account_address">Account Address</option>
+            </select>
+          </div>
         </div>
         {updatedUser.display_name_field === "pseudonym" && (
           <InputField
