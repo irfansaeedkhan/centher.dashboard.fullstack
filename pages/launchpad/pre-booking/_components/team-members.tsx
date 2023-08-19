@@ -52,12 +52,12 @@ const TeamMembers: React.FC<{ data: OptionalType<string> }> = ({ data }) => {
               <span className="block max-w-full overflow-hidden truncate text-xs">
                 {member.name}
               </span>
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+              <span className="verifiedIcon ml-1 inline-flex h-5 w-5 min-w-[1.25rem]">
                 <Image
-                  src={"/images/rainbow-last-frame.png"}
+                  src={"/images/verified-icon.svg"}
                   alt={"Verified"}
-                  width={20}
-                  height={20}
+                  width={16}
+                  height={16}
                 />
               </span>
             </div>

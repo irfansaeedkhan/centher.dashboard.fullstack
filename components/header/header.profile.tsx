@@ -70,7 +70,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   return (
     <div
       ref={ref}
-      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-[364px] overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px]`}
+      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-[364px] overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-width:370px)]:w-[300px] [@media(max-height:420px)]:h-[280px]`}
     >
       <div
         className={clsx(
@@ -93,18 +93,20 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             className="flex max-w-[215px] items-center  text-sm font-semibold text-white fsm:text-base"
             title={loggedInUser?.display_name}
           >
-            <span
-              className={clsx(` block max-w-full overflow-hidden truncate`)}
-            >
+            <span className={clsx(`block max-w-full overflow-hidden truncate`)}>
               {loggedInUser && sliceDisplayName(loggedInUser?.display_name)}
             </span>
-            {!!verificationTick && (
-              <span className="verifiedIcon ml-1 h-5 w-5 min-w-[1.25rem]">
+            {verificationTick && (
+              <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
                 <Image
                   src={verificationTick}
-                  alt={"Verified"}
-                  width={20}
-                  height={20}
+                  alt={
+                    loggedInUser?.membership.status === "citizen"
+                      ? "Citizen"
+                      : "Verified"
+                  }
+                  width={16}
+                  height={16}
                 />
               </span>
             )}

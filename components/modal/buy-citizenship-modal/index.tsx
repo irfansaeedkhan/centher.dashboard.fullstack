@@ -1,25 +1,24 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Image from "next/image";
-import clsx from "clsx";
-
-import { useEventListener } from "usehooks-ts";
-import { useOnClickOutside } from "usehooks-ts";
-import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "../../button/final.button";
-import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import { useWeb3React } from "@web3-react/core";
+import { useEventListener, useOnClickOutside } from "usehooks-ts";
+import { toast } from "react-hot-toast";
+import { CgSpinner } from "react-icons/cg";
+import { FiArrowRight } from "react-icons/fi";
+import clsx from "clsx";
+import { ModalPortal } from "@/components/modal/modal.portal";
+import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
+import useUser from "@/hooks/use.user";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { CitizenShipFailureModal } from "./failure-modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { CustomNewModal } from "../custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
-import useUser from "@/hooks/use.user";
-import { toast } from "react-hot-toast";
-import { FiArrowRight } from "react-icons/fi";
+import FinalButton from "../../button/final.button";
+import { CustomNewModal } from "../custom.new.modal";
 import { CitizenShipSuccessModal } from "./success-modal";
+import { CitizenShipFailureModal } from "./failure-modal";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -45,10 +44,8 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   const {
     isCitizen,
     prices,
-    updateStatusLoading,
     updatePricesLoading,
     buyCitizenShipLoading,
-    subscriptionEndAt,
     updateCitizenShipStatus,
     updatePrices,
     buyCitizenShip,
@@ -84,7 +81,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   useEventListener(
     "keydown",
     (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !showMsg && !buyCitizenShipLoading) {
         onClickClose();
       }
     },
@@ -92,7 +89,9 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   );
 
   useOnClickOutside(PassportModalRef, () => {
-    onClickClose();
+    if (!showMsg && !buyCitizenShipLoading) {
+      onClickClose();
+    }
   });
 
   const priceMapper = (type: CitizenShipType) => {
@@ -108,7 +107,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   const buyMemberShip = async () => {
     try {
       await buyCitizenShip(library, tab, account as string);
-      setshowMsg(<CitizenShipSuccessModal onClickClose={onClickClose} />);
+      setshowMsg(<CitizenShipSuccessModal />);
     } catch (error: any) {
       setshowMsg(
         <CitizenShipFailureModal
@@ -146,7 +145,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                   </h5>
                 </div>
                 <button className="block sm:hidden" onClick={onClickClose}>
-                  <IoClose className="ioCLose h-5 w-5 fill-white" />
+                  <IoClose className="h-5 w-5 fill-white" />
                 </button>
               </div>
               <div className="mx-auto flex w-[90%] items-center justify-center gap-2">
@@ -172,7 +171,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                     >
                       Annualy
                     </span>
-                    <span className="rounded-full bg-background-shade-3 py-[2px] px-2">
+                    <span className="rounded-full bg-background-shade-3 px-2 py-[2px]">
                       <span className="primary-gradient-btn-text custom relative text-xs font-medium">
                         Save 12%
                       </span>
@@ -269,10 +268,10 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       title={priceMapper(tab)}
                       variant="primary"
                       className="text-14px mt-6 w-full py-3 hover:!scale-90 hover:text-black"
-                      isLoading={
-                        updatePricesLoading || buyCitizenShipLoading
-                          ? true
-                          : false
+                      loaderIcon={
+                        updatePricesLoading || buyCitizenShipLoading ? (
+                          <CgSpinner className="h-5 animate-spin text-white" />
+                        ) : undefined
                       }
                     />
                   )}
@@ -291,7 +290,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         </p>
                       </div>
                       <div className="flex w-full justify-center px-5 md:px-10">
-                        <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+                        <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
                           <div className="flex items-center gap-3 fsm:gap-6">
                             <MetamaskIcon2 />
                             <h3 className="text-sm font-semibold text-white fmd:text-base">

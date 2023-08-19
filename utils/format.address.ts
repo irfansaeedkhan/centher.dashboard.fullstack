@@ -11,11 +11,11 @@ export const formatAddress = (address: string | undefined) => {
 };
 
 export const formatEther2Number = (num: number | undefined) => {
-  return Number(num ? ethers.utils.formatEther(num) : 0);
+  return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
 };
 
 export const formatString2Ether = (num: string | undefined) => {
-  return Number(num ? ethers.utils.formatEther(num) : 0);
+  return Number(num ? ethers.utils.formatEther(`${num}`) : 0);
 };
 
 export const formatBNB2USD = (bnb: number | undefined, bnbPrice: number) => {

@@ -17,7 +17,7 @@ const SettingsSidebar = () => {
           <Link
             href={item.link}
             className={clsx(
-              "flex overflow-hidden rounded-[14px] bg-[#1E1E21] p-[1px]    ",
+              "flex overflow-hidden rounded-[14px] bg-[#1E1E21] p-[1px]",
               item.link === router.pathname && "bg-gradient-pattern"
             )}
             key={item.label}

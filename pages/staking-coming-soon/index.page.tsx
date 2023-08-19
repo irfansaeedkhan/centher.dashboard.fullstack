@@ -35,7 +35,7 @@ const StakingComingSoon: NextPageWithLayout = () => {
             Get a Business Account and become a{" "}
             <Link
               className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship_coming_soon}
+              href={AppRoutes.citizenship}
             >
               Centher Citizen
             </Link>{" "}

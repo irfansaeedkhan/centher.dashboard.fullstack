@@ -16,17 +16,19 @@ import { CreatePostCard } from "@/components/feed.components/create.post/create.
 import { PostModal } from "@/components/feed.components/create.post/post.modal";
 import SinglePostCardSkeleton from "@/components/loading.skeletons/single.post";
 import SinglePostTextCardSkeleton from "@/components/loading.skeletons/single.post.text";
-import { customLog } from "@/utils/custom.log";
-import { AppRoutes } from "@/constants/app.routes";
-import { NoPost } from "@/assets/svgs";
 import AdsWrapper from "@/components/wrappers/ads-wrapper";
 import { SuggestedCardMobile } from "@/components/feed.components/suggested-card-mobile";
 import { PromotionCard6Mobile } from "@/components/feed.components/promotion.cards/card-6-mobile";
 import { PromotionCard5Mobile } from "@/components/feed.components/promotion.cards/card-5-mobile";
 import { PromotionCard3Mobile } from "@/components/feed.components/promotion.cards/card-3-mobile";
 import { PromotionCard2Mobile } from "@/components/feed.components/promotion.cards/card-2-mobile";
+import useUser from "@/hooks/use.user";
+import { customLog } from "@/utils/custom.log";
+import { AppRoutes } from "@/constants/app.routes";
+import { NoPost } from "@/assets/svgs";
 
 const Feed: NextPageWithLayout = () => {
+  const { user } = useUser();
   const router = useRouter();
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const openPostModal = useNewPostStore((state) => state.openModal);
@@ -155,11 +157,15 @@ const Feed: NextPageWithLayout = () => {
               </div>
             )}
             {(index + 1) / 6 === 1 && (
-              <div className="block flg:hidden">
-                <AdsWrapper>
-                  <PromotionCard5Mobile />
-                </AdsWrapper>
-              </div>
+              <>
+                {user?.membership.status !== "citizen" && (
+                  <div className="block flg:hidden">
+                    <AdsWrapper>
+                      <PromotionCard5Mobile />
+                    </AdsWrapper>
+                  </div>
+                )}
+              </>
             )}
 
             {(index + 1) / 8 === 1 && (
@@ -216,11 +222,13 @@ const Feed: NextPageWithLayout = () => {
               <PromotionCard2Mobile />
             </AdsWrapper>
           </div>
-          <div className={`mt-4 flex flg:hidden`}>
-            <AdsWrapper>
-              <PromotionCard5Mobile />
-            </AdsWrapper>
-          </div>
+          {user?.membership.status !== "citizen" && (
+            <div className={`mt-4 flex flg:hidden`}>
+              <AdsWrapper>
+                <PromotionCard5Mobile />
+              </AdsWrapper>
+            </div>
+          )}
           <div className={`mt-4 flex f2xl:hidden`}>
             <AdsWrapper>
               <PromotionCard6Mobile />

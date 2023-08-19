@@ -151,17 +151,18 @@ export const AuctionNftDescription = ({
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
-      SuccessFunc(
-        !!result,
-        "Congratulations! You have successfully ended the auction of "
-      );
-      setNftData();
+      if (result?.length) {
+        setNftData();
+        SuccessFunc(
+          true,
+          "Congratulations! You have successfully ended the auction of "
+        );
+      } else throw new Error();
     } catch (err: any) {
-      toastError("something went wrong");
+      SuccessFunc(false, "Something went wrong");
     }
   };
   const handleCancelAuction = async () => {
-    let success = false;
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callCancelAuction(
@@ -172,16 +173,13 @@ export const AuctionNftDescription = ({
 
       if (result?.length) {
         setNftData();
-        success = true;
+        SuccessFunc(
+          true,
+          "Congratulations! You have successfully canceled auction of "
+        );
       }
     } catch (error) {
-      toastError("something went wrong");
       SuccessFunc(false, "Failed to cancel auction");
-    } finally {
-      SuccessFunc(
-        success,
-        "Congratulations! You have successfully canceled auction of "
-      );
     }
   };
 
