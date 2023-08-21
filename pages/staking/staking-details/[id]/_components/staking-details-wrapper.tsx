@@ -229,7 +229,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   return stakingStat ? (
     <PageButtonsWrapper>
-      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-10 pt-10 pb-8">
+      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-10 pb-8 pt-10">
         <Details data={stakingPool} />
         <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
           {stakingStat && (
@@ -295,7 +295,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 }
               </p>
             </div>
-            <div className="mt-6 mb-6 flex items-center justify-between gap-5">
+            <div className="mb-6 mt-6 flex items-center justify-between gap-5">
               <p className="flex items-center gap-2 text-sm text-gray-shade-14">
                 <span>Stakers</span>
               </p>

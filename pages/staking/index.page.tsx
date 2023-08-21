@@ -63,19 +63,16 @@ const Staking: NextPageWithLayout = () => {
     };
 
     const getPoolMetadata = async (inputs: ListCardDataOBj[]) => {
-      try {
-        for (const item of inputs) {
+      for (const item of inputs) {
+        try {
           const metadata = await axios.get(formatIPFSUrl(item.metadataUrl));
-          const buff = stakingList.find(
-            (e) => e.metadataUrl == item.metadataUrl
-          );
-
+          const buff = inputs.find((e) => e.metadataUrl == item.metadataUrl);
           if (buff) {
             buff.metadata = metadata.data;
             setStakingList([...stakingList, buff]);
           }
-        }
-      } catch (error) {}
+        } catch (error) {}
+      }
     };
 
     if (sdk) {
@@ -88,8 +85,10 @@ const Staking: NextPageWithLayout = () => {
           ).then();
 
           const mappedPools = setupUiModels(pools);
-          setStakingList(mappedPools);
-          getPoolMetadata(mappedPools).then(() => setIsLoading(false));
+
+          getPoolMetadata(mappedPools).then(() => {
+            setIsLoading(false);
+          });
         }
       });
     }
@@ -131,7 +130,7 @@ const Staking: NextPageWithLayout = () => {
                 : () => setShowBuyCitizenshipModal(true)
             }
             variant="primary"
-            className="text-14px mt-6 py-3 px-5"
+            className="text-14px mt-6 px-5 py-3"
           />
         </div>
       )}

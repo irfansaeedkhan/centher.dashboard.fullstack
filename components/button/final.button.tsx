@@ -36,7 +36,7 @@ const FinalButton: React.FC<ButtonProps> = ({
       {isLoading ? (
         <button
           className={clsx(
-            `flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 py-[10px] px-2 text-sm font-semibold text-gray-shade-7`,
+            `flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7`,
             className && className
           )}
         >

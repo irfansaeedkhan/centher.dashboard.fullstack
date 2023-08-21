@@ -70,7 +70,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
   return (
     <div className="relative ">
       <div
-        className={`focus:border-ring-yellow-theme text-14px focus:!ring-yellow-theme active:!ring-yellow-theme h-10 w-full max-w-[100px] cursor-pointer rounded-lg border border-gray-shade-3 py-2 px-4 font-semibold text-white shadow-md focus:outline-none ${
+        className={`focus:border-ring-yellow-theme text-14px focus:!ring-yellow-theme active:!ring-yellow-theme h-10 w-full max-w-[100px] cursor-pointer rounded-lg border border-gray-shade-3 px-4 py-2 font-semibold text-white shadow-md focus:outline-none ${
           error ? "border-red-500" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}

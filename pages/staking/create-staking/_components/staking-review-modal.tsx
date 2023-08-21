@@ -211,7 +211,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     })`,
                   }}
                 >
-                  <div className="absolute left-6 bottom-6 my-auto">
+                  <div className="absolute bottom-6 left-6 my-auto">
                     <div className="flex items-center gap-4">
                       <Image
                         src={
@@ -544,7 +544,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   </div>
                 )}
                 {!data?.liquidity_pool_provided && (
-                  <p className="color-[#E5535A] text-14px mt-5 w-full rounded-lg bg-[#E5535A]/60 py-1 px-2 font-normal">
+                  <p className="color-[#E5535A] text-14px mt-5 w-full rounded-lg bg-[#E5535A]/60 px-2 py-1 font-normal">
                     Warning! This staking pool does not provide Liquidity pool
                     and Centher does not guarantee it
                   </p>
@@ -707,7 +707,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   </div>
                 </div>
 
-                <div className="mt-3 mb-2 flex flex-col gap-3">
+                <div className="mb-2 mt-3 flex flex-col gap-3">
                   <div className="text-sm font-semibold text-white">Team</div>
                   <div className="flex flex-wrap items-center gap-2">
                     {memberDetails &&

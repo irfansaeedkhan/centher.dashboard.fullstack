@@ -67,7 +67,7 @@ const StakingListContainer: FC<ComponentProp> = ({
         </div>
         <div className="hidden items-center gap-2 fsm:flex">
           <div className="hidden items-center gap-3 flg:flex">
-            <div className="flex h-9 items-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
+            <div className="flex h-9 items-center gap-3 rounded-lg border border-gray-shade-3 px-4 py-2">
               <div onClick={() => setLayout("grid")}>
                 <LayoutGrid
                   className={clsx(
@@ -100,7 +100,7 @@ const StakingListContainer: FC<ComponentProp> = ({
         </div>
       </div>
       <div className="mt-6 flex items-center gap-3 flg:hidden">
-        <div className="flex h-9 w-full items-center justify-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
+        <div className="flex h-9 w-full items-center justify-center gap-3 rounded-lg border border-gray-shade-3 px-4 py-2">
           <div onClick={() => setLayout("grid")}>
             <LayoutGrid
               className={clsx(
@@ -131,7 +131,7 @@ const StakingListContainer: FC<ComponentProp> = ({
         </div>
       </div>
       {layout === "grid" ? (
-        <div className="mt-7 mb-2 flex h-full w-full max-w-full flex-col gap-6">
+        <div className="mb-2 mt-7 flex h-full w-full max-w-full flex-col gap-6">
           {data.map((card, index) => (
             <GridLayoutCard key={index} card={card} coins={coins} />
           ))}

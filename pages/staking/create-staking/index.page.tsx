@@ -263,7 +263,7 @@ const CreateStaking: NextPageWithLayout = () => {
           name={`level-${index + 1}`}
           id={`level-${index + 1}`}
           placeholder="%"
-          className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+          className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
           value={inputValues[index]?.percent || ""}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
@@ -1011,7 +1011,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                        className="leading-0 absolute right-5  top-4 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -1099,7 +1099,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute top-4  right-5 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*]:transition [&>*]:hover:scale-125 [&>*>*]:stroke-white"
+                          className="leading-0 absolute right-5  top-4 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
@@ -1150,7 +1150,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("staking_name")}
                     id="staking_name"
                     placeholder="For example: DeXa Pack 1"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.staking_name && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1175,7 +1175,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     }}
                     id="token_address"
                     placeholder="Add address here"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.token_address && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1197,7 +1197,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     id="reward_token_address"
                     placeholder="Add address here"
                     onChange={rewardTokenChanged}
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   <p
                     className={`text-12px text-gradient pb-2 pt-1 font-medium`}
@@ -1232,7 +1232,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         )}
                         id="staking_reward_token_price_ratio"
                         placeholder="only numbers"
-                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                       />
                       {stakingForm.formState.errors
                         .staking_reward_token_price_ratio && (
@@ -1261,7 +1261,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("multilevel_rewards")}
                     id="multilevel_rewards"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                     value={selectedValue}
                     onChange={handleChange}
                   >
@@ -1297,7 +1297,6 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-
                 {renderInputFields()}
                 {/* Staking Period */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
@@ -1311,7 +1310,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("staking_period")}
                     id="staking_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1340,7 +1339,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Is Cancelable
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                     <label
                       htmlFor="is_cancelable"
                       className="block font-normal tracking-wide"
@@ -1404,7 +1403,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("charge_fee_on_cancel")}
                         id="charge_fee_on_cancel"
                         placeholder="0%"
-                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                       />
                       {stakingForm.formState.errors.charge_fee_on_cancel && (
                         <p
@@ -1434,7 +1433,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("apy")}
                     id="apy"
                     placeholder="For example: 2%"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.apy && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1456,7 +1455,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("start_date")}
                     id="start_date"
                     placeholder="For example: DeXa Pack 1"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.start_date && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1476,7 +1475,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("rewards_release_start")}
                     id="rewards_release_start"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1512,7 +1511,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <select
                     {...stakingForm.register("claim_period")}
                     id="claim_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
                   >
                     <option className="bg-black text-gray-shade-17" value="">
                       Select Any
@@ -1541,7 +1540,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Show on Centher
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                     <label
                       htmlFor="show_on_centher"
                       className="block font-normal tracking-wide"
@@ -1602,7 +1601,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Liquidity Pool Provided
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                     <label
                       htmlFor="liquidity_pool_provided"
                       className="block font-normal tracking-wide"
@@ -1665,7 +1664,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("min_staking_amount")}
                     id="min_staking_amount"
                     placeholder="Example: 1000"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   <p
                     className={`text-12px text-gradient pb-2 pt-1 font-medium`}
@@ -1694,7 +1693,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("max_staking_amount")}
                     id="max_staking_amount"
                     placeholder="Only numbers here"
-                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none"
+                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
                   />
 
                   {stakingForm.formState.errors.max_staking_amount && (
@@ -1717,7 +1716,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("total_supply")}
                     id="total_supply"
                     placeholder="Only numbers here"
-                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none"
+                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
                   />
                   {stakingForm.formState.errors.total_supply && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1730,7 +1729,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
                   </label>
-                  <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
                     <span className="text-14px text-gray-shade-17">
                       Add metadata here{" "}
                     </span>
@@ -1766,7 +1765,7 @@ const CreateStaking: NextPageWithLayout = () => {
                             className="gradientborders2 relative mb-[2%] flex h-[98px] w-full flex-col items-center justify-center gap-3 rounded-10px bg-background-shade-3 p-[2px] "
                           >
                             <button
-                              className="absolute top-[-4px] right-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
+                              className="absolute right-[-4px] top-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
                               onClick={() => {
                                 handleMetaDataRemove(item.title);
                               }}
@@ -1824,7 +1823,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="title"
                       autoComplete="off"
                       placeholder="Project"
-                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  py-3 px-5 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
+                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  px-5 py-3 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
                       onChange={handleMetaDataChange}
                       value={metaDataDetails.title}
                     />
@@ -1839,7 +1838,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="data"
                       autoComplete="off"
                       placeholder="Premium"
-                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  py-3 px-5 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
+                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  px-5 py-3 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
                       onChange={handleMetaDataChange}
                       value={metaDataDetails.data}
                     />
@@ -1884,7 +1883,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       id="whitepaper"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.whitepaper && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1905,7 +1904,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       id="website_url"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.website_url && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1928,7 +1927,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("facebook")}
                       id="facebook"
                       placeholder="Example: yourlogo.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.facebook && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1949,7 +1948,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("twitter")}
                       id="twitter"
                       placeholder="Example: t.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.twitter && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1970,7 +1969,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("github")}
                       id="github"
                       placeholder="Example: github.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.github && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -1991,7 +1990,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("telegram")}
                       id="telegram"
                       placeholder="Example: yourtel.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.telegram && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2012,7 +2011,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("instagram")}
                       id="instagram"
                       placeholder="Example: instagram.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.instagram && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2033,7 +2032,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("discord")}
                       id="discord"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.discord && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2054,7 +2053,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("reddit")}
                       id="reddit"
                       placeholder="Example: reddit.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.reddit && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2078,7 +2077,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("explorers")}
                       id="explorers"
                       placeholder="Example: BscScan"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.explorers && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2134,7 +2133,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="description"
                       rows={4}
                       placeholder="Example: This is the best project"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.description && (
                       <p className={`text-12px pb-2 font-medium text-red-500`}>
@@ -2166,7 +2165,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           name="jobTitle"
                           id="jobTitle"
                           placeholder="Example: CEO, CTO, COO etc"
-                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                           value={memberData.jobTitle}
                           onChange={handleMemberInputChange}
                         />
@@ -2185,7 +2184,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           name="walletAddress"
                           id="walletAddress"
                           placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
-                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                           value={memberData.walletAddress}
                           onChange={handleMemberInputChange}
                         />
@@ -2216,7 +2215,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {members.map((member, index) => (
                         <div
                           key={index}
-                          className="flex items-center justify-between border-t-[1px] border-gray-shade-3 py-4 px-6 text-white"
+                          className="flex items-center justify-between border-t-[1px] border-gray-shade-3 px-6 py-4 text-white"
                         >
                           <div className="flex items-center gap-1">
                             <TeamMemberIcon />
@@ -2275,7 +2274,7 @@ const CreateStaking: NextPageWithLayout = () => {
             </p>
           </div>
           <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary py-3 px-5">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
               <div className="flex items-center gap-3 fsm:gap-6">
                 <MetamaskIcon2 />
                 <h3 className="text-sm font-semibold text-white fmd:text-base">

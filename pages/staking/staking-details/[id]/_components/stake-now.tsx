@@ -76,7 +76,7 @@ const Booking: React.FC<Props> = ({
         </div>
       </div>
       {filled == 100 ? (
-        <div className="mt-4 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] py-3 px-4 text-sm text-[#E5535A]">
+        <div className="mt-4 flex h-[74px] items-center rounded-xl bg-[#E5535A]/[0.06] px-4 py-3 text-sm text-[#E5535A]">
           All tokens have been booked! wait for Presale rounds to start in order
           to claim your tokens.
         </div>

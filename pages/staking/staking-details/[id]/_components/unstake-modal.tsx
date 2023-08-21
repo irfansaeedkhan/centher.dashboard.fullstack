@@ -17,7 +17,7 @@ const UnstakeModal: React.FC<{
           onChange={(e) => valueChanged(e.target.value)}
           id="unstake"
           placeholder="0.0"
-          className="mt-2 w-full rounded-lg border-0 bg-black-shade-3 py-3 px-5 text-white focus:ring-1 focus:ring-brand-primary"
+          className="mt-2 w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-white focus:ring-1 focus:ring-brand-primary"
         />
         <p className="m-1 text-sm text-danger">{errors}</p>
       </div>

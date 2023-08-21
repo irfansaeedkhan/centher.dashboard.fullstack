@@ -41,14 +41,14 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </Link>
           <div
             className={clsx(
-              "w-fit rounded-[10px] bg-black-shade-3 py-[6px] px-3 text-xs font-semibold",
+              "w-fit rounded-[10px] bg-black-shade-3 px-3 py-[6px] text-xs font-semibold",
               card.is_active ? "text-[#76E268]" : "text-brand-primary"
             )}
           >
             {card.is_active ? "Active" : "Unbalanced"}
           </div>
         </div>
-        <div className="absolute left-6 bottom-6 my-auto">
+        <div className="absolute bottom-6 left-6 my-auto">
           <div className="flex items-center gap-4">
             <Image
               src={

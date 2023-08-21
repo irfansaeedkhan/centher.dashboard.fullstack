@@ -36,7 +36,7 @@ const RewardsTable: React.FC<{
   return (
     <div className="space-y-4">
       <div className="flex w-full flex-col rounded-xl border border-gray-shade-3 bg-black-shade-9">
-        <div className="text-[min(10vw, 20px)] rounded-t-xl bg-elevation-1 px-8 pt-8 pb-4 font-semibold text-white">
+        <div className="text-[min(10vw, 20px)] rounded-t-xl bg-elevation-1 px-8 pb-4 pt-8 font-semibold text-white">
           Claim Rewards History
         </div>
         <div className="scrollSetLight2 overflow-x-auto">

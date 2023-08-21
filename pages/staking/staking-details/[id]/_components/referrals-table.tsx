@@ -34,7 +34,7 @@ const ReferralsTable: React.FC<{
   return (
     <div className="space-y-4">
       <div className="flex w-full flex-col rounded-xl border border-gray-shade-3 bg-black-shade-9">
-        <div className="flex items-center gap-8 rounded-t-xl bg-elevation-1 px-8 pt-8 pb-4">
+        <div className="flex items-center gap-8 rounded-t-xl bg-elevation-1 px-8 pb-4 pt-8">
           <p
             className={clsx(
               "text-[min(10vw, 20px)] hover:textGradient cursor-pointer font-semibold",
