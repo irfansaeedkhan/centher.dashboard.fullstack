@@ -11,8 +11,10 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import FinalButton from "@/components/button/final.button";
 import { TeamMemberIcon } from "@/assets/svgs";
+import useUser from "@/hooks/use.user";
 
 const CitizenshipUpdateDetails: NextPageWithLayout = () => {
+  const { user: loggedInUser } = useUser();
   const [orgMembers, setOrgMembers] = useState<OrgMember[]>([]);
   const [newOrgMember, setNewOrgMember] = useState<
     Pick<OrgMember, "user_id" | "title">
@@ -23,13 +25,14 @@ const CitizenshipUpdateDetails: NextPageWithLayout = () => {
   const [newMemberError, setNewMemberError] = useState<string | null>(null);
 
   const fetchOrgMembers = useCallback(async () => {
+    if (!loggedInUser?._id) return;
     try {
-      const _orgMembers = await getOrgMembers();
+      const _orgMembers = await getOrgMembers(loggedInUser?._id);
       setOrgMembers(_orgMembers);
     } catch (err: any) {
       toast.error(err.message);
     }
-  }, []);
+  }, [loggedInUser]);
 
   useEffect(() => {
     fetchOrgMembers();
