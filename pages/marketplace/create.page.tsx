@@ -48,6 +48,7 @@ const CreateNFT: NextPageWithLayout = () => {
   // const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
+  const [videoThumbnailPreview, setVideoThumbnailPreview] = useState(false);
 
   const bnbPrice = useBNBPrice();
 
@@ -280,6 +281,7 @@ const CreateNFT: NextPageWithLayout = () => {
       <h1 className={title}>Create an NFT</h1>
       <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
+          setVideoThumbnailPreview={setVideoThumbnailPreview}
           asset={asset}
           setAsset={setAsset}
           assetTab={assetTab}
@@ -287,6 +289,8 @@ const CreateNFT: NextPageWithLayout = () => {
           clearForm={clearForm}
         />
         <CreateNFTForm
+          assetTab={assetTab}
+          videoThumbnailPreview={videoThumbnailPreview}
           library={library}
           createNFT={createNFT}
           clearForm={clearForm}

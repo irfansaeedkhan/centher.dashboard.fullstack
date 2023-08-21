@@ -24,12 +24,20 @@ export interface UploadNFTProps {
   setAsset: any;
   clearForm: boolean;
 }
+
+export interface UploadNFTProps2 {
+  asset: Blob | undefined;
+  setAsset: any;
+  clearForm: boolean;
+  setVideoThumbnailPreview: React.Dispatch<React.SetStateAction<boolean>>;
+}
 export interface UploadNFTProps1 {
   asset: Blob | undefined;
   setAsset: any;
   assetTab: string;
   setAssetTab: any;
   clearForm: boolean;
+  setVideoThumbnailPreview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export const UploadNFT = ({
   asset,
@@ -37,6 +45,7 @@ export const UploadNFT = ({
   assetTab,
   setAssetTab,
   clearForm,
+  setVideoThumbnailPreview,
 }: UploadNFTProps1) => {
   return (
     <div className="flex w-full max-w-[544px] flex-col gap-6">
@@ -130,6 +139,7 @@ export const UploadNFT = ({
       )}
       {assetTab === CreateNftUploadFormType.Video && (
         <VideoNFTUpload
+          setVideoThumbnailPreview={setVideoThumbnailPreview}
           asset={asset}
           setAsset={setAsset}
           clearForm={clearForm}

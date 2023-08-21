@@ -5,9 +5,14 @@ import ctl from "@netlify/classnames-template-literals";
 
 // App imports
 import { CrossIcon } from "@/assets/svgs";
-import { UploadNFTProps } from "./upload.nft";
+import { UploadNFTProps2 } from "./upload.nft";
 
-const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
+const VideoNFTUpload = ({
+  asset,
+  setAsset,
+  clearForm,
+  setVideoThumbnailPreview,
+}: UploadNFTProps2) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
   const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
     false
@@ -23,6 +28,7 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
   const uploadPreviewImageFile = (e: any) => {
     const previewUrl = URL.createObjectURL(e.target.files[0]);
     setPreviewImage(previewUrl);
+    setVideoThumbnailPreview(true);
     setShowPreviewImage(true);
   };
   useEffect(() => {
