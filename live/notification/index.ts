@@ -96,12 +96,7 @@ export class NotificationHandler {
   ): Promise<any> {
     try {
       if (this._unreadNotificationsObserver) {
-        try {
-          this._unreadNotificationsObserver.unsubscribe();
-          this._unreadNotificationsObserver = null;
-        } catch (err) {
-          throw err;
-        }
+        return;
       }
 
       const query = QueryFactory.getQuery(
