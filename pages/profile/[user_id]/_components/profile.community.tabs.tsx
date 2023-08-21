@@ -13,13 +13,13 @@ export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
   const router = useRouter();
 
   return (
-    <div className="mb-4 flex w-full justify-center space-x-2 rounded-2xl p-1.5 sm:gap-2 fsm:mb-6 flg:justify-start [@media(max-width:370px)]:overflow-auto">
+    <div className="scrollSetLight2 mb-4 flex w-full space-x-2 overflow-auto rounded-2xl p-1.5 sm:gap-2 fsm:mb-6">
       <Link
         href={{
           pathname: AppRoutes.profile.followers,
           query: { user_id: router.query.user_id },
         }}
-        className="w-full max-w-max"
+        className="min-w-max"
       >
         <FinalButton
           title="Followers"
@@ -36,7 +36,7 @@ export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
           pathname: AppRoutes.profile.following,
           query: { user_id: router.query.user_id },
         }}
-        className="w-full max-w-max"
+        className="min-w-max"
       >
         <FinalButton
           title="Following"
@@ -54,7 +54,7 @@ export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
             pathname: AppRoutes.profile.team_members,
             query: { user_id: router.query.user_id },
           }}
-          className="w-full max-w-max"
+          className="min-w-max"
         >
           <FinalButton
             title="Team Members"
@@ -72,7 +72,7 @@ export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
           pathname: AppRoutes.profile.referrals,
           query: { user_id: router.query.user_id },
         }}
-        className="w-full max-w-max"
+        className="min-w-max"
       >
         <FinalButton
           title="Referrals"
