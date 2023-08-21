@@ -2,10 +2,10 @@ import { axiosCIS } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
 import { OrgMember } from "./types";
 
-export const getOrgMembers = async (): Promise<OrgMember[]> => {
+export const getOrgMembers = async (orgId: string): Promise<OrgMember[]> => {
   try {
     const { data } = await axiosCIS.get<{ members: OrgMember[] }>(
-      "/orgs/members"
+      `/orgs/members/${orgId}`
     );
 
     return data.members;

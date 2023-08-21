@@ -170,6 +170,7 @@ export { default as MultiColorLoader } from "./loader-multi-color.svg";
 export { default as TeamMemberIcon } from "./team-member-icon.svg";
 export { default as IconFailure } from "./icon-failure.svg";
 export { default as XLogo } from "./x-logo.svg";
+export { default as ChatProfile } from "./chat-profile-icon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

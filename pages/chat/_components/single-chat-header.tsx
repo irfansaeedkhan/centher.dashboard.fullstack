@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { useOnClickOutside } from "usehooks-ts";
 import { useCentherLive } from "@/hooks/chat";
 import { CentherLive } from "@/live";
@@ -16,6 +15,7 @@ import { UsersDetails } from "../[chat_id].page";
 import { ChatModal } from "./chat-modal";
 import ProfileImgPlaceholder from "./profile-img-placeholder";
 import { customLog } from "@/utils/custom.log";
+import useUser from "@/hooks/use.user";
 
 const loadingPage = "/images/chat-profile.png";
 const defaultImage = "/images/chat-profile.png";
@@ -23,16 +23,17 @@ const defaultChannelImage = "/images/chat-profile.png";
 
 const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
   const router = useRouter();
+  const { user } = useUser();
   const { adapter } = useCentherLive();
   const [header, setHeader] = useState<any>(null);
   const [status, setStatus] = useState<string>("");
   const [isPinned, setIsPinned] = useState<boolean>(false);
-  const { account } = useWeb3React();
   const [image, setImage] = useState<string>(defaultImage);
   const [title, setTitle] = useState<string>("");
   const [typingUsers, setTypingUsers] = useState<string | null>();
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [link, setLink] = useState<string>("");
 
   const menuRef = React.useRef<HTMLDivElement>(null);
 
@@ -52,7 +53,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
   const conversationDetailshandler = useCallback(
     (arg: any) => {
       const oppositUserConversation = arg.user_conversations.filter(
-        (e: any) => !eqAddress(e.user_address, account)
+        (e: any) => !eqAddress(e.user_address, user?._id)
       );
 
       if (!oppositUserConversation?.length) return;
@@ -81,13 +82,13 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         setImage(header.image);
         setTitle(header.title);
       } else {
-        setTitle(header.userAddress);
+        setLink(header.userAddress);
       }
 
       setHeader(header);
       handleTyping(header.typingUsers, header.isChannel);
     },
-    [chatId]
+    [user?._id]
   );
 
   useEffect(() => {
@@ -123,8 +124,8 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
       }
     };
 
-    if (users.length && users.length == 2 && account) {
-      const oppositUser = users.find((e) => !eqAddress(e._id, account));
+    if (users.length && users.length == 2 && user) {
+      const oppositUser = users.find((e) => !eqAddress(e._id, user?._id));
 
       if (oppositUser) {
         getUser(oppositUser._id).catch((e) => {
@@ -132,17 +133,9 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
         });
       }
     }
-  }, [users, account]);
+  }, [users, user]);
 
-  useEffect(() => {
-    const updateStatus = () => {
-      let stat = getUserStatus();
-      setStatus(stat);
-    };
-    updateStatus();
-  }, [header]);
-
-  const getUserStatus = () => {
+  const getUserStatus = useCallback(() => {
     if (!header || !header.latestSeen || header.latestSeen == 0) {
       return "";
     }
@@ -163,7 +156,16 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
     }
 
     return `${dateTime.toLocaleString().split(",")[0]} ${hoursAndMinutes}`;
-  };
+  }, [header]);
+
+  const updateStatus = useCallback(() => {
+    let stat = getUserStatus();
+    setStatus(stat);
+  }, [getUserStatus]);
+
+  useEffect(() => {
+    updateStatus();
+  }, [header, updateStatus]);
 
   const resetHeaderData = () => {
     setStatus("");
@@ -196,18 +198,21 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
 
   return (
     <div className="flex h-14 w-full items-center justify-between gap-2 border border-gray-shade-3 bg-elevation-1 px-6">
-      <div className="flex w-full items-center gap-2">
+      <div
+        className="flex w-full cursor-pointer items-center gap-2"
+        onClick={() => router.push(`/profile/${link}`)}
+      >
         {/* TODO=> for channel use cover photo */}
         {image ? (
           <Image
             src={image}
             alt="profile image"
-            width={42}
-            height={42}
-            className="rounded-full object-cover"
+            width={40}
+            height={40}
+            className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
           />
         ) : (
-          <ProfileImgPlaceholder className="min-h-[38px] min-w-[38px] " />
+          <ProfileImgPlaceholder className="min-h-[40px] min-w-[40px] " />
         )}
 
         <div className="flex flex-grow flex-col gap-1">
