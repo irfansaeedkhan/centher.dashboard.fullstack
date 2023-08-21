@@ -163,7 +163,7 @@ const StakingReferrals: NextPageWithLayout = () => {
     failedFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <FailedModalContent />,
+      content: () => <FailedModalContent message="" />,
     },
   };
 
