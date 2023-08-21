@@ -41,7 +41,6 @@ import {
   ProgressStatus,
 } from "@/staking/enum/create-pool-steps.enum";
 import { ProgressModal } from "./dto/progress-modal.dto";
-import { CentherStaking } from "@/staking";
 import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -95,6 +94,9 @@ const CreateStaking: NextPageWithLayout = () => {
   const { deactivate, library, account } = useWeb3React();
   const [isLoading, setIsLoading] = useState(false);
   const { sdk } = useStaking();
+  const [isDifferentTokens, setIsDifferentTokens] = useState(false);
+  const [stakingToken, setStakingToken] = useState("");
+  const [isCancelable, setIsCancelable] = useState("no");
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -278,16 +280,34 @@ const CreateStaking: NextPageWithLayout = () => {
   // start joi validation
   const stakingFormSchema = Joi.object({
     staking_name: Joi.string().max(200).label("staking_name"),
-    token_address: Joi.string().max(200).label("token address"),
+    token_address: Joi.custom((val: any, helper: any) => {
+      if (!isAddress(val)) {
+        return helper.error("invalid_address");
+      }
+      return val;
+    })
+      .label("token address")
+      .messages({
+        invalid_address: "Invalid address",
+      }),
     reward_token_address: Joi.string()
-      .max(200)
       .optional()
       .allow("")
-      .label("reward token address"),
+      .custom((val: any, helper: any) => {
+        if (val?.length > 0 && !isAddress(val)) {
+          return helper.error("invalid_address");
+        }
+        return val;
+      })
+      .label("reward token address")
+      .messages({
+        invalid_address: "Invalid address",
+      }),
     multilevel_rewards: Joi.string().max(100).label("multilevel rewards"),
-    apy: Joi.number().max(9999999999999999999).label("apy"),
+    apy: Joi.number().min(0).label("apy"),
     staking_reward_token_price_ratio: Joi.number()
-      .max(9999999999999999999)
+      .max(1000000)
+      .min(0)
       .optional()
       .allow("")
       .label("staking Reward Token Price Ratio"),
@@ -302,15 +322,16 @@ const CreateStaking: NextPageWithLayout = () => {
     is_cancelable: Joi.string().valid("yes", "no").label("is cancelable"),
     charge_fee_on_cancel: Joi.when("is_cancelable", {
       is: "yes",
-      then: Joi.number().required().label("charge fee on cancel"),
+      then: Joi.number().min(0).max(100).label("charge fee on cancel"),
       otherwise: Joi.number()
         .optional()
         .allow("")
+        .min(0)
         .label("charge fee on cancel"),
     }),
     min_staking_amount: Joi.number().label("min staking amount"),
     max_staking_amount: Joi.number().label("max staking amount"),
-    total_supply: Joi.number().label("max staking amount"),
+    total_supply: Joi.number().min(1).label("max staking amount"),
     website_url: Joi.string().max(150).label("website_url"),
     whitepaper: Joi.string().max(150).label("whitepaper"),
     facebook: Joi.string().max(150).optional().allow("").label("facebook"),
@@ -646,6 +667,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
   const onClickClose = () => {
     setProgressModel([]);
+    setshowMsg(null);
   };
 
   const handleNext = async () => {
@@ -745,11 +767,15 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const previewBoxModalFunc = async (data: stakingFormInterfaceUpdated) => {
+    setIsLoading(true);
     await setshowMsg(
       <StakingReviewModal
         data={data}
         onClickClose={onClickClose}
         createStaking={createStaking}
+        loaded={() => {
+          setIsLoading(false);
+        }}
       />
     );
   };
@@ -902,6 +928,21 @@ const CreateStaking: NextPageWithLayout = () => {
       ...provided,
       color: state.isFocused ? "#febf32" : "white",
     }),
+  };
+
+  const rewardTokenChanged = (e: any) => {
+    const rewardToken = e.target.value;
+    if (
+      rewardToken?.length > 0 &&
+      stakingToken?.length > 0 &&
+      isAddress(rewardToken) &&
+      isAddress(stakingToken) &&
+      !eqAddress(rewardToken, stakingToken)
+    ) {
+      setIsDifferentTokens(true);
+    } else {
+      setIsDifferentTokens(false);
+    }
   };
 
   return (
@@ -1129,6 +1170,9 @@ const CreateStaking: NextPageWithLayout = () => {
                   <input
                     type="text"
                     {...stakingForm.register("token_address")}
+                    onChange={(e: any) => {
+                      setStakingToken(e.target.value);
+                    }}
                     id="token_address"
                     placeholder="Add address here"
                     className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
@@ -1152,6 +1196,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("reward_token_address")}
                     id="reward_token_address"
                     placeholder="Add address here"
+                    onChange={rewardTokenChanged}
                     className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   <p
@@ -1169,6 +1214,41 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
+
+                {
+                  /* Staking / Reward Token Price Ratio */
+                  isDifferentTokens && (
+                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                      <label
+                        htmlFor="staking_reward_token_price_ratio"
+                        className="block font-normal tracking-wide"
+                      >
+                        Staking / Reward Token Price Ratio
+                      </label>
+                      <input
+                        type="number"
+                        {...stakingForm.register(
+                          "staking_reward_token_price_ratio"
+                        )}
+                        id="staking_reward_token_price_ratio"
+                        placeholder="only numbers"
+                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      />
+                      {stakingForm.formState.errors
+                        .staking_reward_token_price_ratio && (
+                        <p
+                          className={`text-12px pb-2 font-medium text-red-500`}
+                        >
+                          {
+                            stakingForm.formState.errors
+                              .staking_reward_token_price_ratio.message
+                          }
+                        </p>
+                      )}
+                    </div>
+                  )
+                }
+
                 {/* multi level reward system */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -1217,33 +1297,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/* Staking / Reward Token Price Ratio */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="staking_reward_token_price_ratio"
-                    className="block font-normal tracking-wide"
-                  >
-                    Staking / Reward Token Price Ratio
-                  </label>
-                  <input
-                    type="number"
-                    {...stakingForm.register(
-                      "staking_reward_token_price_ratio"
-                    )}
-                    id="staking_reward_token_price_ratio"
-                    placeholder="only numbers"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors
-                    .staking_reward_token_price_ratio && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {
-                        stakingForm.formState.errors
-                          .staking_reward_token_price_ratio.message
-                      }
-                    </p>
-                  )}
-                </div>
+
                 {renderInputFields()}
                 {/* Staking Period */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
@@ -1301,6 +1355,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           value="no"
                           {...stakingForm.register("is_cancelable")}
                           className="red-radio text-14px h-4 w-4"
+                          onClick={() => setIsCancelable("no")}
                         />
                         <label
                           htmlFor="red-radio3"
@@ -1316,6 +1371,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           value="yes"
                           {...stakingForm.register("is_cancelable")}
                           className="green-radio text-14px h-4 w-4"
+                          onClick={() => setIsCancelable("yes")}
                         />
                         <label
                           htmlFor="green-radio3"
@@ -1332,31 +1388,38 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/*   Charge Fee on Cancel */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="charge_fee_on_cancel"
-                    className="block font-normal tracking-wide"
-                  >
-                    Charge Fee on Cancel
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    {...stakingForm.register("charge_fee_on_cancel")}
-                    id="charge_fee_on_cancel"
-                    placeholder="0%"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
-                  {stakingForm.formState.errors.charge_fee_on_cancel && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {
-                        stakingForm.formState.errors.charge_fee_on_cancel
-                          .message
-                      }
-                    </p>
-                  )}
-                </div>
+                {
+                  /*   Charge Fee on Cancel */
+                  isCancelable == "yes" && (
+                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                      <label
+                        htmlFor="charge_fee_on_cancel"
+                        className="block font-normal tracking-wide"
+                      >
+                        Charge Fee on Cancel
+                        <span className="text-gradient ml-[2px]">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        {...stakingForm.register("charge_fee_on_cancel")}
+                        id="charge_fee_on_cancel"
+                        placeholder="0%"
+                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      />
+                      {stakingForm.formState.errors.charge_fee_on_cancel && (
+                        <p
+                          className={`text-12px pb-2 font-medium text-red-500`}
+                        >
+                          {
+                            stakingForm.formState.errors.charge_fee_on_cancel
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                  )
+                }
+
                 {/* APY */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -1601,7 +1664,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     type="text"
                     {...stakingForm.register("min_staking_amount")}
                     id="min_staking_amount"
-                    placeholder="Example: 100000000000"
+                    placeholder="Example: 1000"
                     className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 py-3 px-5 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   <p

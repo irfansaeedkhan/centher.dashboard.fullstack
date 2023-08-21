@@ -38,13 +38,18 @@ const Staking: NextPageWithLayout = () => {
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
-      tokens.forEach((e) => {
+      tokens.filter(Boolean).forEach((e) => {
         if (e != ZeroAddress && list.indexOf(e) == -1) {
           list.push(e);
         }
       });
 
       const details = await fetchTokenMetadata(list);
+
+      if (!details?.length) {
+        return;
+      }
+
       const tokenDetails = details.map((e: any) => e.token._value);
       setCoinsDetails(
         tokenDetails.map((e: any) => {
@@ -57,13 +62,18 @@ const Staking: NextPageWithLayout = () => {
       );
     };
 
-    const getPoolMetadata = async (address: string) => {
+    const getPoolMetadata = async (inputs: ListCardDataOBj[]) => {
       try {
-        const metadata = await axios.get(formatIPFSUrl(address));
-        const buff = stakingList.find((e) => e.metadataUrl == address);
-        if (buff) {
-          buff.metadata = metadata.data;
-          setStakingList([...stakingList, buff]);
+        for (const item of inputs) {
+          const metadata = await axios.get(formatIPFSUrl(item.metadataUrl));
+          const buff = stakingList.find(
+            (e) => e.metadataUrl == item.metadataUrl
+          );
+
+          if (buff) {
+            buff.metadata = metadata.data;
+            setStakingList([...stakingList, buff]);
+          }
         }
       } catch (error) {}
     };
@@ -79,12 +89,8 @@ const Staking: NextPageWithLayout = () => {
 
           const mappedPools = setupUiModels(pools);
           setStakingList(mappedPools);
-          for (const e of mappedPools) {
-            getPoolMetadata(e.metadataUrl).then();
-          }
+          getPoolMetadata(mappedPools).then(() => setIsLoading(false));
         }
-
-        setIsLoading(false);
       });
     }
   }, [sdk]);

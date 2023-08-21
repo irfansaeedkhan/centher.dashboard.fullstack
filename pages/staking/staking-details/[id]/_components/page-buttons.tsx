@@ -13,13 +13,11 @@ const PageButtonsWrapper: FC<Props> = ({ children }) => {
   return (
     <div className="mx-auto w-full max-w-[1144px] space-y-6">
       <div className="flex items-center gap-3">
-        <Link href={AppRoutes.staking.staking_details.index}>
+        <Link href={AppRoutes.staking.index}>
           <FinalButton
-            title="Project Details"
+            title="Projects"
             variant={
-              router.pathname === AppRoutes.staking.staking_details.index ||
-              router.pathname === AppRoutes.staking.staking_details.referrals ||
-              router.pathname === AppRoutes.staking.staking_details.rewards
+              router.pathname.includes("/staking/staking-details")
                 ? "primary"
                 : "secondary"
             }

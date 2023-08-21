@@ -8,6 +8,9 @@ import Image from "next/image";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
+import { formatEther } from "ethers/lib/utils";
+import Link from "next/link";
+import { Staking } from "@/assets/svgs";
 
 interface Props {
   card: ListCardDataOBj[];
@@ -20,49 +23,99 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
       <table className={`w-full max-w-full table-auto`}>
         <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
           <tr>
-            <TableCell element={"th"}>Token Name</TableCell>
-            <TableCell element={"th"}>Adress</TableCell>
+            <TableCell element={"th"}>Pool Name</TableCell>
             <TableCell element={"th"}>Apy</TableCell>
-            <TableCell element={"th"}>Symbol</TableCell>
+            <TableCell element={"th"}>Token</TableCell>
+            <TableCell element={"th"}>Total Staked</TableCell>
+            <TableCell element={"th"}>Min Stake</TableCell>
+            <TableCell element={"th"}>Status</TableCell>
           </tr>
         </thead>
         <tbody className="">
           {card.map((item, index) => (
             <TableRow key={index}>
               <TableCell element={"td"} className="flex items-center gap-2">
-                <Image
-                  src={
-                    coins.find((e) =>
-                      eqAddress(e?.contractAddress, item.token_address)
-                    )?.logo?.length
-                      ? (coins.find((e) =>
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {item?.metadata?.logo ? (
+                    <Image
+                      src={item.metadata?.logo}
+                      alt="image"
+                      width={15}
+                      height={15}
+                      className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                  )}
+
+                  <span className="text-sm font-semibold text-white">
+                    {item.pack}
+                  </span>
+                </Link>
+              </TableCell>
+
+              <TableCell element={"td"}>
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {+item.apy / 100} %
+                </Link>
+              </TableCell>
+              <TableCell element={"td"} className="flex items-center gap-2">
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {coins.find((e) =>
+                    eqAddress(e?.contractAddress, item.token_address)
+                  )?.logo?.length ? (
+                    <Image
+                      src={
+                        coins.find((e) =>
                           eqAddress(e?.contractAddress, item.token_address)
-                        )?.logo as string)
-                      : "/images/profile-header-cover.jpg"
-                  }
-                  alt="image"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
-                />
-                <span className="text-sm font-semibold text-white">
+                        )?.logo as string
+                      }
+                      alt="image"
+                      width={15}
+                      height={15}
+                      className="h-10 w-10 flex-shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                  )}
+
+                  <span className="text-sm font-semibold text-white">
+                    {
+                      coins.find((e) =>
+                        eqAddress(e?.contractAddress, item.token_address)
+                      )?.name
+                    }
+                  </span>
+                </Link>
+              </TableCell>
+              <TableCell element={"td"}>
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {formatEther(item.totalStakedAmount)}{" "}
                   {
                     coins.find((e) =>
                       eqAddress(e?.contractAddress, item.token_address)
-                    )?.name
+                    )?.symbol
                   }
-                </span>
+                </Link>
               </TableCell>
               <TableCell element={"td"}>
-                {sliceAccountAddress(item.token_address)}
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {formatEther(item.min_staking_amount)}{" "}
+                  {
+                    coins.find((e) =>
+                      eqAddress(e?.contractAddress, item.token_address)
+                    )?.symbol
+                  }
+                </Link>
               </TableCell>
-              <TableCell element={"td"}>{item.apy}</TableCell>
               <TableCell element={"td"}>
-                {
-                  coins.find((e) =>
-                    eqAddress(e?.contractAddress, item.token_address)
-                  )?.symbol
-                }
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {item.totalStakedAmount < item.supply ? (
+                    <span className="textGradient">Active</span>
+                  ) : (
+                    <span className="textGradient">Filled</span>
+                  )}
+                </Link>
               </TableCell>
             </TableRow>
           ))}

@@ -18,6 +18,7 @@ import { useWeb3React } from "@web3-react/core";
 import { RewardsStat } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
+import { PreLoader } from "@/components/pre.loader";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -31,35 +32,40 @@ const StakingDetails: NextPageWithLayout = () => {
   >([]);
   const [expireTime, setExpireTime] = useState(0);
   const { library } = useWeb3React();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
-      tokens.forEach((e) => {
+      tokens.filter(Boolean).forEach((e) => {
         if (e != ZeroAddress && list.indexOf(e) == -1) {
           list.push(e);
         }
       });
 
-      const details = await fetchTokenMetadata(list);
-      const tokenDetails = details.map((e: any) => e.token._value);
-      setCoinsDetails(
-        tokenDetails.map((e: any) => {
-          return {
-            ...e,
-            contractAddress: e.contractAddress._value,
-            chain: e.chain._value,
-          };
-        })
-      );
+      if (list.length > 0) {
+        const details = await fetchTokenMetadata(list);
+        const tokenDetails = details.map((e: any) => e.token._value);
+        setCoinsDetails(
+          tokenDetails.map((e: any) => {
+            return {
+              ...e,
+              contractAddress: e.contractAddress._value,
+              chain: e.chain._value,
+            };
+          })
+        );
+      }
     };
 
     if (!stakingPool && poolId && sdk) {
+      setIsLoading(true);
       sdk.getProject(+poolId).then((pool) => {
         if (pool) {
           getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
           const mappedPools = setupUiModels([pool]);
           setStakingPool(mappedPools[0]);
+          setIsLoading(false);
         }
         //else {//redirect to index}
       });
@@ -179,6 +185,7 @@ const StakingDetails: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
+      {isLoading || !userStaked ? <PreLoader /> : ""}
     </div>
   );
 };

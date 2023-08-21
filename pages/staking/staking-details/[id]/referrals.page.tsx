@@ -29,6 +29,7 @@ import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import { PreLoader } from "@/components/pre.loader";
 
 enum ModalType {
   successFuncModal = "successFuncModal",
@@ -64,10 +65,12 @@ const StakingReferrals: NextPageWithLayout = () => {
     totalRewards: number;
   } | null>(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
-      tokens.forEach((e) => {
+      tokens.filter(Boolean).forEach((e) => {
         if (e != ZeroAddress && list.indexOf(e) == -1) {
           list.push(e);
         }
@@ -87,11 +90,13 @@ const StakingReferrals: NextPageWithLayout = () => {
     };
 
     if (!stakingPool && poolId && sdk) {
+      setIsLoading(true);
       sdk.getProject(+poolId).then((pool) => {
         if (pool) {
           getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
           const mappedPools = setupUiModels([pool]);
           setStakingPool(mappedPools[0]);
+          setIsLoading(false);
         }
         //else {//redirect to index}
       });
@@ -268,6 +273,7 @@ const StakingReferrals: NextPageWithLayout = () => {
           {ModalModel.content}
         </CustomModal>
       )}
+      {isLoading || !referralsInfo ? <PreLoader /> : ""}
     </>
   );
 };

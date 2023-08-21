@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 
@@ -14,13 +14,12 @@ import StakingDropdown from "./dropdown-for-staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 
 const sortOptions = [
-  { label: "Sort by", value: "0" },
   {
-    label: "A-Z",
+    label: "APY",
     value: "1",
   },
   {
-    label: "a-z",
+    label: "A-Z",
     value: "2",
   },
 ];
@@ -37,13 +36,23 @@ const StakingListContainer: FC<ComponentProp> = ({
   coins,
 }) => {
   const [layout, setLayout] = useState<"grid" | "list">("grid");
-  const [showItems, setShowItems] = useState<string>("0");
+  const [showItems, setShowItems] = useState<string>("1");
+  const [data, setData] = useState<ListCardDataOBj[]>([]);
+
+  useEffect(() => {
+    if (pools.length) {
+      if (showItems == "1") {
+        setData(pools.sort((a, b) => +b.apy - +a.apy));
+      }
+
+      if (showItems == "2") {
+        setData(pools.sort((a, b) => (a.pack < b.pack ? -1 : 1)));
+      }
+    }
+  }, [showItems, pools]);
 
   return (
     <div className="mx-auto w-full max-w-[1128px]">
-      <p className="textGradient block w-full pb-8 pt-7 text-center text-xs font-medium fsm:hidden">
-        Last updated 17 mints ago
-      </p>
       <div className="flex items-center justify-between gap-10">
         <div className="flex w-full items-center justify-between gap-5 fsm:w-fit fsm:justify-start flg:gap-6">
           <h5 className="textGradient text-2xl font-semibold">Staking</h5>
@@ -57,9 +66,6 @@ const StakingListContainer: FC<ComponentProp> = ({
           </Link>
         </div>
         <div className="hidden items-center gap-2 fsm:flex">
-          <p className="textGradient text-xs font-medium">
-            Last updated 17 mints ago
-          </p>
           <div className="hidden items-center gap-3 flg:flex">
             <div className="flex h-9 items-center gap-3 rounded-lg border border-gray-shade-3 py-2 px-4">
               <div onClick={() => setLayout("grid")}>
@@ -126,12 +132,12 @@ const StakingListContainer: FC<ComponentProp> = ({
       </div>
       {layout === "grid" ? (
         <div className="mt-7 mb-2 flex h-full w-full max-w-full flex-col gap-6">
-          {pools.map((card, index) => (
+          {data.map((card, index) => (
             <GridLayoutCard key={index} card={card} coins={coins} />
           ))}
         </div>
       ) : layout === "list" ? (
-        <ListLayoutTable card={pools} coins={coins} />
+        <ListLayoutTable card={data} coins={coins} />
       ) : null}
     </div>
   );

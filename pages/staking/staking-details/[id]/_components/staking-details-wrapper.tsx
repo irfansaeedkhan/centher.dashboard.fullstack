@@ -19,7 +19,12 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import axios from "axios";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
-import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
+import {
+  formatEther,
+  formatUnits,
+  isAddress,
+  parseEther,
+} from "ethers/lib/utils";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
@@ -56,14 +61,13 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
-  const [userDetails, setUserDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [rewardEstimation, setRewardEstimation] = useState<{
-    claim: number;
-    total: number;
+    claim: string;
+    total: string;
   } | null>(null);
-  const [stakingValue, setStakingValue] = useState<number>(0);
+  const [stakingValue, setStakingValue] = useState<string>("0");
   const router = useRouter();
 
   useEffect(() => {
@@ -107,6 +111,8 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         ),
         totalStakingCap: stakingPool.supply,
         tokenAddress: stakingPool.token_address,
+        minAmount: stakingPool.min_staking_amount,
+        maxAmount: stakingPool.max_staking_amount,
       });
     }
   }, [stakingPool]);
@@ -114,7 +120,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
-      tokens.forEach((e) => {
+      tokens.filter(Boolean).forEach((e) => {
         if (e != ZeroAddress && list.indexOf(e) == -1) {
           list.push(e);
         }
@@ -149,34 +155,41 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   useEffect(() => {
     if (stakingPool) {
       const total =
-        +stakingPool.apy *
-        stakingValue *
-        (+stakingPool.staking_period / oneYearInSec);
+        +(+stakingPool.apy / 100).toFixed(2) *
+        +stakingValue *
+        +(+stakingPool.staking_period / oneYearInSec).toFixed(4);
 
       const claim =
-        +stakingPool.apy *
-        stakingValue *
-        (+stakingPool.claim_period / oneYearInSec);
+        +(+stakingPool.apy / 100).toFixed(2) *
+        +stakingValue *
+        +(+stakingPool.claim_period / oneYearInSec).toFixed(4);
 
       setRewardEstimation({
-        total: +formatUnits(total + "", 18).toString(),
-        claim: +formatUnits(claim + "", 18).toString(),
+        total: total + "",
+        claim: claim + "",
       });
     }
   }, [stakingValue]);
 
-  const stakingValueChanges = (value: number) => {
-    setStakingValue(+parseEther(normalizeValue(value) + "").toString());
+  const stakingValueChanges = (value: string) => {
+    setStakingValue(value);
   };
 
   const stakeSubmit = async (referrer: string) => {
     try {
-      if (sdk && poolId && stakingValue > 0) {
+      const amount = parseEther(normalizeValue(stakingValue) + "").toString();
+      const minAmount = stakingPool?.min_staking_amount || "0";
+
+      if (sdk && poolId) {
+        if (+amount < +minAmount) {
+          throw new Error("Amount cannot be less than minimum staking amount");
+        }
+
         if (referrer != ZeroAddress && !isAddress(referrer)) {
           throw new Error("Invalid referrer error");
         }
 
-        await sdk.stake(library, +poolId, referrer, stakingValue + "");
+        await sdk.stake(library, +poolId, referrer, amount);
         //TODO=> show success modal
         modal.createModal(ModalType.successFuncModal);
       } else {
@@ -185,7 +198,17 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     } catch (error) {
       console.log(error);
       //TODO=> show error modal
-      modal.createModal(ModalType.failedFuncModal);
+      let message = error instanceof Error ? error.message : error;
+
+      if (
+        typeof message == "string" &&
+        message.includes("call revert exception")
+      ) {
+        message =
+          "This request cannot be done at this moment, please try after a while or contact support.";
+      }
+
+      modal.createModal(ModalType.failedFuncModal, message);
     }
   };
 
@@ -198,7 +221,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     failedFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <FailedModalContent />,
+      content: (message: string) => <FailedModalContent message={message} />,
     },
   };
 
@@ -227,7 +250,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 <AiOutlineInfoCircle className="h-4 w-4" />
               </p>
               <p className="text-sm font-medium text-white">
-                {stakingPool?.apy} %
+                {(stakingPool ? +stakingPool.apy : 0) / 100} %
               </p>
             </div>
             <div className="mt-6 flex items-center justify-between gap-5">
@@ -239,7 +262,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                   stakingPool?.totalStakedAmount + "",
                   coinsDetails.find((e) =>
                     eqAddress(e?.contractAddress, stakingPool?.token_address)
-                  )?.decimals
+                  )?.decimals || 18
                 )}{" "}
                 {
                   coinsDetails.find((e) =>
@@ -260,7 +283,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                       e?.contractAddress,
                       stakingPool?.reward_token_address
                     )
-                  )?.decimals
+                  )?.decimals || 18
                 )}{" "}
                 {
                   coinsDetails.find((e) =>

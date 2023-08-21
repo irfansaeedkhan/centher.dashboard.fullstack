@@ -14,6 +14,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { metaDataType } from "./staking-types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
+import { Staking } from "@/assets/svgs";
 
 export interface ListCardProps {
   card: ListCardDataOBj;
@@ -73,20 +74,23 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               "word-break flex items-center gap-2 truncate"
             )}
           >
-            <Image
-              src={
-                coins.find((e) =>
-                  eqAddress(e?.contractAddress, card.token_address)
-                )?.logo
-                  ? (coins.find((e) =>
-                      eqAddress(e?.contractAddress, card.token_address)
-                    )?.logo as string)
-                  : "/images/token-address-symbol.png"
-              }
-              alt="token-address-symbol"
-              width={20}
-              height={20}
-            />
+            {coins.find((e) =>
+              eqAddress(e?.contractAddress, card.token_address)
+            )?.logo ? (
+              <Image
+                src={
+                  coins.find((e) =>
+                    eqAddress(e?.contractAddress, card.token_address)
+                  )?.logo as string
+                }
+                alt="token-address-symbol"
+                width={20}
+                height={20}
+              />
+            ) : (
+              <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+            )}
+
             <span>{sliceAccountAddress(card.token_address)} </span>
             <FiCopy
               className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
@@ -118,7 +122,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </p>
         </div>
       </div>
-      {card.token_address != card.reward_token_address ? (
+      {!eqAddress(card.token_address, card.reward_token_address) ? (
         <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
           <div className={section}>
             <p className={label}>Token Address</p>
@@ -128,20 +132,23 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                 "word-break flex items-center gap-2 truncate"
               )}
             >
-              <Image
-                src={
-                  coins.find((e) =>
-                    eqAddress(e?.contractAddress, card.reward_token_address)
-                  )?.logo
-                    ? (coins.find((e) =>
-                        eqAddress(e?.contractAddress, card.reward_token_address)
-                      )?.logo as string)
-                    : "/images/token-address-symbol.png"
-                }
-                alt="token-address-symbol"
-                width={20}
-                height={20}
-              />
+              {coins.find((e) =>
+                eqAddress(e?.contractAddress, card.reward_token_address)
+              )?.logo ? (
+                <Image
+                  src={
+                    coins.find((e) =>
+                      eqAddress(e?.contractAddress, card.reward_token_address)
+                    )?.logo as string
+                  }
+                  alt="token-address-symbol"
+                  width={20}
+                  height={20}
+                />
+              ) : (
+                <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              )}
+
               <span>{sliceAccountAddress(card.reward_token_address)}</span>
               <FiCopy
                 className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
@@ -199,7 +206,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                       level.percent === 0 ? "text-gray-shade-14" : "text-white"
                     )}
                   >
-                    {level.percent}%
+                    {level.percent / 100}%
                   </p>
                 </div>
               ))}

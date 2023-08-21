@@ -15,6 +15,8 @@ import { Memb } from "@/pages/staking/create-staking/_components/staking-review-
 import { fetchUsers } from "@/hooks/user.get.multi.users";
 import { eqAddress } from "@/live/utils/address.utils";
 import TeamMembers from "@/pages/staking/create-staking/_components/team.memeber";
+import { ZeroAddress } from "@/web3/constants/common";
+import { isAddress } from "ethers/lib/utils";
 
 const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
   data,
@@ -36,6 +38,14 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
 
   useEffect(() => {
     const getUsers = async (walletAddresses: string[]) => {
+      const filteredUsers = walletAddresses.filter(
+        (e) => ZeroAddress != e && isAddress(e)
+      );
+
+      if (!filteredUsers?.length) {
+        return [];
+      }
+
       const users = await fetchUsers(walletAddresses);
       return users;
     };

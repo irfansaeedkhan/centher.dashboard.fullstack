@@ -148,6 +148,7 @@ export class CentherStaking {
         skip: input.getPage(),
         first: input.getPageSize(),
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.pools;
@@ -161,6 +162,7 @@ export class CentherStaking {
       variables: {
         id: poolId + "",
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.pools[0];
@@ -218,6 +220,7 @@ export class CentherStaking {
         first: input.getPageSize(),
         skip: input.getPage(),
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.rewardClaimeds;
@@ -237,6 +240,7 @@ export class CentherStaking {
         poolId,
         referrer: user,
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.refRewardPaids.reduce(
@@ -259,6 +263,7 @@ export class CentherStaking {
         first: input.getPageSize(),
         skip: input.getPage(),
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.refRewardPaids;
@@ -488,6 +493,7 @@ export class CentherStaking {
         referrer: user,
         pool: poolId,
       },
+      fetchPolicy: "no-cache",
     });
 
     return result?.data.users.map((e: Partial<Referral>) => {

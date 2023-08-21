@@ -1,8 +1,7 @@
 import { CircularClose } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
 import React from "react";
 
-const FailedModalContent = () => {
+const FailedModalContent: React.FC<{ message: string }> = ({ message }) => {
   return (
     <div className={modalBodyWrapper1}>
       <div className="flex flex-col items-center justify-center">
@@ -12,18 +11,11 @@ const FailedModalContent = () => {
         </h2>
       </div>
       <p className="text-14px text-center font-normal leading-6 text-gray-shade-2">
-        Please review the data, make sure you filled out all the mandatory
-        fields and try again.
+        {message?.length
+          ? message
+          : `Please review the data, make sure you filled out all the mandatory
+        fields and try again.`}
       </p>
-      <div className="flex items-center gap-2">
-        <FinalButton
-          title="Go Back"
-          variant="secondary"
-          className="w-full"
-          onClick={() => {}}
-        />
-        <FinalButton title="Retry" className="w-full" onClick={() => {}} />
-      </div>
     </div>
   );
 };

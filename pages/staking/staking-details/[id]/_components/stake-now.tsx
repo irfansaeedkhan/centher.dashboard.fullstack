@@ -6,16 +6,20 @@ import FinalButton from "@/components/button/final.button";
 import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
+import { formatUnits } from "ethers/lib/utils";
+import { Staking } from "@/assets/svgs";
 
 export interface StakingStat {
   totalStakedAmount: string;
   totalStakingCap: string;
   tokenAddress: string;
+  minAmount: string;
+  maxAmount: string;
 }
 
 interface Props {
   data: StakingStat;
-  onValueChanged: (val: number) => void;
+  onValueChanged: (val: string) => void;
   onSubmit: (referrer: string) => void;
   coins: Array<CoinDetails | undefined>;
 }
@@ -33,7 +37,6 @@ const Booking: React.FC<Props> = ({
   useEffect(() => {
     setFilled((+totalStakedAmount / +totalStakingCap) * 100);
   }, [totalStakedAmount, totalStakingCap]);
-
   return (
     <div className="w-full max-w-[512px] flex-shrink-0">
       <div className="h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
@@ -108,31 +111,34 @@ const Booking: React.FC<Props> = ({
               // value={paymentForm.paymentTokenAmount}
               min={0}
               onChange={(e) => {
-                onValueChanged(+e.target.value);
+                onValueChanged(e.target.value);
               }}
             />
 
             <div className="flex w-full max-w-[60px] items-center gap-2">
               {/* TODO: Change this hard-coded icon to icon url coming from backend */}
-              <Image
-                src={
-                  coins.find((e) =>
-                    eqAddress(e?.contractAddress, data.tokenAddress)
-                  )?.logo
-                    ? (coins.find((e) =>
-                        eqAddress(e?.contractAddress, data.tokenAddress)
-                      )?.logo as string)
-                    : "/images/dexa-icon.png"
-                }
-                alt={
-                  coins.find((e) =>
-                    eqAddress(e?.contractAddress, data.tokenAddress)
-                  )?.symbol as string
-                }
-                width={20}
-                height={20}
-                className="h-5 w-5 flex-shrink-0 object-cover"
-              />
+              {coins.find((e) =>
+                eqAddress(e?.contractAddress, data.tokenAddress)
+              )?.logo ? (
+                <Image
+                  alt={
+                    coins.find((e) =>
+                      eqAddress(e?.contractAddress, data.tokenAddress)
+                    )?.symbol as string
+                  }
+                  src={
+                    coins.find((e) =>
+                      eqAddress(e?.contractAddress, data.tokenAddress)
+                    )?.logo as string
+                  }
+                  width={20}
+                  height={20}
+                  className="h-5 w-5 flex-shrink-0 object-cover"
+                />
+              ) : (
+                <Staking className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+              )}
+
               <p className="text-xs font-semibold text-white">
                 {
                   coins.find((e) =>
@@ -142,6 +148,20 @@ const Booking: React.FC<Props> = ({
               </p>
             </div>
           </div>
+          <small className="m-2 text-sm text-gray-shade-14">
+            MIN: {formatUnits(data.minAmount ? data.minAmount + "" : "0", 18)}{" "}
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, data.tokenAddress)
+              )?.symbol
+            }{" "}
+            , MAX: {formatUnits(data.maxAmount ? data.maxAmount + "" : "0", 18)}{" "}
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, data.tokenAddress)
+              )?.symbol
+            }
+          </small>
           <FinalButton
             variant={"primary"}
             title="Stake Now"

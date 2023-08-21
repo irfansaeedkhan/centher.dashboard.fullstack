@@ -81,7 +81,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     STAKING: {
       56: "0x0000000000000000000000000000000000000000",
-      5: "0x1f61019bb765e32C4191DcF74290B632E6169Bdb",
+      5: "0x6Fa39daA198584bC1Ee4909f914ba4A50eA57655",
     },
   },
   network:

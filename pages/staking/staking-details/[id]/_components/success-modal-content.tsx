@@ -15,11 +15,6 @@ const SuccessModalContent = () => {
         Congratulations! you have successfully create your Staking Project on
         centher platform.
       </p>
-      <FinalButton
-        title="View Staking Project"
-        className="w-full"
-        onClick={() => {}}
-      />
     </div>
   );
 };

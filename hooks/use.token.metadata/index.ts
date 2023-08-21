@@ -4,6 +4,10 @@ import { customLog } from "@/utils/custom.log";
 
 export const fetchTokenMetadata = async (addresses: string[]) => {
   try {
+    if (!addresses?.length) {
+      return [];
+    }
+
     const fetcher = new MoralisFetcher();
     const metadata = await fetcher.getTokenMetadata({
       addresses,

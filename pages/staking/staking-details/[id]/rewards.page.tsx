@@ -27,6 +27,7 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import { PreLoader } from "@/components/pre.loader";
 
 enum ModalType {
   stakeRewardsModal = "stakeRewardsModal",
@@ -57,6 +58,7 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [rewards, setRewards] = useState<ClaimedRewards[]>([]);
   const [cancelErrors, setCancelErrors] = useState("");
   const [cancelAmount, setCancelAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const claimreward = async () => {
     try {
@@ -132,7 +134,7 @@ const ClaimRewards: NextPageWithLayout = () => {
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
-      tokens.forEach((e) => {
+      tokens.filter(Boolean).forEach((e) => {
         if (e != ZeroAddress && list.indexOf(e) == -1) {
           list.push(e);
         }
@@ -152,11 +154,13 @@ const ClaimRewards: NextPageWithLayout = () => {
     };
 
     if (!stakingPool && poolId && sdk) {
+      setIsLoading(true);
       sdk.getProject(+poolId).then((pool) => {
         if (pool) {
           getCoinDetails([pool.stakeToken, pool.rewardToken]).then();
           const mappedPools = setupUiModels([pool]);
           setStakingPool(mappedPools[0]);
+          setIsLoading(false);
         }
         //else {//redirect to index}
       });
@@ -280,6 +284,7 @@ const ClaimRewards: NextPageWithLayout = () => {
           {ModalModel.content}
         </CustomModal>
       )}
+      {isLoading || !userStaked ? <PreLoader /> : ""}
     </>
   );
 };

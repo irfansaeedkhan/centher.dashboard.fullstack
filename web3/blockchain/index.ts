@@ -31,7 +31,8 @@ export class BlockchainRead {
 
     const { data, error } = await ApolloProvider.query(
       QueryNames.GENEALOGY_AT_LEVEL,
-      variables
+      variables,
+      false
     );
 
     if (error) {
