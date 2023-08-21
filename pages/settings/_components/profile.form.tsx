@@ -64,71 +64,76 @@ export const ProfileForm: React.FC<EditProfileFormProps> = (props) => {
 
         <div className="flex flex-col gap-2">
           <label className={`text-sm text-white`}>Display Name Field</label>
-          <select
+          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+            <select
+              onChange={(e) => {
+                setUpdatedUser({
+                  ...updatedUser,
+                  display_name_field: e.target
+                    .value as LoggedInUser["display_name_field"],
+                });
+                setIsModified(true);
+              }}
+              value={updatedUser.display_name_field}
+              className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-0`}
+            >
+              <option value="pseudonym">Pseudonym</option>
+              <option value="real_name">Real Name</option>
+              <option value="account_address">Account Address</option>
+            </select>
+          </div>
+        </div>
+        {updatedUser.display_name_field === "pseudonym" && (
+          <InputField
+            id="pseudonym"
+            label="Pseudonym"
+            placeholder="e.g. Steven Paul"
+            value={updatedUser.pseudonym}
+            maxLength={50}
             onChange={(e) => {
               setUpdatedUser({
                 ...updatedUser,
-                display_name_field: e.target
-                  .value as LoggedInUser["display_name_field"],
+                pseudonym: e.target.value,
               });
               setIsModified(true);
             }}
-            value={updatedUser.display_name_field}
-            className={`w-full rounded-lg border-0 bg-[#1E1E21] px-5 py-3 text-sm font-medium leading-6 text-white focus:outline-none focus:ring-brand-primary`}
-          >
-            <option value="pseudonym">Pseudonym</option>
-            <option value="real_name">Real Name</option>
-            <option value="account_address">Account Address</option>
-          </select>
-        </div>
+          />
+        )}
 
-        <InputField
-          id="pseudonym"
-          label="Pseudonym"
-          placeholder="e.g. Steven Paul"
-          value={updatedUser.pseudonym}
-          maxLength={50}
-          onChange={(e) => {
-            setUpdatedUser({
-              ...updatedUser,
-              pseudonym: e.target.value,
-            });
-            setIsModified(true);
-          }}
-        />
-        <div className="flex w-full flex-col gap-6 fsm:flex-row fmd:gap-3">
-          <div className="w-full">
-            <InputField
-              id="first_name"
-              label="First Name"
-              placeholder="e.g. Steven"
-              value={updatedUser.first_name}
-              onChange={(e) => {
-                setUpdatedUser({
-                  ...updatedUser,
-                  first_name: e.target.value,
-                });
-                setIsModified(true);
-              }}
-            />
+        {updatedUser.display_name_field === "real_name" && (
+          <div className="flex w-full flex-col gap-6 fsm:flex-row fmd:gap-3">
+            <div className="w-full">
+              <InputField
+                id="first_name"
+                label="First Name"
+                placeholder="e.g. Steven"
+                value={updatedUser.first_name}
+                onChange={(e) => {
+                  setUpdatedUser({
+                    ...updatedUser,
+                    first_name: e.target.value,
+                  });
+                  setIsModified(true);
+                }}
+              />
+            </div>
+            <div className="w-full">
+              <InputField
+                id="last_name"
+                label="Last Name"
+                placeholder="e.g. Paul"
+                value={updatedUser.last_name}
+                onChange={(e) => {
+                  setUpdatedUser({
+                    ...updatedUser,
+                    last_name: e.target.value,
+                  });
+                  setIsModified(true);
+                }}
+              />
+            </div>
           </div>
-          <div className="w-full">
-            <InputField
-              id="last_name"
-              label="Last Name"
-              placeholder="e.g. Paul"
-              value={updatedUser.last_name}
-              onChange={(e) => {
-                setUpdatedUser({
-                  ...updatedUser,
-                  last_name: e.target.value,
-                });
-                setIsModified(true);
-              }}
-            />
-          </div>
-        </div>
-
+        )}
         <FinalButton
           title={ButtonsText.update_profile}
           variant={isModified ? "primary" : "secondary"}
