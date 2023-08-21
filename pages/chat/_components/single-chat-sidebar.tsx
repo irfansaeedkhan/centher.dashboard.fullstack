@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { useOnClickOutside } from "usehooks-ts";
 import { BsThreeDots } from "react-icons/bs";
 import { FiTrash2 } from "react-icons/fi";
@@ -13,6 +12,7 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { getDateDifferent } from "@/live/utils/time.utils";
 import { AppRoutes } from "@/constants/app.routes";
 import { User } from "@/models/user";
+import useUser from "@/hooks/use.user";
 import { GradientTick, PinFill, PinIcon, UnpinIcon } from "@/assets/svgs";
 import { ChatModal } from "./chat-modal";
 
@@ -50,7 +50,7 @@ type IChannelConversationOverview = {
   needAttention?: boolean;
 };
 
-const defaultImageForUsers = "";
+const defaultImageForUsers = "/images/chat-profile.png";
 const defaultImageForChannles = "";
 
 const defaultChannelInfo = {
@@ -82,7 +82,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
   unpinConversation,
 }) => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { user } = useUser();
   const [conversationOverView, setConversationOverView] =
     useState<IConversationOverView>(defaultPrivateInfo);
   const [channelConversationOverView, setChannelConversationOverView] =
@@ -111,7 +111,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
   const isMessageSeenByMe = (message: any) => {
     const result = message.activities.find(
-      (e: any) => e.type == "seen" && eqAddress(e.user_address, account)
+      (e: any) => e.type == "seen" && eqAddress(e.user_address, user?._id)
     );
     return !!result;
   };
@@ -155,7 +155,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
     let needToPlaySound = false;
     if (data && data.is_channel) {
       const myUser = data.user_conversations.find((e) =>
-        eqAddress(e.user_address, account)
+        eqAddress(e.user_address, user?._id)
       );
 
       if (myUser?.is_pinned) {
@@ -164,7 +164,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
 
       const needAttention =
         data.user_conversations
-          .filter((e) => !eqAddress(e.user_address, account))
+          .filter((e) => !eqAddress(e.user_address, user?._id))
           .map((e) => e.messages)
           .flat()
           .filter((e) => !isMessageSeenByMe(e))?.length > 0;
@@ -184,13 +184,13 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
       setIsChannel(true);
     }
 
-    if (data && !data.is_channel && users?.length) {
+    if (data && !data.is_channel) {
       const oppositUser = data.user_conversations.find(
-        (e) => !eqAddress(e.user_address, account)
+        (e) => !eqAddress(e.user_address, user?._id)
       );
 
       const myUser = data.user_conversations.find((e) =>
-        eqAddress(e.user_address, account)
+        eqAddress(e.user_address, user?._id)
       );
 
       if (myUser?.is_pinned) {
@@ -249,6 +249,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
         ),
         lastMessage: controlStringLength(lastMessage),
         latestUpdate: getDateDifferent(data.updated_at),
+        needAttention,
       };
 
       needToPlaySound = needAttention;
@@ -264,11 +265,11 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
         // play();
       }
     }
-  }, [data, account]);
+  }, [data, user?._id]);
 
   useEffect(() => {
     setIsSelected(false);
-    if (router.query.chat_id && router.query.chat_id == data.id) {
+    if (router.query.chat_id && router.query.chat_id === data.id) {
       setIsSelected(true);
     }
   }, [router, data]);
@@ -284,7 +285,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
           }
         >
           <div className="flex w-full items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-grow items-center gap-3">
               {isSelectConversation && (
                 <div
                   className={clsx(
@@ -325,7 +326,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   alt="profile image"
                   width={48}
                   height={48}
-                  className="rounded-full object-cover"
+                  className="!h-12 !w-12 flex-shrink-0 rounded-full object-cover"
                 />
                 <div className="flex flex-grow flex-col gap-1">
                   <div className="flex items-center gap-2">
@@ -336,7 +337,13 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                     </h6>
                     {isPinned && <PinFill />}
                   </div>
-                  <p className="text-xs leading-[17.07px] text-gray-shade-14">
+                  <p
+                    className={
+                      conversationOverView?.needAttention
+                        ? "text-xs font-bold leading-[17.07px] text-gray-shade-14"
+                        : "text-xs leading-[17.07px] text-gray-shade-14"
+                    }
+                  >
                     {isChannel
                       ? channelConversationOverView.description
                       : conversationOverView.lastMessage}
@@ -355,7 +362,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   <div className="text-14px absolute right-0 top-[30px] z-[500]  rounded-10px bg-black-shade-12">
                     <span
                       className={clsx(
-                        `absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
+                        `absolute top-[-3px] right-[18px] h-3 w-3 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `
                       )}
                     >
@@ -409,15 +416,18 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                 )}
               </div>
 
-              {conversationOverView?.needAttention ? (
+              {/* {conversationOverView?.needAttention ? (
                 <div className="flex h-[19px] w-[21px] items-center justify-center bg-gradient-pattern text-xs">
-                  {/* 22 */}
+                 
                 </div>
               ) : (
                 <p className="min-w-max text-xs leading-[14.63px] text-gray-shade-14">
                   {conversationOverView?.latestUpdate}
                 </p>
-              )}
+              )} */}
+              <p className="min-w-max text-xs leading-[14.63px] text-gray-shade-14">
+                {conversationOverView?.latestUpdate}
+              </p>
             </div>
           </div>
 

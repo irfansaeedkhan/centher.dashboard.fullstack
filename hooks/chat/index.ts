@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 import { CentherLive } from "@/live";
 import { centherLiveoptions } from "@/live/config";
 import { IConversation } from "@/live/types";
@@ -11,9 +12,11 @@ import {
 } from "@/store/centher.live";
 import { getAuthTokens } from "@/lib/auth";
 import { customLog } from "@/utils/custom.log";
-import toast from "react-hot-toast";
+import useUser from "../use.user";
 
 export const useCentherLive = () => {
+  const { user } = useUser();
+  const router = useRouter();
   const { adapter, setAdapter } = useCentherLiveStore((state) => ({
     adapter: state.adapter,
     setAdapter: state.setAdapter,
@@ -26,10 +29,10 @@ export const useCentherLive = () => {
     })
   );
 
-  const { account } = useWeb3React();
   const [conversationLoading, setConversationLoading] =
     useState<boolean>(false);
   const [unreadNotifications, setUnreadNotifications] = useState<number>(0);
+  const [unreadConversations, setUnreadConversations] = useState<number>(0);
 
   const token = getAuthTokens()?.access_token;
 
@@ -47,6 +50,22 @@ export const useCentherLive = () => {
       //     }
       //   });
       // }
+      const hasUnreadMessages = getConversationWithMessageStatus(
+        newConversations,
+        "fetched",
+        account
+      );
+
+      const unseenMessages = getConversationWithMessageStatus(
+        newConversations,
+        "seen",
+        account
+      );
+
+      setUnreadConversations(unseenMessages);
+      if (!router.pathname?.includes("chat") && hasUnreadMessages) {
+        toast(`You have a new message`);
+      }
 
       const pinnedConversations: IConversation[] = [];
       const unpinnedConversation: IConversation[] = [];
@@ -76,7 +95,7 @@ export const useCentherLive = () => {
       setConversations(finalArray);
       setConversationLoading(false);
     },
-    [setConversations]
+    [setConversations, router.pathname]
   );
 
   const notificationCallback = useCallback(async (e: any) => {
@@ -105,10 +124,10 @@ export const useCentherLive = () => {
       await adapter.subToConversations(adapter, handler);
     };
 
-    if (account?.length && !adapter && token) {
+    if (user && !adapter && token) {
       const config: ICentherLiveOptions = {
         ...centherLiveoptions,
-        userAddress: account,
+        userAddress: user._id,
         userToken: token,
         eventHandlers: {
           OnNotificationReceived: notificationCallback,
@@ -129,7 +148,8 @@ export const useCentherLive = () => {
         .catch((e) => customLog(["development", "staging"], e));
     }
   }, [
-    account,
+    handleUnreadNotification,
+    user,
     adapter,
     setAdapter,
     conversationSubscriptionHander,
@@ -137,5 +157,31 @@ export const useCentherLive = () => {
     notificationCallback,
   ]);
 
-  return { adapter, conversations, conversationLoading, unreadNotifications };
+  return {
+    adapter,
+    conversations,
+    conversationLoading,
+    unreadNotifications,
+    unreadConversations,
+  };
 };
+
+function getConversationWithMessageStatus(
+  conversations: IConversation[],
+  status: string,
+  account: string
+): number {
+  return conversations
+    .map((e) => e.user_conversations)
+    .flat()
+    .filter((e) => !eqAddress(e.user_address, account))
+    .map((e) => e.messages)
+    .flat()
+    .filter((e) => {
+      return (
+        e.activities.filter(
+          (a) => eqAddress(account, a.user_address) && a.type == status
+        )?.length == 0
+      );
+    }).length;
+}

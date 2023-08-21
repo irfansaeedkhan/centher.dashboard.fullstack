@@ -53,13 +53,13 @@ export const ChatModal: React.FC<Props> = ({
             <div className="mt-4 flex flex-col-reverse gap-2 fsm:flex-row fmd:mt-6">
               <ActionButton
                 onClick={onClose}
-                className="bg-black-shade-7 text-gray-shade-10 hover:bg-gray-900"
+                className="border border-gray-shade-3 bg-transparent text-gray-shade-10 hover:bg-gray-900"
               >
                 Cancel
               </ActionButton>
               <ActionButton
                 onClick={onAction}
-                className="group flex items-center justify-center bg-danger text-white hover:bg-red-900"
+                className="group flex items-center justify-center border border-danger text-white hover:bg-red-900"
               >
                 Delete
               </ActionButton>
@@ -81,7 +81,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({
   return (
     <button
       className={clsx(
-        `w-full rounded-lg px-4 py-2 font-semibold transition-all fmd:py-3`,
+        `w-full rounded-[14px] px-4 py-2 font-semibold transition-all fmd:py-3`,
         className
       )}
       {...props}
