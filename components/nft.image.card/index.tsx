@@ -14,12 +14,13 @@ import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 export interface NFTCardProps {
   data: NFTLockedDetailsProps;
 }
 
-export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
+export const NFTImageCard: React.FC<NFTCardProps> = ({ data }, context) => {
   const [imageUrl, setImageUrl] = useState("");
   const { library, account } = useWeb3React();
 
@@ -442,17 +443,21 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.collection}
-                </h6>
+                <a href={`/profile/${router.query.user_id}/nfts/collection`}>
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.collection}
+                  </h6>
+                </a>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.mintHash}
-                </h6>
+                <a href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}>
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.mintHash}
+                  </h6>
+                </a>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
