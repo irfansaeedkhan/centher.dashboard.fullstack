@@ -97,6 +97,23 @@ const CreateStaking: NextPageWithLayout = () => {
   const [isDifferentTokens, setIsDifferentTokens] = useState(false);
   const [stakingToken, setStakingToken] = useState("");
   const [isCancelable, setIsCancelable] = useState("no");
+  const [isLP, setIsLP] = useState("no");
+  const [metaDataDetails, setMetaDataDetails] = useState<metaDataType>({
+    title: "",
+    data: "",
+  });
+  const [metaDataModal, setMetaDataModal] = useState(false);
+  const [metaDataErr, setMetaDataErr] = useState<null | string>(null);
+  const [metaDataList, setMetaDataList] = useState<metaDataType[]>([]);
+  const [members, setMembers] = useState<teamMember[]>([]);
+  const [memberError, setMemberError] = useState<string | null>(null);
+  const [memberData, setMemberData] = useState({
+    jobTitle: "",
+    walletAddress: "",
+  });
+
+  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [inputValues, setInputValues] = useState<levelDataType[]>([]);
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -148,13 +165,6 @@ const CreateStaking: NextPageWithLayout = () => {
   // end upload images and videos
 
   // start handle metadata
-  const [metaDataDetails, setMetaDataDetails] = useState<metaDataType>({
-    title: "",
-    data: "",
-  });
-  const [metaDataModal, setMetaDataModal] = useState(false);
-  const [metaDataErr, setMetaDataErr] = useState<null | string>(null);
-  const [metaDataList, setMetaDataList] = useState<metaDataType[]>([]);
 
   const handleMetaDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -194,8 +204,6 @@ const CreateStaking: NextPageWithLayout = () => {
   // end handle metadata
 
   // start handle level system
-  const [selectedValue, setSelectedValue] = useState<string>("");
-  const [inputValues, setInputValues] = useState<levelDataType[]>([]);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
     const newSelectedValue: string = event.target.value;
@@ -228,7 +236,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
     // Check if the input value is a valid number (integer or decimal)
     const numericValue: number = parseFloat(inputValue);
-    if (!isNaN(numericValue) && isFinite(numericValue)) {
+    if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
       const newInputValues: levelDataType[] = [...inputValues];
       newInputValues[index].percent = numericValue;
       setInputValues(newInputValues);
@@ -262,13 +270,12 @@ const CreateStaking: NextPageWithLayout = () => {
           type="number"
           name={`level-${index + 1}`}
           id={`level-${index + 1}`}
-          placeholder="%"
+          placeholder="0%"
           className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
           value={inputValues[index]?.percent || ""}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
           }
-          pattern="[0-9]+(\.[0-9]+)?" // Allows integer and decimal numbers
           title="Please enter numbers only"
           required
         />
@@ -329,9 +336,23 @@ const CreateStaking: NextPageWithLayout = () => {
         .min(0)
         .label("charge fee on cancel"),
     }),
-    min_staking_amount: Joi.number().label("min staking amount"),
-    max_staking_amount: Joi.number().label("max staking amount"),
-    total_supply: Joi.number().min(1).label("max staking amount"),
+    min_staking_amount: Joi.number().min(0).label("min staking amount"),
+    // max_staking_amount: Joi.number().label("max staking amount"),
+    max_staking_amount: Joi.when("liquidity_pool_provided", {
+      is: "yes",
+      then: Joi.number().min(0).label("liquidity pool provided"),
+      otherwise: Joi.number()
+        .optional()
+        .allow("")
+        .min(0)
+        .label("liquidity pool provided"),
+    }),
+    // total_supply: Joi.number().min(1).label("max staking amount"),
+    total_supply: Joi.when("liquidity_pool_provided", {
+      is: "yes",
+      then: Joi.number().min(0).label("total sypply"),
+      otherwise: Joi.number().optional().allow("").min(0).label("total sypply"),
+    }),
     website_url: Joi.string().max(150).label("website_url"),
     whitepaper: Joi.string().max(150).label("whitepaper"),
     facebook: Joi.string().max(150).optional().allow("").label("facebook"),
@@ -391,12 +412,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
   // form2 start
   // handle adding members
-  const [members, setMembers] = useState<teamMember[]>([]);
-  const [memberError, setMemberError] = useState<string | null>(null);
-  const [memberData, setMemberData] = useState({
-    jobTitle: "",
-    walletAddress: "",
-  });
+
   const handleMemberInputChange = (
     event: ChangeEvent<HTMLInputElement>
   ): void => {
@@ -468,31 +484,6 @@ const CreateStaking: NextPageWithLayout = () => {
       previewBoxModalFunc(finalData);
     }
   };
-
-  const progressCallbackHandler = useCallback(
-    async (title: CreatePoolStepsEnum, value: number) => {
-      if (progressModel?.length) {
-        const updatedProgress = progressModel.map((e) => {
-          if (e.title == title) {
-            if (value == 100) {
-              e.status = ProgressStatus.done;
-            }
-
-            if (value == 0) {
-              e.status = ProgressStatus.inProgress;
-            }
-
-            e.value = value;
-
-            return e;
-          } else return e;
-        });
-
-        await setProgressModel(updatedProgress);
-      }
-    },
-    [progressModel, setProgressModel]
-  );
 
   const afterSubmitMapper = async (data: stakingFormInterface) => {
     if (!library || !account?.length) {
@@ -659,6 +650,31 @@ const CreateStaking: NextPageWithLayout = () => {
     );
     await setProgressModel([]);
   };
+
+  const progressCallbackHandler = useCallback(
+    async (title: CreatePoolStepsEnum, value: number) => {
+      if (progressModel?.length) {
+        const updatedProgress = progressModel.map((e) => {
+          if (e.title == title) {
+            if (value == 100) {
+              e.status = ProgressStatus.done;
+            }
+
+            if (value == 0) {
+              e.status = ProgressStatus.inProgress;
+            }
+
+            e.value = value;
+
+            return e;
+          } else return e;
+        });
+
+        await setProgressModel(updatedProgress);
+      }
+    },
+    [progressModel, setProgressModel]
+  );
 
   const retryFunc = () => {
     setshowMsg(null);
@@ -1164,7 +1180,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     htmlFor="token_address"
                     className="block font-normal tracking-wide"
                   >
-                    Toke Address
+                    Token Address
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
                   <input
@@ -1616,6 +1632,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           value="no"
                           {...stakingForm.register("liquidity_pool_provided")}
                           className="red-radio text-14px h-4 w-4"
+                          onClick={() => setIsLP("no")}
                         />
                         <label
                           htmlFor="red-radio2"
@@ -1631,6 +1648,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           value="yes"
                           {...stakingForm.register("liquidity_pool_provided")}
                           className="green-radio text-14px h-4 w-4"
+                          onClick={() => setIsLP("yes")}
                         />
                         <label
                           htmlFor="green-radio2"
@@ -1679,51 +1697,74 @@ const CreateStaking: NextPageWithLayout = () => {
                     </p>
                   )}
                 </div>
-                {/* Maximum Stakable Amount */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="max_staking_amount"
-                    className="block font-normal tracking-wide"
-                  >
-                    Maximum Stakable Amount
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("max_staking_amount")}
-                    id="max_staking_amount"
-                    placeholder="Only numbers here"
-                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
-                  />
+                {
+                  /* Maximum Stakable Amount */
+                  isLP == "yes" ? (
+                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                      <label
+                        htmlFor="max_staking_amount"
+                        className="block font-normal tracking-wide"
+                      >
+                        Maximum Stakable Amount
+                        <span className="text-gradient ml-[2px]">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        {...stakingForm.register("max_staking_amount")}
+                        id="max_staking_amount"
+                        placeholder="Only numbers here"
+                        className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
+                      />
 
-                  {stakingForm.formState.errors.max_staking_amount && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.max_staking_amount.message}
-                    </p>
-                  )}
-                </div>
-                {/* Total Supply */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
-                  <label
-                    htmlFor="total_supply"
-                    className="block font-normal tracking-wide"
-                  >
-                    Total Supply
-                    <span className="text-gradient ml-[2px]">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    {...stakingForm.register("total_supply")}
-                    id="total_supply"
-                    placeholder="Only numbers here"
-                    className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
-                  />
-                  {stakingForm.formState.errors.total_supply && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
-                      {stakingForm.formState.errors.total_supply.message}
-                    </p>
-                  )}
-                </div>
+                      {stakingForm.formState.errors.max_staking_amount && (
+                        <p
+                          className={`text-12px pb-2 font-medium text-red-500`}
+                        >
+                          {
+                            stakingForm.formState.errors.max_staking_amount
+                              .message
+                          }
+                        </p>
+                      )}
+                    </div>
+                  ) : null
+                }
+
+                {
+                  /* Total Supply */
+                  isLP == "yes" ? (
+                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                      <label
+                        htmlFor="total_supply"
+                        className="block font-normal tracking-wide"
+                      >
+                        Total Supply
+                        <span className="text-gradient ml-[2px]">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        {...stakingForm.register("total_supply")}
+                        id="total_supply"
+                        placeholder="Only numbers here"
+                        className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
+                      />
+                      <p
+                        className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                      >
+                        How much of the Token you want to make available for
+                        staking
+                      </p>
+                      {stakingForm.formState.errors.total_supply && (
+                        <p
+                          className={`text-12px pb-2 font-medium text-red-500`}
+                        >
+                          {stakingForm.formState.errors.total_supply.message}
+                        </p>
+                      )}
+                    </div>
+                  ) : null
+                }
+
                 {/*  Metadata */}
                 <div className="text-14px col-span-2 w-full font-medium text-white">
                   <label htmlFor="test" className="block font-normal">

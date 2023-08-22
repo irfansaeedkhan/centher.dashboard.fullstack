@@ -23,18 +23,36 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
       <table className={`w-full max-w-full table-auto`}>
         <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
           <tr>
-            <TableCell element={"th"}>Pool Name</TableCell>
-            <TableCell element={"th"}>Apy</TableCell>
-            <TableCell element={"th"}>Token</TableCell>
-            <TableCell element={"th"}>Total Staked</TableCell>
-            <TableCell element={"th"}>Min Stake</TableCell>
-            <TableCell element={"th"}>Status</TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Pool Name
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Apy
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Token
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Total Staked
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Min Stake
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Liquidity Pool
+            </TableCell>
+            <TableCell element={"th"} className="min-w-[100px]">
+              Status
+            </TableCell>
           </tr>
         </thead>
         <tbody className="">
           {card.map((item, index) => (
             <TableRow key={index}>
-              <TableCell element={"td"} className="flex items-center gap-2">
+              <TableCell
+                element={"td"}
+                className="flex min-w-[100px] items-center gap-2"
+              >
                 <Link href={"/staking/staking-details/" + item.id}>
                   {item?.metadata?.logo ? (
                     <Image
@@ -54,12 +72,15 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                 </Link>
               </TableCell>
 
-              <TableCell element={"td"}>
+              <TableCell element={"td"} className="min-w-[100px]">
                 <Link href={"/staking/staking-details/" + item.id}>
                   {+item.apy / 100} %
                 </Link>
               </TableCell>
-              <TableCell element={"td"} className="flex items-center gap-2">
+              <TableCell
+                element={"td"}
+                className="flex min-w-[100px] items-center gap-2"
+              >
                 <Link href={"/staking/staking-details/" + item.id}>
                   {coins.find((e) =>
                     eqAddress(e?.contractAddress, item.token_address)
@@ -88,7 +109,7 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                   </span>
                 </Link>
               </TableCell>
-              <TableCell element={"td"}>
+              <TableCell element={"td"} className="min-w-[100px]">
                 <Link href={"/staking/staking-details/" + item.id}>
                   {formatEther(item.totalStakedAmount)}{" "}
                   {
@@ -98,7 +119,7 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                   }
                 </Link>
               </TableCell>
-              <TableCell element={"td"}>
+              <TableCell element={"td"} className="min-w-[100px]">
                 <Link href={"/staking/staking-details/" + item.id}>
                   {formatEther(item.min_staking_amount)}{" "}
                   {
@@ -108,7 +129,16 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                   }
                 </Link>
               </TableCell>
-              <TableCell element={"td"}>
+              <TableCell element={"td"} className="min-w-[100px]">
+                <Link href={"/staking/staking-details/" + item.id}>
+                  {item.liquidity_pool_provided == "yes" ? (
+                    <span className="textGradient">Yes</span>
+                  ) : (
+                    <span className="text-error">No</span>
+                  )}
+                </Link>
+              </TableCell>
+              <TableCell element={"td"} className="min-w-[100px]">
                 <Link href={"/staking/staking-details/" + item.id}>
                   {item.totalStakedAmount < item.supply ? (
                     <span className="textGradient">Active</span>

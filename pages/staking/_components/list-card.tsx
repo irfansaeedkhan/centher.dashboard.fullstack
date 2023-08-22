@@ -187,7 +187,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
       ) : (
         ""
       )}
-      {card.rewards_level && (
+      {/* {card.rewards_level && (
         <div className="gradient-border-3 rounded-xl p-[1px]">
           <div className="p-5">
             <p className={label}>Multilevel Rewards System(Monthly)</p>
@@ -213,7 +213,8 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
+      <hr />
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
         <div className={section}>
           <p className={label}>APY</p>
@@ -237,40 +238,45 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             }
           </p>
         </div>
-        {card.liquidity_pool_provided === "yes" && (
-          <div className={section}>
-            <p className={label}>Liquidity Pool Provided</p>
-            <p className={value2}>{card.liquidity_pool_provided}</p>
-          </div>
-        )}
-        {card.is_cancelable === "yes" && (
-          <div className={section}>
-            <p className={label}>Is Cancelable</p>
-            <p className={value2}>{card.is_cancelable}</p>
-          </div>
-        )}
         <div className={section}>
-          <p className={label}>Total Supply</p>
-          <p className={value2}>
-            {normalizeValue(formatUnits(card.supply, 18).toString())}
-          </p>
+          <p className={label}>Liquidity Pool Provided</p>
+          <p className={value2}>{card.liquidity_pool_provided}</p>
         </div>
         <div className={section}>
-          <p className={label}>Charge Fee on Cancel</p>
-          <p className={value}>{card.charge_fee_on_cancel} %</p>
+          <p className={label}>Is Cancelable</p>
+          <p className={value2}>{card.is_cancelable}</p>
         </div>
+        {card.supply && +card.supply > 0 ? (
+          <div className={section}>
+            <p className={label}>Total Supply</p>
+            <p className={value2}>
+              {normalizeValue(formatUnits(card.supply, 18).toString())}
+            </p>
+          </div>
+        ) : null}
+
+        {card.is_cancelable == "yes" ? (
+          <div className={section}>
+            <p className={label}>Charge Fee on Cancel</p>
+            <p className={value}>{card.charge_fee_on_cancel} %</p>
+          </div>
+        ) : null}
+
         <div className={section}>
           <p className={label}>Start Time</p>
           <p className={value}>
             {new Date(+card.start_time * 1000).toDateString()}
           </p>
         </div>
-        <div className={section}>
-          <p className={label}>Maximum Stakable Amount</p>
-          <p className={value}>
-            {normalizeValue(formatUnits(card.max_staking_amount, 18))}
-          </p>
-        </div>
+        {card.max_staking_amount && +card.max_staking_amount > 0 ? (
+          <div className={section}>
+            <p className={label}>Maximum Stakable Amount</p>
+            <p className={value}>
+              {normalizeValue(formatUnits(card.max_staking_amount, 18))}
+            </p>
+          </div>
+        ) : null}
+
         <div className={section}>
           <p className={label}>Minimum Stakable Amount</p>
           <p className={value}>
