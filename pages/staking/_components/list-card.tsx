@@ -359,6 +359,18 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </div>
         </div>
       ) : null}
+
+      {card.liquidity_pool_provided == "no" ? (
+        <div
+          className="mt-2 flex items-center rounded-xl bg-[#cf121228] p-6  px-4 py-3 text-sm text-[#fd4040]"
+          role="alert"
+        >
+          <p>
+            Warning! This staking pool does not provide Liquidity pool and
+            Centher does not guarantee it
+          </p>
+        </div>
+      ) : null}
     </div>
   );
 };
