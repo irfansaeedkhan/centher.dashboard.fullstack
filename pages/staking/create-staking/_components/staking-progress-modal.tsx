@@ -14,11 +14,13 @@ import { ProgressStatus } from "@/staking/enum/create-pool-steps.enum";
 interface CustomModalProps {
   onClickClose: () => void;
   data: ProgressModal[];
+  item: ProgressModal;
 }
 
 export const StakingProgressModal: React.FC<CustomModalProps> = ({
   onClickClose,
   data,
+  item,
 }) => {
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
@@ -50,7 +52,6 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
             Setting things for you
           </h2>
           <div className="flex flex-col gap-5 text-center">
-            <MultiColorLoader className="spinner-2s mx-auto w-16" />
             <div className="flex flex-col gap-2">
               <h2 className="text-base font-semibold text-white fsm:text-lg">
                 You are almost there!
@@ -60,47 +61,14 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
               </p>
             </div>
             <div className="flex flex-col gap-4 rounded-2xl border border-gray-shade-border-color bg-black-shade-9 p-4">
-              {data.map((e, i) => {
-                if (e.status == ProgressStatus.pending) {
-                  return (
-                    <div className="flex items-center justify-between" key={i}>
-                      <h5 className="text-14px font-medium text-white">
-                        {e.title}
-                      </h5>
-                      <div className="value">
-                        <h6 className="text-14px font-medium text-[#F3BA2F]">
-                          Pending
-                        </h6>
-                      </div>
-                    </div>
-                  );
-                }
-                if (e.status == ProgressStatus.inProgress) {
-                  return (
-                    <div className="flex items-center justify-between" key={i}>
-                      <h5 className="text-14px font-medium text-white">
-                        {e.title}
-                      </h5>
-                      <div className="value">
-                        <MultiColorLoader className="spinner-2s mx-auto w-10" />
-                      </div>
-                    </div>
-                  );
-                }
-
-                if (e.status == ProgressStatus.done) {
-                  return (
-                    <div className="flex items-center justify-between" key={i}>
-                      <h5 className="text-14px font-medium text-white">
-                        {e.title}
-                      </h5>
-                      <div className="value">
-                        <BiCheckCircle className="h-6 w-6 flex-shrink-0 fill-[#76E268]" />
-                      </div>
-                    </div>
-                  );
-                }
-              })}
+              <div className="flex items-center justify-between">
+                <h5 className="text-14px font-medium text-white">
+                  {item.title}
+                </h5>
+                <div className="value">
+                  <MultiColorLoader className="spinner-2s mx-auto w-16" />
+                </div>
+              </div>
             </div>
             <FinalButton
               onClick={() => {

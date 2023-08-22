@@ -5,6 +5,5 @@ import {
 
 export interface ProgressModal {
   title: CreatePoolStepsEnum;
-  status: ProgressStatus;
   value: number;
 }

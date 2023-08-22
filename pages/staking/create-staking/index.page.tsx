@@ -86,7 +86,9 @@ const CreateStaking: NextPageWithLayout = () => {
   const [profileErr, setProfileErr] = useState(false);
   const [coverErr, setCoverErr] = useState(false);
   const [clearForm, setClearForm] = useState(false);
-  const [progressModel, setProgressModel] = useState<ProgressModal[]>([]);
+  const [progressModel, setProgressModel] = useState<ProgressModal | null>(
+    null
+  );
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const { connectWallet } = useConnectWallet();
@@ -496,60 +498,6 @@ const CreateStaking: NextPageWithLayout = () => {
 
     setshowMsg(null);
 
-    let initialProgress = [
-      {
-        title: CreatePoolStepsEnum.preflight,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-      {
-        title: CreatePoolStepsEnum.stake_approval,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-    ];
-
-    if (
-      data.reward_token_address?.length &&
-      isAddress(data.reward_token_address) &&
-      data.reward_token_address != data.token_address
-    ) {
-      initialProgress.push({
-        title: CreatePoolStepsEnum.reward_approval,
-        status: ProgressStatus.pending,
-        value: 0,
-      });
-    }
-
-    initialProgress = [
-      ...initialProgress,
-      {
-        title: CreatePoolStepsEnum.examinate,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-      {
-        title: CreatePoolStepsEnum.banner,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-      {
-        title: CreatePoolStepsEnum.logo,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-      {
-        title: CreatePoolStepsEnum.metadata,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-      {
-        title: CreatePoolStepsEnum.contract,
-        status: ProgressStatus.pending,
-        value: 0,
-      },
-    ];
-
     const metadata: CreatePoolMetadata = {
       library: metaDataList,
       banner: "",
@@ -630,15 +578,8 @@ const CreateStaking: NextPageWithLayout = () => {
         levelFive: levelFive ? levelFive.percent * 100 : 0,
         levelSix: levelSix ? levelSix.percent * 100 : 0,
       };
-
-      initialProgress.push({
-        title: CreatePoolStepsEnum.affiliate,
-        status: ProgressStatus.pending,
-        value: 0,
-      });
     }
 
-    await setProgressModel(initialProgress);
     await sdk.createPool(
       library,
       input,
@@ -648,30 +589,15 @@ const CreateStaking: NextPageWithLayout = () => {
         progressCallbackHandler(title, value);
       }
     );
-    await setProgressModel([]);
+    await setProgressModel(null);
   };
 
   const progressCallbackHandler = useCallback(
-    async (title: CreatePoolStepsEnum, value: number) => {
-      if (progressModel?.length) {
-        const updatedProgress = progressModel.map((e) => {
-          if (e.title == title) {
-            if (value == 100) {
-              e.status = ProgressStatus.done;
-            }
-
-            if (value == 0) {
-              e.status = ProgressStatus.inProgress;
-            }
-
-            e.value = value;
-
-            return e;
-          } else return e;
-        });
-
-        await setProgressModel(updatedProgress);
-      }
+    (title: CreatePoolStepsEnum, value: number) => {
+      setProgressModel({
+        title,
+        value,
+      });
     },
     [progressModel, setProgressModel]
   );
@@ -682,7 +608,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const onClickClose = () => {
-    setProgressModel([]);
+    setProgressModel(null);
     setshowMsg(null);
   };
 
@@ -876,7 +802,16 @@ const CreateStaking: NextPageWithLayout = () => {
         message = `Wallet:  ${error.message}`;
       }
 
-      await setProgressModel([]);
+      await setProgressModel(null);
+
+      if (message.includes("user rejected transaction")) {
+        message = "Transaction rejected";
+      }
+
+      if (message.includes("call revert exception")) {
+        message =
+          "Something went wrong while we called smart contract, please try again after a while or contact support.";
+      }
 
       setshowMsg(
         <StakingFailureModal
@@ -2346,9 +2281,10 @@ const CreateStaking: NextPageWithLayout = () => {
         </CustomNewModal>
       )}
       {showMsg && showMsg}
-      {progressModel?.length > 0 && (
+      {progressModel && (
         <StakingProgressModal
-          data={progressModel}
+          data={[]}
+          item={progressModel}
           onClickClose={onClickClose}
         />
       )}
