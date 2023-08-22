@@ -231,34 +231,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
       ) : (
         ""
       )}
-      {/* {card.rewards_level && (
-        <div className="gradient-border-3 rounded-xl p-[1px]">
-          <div className="p-5">
-            <p className={label}>Multilevel Rewards System(Monthly)</p>
-            <div className="scrollSetLight2 flex items-center justify-between gap-2 overflow-x-auto">
-              {card.rewards_level.map((level, index) => (
-                <div
-                  className="flex min-w-[80px] items-center gap-1"
-                  key={index}
-                >
-                  <p className="text-xs font-medium text-gray-shade-14">
-                    Level {level.level}:
-                  </p>
-                  <p
-                    className={clsx(
-                      "text-sm font-medium",
-                      level.percent === 0 ? "text-gray-shade-14" : "text-white"
-                    )}
-                  >
-                    {level.percent / 100}%
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )} */}
-      <hr />
+      <div className="border-b-2 border-gray-shade-3"></div>
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
         <div className={section}>
           <p className={label}>APY</p>

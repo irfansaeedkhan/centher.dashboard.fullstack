@@ -298,7 +298,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
                 {stakingPool?.users ? stakingPool?.users.length : 0}
               </p>
             </div>
-            <hr />
+            <div className="border-b-2 border-gray-shade-3"></div>
             <div className="mt-6 flex items-center justify-between gap-5">
               <p className="flex items-center gap-2 text-sm text-gray-shade-14">
                 <span>Your reward in each claim</span>

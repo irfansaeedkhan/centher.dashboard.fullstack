@@ -38,7 +38,7 @@ import { ZeroAddress } from "@/web3/constants/common";
 import { useStaking } from "@/hooks/staking";
 import { fetchUsers } from "@/hooks/user.get.multi.users";
 import { isAddress } from "ethers/lib/utils";
-import { stakingPeriodOptions } from "../../constants";
+import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 
 export interface Memb {
@@ -324,7 +324,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                 data.reward_token_address?.length ? (
                   <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
                     <div className={section}>
-                      <p className={label}>Token Address</p>
+                      <p className={label}>Reward Token Address</p>
                       <p
                         className={clsx(
                           value,
@@ -422,51 +422,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                 ) : (
                   ""
                 )}
-                {/* <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
-                  <div className={section}>
-                    <p className={label}>Rewards Token Address</p>
-                    <p
-                      className={clsx(
-                        value,
-                        "word-break flex items-center gap-2 truncate"
-                      )}
-                    >
-                      <Image
-                        src="/images/token-address-symbol.png"
-                        alt="token-address-symbol"
-                        width={20}
-                        height={20}
-                      />
-                      <span>
-                        {sliceAccountAddress(data?.reward_token_address)}
-                      </span>
-                      <FiCopy
-                        className="h-5 w-5 cursor-pointer stroke-gray-shade-14 hover:stroke-brand-primary"
-                        onClick={async () => {
-                          await copyText(data?.reward_token_address ?? "");
-                          toast.success("Reward Token address copied!");
-                        }}
-                      />
-                    </p>
-                  </div>
-                  {data?.reward_token_address !== data?.token_address && (
-                    <>
-                      <div className="col-span-1">
-                        <p className={label}>Project Name</p>
-                        <p className={value}>DeXa name here</p>
-                      </div>
-                      <div className="col-span-1">
-                        <p className={label}>Price</p>
-                        <p className={value}>price here</p>
-                      </div>
-                      <div className="col-span-1">
-                        <p className={label}>Symbol</p>
-                        <p className={value}>symbol here</p>
-                      </div>
-                    </>
-                  )}
-                </div> */}
-
+                <div className="border-b-2 border-gray-shade-3"></div>
                 {data?.multilevel_rewards !== "No referral" &&
                   data?.rewards_level &&
                   data?.rewards_level.length > 0 && (
@@ -518,9 +474,8 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   <div className={section}>
                     <p className={label}>Claim Period</p>
                     <p className={value}>
-                      {data?.claim_period}
                       {
-                        stakingPeriodOptions.find(
+                        claimPeriodOptions.find(
                           (e) => e.value == +data?.claim_period
                         )?.title
                       }
@@ -583,7 +538,8 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     </p>
                   </div>
                 </div>
-                {data?.project_metadata && (
+                {data?.project_metadata &&
+                data?.project_metadata?.length > 0 ? (
                   <div>
                     <p className={label}>Project Metadata</p>
                     <div className="grid w-full items-center gap-5 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
@@ -600,12 +556,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       ))}
                     </div>
                   </div>
-                )}
-                {data?.liquidity_pool_provided && (
-                  <p className="color-[#E5535A] text-14px mt-5 w-full rounded-lg bg-[#E5535A]/60 px-2 py-1 font-normal">
-                    Warning! This staking pool does not provide Liquidity pool.
-                  </p>
-                )}
+                ) : null}
               </div>
               {/* bottom */}
               <div className="flex flex-col gap-4 pt-6 fsm:pt-5">
