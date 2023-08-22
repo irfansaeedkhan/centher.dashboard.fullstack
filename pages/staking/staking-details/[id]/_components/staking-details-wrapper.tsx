@@ -19,18 +19,12 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import axios from "axios";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
-import {
-  formatEther,
-  formatUnits,
-  isAddress,
-  parseEther,
-} from "ethers/lib/utils";
+import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CustomModal } from "@/components/modal/custom.modal";
-import { ModalWrapper } from "@/components/modal";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
@@ -56,7 +50,6 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   const { sdk } = useStaking();
   const [poolId, setPoolId] = useState("0");
   const [activeTab, setActiveTab] = useState("index");
-  const { user } = useUser();
   const [stakingStat, setStakingStat] = useState<StakingStat | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -68,6 +61,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     total: string;
   } | null>(null);
   const [stakingValue, setStakingValue] = useState<string>("0");
+
   const router = useRouter();
 
   useEffect(() => {
@@ -238,7 +232,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
               onValueChanged={stakingValueChanges}
               onSubmit={stakeSubmit}
               coins={coinsDetails}
-              start={stakingPool?.start_time}
+              start={stakingPool?.start_time || "1"}
             />
           )}
           <div className="h-auto w-full max-w-[512px] rounded-2xl border border-gray-shade-3 p-8">

@@ -8,6 +8,7 @@ import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { formatUnits } from "ethers/lib/utils";
 import { Staking } from "@/assets/svgs";
+import { OptionalType } from "@/staking/types";
 
 export interface StakingStat {
   totalStakedAmount: string;
@@ -39,6 +40,7 @@ const Booking: React.FC<Props> = ({
   useEffect(() => {
     setFilled((+totalStakedAmount / +totalStakingCap) * 100);
   }, [totalStakedAmount, totalStakingCap]);
+
   return (
     <div className="w-full max-w-[512px] flex-shrink-0">
       <div className="h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
