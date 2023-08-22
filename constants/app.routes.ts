@@ -39,9 +39,9 @@ export const AppRoutes = {
     index: "/settings",
     about: "/settings/about",
     profile: "/settings/profile",
+    citizenship: "/settings/citizenship",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
-    citizenship: "/settings/citizenship",
   },
 
   feed: {
@@ -61,6 +61,16 @@ export const AppRoutes = {
   launchpad_pre_booking: {
     index: "/launchpad/pre-booking",
     booking: "/launchpad/pre-booking/bookings",
+  },
+  staking: {
+    index: "/staking",
+    create_staking: "/staking/create-staking",
+    staking_details: {
+      index: "/staking/staking-details/[id]",
+      rewards: "/staking/staking-details/[id]/rewards",
+      referrals: "/staking/staking-details/[id]/referrals",
+    },
+    faqs: "/staking/faqs",
   },
 
   // Not ready pages

@@ -7,10 +7,10 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { MenuClose } from "@/assets/svgs";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
 import FinalButton from "../button/final.button";
-import { BuyCitizenshipModal } from "../modal/buy-citizenship-modal";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 

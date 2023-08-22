@@ -1,6 +1,6 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
 import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
@@ -12,6 +12,12 @@ import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
 import { ZeroAddress } from "../constants/common";
 import { CitizenShipType } from "@/store/citizen.store";
+import { InsufficientFundError } from "@/staking/errors/params.error";
+import {
+  AddAffiliateSettingsInput,
+  MappedCreatePoolInput,
+} from "@/staking/types";
+import { parseEther } from "ethers/lib/utils";
 
 export class BlockchainRead {
   static async getReferrers(
@@ -25,7 +31,8 @@ export class BlockchainRead {
 
     const { data, error } = await ApolloProvider.query(
       QueryNames.GENEALOGY_AT_LEVEL,
-      variables
+      variables,
+      false
     );
 
     if (error) {
@@ -673,6 +680,69 @@ export class BlockchainRead {
     }
 
     return data.nfts.length;
+  }
+
+  static async getUserClaimableStakingRewards(
+    library: Web3Provider,
+    poolId: number,
+    user: string
+  ): Promise<string> {
+    const signer = getSigner(library);
+    const stakingContract = SmartContractProvider.getContract(
+      SmartContractName.STAKING,
+      signer
+    );
+
+    const result = await stakingContract.functions.calculateReward(
+      poolId,
+      user
+    );
+
+    return result[0];
+  }
+
+  static async getUserStakingRewards(
+    library: Web3Provider,
+    poolId: number,
+    user: string
+  ): Promise<any> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      const result = await stakingContract.functions.calculateTotalReward(
+        poolId,
+        user
+      );
+
+      return result;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  }
+
+  static async getRefClaimableReward(
+    library: Web3Provider,
+    poolId: number,
+    user: string
+  ): Promise<string> {
+    const signer = getSigner(library);
+    const stakingContract = SmartContractProvider.getContract(
+      SmartContractName.STAKING,
+      signer
+    );
+
+    const result =
+      await stakingContract.functions.calculateClaimableRewardForRef(
+        poolId,
+        user
+      );
+
+    return result[0];
   }
 
   static async getCollectionAdditionalInfo(
@@ -1794,6 +1864,242 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "buyCitizenShip");
+      throw error;
+    }
+  }
+
+  static async createStakingPool(
+    library: Web3Provider,
+    data: MappedCreatePoolInput,
+    ownerAddress: string,
+    preflight: boolean
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      if (data.showOnCenther) {
+        const balance = await library.getBalance(ownerAddress);
+        const price = await stakingContract.functions.platformFees();
+
+        if (+balance.toString() < +price.toString()) {
+          throw new InsufficientFundError(
+            `Not enough balance for pay fee, balance: ${balance.toString()}, fee: ${price.toString()}`
+          );
+        }
+
+        await stakingContract.callStatic.createPool(data, {
+          value: price.toString(),
+        });
+
+        if (!preflight) {
+          const tx = await stakingContract.functions.createPool(data, {
+            value: price.toString(),
+          });
+          await tx.wait();
+          return tx.hash;
+        }
+
+        return "done";
+      } else {
+        await stakingContract.callStatic.createPool(data);
+        if (!preflight) {
+          const tx = await stakingContract.functions.createPool(data);
+          await tx.wait();
+          return tx.hash;
+        }
+
+        return "done";
+      }
+    } catch (error: any) {
+      logger(error, "createStakingPool");
+      throw error;
+    }
+  }
+
+  static async SetApprovalForWallet(
+    library: Web3Provider,
+    tokenAddress: string,
+    userAddress: string,
+    spenderAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
+      );
+
+      const balance = await tokenContract.functions.balanceOf(userAddress);
+
+      if (balance == 0) {
+        throw new InsufficientFundError(
+          "theres nothing for approval, balance is 0"
+        );
+      }
+
+      // const currentAllowence = await tokenContract.functions.allowance(
+      //   userAddress,
+      //   spenderAddress
+      // );
+
+      const tx = await tokenContract.functions.approve(
+        spenderAddress,
+        balance.toString()
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "SetApprovalForWallet");
+      throw error;
+    }
+  }
+
+  static async setStakingPoolAffiliateSettings(
+    library: Web3Provider,
+    data: AddAffiliateSettingsInput,
+    poolId: number
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.setAffiliateSetting(poolId, data);
+      const tx = await stakingContract.functions.setAffiliateSetting(
+        poolId,
+        data
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "setStakingPoolAffiliateSettings");
+      throw error;
+    }
+  }
+
+  static async getCurrentStakingPoolId(library: Web3Provider): Promise<number> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      const result = await stakingContract.functions.poolIds();
+      return +result.toString();
+    } catch (error: any) {
+      logger(error, "createPool");
+      throw error;
+    }
+  }
+
+  static async stake(
+    library: Web3Provider,
+    poolId: string,
+    amount: string,
+    referrer: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.stake(
+        poolId,
+        parseEther(normalizeValue(amount) + ""),
+        referrer
+      );
+      const tx = await stakingContract.functions.stake(
+        poolId,
+        parseEther(normalizeValue(amount) + ""),
+        referrer
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "stake");
+      throw error;
+    }
+  }
+
+  static async claimReward(
+    library: Web3Provider,
+    poolId: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.claimReward(poolId);
+      const tx = await stakingContract.functions.claimReward(poolId);
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimReward");
+      throw error;
+    }
+  }
+
+  static async claimRefReward(
+    library: Web3Provider,
+    poolId: string,
+    user: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.claimRewardForRef(poolId, user);
+      const tx = await stakingContract.functions.claimReward(poolId, user);
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimRefReward");
+      throw error;
+    }
+  }
+
+  static async unstake(
+    library: Web3Provider,
+    poolId: string,
+    amount: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.unstake(
+        poolId,
+        parseEther(normalizeValue(amount) + "")
+      );
+
+      const tx = await stakingContract.functions.unstake(
+        poolId,
+        parseEther(normalizeValue(amount) + "")
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimRunstakeefReward");
       throw error;
     }
   }

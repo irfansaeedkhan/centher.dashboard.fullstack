@@ -1,9 +1,20 @@
 import Moralis from "moralis";
 
-import { FetchFuncWrapper, FetchParam, WalletNftsResult } from "./interfaces";
+import {
+  FetchFuncWrapper,
+  FetchParam,
+  GetTokenMetadaInput,
+  WalletNftsResult,
+} from "./interfaces";
 
 export class MoralisFetcher {
   private _instance: FetchFuncWrapper | null = null;
+
+  async getTokenMetadata(param: GetTokenMetadaInput): Promise<any> {
+    await this.checkInstance();
+    const result = await this._instance?.token.getTokenMetadata(param);
+    return result?.result;
+  }
 
   async getTokenPrice(param: FetchParam): Promise<number | undefined> {
     await this.checkInstance();
@@ -36,7 +47,10 @@ export class MoralisFetcher {
     } catch (err) {}
 
     return {
-      token: { getTokenPrice: Moralis.EvmApi.token.getTokenPrice },
+      token: {
+        getTokenPrice: Moralis.EvmApi.token.getTokenPrice,
+        getTokenMetadata: Moralis.EvmApi.token.getTokenMetadata,
+      },
       nft: { getWalletNFTs: Moralis.EvmApi.nft.getWalletNFTs },
     };
   }

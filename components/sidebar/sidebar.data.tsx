@@ -5,6 +5,7 @@ import {
   Explore,
   Notification,
   Launchpad,
+  Staking,
   CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
@@ -51,6 +52,19 @@ export const sidebarData: SidebarData = {
           AppRoutes.marketplace.collection,
           AppRoutes.marketplace.nft,
         ],
+      },
+      {
+        label: "Staking",
+        url: AppRoutes.staking.index,
+        icon: Launchpad,
+        activeList: [
+          AppRoutes.staking.index,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details.index,
+          AppRoutes.staking.staking_details.rewards,
+          AppRoutes.staking.staking_details.referrals,
+        ],
+        available_for: "citizen",
       },
       {
         label: "Create Collection",
