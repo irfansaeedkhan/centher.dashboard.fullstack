@@ -20,7 +20,7 @@ export interface NFTCardProps {
   data: NFTLockedDetailsProps;
 }
 
-export const NFTImageCard: React.FC<NFTCardProps> = ({ data }, context) => {
+export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState("");
   const { library, account } = useWeb3React();
 
