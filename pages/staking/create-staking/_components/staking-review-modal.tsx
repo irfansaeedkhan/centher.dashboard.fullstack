@@ -557,17 +557,20 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     <p className={label}>Start Time</p>
                     <p className={value}>{data?.start_date}</p>
                   </div>
-                  <div className={section}>
-                    <p className={label}>Maximum Stakable Amount</p>
-                    <p className={value}>
-                      {data?.max_staking_amount}{" "}
-                      {
-                        coinsDetails.find((e) =>
-                          eqAddress(data.token_address, e?.contractAddress)
-                        )?.symbol
-                      }
-                    </p>
-                  </div>
+                  {data?.max_staking_amount && data?.max_staking_amount >= 0 ? (
+                    <div className={section}>
+                      <p className={label}>Maximum Stakable Amount</p>
+                      <p className={value}>
+                        {data?.max_staking_amount}{" "}
+                        {
+                          coinsDetails.find((e) =>
+                            eqAddress(data.token_address, e?.contractAddress)
+                          )?.symbol
+                        }
+                      </p>
+                    </div>
+                  ) : null}
+
                   <div className={section}>
                     <p className={label}>Minimum Stakable Amount</p>
                     <p className={value}>
@@ -598,10 +601,9 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     </div>
                   </div>
                 )}
-                {!data?.liquidity_pool_provided && (
+                {data?.liquidity_pool_provided && (
                   <p className="color-[#E5535A] text-14px mt-5 w-full rounded-lg bg-[#E5535A]/60 px-2 py-1 font-normal">
-                    Warning! This staking pool does not provide Liquidity pool
-                    and Centher does not guarantee it
+                    Warning! This staking pool does not provide Liquidity pool.
                   </p>
                 )}
               </div>
@@ -818,8 +820,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   role="alert"
                 >
                   <p>
-                    Warning! This staking pool does not provide Liquidity pool
-                    and Centher does not guarantee it
+                    Warning! This staking pool does not provide Liquidity pool.
                   </p>
                 </div>
               ) : null}
