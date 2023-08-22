@@ -22,6 +22,7 @@ interface Props {
   onValueChanged: (val: string) => void;
   onSubmit: (referrer: string) => void;
   coins: Array<CoinDetails | undefined>;
+  start: string;
 }
 
 const Booking: React.FC<Props> = ({
@@ -29,6 +30,7 @@ const Booking: React.FC<Props> = ({
   onValueChanged,
   onSubmit,
   coins,
+  start,
 }) => {
   const { totalStakedAmount, totalStakingCap, tokenAddress } = data;
   const [filled, setFilled] = useState(0);
@@ -162,13 +164,24 @@ const Booking: React.FC<Props> = ({
               )?.symbol
             }
           </small>
-          <FinalButton
-            variant={"primary"}
-            title="Stake Now"
-            borderRounded={"14px"}
-            className={clsx("mt-3 h-12 w-full text-sm")}
-            onClick={() => onSubmit(referrer?.length ? referrer : ZeroAddress)}
-          />
+          {+new Date(+start * 1000) <= +new Date() ? (
+            <FinalButton
+              variant={"primary"}
+              title="Stake Now"
+              borderRounded={"14px"}
+              className={clsx("mt-3 h-12 w-full text-sm")}
+              onClick={() =>
+                onSubmit(referrer?.length ? referrer : ZeroAddress)
+              }
+            />
+          ) : (
+            <p className="text-center text-lg font-semibold text-white">
+              This pool will start working from{" "}
+              <span className="text-lg font-semibold text-gray-shade-14">
+                {new Date(+start * 1000).toLocaleDateString()}
+              </span>
+            </p>
+          )}
         </div>
       )}
     </div>

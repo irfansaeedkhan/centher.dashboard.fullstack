@@ -63,16 +63,19 @@ const Staking: NextPageWithLayout = () => {
     };
 
     const getPoolMetadata = async (inputs: ListCardDataOBj[]) => {
+      const fetchedItems = [];
       for (const item of inputs) {
         try {
           const metadata = await axios.get(formatIPFSUrl(item.metadataUrl));
           const buff = inputs.find((e) => e.metadataUrl == item.metadataUrl);
           if (buff) {
             buff.metadata = metadata.data;
-            setStakingList([...stakingList, buff]);
+            fetchedItems.push(buff);
           }
         } catch (error) {}
       }
+
+      setStakingList(fetchedItems);
     };
 
     if (sdk) {

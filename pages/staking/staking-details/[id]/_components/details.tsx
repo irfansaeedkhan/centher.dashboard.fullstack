@@ -50,7 +50,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
       return users;
     };
 
-    if (data && data?.metadata?.team?.length && !users?.length) {
+    if (data && !users?.length) {
       const addresses = data?.metadata?.team.map((e: any) => e.walletAddress);
       if (addresses?.length) {
         getUsers(addresses).then((users) => {
@@ -60,7 +60,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
               userDisplayName: e.display_name,
               title: data?.metadata?.team.find((e: any) =>
                 eqAddress(e.walletAddress, e._id)
-              ).jobTitle,
+              )?.jobTitle,
               address: e._id,
             };
           });
@@ -69,7 +69,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
         });
       }
     }
-  }, [data]);
+  }, [data?.metadata]);
 
   return (
     <div className="flex flex-col gap-6 border-b border-gray-shade-3 pb-8">

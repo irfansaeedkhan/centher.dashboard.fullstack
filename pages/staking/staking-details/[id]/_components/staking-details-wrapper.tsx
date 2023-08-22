@@ -238,6 +238,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
               onValueChanged={stakingValueChanges}
               onSubmit={stakeSubmit}
               coins={coinsDetails}
+              start={stakingPool?.start_time}
             />
           )}
           <div className="h-auto w-full max-w-[512px] rounded-2xl border border-gray-shade-3 p-8">

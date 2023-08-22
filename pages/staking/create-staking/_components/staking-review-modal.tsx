@@ -5,7 +5,13 @@ import { clsx } from "clsx";
 import { toast } from "react-hot-toast";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { SiBinance } from "react-icons/si";
-import { FiCopy, FiGithub, FiInstagram, FiTwitter } from "react-icons/fi";
+import {
+  FiArrowUpRight,
+  FiCopy,
+  FiGithub,
+  FiInstagram,
+  FiTwitter,
+} from "react-icons/fi";
 
 import {
   LinkNewIcon,
@@ -33,6 +39,7 @@ import { useStaking } from "@/hooks/staking";
 import { fetchUsers } from "@/hooks/user.get.multi.users";
 import { isAddress } from "ethers/lib/utils";
 import { stakingPeriodOptions } from "../../constants";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 export interface Memb {
   title: string | undefined;
@@ -287,6 +294,30 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       }
                     </p>
                   </div>
+                  <div className="col-span-1">
+                    <p className={label}>Details</p>
+                    <p className={value}>
+                      <p className={value}>
+                        {" "}
+                        <a
+                          href={`${BlockchainConfig.scanner.url}/address/${data.token_address}`}
+                          target={"_blank"}
+                          rel="noreferrer"
+                          title="View on Explorer"
+                          className={`group flex items-center gap-1 text-white`}
+                        >
+                          <span
+                            className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                          >
+                            View on {BlockchainConfig.scanner.name}
+                          </span>
+                          <FiArrowUpRight
+                            className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                          />
+                        </a>
+                      </p>
+                    </p>
+                  </div>
                 </div>
 
                 {!eqAddress(data.token_address, data.reward_token_address) &&
@@ -361,6 +392,30 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                             )
                           )?.symbol
                         }
+                      </p>
+                    </div>
+                    <div className="col-span-1">
+                      <p className={label}>Details</p>
+                      <p className={value}>
+                        <p className={value}>
+                          {" "}
+                          <a
+                            href={`${BlockchainConfig.scanner.url}/address/${data.reward_token_address}`}
+                            target={"_blank"}
+                            rel="noreferrer"
+                            title="View on Explorer"
+                            className={`group flex items-center gap-1 text-white`}
+                          >
+                            <span
+                              className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                            >
+                              View on {BlockchainConfig.scanner.name}
+                            </span>
+                            <FiArrowUpRight
+                              className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                            />
+                          </a>
+                        </p>
                       </p>
                     </div>
                   </div>

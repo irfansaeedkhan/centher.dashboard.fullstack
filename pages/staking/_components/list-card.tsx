@@ -1,6 +1,6 @@
 import React from "react";
 import clsx from "clsx";
-import { FiCopy } from "react-icons/fi";
+import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
@@ -15,6 +15,7 @@ import { metaDataType } from "./staking-types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { Staking } from "@/assets/svgs";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 export interface ListCardProps {
   card: ListCardDataOBj;
@@ -121,6 +122,29 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             }
           </p>
         </div>
+
+        <div className={section}>
+          <p className={label}>Details</p>
+          <p className={value}>
+            {" "}
+            <a
+              href={`${BlockchainConfig.scanner.url}/address/${card.token_address}`}
+              target={"_blank"}
+              rel="noreferrer"
+              title="View on Explorer"
+              className={`group flex items-center gap-1 text-white`}
+            >
+              <span
+                className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+              >
+                View on {BlockchainConfig.scanner.name}
+              </span>
+              <FiArrowUpRight
+                className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+              />
+            </a>
+          </p>
+        </div>
       </div>
       {!eqAddress(card.token_address, card.reward_token_address) ? (
         <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
@@ -169,10 +193,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               }
             </p>
           </div>
-          {/* <div className={section}>
-            <p className={label}>Price</p>
-            <p className={value}>{coins.find(e=>e?.contractAddress == card.token_address)?.decimals}</p>
-          </div> */}
+
           <div className={section}>
             <p className={label}>Symbol</p>
             <p className={value}>
@@ -181,6 +202,29 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                   eqAddress(e?.contractAddress, card.reward_token_address)
                 )?.symbol
               }
+            </p>
+          </div>
+
+          <div className={section}>
+            <p className={label}>Details</p>
+            <p className={value}>
+              {" "}
+              <a
+                href={`${BlockchainConfig.scanner.url}/address/${card.reward_token_address}`}
+                target={"_blank"}
+                rel="noreferrer"
+                title="View on Explorer"
+                className={`group flex items-center gap-1 text-white`}
+              >
+                <span
+                  className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                >
+                  View on {BlockchainConfig.scanner.name}
+                </span>
+                <FiArrowUpRight
+                  className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                />
+              </a>
             </p>
           </div>
         </div>
@@ -218,7 +262,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
         <div className={section}>
           <p className={label}>APY</p>
-          <p className={value}>{card.apy}</p>
+          <p className={value}>{+card.apy / 100} %</p>
         </div>
         <div className={section}>
           <p className={label}>Staking Period</p>
@@ -250,7 +294,12 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           <div className={section}>
             <p className={label}>Total Supply</p>
             <p className={value2}>
-              {normalizeValue(formatUnits(card.supply, 18).toString())}
+              {normalizeValue(formatUnits(card.supply, 18).toString())}{" "}
+              {
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, card.token_address)
+                )?.symbol
+              }
             </p>
           </div>
         ) : null}
@@ -258,7 +307,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         {card.is_cancelable == "yes" ? (
           <div className={section}>
             <p className={label}>Charge Fee on Cancel</p>
-            <p className={value}>{card.charge_fee_on_cancel} %</p>
+            <p className={value}>{+card.charge_fee_on_cancel / 100} %</p>
           </div>
         ) : null}
 
@@ -272,7 +321,12 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           <div className={section}>
             <p className={label}>Maximum Stakable Amount</p>
             <p className={value}>
-              {normalizeValue(formatUnits(card.max_staking_amount, 18))}
+              {normalizeValue(formatUnits(card.max_staking_amount, 18))}{" "}
+              {
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, card.token_address)
+                )?.symbol
+              }
             </p>
           </div>
         ) : null}
@@ -280,11 +334,16 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         <div className={section}>
           <p className={label}>Minimum Stakable Amount</p>
           <p className={value}>
-            {normalizeValue(formatUnits(card.min_staking_amount, 18))}
+            {normalizeValue(formatUnits(card.min_staking_amount, 18))}{" "}
+            {
+              coins.find((e) =>
+                eqAddress(e?.contractAddress, card.token_address)
+              )?.symbol
+            }
           </p>
         </div>
       </div>
-      {card.metadata?.library?.length && (
+      {card.metadata?.library?.length ? (
         <div>
           <p className={label}>Project Metadata</p>
           <div className="grid w-full items-center gap-5 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
@@ -299,7 +358,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
