@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useOnClickOutside } from "usehooks-ts";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { BsEmojiSmile } from "react-icons/bs";
 import useSound from "use-sound";
 import data from "@emoji-mart/data";
@@ -21,6 +21,7 @@ import {
   ReplyGradientIcon,
   SendChatIcon,
 } from "@/assets/svgs";
+import useUser from "@/hooks/use.user";
 
 import ChatSidebar from "./_components/chat.sidebar";
 import SingleChatHeader from "./_components/single-chat-header";
@@ -34,7 +35,9 @@ export interface UsersDetails {
 
 const SingleChat: NextPageWithLayout = () => {
   const router = useRouter();
-  const { account } = useWeb3React();
+  const { user } = useUser();
+  const emojiPickerRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { adapter } = useCentherLive();
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState<string>("");
@@ -51,7 +54,7 @@ const SingleChat: NextPageWithLayout = () => {
   const [play] = useSound("/sounds/send-message.mp3");
 
   const chatId = router.query.chat_id as string;
-
+  useOnClickOutside(emojiPickerRef, () => setShowEmojiPicker(false));
   useEffect(() => {
     setMessages([]);
     setUsersDetails([]);
@@ -63,11 +66,11 @@ const SingleChat: NextPageWithLayout = () => {
         router.push("/chat");
       }
 
-      if (account) {
+      if (user) {
         let msgs: any[] = [];
-        msgs = mapMessages(args, account);
+        msgs = mapMessages(args, user._id);
         try {
-          const messagesReceipts = findUnSeenMessages(msgs, account);
+          const messagesReceipts = findUnSeenMessages(msgs, user._id);
           if (messagesReceipts?.length) {
             await connection?.seenMessage({
               message_id: messagesReceipts,
@@ -87,7 +90,7 @@ const SingleChat: NextPageWithLayout = () => {
         customLog(["development", "staging"], "Not Logged In!");
       }
     },
-    [account, router]
+    [user, router]
   );
 
   useEffect(() => {
@@ -165,10 +168,8 @@ const SingleChat: NextPageWithLayout = () => {
     }
   }, [adapter, chatId, messageSubscriptionHandler, pageSize]);
 
-  // TODO: => for edit we need a modal like reply
-
   const sendMessage = async () => {
-    if (!account) {
+    if (!user) {
       return;
     }
 
@@ -188,6 +189,9 @@ const SingleChat: NextPageWithLayout = () => {
         setEditingMessage(null);
       } else {
         const replaingMessageBuffer = replingMessage?.message;
+        if (messagesEndRef.current) {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
         setNewMessage("");
         setShowEmojiPicker(false);
         closeReply();
@@ -197,7 +201,7 @@ const SingleChat: NextPageWithLayout = () => {
           conversationId: chatId,
           content: buffer,
           type: MessageTypeEnum.text,
-          user: account.toLowerCase(),
+          user: user._id.toLowerCase(),
           repliedTo: replaingMessageBuffer ? replaingMessageBuffer.id : null,
         });
       }
@@ -208,7 +212,7 @@ const SingleChat: NextPageWithLayout = () => {
     const newMessage = {
       create_at: new Date(),
       id: null,
-      sender: account?.toLowerCase(),
+      sender: user?._id?.toLowerCase(),
       content: content,
       type: "text",
       medias: [],
@@ -256,7 +260,13 @@ const SingleChat: NextPageWithLayout = () => {
 
   const openModalReply = (message: any) => {
     setReplyingMessage(message);
+    setEditModal(false);
     setReplyModal(true);
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 500);
   };
 
   const closeReply = () => {
@@ -270,7 +280,13 @@ const SingleChat: NextPageWithLayout = () => {
   };
 
   const editMessage = (msg: any) => {
+    setReplyModal(false);
     setEditModal(true);
+    setTimeout(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
+    }, 500);
     setEditingMessage(msg.message);
     setNewMessage(msg.message.content);
   };
@@ -282,7 +298,6 @@ const SingleChat: NextPageWithLayout = () => {
   };
 
   const sendEmojiForMessage = async (msg: any, code: string) => {
-    //----------------------------------------------------------------------
     await adapter?.addEmojiToMessage(msg.id, code);
   };
 
@@ -306,6 +321,8 @@ const SingleChat: NextPageWithLayout = () => {
             onEditMessage={editMessage}
             onEmojiReaction={sendEmojiForMessage}
             setPageSize={setPageSize}
+            messagesEndRef={messagesEndRef}
+            pageSize={pageSize}
           />
         )}
       </div>
@@ -365,8 +382,11 @@ const SingleChat: NextPageWithLayout = () => {
               </div>
             )}
 
-            <div className="focus-within:transparent focus-within:transparent flex w-full items-center gap-2 ring-0">
-              <div className="relative mr-2 flex items-center gap-3">
+            <div className="focus-within:transparent flex w-full items-center gap-2 ring-0">
+              <div
+                className="relative mr-2 flex items-center gap-3"
+                ref={emojiPickerRef}
+              >
                 {/* <BsPlusCircleFill className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" />
               <BsImage className="h-5 w-5 cursor-pointer fill-gray-shade-18 hover:fill-white" /> */}
                 <button onClick={toggleEmojiPicker}>

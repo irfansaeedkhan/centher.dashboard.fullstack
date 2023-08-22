@@ -53,12 +53,9 @@ const CurrentUserHoveredList: React.FC<CurrentUserHoveredListProps> = ({
           />
           {isEmojiOpen && emojiBar && (
             <div
-              className="text-14px absolute left-[50%]  right-0 top-[-20px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="text-14px absolute right-0 left-[50%] top-[-10px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
               onMouseLeave={handleMouseLeave}
             >
-              <span className="translate-[-50%] absolute bottom-[-10%] left-[50%] h-5 w-5 translate-y-[50%] scale-x-[3] text-black-shade-12">
-                &#9660;
-              </span>
               <Image
                 src={emojiMapper[Emojies.heart]}
                 alt="heart"

@@ -57,7 +57,7 @@ export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
           className="min-w-max"
         >
           <FinalButton
-            title="Team Members"
+            title="Team"
             variant={`${
               router.pathname === AppRoutes.profile.team_members
                 ? "primary"

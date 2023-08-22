@@ -17,6 +17,7 @@ import { CentherLive } from "..";
 export class ChatHandler {
   private static _messageObserver: any;
   private static _conversationObserver: any;
+  private static _conversationsObserver: any;
   static async sendMessage(
     connection: IApolloProvider,
     message: ISendMessage
@@ -25,6 +26,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getUserConversationId);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: { _eq: message.conversationId, _eq1: message.user },
       });
@@ -94,6 +96,10 @@ export class ChatHandler {
     sdk: CentherLive
   ): Promise<void> {
     try {
+      if (this._conversationsObserver) {
+        return;
+      }
+
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.subToConversations);
       const result = await connection?.subscribe({
@@ -101,7 +107,7 @@ export class ChatHandler {
         variables: { _eq: filters.user },
       });
 
-      result?.subscribe(async (data) => {
+      this._conversationsObserver = result?.subscribe(async (data) => {
         const conversations = data.data.conversations;
         handler(sdk, conversations, filters.user);
       });
@@ -153,6 +159,7 @@ export class ChatHandler {
       const query = QueryFactory.getQuery(QueryNames.createNewPrivateChat);
       const result = await connection?.mutate({
         mutation: query,
+
         variables: {
           user_address: input.user,
           created_at: new Date(),
@@ -197,6 +204,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.findConversationByUsers);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _eq: userOne,
@@ -328,6 +336,7 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getChatPaticipants);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _eq: conversationId,
@@ -605,12 +614,12 @@ export class ChatHandler {
       this.validateConnection(connection);
       const query = QueryFactory.getQuery(QueryNames.getlastFetchedMessage);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _ilike: userAddress,
           _eq: conversationId,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.users[0].activities[0]?.message?.created_at;
@@ -630,12 +639,12 @@ export class ChatHandler {
         QueryNames.getAllConversationMessageToFetch
       );
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _nilike: userAddress,
           _eq: conversationId,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.messages.map((e: any) => e.id);
@@ -656,13 +665,13 @@ export class ChatHandler {
         QueryNames.getMessagesToCreateFetchedActivity
       );
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _gt: DateTime,
           _eq: conversationId,
           _nilike: userAddress,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.messages.map((e: any) => e.id);
@@ -686,13 +695,13 @@ export class ChatHandler {
     try {
       const query = QueryFactory.getQuery(QueryNames.checkActivityExist);
       const result = await connection?.query({
+        fetchPolicy: "no-cache",
         query,
         variables: {
           _ilike: user,
           _message_id: msgId,
           _type: type,
         },
-        fetchPolicy: "no-cache",
       });
 
       return result?.data.activities.length > 0;
