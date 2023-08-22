@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { IoClose } from "react-icons/io5";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import { AppRoutes } from "@/constants/app.routes";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   isOpen: boolean;
@@ -54,23 +55,19 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 </h3>
                 <div>
                   <Link href={AppRoutes.auth.login}>
-                    <ActionButton
-                      //not confirm yet we need to close the modal or not
-                      // onClick={onClose}
-                      className="mb-6 bg-brand-primary text-black hover:bg-brand-primary-dark"
-                    >
-                      Login
-                    </ActionButton>
+                    <FinalButton
+                      title={"Login"}
+                      variant={"primary"}
+                      className={"mb-2 w-full"}
+                    />
                   </Link>
 
                   <Link href={AppRoutes.auth.register}>
-                    <ActionButton
-                      //not confirm yet we need to close the modal or not
-                      // onClick={onClose}
-                      className="bg-black-shade-7 text-gray-shade-10 hover:bg-gray-900"
-                    >
-                      Register
-                    </ActionButton>
+                    <FinalButton
+                      title={"Register"}
+                      variant={"primary"}
+                      className={"w-full"}
+                    />
                   </Link>
                 </div>
               </div>
