@@ -1,15 +1,15 @@
 import Image from "next/image";
 import React from "react";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { NextPageWithLayout } from "../_app.page";
+import { NextPageWithLayout } from "@/pages/_app.page";
 
 const CreateStakingProject: NextPageWithLayout = () => {
   return (
-    <>
-      <h2 className="textGradient px-8 pt-10 pb-6 text-[44px] font-semibold">
+    <main className="mx-auto max-w-[930px]">
+      <h2 className="textGradient px-8 pb-6 pt-10 text-[44px] font-semibold">
         Centher Academy
       </h2>
-      <div className="flex-1 rounded-tl-[20px] rounded-tr-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
+      <div className="flex-1 rounded-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
         <div className="">
           <h2 className="text-20px textGradient px-8 pt-10 font-semibold">
             How to Create a Staking Project?
@@ -27,20 +27,24 @@ const CreateStakingProject: NextPageWithLayout = () => {
               (click on the three menu lines on mobile) and select Staking.
               Click on Create New button.
             </h5>
-            <Image
-              width={320}
-              height={320}
-              src="/images/step1.png"
-              alt="what is staking"
-              className="pb-4"
-            />
+            <div className="flex justify-center">
+              <div className="gradient-border-3 mb-4 overflow-hidden rounded-lg p-[1px]">
+                <Image
+                  width={320}
+                  height={320}
+                  src="/images/step1.png"
+                  alt="what is staking"
+                  className="overflow-hidden rounded-lg"
+                />
+              </div>
+            </div>
 
             <div>
               <h5 className="text-white">
                 The Staking Form will appear on screen and indicate all
                 mandatory fields with * mark.
               </h5>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Logo and Banner
               </h2>
               <p>
@@ -51,7 +55,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Name and Token Address
               </h2>
               <p>
@@ -63,7 +67,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Reward Token Address
               </h2>
               <p>
@@ -75,16 +79,20 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <Image
-              width={520}
-              height={420}
-              src="/images/step2.png"
-              alt="what is staking"
-              className="pb-4 pt-4"
-            />
+            <div className="flex justify-center">
+              <div className="gradient-border-3 mb-4 mt-4 overflow-hidden rounded-lg p-[1px]">
+                <Image
+                  width={520}
+                  height={420}
+                  src="/images/step2.png"
+                  alt="what is staking"
+                  className="overflow-hidden rounded-lg"
+                />
+              </div>
+            </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Multilevel Rewards System
               </h2>
               <p>
@@ -109,7 +117,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Staking / Reward Token Price Ratio
               </h2>
               <p>
@@ -124,7 +132,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Staking Period
               </h2>
               <p>
@@ -136,7 +144,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Is Cancelable
               </h2>
               <p>
@@ -146,7 +154,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Charge Fee on Cancel
               </h2>
               <p>
@@ -156,7 +164,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 APY
               </h2>
               <p>
@@ -166,7 +174,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Start Date
               </h2>
               <p>
@@ -176,7 +184,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Reward Release Start
               </h2>
               <p>
@@ -187,7 +195,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Claim Period
               </h2>
               <p>
@@ -199,7 +207,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Show on Centher
               </h2>
               <p>
@@ -214,7 +222,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Liquidity Pool Provided
               </h2>
               <p>
@@ -226,7 +234,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Minimum Stakable Amount
               </h2>
               <p>
@@ -237,16 +245,20 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <Image
-              src="/images/step3.png"
-              alt=""
-              width={520}
-              height={420}
-              className="pb-4 pt-4"
-            />
+            <div className="flex justify-center">
+              <div className="gradient-border-3 mb-4 mt-4  overflow-hidden rounded-lg p-[1px]">
+                <Image
+                  src="/images/step3.png"
+                  alt=""
+                  width={520}
+                  height={420}
+                  className="overflow-hidden rounded-lg"
+                />
+              </div>
+            </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Maximum Stakable Amount
               </h2>
               <p>
@@ -259,7 +271,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Total Supply
               </h2>
               <p>
@@ -269,7 +281,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
             </div>
 
             <div>
-              <h2 className="textGradient pt-4 pb-4 text-[20px] font-semibold">
+              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
                 Project Metadata
               </h2>
               <p>
@@ -280,13 +292,17 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <Image
-              src="/images/step4.png"
-              alt=""
-              width={520}
-              height={420}
-              className="pb-4 pt-4"
-            />
+            <div className="flex justify-center">
+              <div className="gradient-border-3 mb-4 mt-4 overflow-hidden rounded-lg p-[1px]">
+                <Image
+                  src="/images/step4.png"
+                  alt=""
+                  width={520}
+                  height={420}
+                  className="overflow-hidden rounded-lg"
+                />
+              </div>
+            </div>
 
             <p className="pb-2">
               After you click on Next button you will be directed to the social
@@ -301,12 +317,19 @@ const CreateStakingProject: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
-    </>
+    </main>
   );
 };
 
 CreateStakingProject.getLayout = (page) => {
-  return <AllPagesWrapper pageTitle="Create Staking">{page}</AllPagesWrapper>;
+  return (
+    <AllPagesWrapper
+      pageTitle="How to create Staking Project"
+      showSidebar={false}
+    >
+      {page}
+    </AllPagesWrapper>
+  );
 };
 
 export default CreateStakingProject;
