@@ -85,11 +85,11 @@ const CurrentUserSide: React.FC<{
 
   const handleMouseLeave = () => {
     console.log("leave mouse");
-    sett(t + "leave mouse");
+    sett((prevT) => prevT + "leave mouse");
     if (hoverRef.current) {
       hoverRef.current.style.display = "none";
-      setEmojiBar(false);
-      setEmojiBarMobile(false);
+      setEmojiBar((prevEmojiBar) => false);
+      setEmojiBarMobile((setEmojiBarMobile) => false);
       console.log("check");
     }
     sett(t + "check");
@@ -324,12 +324,9 @@ const CurrentUserSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           // onTouchStart={handleTouchStart}
-          onTouchMove={(e) => handleTouchLeave(e)}
+          //onTouchMove={(e) => handleTouchLeave(e)}
           // onTouchCancel={handleTouchCancel}
-          className={clsx(
-            `box relative flex gap-2`,
-            emoji?.length > 0 && "mb-5"
-          )}
+          className={clsx(` relative flex gap-2`, emoji?.length > 0 && "mb-5")}
         >
           {emoji?.length > 0 && (
             <div
