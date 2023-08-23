@@ -12,6 +12,7 @@ import { UsersDetails } from "../[chat_id].page";
 import CurrentUserHoveredList from "./current-user-hovered-list";
 import CurrentUserHoveredListMobile from "./current-user-hovered-list-mobile";
 import EmojiSenderList from "./emoji-sender-list";
+import { set } from "lodash";
 
 const CurrentUserSide: React.FC<{
   openModalReply: (msg: any) => void;
@@ -109,6 +110,17 @@ const CurrentUserSide: React.FC<{
       setEmojiSenderListBar(false);
     }
   };
+
+  function handleTouchLeave(event: any) {
+    // Code to run when touch leaves the element
+    sett("hiiiiiii");
+    var boxElement = document.getElementById("box");
+    if (!boxElement?.contains(event.target)) {
+      setEmojiBar(false);
+      setEmojiBarMobile(false);
+      console.log("hell");
+    }
+  }
 
   const onReplayCalled = () => {
     if (openModalReply) {
@@ -312,9 +324,12 @@ const CurrentUserSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           // onTouchStart={handleTouchStart}
-          // onTouchEnd={handleTouchEnd}
+          onTouchMove={(e) => handleTouchLeave(e)}
           // onTouchCancel={handleTouchCancel}
-          className={clsx(`relative flex gap-2`, emoji?.length > 0 && "mb-5")}
+          className={clsx(
+            `box relative flex gap-2`,
+            emoji?.length > 0 && "mb-5"
+          )}
         >
           {emoji?.length > 0 && (
             <div
@@ -395,7 +410,7 @@ const CurrentUserSide: React.FC<{
               )}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
-              // onMouseLeave={handleMouseLeaveMobile}
+              onMouseLeave={handleMouseLeaveMobile}
             >
               <p
                 className={clsx(
