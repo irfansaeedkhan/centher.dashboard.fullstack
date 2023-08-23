@@ -149,7 +149,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
       {!eqAddress(card.token_address, card.reward_token_address) ? (
         <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
           <div className={section}>
-            <p className={label}>Token Address</p>
+            <p className={label}>Reward Token Address</p>
             <p
               className={clsx(
                 value,
