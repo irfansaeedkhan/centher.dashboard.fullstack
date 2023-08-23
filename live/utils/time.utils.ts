@@ -45,7 +45,16 @@ export function isYesterday(dateTime: Date): boolean {
 }
 
 export function getHoursAndMinutes(dateTime: Date): string {
-  return dateTime.getHours() + ":" + dateTime.getMinutes();
+  let curMinutes = dateTime.getMinutes();
+  let minutes = "";
+
+  if (String(curMinutes).length < 2) {
+    minutes = "0" + curMinutes;
+  } else {
+    minutes = curMinutes + "";
+  }
+
+  return dateTime.getHours() + ":" + minutes;
 }
 
 export function getMessageTime(input: any): string {
