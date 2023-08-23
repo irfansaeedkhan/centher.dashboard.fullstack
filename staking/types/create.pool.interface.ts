@@ -41,7 +41,7 @@ export interface CreatePoolInput {
 
 export interface MappedCreatePoolInput {
   name: string;
-  startTime: string;
+  startTime: number;
   stakeToken: string;
   rewardToken: string;
   rate: number;

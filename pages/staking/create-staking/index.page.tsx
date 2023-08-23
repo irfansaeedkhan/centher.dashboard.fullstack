@@ -525,9 +525,11 @@ const CreateStaking: NextPageWithLayout = () => {
       ownerAddress: account as string,
       stakeToken: data.token_address,
       rewardToken: data.reward_token_address,
-      rate: data.staking_reward_token_price_ratio
-        ? +data.staking_reward_token_price_ratio
-        : 0,
+      rate:
+        data.staking_reward_token_price_ratio &&
+        data.staking_reward_token_price_ratio > 0
+          ? data.staking_reward_token_price_ratio
+          : 0,
       annualStakingRewardRate: data.apy ? data.apy : 0,
       minStakeAmount: data.min_staking_amount ? data.min_staking_amount : 0,
       maxStakeAmount: data.max_staking_amount ? data.max_staking_amount : 0,

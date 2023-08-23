@@ -176,6 +176,10 @@ const Booking: React.FC<Props> = ({
                 onSubmit(referrer?.length ? referrer : ZeroAddress)
               }
             />
+          ) : +new Date(+start * 1000) - +new Date() < 86400 ? (
+            <p className="text-center text-lg font-semibold text-white">
+              This pool will start working soon
+            </p>
           ) : (
             <p className="text-center text-lg font-semibold text-white">
               This pool will start working from{" "}
