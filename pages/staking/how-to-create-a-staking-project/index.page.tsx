@@ -6,45 +6,47 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 const CreateStakingProject: NextPageWithLayout = () => {
   return (
     <main className="mx-auto max-w-[930px]">
-      <h2 className="textGradient px-8 pb-6 pt-10 text-[44px] font-semibold">
+      <h1 className="textGradient mb-6 mt-4 text-[28px] font-semibold fsm:text-[32px] fmd:mb-10 fmd:mt-6 fmd:text-[44px]">
         Centher Academy
-      </h2>
-      <div className="flex-1 rounded-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
-        <div className="">
-          <h2 className="text-20px textGradient px-8 pt-10 font-semibold">
+      </h1>
+      <div className="rounded-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
+        <div className="p-8">
+          <h2 className="text-20px textGradient font-semibold">
             How to Create a Staking Project?
           </h2>
-          <div className="content text-grayText text-14px p-8 font-normal text-white">
-            <p>
-              Let&apos;s get into a step-by-step-guide on how to Create your
-              first Staking Project! First of all, you will need to be a Centher
-              Citizen in order to benefit from this Service. If you have not
-              gotten your Passport yet, (link to popup citizenship or you are
-              already a citizen for citizens).
-            </p>
-            <h5 className="py-5 text-white">
-              Once you are set up with Citizenship, head on the left menu bar
-              (click on the three menu lines on mobile) and select Staking.
-              Click on Create New button.
-            </h5>
-            <div className="flex justify-center">
-              <div className="gradient-border-3 mb-4 overflow-hidden rounded-lg p-[1px]">
-                <Image
-                  width={320}
-                  height={320}
-                  src="/images/step1.png"
-                  alt="what is staking"
-                  className="overflow-hidden rounded-lg"
-                />
+          <div className="content text-14px mt-8 font-normal text-gray-shade-18">
+            <div className="space-y-4">
+              <p>
+                Let&apos;s get into a step-by-step-guide on how to Create your
+                first Staking Project! First of all, you will need to be a
+                Centher Citizen in order to benefit from this Service. If you
+                have not gotten your Passport yet, (link to popup citizenship or
+                you are already a citizen for citizens).
+              </p>
+              <p>
+                Once you are set up with Citizenship, head on the left menu bar
+                (click on the three menu lines on mobile) and select Staking.
+                Click on Create New button.
+              </p>
+              <div className="flex justify-center">
+                <div className="gradient-border-3 overflow-hidden rounded-lg p-[1px]">
+                  <Image
+                    width={320}
+                    height={320}
+                    src="/images/step1.png"
+                    alt="what is staking"
+                    className="overflow-hidden rounded-lg"
+                  />
+                </div>
               </div>
-            </div>
-
-            <div>
-              <h5 className="text-white">
+              <p>
                 The Staking Form will appear on screen and indicate all
                 mandatory fields with * mark.
-              </h5>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+              </p>
+            </div>
+
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Logo and Banner
               </h2>
               <p>
@@ -54,8 +56,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Name and Token Address
               </h2>
               <p>
@@ -66,8 +68,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Reward Token Address
               </h2>
               <p>
@@ -75,24 +77,23 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 value as Token Address, this means that the same staked token
                 will be given in rewards during the staking period. If another
                 token is selected, that token will be used to reward the users
-                fro staking.
+                for staking.
               </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="gradient-border-3 mb-4 mt-4 overflow-hidden rounded-lg p-[1px]">
-                <Image
-                  width={520}
-                  height={420}
-                  src="/images/step2.png"
-                  alt="what is staking"
-                  className="overflow-hidden rounded-lg"
-                />
+              <div className="mt-4 flex justify-center">
+                <div className="gradient-border-3 overflow-hidden rounded-lg p-[1px]">
+                  <Image
+                    width={520}
+                    height={420}
+                    src="/images/step2.png"
+                    alt="what is staking"
+                    className="overflow-hidden rounded-lg"
+                  />
+                </div>
               </div>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Multilevel Rewards System
               </h2>
               <p>
@@ -100,7 +101,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 for more information about affiliation. <br />
                 You can choose:
               </p>
-              <ul className="ml-5 list-disc">
+              <ul className="ml-5 mt-4 list-disc">
                 <li>No referral: there is no reward system in place.</li>
                 <li>
                   Recurring return: (claimable according to Claim Period). can
@@ -116,8 +117,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </ul>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Staking / Reward Token Price Ratio
               </h2>
               <p>
@@ -131,8 +132,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Staking Period
               </h2>
               <p>
@@ -143,8 +144,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Is Cancelable
               </h2>
               <p>
@@ -153,8 +154,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Charge Fee on Cancel
               </h2>
               <p>
@@ -163,18 +164,16 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
-                APY
-              </h2>
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">APY</h2>
               <p>
                 Annual Percentage Yield that the tokens will produce while on
                 staking and thee users will be able to claim.
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Start Date
               </h2>
               <p>
@@ -183,8 +182,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Reward Release Start
               </h2>
               <p>
@@ -194,8 +193,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Claim Period
               </h2>
               <p>
@@ -206,8 +205,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Show on Centher
               </h2>
               <p>
@@ -221,8 +220,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Liquidity Pool Provided
               </h2>
               <p>
@@ -233,8 +232,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Minimum Stakable Amount
               </h2>
               <p>
@@ -243,22 +242,21 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 is always a coefficient of this value, for example if min value
                 is 250, then allowed amounts are 250,500,750,1000,etc.
               </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="gradient-border-3 mb-4 mt-4  overflow-hidden rounded-lg p-[1px]">
-                <Image
-                  src="/images/step3.png"
-                  alt=""
-                  width={520}
-                  height={420}
-                  className="overflow-hidden rounded-lg"
-                />
+              <div className="mt-4 flex justify-center">
+                <div className="gradient-border-3 overflow-hidden rounded-lg p-[1px]">
+                  <Image
+                    src="/images/step3.png"
+                    alt=""
+                    width={520}
+                    height={420}
+                    className="overflow-hidden rounded-lg"
+                  />
+                </div>
               </div>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Maximum Stakable Amount
               </h2>
               <p>
@@ -270,8 +268,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Total Supply
               </h2>
               <p>
@@ -280,8 +278,8 @@ const CreateStakingProject: NextPageWithLayout = () => {
               </p>
             </div>
 
-            <div>
-              <h2 className="textGradient pb-4 pt-4 text-[20px] font-semibold">
+            <div className="mt-6">
+              <h2 className="mb-2 text-base font-medium text-white">
                 Project Metadata
               </h2>
               <p>
@@ -290,30 +288,27 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 &ldquo;Round&ldquo; - &ldquo;One&ldquo; or whatever you want to
                 mark your project with.
               </p>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="gradient-border-3 mb-4 mt-4 overflow-hidden rounded-lg p-[1px]">
-                <Image
-                  src="/images/step4.png"
-                  alt=""
-                  width={520}
-                  height={420}
-                  className="overflow-hidden rounded-lg"
-                />
+              <div className="mt-4 flex justify-center">
+                <div className="gradient-border-3 overflow-hidden rounded-lg p-[1px]">
+                  <Image
+                    src="/images/step4.png"
+                    alt=""
+                    width={520}
+                    height={420}
+                    className="overflow-hidden rounded-lg"
+                  />
+                </div>
               </div>
+              <p className="mt-4">
+                After you click on Next button you will be directed to the
+                social page where you can add all of the social links you have
+                at your disposal to maximise the networking of your project.
+              </p>
+              <p className="mt-4">
+                Save and see the preview of your project before submitting. In
+                this phase you can still edit the project details.
+              </p>
             </div>
-
-            <p className="pb-2">
-              After you click on Next button you will be directed to the social
-              page where you can add all of the social links you have at your
-              disposal to maximise the networking of your project.
-            </p>
-
-            <p>
-              Save and see the preview of your project before submitting. In
-              this phase you can still edit the project details.
-            </p>
           </div>
         </div>
       </div>
