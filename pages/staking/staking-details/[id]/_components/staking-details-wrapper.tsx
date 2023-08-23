@@ -19,7 +19,7 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import axios from "axios";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
-import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
+import { formatUnits, parseEther } from "ethers/lib/utils";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
@@ -149,12 +149,12 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   useEffect(() => {
     if (stakingPool) {
       const total =
-        +(+stakingPool.apy / 100).toFixed(2) *
+        +(+stakingPool.apy / 10000).toFixed(2) *
         +stakingValue *
         +(+stakingPool.staking_period / oneYearInSec).toFixed(4);
 
       const claim =
-        +(+stakingPool.apy / 100).toFixed(2) *
+        +(+stakingPool.apy / 10000).toFixed(2) *
         +stakingValue *
         +(+stakingPool.claim_period / oneYearInSec).toFixed(4);
 
