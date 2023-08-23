@@ -87,7 +87,7 @@ const NewConversationModal: React.FC<ComponentProp> = ({
                 showingNetwork.map((e, i) => (
                   <button
                     key={i}
-                    className="mt-2 flex w-full cursor-pointer items-center gap-2 py-4 px-6 hover:bg-[#141416]"
+                    className="mt-2 flex w-full cursor-pointer items-center gap-2 px-6 py-4 hover:bg-[#141416]"
                     onClick={(event) =>
                       createNewPrivateConversation(event, e._id)
                     }

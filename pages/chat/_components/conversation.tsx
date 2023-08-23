@@ -31,7 +31,6 @@ const Conversation: React.FC<{
   pageSize,
 }) => {
   const { user } = useUser();
-  const [showBlur, setShowBlur] = useState<string>();
 
   const messageRefCallback = useCallback(() => {
     if (messagesEndRef.current) {
@@ -44,7 +43,7 @@ const Conversation: React.FC<{
   }, [messageRefCallback]);
 
   return (
-    <div className={clsx(`flex flex-col gap-2 px-6 pb-8 pt-16`, showBlur)}>
+    <div className={clsx(`flex flex-col gap-2 px-6 pb-8 pt-16`)}>
       {!!data.messages.length ? (
         <>
           {data.messages.length >= 25 && pageSize <= data.messages.length && (
@@ -69,7 +68,6 @@ const Conversation: React.FC<{
                   onDeleteMessage={onDeleteMessage}
                   onEditMessage={onEditMessage}
                   onEmojiReaction={onEmojiReaction}
-                  setShowBlur={setShowBlur}
                 />
               );
             } else {
@@ -82,7 +80,6 @@ const Conversation: React.FC<{
                   }}
                   openModalReply={openModalReply}
                   onEmojiReaction={onEmojiReaction}
-                  setShowBlur={setShowBlur}
                 />
               );
             }
