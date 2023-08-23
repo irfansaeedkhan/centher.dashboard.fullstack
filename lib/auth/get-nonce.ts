@@ -13,9 +13,9 @@ export const getNonce = async (account_address: string): Promise<AuthNonce> => {
     );
     return data;
   } catch (error: any) {
-    let errorMessage = "Can not get nonce";
+    let errorMessage = "Can not get nonce" + error;
     if (error.response?.status === 500) {
-      throw new AppError(error, "Can not get nonce", "getNonce");
+      throw new AppError(error, "Can not get nonce" + error, "getNonce");
     } else {
       throw new AppError(
         error,
