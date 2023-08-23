@@ -12,7 +12,9 @@ export const fetchTokenMetadata = async (addresses: string[]) => {
     const metadata = await fetcher.getTokenMetadata({
       addresses,
       chain:
-        process.env.NODE_ENV == "production" ? EvmChain.BSC : EvmChain.GOERLI,
+        process.env.NEXT_PUBLIC_APP_ENV == "production"
+          ? EvmChain.BSC
+          : EvmChain.GOERLI,
     });
     return metadata;
   } catch (error: any) {
