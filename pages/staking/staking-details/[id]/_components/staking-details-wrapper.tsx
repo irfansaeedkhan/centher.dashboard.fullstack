@@ -158,9 +158,14 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         +stakingValue *
         +(+stakingPool.claim_period / oneYearInSec).toFixed(4);
 
+      let coef = 1;
+      if (stakingPool.rate && stakingPool.rate > 0) {
+        coef = stakingPool.rate;
+      }
+
       setRewardEstimation({
-        total: total + "",
-        claim: claim + "",
+        total: total * coef + "",
+        claim: claim * coef + "",
       });
     }
   }, [stakingValue]);

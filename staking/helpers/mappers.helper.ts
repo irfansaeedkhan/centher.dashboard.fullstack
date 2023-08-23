@@ -94,6 +94,7 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
     return {
       id: e.id + "",
       pack: e.name,
+      rate: +e.rate,
       price: "",
       sybmol: "",
       token_address: e.stakeToken,
