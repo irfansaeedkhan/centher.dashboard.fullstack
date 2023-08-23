@@ -1900,6 +1900,7 @@ export class BlockchainWrite {
             value: price.toString(),
           });
           await tx.wait();
+          await library.waitForTransaction(tx.hash, 5);
           return tx.hash;
         }
 
@@ -1909,6 +1910,7 @@ export class BlockchainWrite {
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data);
           await tx.wait();
+          await library.waitForTransaction(tx.hash, 5);
           return tx.hash;
         }
 
@@ -1952,6 +1954,7 @@ export class BlockchainWrite {
       );
 
       await tx.wait();
+      await library.waitForTransaction(tx.hash, 5);
       return tx.hash;
     } catch (error: any) {
       logger(error, "SetApprovalForWallet");
@@ -1976,7 +1979,9 @@ export class BlockchainWrite {
         poolId,
         data
       );
+
       await tx.wait();
+      await library.waitForTransaction(tx.hash, 5);
       return tx.hash;
     } catch (error: any) {
       logger(error, "setStakingPoolAffiliateSettings");

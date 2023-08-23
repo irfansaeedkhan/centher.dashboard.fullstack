@@ -583,6 +583,7 @@ export class CentherStaking {
     }
 
     if (
+      input.rewardToken?.length > 0 &&
       ZeroAddress != input.rewardToken &&
       !eqAddress(input.stakeToken, input.rewardToken)
     ) {

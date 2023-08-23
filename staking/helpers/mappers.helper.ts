@@ -11,7 +11,7 @@ export function setupCreatePoolData(
 ): MappedCreatePoolInput {
   const rewardIsDifferent =
     input.rewardToken?.length != 0 &&
-    !eqAddress(input.rewardToken, input.rewardToken);
+    !eqAddress(input.stakeToken, input.rewardToken);
 
   if (!isAddress(input.stakeToken)) {
     throw new CreatePoolParamsError<CreatePoolInput>(
@@ -27,7 +27,7 @@ export function setupCreatePoolData(
     );
   }
 
-  if (rewardIsDifferent && input.rate <= 0) {
+  if (rewardIsDifferent && (!input.rate || input.rate <= 0)) {
     throw new CreatePoolParamsError<CreatePoolInput>(
       "rate",
       "rate must be bigger than 0"
@@ -52,6 +52,13 @@ export function setupCreatePoolData(
     );
   }
 
+  if (isToday(new Date(input.startTime))) {
+    const distanceFromNow = 30 * 60 * 1000;
+    input.startTime = +new Date() + distanceFromNow + "";
+  } else {
+    input.startTime = +new Date(input.startTime) + "";
+  }
+
   if (+new Date(input.startTime) < +new Date()) {
     throw new CreatePoolParamsError<CreatePoolInput>(
       "startTime",
@@ -61,18 +68,19 @@ export function setupCreatePoolData(
 
   return {
     name: input.name,
-    startTime: +new Date(input.startTime) / 1000 + "",
+    startTime: Math.floor(+new Date(+input.startTime) / 1000),
     stakeToken: input.stakeToken,
-    rewardToken: input.rewardToken ? input.rewardToken : ZeroAddress,
+    rewardToken: rewardIsDifferent ? input.rewardToken : ZeroAddress,
     rate: rewardIsDifferent ? input.rate : 0,
     annualStakingRewardRate: input.annualStakingRewardRate * 100,
-    minStakeAmount: parseEther(input.minStakeAmount + "").toString(),
-    maxStakeAmount: parseEther(input.maxStakeAmount + "").toString(),
+    minStakeAmount: parseEther(input.minStakeAmount + "").toString() || "0",
+    maxStakeAmount: parseEther(input.maxStakeAmount + "").toString() || "0",
     stakingDurationPeriod: input.stakingDurationPeriod,
     claimDuration: input.claimDuration,
     rewardModeForRef: input.rewardModeForRef,
     firstReward: input.firstReward,
-    maxStakableAmount: parseEther(input.maxStakableAmount + "").toString(),
+    maxStakableAmount:
+      parseEther(input.maxStakableAmount + "").toString() || "0",
     cancellationFees: input.cancellationFees ? input.cancellationFees * 100 : 0,
     poolMetadata: "",
     isUnstakable: input.isUnstakable,
@@ -86,8 +94,8 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
     return {
       id: e.id + "",
       pack: e.name,
-      price: "100",
-      sybmol: "dxc",
+      price: "",
+      sybmol: "",
       token_address: e.stakeToken,
       reward_token_address: e.rewardToken,
       apy: e.annualStakingRewardRate + "",
@@ -124,4 +132,14 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
       transfers: e.transfers,
     };
   });
+}
+
+function isToday(dateToCheck: Date): boolean {
+  const today = new Date();
+
+  return (
+    dateToCheck.getDate() === today.getDate() &&
+    dateToCheck.getMonth() === today.getMonth() &&
+    dateToCheck.getFullYear() === today.getFullYear()
+  );
 }
