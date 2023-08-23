@@ -7,9 +7,6 @@ export const AppRoutes = {
 
   // Public or Authenticated Pages
   terms: "/terms",
-  staking: {
-    how_to_create_a_staking_project: "/staking/how-to-create-a-staking-project",
-  },
 
   profile: {
     // Authenticated Pages
@@ -74,6 +71,7 @@ export const AppRoutes = {
       referrals: "/staking/staking-details/[id]/referrals",
     },
     faqs: "/staking/faqs",
+    how_to_create_a_staking_project: "/staking/how-to-create-a-staking-project",
   },
 
   // Not ready pages

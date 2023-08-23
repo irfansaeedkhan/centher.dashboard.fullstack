@@ -1890,11 +1890,11 @@ export class BlockchainWrite {
             `Not enough balance for pay fee, balance: ${balance.toString()}, fee: ${price.toString()}`
           );
         }
-
+        console.log(price.toString(), data);
         await stakingContract.callStatic.createPool(data, {
           value: price.toString(),
         });
-
+        console.log("rad shod");
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data, {
             value: price.toString(),
