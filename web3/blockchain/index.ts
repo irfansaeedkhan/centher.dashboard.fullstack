@@ -59,6 +59,28 @@ export class BlockchainRead {
     });
   }
 
+  static async getReferrersAddress(
+    library: Web3Provider,
+    userAddress: string
+  ): Promise<string[]> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+
+      const result = await registrationContract.functions.getReferrerAddresses(
+        userAddress
+      );
+
+      return result;
+    } catch (error: any) {
+      logger(error, "getReferrersAddress");
+      throw error;
+    }
+  }
+
   static async getAllCollections(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
@@ -1890,11 +1912,11 @@ export class BlockchainWrite {
             `Not enough balance for pay fee, balance: ${balance.toString()}, fee: ${price.toString()}`
           );
         }
-
+        console.log(price.toString(), data);
         await stakingContract.callStatic.createPool(data, {
           value: price.toString(),
         });
-
+        console.log("rad shod");
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data, {
             value: price.toString(),
@@ -1943,11 +1965,6 @@ export class BlockchainWrite {
         );
       }
 
-      // const currentAllowence = await tokenContract.functions.allowance(
-      //   userAddress,
-      //   spenderAddress
-      // );
-
       const tx = await tokenContract.functions.approve(
         spenderAddress,
         balance.toString()
@@ -1955,6 +1972,17 @@ export class BlockchainWrite {
 
       await tx.wait();
       await library.waitForTransaction(tx.hash, 5);
+      // const currentAllowence = await tokenContract.functions.allowance(
+      //   userAddress,
+      //   spenderAddress
+      // );
+
+      // if (currentAllowence?.toString() != balance?.toString()) {
+      //   throw new Error(
+      //     "Set approval encountered to error, please try again or contact support."
+      //   );
+      // }
+
       return tx.hash;
     } catch (error: any) {
       logger(error, "SetApprovalForWallet");

@@ -41,7 +41,7 @@ enum ModalType {
 }
 
 const StakingDetailsWrapper = ({ children }: Props) => {
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -171,6 +171,10 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   const stakeSubmit = async (referrer: string) => {
     try {
+      if (!library || !account?.length) {
+        throw new Error("Connect wallet");
+      }
+
       const amount = parseEther(normalizeValue(stakingValue) + "").toString();
       const minAmount = stakingPool?.min_staking_amount || "0";
 
@@ -179,19 +183,13 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           throw new Error("Amount cannot be less than minimum staking amount");
         }
 
-        if (referrer != ZeroAddress && !isAddress(referrer)) {
-          throw new Error("Invalid referrer error");
-        }
-
-        await sdk.stake(library, +poolId, referrer, amount);
-        //TODO=> show success modal
+        await sdk.stake(library, +poolId, account, amount);
         modal.createModal(ModalType.successFuncModal);
       } else {
         throw new Error("Invalid params");
       }
     } catch (error) {
       console.log(error);
-      //TODO=> show error modal
       let message = error instanceof Error ? error.message : error;
 
       if (
