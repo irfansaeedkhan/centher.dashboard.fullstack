@@ -15,6 +15,7 @@ import { BNBIcon, LockedIconBG, HammerIconBG } from "@/assets/svgs";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { getUTCNow } from "@/web3/utils/utils";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 
 export interface NFTCardProps {
@@ -456,17 +457,29 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.collection}
-                </h6>
+                <Link
+                  className="flex w-full cursor-pointer items-center text-white"
+                  href={{
+                    pathname: AppRoutes.marketplace.collection,
+                    query: { collection: data.collection },
+                  }}
+                >
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.collection}
+                  </h6>
+                </Link>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.mintHash}
-                </h6>
+                <Link
+                  href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
+                >
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.mintHash}
+                  </h6>
+                </Link>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
