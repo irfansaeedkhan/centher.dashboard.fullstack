@@ -23,7 +23,6 @@ import { formatBNB2USD, formatIPFSUrl } from "@/utils/format.address";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import Button from "@/components/button";
 import NftCollectionProfileSkeleton from "@/components/loading.skeletons/nft.collection.profile";
 import NftsSkeleton from "@/components/loading.skeletons/nfts";
 import { NFTCard } from "@/components/nft.card";
@@ -34,6 +33,7 @@ import {
   TwitterSvg,
   HotNftEmptyIcon,
 } from "@/assets/svgs";
+import FinalButton from "@/components/button/final.button";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -452,31 +452,36 @@ const Collection: NextPageWithLayout = () => {
             <div className={title}>NFTS</div>
             <div className={buttonList}>
               <div className="flex w-full max-w-[640px] flex-row  items-center justify-center gap-3 fsm:justify-end fsm:gap-5">
-                <Button
+                <FinalButton
                   title={"All"}
-                  variant={filter === "All" ? "v1" : "v2"}
+                  variant={filter === "All" ? "primary" : "secondary"}
                   className="px-4 py-2  fsm:max-w-fit fsm:py-4"
+                  borderRounded="14px"
                   onClick={() => {
                     setFilter("All");
                   }}
                 />
-                <Button
+
+                <FinalButton
                   title={"Listed For Sale"}
-                  variant={filter === "List" ? "v1" : "v2"}
-                  className="px-4 py-2 fsm:max-w-fit fsm:py-4"
+                  variant={filter === "List" ? "primary" : "secondary"}
+                  className="px-4 py-2  fsm:max-w-fit fsm:py-4"
+                  borderRounded="14px"
                   onClick={() => {
                     setFilter("List");
                   }}
                 />
               </div>
-              <select
-                className={inputField}
-                value={orderdir}
-                onChange={(e) => setOrderDir(e.target.value)}
-              >
-                <option value="asc">Low to high</option>
-                <option value="desc">High to Low</option>
-              </select>
+              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                <select
+                  className={inputField}
+                  value={orderdir}
+                  onChange={(e) => setOrderDir(e.target.value)}
+                >
+                  <option value="asc">Low to high</option>
+                  <option value="desc">High to Low</option>
+                </select>
+              </div>
             </div>
           </div>
           <div className="tabsContent mt-10">
@@ -557,8 +562,8 @@ const threeDotsBtn = ctl(`
 w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px `);
 
 const inputField = ctl(`
-  w-full 
-  
+  fsm:w-[400px]
+  fmd:w-[200px]
   fsm:py-3 
   fsm:px-10 
   bg-black-shade-7 
@@ -566,7 +571,7 @@ const inputField = ctl(`
   rounded-lg
   border-0
   focus:outline-none 
-  focus:ring-brand-primary
+  focus:ring-0
   fsm:max-w-max
 `);
 const nftCardWrapper = ctl(

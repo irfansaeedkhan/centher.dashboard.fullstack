@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { Message } from "@/models/chat";
 import { eqAddress } from "@/live/utils/address.utils";
+import useUser from "@/hooks/use.user";
 import { ChatMessageSkeleton } from "@/components/loading.skeletons/chat.skeletons";
 import ClientSide from "./client-side";
 import CurrentUserSide from "./current-user-side";
@@ -18,6 +18,8 @@ const Conversation: React.FC<{
     usersDetails: UsersDetails[];
   };
   setPageSize: React.Dispatch<React.SetStateAction<number>>;
+  messagesEndRef: React.RefObject<HTMLDivElement>;
+  pageSize: number;
 }> = ({
   data,
   openModalReply,
@@ -25,21 +27,26 @@ const Conversation: React.FC<{
   onEditMessage,
   onEmojiReaction,
   setPageSize,
+  messagesEndRef,
+  pageSize,
 }) => {
-  const { account } = useWeb3React();
-  const messagesEndRef = useRef<any>(null);
+  const { user } = useUser();
 
-  useEffect(() => {
+  const messageRefCallback = useCallback(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
-  }, []);
+  }, [messagesEndRef]);
+
+  useEffect(() => {
+    messageRefCallback();
+  }, [messageRefCallback]);
 
   return (
-    <div className={clsx(`flex flex-col gap-2 py-8 px-6`)}>
+    <div className={clsx(`flex flex-col gap-2 px-6 pb-8 pt-16`)}>
       {!!data.messages.length ? (
         <>
-          {data.messages.length >= 25 && (
+          {data.messages.length >= 25 && pageSize <= data.messages.length && (
             <button
               className="text-sm text-gray-400 underline underline-offset-[3px]"
               onClick={() => setPageSize(data.messages.length + 25)}
@@ -49,7 +56,7 @@ const Conversation: React.FC<{
           )}
 
           {data.messages.map((e, i) => {
-            if (eqAddress(e.sender, account)) {
+            if (eqAddress(e.sender, user?._id)) {
               return (
                 <CurrentUserSide
                   key={i}

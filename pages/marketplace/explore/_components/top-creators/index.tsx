@@ -6,6 +6,7 @@ import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
 import { useTopCreators } from "./use-top-creators";
 import CreatorCard from "./creator-card";
 import styles from "./styles.module.css";
+import FinalButton from "@/components/button/final.button";
 
 export const TopCreators = () => {
   const { topCreators, loading } = useTopCreators();
@@ -25,13 +26,14 @@ export const TopCreators = () => {
       <div
         className={`relative -mx-2 flex h-[80px] items-center justify-between overflow-hidden border-gray-shade-3 bg-[url(/images/bg-top-creators.png)] bg-cover bg-center bg-no-repeat fsm:-mx-4 fmd:mx-0 fmd:h-[100px] fmd:rounded-2xl fmd:border-2 flg:h-[120px]`}
       >
-        <button
+        <FinalButton
+          title=""
+          loaderIcon={
+            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18" />
+          }
           onClick={() => scroll(-200)}
           className={clsx(scrollButton, `left-2`)}
-        >
-          <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 hover:fill-gray-shade-3" />
-        </button>
-
+        />
         <div
           ref={ref}
           className={clsx(
@@ -62,16 +64,17 @@ export const TopCreators = () => {
             </>
           ) : null}
         </div>
-
-        <button
+        <FinalButton
+          title=""
+          loaderIcon={
+            <BsArrowRightShort className="h-6 w-6 fill-gray-shade-18" />
+          }
           onClick={() => scroll(200)}
           className={clsx(scrollButton, `right-2`)}
-        >
-          <BsArrowRightShort className="h-6 w-6 fill-gray-shade-18 hover:fill-gray-shade-3" />
-        </button>
+        />
       </div>
     </div>
   );
 };
 
-const scrollButton = `hidden absolute p-1 top-1/2 -translate-y-1/2 transform fmd:block rounded-full bg-gray-shade-9 hover:bg-brand-primary`;
+const scrollButton = `hidden !absolute p-1 top-1/2 -translate-y-1/2 transform fmd:block rounded-full bg-gray-shade-9 hover:bg-brand-primary`;

@@ -46,6 +46,8 @@ import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "./followed.component";
+import { ChatProfile } from "@/assets/svgs";
+import { useCentherLive } from "@/hooks/chat";
 
 export type CoverImageWithFile = {
   path: string;
@@ -62,6 +64,7 @@ interface Props {
 
 const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const router = useRouter();
+  const { adapter } = useCentherLive();
   const profileCardDetails = useGetProfileCardDetails(user);
   const { incrementFollowersCount, decrementFollowersCount } =
     useProfileCardStore((state) => ({
@@ -76,6 +79,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const { user: loggedInUser } = useUser();
 
   const { imagePosition } = useDragCoverImage();
+  const [coverImageLoading, setCoverImageLoading] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     path: user?.cover_image,
     object_name: "",
@@ -174,7 +178,9 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const handleUploadCoverImage = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
+    setCoverImageLoading(true);
     if (!coverImage.blob) {
+      setCoverImageLoading(false);
       return;
     }
 
@@ -223,8 +229,10 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
       }));
 
       button.disabled = false;
+      setCoverImageLoading(false);
     } catch (error: any) {
       button.disabled = false;
+      setCoverImageLoading(false);
       process.env.NODE_ENV !== "production" && console.dir(error);
       let errorMsg = "Error uploading image";
       if (
@@ -269,6 +277,16 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const chatHandler = async () => {
+    if (adapter) {
+      const result = await adapter.createNewPrivateConversation({
+        targetUser: user._id.toLowerCase(),
+      });
+      router.push(`/chat/${result}`);
+    } else throw new Error("Invalid stream handler instance");
+  };
+
   return (
     <div className={`rounded-xl bg-background-shade-3`}>
       <div
@@ -330,9 +348,6 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     className={`group`}
                     variant="upload-cover"
                   >
-                    <CgSpinner
-                      className={`hidden h-4 w-4 animate-spin group-disabled:block`}
-                    />
                     <FinalButton
                       title="Save"
                       variant="primary"
@@ -343,8 +358,15 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     <FinalButton
                       title="Upload Cover"
                       variant="primary"
-                      className="hidden fmd:inline-block"
+                      className="hidden h-9 w-[124px] fmd:inline-block"
                       borderRounded="14px"
+                      loaderIcon={
+                        coverImageLoading && (
+                          <CgSpinner
+                            className={`mx-auto h-4 w-4 animate-spin text-center text-white`}
+                          />
+                        )
+                      }
                     />
                   </CoverUploadButton>
                 </div>
@@ -380,7 +402,13 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
       <div className={`relative px-2 fsm:px-4`}>
         {!!loggedInUser &&
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
-            <div className="absolute -top-[45px] right-4 hidden w-full max-w-[122px] fmd:block">
+            <div className="absolute -top-[45px] right-4 hidden w-full max-w-[182px] gap-2 fmd:flex">
+              <div
+                className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                onClick={chatHandler}
+              >
+                <ChatProfile />
+              </div>
               {loadingState ? (
                 <FinalButton
                   title=""
@@ -464,7 +492,13 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
 
             {!!loggedInUser &&
               loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
-                <div className="mt-2 flex w-full max-w-[122px] justify-center fmd:hidden">
+                <div className="mt-2 flex w-full max-w-[182px] justify-center gap-2 fmd:hidden">
+                  <div
+                    className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                    onClick={chatHandler}
+                  >
+                    <ChatProfile />
+                  </div>
                   {loadingState ? (
                     <FinalButton
                       title=""
