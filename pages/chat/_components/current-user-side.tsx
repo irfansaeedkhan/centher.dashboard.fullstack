@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useMediaQuery } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import clsx from "clsx";
 import { eqAddress } from "@/live/utils/address.utils";
 import { getMessageTime } from "@/live/utils/time.utils";
 import { emojiMapper } from "@/live/utils/emoji.mapper";
+import useUser from "@/hooks/use.user";
+import { urlify } from "@/live/utils/tools";
 import { Emojies } from "@/live/enums/emojis.enum";
 import { Delivered, Pending, Seen, Sent } from "@/assets/svgs";
 import { UsersDetails } from "../[chat_id].page";
@@ -28,13 +29,13 @@ const CurrentUserSide: React.FC<{
   onEmojiReaction,
 }) => {
   const [time, setTime] = useState<string>("");
+  const { user } = useUser();
   const [emoji, setEmoji] = useState<{ code: string; sender: string }[]>([]);
   const [emojiBar, setEmojiBar] = useState<boolean>(true);
   const [emojiBarMobile, setEmojiBarMobile] = useState<boolean>(false);
   const [emojiSenderListBar, setEmojiSenderListBar] = useState<boolean>(true);
   const [isReply, setIsReply] = useState<boolean>(false);
   const [replyDate, setReplyData] = useState<any>(null);
-  const { account } = useWeb3React();
   const belowMobile = useMediaQuery("(max-width: 560px)");
   const [preventSelect, setPreventSelect] = useState(false);
   const [t, sett] = useState("");
@@ -54,7 +55,7 @@ const CurrentUserSide: React.FC<{
       );
 
       let displayName = sender?.display_name;
-      if (eqAddress(sender?._id, account)) {
+      if (eqAddress(sender?._id, user?._id)) {
         displayName = "You";
       }
 
@@ -74,7 +75,7 @@ const CurrentUserSide: React.FC<{
     if (data.message.reactions.length) {
       setEmoji(data.message.reactions);
     }
-  }, [data]);
+  }, [data, user?._id]);
 
   const handleMouseEnter = () => {
     if (hoverRef.current) {
@@ -234,7 +235,7 @@ const CurrentUserSide: React.FC<{
           )}
           <div
             className={clsx(
-              `gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]`,
+              `gradient-chat-box relative flex h-auto w-fit items-end justify-between gap-2 rounded-[10px] bg-background-shade-3 bg-gradient-pattern-current px-4 py-[10px] fmd:max-w-[50%]`,
               emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
             )}
             onTouchStart={handleTouchStart}
@@ -281,7 +282,7 @@ const CurrentUserSide: React.FC<{
             )}
             <div className="z-10 flex flex-col gap-3">
               <div className="flex w-[98%] gap-3">
-                <div className="w-[1px] bg-gradient-pattern"></div>
+                <div className="w-[1px] bg-gradient-pattern-current"></div>
                 <div className="flex flex-col gap-1">
                   <h4 className="text-gradient text-xs">{replyDate?.sender}</h4>
                   <p className="text-xs text-gray-shade-14">
@@ -289,15 +290,17 @@ const CurrentUserSide: React.FC<{
                   </p>
                 </div>
               </div>
-              <p
+
+              <div
                 className={clsx(
                   `word-break text-14px  z-10 leading-[17.07px] text-white`,
                   emojiBarMobile && "bg-[#262323b8]",
                   `${preventSelect && "prevent-select"}`
                 )}
-              >
-                {data.message.content}
-              </p>
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
             </div>
             <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
               <span className="min-w-max">{time}</span>
@@ -402,22 +405,32 @@ const CurrentUserSide: React.FC<{
             )}
             <div
               className={clsx(
-                `gradient-chat-box relative flex h-auto items-end gap-2 rounded-[10px] bg-gradient-pattern px-4 py-[10px] fmd:max-w-[50%]`,
+                `gradient-chat-box relative flex h-auto items-end gap-2 rounded-[10px] bg-gradient-pattern-current px-4 py-[10px] fmd:max-w-[50%]`,
                 emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
               )}
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onMouseLeave={handleMouseLeaveMobile}
             >
-              <p
+              {/* <p
                 className={clsx(
                   `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`,
                   emojiBarMobile && "bg-[#262323b8]",
                   `${preventSelect && "prevent-select"}`
                 )}
               >
-                {data.message.content}
-              </p>
+                {urlify(data.message.content)}
+              </p> */}
+              <div
+                className={clsx(
+                  `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`,
+                  emojiBarMobile && "bg-[#262323b8]",
+                  preventSelect && "prevent-select"
+                )}
+                dangerouslySetInnerHTML={{
+                  __html: urlify(data.message.content),
+                }}
+              ></div>
               <p className="z-10 flex gap-1 text-[10px] text-gray-shade-14">
                 <span className="min-w-max">{time}</span>{" "}
                 <span>

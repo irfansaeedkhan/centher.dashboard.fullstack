@@ -29,8 +29,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <>
       <ScriptTags />
       <CookiesConstentModal />
+
       <NextNProgress
-        color="#FEBF32"
+        color="linear-gradient(270.23deg, #5691ff -9.34%, #72f6d1 17.09%, #76e268 48.54%, #ffd505 78.11%, #ff5e52 107.63%)"
         options={{
           showSpinner: false,
         }}

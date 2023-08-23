@@ -42,8 +42,8 @@ enum ModalType {
   proceedFuncModal = "proceedFuncModal",
   listingFuncModal = "listingFuncModal",
   saleWithListingModal = "saleWithListingModal",
-  sendFuncModal = "sendFuncModal",
   successFuncModal = "successFuncModal",
+  successSendFuncModal = "successSendFuncModal",
 }
 
 export const NonNFTDescription = ({
@@ -63,6 +63,7 @@ export const NonNFTDescription = ({
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [end, setEnd] = useState(true);
+  const [sendNftModal, setSendNftModal] = useState(false);
   const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
   const isApproved = useGetApprovedForAll(account, data?.collection);
@@ -136,15 +137,6 @@ export const NonNFTDescription = ({
       modal.createModal(ModalType.listingFuncModal);
     } catch (err: any) {
       toastError("Failed to list NFT");
-    }
-  };
-  const sendFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.sendFuncModal);
-    } catch (err: any) {
-      toastError("Failed to send");
     }
   };
 
@@ -271,15 +263,19 @@ export const NonNFTDescription = ({
 
         if (result?.length) {
           setNftData();
-          SuccessFunc(true, "Congratulations! You have successfully sent ");
+          SuccessSendFunc(true, "Congratulations! You have successfully sent ");
+          setSendNftModal(false);
         } else {
+          setSendNftModal(false);
           throw new Error();
         }
       } catch (error) {
-        SuccessFunc(false, "failed to send nft");
+        setSendNftModal(false);
+        SuccessSendFunc(false, "failed to send nft");
       }
     } else {
-      SuccessFunc(false, "failed to send nft");
+      setSendNftModal(false);
+      SuccessSendFunc(false, "failed to send nft");
     }
   };
 
@@ -287,6 +283,7 @@ export const NonNFTDescription = ({
     try {
       validateProvider();
       modal.dismissModal();
+      setSendNftModal(false);
       modal.createModal(ModalType.proceedFuncModal);
     } catch (err: any) {
       toastError("Something went wrong");
@@ -298,6 +295,15 @@ export const NonNFTDescription = ({
       validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
+    } catch (err: any) {
+      toastError("Something went wrong");
+    }
+  };
+  const SuccessSendFunc = (txStatus: boolean, msg: string) => {
+    try {
+      validateProvider();
+      modal.dismissModal();
+      modal.createModal(ModalType.successSendFuncModal, { txStatus, msg });
     } catch (err: any) {
       toastError("Something went wrong");
     }
@@ -449,11 +455,7 @@ export const NonNFTDescription = ({
         />
       ),
     },
-    sendFuncModal: {
-      title: "Send NFT",
-      visibility: true,
-      content: () => <SendNFTModal handleSend={handleSendNFT} />,
-    },
+
     saleWithListingModal: {
       title: "List for sale",
       visibility: true,
@@ -482,6 +484,41 @@ export const NonNFTDescription = ({
               onClick={() => handleListing(listingPrice)}
               variant="primary"
               className="w-full"
+            />
+          </div>
+        </div>
+      ),
+    },
+    successSendFuncModal: {
+      title: "Send NFT",
+      visibility: true,
+      content: ({ txStatus, msg }: IModalProps) => (
+        <div className={modalBodyWrapper}>
+          <div className="flex flex-col items-center justify-center">
+            {txStatus ? <GreenTick /> : <CircularClose />}
+            <h2 className="text-18px font-semibold text-white">
+              {txStatus ? <span>NFT Send Successfully!</span> : "Failed!"}
+            </h2>
+          </div>
+          {txStatus && (
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+              {msg}
+            </p>
+          )}
+          {!txStatus && (
+            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+              {msg ?? "Transaction Failed."}
+            </p>
+          )}
+          <div className={footerBtnContainer}>
+            <FinalButton
+              title={"View item"}
+              variant="primary"
+              onClick={() => {
+                modal.dismissModal();
+                window.location.reload();
+              }}
+              className="w-full hover:scale-95"
             />
           </div>
         </div>
@@ -543,7 +580,7 @@ export const NonNFTDescription = ({
           {transferable && (
             <FinalButton
               title={"Send"}
-              onClick={sendFunc}
+              onClick={() => setSendNftModal(true)}
               variant="secondary"
               className="h-11 w-full rounded-[14px]"
             />
@@ -598,7 +635,15 @@ export const NonNFTDescription = ({
           </div>
         </div>
       )}
-
+      {sendNftModal && (
+        <SendNFTModal
+          data={data}
+          handleSend={handleSendNFT}
+          onClose={() => {
+            setSendNftModal(false);
+          }}
+        />
+      )}
       {ModalModel.visibility && (
         <CustomModal
           onClose={() => {
@@ -621,4 +666,3 @@ const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2
 const greyTxt = `text-14px font-normal text-gray-shade-7`;
 const desTitle = `text-14px font-semibold text-white`;
 const BnBNum = `text-16px font-bold text-white`;
-const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;

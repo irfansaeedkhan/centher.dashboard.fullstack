@@ -211,6 +211,7 @@ const queries: Queries = {
       id
     }
   }`,
+  //TODO: if conversation exist, but isActive is false, update it to true
   findConversationByUsers: `query MyQuery($_eq: String = "", $_eq1: String = "") {
     user_conversations(where: {conversation: {user_conversations: {user_address: {_ilike: $_eq}}, is_active: {_eq: true}, is_channel: {_eq: false}, is_public: {_eq: false}}, user_address: {_eq: $_eq1}}) {
       conversation_id

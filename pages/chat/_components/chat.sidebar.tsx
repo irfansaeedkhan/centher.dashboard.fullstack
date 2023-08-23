@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import { FiTrash2 } from "react-icons/fi";
@@ -30,7 +29,6 @@ const ChatSidebar = () => {
   const { conversations, conversationLoading, adapter } = useCentherLive();
   const [filteredConversations, setFilteredConversations] =
     useState<IConversation[]>(conversations);
-
   const [loading, setLoading] = useState<boolean>(false);
   const [showConversationModal, setShowConversationModal] =
     useState<boolean>(false);
@@ -39,6 +37,7 @@ const ChatSidebar = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isSelectConversation, setIsSelectConversation] =
     useState<boolean>(false);
+  const [newConversationId, setNewConversationId] = useState<string>("");
 
   const [ConversationsUsers, setConvesationUsers] = useState<UsersDetails[]>(
     []
@@ -192,12 +191,18 @@ const ChatSidebar = () => {
     }
   };
 
-  const createNewPrivateConversation = async (user: string) => {
+  const createNewPrivateConversation = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    user: string
+  ) => {
+    const button = e.currentTarget as HTMLButtonElement;
+    button.disabled = true;
     try {
       if (adapter) {
         const result = await adapter.createNewPrivateConversation({
           targetUser: user.toLowerCase(),
         });
+        setNewConversationId(result);
         router.push(`/chat/${result}`);
       } else throw new Error("Invalid stream handler instance");
     } catch (err: any) {
@@ -205,6 +210,7 @@ const ChatSidebar = () => {
       toast.error(err?.message ? err?.message : "Can not start chat");
     } finally {
       setShowConversationModal(false);
+      button.disabled = false;
     }
   };
 
@@ -292,19 +298,40 @@ const ChatSidebar = () => {
           </div>
         </div>
       )}
-      {!conversationLoading &&
-        filteredConversations.map((item, index) => (
-          <SingleChatSidebar
-            key={index}
-            data={item}
-            users={ConversationsUsers}
-            onClickSelectConversation={onClickSelectConversation}
-            isSelectConversation={isSelectConversation}
-            onDeleteConversation={deleteConversation}
-            pinConversation={pinConversation}
-            unpinConversation={unpinConversation}
-          />
-        ))}
+      <div
+        className={clsx(
+          "scrollSetLight max-h-[calc(100vh-202px)] overflow-y-auto",
+          conversationLoading ? "h-auto" : "h-full"
+        )}
+      >
+        {!conversationLoading &&
+          filteredConversations
+            .sort((a, b) => {
+              if (newConversationId && a.updated_at === null) {
+                if (a.id === newConversationId) {
+                  return -1;
+                }
+                return 0;
+              } else {
+                if (a.id === router.query?.chat_id && a.updated_at === null) {
+                  return -1;
+                }
+                return 0;
+              }
+            })
+            .map((item, index) => (
+              <SingleChatSidebar
+                key={index}
+                data={item}
+                users={ConversationsUsers}
+                onClickSelectConversation={onClickSelectConversation}
+                isSelectConversation={isSelectConversation}
+                onDeleteConversation={deleteConversation}
+                pinConversation={pinConversation}
+                unpinConversation={unpinConversation}
+              />
+            ))}
+      </div>
       {conversationLoading && (
         <div className="mx-auto w-[90%]">
           <ChatFriendListSkeleton />
