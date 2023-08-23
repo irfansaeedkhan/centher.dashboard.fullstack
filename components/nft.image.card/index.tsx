@@ -40,8 +40,6 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [name, setName] = useState();
   const [description, setDescription] = useState();
 
-  console.log("App routes", AppRoutes);
-
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
@@ -465,6 +463,8 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h5>
                 <Link
                   href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
+                  target="_blank"
+                  rel="noreferrer noopener"
                 >
                   <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
                     {data.mintHash}
