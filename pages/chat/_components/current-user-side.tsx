@@ -499,6 +499,7 @@ const CurrentUserSide: React.FC<{
   const belowMobile = useMediaQuery("(max-width: 560px)");
   const [showNonBlur, setNonShowBlur] = useState<string>();
   const [showBackground, setShowBackground] = useState<boolean>();
+  const [t, sett] = useState("");
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
@@ -548,9 +549,12 @@ const CurrentUserSide: React.FC<{
     if (hoverRef.current) {
       hoverRef.current.style.display = "none";
       setEmojiBar((prevEmojiBar) => false);
+      sett("emojibar");
+      setEmojiBarMobile((prevEmojiBarMobile) => false);
       setShowBackground((prevBackground) => false);
       setShowBlur("");
       setNonShowBlur((prevShowNonBlur) => "");
+      sett("last");
     }
   };
 
@@ -643,6 +647,9 @@ const CurrentUserSide: React.FC<{
       setEmojiBarMobile(true);
     }
   };
+
+  console.log("emoji bar", emojiBar);
+
   return (
     <>
       {isReply ? (
@@ -817,7 +824,11 @@ const CurrentUserSide: React.FC<{
               </div>
             </div>
           )}
-
+          <p className="text-white">emojibar-- {emojiBar.toString()}</p>
+          <p className="text-white">
+            emojibarmobile--{emojiBarMobile.toString()}
+          </p>
+          <p className="text-white">{t}</p>
           <div className={`flex w-full items-center justify-end gap-2`}>
             {belowMobile ? (
               <div ref={hoverRef} className={`hidden `}>
