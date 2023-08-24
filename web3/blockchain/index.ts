@@ -1970,35 +1970,16 @@ export class BlockchainWrite {
         signer
       );
 
-      let balance;
-      try {
-        balance = await tokenContract.functions.balanceOf(userAddress);
-        if (balance == 0) {
-          throw new InsufficientFundError(
-            "theres nothing for approval, balance is 0"
-          );
-        }
-      } catch (error) {
-        throw new Error("Invalid token address");
-      }
+      const maxUintRange =
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
       const tx = await tokenContract.functions.approve(
         spenderAddress,
-        balance.toString()
+        maxUintRange
       );
 
       await tx.wait();
       await library.waitForTransaction(tx.hash, 5);
-      // const currentAllowence = await tokenContract.functions.allowance(
-      //   userAddress,
-      //   spenderAddress
-      // );
-
-      // if (currentAllowence?.toString() != balance?.toString()) {
-      //   throw new Error(
-      //     "Set approval encountered to error, please try again or contact support."
-      //   );
-      // }
 
       return tx.hash;
     } catch (error: any) {
