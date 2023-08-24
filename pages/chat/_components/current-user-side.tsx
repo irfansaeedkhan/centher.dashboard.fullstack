@@ -500,7 +500,7 @@ const CurrentUserSide: React.FC<{
   const [showNonBlur, setNonShowBlur] = useState<string>();
   const [showBackground, setShowBackground] = useState<boolean>();
   const [t, sett] = useState("");
-
+  const [a, seta] = useState("");
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
 
@@ -631,6 +631,7 @@ const CurrentUserSide: React.FC<{
   };
 
   const handleSetData = () => {
+    seta("check");
     setEmojiBarMobile(false);
     setShowBackground(false);
     setShowBlur("");
@@ -828,6 +829,7 @@ const CurrentUserSide: React.FC<{
           <p className="text-white">
             emojibarmobile--{emojiBarMobile.toString()}
           </p>
+          <p className="text-white">{a}</p>
           <p className="text-white">{t}</p>
           <div className={`flex w-full items-center justify-end gap-2`}>
             {belowMobile ? (
