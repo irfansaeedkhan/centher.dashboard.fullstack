@@ -10,7 +10,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
         Centher Academy
       </h1>
       <div className="rounded-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
-        <div className="p-8">
+        <div className="px-4 py-8 fmd:px-8">
           <h2 className="text-20px textGradient font-semibold">
             How to Create a Staking Project?
           </h2>
@@ -307,6 +307,19 @@ const CreateStakingProject: NextPageWithLayout = () => {
               <p className="mt-4">
                 Save and see the preview of your project before submitting. In
                 this phase you can still edit the project details.
+              </p>
+
+              <p className="mt-4">
+                Once you click on submit your wallet will show indicating an
+                amount of Stake Token you want to assign to the stake and the
+                same thing will happen if you chose a different token as Reward
+                Token. <br />
+                Select Max Amount inside your wallet interface and approve the
+                transaction.
+              </p>
+
+              <p className="mt-4">
+                Congratulations! Your staking project is now live!
               </p>
             </div>
           </div>
