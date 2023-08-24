@@ -14,7 +14,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
           <h2 className="text-20px textGradient font-semibold">
             How to Create a Staking Project?
           </h2>
-          <div className="content text-14px mt-8 font-normal text-gray-shade-18">
+          <div className="content text-14px mt-8 text-justify font-normal text-gray-shade-18">
             <div className="space-y-4">
               <p>
                 Let&apos;s get into a step-by-step-guide on how to Create your
@@ -240,7 +240,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 It&apos;s the minimum amount you want your users to stake, it
                 can be any number but if you set a min value then staking amount
                 is always a coefficient of this value, for example if min value
-                is 250, then allowed amounts are 250,500,750,1000,etc.
+                is 250, then allowed amounts are 250, 500, 750, 1000 etc.
               </p>
               <div className="mt-4 flex justify-center">
                 <div className="gradient-border-3 overflow-hidden rounded-lg p-[1px]">
