@@ -379,10 +379,17 @@ export class CentherStaking {
   async stake(
     library: Web3Provider,
     poolId: number,
-    referrer: string,
+    userAddress: string,
     amount: string
   ): Promise<void> {
     try {
+      const referrers = await BlockchainRead.getReferrersAddress(
+        library,
+        userAddress
+      );
+
+      const referrer = referrers[0];
+
       const result = await BlockchainWrite.stake(
         library,
         poolId + "",
@@ -583,6 +590,7 @@ export class CentherStaking {
     }
 
     if (
+      input.rewardToken?.length > 0 &&
       ZeroAddress != input.rewardToken &&
       !eqAddress(input.stakeToken, input.rewardToken)
     ) {

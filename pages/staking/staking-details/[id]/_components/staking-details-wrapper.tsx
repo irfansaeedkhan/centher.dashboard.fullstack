@@ -19,7 +19,7 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import axios from "axios";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
-import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
+import { formatUnits, parseEther } from "ethers/lib/utils";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
@@ -41,7 +41,7 @@ enum ModalType {
 }
 
 const StakingDetailsWrapper = ({ children }: Props) => {
-  const { library } = useWeb3React();
+  const { library, account } = useWeb3React();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -149,18 +149,23 @@ const StakingDetailsWrapper = ({ children }: Props) => {
   useEffect(() => {
     if (stakingPool) {
       const total =
-        +(+stakingPool.apy / 100).toFixed(2) *
+        +(+stakingPool.apy / 10000).toFixed(2) *
         +stakingValue *
         +(+stakingPool.staking_period / oneYearInSec).toFixed(4);
 
       const claim =
-        +(+stakingPool.apy / 100).toFixed(2) *
+        +(+stakingPool.apy / 10000).toFixed(2) *
         +stakingValue *
         +(+stakingPool.claim_period / oneYearInSec).toFixed(4);
 
+      let coef = 1;
+      if (stakingPool.rate && stakingPool.rate > 0) {
+        coef = stakingPool.rate;
+      }
+
       setRewardEstimation({
-        total: total + "",
-        claim: claim + "",
+        total: total * coef + "",
+        claim: claim * coef + "",
       });
     }
   }, [stakingValue]);
@@ -171,6 +176,10 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   const stakeSubmit = async (referrer: string) => {
     try {
+      if (!library || !account?.length) {
+        throw new Error("Connect wallet");
+      }
+
       const amount = parseEther(normalizeValue(stakingValue) + "").toString();
       const minAmount = stakingPool?.min_staking_amount || "0";
 
@@ -179,19 +188,13 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           throw new Error("Amount cannot be less than minimum staking amount");
         }
 
-        if (referrer != ZeroAddress && !isAddress(referrer)) {
-          throw new Error("Invalid referrer error");
-        }
-
-        await sdk.stake(library, +poolId, referrer, amount);
-        //TODO=> show success modal
+        await sdk.stake(library, +poolId, account, amount);
         modal.createModal(ModalType.successFuncModal);
       } else {
         throw new Error("Invalid params");
       }
     } catch (error) {
       console.log(error);
-      //TODO=> show error modal
       let message = error instanceof Error ? error.message : error;
 
       if (

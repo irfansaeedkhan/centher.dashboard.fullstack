@@ -59,6 +59,28 @@ export class BlockchainRead {
     });
   }
 
+  static async getReferrersAddress(
+    library: Web3Provider,
+    userAddress: string
+  ): Promise<string[]> {
+    try {
+      const signer = getSigner(library);
+      const registrationContract = SmartContractProvider.getContract(
+        SmartContractName.REGISTRATION,
+        signer
+      );
+
+      const result = await registrationContract.functions.getReferrerAddresses(
+        userAddress
+      );
+
+      return result;
+    } catch (error: any) {
+      logger(error, "getReferrersAddress");
+      throw error;
+    }
+  }
+
   static async getAllCollections(first: number, skip: number): Promise<any[]> {
     const variables = {
       first,
@@ -1900,6 +1922,7 @@ export class BlockchainWrite {
             value: price.toString(),
           });
           await tx.wait();
+          await library.waitForTransaction(tx.hash, 5);
           return tx.hash;
         }
 
@@ -1909,6 +1932,7 @@ export class BlockchainWrite {
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data);
           await tx.wait();
+          await library.waitForTransaction(tx.hash, 5);
           return tx.hash;
         }
 
@@ -1941,17 +1965,24 @@ export class BlockchainWrite {
         );
       }
 
-      // const currentAllowence = await tokenContract.functions.allowance(
-      //   userAddress,
-      //   spenderAddress
-      // );
-
       const tx = await tokenContract.functions.approve(
         spenderAddress,
         balance.toString()
       );
 
       await tx.wait();
+      await library.waitForTransaction(tx.hash, 5);
+      // const currentAllowence = await tokenContract.functions.allowance(
+      //   userAddress,
+      //   spenderAddress
+      // );
+
+      // if (currentAllowence?.toString() != balance?.toString()) {
+      //   throw new Error(
+      //     "Set approval encountered to error, please try again or contact support."
+      //   );
+      // }
+
       return tx.hash;
     } catch (error: any) {
       logger(error, "SetApprovalForWallet");
@@ -1976,7 +2007,9 @@ export class BlockchainWrite {
         poolId,
         data
       );
+
       await tx.wait();
+      await library.waitForTransaction(tx.hash, 5);
       return tx.hash;
     } catch (error: any) {
       logger(error, "setStakingPoolAffiliateSettings");

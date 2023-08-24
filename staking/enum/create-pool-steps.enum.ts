@@ -8,6 +8,7 @@ export enum CreatePoolStepsEnum {
   metadata = "Create Metadata",
   contract = "Call Contract",
   affiliate = "Setup Affiliate Setting",
+  network_confirmation = "Waiting for network confirmation",
 }
 
 export enum ProgressStatus {

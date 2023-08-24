@@ -152,6 +152,7 @@ export type ListCardDataOBj = {
   supply: string;
   totalStakedAmount: string;
   totalPaidReward: string;
+  rate: number;
   multilevel_rewards?:
     | "No referral"
     | "Fix Commission (0 to 6 levels)"

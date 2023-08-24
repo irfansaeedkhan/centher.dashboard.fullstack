@@ -38,7 +38,9 @@ const Booking: React.FC<Props> = ({
   const [referrer, setReferrer] = useState("");
 
   useEffect(() => {
-    setFilled((+totalStakedAmount / +totalStakingCap) * 100);
+    const percentage = (+totalStakedAmount / +totalStakingCap) * 100;
+
+    setFilled(percentage ? percentage : 0);
   }, [totalStakedAmount, totalStakingCap]);
 
   return (
@@ -86,7 +88,7 @@ const Booking: React.FC<Props> = ({
         </div>
       ) : (
         <div className="mt-4 flex flex-col gap-2">
-          <p className="text-sm text-white">
+          {/* <p className="text-sm text-white">
             Referrals<span className="text-gray-shade-14">(Optional)</span>
           </p>
           <input
@@ -96,8 +98,8 @@ const Booking: React.FC<Props> = ({
             type="text"
             placeholder="Add referrals here"
             className="w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm text-white focus:ring-1 focus:ring-brand-primary"
-          />
-          <p className="text-sm text-white">Add Value</p>
+          /> */}
+          <p className="mt-10 text-sm text-white">Add Value</p>
           <div className="relative flex h-12 w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 p-3 focus-within:ring-1 focus-within:ring-brand-primary flg:max-w-full">
             <CustomNumberInput
               name={
@@ -176,8 +178,12 @@ const Booking: React.FC<Props> = ({
                 onSubmit(referrer?.length ? referrer : ZeroAddress)
               }
             />
+          ) : +new Date(+start * 1000) - +new Date() < 86400000 ? (
+            <p className="mt-3 text-center text-lg font-semibold text-white">
+              This pool will start working soon
+            </p>
           ) : (
-            <p className="text-center text-lg font-semibold text-white">
+            <p className="mt-3 text-center text-lg font-semibold text-white">
               This pool will start working from{" "}
               <span className="text-lg font-semibold text-gray-shade-14">
                 {new Date(+start * 1000).toLocaleDateString()}
