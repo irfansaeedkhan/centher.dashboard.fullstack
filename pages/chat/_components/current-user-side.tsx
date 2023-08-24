@@ -544,10 +544,11 @@ const CurrentUserSide: React.FC<{
     if (hoverRef.current) {
       hoverRef.current.style.display = "block";
       setEmojiBar(true);
+
       setLogs((prev_logs) => [
         ...prev_logs,
         // eslint-disable-next-line react/jsx-key
-        <div> Enter </div>,
+        <div> Click On mouse enter !!</div>,
       ]);
     }
   };
@@ -660,6 +661,11 @@ const CurrentUserSide: React.FC<{
   const touchDurationRef = useRef<number>(0);
 
   const handleTouchStart = () => {
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> Handle touch start !!</div>,
+    ]);
     handleSetData();
     const startTime = new Date().getTime();
     touchDurationRef.current = 0;
@@ -673,25 +679,50 @@ const CurrentUserSide: React.FC<{
   };
 
   const handleTouchEnd = () => {
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> Handle touch end !!</div>,
+    ]);
     if (timerRef.current) {
       clearInterval(timerRef.current);
     }
 
     const threshold = 1000; // Adjust this value to your desired hold duration
     if (touchDurationRef.current >= threshold) {
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Calling openPopUp Function</div>,
+      ]);
       openPopup();
     }
   };
 
   const handleMouseLeaveMobile = () => {
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> {Number(noOfTrigger)} Handle Mouse Leave mobile</div>,
+    ]);
     if (hoverRef.current && belowMobile) {
       hoverRef.current.style.display = "none";
       setEmojiBarMobile(false);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Closed mobilebar</div>,
+      ]);
     }
   };
 
   const handleSetData = () => {
     seta("check");
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> {Number(noOfTrigger)} Handle set data</div>,
+    ]);
     setEmojiBarMobile(false);
     setShowBackground(false);
     setShowBlur("");
@@ -699,14 +730,29 @@ const CurrentUserSide: React.FC<{
   };
 
   const openPopup = () => {
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> {Number(noOfTrigger)} Pop up Function called</div>,
+    ]);
     // Implement your logic to open the pop-up here
     if (hoverRef.current) {
       hoverRef.current.style.display = "block";
       setShowBlur("blur-local");
       setShowBackground(true);
       setNonShowBlur("not-blur");
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Setting up emojibar</div>,
+      ]);
       setEmojiBarMobile(true);
     }
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> {Number(noOfTrigger)} Pop up Function call end</div>,
+    ]);
   };
 
   return (
