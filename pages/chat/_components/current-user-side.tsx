@@ -575,7 +575,7 @@ const CurrentUserSide: React.FC<{
         // eslint-disable-next-line react/jsx-key
         <div>
           {" "}
-          {Number(noOfTrigger)} Emoji Bar {emojiBar}
+          {Number(noOfTrigger)} Emoji Bar {emojiBar.toString()}
         </div>,
       ]);
       setLogs((prev_logs) => [
@@ -583,7 +583,7 @@ const CurrentUserSide: React.FC<{
         // eslint-disable-next-line react/jsx-key
         <div>
           {" "}
-          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile}
+          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile.toString()}
         </div>,
       ]);
       setEmojiBar((prevEmojiBar) => false);
@@ -603,7 +603,7 @@ const CurrentUserSide: React.FC<{
         // eslint-disable-next-line react/jsx-key
         <div>
           {" "}
-          {Number(noOfTrigger)} Emoji Bar {emojiBar}
+          {Number(noOfTrigger)} Emoji Bar {emojiBar.toString()}
         </div>,
       ]);
       setLogs((prev_logs) => [
@@ -611,7 +611,7 @@ const CurrentUserSide: React.FC<{
         // eslint-disable-next-line react/jsx-key
         <div>
           {" "}
-          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile}
+          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile.toString()}
         </div>,
       ]);
     }
