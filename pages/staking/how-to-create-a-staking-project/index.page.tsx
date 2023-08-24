@@ -308,6 +308,19 @@ const CreateStakingProject: NextPageWithLayout = () => {
                 Save and see the preview of your project before submitting. In
                 this phase you can still edit the project details.
               </p>
+
+              <p className="mt-4">
+                Once you click on submit your wallet will show indicating an
+                amount of Stake Token you want to assign to the stake and the
+                same thing will happen if you chose a different token as Reward
+                Token. <br />
+                Select Max Amount inside your wallet interface and approve the
+                transaction.
+              </p>
+
+              <p className="mt-4">
+                Congratulations! Your staking project is now live!
+              </p>
             </div>
           </div>
         </div>
