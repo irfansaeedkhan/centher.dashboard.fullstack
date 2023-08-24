@@ -10,7 +10,7 @@ const CreateStakingProject: NextPageWithLayout = () => {
         Centher Academy
       </h1>
       <div className="rounded-[20px] border border-[#2A2D3C] bg-[#1B1C22]">
-        <div className="p-8">
+        <div className="px-4 py-8 fmd:px-8">
           <h2 className="text-20px textGradient font-semibold">
             How to Create a Staking Project?
           </h2>
