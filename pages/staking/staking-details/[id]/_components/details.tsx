@@ -108,7 +108,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
               className={button}
             >
               <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>Twitter</span>
+              <span>X.com</span>
             </a>
             <a
               href={findLink("facebook")}

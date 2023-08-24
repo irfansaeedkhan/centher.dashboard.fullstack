@@ -44,7 +44,7 @@ export interface MappedCreatePoolInput {
   startTime: number;
   stakeToken: string;
   rewardToken: string;
-  rate: number;
+  rate: string;
   annualStakingRewardRate: number;
   minStakeAmount: string;
   maxStakeAmount: string;

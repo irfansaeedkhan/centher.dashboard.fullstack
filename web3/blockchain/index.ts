@@ -20,6 +20,19 @@ import {
 import { parseEther } from "ethers/lib/utils";
 
 export class BlockchainRead {
+  static async isContractAddress(
+    library: Web3Provider,
+    address: string
+  ): Promise<boolean> {
+    try {
+      const code = await library.getCode(address);
+      return code == "0x" ? false : true;
+    } catch (error) {
+      logger(error, "isContractAddress");
+      throw error;
+    }
+  }
+
   static async getReferrers(
     account: string | null | undefined,
     level: string
@@ -74,7 +87,7 @@ export class BlockchainRead {
         userAddress
       );
 
-      return result;
+      return result[0];
     } catch (error: any) {
       logger(error, "getReferrersAddress");
       throw error;
@@ -1912,11 +1925,11 @@ export class BlockchainWrite {
             `Not enough balance for pay fee, balance: ${balance.toString()}, fee: ${price.toString()}`
           );
         }
-        console.log(price.toString(), data);
+
         await stakingContract.callStatic.createPool(data, {
           value: price.toString(),
         });
-        console.log("rad shod");
+
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data, {
             value: price.toString(),
@@ -1957,12 +1970,16 @@ export class BlockchainWrite {
         signer
       );
 
-      const balance = await tokenContract.functions.balanceOf(userAddress);
-
-      if (balance == 0) {
-        throw new InsufficientFundError(
-          "theres nothing for approval, balance is 0"
-        );
+      let balance;
+      try {
+        balance = await tokenContract.functions.balanceOf(userAddress);
+        if (balance == 0) {
+          throw new InsufficientFundError(
+            "theres nothing for approval, balance is 0"
+          );
+        }
+      } catch (error) {
+        throw new Error("Invalid token address");
       }
 
       const tx = await tokenContract.functions.approve(
@@ -2051,12 +2068,15 @@ export class BlockchainWrite {
         parseEther(normalizeValue(amount) + ""),
         referrer
       );
+
       const tx = await stakingContract.functions.stake(
         poolId,
         parseEther(normalizeValue(amount) + ""),
         referrer
       );
+
       await tx.wait();
+      await library.waitForTransaction(tx.hash, 2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "stake");

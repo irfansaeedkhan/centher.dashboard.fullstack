@@ -154,7 +154,7 @@ const Booking: React.FC<Props> = ({
               </p>
             </div>
           </div>
-          <small className="m-2 text-sm text-gray-shade-14">
+          <small className="m-2 text-sm text-gray-shade-12">
             MIN: {formatUnits(data.minAmount ? data.minAmount + "" : "0", 18)}{" "}
             {
               coins.find((e) =>
@@ -178,15 +178,12 @@ const Booking: React.FC<Props> = ({
                 onSubmit(referrer?.length ? referrer : ZeroAddress)
               }
             />
-          ) : +new Date(+start * 1000) - +new Date() < 86400000 ? (
-            <p className="mt-3 text-center text-lg font-semibold text-white">
-              This pool will start working soon
-            </p>
           ) : (
-            <p className="mt-3 text-center text-lg font-semibold text-white">
+            <p className="text-md mt-3 text-center text-white">
               This pool will start working from{" "}
-              <span className="text-lg font-semibold text-gray-shade-14">
-                {new Date(+start * 1000).toLocaleDateString()}
+              <span className="text-md text-gray-shade-14">
+                {new Date(+start * 1000).toLocaleDateString()}{" "}
+                {new Date(+start * 1000).toLocaleTimeString()}
               </span>
             </p>
           )}

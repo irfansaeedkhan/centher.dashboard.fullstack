@@ -182,10 +182,26 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
       const amount = parseEther(normalizeValue(stakingValue) + "").toString();
       const minAmount = stakingPool?.min_staking_amount || "0";
-
+      const maxAmount = stakingPool?.max_staking_amount || "0";
       if (sdk && poolId) {
+        if (
+          stakingPool?.max_staking_amount &&
+          +stakingPool?.max_staking_amount > 0 &&
+          +stakingPool?.max_staking_amount < +amount
+        ) {
+          modal.createModal(
+            ModalType.failedFuncModal,
+            `Amount must be less than ${formatUnits(maxAmount).toString()}.`
+          );
+          return;
+        }
+
         if (+amount < +minAmount) {
-          throw new Error("Amount cannot be less than minimum staking amount");
+          modal.createModal(
+            ModalType.failedFuncModal,
+            `Amount must be bigger than ${formatUnits(minAmount).toString()}.`
+          );
+          return;
         }
 
         await sdk.stake(library, +poolId, account, amount);

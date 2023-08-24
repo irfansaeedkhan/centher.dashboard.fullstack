@@ -1,6 +1,6 @@
 import { CreatePoolInput, MappedCreatePoolInput } from "../types";
 import { ZeroAddress } from "@/web3/constants/common";
-import { isAddress, parseEther } from "ethers/lib/utils";
+import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
 import { CreatePoolParamsError } from "../errors/params.error";
 import { eqAddress } from "@/live/utils/address.utils";
 import { StakingProject } from "../types/get.projects.interface";
@@ -71,7 +71,7 @@ export function setupCreatePoolData(
     startTime: Math.floor(+new Date(+input.startTime) / 1000),
     stakeToken: input.stakeToken,
     rewardToken: rewardIsDifferent ? input.rewardToken : ZeroAddress,
-    rate: rewardIsDifferent ? input.rate : 0,
+    rate: rewardIsDifferent ? parseEther(input.rate + "").toString() : "0",
     annualStakingRewardRate: input.annualStakingRewardRate * 100,
     minStakeAmount: parseEther(input.minStakeAmount + "").toString() || "0",
     maxStakeAmount: parseEther(input.maxStakeAmount + "").toString() || "0",
@@ -94,7 +94,7 @@ export function setupUiModels(input: StakingProject[]): ListCardDataOBj[] {
     return {
       id: e.id + "",
       pack: e.name,
-      rate: +e.rate,
+      rate: +formatUnits(e.rate),
       price: "",
       sybmol: "",
       token_address: e.stakeToken,

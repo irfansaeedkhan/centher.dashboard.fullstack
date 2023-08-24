@@ -620,7 +620,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           className={button}
                         >
                           <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-                          <span>Twitter</span>
+                          <span>X.com</span>
                         </a>
                       )}
                       {data?.github && (
