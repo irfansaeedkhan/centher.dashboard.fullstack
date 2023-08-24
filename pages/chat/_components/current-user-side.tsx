@@ -503,6 +503,8 @@ const CurrentUserSide: React.FC<{
   const [a, seta] = useState("");
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
+  const [logs, setLogs] = useState<JSX.Element[]>([]);
+  const [noOfTrigger, setNoOfTrigger] = useState<Number>(1);
 
   useEffect(() => {
     setEmoji([]);
@@ -542,12 +544,48 @@ const CurrentUserSide: React.FC<{
     if (hoverRef.current) {
       hoverRef.current.style.display = "block";
       setEmojiBar(true);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> Enter </div>,
+      ]);
     }
   };
 
   const handleMouseLeave = () => {
+    setLogs((prev_logs) => [
+      ...prev_logs,
+      // eslint-disable-next-line react/jsx-key
+      <div> {Number(noOfTrigger)} Mouse Leave Triggered</div>,
+    ]);
     if (hoverRef.current) {
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Hover Current Element</div>,
+      ]);
       hoverRef.current.style.display = "none";
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Values before setting function</div>,
+      ]);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div>
+          {" "}
+          {Number(noOfTrigger)} Emoji Bar {emojiBar}
+        </div>,
+      ]);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div>
+          {" "}
+          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile}
+        </div>,
+      ]);
       setEmojiBar((prevEmojiBar) => false);
       sett("emojibar");
       setEmojiBarMobile((prevEmojiBarMobile) => false);
@@ -555,7 +593,29 @@ const CurrentUserSide: React.FC<{
       setShowBlur("");
       setNonShowBlur((prevShowNonBlur) => "");
       sett("last");
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div> {Number(noOfTrigger)} Values after setting function</div>,
+      ]);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div>
+          {" "}
+          {Number(noOfTrigger)} Emoji Bar {emojiBar}
+        </div>,
+      ]);
+      setLogs((prev_logs) => [
+        ...prev_logs,
+        // eslint-disable-next-line react/jsx-key
+        <div>
+          {" "}
+          {Number(noOfTrigger)} Emoji Bar Mobile {emojiBarMobile}
+        </div>,
+      ]);
     }
+    setNoOfTrigger((prev_trigger) => Number(prev_trigger) + 1);
   };
 
   const handleMouseClickEmojiList = () => {
@@ -648,8 +708,6 @@ const CurrentUserSide: React.FC<{
       setEmojiBarMobile(true);
     }
   };
-
-  console.log("emoji bar", emojiBar);
 
   return (
     <>
@@ -825,12 +883,7 @@ const CurrentUserSide: React.FC<{
               </div>
             </div>
           )}
-          <p className="text-white">emojibar-- {emojiBar.toString()}</p>
-          <p className="text-white">
-            emojibarmobile--{emojiBarMobile.toString()}
-          </p>
-          <p className="text-white">{a}</p>
-          <p className="text-white">{t}</p>
+          <div className="text-white">{logs}</div>
           <div className={`flex w-full items-center justify-end gap-2`}>
             {belowMobile ? (
               <div ref={hoverRef} className={`hidden `}>
