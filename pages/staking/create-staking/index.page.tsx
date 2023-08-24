@@ -65,6 +65,7 @@ import {
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
+import { BlockchainRead } from "@/web3/blockchain";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -444,7 +445,7 @@ const CreateStaking: NextPageWithLayout = () => {
     setMembers((prevMembers) => prevMembers.filter((_, i) => i !== index));
   };
 
-  const submitForm = (data: stakingFormInterface) => {
+  const submitForm = async (data: stakingFormInterface) => {
     let finalData = {
       profile_image: profile,
       cover_image: cover,
@@ -481,6 +482,44 @@ const CreateStaking: NextPageWithLayout = () => {
       description: data.description,
       members: members,
     };
+
+    const isTokenAddressValid = await BlockchainRead.isContractAddress(
+      library,
+      finalData.token_address
+    );
+
+    if (!isTokenAddressValid) {
+      setshowMsg(
+        <StakingFailureModal
+          onClickClose={onClickClose}
+          retryFunc={retryFunc}
+          message={`Token with address "${finalData.token_address}" does not exist on network`}
+        />
+      );
+      return;
+    }
+
+    if (
+      finalData.reward_token_address &&
+      finalData.reward_token_address.length > 0 &&
+      !eqAddress(finalData.token_address, finalData.reward_token_address)
+    ) {
+      const isTokenAddressValid = await BlockchainRead.isContractAddress(
+        library,
+        finalData.reward_token_address
+      );
+
+      if (!isTokenAddressValid) {
+        setshowMsg(
+          <StakingFailureModal
+            onClickClose={onClickClose}
+            retryFunc={retryFunc}
+            message={`Token with address "${finalData.reward_token_address}" does not exist on network`}
+          />
+        );
+        return;
+      }
+    }
 
     if (finalData) {
       previewBoxModalFunc(finalData);
@@ -1919,7 +1958,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       htmlFor="twitter"
                       className="block font-normal tracking-wide"
                     >
-                      Twitter
+                      X.com
                     </label>
                     <input
                       type="text"
