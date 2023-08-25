@@ -2053,7 +2053,7 @@ export class BlockchainWrite {
 
       const approvalTx = await tokenContract.functions.approve(
         spenderAddress,
-        parseEther(normalizeValue(amount) + "")
+        amount
       );
 
       await approvalTx.wait();
@@ -2061,7 +2061,7 @@ export class BlockchainWrite {
 
       const tx = await stakingContract.functions.stake(
         poolId,
-        parseEther(normalizeValue(amount) + ""),
+        amount,
         referrer
       );
 

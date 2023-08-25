@@ -9,6 +9,7 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { formatUnits } from "ethers/lib/utils";
 import { Staking } from "@/assets/svgs";
 import { OptionalType } from "@/staking/types";
+import { CgSpinner } from "react-icons/cg";
 
 export interface StakingStat {
   totalStakedAmount: string;
@@ -24,6 +25,7 @@ interface Props {
   onSubmit: (referrer: string) => void;
   coins: Array<CoinDetails | undefined>;
   start: string;
+  stakingLoader: boolean;
 }
 
 const Booking: React.FC<Props> = ({
@@ -32,6 +34,7 @@ const Booking: React.FC<Props> = ({
   onSubmit,
   coins,
   start,
+  stakingLoader,
 }) => {
   const { totalStakedAmount, totalStakingCap, tokenAddress } = data;
   const [filled, setFilled] = useState(0);
@@ -176,6 +179,11 @@ const Booking: React.FC<Props> = ({
               className={clsx("mt-3 h-12 w-full text-sm")}
               onClick={() =>
                 onSubmit(referrer?.length ? referrer : ZeroAddress)
+              }
+              loaderIcon={
+                stakingLoader ? (
+                  <CgSpinner className="h-5 animate-spin text-white" />
+                ) : undefined
               }
             />
           ) : (

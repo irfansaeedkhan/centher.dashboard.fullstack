@@ -61,7 +61,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     total: string;
   } | null>(null);
   const [stakingValue, setStakingValue] = useState<string>("0");
-
+  const [stakeLoader, setStakeLoader] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -203,7 +203,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           );
           return;
         }
-
+        setStakeLoader(true);
         await sdk.stake(
           library,
           +poolId,
@@ -211,12 +211,12 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           amount,
           stakingPool?.token_address as string
         );
+        setStakeLoader(false);
         modal.createModal(ModalType.successFuncModal);
       } else {
         throw new Error("Invalid params");
       }
     } catch (error) {
-      console.log(error);
       let message = error instanceof Error ? error.message : error;
 
       if (
@@ -258,6 +258,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
               onSubmit={stakeSubmit}
               coins={coinsDetails}
               start={stakingPool?.start_time || "1"}
+              stakingLoader={stakeLoader}
             />
           )}
           <div className="h-auto w-full max-w-[512px] rounded-2xl border border-gray-shade-3 p-8">
