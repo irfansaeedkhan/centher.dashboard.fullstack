@@ -1,19 +1,23 @@
 import { GreenTick } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
 import React from "react";
 
-const SuccessModalContent = () => {
+const SuccessModalContent: React.FC<{ message?: string; title?: string }> = ({
+  message,
+  title,
+}) => {
   return (
     <div className={modalBodyWrapper1}>
       <div className="flex flex-col items-center justify-center">
         <GreenTick />
         <h2 className="text-18px font-semibold text-white">
-          Staking Project Created Successfully
+          {title?.length ? title : `Staking Project Created Successfully`}
         </h2>
       </div>
       <p className="text-14px text-center font-normal leading-6 text-gray-shade-2">
-        Congratulations! you have successfully create your Staking Project on
-        centher platform.
+        {message?.length
+          ? message
+          : `Congratulations! you have successfully create your Staking Project on
+        centher platform.`}
       </p>
     </div>
   );

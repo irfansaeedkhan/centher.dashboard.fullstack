@@ -212,7 +212,11 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           stakingPool?.token_address as string
         );
         setStakeLoader(false);
-        modal.createModal(ModalType.successFuncModal);
+        modal.createModal(ModalType.successFuncModal, {
+          title: "New Stake",
+          message:
+            "Your stake processed successfully. Reload the page to get the latest details.",
+        });
       } else {
         throw new Error("Invalid params");
       }
@@ -227,7 +231,10 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           "This request cannot be done at this moment, please try after a while or contact support.";
       }
 
-      modal.createModal(ModalType.failedFuncModal, message);
+      modal.createModal(ModalType.failedFuncModal, {
+        message,
+        title: "New Stake Failed",
+      });
     }
   };
 
@@ -235,12 +242,16 @@ const StakingDetailsWrapper = ({ children }: Props) => {
     successFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <SuccessModalContent />,
+      content: (input: { title: string; message: string }) => (
+        <SuccessModalContent message={input.message} title={input.title} />
+      ),
     },
     failedFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: (message: string) => <FailedModalContent message={message} />,
+      content: (input: { title: string; message: string }) => (
+        <FailedModalContent message={input.message} title={input.title} />
+      ),
     },
   };
 

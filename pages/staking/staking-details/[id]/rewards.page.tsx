@@ -28,9 +28,10 @@ import { eqAddress } from "@/live/utils/address.utils";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
 import { PreLoader } from "@/components/pre.loader";
+import { CgSpinner } from "react-icons/cg";
+import { title } from "process";
 
 enum ModalType {
-  stakeRewardsModal = "stakeRewardsModal",
   cancelStakingModal = "cancelStakingModal",
   successFuncModal = "successFuncModal",
   failedFuncModal = "failedFuncModal",
@@ -59,16 +60,28 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [cancelErrors, setCancelErrors] = useState("");
   const [cancelAmount, setCancelAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [claimInProcess, setClaimInProcess] = useState(false);
+  const [cancelInProcess, setCancelInProcess] = useState(false);
 
   const claimreward = async () => {
     try {
       if (sdk && poolId) {
+        setClaimInProcess(true);
         await sdk.claimReward(library, +poolId);
-        //TODO=> show success modal
+        setClaimInProcess(false);
+        modal.createModal(ModalType.successFuncModal, {
+          message:
+            "You claimed your reward successfully, please reload the page to get the latest updates.",
+          title: "Claim Reward",
+        });
       } else throw new Error("Invalid params");
     } catch (error) {
-      //TODO=> show error modal
-      console.log(error);
+      modal.createModal(ModalType.failedFuncModal, {
+        message: "Claim reward failed",
+        title: "Claim Reward",
+      });
+    } finally {
+      setClaimInProcess(false);
     }
   };
 
@@ -86,28 +99,26 @@ const ClaimRewards: NextPageWithLayout = () => {
 
     try {
       if (sdk && poolId) {
+        modal.dismissModal();
+        setCancelInProcess(true);
         await sdk.unstake(library, +poolId, cancelAmount + "");
-        //TODO=> success modal
-        modal.createModal(ModalType.successFuncModal);
+        modal.createModal(ModalType.successFuncModal, {
+          title: "Cancel Staking",
+          message:
+            "Your request processed successfully, Reload the page to get the latest details",
+        });
       } else throw new Error("invalid params");
     } catch (error) {
-      console.log(error);
-      //TODO=> show error modal
-      modal.createModal(ModalType.failedFuncModal);
+      modal.createModal(ModalType.failedFuncModal, {
+        title: "Cancel Staking Failed",
+        message: "Request failed",
+      });
+    } finally {
+      setCancelInProcess(false);
     }
   };
 
   const rewardsModal: TemplateCollection = {
-    stakeRewardsModal: {
-      title: "Claim reward",
-      visibility: true,
-      content: () => (
-        <StakeRewardModal
-          onClose={() => modal.dismissModal()}
-          onConfirm={claimreward}
-        />
-      ),
-    },
     cancelStakingModal: {
       title: "Unstake",
       visibility: true,
@@ -122,12 +133,17 @@ const ClaimRewards: NextPageWithLayout = () => {
     successFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <SuccessModalContent />,
+      content: (input: { message: string; title: string }) => (
+        <SuccessModalContent message={input.message} title={input.title} />
+      ),
     },
+
     failedFuncModal: {
-      title: "Creating Staking Pack",
+      title: "Claim failed",
       visibility: true,
-      content: () => <FailedModalContent message="" />,
+      content: (input: { message: string; title: string }) => (
+        <FailedModalContent message={input.message} title={input.title} />
+      ),
     },
   };
 
@@ -207,6 +223,7 @@ const ClaimRewards: NextPageWithLayout = () => {
         <div className="text-[min(10vw, 20px)] textGradient font-semibold">
           Claim Rewards
         </div>
+
         <div className="flex flex-col justify-between gap-5 rounded-xl bg-elevation-1 p-6 md:flex-row md:items-center md:gap-10">
           <div>
             <p className="text-xs font-medium text-gray-shade-14">My Rewards</p>
@@ -240,7 +257,12 @@ const ClaimRewards: NextPageWithLayout = () => {
               title="Claim Rewards"
               borderRounded="10px"
               disabled={+claimableReward <= 0}
-              onClick={() => modal.createModal(ModalType.stakeRewardsModal)}
+              onClick={claimreward}
+              loaderIcon={
+                claimInProcess ? (
+                  <CgSpinner className="h-5 animate-spin text-white" />
+                ) : undefined
+              }
             />
             {stakingPool?.is_cancelable ? (
               <FinalButton
@@ -252,6 +274,11 @@ const ClaimRewards: NextPageWithLayout = () => {
                   userStaked && +userStaked?.totalStakeAmount > 0 ? false : true
                 }
                 onClick={() => modal.createModal(ModalType.cancelStakingModal)}
+                loaderIcon={
+                  cancelInProcess ? (
+                    <CgSpinner className="h-5 animate-spin text-white" />
+                  ) : undefined
+                }
               />
             ) : (
               ""
@@ -259,6 +286,7 @@ const ClaimRewards: NextPageWithLayout = () => {
           </div>
         </div>
       </div>
+
       <RewardsTable
         data={rewards}
         decimals={
