@@ -119,7 +119,7 @@ const StakingDetails: NextPageWithLayout = () => {
               {
                 +normalizeValue(
                   formatUnits(
-                    userStaked ? userStaked.totalReward : 0 + "",
+                    userStaked ? userStaked.totalClaimableReward : 0 + "",
                     coinsDetails.find((e) =>
                       eqAddress(
                         stakingPool?.reward_token_address,

@@ -173,9 +173,9 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [poolId, router]);
 
   useEffect(() => {
-    if (poolId && library && user && !claimableReward) {
-      sdk?.getUserClaimableRewards(library, +poolId, user._id).then((data) => {
-        setClaimableReward(data);
+    if (poolId && library && user && claimableReward == "0") {
+      sdk?.getUserStakes(library, +poolId, user._id).then((data) => {
+        setClaimableReward(data.totalClaimableReward);
       });
     }
   }, [poolId, library]);
