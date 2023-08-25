@@ -204,7 +204,13 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           return;
         }
 
-        await sdk.stake(library, +poolId, account, amount);
+        await sdk.stake(
+          library,
+          +poolId,
+          account,
+          amount,
+          stakingPool?.token_address as string
+        );
         modal.createModal(ModalType.successFuncModal);
       } else {
         throw new Error("Invalid params");

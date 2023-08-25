@@ -380,7 +380,8 @@ export class CentherStaking {
     library: Web3Provider,
     poolId: number,
     userAddress: string,
-    amount: string
+    amount: string,
+    tokenAddress: string
   ): Promise<void> {
     try {
       const referrers = await BlockchainRead.getReferrersAddress(
@@ -394,7 +395,9 @@ export class CentherStaking {
         library,
         poolId + "",
         amount,
-        referrer
+        referrer,
+        tokenAddress,
+        AddressFactory.getContractAddress(SmartContractName.STAKING)
       );
 
       if (!result?.length) {

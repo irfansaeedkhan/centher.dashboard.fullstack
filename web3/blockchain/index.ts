@@ -2035,7 +2035,9 @@ export class BlockchainWrite {
     library: Web3Provider,
     poolId: string,
     amount: string,
-    referrer: string
+    referrer: string,
+    tokenAddress: string,
+    spenderAddress: string
   ): Promise<string> {
     try {
       const signer = getSigner(library);
@@ -2044,11 +2046,18 @@ export class BlockchainWrite {
         signer
       );
 
-      await stakingContract.callStatic.stake(
-        poolId,
-        parseEther(normalizeValue(amount) + ""),
-        referrer
+      const tokenContract = SmartContractProvider.getErc20Contract(
+        tokenAddress,
+        signer
       );
+
+      const approvalTx = await tokenContract.functions.approve(
+        spenderAddress,
+        parseEther(normalizeValue(amount) + "")
+      );
+
+      await approvalTx.wait();
+      await library.waitForTransaction(approvalTx.hash, 2);
 
       const tx = await stakingContract.functions.stake(
         poolId,
