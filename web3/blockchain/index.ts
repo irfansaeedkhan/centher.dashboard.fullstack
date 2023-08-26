@@ -2108,7 +2108,10 @@ export class BlockchainWrite {
       );
 
       await stakingContract.callStatic.claimRewardForRef(poolId, user);
-      const tx = await stakingContract.functions.claimReward(poolId, user);
+      const tx = await stakingContract.functions.claimRewardForRef(
+        poolId,
+        user
+      );
       await tx.wait();
       return tx.hash;
     } catch (error: any) {
