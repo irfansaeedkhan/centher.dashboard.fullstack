@@ -2126,6 +2126,10 @@ export class BlockchainWrite {
     amount: string
   ): Promise<string> {
     try {
+      if (+amount <= 0) {
+        throw new Error("Invalid amount");
+      }
+
       const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,

@@ -100,14 +100,14 @@ const ClaimRewards: NextPageWithLayout = () => {
     }
   };
 
-  const valueChanged = (value: string) => {
-    setCancelAmount(value);
-  };
-
-  const cancelSubmit = async () => {
+  const cancelSubmit = async (cancelAmount: string) => {
     try {
       if (+formatUnits(userStaked?.totalStakeAmount + "", 18) < +cancelAmount) {
         throw new Error("value is bigger than all your staking amount");
+      }
+
+      if (+cancelAmount <= 0) {
+        throw new Error("value must be bigger than 0");
       }
 
       if (sdk && poolId) {
@@ -135,11 +135,7 @@ const ClaimRewards: NextPageWithLayout = () => {
       title: "Unstake",
       visibility: true,
       content: () => (
-        <UnstakeModal
-          valueChanged={valueChanged}
-          submit={cancelSubmit}
-          errors={cancelErrors}
-        />
+        <UnstakeModal submit={cancelSubmit} errors={cancelErrors} />
       ),
     },
     successFuncModal: {
