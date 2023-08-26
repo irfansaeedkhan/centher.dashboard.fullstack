@@ -30,6 +30,11 @@ import FailedModalContent from "./_components/failed-modal-content";
 import { PreLoader } from "@/components/pre.loader";
 import { CgSpinner } from "react-icons/cg";
 import { title } from "process";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import { MetamaskIcon2 } from "@/assets/svgs";
+import toast from "react-hot-toast";
+import { FiArrowRight } from "react-icons/fi";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",
@@ -38,7 +43,7 @@ enum ModalType {
 }
 
 const ClaimRewards: NextPageWithLayout = () => {
-  const { library } = useWeb3React();
+  const { library, deactivate } = useWeb3React();
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -58,10 +63,20 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [pageSize, setPageSize] = useState("10");
   const [rewards, setRewards] = useState<ClaimedRewards[]>([]);
   const [cancelErrors, setCancelErrors] = useState("");
-  const [cancelAmount, setCancelAmount] = useState(0);
+  const [cancelAmount, setCancelAmount] = useState("0");
   const [isLoading, setIsLoading] = useState(true);
   const [claimInProcess, setClaimInProcess] = useState(false);
   const [cancelInProcess, setCancelInProcess] = useState(false);
+  const { connectWallet } = useConnectWallet();
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
+
+  useEffect(() => {
+    if (!library) {
+      setConnectWalletModal(true);
+    } else {
+      setConnectWalletModal(false);
+    }
+  }, [library]);
 
   const claimreward = async () => {
     try {
@@ -86,22 +101,19 @@ const ClaimRewards: NextPageWithLayout = () => {
   };
 
   const valueChanged = (value: string) => {
-    if (formatUnits(userStaked?.totalStakeAmount + "", 18) < value) {
-      setCancelErrors("value is bigger than all your staking amount");
-    }
-    setCancelAmount(+value);
+    setCancelAmount(value);
   };
 
   const cancelSubmit = async () => {
-    if (cancelAmount <= 0) {
-      setCancelErrors("Amount is required");
-    }
-
     try {
+      if (+formatUnits(userStaked?.totalStakeAmount + "", 18) < +cancelAmount) {
+        throw new Error("value is bigger than all your staking amount");
+      }
+
       if (sdk && poolId) {
         modal.dismissModal();
         setCancelInProcess(true);
-        await sdk.unstake(library, +poolId, cancelAmount + "");
+        await sdk.unstake(library, +poolId, cancelAmount);
         modal.createModal(ModalType.successFuncModal, {
           title: "Cancel Staking",
           message:
@@ -312,7 +324,49 @@ const ClaimRewards: NextPageWithLayout = () => {
           {ModalModel.content}
         </CustomModal>
       )}
-      {isLoading || !userStaked ? <PreLoader /> : ""}
+      {connectWalletModal && (
+        <CustomNewModal
+          onClose={() => {
+            setConnectWalletModal(false);
+          }}
+          title={"Connect to wallet"}
+        >
+          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
+            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
+              Please Connect your wallet to continue, the system support
+              following wallet.
+            </p>
+          </div>
+          <div className="flex w-full justify-center px-5 md:px-10">
+            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
+              <div className="flex items-center gap-3 fsm:gap-6">
+                <MetamaskIcon2 />
+                <h3 className="text-sm font-semibold text-white fmd:text-base">
+                  Metamask
+                </h3>
+              </div>
+              <button
+                onClick={async () => {
+                  if (!user) {
+                    toast.error("Please login to buy this membership");
+                    setConnectWalletModal(false);
+                    return;
+                  }
+                  const _account = await connectWallet();
+                  if (user._id.toLowerCase() !== _account?.toLowerCase()) {
+                    toast.error("Please connect to correct account");
+                    deactivate();
+                  }
+                  setConnectWalletModal(false);
+                }}
+              >
+                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+              </button>
+            </div>
+          </div>
+        </CustomNewModal>
+      )}
+      {!connectWalletModal && (isLoading || !userStaked) ? <PreLoader /> : ""}
     </>
   );
 };

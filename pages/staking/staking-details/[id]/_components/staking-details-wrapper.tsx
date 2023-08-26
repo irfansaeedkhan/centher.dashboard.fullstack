@@ -189,18 +189,22 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           +stakingPool?.max_staking_amount > 0 &&
           +stakingPool?.max_staking_amount < +amount
         ) {
-          modal.createModal(
-            ModalType.failedFuncModal,
-            `Amount must be less than ${formatUnits(maxAmount).toString()}.`
-          );
+          modal.createModal(ModalType.failedFuncModal, {
+            message: `Amount must be less than ${formatUnits(
+              maxAmount
+            ).toString()}.`,
+            title: "Invalid Amount",
+          });
           return;
         }
 
         if (+amount < +minAmount) {
-          modal.createModal(
-            ModalType.failedFuncModal,
-            `Amount must be bigger than ${formatUnits(minAmount).toString()}.`
-          );
+          modal.createModal(ModalType.failedFuncModal, {
+            message: `Amount must be bigger than ${formatUnits(
+              minAmount
+            ).toString()}.`,
+            title: "Invalid Amount",
+          });
           return;
         }
         setStakeLoader(true);

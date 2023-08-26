@@ -10,7 +10,7 @@ const FailedModalContent: React.FC<{ message?: string; title?: string }> = ({
       <div className="flex flex-col items-center justify-center">
         <CircularClose />
         <h2 className="text-18px font-semibold text-white">
-          {title?.length ? title : `Couldn&apos;t Create Staking`}
+          {title?.length ? title : `Couldn't Create Staking`}
         </h2>
       </div>
       <p className="text-14px text-center font-normal leading-6 text-gray-shade-2">

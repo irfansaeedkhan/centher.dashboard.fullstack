@@ -2131,12 +2131,12 @@ export class BlockchainWrite {
 
       await stakingContract.callStatic.unstake(
         poolId,
-        parseEther(normalizeValue(amount) + "")
+        parseEther(normalizeValue(amount))
       );
 
       const tx = await stakingContract.functions.unstake(
         poolId,
-        parseEther(normalizeValue(amount) + "")
+        parseEther(normalizeValue(amount))
       );
 
       await tx.wait();
