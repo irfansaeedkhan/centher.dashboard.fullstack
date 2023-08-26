@@ -217,8 +217,9 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [sdk, user, poolId, page, pageSize]);
 
   useEffect(() => {
-    if (sdk && poolId && user && library && !userStaked) {
+    if (sdk && poolId && user && library) {
       sdk.getUserStakes(library, +poolId, user._id).then((data) => {
+        console.log("||||||||||||||", data);
         setUserStaked(data);
       });
     }
@@ -272,7 +273,7 @@ const ClaimRewards: NextPageWithLayout = () => {
                 ) : undefined
               }
             />
-            {stakingPool?.is_cancelable ? (
+            {stakingPool?.is_cancelable == "yes" ? (
               <FinalButton
                 variant="danger"
                 className="h-9"

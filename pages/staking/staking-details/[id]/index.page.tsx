@@ -94,7 +94,7 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [library]);
 
   useEffect(() => {
-    if (sdk && poolId && user && library && !userStaked) {
+    if (sdk && poolId && user && library) {
       sdk.getUserStakes(library, +poolId, user._id).then((data) => {
         setUserStaked(data);
       });

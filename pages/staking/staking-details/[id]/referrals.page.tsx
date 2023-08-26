@@ -123,13 +123,15 @@ const StakingReferrals: NextPageWithLayout = () => {
   }, [poolId, router]);
 
   useEffect(() => {
-    if (user && sdk && poolId && !totalClaimed) {
+    if (user && sdk && poolId) {
       sdk.getTotalClaimedRefReward(poolId, user._id).then((data) => {
         setTotalClaimed(data);
       });
     }
+  }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
 
-    if (user && sdk && poolId && !claimedRewards.length) {
+  useEffect(() => {
+    if (user && sdk && poolId) {
       sdk
         .getClaimedRefRewards(
           new GetRefRewardInput(+page, +pageSize, poolId, user._id)
@@ -138,8 +140,10 @@ const StakingReferrals: NextPageWithLayout = () => {
           setClaimedRewards(data);
         });
     }
+  }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
 
-    if (user && sdk && poolId && stakingPool && !referralsInfo) {
+  useEffect(() => {
+    if (user && sdk && poolId && stakingPool) {
       let maxLevel =
         stakingPool?.rewards_level?.find((e) => !e.percent)?.level || 6;
 
