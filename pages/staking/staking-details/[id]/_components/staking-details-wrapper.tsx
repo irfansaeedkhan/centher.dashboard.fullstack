@@ -207,6 +207,19 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           });
           return;
         }
+
+        if (+minAmount > 0 && +amount % +minAmount != 0) {
+          modal.createModal(ModalType.failedFuncModal, {
+            message: `Amount must be a coefficient of ${formatUnits(
+              minAmount
+            ).toString()}, eg. ${formatUnits(minAmount).toString()}, ${
+              +formatUnits(minAmount).toString() * 2
+            }, ${+formatUnits(minAmount).toString() * 3}, ...`,
+            title: "Invalid Amount",
+          });
+          return;
+        }
+
         setStakeLoader(true);
         await sdk.stake(
           library,
@@ -235,6 +248,14 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           "This request cannot be done at this moment, please try after a while or contact support.";
       }
 
+      if (
+        typeof message == "string" &&
+        message.includes("rejected transaction")
+      ) {
+        message = "Transaction rejected.";
+      }
+
+      setStakeLoader(false);
       modal.createModal(ModalType.failedFuncModal, {
         message,
         title: "New Stake Failed",
