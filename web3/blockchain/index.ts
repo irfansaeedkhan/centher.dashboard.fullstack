@@ -2149,7 +2149,27 @@ export class BlockchainWrite {
       await tx.wait();
       return tx.hash;
     } catch (error: any) {
-      logger(error, "claimRunstakeefReward");
+      logger(error, "unstake");
+      throw error;
+    }
+  }
+
+  static async restake(library: Web3Provider, poolId: string): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
+      );
+
+      await stakingContract.callStatic.restake(poolId);
+
+      const tx = await stakingContract.functions.restake(poolId);
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "restake");
       throw error;
     }
   }

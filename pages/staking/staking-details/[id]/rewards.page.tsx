@@ -69,6 +69,7 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [cancelInProcess, setCancelInProcess] = useState(false);
   const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const [restakeInProgress, setRestakeInProgress] = useState(false);
 
   useEffect(() => {
     if (!library) {
@@ -127,6 +128,28 @@ const ClaimRewards: NextPageWithLayout = () => {
       });
     } finally {
       setCancelInProcess(false);
+    }
+  };
+
+  const restakeClicked = async () => {
+    try {
+      if (sdk && poolId) {
+        setRestakeInProgress(true);
+        await sdk.restake(library, +poolId);
+        setRestakeInProgress(false);
+        modal.createModal(ModalType.successFuncModal, {
+          message:
+            "You restaked your rewards successfully, please reload the page to get the latest updates.",
+          title: "Restake Rewards",
+        });
+      } else throw new Error("Invalid params");
+    } catch (error) {
+      modal.createModal(ModalType.failedFuncModal, {
+        message: "Restake Rewards Failed",
+        title: "Restake Rewards",
+      });
+    } finally {
+      setRestakeInProgress(false);
     }
   };
 
@@ -219,7 +242,6 @@ const ClaimRewards: NextPageWithLayout = () => {
   useEffect(() => {
     if (sdk && poolId && user && library) {
       sdk.getUserStakes(library, +poolId, user._id).then((data) => {
-        console.log("||||||||||||||", data);
         setUserStaked(data);
       });
     }
@@ -285,6 +307,27 @@ const ClaimRewards: NextPageWithLayout = () => {
                 onClick={() => modal.createModal(ModalType.cancelStakingModal)}
                 loaderIcon={
                   cancelInProcess ? (
+                    <CgSpinner className="h-5 animate-spin text-white" />
+                  ) : undefined
+                }
+              />
+            ) : (
+              ""
+            )}
+
+            {eqAddress(
+              stakingPool?.token_address,
+              stakingPool?.reward_token_address
+            ) ? (
+              <FinalButton
+                variant="danger"
+                className="h-9"
+                title="Restake Rewards"
+                borderRounded="10px"
+                disabled={+claimableReward <= 0}
+                onClick={restakeClicked}
+                loaderIcon={
+                  restakeInProgress ? (
                     <CgSpinner className="h-5 animate-spin text-white" />
                   ) : undefined
                 }

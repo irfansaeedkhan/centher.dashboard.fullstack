@@ -463,6 +463,19 @@ export class CentherStaking {
     }
   }
 
+  @CatchError()
+  async restake(library: Web3Provider, poolId: number): Promise<void> {
+    try {
+      const result = await BlockchainWrite.restake(library, poolId + "");
+
+      if (!result?.length) {
+        throw new Error("Invalid transaction");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getReferralClaimableReward(
     library: Web3Provider,
     user: string,
