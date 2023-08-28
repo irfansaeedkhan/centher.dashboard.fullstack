@@ -16,6 +16,8 @@ import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import FinalButton from "@/components/button/final.button";
+import { useRouter } from "next/router";
 
 export interface ListCardProps {
   card: ListCardDataOBj;
@@ -23,6 +25,8 @@ export interface ListCardProps {
 }
 
 const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
+  const router = useRouter();
+
   return (
     <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
       <div
@@ -34,12 +38,19 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
         }}
       >
         <div className="absolute right-6 top-5 flex items-center gap-4">
-          <Link
+          {/* <Link
             href={"/staking/staking-details/" + card.id}
             className="textGradient text-xs font-medium"
           >
             View project detail
-          </Link>
+          </Link> */}
+          <FinalButton
+            variant="primary"
+            className="h-7"
+            title="View project detail"
+            borderRounded="10px"
+            onClick={() => router.push("/staking/staking-details/" + card.id)}
+          />
           <div
             className={clsx(
               "w-fit rounded-[10px] bg-black-shade-3 px-3 py-[6px] text-xs font-semibold",
@@ -103,7 +114,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </p>
         </div>
         <div className={section}>
-          <p className={label}>Project Name</p>
+          <p className={label}>Token Project Name</p>
           <p className={value}>
             {
               coins.find((e) =>
@@ -184,7 +195,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             </p>
           </div>
           <div className={section}>
-            <p className={label}>Project Name</p>
+            <p className={label}>Token Project Name</p>
             <p className={value}>
               {
                 coins.find((e) =>

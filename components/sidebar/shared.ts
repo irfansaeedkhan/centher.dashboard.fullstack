@@ -11,6 +11,7 @@ export type SidebarData = {
       activeList: string[];
       available_for: "all" | "citizen" | "verified";
       countType?: CountType;
+      badge?: "citizen" | "none";
     }[];
   };
 };
