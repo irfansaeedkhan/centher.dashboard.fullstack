@@ -105,14 +105,9 @@ const StakingDetails: NextPageWithLayout = () => {
     if (stakingPool) {
       const transfers = stakingPool.transfers
         ?.filter((e) => e.type == "stake")
-        .sort((a, b) => b.endAt - a.endAt);
-
+        .sort((a, b) => a.endAt - b.endAt);
       if (transfers?.length) {
-        const dfferent = transfers[0].endAt - +new Date() / 1000;
-
-        if (dfferent > 0) {
-          setExpireTime(transfers[0].endAt);
-        }
+        setExpireTime(transfers[0].endAt);
       } else setExpireTime(+new Date() / 1000);
     }
   }, [stakingPool]);
@@ -195,7 +190,6 @@ const StakingDetails: NextPageWithLayout = () => {
               Locker Expiration
             </p>
             <p className="mt-[6px] font-semibold text-white">
-              {/* 4 Years : 2 Months : 28 Days */}
               {new Date(expireTime * 1000).toLocaleDateString()}
             </p>
           </div>
