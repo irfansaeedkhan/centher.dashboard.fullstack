@@ -20,7 +20,7 @@ const SettingsTopBar = () => {
   );
 
   return (
-    <div className="mb-8 w-full  flex-shrink-0 overflow-x-auto bg-[#17171A] py-2 px-2 pb-3">
+    <div className="mb-8 w-full  flex-shrink-0 overflow-x-auto bg-[#17171A] px-2 py-2 pb-3">
       <div className="justify-centerrounded-3xl flex w-full items-center gap-2">
         {filteredSidebarData.map((item) => (
           <Link
@@ -33,7 +33,7 @@ const SettingsTopBar = () => {
           >
             <span
               className={clsx(
-                "left-6 flex flex-grow items-center justify-center rounded-[14px] bg-[#17171A] py-1 px-4 text-sm font-medium"
+                "left-6 flex flex-grow items-center justify-center rounded-[14px] bg-[#17171A] px-4 py-1 text-sm font-medium"
               )}
             >
               <span

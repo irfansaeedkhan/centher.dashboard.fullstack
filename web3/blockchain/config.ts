@@ -13,6 +13,7 @@ import ntrAbi from "../abis/ntr.json";
 import routerAbi from "../abis/router.json";
 import ERC721Abi from "../abis/erc721.json";
 import nftadapter from "../abis/nftadapter.json";
+import stakingAbi from "../abis/staking.json";
 
 import { BigNumber } from "ethers";
 
@@ -78,6 +79,10 @@ export const BlockchainConfig: IBlockchainConfig = {
       56: "0x8B2825469a27980462E6cf05117aC967eb50b6bA",
       5: "0xC8DA70cF9625C710D34b97927a5b3a80EF298a1d",
     },
+    STAKING: {
+      56: "0xb2328A1Cd08F72B17ED32B17f76FcDfa383Bbd32",
+      5: "0xef326CdAdA59D3A740A76bB5f4F88Fb2f1076164",
+    },
   },
   network:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
@@ -102,6 +107,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     ERC721: ERC721Abi,
     DXC: dxcAbi,
     NFT_ADAPTER: nftadapter,
+    STAKING: stakingAbi,
   },
   toastErrors: false,
   maxSupply: BigNumber.from("260000"),
@@ -153,7 +159,7 @@ export const BlockchainConfig: IBlockchainConfig = {
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
       ? "https://api.thegraph.com/subgraphs/name/rezahssini/centher-production"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/test-migration",
+      : "https://api.thegraph.com/subgraphs/name/rezahssini/withcitizenship",
 };
 
 export const SwapCollection =

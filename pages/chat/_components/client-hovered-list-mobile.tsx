@@ -38,7 +38,7 @@ const ClientHoveredListMobile: React.FC<ClientHoveredListMobile> = ({
         <div className="" ref={emojiRef}>
           {emojiBarMobile && (
             <div
-              className="text-14px absolute left-0  top-[-48px] flex w-[225px] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="text-14px absolute left-0 top-[-48px]  z-[500] flex w-[225px] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
               onMouseLeave={handleMouseLeave}
             >
               <span className="translate-[-50%] absolute bottom-[-10%] left-[50%] h-5 w-5 translate-y-[50%] scale-x-[3] text-black-shade-12">

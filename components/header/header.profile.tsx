@@ -24,7 +24,7 @@ import {
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
-import FinalButton from "../button/final.button";
+import FinalButton from "@/components/button/final.button";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -70,7 +70,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   return (
     <div
       ref={ref}
-      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-300 overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px]`}
+      className={`absolute -right-[62px] top-[calc(100%+20px)] z-50 h-auto w-[364px] overflow-y-auto overflow-x-hidden rounded-2xl bg-black-shade-8 fxl:right-0 custom-height-oriented:h-[480px] [@media(max-height:420px)]:h-[280px] [@media(max-width:370px)]:w-[300px]`}
     >
       <div
         className={clsx(

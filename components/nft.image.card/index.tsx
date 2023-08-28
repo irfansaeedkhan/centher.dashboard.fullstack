@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
@@ -11,6 +12,7 @@ import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
@@ -214,7 +216,8 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           {imageUrl ? (
             <img
               src={
-                imageUrl.includes("mp3")
+                data.type &&
+                (data.type.includes("audio") || data.type.includes("video"))
                   ? "/images/default-music.png"
                   : imageUrl
               }
@@ -442,17 +445,31 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.collection}
-                </h6>
+                <Link
+                  className="flex w-full cursor-pointer items-center text-white"
+                  href={{
+                    pathname: AppRoutes.marketplace.collection,
+                    query: { collection: data.collection },
+                  }}
+                >
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.collection}
+                  </h6>
+                </Link>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
-                  {data.mintHash}
-                </h6>
+                <Link
+                  href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                    {data.mintHash}
+                  </h6>
+                </Link>
               </div>
               <div className="flex flex-col gap-2">
                 <h5 className="text-14px font-normal text-gray-shade-18">
