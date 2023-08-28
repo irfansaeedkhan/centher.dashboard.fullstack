@@ -10,6 +10,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { Staking } from "@/assets/svgs";
 import { OptionalType } from "@/staking/types";
 import { CgSpinner } from "react-icons/cg";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 export interface StakingStat {
   totalStakedAmount: string;
@@ -42,8 +43,7 @@ const Booking: React.FC<Props> = ({
 
   useEffect(() => {
     const percentage = (+totalStakedAmount / +totalStakingCap) * 100;
-
-    setFilled(percentage ? percentage : 0);
+    setFilled(Math.ceil(percentage));
   }, [totalStakedAmount, totalStakingCap]);
 
   return (
