@@ -929,7 +929,7 @@ const CurrentUserSide: React.FC<{
               </div>
             </div>
           )}
-          <div className="text-white">{logs}</div>
+
           <div className={`flex w-full items-center justify-end gap-2`}>
             {belowMobile ? (
               <div ref={hoverRef} className={`hidden `}>
