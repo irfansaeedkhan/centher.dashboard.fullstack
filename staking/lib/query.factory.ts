@@ -152,27 +152,28 @@ const queries: Queries = {
       amount
     }
   }`,
-  GET_USER_TOTAL_CLAIMED_REF_REWARDS: `query MyQuery($poolId: BigInt = "", $referrer: Bytes = "") {
-    refRewardPaids(where: {poolId: $poolId, referrer: $referrer}, first: 1000) {
-      reward
+  GET_USER_TOTAL_CLAIMED_REF_REWARDS: `query MyQuery($referral: Bytes = "", $projectId: BigInt = "") {
+    rewards(where: {referral: $referral, projectId: $projectId, isRef: true}) {
+      amount
     }
   }`,
-  GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($poolId: BigInt = "", $referrer: Bytes = "", $first: Int = 1000, $skip: Int = 10) {
-    refRewardPaids(
-      where: {poolId: $poolId, referrer: $referrer}
-      first: $first
-      skip: $skip
-      orderBy: blockNumber
-      orderDirection: desc
+  GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($first1: Int = 1000, $skip1: Int = 0, $projectId: BigInt = "", $referral: Bytes = "") {
+    rewards(
+      where: {projectId: $projectId, referral: $referral, isRef: true}
+      first: $first1
+      skip: $skip1
     ) {
-      referrer
-      reward
-      transactionHash
-      staker
-      poolId
+      user
+      type
+      txId
+      startDuration
+      referral
+      projectId
+      isRef
       id
-      blockTimestamp
-      blockNumber
+      endDuration
+      createdAt
+      amount
     }
   }`,
   GET_USER_REFERRALS: `query MyQuery($referrer: Bytes = "", $pool: BigInt = "") {

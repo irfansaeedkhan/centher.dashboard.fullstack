@@ -20,6 +20,7 @@ const ReferralsTable: React.FC<{
   referrals: OptionalType<Referral[]>;
   coins: Array<CoinDetails | undefined>;
   pool: ListCardDataOBj | null;
+  claimable: boolean;
 }> = ({
   rewards,
   pageSize,
@@ -30,6 +31,7 @@ const ReferralsTable: React.FC<{
   claimRefReward,
   coins,
   pool,
+  claimable,
 }) => {
   return (
     <div className="space-y-4">
@@ -72,6 +74,7 @@ const ReferralsTable: React.FC<{
           ) : (
             currentTab === "referrals" && (
               <ListReferralsTable
+                claimable={claimable}
                 data={referrals}
                 token={
                   coins.find((e) =>

@@ -82,16 +82,19 @@ const Staking: NextPageWithLayout = () => {
       setIsLoading(true);
       const filters = new GetStakingProjectInput(0, 20);
       sdk.getProjects(filters).then((pools) => {
-        if (pools?.length && !coinsDetails?.length) {
-          getCoinDetails(
-            pools.map((e) => [e.stakeToken, e.rewardToken]).flat()
-          ).then();
+        if (pools?.length) {
+          if (!coinsDetails?.length) {
+            getCoinDetails(
+              pools.map((e) => [e.stakeToken, e.rewardToken]).flat()
+            ).then();
+          }
 
           const mappedPools = setupUiModels(pools);
-
           getPoolMetadata(mappedPools).then(() => {
             setIsLoading(false);
           });
+        } else {
+          setIsLoading(false);
         }
       });
     }
@@ -105,7 +108,7 @@ const Staking: NextPageWithLayout = () => {
       )}
     >
       {/* show if user already have stakings */}
-      {stakingList ? (
+      {stakingList?.length ? (
         <StakingListContainer
           pools={stakingList}
           fetchTime={+new Date()}

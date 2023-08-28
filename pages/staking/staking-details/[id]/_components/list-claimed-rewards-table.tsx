@@ -14,18 +14,16 @@ const ListClaimedRewardsTable: React.FC<{
     return (
       <a
         href={`${BlockchainConfig.scanner.url}/tx/${
-          reward.transactionHash.endsWith("-1")
-            ? reward.transactionHash.slice(0, -2)
-            : reward.transactionHash
+          reward.txId.endsWith("-1") ? reward.txId.slice(0, -2) : reward.txId
         }`}
         target="_blank"
         rel="noreferrer noopener"
         className="hover:text-brand-primary"
       >
-        {reward.transactionHash.slice(0, 6)}...
-        {reward.transactionHash.endsWith("-1")
-          ? reward.transactionHash.slice(-6, -2)
-          : reward.transactionHash.slice(-4)}
+        {reward.txId.slice(0, 6)}...
+        {reward.txId.endsWith("-1")
+          ? reward.txId.slice(-6, -2)
+          : reward.txId.slice(-4)}
       </a>
     );
   };
@@ -49,15 +47,15 @@ const ListClaimedRewardsTable: React.FC<{
           data.map((e: RefReward, i: number) => (
             <TableRow key={i}>
               <TableCell element={"td"}>
-                {new Date(e.blockTimestamp * 1000).toLocaleDateString()}
+                {new Date(+e.createdAt * 1000).toLocaleDateString()}
               </TableCell>
               <TableCell element={"td"}>
-                {formatUnits(e.reward, decimals)} {token}
+                {formatUnits(e.amount, decimals)} {token}
               </TableCell>
               <TableCell element={"td"}>
                 {" "}
-                {e.staker.slice(0, 6)}...
-                {e.staker.slice(-4)}
+                {e.user.slice(0, 6)}...
+                {e.user.slice(-4)}
               </TableCell>
               <TableCell element={"td"}>
                 {Check_Reward_Form_TransactionHash(e)}

@@ -18,7 +18,7 @@ import {
   GetRefRewardInput,
   RefReward,
 } from "@/staking/types/ref.rewards.interface";
-import { formatUnits, isAddress } from "ethers/lib/utils";
+import { formatUnits, isAddress, parseUnits } from "ethers/lib/utils";
 import {
   GetReferralsInput,
   Referral,
@@ -34,6 +34,7 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { FiArrowRight } from "react-icons/fi";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import toast from "react-hot-toast";
+import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 enum ModalType {
   successFuncModal = "successFuncModal",
@@ -125,7 +126,7 @@ const StakingReferrals: NextPageWithLayout = () => {
   useEffect(() => {
     if (user && sdk && poolId) {
       sdk.getTotalClaimedRefReward(poolId, user._id).then((data) => {
-        setTotalClaimed(data);
+        setTotalClaimed(data + "");
       });
     }
   }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
@@ -145,12 +146,20 @@ const StakingReferrals: NextPageWithLayout = () => {
   useEffect(() => {
     if (user && sdk && poolId && stakingPool) {
       let maxLevel =
-        stakingPool?.rewards_level?.find((e) => !e.percent)?.level || 6;
-
+        stakingPool?.rewards_level?.find((e) => !e.percent || +e.percent == 0)
+          ?.level || 6;
       sdk
         .getUserReferrals(
           library,
-          new GetReferralsInput(poolId, user._id, maxLevel, +page, +pageSize)
+          new GetReferralsInput(
+            poolId,
+            user._id,
+            maxLevel,
+            stakingPool.multilevel_rewards ==
+              "Recurring Return (0 to 6 levels)",
+            +page,
+            +pageSize
+          )
         )
         .then((data) => {
           setReferralsInfo(data);
@@ -162,12 +171,9 @@ const StakingReferrals: NextPageWithLayout = () => {
     try {
       if (isAddress(user) && sdk && poolId) {
         await sdk.claimRefReward(library, +poolId, user);
-        //TODO=> show success modal
         modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {
-      //TODO=> show erro modal
-      console.log(error);
       modal.createModal(ModalType.failedFuncModal);
     }
   };
@@ -176,12 +182,22 @@ const StakingReferrals: NextPageWithLayout = () => {
     successFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <SuccessModalContent />,
+      content: () => (
+        <SuccessModalContent
+          title="Claim referrals reward"
+          message="You claimed referral reward successfully, please reload the page to get the latest details."
+        />
+      ),
     },
     failedFuncModal: {
       title: "Creating Staking Pack",
       visibility: true,
-      content: () => <FailedModalContent message="" />,
+      content: () => (
+        <FailedModalContent
+          message="Something went wrong, please try later or contact support."
+          title="Claim referreral reward failed"
+        />
+      ),
     },
   };
 
@@ -204,7 +220,7 @@ const StakingReferrals: NextPageWithLayout = () => {
               </p>
               <p className="mt-[6px] font-semibold text-white">
                 {formatUnits(
-                  totalClaimed,
+                  normalizeValue(totalClaimed + ""),
                   coinsDetails.find((e) =>
                     eqAddress(
                       e?.contractAddress,
@@ -280,6 +296,9 @@ const StakingReferrals: NextPageWithLayout = () => {
         claimRefReward={claimRefReward}
         pool={stakingPool}
         coins={coinsDetails}
+        claimable={
+          stakingPool?.multilevel_rewards == "Recurring Return (0 to 6 levels)"
+        }
       />
       {ModalModel.visibility && (
         <CustomModal
@@ -334,11 +353,11 @@ const StakingReferrals: NextPageWithLayout = () => {
         </CustomNewModal>
       )}
 
-      {!connectWalletModal && (isLoading || !referralsInfo) ? (
+      {/* {!connectWalletModal && (isLoading || !referralsInfo) ? (
         <PreLoader />
       ) : (
         ""
-      )}
+      )} */}
     </>
   );
 };

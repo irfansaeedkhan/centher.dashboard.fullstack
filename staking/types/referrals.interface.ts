@@ -20,11 +20,13 @@ export class GetReferralsInput extends PaginatedRequest {
   poolId: string = "";
   user: string = "";
   levels: number;
+  isClaimable: boolean = false;
 
   constructor(
     poolId: string,
     user: string,
     levels: number,
+    claimable: boolean,
     page: number,
     pageSize: number
   ) {
@@ -34,5 +36,6 @@ export class GetReferralsInput extends PaginatedRequest {
     this.page = page;
     this.pageSize = pageSize;
     this.levels = levels;
+    this.isClaimable = claimable;
   }
 }

@@ -237,36 +237,40 @@ export class CentherStaking {
     const result = await this._connection?.query({
       query,
       variables: {
-        poolId,
-        referrer: user,
+        projectId: poolId,
+        referral: user,
       },
       fetchPolicy: "no-cache",
     });
 
-    return result?.data.refRewardPaids.reduce(
-      (a: number, b: { reward: string }) => a + +b.reward,
+    return result?.data.rewards.reduce(
+      (a: number, b: { amount: string }) => a + +b.amount,
       0
     );
   }
 
   @CatchError()
   async getClaimedRefRewards(input: GetRefRewardInput): Promise<RefReward[]> {
-    const query = QueryFactory.getQuery(
-      QueryNames.GET_USER_CLAIMED_REF_REWARDS
-    );
+    try {
+      const query = QueryFactory.getQuery(
+        QueryNames.GET_USER_CLAIMED_REF_REWARDS
+      );
 
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        poolId: input.poolId,
-        referrer: input.user,
-        first: input.getPageSize(),
-        skip: input.getPage(),
-      },
-      fetchPolicy: "no-cache",
-    });
+      const result = await this._connection?.query({
+        query,
+        variables: {
+          projectId: input.poolId,
+          referral: input.user,
+          first1: input.getPageSize(),
+          skip1: input.getPage(),
+        },
+        fetchPolicy: "no-cache",
+      });
 
-    return result?.data.refRewardPaids;
+      return result?.data.rewards;
+    } catch (error) {
+      throw error;
+    }
   }
 
   @CatchError()
@@ -337,7 +341,6 @@ export class CentherStaking {
       ...fivethLevels,
       ...sixthLevels,
     ].sort((a, b) => +b.joinedAt - +a.joinedAt);
-
     let start = 0;
     let end = finalResult.length - 1;
 
@@ -354,7 +357,7 @@ export class CentherStaking {
       finalResult = await Promise.all(getUsersStakes);
     }
 
-    if (finalResult.length) {
+    if (finalResult.length && input.isClaimable) {
       const getUserRefRewards = finalResult.map((e) =>
         this.getUserLevelRefRewards(e, input.poolId, library)
       );
@@ -495,13 +498,17 @@ export class CentherStaking {
     poolId: string,
     library: Web3Provider
   ): Promise<Referral> {
-    const result = await this.getReferralClaimableReward(
-      library,
-      input.id.split("-")[0],
-      +poolId
-    );
-    input.claimableReward = result;
-    return input;
+    try {
+      const result = await this.getReferralClaimableReward(
+        library,
+        input.id.split("-")[0],
+        +poolId
+      );
+      input.claimableReward = result;
+      return input;
+    } catch (error) {
+      return input;
+    }
   }
 
   private async getUserLevelReferrals(

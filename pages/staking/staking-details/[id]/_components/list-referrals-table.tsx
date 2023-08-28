@@ -12,6 +12,7 @@ const ListReferralsTable: React.FC<{
   claimRefReward: (user: string) => void;
   rewardTokenDecimals: string;
   decimals: string;
+  claimable: boolean;
 }> = ({
   data,
   token,
@@ -19,6 +20,7 @@ const ListReferralsTable: React.FC<{
   rewardToken,
   rewardTokenDecimals,
   decimals,
+  claimable,
 }) => {
   return (
     <table className={`w-full max-w-full table-auto`}>
@@ -28,8 +30,10 @@ const ListReferralsTable: React.FC<{
           <TableCell element={"th"}>Join Date</TableCell>
           <TableCell element={"th"}>Level</TableCell>
           <TableCell element={"th"}>Staked Amount</TableCell>
-          <TableCell element={"th"}>Claimable Reward</TableCell>
-          <TableCell element={"th"}>Action</TableCell>
+          {claimable ? (
+            <TableCell element={"th"}>Claimable Reward</TableCell>
+          ) : null}
+          {claimable ? <TableCell element={"th"}>Action</TableCell> : null}
         </tr>
       </thead>
       <tbody className="">
@@ -56,24 +60,29 @@ const ListReferralsTable: React.FC<{
                 )}{" "}
                 {token}
               </TableCell>
-              <TableCell element={"td"}>
-                {formatUnits(
-                  e.claimableReward ? e.claimableReward + "" : "0",
-                  rewardTokenDecimals
-                )}{" "}
-                {rewardToken}
-              </TableCell>
-              <TableCell element={"td"}>
-                {e.claimableReward && e.claimableReward != "0" ? (
-                  <FinalButton
-                    title="Claim Rewards"
-                    variant="primary"
-                    onClick={() => claimRefReward(e.id.split("-")[0])}
-                  />
-                ) : (
-                  "Not available to claim"
-                )}
-              </TableCell>
+              {claimable ? (
+                <TableCell element={"td"}>
+                  {formatUnits(
+                    e.claimableReward ? e.claimableReward + "" : "0",
+                    rewardTokenDecimals
+                  )}{" "}
+                  {rewardToken}
+                </TableCell>
+              ) : null}
+
+              {claimable ? (
+                <TableCell element={"td"}>
+                  {e.claimableReward && e.claimableReward != "0" ? (
+                    <FinalButton
+                      title="Claim Rewards"
+                      variant="primary"
+                      onClick={() => claimRefReward(e.id.split("-")[0])}
+                    />
+                  ) : (
+                    "Not available to claim"
+                  )}
+                </TableCell>
+              ) : null}
             </TableRow>
           ))
         )}

@@ -1,14 +1,17 @@
 import { PaginatedRequest } from "./general";
 
 export interface RefReward {
-  referrer: string;
-  reward: string;
-  transactionHash: string;
-  staker: string;
-  poolId: number;
+  user: string;
+  type: string;
+  txId: string;
+  startDuration: string;
+  referral: string;
+  projectId: string;
+  isRef: boolean;
   id: string;
-  blockTimestamp: number;
-  blockNumber: number;
+  endDuration: string;
+  createdAt: string;
+  amount: string;
 }
 
 export class GetRefRewardInput extends PaginatedRequest {

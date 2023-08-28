@@ -755,7 +755,6 @@ export class BlockchainRead {
 
       return result;
     } catch (error) {
-      console.log(error);
       return [];
     }
   }
