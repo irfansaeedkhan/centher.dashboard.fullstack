@@ -76,6 +76,7 @@ const categoryOptions = [
 
 const CreateStaking: NextPageWithLayout = () => {
   const [formStep, setFormStep] = useState(0);
+  const [totalPercentageError, setTotalPercentageError] = useState(false);
   const [showMsg, setshowMsg] = useState<any>(null);
   // start upload images and videos
   const [showCoverImage, setShowCoverImage] = useState<boolean | null>(false);
@@ -237,12 +238,18 @@ const CreateStaking: NextPageWithLayout = () => {
   ): void => {
     const inputValue: string = event.target.value;
 
-    // Check if the input value is a valid number (integer or decimal)
     const numericValue: number = parseFloat(inputValue);
     if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
       const newInputValues: levelDataType[] = [...inputValues];
       newInputValues[index].percent = numericValue;
       setInputValues(newInputValues);
+
+      // Calculate total percentage and check if it's over 100
+      const totalPercentage = newInputValues.reduce(
+        (total, input) => total + input.percent,
+        0
+      );
+      setTotalPercentageError(totalPercentage > 100);
     } else {
       // If the input value is not a valid number, set it to an empty string
       const newInputValues: levelDataType[] = [...inputValues];
@@ -275,7 +282,11 @@ const CreateStaking: NextPageWithLayout = () => {
           id={`level-${index + 1}`}
           placeholder="0%"
           className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-          value={inputValues[index]?.percent || ""}
+          value={
+            inputValues[index]?.percent === 0
+              ? "0"
+              : inputValues[index]?.percent || ""
+          }
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
           }
@@ -662,17 +673,9 @@ const CreateStaking: NextPageWithLayout = () => {
       setCoverErr(true);
       return;
     }
-
-    // if (
-    //   multilevel_rewards === "Recurring Return (0 to 6 levels)" ||
-    //   multilevel_rewards === "Fix Commission (0 to 6 levels)"
-    // ) {
-    //   inputValues.map((data) => {
-    //     if (data.percent === null || data.percent === undefined) {
-    //       return;
-    //     }
-    //   });
-    // }
+    if (totalPercentageError) {
+      return;
+    }
 
     await stakingForm.trigger([
       "staking_name",
@@ -1286,6 +1289,11 @@ const CreateStaking: NextPageWithLayout = () => {
                   {stakingForm.formState.errors.multilevel_rewards && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
                       {stakingForm.formState.errors.multilevel_rewards.message}
+                    </p>
+                  )}
+                  {totalPercentageError && (
+                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      Total percentage cannot exceed 100%
                     </p>
                   )}
                 </div>
