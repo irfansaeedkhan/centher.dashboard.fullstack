@@ -51,6 +51,7 @@ export interface stakingFormInterface {
   telegram: string;
   instagram: string;
   discord: string;
+  centher: string;
   reddit: string;
   explorers: string;
   category: CategoryOption[] | [];

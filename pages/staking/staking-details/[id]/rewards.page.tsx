@@ -295,6 +295,28 @@ const ClaimRewards: NextPageWithLayout = () => {
                 ) : undefined
               }
             />
+            {eqAddress(
+              stakingPool?.token_address,
+              stakingPool?.reward_token_address
+            ) ? (
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <FinalButton
+                  variant="primary"
+                  className="h-9"
+                  title="Restake Rewards"
+                  borderRounded="10px"
+                  disabled={+claimableReward <= 0}
+                  onClick={restakeClicked}
+                  loaderIcon={
+                    restakeInProgress ? (
+                      <CgSpinner className="h-5 animate-spin text-white" />
+                    ) : undefined
+                  }
+                />
+              </div>
+            ) : (
+              ""
+            )}
             {stakingPool?.is_cancelable == "yes" ? (
               <FinalButton
                 variant="danger"
@@ -307,27 +329,6 @@ const ClaimRewards: NextPageWithLayout = () => {
                 onClick={() => modal.createModal(ModalType.cancelStakingModal)}
                 loaderIcon={
                   cancelInProcess ? (
-                    <CgSpinner className="h-5 animate-spin text-white" />
-                  ) : undefined
-                }
-              />
-            ) : (
-              ""
-            )}
-
-            {eqAddress(
-              stakingPool?.token_address,
-              stakingPool?.reward_token_address
-            ) ? (
-              <FinalButton
-                variant="danger"
-                className="h-9"
-                title="Restake Rewards"
-                borderRounded="10px"
-                disabled={+claimableReward <= 0}
-                onClick={restakeClicked}
-                loaderIcon={
-                  restakeInProgress ? (
                     <CgSpinner className="h-5 animate-spin text-white" />
                   ) : undefined
                 }

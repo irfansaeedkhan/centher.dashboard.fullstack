@@ -12,6 +12,9 @@ import clsx from "clsx";
 import ListLayoutTable from "./list-layout-table";
 import StakingDropdown from "./dropdown-for-staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
+import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
+import useUser from "@/hooks/use.user";
+import { useRouter } from "next/router";
 
 const sortOptions = [
   {
@@ -35,9 +38,12 @@ const StakingListContainer: FC<ComponentProp> = ({
   fetchTime,
   coins,
 }) => {
+  const router = useRouter();
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [showItems, setShowItems] = useState<string>("1");
   const [data, setData] = useState<ListCardDataOBj[]>([]);
+  const [showBuyCitizenshipModal, setShowBuyCitizenshipModal] = useState(false);
+  const { user: loggedInUser } = useUser();
 
   useEffect(() => {
     if (pools.length) {
@@ -56,14 +62,20 @@ const StakingListContainer: FC<ComponentProp> = ({
       <div className="flex items-center justify-between gap-10">
         <div className="flex w-full items-center justify-between gap-5 fsm:w-fit fsm:justify-start flg:gap-6">
           <h5 className="textGradient text-2xl font-semibold">Staking</h5>
-          <Link href={AppRoutes.staking.create_staking}>
-            <FinalButton
-              className="text-14px h-8 flg:h-9"
-              title="Create New Project"
-              variant="primary"
-              borderRounded="10px"
-            />
-          </Link>
+          <FinalButton
+            className="text-14px h-8 flg:h-9"
+            title="Create New Project"
+            variant="primary"
+            borderRounded="10px"
+            onClick={
+              loggedInUser?.membership.status === "citizen"
+                ? () =>
+                    router.push({
+                      pathname: AppRoutes.staking.create_staking,
+                    })
+                : () => setShowBuyCitizenshipModal(true)
+            }
+          />
         </div>
         <div className="hidden items-center gap-2 fsm:flex">
           <div className="hidden items-center gap-3 flg:flex">
@@ -139,6 +151,13 @@ const StakingListContainer: FC<ComponentProp> = ({
       ) : layout === "list" ? (
         <ListLayoutTable card={data} coins={coins} />
       ) : null}
+
+      {showBuyCitizenshipModal && (
+        <BuyCitizenshipModal
+          isOpen={showBuyCitizenshipModal}
+          onClickClose={() => setShowBuyCitizenshipModal(false)}
+        />
+      )}
     </div>
   );
 };

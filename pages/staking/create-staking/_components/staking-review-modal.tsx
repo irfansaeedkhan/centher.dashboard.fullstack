@@ -275,7 +275,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     </p>
                   </div>
                   <div className="col-span-1">
-                    <p className={label}>Project Name</p>
+                    <p className={label}>Token Project Name</p>
                     <p className={value}>
                       {
                         coinsDetails.find((e) =>
@@ -367,7 +367,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       </p>
                     </div>
                     <div className={section}>
-                      <p className={label}>Project Name</p>
+                      <p className={label}>Token Project Name</p>
                       <p className={value}>
                         {" "}
                         {
@@ -567,24 +567,28 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       Official Links
                     </div>
                     <div className="flex items-center gap-2">
-                      <a
-                        href={data?.whitepaper}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className={button}
-                      >
-                        <Whitepaper className="group-hover:[&>*]:stroke-white" />
-                        <span>Whitepaper</span>
-                      </a>
-                      <a
-                        href={data?.website_url}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className={button}
-                      >
-                        <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
-                        <span>Website </span>
-                      </a>
+                      {data?.whitepaper?.length ? (
+                        <a
+                          href={data?.whitepaper}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className={button}
+                        >
+                          <Whitepaper className="group-hover:[&>*]:stroke-white" />
+                          <span>Whitepaper</span>
+                        </a>
+                      ) : null}
+                      {data?.website_url?.length ? (
+                        <a
+                          href={data?.website_url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className={button}
+                        >
+                          <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
+                          <span>Website </span>
+                        </a>
+                      ) : null}
                     </div>
                   </div>
                   <div className="flex flex-col gap-3">
@@ -592,15 +596,18 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                       Social Links
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                      <a
-                        href="will come from api"
-                        target="_blank"
-                        rel="noreferrer noopener"
-                        className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
-                      >
-                        <NewCentherIcon />
-                        <span>Centher</span>
-                      </a>
+                      {data?.centher?.length ? (
+                        <a
+                          href="will come from api"
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+                        >
+                          <NewCentherIcon />
+                          <span>Centher</span>
+                        </a>
+                      ) : null}
+
                       {data?.facebook && (
                         <a
                           href={data?.facebook}

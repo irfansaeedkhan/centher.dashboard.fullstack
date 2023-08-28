@@ -491,6 +491,7 @@ const CreateStaking: NextPageWithLayout = () => {
       explorers: data.explorers,
       category: data.category,
       description: data.description,
+      centher: "",
       members: members,
     };
 

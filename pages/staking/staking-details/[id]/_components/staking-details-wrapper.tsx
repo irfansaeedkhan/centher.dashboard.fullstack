@@ -29,7 +29,7 @@ import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
 
-const oneYearInSec = 365 * 24 * 60 * 60;
+const oneYearInSec = 31449600;
 
 interface Props {
   children?: React.ReactNode;

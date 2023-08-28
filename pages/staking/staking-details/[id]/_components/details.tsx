@@ -78,74 +78,88 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
         <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Official Links</div>
           <div className="flex items-center gap-2">
-            <a
-              href={findLink("website_url")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
-              <span>Website</span>
-            </a>
-            <a
-              href={findLink("whitepaper")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <Whitepaper className="group-hover:[&>*]:stroke-white" />
-              <span>Whitepaper</span>
-            </a>
+            {findLink("website_url") != "/#" ? (
+              <a
+                href={findLink("website_url")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <LinkNewIcon className="group-hover:[&>*]:stroke-white" />
+                <span>Website</span>
+              </a>
+            ) : null}
+            {findLink("whitepaper") != "/#" ? (
+              <a
+                href={findLink("whitepaper")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <Whitepaper className="group-hover:[&>*]:stroke-white" />
+                <span>Whitepaper</span>
+              </a>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-col gap-3">
           <div className="text-sm font-semibold text-white">Social Links</div>
           <div className="flex flex-wrap items-center gap-2">
-            <a
-              href={findLink("twitter")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>X.com</span>
-            </a>
-            <a
-              href={findLink("facebook")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <RiFacebookCircleLine className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>Facebook</span>
-            </a>
-            <a
-              href={findLink("instagram")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <FiInstagram className="h-5 w-5 group-hover:[&>*]:stroke-white" />
-              <span>Instagram</span>
-            </a>
-            <a
-              href={findLink("telegram")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className={button}
-            >
-              <NewTelegramIcon className="group-hover:[&>*]:stroke-white" />
-              <span>Telegram</span>
-            </a>
-            <a
-              href={findLink("centher")}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
-            >
-              <NewCentherIcon />
-              <span>Centher</span>
-            </a>
+            {findLink("twitter") != "/#" ? (
+              <a
+                href={findLink("twitter")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <FiTwitter className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                <span>X.com</span>
+              </a>
+            ) : null}
+            {findLink("facebook") != "/#" ? (
+              <a
+                href={findLink("facebook")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <RiFacebookCircleLine className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                <span>Facebook</span>
+              </a>
+            ) : null}
+            {findLink("instagram") != "/#" ? (
+              <a
+                href={findLink("instagram")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <FiInstagram className="h-5 w-5 group-hover:[&>*]:stroke-white" />
+                <span>Instagram</span>
+              </a>
+            ) : null}
+            {findLink("telegram") != "/#" ? (
+              <a
+                href={findLink("telegram")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className={button}
+              >
+                <NewTelegramIcon className="group-hover:[&>*]:stroke-white" />
+                <span>Telegram</span>
+              </a>
+            ) : null}
+            {findLink("centher") != "/#" ? (
+              <a
+                href={findLink("centher")}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
+              >
+                <NewCentherIcon />
+                <span>Centher</span>
+              </a>
+            ) : null}
           </div>
         </div>
         <div className="flex flex-col gap-3">

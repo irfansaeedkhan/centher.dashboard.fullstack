@@ -42,7 +42,12 @@ const Booking: React.FC<Props> = ({
   const [referrer, setReferrer] = useState("");
 
   useEffect(() => {
-    const percentage = (+totalStakedAmount / +totalStakingCap) * 100;
+    let supply = totalStakingCap;
+    if (!totalStakingCap || +totalStakingCap == 0) {
+      supply = "999999999999999999";
+    }
+
+    const percentage = (+totalStakedAmount / +supply) * 100;
     setFilled(Math.ceil(percentage));
   }, [totalStakedAmount, totalStakingCap]);
 
@@ -158,18 +163,32 @@ const Booking: React.FC<Props> = ({
             </div>
           </div>
           <small className="m-2 text-sm text-gray-shade-12">
-            MIN: {formatUnits(data.minAmount ? data.minAmount + "" : "0", 18)}{" "}
-            {
-              coins.find((e) =>
-                eqAddress(e?.contractAddress, data.tokenAddress)
-              )?.symbol
-            }{" "}
-            , MAX: {formatUnits(data.maxAmount ? data.maxAmount + "" : "0", 18)}{" "}
-            {
-              coins.find((e) =>
-                eqAddress(e?.contractAddress, data.tokenAddress)
-              )?.symbol
-            }
+            {data.minAmount && data.minAmount != "0"
+              ? "MIN: " +
+                formatUnits(
+                  data.minAmount ? data.minAmount + "" : "0",
+                  coins.find((e) =>
+                    eqAddress(e?.contractAddress, data.tokenAddress)
+                  )?.decimals
+                ) +
+                " " +
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, data.tokenAddress)
+                )?.symbol
+              : null}
+            {data.maxAmount && data.maxAmount != "0"
+              ? " ,MAX: " +
+                formatUnits(
+                  data.maxAmount ? data.maxAmount + "" : "0",
+                  coins.find((e) =>
+                    eqAddress(e?.contractAddress, data.tokenAddress)
+                  )?.decimals
+                ) +
+                " " +
+                coins.find((e) =>
+                  eqAddress(e?.contractAddress, data.tokenAddress)
+                )?.symbol
+              : null}{" "}
           </small>
           {+new Date(+start * 1000) <= +new Date() ? (
             <FinalButton
