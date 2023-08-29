@@ -28,6 +28,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
+import { BigNumber, ethers } from "ethers";
 
 const oneYearInSec = 31449600;
 
@@ -208,16 +209,22 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           return;
         }
 
-        if (+minAmount > 0 && +amount % +minAmount != 0) {
-          modal.createModal(ModalType.failedFuncModal, {
-            message: `Amount must be a coefficient of ${formatUnits(
-              minAmount
-            ).toString()}, eg. ${formatUnits(minAmount).toString()}, ${
-              +formatUnits(minAmount).toString() * 2
-            }, ${+formatUnits(minAmount).toString() * 3}, ...`,
-            title: "Invalid Amount",
-          });
-          return;
+        if (+minAmount > 0) {
+          const div = ethers.FixedNumber.from(amount)
+            .divUnsafe(ethers.FixedNumber.from(minAmount))
+            .toString()
+            .split(".")[1];
+          if (div && +div > 0) {
+            modal.createModal(ModalType.failedFuncModal, {
+              message: `Amount must be a coefficient of ${formatUnits(
+                minAmount
+              ).toString()}, eg. ${formatUnits(minAmount).toString()}, ${
+                +formatUnits(minAmount).toString() * 2
+              }, ${+formatUnits(minAmount).toString() * 3}, ...`,
+              title: "Invalid Amount",
+            });
+            return;
+          }
         }
 
         setStakeLoader(true);
