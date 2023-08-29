@@ -353,11 +353,11 @@ const StakingReferrals: NextPageWithLayout = () => {
         </CustomNewModal>
       )}
 
-      {/* {!connectWalletModal && (isLoading || !referralsInfo) ? (
+      {!connectWalletModal && (isLoading || !referralsInfo) ? (
         <PreLoader />
       ) : (
         ""
-      )} */}
+      )}
     </>
   );
 };
