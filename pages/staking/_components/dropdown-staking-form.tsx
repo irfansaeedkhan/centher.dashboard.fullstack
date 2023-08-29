@@ -31,9 +31,6 @@ const DropdownStakingForm: React.FC<DropdownProps> = ({
     setIsOpen(false);
   };
 
-  console.log("selectedValue", selectedValue);
-  console.log("onSelect", onSelect);
-
   const selectedOption = options.find(
     (option) => option.value === selectedValue
   );

@@ -232,53 +232,37 @@ const CreateStaking: NextPageWithLayout = () => {
     }
   };
 
-  // const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-  //   const newSelectedValue: string | number = event.target.value;
-  //   setSelectedValue(newSelectedValue);
-  //   if (newSelectedValue === "No referral") {
-  //     setInputValues([]);
-  //   } else if (
-  //     newSelectedValue === "Recurring Return (0 to 6 levels)" ||
-  //     newSelectedValue === "Fix Commission (0 to 6 levels)"
-  //   ) {
-  //     const numLevels: number = 6;
-  //     const newInputValues: levelDataType[] = Array.from(
-  //       { length: numLevels },
-  //       (_, index) => ({
-  //         level: index + 1,
-  //         percent: 0, // You can set the default percent value here, if needed
-  //       })
-  //     );
-  //     setInputValues(newInputValues);
-  //   } else {
-  //     setInputValues([]);
-  //   }
-  // };
-
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement>,
     index: number
   ): void => {
     const inputValue: string = event.target.value;
 
-    const numericValue: number = parseFloat(inputValue);
-    if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
+    if (inputValue === "0") {
+      const numericValue: number = parseFloat(inputValue);
       const newInputValues: levelDataType[] = [...inputValues];
       newInputValues[index].percent = numericValue;
       setInputValues(newInputValues);
-
-      // Calculate total percentage and check if it's over 100
-      const totalPercentage = newInputValues.reduce(
-        (total, input) => total + input.percent,
-        0
-      );
-      setTotalPercentageError(totalPercentage > 100);
     } else {
-      // If the input value is not a valid number, set it to an empty string
-      const newInputValues: levelDataType[] = [...inputValues];
-      newInputValues[index].percent = 0; // You can set the default percent value here, if needed
-      setInputValues(newInputValues);
+      const numericValue: number = parseFloat(inputValue);
+      if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
+        const newInputValues: levelDataType[] = [...inputValues];
+        newInputValues[index].percent = numericValue;
+        setInputValues(newInputValues);
+
+        // Calculate total percentage and check if it's over 100
+        const totalPercentage = newInputValues.reduce(
+          (total, input) => total + input.percent,
+          0
+        );
+        setTotalPercentageError(totalPercentage > 100);
+      } else {
+        const newInputValues: levelDataType[] = [...inputValues];
+        newInputValues[index].percent = 0;
+        setInputValues(newInputValues);
+      }
     }
+    console.log(inputValues);
   };
 
   const renderInputFields = (): JSX.Element[] => {
@@ -305,11 +289,7 @@ const CreateStaking: NextPageWithLayout = () => {
           id={`level-${index + 1}`}
           placeholder="0%"
           className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-          value={
-            inputValues[index]?.percent === 0
-              ? "0"
-              : inputValues[index]?.percent || ""
-          }
+          value={String(inputValues[index].percent) || ""}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
           }
