@@ -91,6 +91,7 @@ const StakingListContainer: FC<ComponentProp> = ({
             </div>
             <div className="w-[162px]">
               <StakingDropdown
+                placeholder="Sort by"
                 options={sortOptions}
                 selectedValue={showItems}
                 onSelect={setShowItems}
@@ -124,6 +125,7 @@ const StakingListContainer: FC<ComponentProp> = ({
         </div>
         <div className="w-full">
           <StakingDropdown
+            placeholder="Sort by"
             options={sortOptions}
             selectedValue={showItems}
             onSelect={setShowItems}
