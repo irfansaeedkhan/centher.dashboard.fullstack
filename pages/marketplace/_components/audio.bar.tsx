@@ -46,7 +46,7 @@ const Bar: React.FC<BarProps> = (props) => {
         onMouseDown={handleTimeDrag}
       >
         <span
-          className={clsx(`relative h-[54px] w-[2px] bg-white`)}
+          className={clsx(`relative h-[50px] w-[2px] bg-white`)}
           style={{
             left: `${curPercentage}%`,
           }}

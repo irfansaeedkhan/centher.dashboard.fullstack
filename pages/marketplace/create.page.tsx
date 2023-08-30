@@ -14,7 +14,6 @@ import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
 // import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -31,6 +30,13 @@ enum ModalType {
   proceedFuncModal = "proceedFuncModal",
 }
 
+export enum CreateNftUploadFormType {
+  Image = "Image",
+  Gif = "Gif",
+  Video = "Video",
+  Audio = "Audio",
+}
+
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
   const [clearForm, setClearForm] = useState(false);
@@ -41,7 +47,8 @@ const CreateNFT: NextPageWithLayout = () => {
   });
   // const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
-  const [assetTab, setAssetTab] = useState("Image");
+  const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
+  const [videoThumbnailPreview, setVideoThumbnailPreview] = useState(false);
 
   const bnbPrice = useBNBPrice();
 
@@ -274,6 +281,7 @@ const CreateNFT: NextPageWithLayout = () => {
       <h1 className={title}>Create an NFT</h1>
       <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
+          setVideoThumbnailPreview={setVideoThumbnailPreview}
           asset={asset}
           setAsset={setAsset}
           assetTab={assetTab}
@@ -281,6 +289,8 @@ const CreateNFT: NextPageWithLayout = () => {
           clearForm={clearForm}
         />
         <CreateNFTForm
+          assetTab={assetTab}
+          videoThumbnailPreview={videoThumbnailPreview}
           library={library}
           createNFT={createNFT}
           clearForm={clearForm}
@@ -306,11 +316,7 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        {/* <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        > */}
         <div className={feedContainer}>{page}</div>
-        {/* </GoogleReCaptchaWrapper> */}
       </div>
     </AllPagesWrapper>
   );

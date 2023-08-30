@@ -214,14 +214,24 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             locked && "pointer-events-none"
           )}
         >
-          <Image
-            src={imageUrl}
-            alt={data.name}
-            height={222}
-            width={293}
-            className="!h-[222px] !w-[293px] rounded-md object-cover"
-            onError={() => setImageUrl("/images/placeholder-square.svg")}
-          />
+          {data.type.includes("audio") || data.type.includes("video") ? (
+            <Image
+              src={"/images/default-music.png"}
+              alt={data.name}
+              height={222}
+              width={293}
+              className="!h-[222px] !w-[293px] rounded-md object-cover"
+            />
+          ) : (
+            <Image
+              src={imageUrl}
+              alt={data.name}
+              height={222}
+              width={293}
+              className="!h-[222px] !w-[293px] rounded-md object-cover"
+              onError={() => setImageUrl("/images/placeholder-square.svg")}
+            />
+          )}
           {locked && (
             <div
               className={`absolute right-5 top-[70px] flex h-[24px] w-[80px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px]`}

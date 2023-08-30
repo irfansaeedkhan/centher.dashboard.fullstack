@@ -40,7 +40,7 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
       ) : (
         <div className={uploadBox}>
           <div className={uploadBoxContent}>
-            <span className={formatName}>MPEG, WAV, M4A</span>
+            <span className={formatName}>MPEG, WAV, M4A, MP3</span>
             <div className={uploadBtnContainer}>
               <label htmlFor="audio-nft" className={chooseFileBtn}>
                 Choose File
@@ -48,11 +48,24 @@ const AudioNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
               <input
                 type="file"
                 id="audio-nft"
-                className={chooseFileBtn2}
+                className="absolute h-full w-full opacity-0"
                 onChange={uploadFile}
                 accept="audio/mpeg, audio/wav, audio/m4a"
               />
             </div>
+            {/* <div className={uploadBtnContainer}>
+              <label htmlFor="audio_nft">
+                <FinalButton title="Choose File" variant="primary" />
+
+                <input
+                  type="file"
+                  id="audio_nft"
+                  className={"hidden"}
+                  onChange={uploadFile}
+                  accept="audio/mpeg, audio/wav, audio/m4a"
+                />
+              </label>
+            </div> */}
           </div>
         </div>
       )}
@@ -85,8 +98,5 @@ const uploadBtnContainer = ctl(`
   relative w-[132px] h-10
     `);
 const chooseFileBtn = ctl(`
-z-10  absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
-    `);
-const chooseFileBtn2 = ctl(`
-  absolute w-full h-full  opacity-0
+z-10 absolute w-full h-full text-sm text-white font-bold leading-normal bg-transparent rounded-[14px] border border-gray-shade-3 text-center flex items-center justify-center hover:bg-[#1E202B] cursor-pointer
     `);

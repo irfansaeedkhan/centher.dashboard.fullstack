@@ -56,6 +56,8 @@ interface AuctionFormProps {
   clearForm: boolean;
   asset: Blob | undefined;
   library: any;
+  videoThumbnailPreview: boolean;
+  assetTab: string;
 }
 const AuctionForm = ({
   createNFT,
@@ -63,6 +65,8 @@ const AuctionForm = ({
   clearForm,
   asset,
   library,
+  videoThumbnailPreview,
+  assetTab,
 }: AuctionFormProps) => {
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
@@ -346,7 +350,11 @@ const AuctionForm = ({
               ? "primary"
               : "secondary"
           }
-          disabled={!formState.isValid || asset === undefined}
+          disabled={
+            !formState.isValid ||
+            asset === undefined ||
+            (assetTab === "Video" && !videoThumbnailPreview)
+          }
           onClick={handleSubmit(onSubmit)}
           className="mt-2 hover:scale-95"
         />

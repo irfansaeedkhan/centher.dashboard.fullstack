@@ -28,13 +28,17 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
       <div
         className={clsx(
           `relative w-full rounded-2xl border border-gray-shade-3 bg-black-shade-9`,
-          props.image?.includes("mp3") ? `` : `pb-[100%]`
+          props.type?.includes("audio") ? `` : `pb-[100%]`
         )}
       >
-        {props.image && imageUrl && (
+        {props.type && imageUrl && (
           <div>
-            {props.image.includes("mp3") ? (
+            {props.type.includes("audio") ? (
               <AudioPlayer src={props.image} />
+            ) : props.type.includes("video") ? (
+              <video controls={true} className={videoStyling}>
+                <source src={props.image} type="video/mp4" />
+              </video>
             ) : (
               <Image
                 className={`absolute h-full w-full rounded-2xl object-cover`}
@@ -58,3 +62,6 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
     </div>
   );
 };
+const videoStyling = `
+w-full h-full absolute rounded-2xl object-contain
+`;
