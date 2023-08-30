@@ -227,29 +227,6 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async getTotalClaimedRefReward(
-    poolId: string,
-    user: string
-  ): Promise<string> {
-    const query = QueryFactory.getQuery(
-      QueryNames.GET_USER_TOTAL_CLAIMED_REF_REWARDS
-    );
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        projectId: poolId,
-        referral: user,
-      },
-      fetchPolicy: "no-cache",
-    });
-
-    return result?.data.rewards.reduce(
-      (a: number, b: { amount: string }) => a + +b.amount,
-      0
-    );
-  }
-
-  @CatchError()
   async getClaimedRefRewards(input: GetRefRewardInput): Promise<RefReward[]> {
     try {
       const query = QueryFactory.getQuery(
@@ -260,7 +237,7 @@ export class CentherStaking {
         query,
         variables: {
           projectId: input.poolId,
-          referral: input.user,
+          user: input.user,
           first1: input.getPageSize(),
           skip1: input.getPage(),
         },
@@ -504,6 +481,7 @@ export class CentherStaking {
         input.id.split("-")[0],
         +poolId
       );
+
       input.claimableReward = result;
       return input;
     } catch (error) {

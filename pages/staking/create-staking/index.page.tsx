@@ -54,6 +54,7 @@ import {
   CreatePoolUploadLogoError,
   CreatePoolUploadMetadataError,
   InsufficientFundError,
+  InvalidAffiliateSystemSettings,
   WalletApprovalError,
   WalletConnectedError,
 } from "@/staking/errors/params.error";
@@ -634,6 +635,20 @@ const CreateStaking: NextPageWithLayout = () => {
         levelFive: levelFive ? levelFive.percent * 100 : 0,
         levelSix: levelSix ? levelSix.percent * 100 : 0,
       };
+
+      if (
+        affiliateSetting.levelOne +
+          affiliateSetting.levelTwo +
+          affiliateSetting.levelThree +
+          affiliateSetting.levelFour +
+          affiliateSetting.levelFive +
+          affiliateSetting.levelSix <=
+        0
+      ) {
+        throw new InvalidAffiliateSystemSettings(
+          "You need to add percent at least for one level, otherwise use no referral mode."
+        );
+      }
     }
 
     await sdk.createPool(
@@ -848,6 +863,10 @@ const CreateStaking: NextPageWithLayout = () => {
 
       if (error instanceof WalletConnectedError) {
         message = `Wallet:  ${error.message}`;
+      }
+
+      if (error instanceof InvalidAffiliateSystemSettings) {
+        message = `Affiliate setting:  ${error.message}`;
       }
 
       await setProgressModel(null);

@@ -11,6 +11,7 @@ import { eqAddress } from "@/live/utils/address.utils";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 
 const ReferralsTable: React.FC<{
+  isClaiming: string;
   rewards: RefReward[];
   pageSize: string;
   setPageSize: (val: string) => void;
@@ -22,6 +23,7 @@ const ReferralsTable: React.FC<{
   pool: ListCardDataOBj | null;
   claimable: boolean;
 }> = ({
+  isClaiming,
   rewards,
   pageSize,
   setPageSize,
@@ -74,6 +76,7 @@ const ReferralsTable: React.FC<{
           ) : (
             currentTab === "referrals" && (
               <ListReferralsTable
+                isClaiming={isClaiming}
                 claimable={claimable}
                 data={referrals}
                 token={

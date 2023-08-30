@@ -81,44 +81,15 @@ const queries: Queries = {
       cancellationFees
       annualStakingRewardRate
       transfers {
-        user
-        type
-        txId
-        projectId
-        paidFee
-        id
         endAt
         createdAt
-        amount
       }
       users {
         referrer
         joinedAt
         id
-        transfers {
-          user
-          type
-          txId
-          projectId
-          paidFee
-          id
-          endAt
-          createdAt
-          amount
-        }
       }
-      rewards {
-        user
-        type
-        txId
-        startDuration
-        referral
-        projectId
-        id
-        endDuration
-        createdAt
-        amount
-      }
+     
     }
   }
   `,
@@ -137,7 +108,7 @@ const queries: Queries = {
   }`,
   GET_USER_CLAIMED_REWARDS: `query MyQuery($poolId: BigInt = "", $user: Bytes = "", $first: Int = 10, $skip: Int = 10) {
     rewardClaimeds(
-      where: {poolId: $poolId, user: $user}
+      where: {poolId: $poolId, user: $user, isRef: false}
       first: $first
       skip: $skip
       orderDirection: desc
@@ -152,14 +123,9 @@ const queries: Queries = {
       amount
     }
   }`,
-  GET_USER_TOTAL_CLAIMED_REF_REWARDS: `query MyQuery($referral: Bytes = "", $projectId: BigInt = "") {
-    rewards(where: {referral: $referral, projectId: $projectId, isRef: true}) {
-      amount
-    }
-  }`,
-  GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($first1: Int = 1000, $skip1: Int = 0, $projectId: BigInt = "", $referral: Bytes = "") {
+  GET_USER_CLAIMED_REF_REWARDS: `query MyQuery($first1: Int = 1000, $skip1: Int = 0, $projectId: BigInt = "", $user: Bytes = "") {
     rewards(
-      where: {projectId: $projectId, referral: $referral, isRef: true}
+      where: {projectId: $projectId, user: $user, isRef: true}
       first: $first1
       skip: $skip1
     ) {

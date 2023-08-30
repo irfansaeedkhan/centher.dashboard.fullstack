@@ -424,13 +424,15 @@ const StakingDetailsWrapper = ({ children }: Props) => {
             className="rounded-[10px]"
           />
         </Link>
-        <Link href={`/staking/staking-details/${poolId}/referrals`}>
-          <FinalButton
-            title="Referrals"
-            variant={activeTab == "referrals" ? "primary" : "secondary"}
-            className="rounded-[10px]"
-          />
-        </Link>
+        {stakingPool?.multilevel_rewards != "No referral" && (
+          <Link href={`/staking/staking-details/${poolId}/referrals`}>
+            <FinalButton
+              title="Referrals"
+              variant={activeTab == "referrals" ? "primary" : "secondary"}
+              className="rounded-[10px]"
+            />
+          </Link>
+        )}
       </div>
       {children}
       {isLoading && <PreLoader />}

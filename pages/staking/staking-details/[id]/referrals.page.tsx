@@ -65,6 +65,7 @@ const StakingReferrals: NextPageWithLayout = () => {
   );
   const { connectWallet } = useConnectWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const [claimRefRewardInProgress, setClaimRefRewardInProgress] = useState("");
 
   const [referralsInfo, setReferralsInfo] = useState<{
     data: Referral[];
@@ -125,20 +126,17 @@ const StakingReferrals: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (user && sdk && poolId) {
-      sdk.getTotalClaimedRefReward(poolId, user._id).then((data) => {
-        setTotalClaimed(data + "");
-      });
-    }
-  }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
-
-  useEffect(() => {
-    if (user && sdk && poolId) {
       sdk
         .getClaimedRefRewards(
           new GetRefRewardInput(+page, +pageSize, poolId, user._id)
         )
         .then((data) => {
           setClaimedRewards(data);
+          const total = data.reduce(
+            (a: number, b: { amount: string }) => a + +b.amount,
+            0
+          );
+          setTotalClaimed(total + "");
         });
     }
   }, [poolId, sdk, user, page, pageSize, currentTab, stakingPool]);
@@ -170,11 +168,14 @@ const StakingReferrals: NextPageWithLayout = () => {
   const claimRefReward = async (user: string) => {
     try {
       if (isAddress(user) && sdk && poolId) {
+        setClaimRefRewardInProgress(user);
         await sdk.claimRefReward(library, +poolId, user);
         modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {
       modal.createModal(ModalType.failedFuncModal);
+    } finally {
+      setClaimRefRewardInProgress("");
     }
   };
 
@@ -287,6 +288,7 @@ const StakingReferrals: NextPageWithLayout = () => {
       </div>
 
       <ReferralsTable
+        isClaiming={claimRefRewardInProgress}
         rewards={claimedRewards}
         referrals={referralsInfo?.data}
         pageSize={pageSize}
