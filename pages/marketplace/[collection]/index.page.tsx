@@ -55,6 +55,7 @@ const Collection: NextPageWithLayout = () => {
   const copyShareUrl = async () => {
     await copyText(shareUrl);
     toast.success("Collection link copied");
+    setIsMenuVisible(false);
   };
 
   const {
@@ -252,14 +253,26 @@ const Collection: NextPageWithLayout = () => {
                         <CopyIcon className={icon} /> Copy Link
                       </button>
 
-                      <FacebookShareButton url={shareUrl} className="w-full">
+                      <FacebookShareButton
+                        onClick={() => {
+                          setIsMenuVisible(false);
+                        }}
+                        url={shareUrl}
+                        className="w-full"
+                      >
                         <span className={menuButton}>
                           <FacebookCircleIcon className={icon} /> Share on
                           Facebook
                         </span>
                       </FacebookShareButton>
 
-                      <TwitterShareButton url={shareUrl} className="w-full">
+                      <TwitterShareButton
+                        onClick={() => {
+                          setIsMenuVisible(false);
+                        }}
+                        url={shareUrl}
+                        className="w-full"
+                      >
                         <span className={menuButton}>
                           <TwitterSvg className={icon} /> Share on Twitter
                         </span>
