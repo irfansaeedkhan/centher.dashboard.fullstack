@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import React from "react";
 import styles from "./button.module.css";
-import { CgSpinner } from "react-icons/cg";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
@@ -9,7 +8,6 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   Icon?: React.ReactNode;
   borderRounded?: string;
   backgroundColor?: string;
-  isLoading?: boolean;
   loaderIcon?: React.ReactNode;
 }
 interface CustomCSSProperties extends React.CSSProperties {
@@ -24,7 +22,6 @@ const FinalButton: React.FC<ButtonProps> = ({
   loaderIcon,
   borderRounded = "14px",
   backgroundColor = "#17171A",
-  isLoading = false,
   ...props
 }) => {
   const customStyles: CustomCSSProperties = {

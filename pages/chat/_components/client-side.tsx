@@ -19,8 +19,9 @@ const defaultImage = "/images/chat-profile.png";
 const ClientSide: React.FC<{
   openModalReply: (msg: any) => void;
   onEmojiReaction: (msg: any, code: string) => void;
+  setShowBlur: (value: string) => void;
   data: { message: any; users: UsersDetails[] | null };
-}> = ({ data, openModalReply, onEmojiReaction }) => {
+}> = ({ data, openModalReply, onEmojiReaction, setShowBlur }) => {
   const { user } = useUser();
   const [time, setTime] = useState<string>("");
   const [emoji, setEmoji] = useState<{ code: string; sender: string }[]>([]);
@@ -30,8 +31,8 @@ const ClientSide: React.FC<{
   const [isReply, setIsReply] = useState<boolean>(false);
   const [replyDate, setReplyData] = useState<any>(null);
   const [image, setImage] = useState<string>(defaultImage);
+  const [showNonBlur, setNonShowBlur] = useState<string>();
   const belowMobile = useMediaQuery("(max-width: 560px)");
-  const [preventSelect, setPreventSelect] = useState(false);
 
   const hoverRef = useRef<HTMLDivElement>(null);
   const clickEmojiRef = useRef<HTMLDivElement>(null);
@@ -93,7 +94,6 @@ const ClientSide: React.FC<{
       hoverRef.current.style.display = "none";
       setEmojiBar(false);
       handleSetData();
-      setEmojiBarMobile(false);
     }
   };
 
@@ -150,14 +150,16 @@ const ClientSide: React.FC<{
 
   const handleSetData = () => {
     setEmojiBarMobile(false);
-    setPreventSelect(false);
+    setShowBlur("");
+    setNonShowBlur("");
   };
 
   const openPopup = () => {
     // Implement your logic to open the pop-up here
-    setPreventSelect(true);
-    if (hoverRef.current && belowMobile) {
+    if (hoverRef.current) {
       hoverRef.current.style.display = "block";
+      setShowBlur("blur-local");
+      setNonShowBlur("not-blur");
       setEmojiBarMobile(true);
     }
   };
@@ -169,16 +171,12 @@ const ClientSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={clsx(
-            `relative flex w-full items-center gap-2`,
-            emoji?.length > 0 && "mb-5",
-            emojiBarMobile && " bg-[#262323b8] p-1"
+            `child relative flex w-full items-center gap-2 ${showNonBlur}`,
+            `${emoji?.length > 0 && "mb-5"}`
           )}
         >
           <div
-            className={clsx(
-              `gradient-border-4 flex h-auto w-fit rounded-[10px] bg-background-shade-3 p-[1px] fmd:max-w-[50%]`,
-              emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
-            )}
+            className="gradient-border-4 flex h-auto w-fit rounded-[10px] bg-background-shade-3 p-[1px] fmd:max-w-[50%]"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
@@ -241,9 +239,7 @@ const ClientSide: React.FC<{
 
                 <div
                   className={clsx(
-                    `word-break text-14px  z-10 leading-[17.07px] text-white`,
-                    emojiBarMobile && "bg-[#262323b8]",
-                    preventSelect && "prevent-select"
+                    `word-break text-14px  z-10 leading-[17.07px] text-white`
                   )}
                   dangerouslySetInnerHTML={{
                     __html: urlify(data.message.content),
@@ -284,14 +280,13 @@ const ClientSide: React.FC<{
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           className={clsx(
-            `relative flex items-center gap-2`,
-            emoji?.length > 0 && "mb-5",
-            emojiBarMobile && " bg-[#262323b8] p-1"
+            `child relative flex items-center gap-2 ${showNonBlur}`,
+            `${emoji?.length > 0 && "mb-5"}`
           )}
         >
           {emoji.length > 0 && (
             <div
-              className="absolute bottom-[5px] left-[35px] z-30 flex translate-x-[50%] translate-y-[100%] items-center justify-center rounded-full  bg-black-shade-3 p-1"
+              className="absolute bottom-[5px] left-[35px] z-30 flex translate-y-[100%] items-center justify-center rounded-full bg-black-shade-3  p-1"
               onMouseLeave={handleMouseLeaveEmojiList}
             >
               <div
@@ -342,18 +337,13 @@ const ClientSide: React.FC<{
           )}
 
           <div
-            className={clsx(
-              `gradient-border-4 flex h-auto w-fit rounded-[10px] border bg-background-shade-3 p-[1px] fmd:max-w-[50%]`,
-              emojiBarMobile && "bg-[#262323b8] opacity-[0.8]"
-            )}
+            className="gradient-border-4 flex h-auto w-fit rounded-[10px] border bg-background-shade-3 p-[1px] fmd:max-w-[50%]"
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
             {/* <p
               className={clsx(
-                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`,
-                emojiBarMobile && "bg-[#262323b8]",
-                `${preventSelect && "prevent-select"}`
+                `word-break text-14px z-10 max-w-[calc(90%-10px)] whitespace-pre-wrap break-words leading-[17.07px] text-white`
               )}
             >
             </p> */}
