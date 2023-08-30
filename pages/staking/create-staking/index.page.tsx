@@ -10,13 +10,35 @@ import Select, { StylesConfig } from "react-select";
 import { IoClose } from "react-icons/io5";
 import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
-
-import { cn } from "@/utils/cn/cn";
+import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
+import { isAddress } from "ethers/lib/utils";
+import cn from "@/utils/cn";
 import { CrossIcon, MetamaskIcon2, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { eqAddress } from "@/live/utils/address.utils";
+import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import useUser from "@/hooks/use.user";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import {
+  CreatePoolCallContractError,
+  CreatePoolCallStaticError,
+  CreatePoolParamsError,
+  CreatePoolUploadBannerError,
+  CreatePoolUploadLogoError,
+  CreatePoolUploadMetadataError,
+  InsufficientFundError,
+  InvalidAffiliateSystemSettings,
+  WalletApprovalError,
+  WalletConnectedError,
+} from "@/staking/errors/params.error";
+import { PreLoader } from "@/components/pre.loader";
+import { useStaking } from "@/hooks/staking";
+import { BlockchainRead } from "@/web3/blockchain";
 import { StakingSuccessModal } from "./_components/staking-success-modal";
 import {
   levelDataType,
@@ -35,38 +57,12 @@ import {
   StakingFiles,
 } from "@/staking/types";
 import { StakingProgressModal } from "./_components/staking-progress-modal";
-import { eqAddress } from "@/live/utils/address.utils";
-import {
-  CreatePoolStepsEnum,
-  ProgressStatus,
-} from "@/staking/enum/create-pool-steps.enum";
 import { ProgressModal } from "./dto/progress-modal.dto";
-import { useWeb3React } from "@web3-react/core";
-import { FiArrowRight } from "react-icons/fi";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import useUser from "@/hooks/use.user";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import {
-  CreatePoolCallContractError,
-  CreatePoolCallStaticError,
-  CreatePoolParamsError,
-  CreatePoolUploadBannerError,
-  CreatePoolUploadLogoError,
-  CreatePoolUploadMetadataError,
-  InsufficientFundError,
-  InvalidAffiliateSystemSettings,
-  WalletApprovalError,
-  WalletConnectedError,
-} from "@/staking/errors/params.error";
-import { isAddress } from "ethers/lib/utils";
-import { PreLoader } from "@/components/pre.loader";
-import { useStaking } from "@/hooks/staking";
 import {
   claimPeriodOptions,
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
-import { BlockchainRead } from "@/web3/blockchain";
 import DropdownStakingForm from "../_components/dropdown-staking-form";
 
 const categoryOptions = [

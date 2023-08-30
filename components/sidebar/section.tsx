@@ -68,7 +68,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                   }
                 >
                   <span>{item.label}</span>
-                  {item.badge === "citizen" && (
+                  {item.available_for === "citizen" && (
                     <Image
                       src="/images/citizen-icon.svg"
                       alt="Citizen"

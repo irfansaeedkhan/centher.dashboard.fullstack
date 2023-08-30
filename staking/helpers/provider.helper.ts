@@ -1,6 +1,6 @@
-import { BlockchainConfig } from "@/web3/blockchain/config";
-import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { providers } from "ethers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 
 export function getDefaultProvider(
   rpcAddress: string

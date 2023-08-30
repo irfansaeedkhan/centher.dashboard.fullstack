@@ -1,6 +1,6 @@
+import React, { useState } from "react";
 import FinalButton from "@/components/button/final.button";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import React, { useState } from "react";
 
 const UnstakeModal: React.FC<{
   submit: (value: string) => void;

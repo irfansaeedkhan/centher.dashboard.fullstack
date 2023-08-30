@@ -1,20 +1,17 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import Link from "next/link";
+import React, { FC, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { AiOutlineUnorderedList } from "react-icons/ai";
-
+import clsx from "clsx";
 import { LayoutGrid } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
-
-import { ListCardDataOBj } from "./list-card-data";
-import GridLayoutCard from "./list-card";
-import clsx from "clsx";
-import ListLayoutTable from "./list-layout-table";
-import StakingDropdown from "./dropdown-for-staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import useUser from "@/hooks/use.user";
-import { useRouter } from "next/router";
+import { ListCardDataOBj } from "./list-card-data";
+import GridLayoutCard from "./list-card";
+import ListLayoutTable from "./list-layout-table";
+import StakingDropdown from "./dropdown-for-staking";
 
 const sortOptions = [
   {

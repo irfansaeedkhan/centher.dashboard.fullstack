@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { formatUnits } from "ethers/lib/utils";
+import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import FinalButton from "@/components/button/final.button";
 import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
-import { formatUnits } from "ethers/lib/utils";
 import { Staking } from "@/assets/svgs";
-import { OptionalType } from "@/staking/types";
-import { CgSpinner } from "react-icons/cg";
-import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 
 export interface StakingStat {
   totalStakedAmount: string;

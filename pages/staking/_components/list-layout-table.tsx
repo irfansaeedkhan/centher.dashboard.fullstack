@@ -1,16 +1,15 @@
 import React from "react";
-import { ListCardDataOBj } from "./list-card-data";
+import Link from "next/link";
+import Image from "next/image";
+import { formatEther } from "ethers/lib/utils";
 import {
   TableCell,
   TableRow,
 } from "../staking-details/[id]/_components/table-types";
-import Image from "next/image";
-import { sliceAccountAddress } from "@/utils/user.helpers";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
-import { formatEther } from "ethers/lib/utils";
-import Link from "next/link";
 import { Staking } from "@/assets/svgs";
+import { ListCardDataOBj } from "./list-card-data";
 
 interface Props {
   card: ListCardDataOBj[];

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FiInstagram, FiTwitter } from "react-icons/fi";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import { SiBinance } from "react-icons/si";
-
+import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
   NewCentherIcon,
@@ -12,11 +12,10 @@ import {
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { OptionalType } from "@/staking/types";
 import { Memb } from "@/pages/staking/create-staking/_components/staking-review-modal";
-import { fetchUsers } from "@/hooks/user.get.multi.users";
+import { fetchUsers } from "@/hooks/use.get.multi.users";
 import { eqAddress } from "@/live/utils/address.utils";
 import TeamMembers from "@/pages/staking/create-staking/_components/team.memeber";
 import { ZeroAddress } from "@/web3/constants/common";
-import { isAddress } from "ethers/lib/utils";
 
 const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
   data,

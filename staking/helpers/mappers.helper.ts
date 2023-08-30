@@ -1,10 +1,10 @@
-import { CreatePoolInput, MappedCreatePoolInput } from "../types";
-import { ZeroAddress } from "@/web3/constants/common";
 import { formatUnits, isAddress, parseEther } from "ethers/lib/utils";
-import { CreatePoolParamsError } from "../errors/params.error";
+import { ZeroAddress } from "@/web3/constants/common";
 import { eqAddress } from "@/live/utils/address.utils";
-import { StakingProject } from "../types/get.projects.interface";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
+import { CreatePoolInput, MappedCreatePoolInput } from "../types";
+import { StakingProject } from "../types/get.projects.interface";
+import { CreatePoolParamsError } from "../errors/params.error";
 
 export function setupCreatePoolData(
   input: CreatePoolInput

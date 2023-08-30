@@ -64,8 +64,7 @@ export const sidebarData: SidebarData = {
           AppRoutes.staking.staking_details.rewards,
           AppRoutes.staking.staking_details.referrals,
         ],
-        available_for: "all",
-        badge: "citizen",
+        available_for: "citizen",
       },
       {
         label: "Create Collection",
@@ -73,7 +72,6 @@ export const sidebarData: SidebarData = {
         icon: CreateCollection,
         activeList: [AppRoutes.marketplace.create_collection],
         available_for: "citizen",
-        badge: "citizen",
       },
       {
         label: "Create NFT",
@@ -81,7 +79,6 @@ export const sidebarData: SidebarData = {
         icon: CreateNFT,
         activeList: [AppRoutes.marketplace.create_nft],
         available_for: "citizen",
-        badge: "citizen",
       },
     ],
   },
