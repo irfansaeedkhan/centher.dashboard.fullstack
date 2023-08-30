@@ -362,7 +362,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   <div className="text-14px absolute right-0 top-[30px] z-[500]  rounded-10px bg-black-shade-12">
                     <span
                       className={clsx(
-                        `absolute top-[-3px] right-[18px] h-3 w-3 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
+                        `absolute right-[18px] top-[-3px] h-3 w-3 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `
                       )}
                     >

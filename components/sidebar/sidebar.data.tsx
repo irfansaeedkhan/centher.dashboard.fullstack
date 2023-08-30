@@ -5,6 +5,7 @@ import {
   Explore,
   Notification,
   Launchpad,
+  Staking,
   CreateNFT,
 } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
@@ -53,11 +54,26 @@ export const sidebarData: SidebarData = {
         ],
       },
       {
+        label: "Staking",
+        url: AppRoutes.staking.index,
+        icon: Launchpad,
+        activeList: [
+          AppRoutes.staking.index,
+          AppRoutes.staking.create_staking,
+          AppRoutes.staking.staking_details.index,
+          AppRoutes.staking.staking_details.rewards,
+          AppRoutes.staking.staking_details.referrals,
+        ],
+        available_for: "all",
+        badge: "citizen",
+      },
+      {
         label: "Create Collection",
         url: AppRoutes.marketplace.create_collection,
         icon: CreateCollection,
         activeList: [AppRoutes.marketplace.create_collection],
         available_for: "citizen",
+        badge: "citizen",
       },
       {
         label: "Create NFT",
@@ -65,6 +81,7 @@ export const sidebarData: SidebarData = {
         icon: CreateNFT,
         activeList: [AppRoutes.marketplace.create_nft],
         available_for: "citizen",
+        badge: "citizen",
       },
     ],
   },

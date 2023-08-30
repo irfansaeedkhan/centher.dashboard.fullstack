@@ -67,4 +67,21 @@ export class SmartContractProvider {
 
     return this.getContract(tokenContractName, signer);
   }
+
+  static getErc20Contract(
+    tokenAddress: string,
+    signer?: SignerOrProvider
+  ): any {
+    if (!tokenAddress) {
+      throw new Error("Token contract not found");
+    }
+
+    const abi = AddressFactory.getContractAbi(SmartContractName.BUSD);
+    const instance = this.getContractInstance(abi, tokenAddress, signer);
+    if (!instance) {
+      throw new Error("Invalid smart contract instance");
+    }
+
+    return instance;
+  }
 }

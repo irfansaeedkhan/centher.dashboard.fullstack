@@ -36,7 +36,7 @@ const SettingsSidebar = () => {
           >
             <span
               className={clsx(
-                "left-6 flex-grow rounded-[14px] bg-[#1E1E21] py-3 px-4 text-sm font-medium"
+                "left-6 flex-grow rounded-[14px] bg-[#1E1E21] px-4 py-3 text-sm font-medium"
               )}
             >
               <span

@@ -69,7 +69,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
       >
         {/*header*/}
         <button
-          className={`absolute top-6 right-6 text-white`}
+          className={`absolute right-6 top-6 text-white`}
           onClick={onClose}
         >
           <IoClose className="h-6 w-6" />

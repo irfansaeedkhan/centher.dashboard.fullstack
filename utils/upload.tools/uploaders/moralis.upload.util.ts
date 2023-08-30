@@ -40,11 +40,17 @@ export class MoralisUploader implements IUploader<IUploadParam, string> {
     }`;
   }
 
-  async upload(input: IUploadParam): Promise<string> {
+  async upload(
+    input: IUploadParam,
+    statusController?: (progress: number) => void
+  ): Promise<string> {
     try {
       const options = {
         wrapWithDirectory: true,
         progress: (prog: any) => {
+          if (statusController) {
+            statusController(prog);
+          }
           customLog(["development", "staging"], prog);
         },
       };
