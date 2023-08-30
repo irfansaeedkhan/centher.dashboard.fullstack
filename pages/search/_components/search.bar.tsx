@@ -72,15 +72,15 @@ const Searchbar = () => {
 
   return (
     <form className="relative w-full" onSubmit={submitData}>
-      <div className="flex items-center gap-2 rounded-xl bg-background-shade-3 px-3 py-2 focus-within:ring-1 focus-within:ring-brand-primary">
+      <div className="focus-within:gradient-border-3 flex items-center gap-2 !rounded-lg bg-background-shade-3 p-[1px] ">
         <input
           type="text"
           placeholder="Search"
-          className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
+          className="w-full border-0 bg-transparent p-0 px-3 py-2 text-white focus:outline-none focus:ring-0"
           value={searchQueryInput}
           onChange={(e) => handleSearchQueryInput(e)}
         />
-        <button type="submit">
+        <button type="submit" className="pr-2">
           <SearchIcon />
         </button>
         {openPopup && (
