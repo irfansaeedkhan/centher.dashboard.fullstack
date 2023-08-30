@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
+import axios from "axios";
+import clsx from "clsx";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -8,22 +9,16 @@ import FinalButton from "@/components/button/final.button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
-import StakingListContainer from "./_components/staking-list-container";
-import clsx from "clsx";
 import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
-import {
-  GetStakingProjectInput,
-  StakingProject,
-} from "@/staking/types/get.projects.interface";
-import { ListCardDataOBj } from "./_components/list-card-data";
+import { GetStakingProjectInput } from "@/staking/types/get.projects.interface";
 import { ZeroAddress } from "@/web3/constants/common";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
-import axios from "axios";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
-import { OptionalType } from "@/staking/types";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
+import StakingListContainer from "./_components/staking-list-container";
+import { ListCardDataOBj } from "./_components/list-card-data";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();

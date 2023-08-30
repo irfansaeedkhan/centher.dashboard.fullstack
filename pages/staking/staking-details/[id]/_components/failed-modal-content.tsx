@@ -1,5 +1,5 @@
-import { CircularClose } from "@/assets/svgs";
 import React from "react";
+import { CircularClose } from "@/assets/svgs";
 
 const FailedModalContent: React.FC<{ message?: string; title?: string }> = ({
   message,

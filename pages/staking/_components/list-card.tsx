@@ -1,23 +1,22 @@
 import React from "react";
+import { useRouter } from "next/router";
+import Image from "next/image";
+import { formatUnits } from "ethers/lib/utils";
 import clsx from "clsx";
 import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
-import { ListCardDataOBj } from "./list-card-data";
-import Image from "next/image";
-import Link from "next/link";
-import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { formatIPFSUrl } from "@/utils/format.address";
-import { formatUnits } from "ethers/lib/utils";
-import { metaDataType } from "./staking-types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import FinalButton from "@/components/button/final.button";
-import { useRouter } from "next/router";
+import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
+import { metaDataType } from "./staking-types";
+import { ListCardDataOBj } from "./list-card-data";
 
 export interface ListCardProps {
   card: ListCardDataOBj;

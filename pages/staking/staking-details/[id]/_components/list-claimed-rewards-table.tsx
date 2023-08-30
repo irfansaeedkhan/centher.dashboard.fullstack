@@ -1,9 +1,8 @@
 import React from "react";
-import FinalButton from "@/components/button/final.button";
-import { TableCell, TableRow } from "./table-types";
-import { RefReward } from "@/staking/types/ref.rewards.interface";
 import { formatUnits } from "ethers/lib/utils";
+import { RefReward } from "@/staking/types/ref.rewards.interface";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { TableCell, TableRow } from "./table-types";
 
 const ListClaimedRewardsTable: React.FC<{
   data: RefReward[];

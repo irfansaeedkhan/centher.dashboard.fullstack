@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-
+import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
+import { formatUnits, isAddress } from "ethers/lib/utils";
+import { FiArrowRight } from "react-icons/fi";
+import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { ClaimableReward, MetamaskIcon2, StakingUsers } from "@/assets/svgs";
-
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
-import ReferralsTable from "./_components/referrals-table";
-import { useWeb3React } from "@web3-react/core";
-import { ListCardDataOBj } from "../../_components/list-card-data";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import useUser from "@/hooks/use.user";
-import { useRouter } from "next/router";
 import { useStaking } from "@/hooks/staking";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { ZeroAddress } from "@/web3/constants/common";
@@ -18,7 +16,6 @@ import {
   GetRefRewardInput,
   RefReward,
 } from "@/staking/types/ref.rewards.interface";
-import { formatUnits, isAddress, parseUnits } from "ethers/lib/utils";
 import {
   GetReferralsInput,
   Referral,
@@ -27,14 +24,15 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import SuccessModalContent from "./_components/success-modal-content";
-import FailedModalContent from "./_components/failed-modal-content";
 import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { FiArrowRight } from "react-icons/fi";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import toast from "react-hot-toast";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { ListCardDataOBj } from "../../_components/list-card-data";
+import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import ReferralsTable from "./_components/referrals-table";
+import SuccessModalContent from "./_components/success-modal-content";
+import FailedModalContent from "./_components/failed-modal-content";
 
 enum ModalType {
   successFuncModal = "successFuncModal",

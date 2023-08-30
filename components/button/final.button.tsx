@@ -31,7 +31,7 @@ const FinalButton: React.FC<ButtonProps> = ({
   return (
     <button
       className={clsx(
-        ` default-button-styling flex items-center justify-center gap-2`,
+        `default-button-styling flex items-center justify-center gap-2`,
         variant === "primary" &&
           `primary-gradient-btn relative bg-gradient-pattern`,
         variant === "primary" && !props.disabled && "hover:scale-105",

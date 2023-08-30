@@ -1,5 +1,5 @@
-import { GreenTick } from "@/assets/svgs";
 import React from "react";
+import { GreenTick } from "@/assets/svgs";
 
 const SuccessModalContent: React.FC<{ message?: string; title?: string }> = ({
   message,

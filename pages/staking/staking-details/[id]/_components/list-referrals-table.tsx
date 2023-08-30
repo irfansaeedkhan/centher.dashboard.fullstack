@@ -1,9 +1,9 @@
 import React from "react";
-import FinalButton from "@/components/button/final.button";
-import { TableCell, TableRow } from "./table-types";
-import { Referral } from "@/staking/types/referrals.interface";
 import { formatUnits } from "ethers/lib/utils";
+import FinalButton from "@/components/button/final.button";
+import { Referral } from "@/staking/types/referrals.interface";
 import { OptionalType } from "@/staking/types";
+import { TableCell, TableRow } from "./table-types";
 
 const ListReferralsTable: React.FC<{
   data: OptionalType<Referral[]>;

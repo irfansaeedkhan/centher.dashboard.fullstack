@@ -1,8 +1,5 @@
 import React, { useRef } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
-
-import { AppRoutes } from "@/constants/app.routes";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import FinalButton from "@/components/button/final.button";

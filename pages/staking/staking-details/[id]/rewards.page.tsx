@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
+import { formatUnits } from "ethers/lib/utils";
+import { CgSpinner } from "react-icons/cg";
+import toast from "react-hot-toast";
+import { FiArrowRight } from "react-icons/fi";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
-import RewardsTable from "./_components/rewards-table";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
-import StakeRewardModal from "./_components/stake-reward-modal";
-import UnstakeModal from "./_components/unstake-modal";
 import { ZeroAddress } from "@/web3/constants/common";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
-import { ListCardDataOBj } from "../../_components/list-card-data";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import useUser from "@/hooks/use.user";
-import { useRouter } from "next/router";
 import { useStaking } from "@/hooks/staking";
-import { useWeb3React } from "@web3-react/core";
-import { useBNBPrice } from "@/hooks/use.get.bnb.price";
-import { formatUnits } from "ethers/lib/utils";
 import {
   ClaimedRewards,
   GetClaimedRewardsInput,
@@ -25,16 +22,16 @@ import {
 } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
-import SuccessModalContent from "./_components/success-modal-content";
-import FailedModalContent from "./_components/failed-modal-content";
 import { PreLoader } from "@/components/pre.loader";
-import { CgSpinner } from "react-icons/cg";
-import { title } from "process";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
-import toast from "react-hot-toast";
-import { FiArrowRight } from "react-icons/fi";
+import RewardsTable from "./_components/rewards-table";
+import { ListCardDataOBj } from "../../_components/list-card-data";
+import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import UnstakeModal from "./_components/unstake-modal";
+import SuccessModalContent from "./_components/success-modal-content";
+import FailedModalContent from "./_components/failed-modal-content";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",

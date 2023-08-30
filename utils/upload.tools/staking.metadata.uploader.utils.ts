@@ -1,6 +1,3 @@
-import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
-import { IUploader } from "./interfaces/file.uploader.interface";
-import { MoralisUploader } from "./uploaders/moralis.upload.util";
 import {
   CreatePoolMetadata,
   OptionalType,
@@ -11,6 +8,9 @@ import {
   CreatePoolUploadLogoError,
   CreatePoolUploadMetadataError,
 } from "@/staking/errors/params.error";
+import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
+import { IUploader } from "./interfaces/file.uploader.interface";
+import { MoralisUploader } from "./uploaders/moralis.upload.util";
 
 export class StakingUploader {
   _uploader: IUploader;

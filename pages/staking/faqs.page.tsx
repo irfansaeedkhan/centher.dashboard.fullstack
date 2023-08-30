@@ -1,8 +1,8 @@
 import React from "react";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { NextPageWithLayout } from "../_app.page";
 import { faqsData } from "./_components/faqs-data";
 import SingleFaq from "./_components/single-faq";
-import { NextPageWithLayout } from "../_app.page";
 import PageButtonsWrapper from "./staking-details/[id]/_components/page-buttons";
 
 const Faqs: NextPageWithLayout = () => {

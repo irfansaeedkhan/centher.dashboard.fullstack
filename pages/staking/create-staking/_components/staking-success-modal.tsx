@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import { useRouter } from "next/router";
-
 import { AppRoutes } from "@/constants/app.routes";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";

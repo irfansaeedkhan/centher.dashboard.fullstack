@@ -12,7 +12,8 @@ import {
   FiInstagram,
   FiTwitter,
 } from "react-icons/fi";
-
+import { isAddress } from "ethers/lib/utils";
+import { useWeb3React } from "@web3-react/core";
 import {
   LinkNewIcon,
   NewCentherIcon,
@@ -23,23 +24,19 @@ import {
   Whitepaper,
   Staking,
 } from "@/assets/svgs";
-
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import FinalButton from "@/components/button/final.button";
-import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { useWeb3React } from "@web3-react/core";
 import { eqAddress } from "@/live/utils/address.utils";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { ZeroAddress } from "@/web3/constants/common";
 import { useStaking } from "@/hooks/staking";
-import { fetchUsers } from "@/hooks/user.get.multi.users";
-import { isAddress } from "ethers/lib/utils";
-import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
+import { fetchUsers } from "@/hooks/use.get.multi.users";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
+import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
 
 export interface Memb {
   title: string | undefined;

@@ -82,6 +82,7 @@ const Conversation: React.FC<{
                   }}
                   openModalReply={openModalReply}
                   onEmojiReaction={onEmojiReaction}
+                  setShowBlur={setShowBlur}
                 />
               );
             }
