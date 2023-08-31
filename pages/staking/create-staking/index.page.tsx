@@ -41,6 +41,7 @@ import { useStaking } from "@/hooks/staking";
 import { BlockchainRead } from "@/web3/blockchain";
 import { StakingSuccessModal } from "./_components/staking-success-modal";
 import {
+  MultiLevelRewards,
   levelDataType,
   metaDataType,
   stakingFormInterface,
@@ -114,7 +115,7 @@ const CreateStaking: NextPageWithLayout = () => {
     walletAddress: "",
   });
 
-  const [selectedValue, setSelectedValue] = useState<string | number>("");
+  const [selectedValue, setSelectedValue] = useState<MultiLevelRewards>("");
   const [inputValues, setInputValues] = useState<levelDataType[]>([]);
 
   const uploadCoverFile = (e: any) => {
@@ -206,7 +207,7 @@ const CreateStaking: NextPageWithLayout = () => {
   // end handle metadata
 
   // start handle level system
-  const handleMultilevelChange = (value: string | number) => {
+  const handleMultilevelChange = (value: MultiLevelRewards) => {
     setSelectedValue(value);
 
     if (value === "No referral") {
@@ -259,7 +260,6 @@ const CreateStaking: NextPageWithLayout = () => {
         setInputValues(newInputValues);
       }
     }
-    console.log(inputValues);
   };
 
   const renderInputFields = (): JSX.Element[] => {
@@ -1288,10 +1288,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       ]}
                       selectedValue={stakingForm.watch("multilevel_rewards")}
                       onSelect={(value) => {
-                        stakingForm.setValue(
-                          "multilevel_rewards",
-                          value.toString()
-                        );
+                        stakingForm.setValue("multilevel_rewards", value);
                         handleMultilevelChange(value);
                       }}
                       error={

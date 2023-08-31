@@ -2,17 +2,18 @@ import React, { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import clsx from "clsx";
+import { MultiLevelRewards } from "./staking-types";
 
 interface DropdownOption {
   title: string;
-  value: string | number;
+  value: MultiLevelRewards;
 }
 
 interface DropdownProps {
   placeholder?: string;
   options: DropdownOption[];
-  selectedValue: string | number;
-  onSelect: (value: string | number) => void;
+  selectedValue: MultiLevelRewards;
+  onSelect: (value: MultiLevelRewards) => void;
   error?: string;
 }
 

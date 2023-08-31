@@ -18,11 +18,18 @@ export interface CategoryOption {
   label: string;
 }
 
+export type MultiLevelRewards =
+  | "No referral"
+  | "Recurring Return (0 to 6 levels)"
+  | "Fix Commission (0 to 6 levels)"
+  | ""
+  | number;
+
 export interface stakingFormInterface {
   staking_name: string;
   token_address: string;
   reward_token_address: string;
-  multilevel_rewards: string;
+  multilevel_rewards: MultiLevelRewards;
   apy: number | null;
   staking_reward_token_price_ratio: number | null;
   staking_period: string;
