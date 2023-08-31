@@ -37,8 +37,6 @@ interface FixedPriceFormProps {
   clearForm: boolean;
   asset: Blob | undefined;
   library: any;
-  videoThumbnailPreview: boolean;
-  assetTab: string;
 }
 interface FormFields {
   NFTName: String;
@@ -55,8 +53,6 @@ const FixedPriceForm = ({
   clearForm,
   asset,
   library,
-  videoThumbnailPreview,
-  assetTab,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
@@ -367,11 +363,7 @@ const FixedPriceForm = ({
               ? "primary"
               : "secondary"
           }
-          disabled={
-            !formState.isValid ||
-            asset === undefined ||
-            (assetTab === "Video" && !videoThumbnailPreview)
-          }
+          disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
           className="mt-2 hover:scale-95"
         />

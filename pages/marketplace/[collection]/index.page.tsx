@@ -55,6 +55,7 @@ const Collection: NextPageWithLayout = () => {
   const copyShareUrl = async () => {
     await copyText(shareUrl);
     toast.success("Collection link copied");
+    setIsMenuVisible(false);
   };
 
   const {
@@ -189,7 +190,7 @@ const Collection: NextPageWithLayout = () => {
                 />
               )}
 
-              <div className={shareBtn}>
+              <div className={`text-14px absolute right-6 bottom-4`}>
                 <div ref={menuRef} className={`relative`}>
                   <div className="flex items-center justify-center gap-5">
                     {(metadata?.facebook ||
@@ -252,14 +253,26 @@ const Collection: NextPageWithLayout = () => {
                         <CopyIcon className={icon} /> Copy Link
                       </button>
 
-                      <FacebookShareButton url={shareUrl} className="w-full">
+                      <FacebookShareButton
+                        onClick={() => {
+                          setIsMenuVisible(false);
+                        }}
+                        url={shareUrl}
+                        className="w-full"
+                      >
                         <span className={menuButton}>
                           <FacebookCircleIcon className={icon} /> Share on
                           Facebook
                         </span>
                       </FacebookShareButton>
 
-                      <TwitterShareButton url={shareUrl} className="w-full">
+                      <TwitterShareButton
+                        onClick={() => {
+                          setIsMenuVisible(false);
+                        }}
+                        url={shareUrl}
+                        className="w-full"
+                      >
                         <span className={menuButton}>
                           <TwitterSvg className={icon} /> Share on Twitter
                         </span>
@@ -341,7 +354,9 @@ const Collection: NextPageWithLayout = () => {
               )}
             </div>
             <div className={coverDetails}>
-              <div className={topDetais}>
+              <div
+                className={` flex flex-col items-center justify-center gap-5 text-center lg:flex-row lg:items-baseline lg:justify-between lg:text-left`}
+              >
                 <div className="w-full">
                   <h5 className={collectionName}>{info?.name}</h5>
                   <div className="lg:flex-start mt-1 flex justify-center gap-1 text-left md:items-center lg:justify-start">
@@ -380,7 +395,9 @@ const Collection: NextPageWithLayout = () => {
                     </Link>
                   </div>
                 </div>
-                <div className={detailsCard}>
+                <div
+                  className={`flex w-full max-w-fit flex-row flex-wrap items-center justify-between gap-5 rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-7 py-4 fsm:w-auto fsm:gap-8 fmd:min-w-max flg:justify-center [&>*]:w-[44%] fsm:[&>*]:w-[28%] fmd:[&>*]:w-auto`}
+                >
                   <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Items</h4>
                     <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
@@ -448,9 +465,13 @@ const Collection: NextPageWithLayout = () => {
         )}
         {/* nft tabs */}
         <div className="mt-6">
-          <div className={tabsContainer}>
+          <div
+            className={`flex flex-col items-center justify-between gap-5 fsm:flex-row`}
+          >
             <div className={title}>NFTS</div>
-            <div className={buttonList}>
+            <div
+              className={`flex w-full max-w-[640px] flex-col items-center justify-center gap-3 fsm:flex-row fsm:justify-end fsm:gap-5`}
+            >
               <div className="flex w-full max-w-[640px] flex-row  items-center justify-center gap-3 fsm:justify-end fsm:gap-5">
                 <FinalButton
                   title={"All"}
@@ -541,9 +562,7 @@ const profileImage = ctl(`
 const coverDetails = ctl(`
 mt-8 lg:mt-6 px-7 pt-7 pb-2
 `);
-const topDetais = ctl(`
- flex flex-col items-center justify-center text-center lg:text-left lg:flex-row gap-5 lg:items-baseline lg:justify-between
-`);
+
 const collectionName = ctl(`
 text-white text-20px font-semibold word-break
 `);
@@ -577,21 +596,9 @@ const inputField = ctl(`
 const nftCardWrapper = ctl(
   `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
 );
-const shareBtn = ctl(`
-text-14px absolute right-6 bottom-4
-`);
-const detailsCard = ctl(`
-fmd:min-w-max flex flex-row w-full items-center justify-start fmd:justify-center gap-5 fsm:gap-8 fsm:w-auto  bg-gray-shade-9 border-2 border-gray-shade-3 rounded-2xl  px-7 py-4 max-w-fit flex-wrap
-`);
 const detailsCardTitle = ctl(`
 text-12px font-semibold text-gray-shade-7 mb-2
 `);
 const detailsCardValue = ctl(`
 text-14px font-semibold text-white
-`);
-const tabsContainer = ctl(`
-flex gap-5 flex-col fsm:flex-row justify-between items-center
-`);
-const buttonList = ctl(`
-w-full max-w-[640px] flex justify-center flex-col fsm:flex-row items-center gap-3 fsm:gap-5 fsm:justify-end
 `);

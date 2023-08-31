@@ -10,15 +10,38 @@ import Select, { StylesConfig } from "react-select";
 import { IoClose } from "react-icons/io5";
 import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
-
-import { cn } from "@/utils/cn/cn";
+import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
+import { isAddress } from "ethers/lib/utils";
+import cn from "@/utils/cn";
 import { CrossIcon, MetamaskIcon2, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { CustomModal } from "@/components/modal/custom.modal";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { eqAddress } from "@/live/utils/address.utils";
+import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
+import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import useUser from "@/hooks/use.user";
+import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import {
+  CreatePoolCallContractError,
+  CreatePoolCallStaticError,
+  CreatePoolParamsError,
+  CreatePoolUploadBannerError,
+  CreatePoolUploadLogoError,
+  CreatePoolUploadMetadataError,
+  InsufficientFundError,
+  InvalidAffiliateSystemSettings,
+  WalletApprovalError,
+  WalletConnectedError,
+} from "@/staking/errors/params.error";
+import { PreLoader } from "@/components/pre.loader";
+import { useStaking } from "@/hooks/staking";
+import { BlockchainRead } from "@/web3/blockchain";
 import { StakingSuccessModal } from "./_components/staking-success-modal";
 import {
+  MultiLevelRewards,
   levelDataType,
   metaDataType,
   stakingFormInterface,
@@ -35,37 +58,13 @@ import {
   StakingFiles,
 } from "@/staking/types";
 import { StakingProgressModal } from "./_components/staking-progress-modal";
-import { eqAddress } from "@/live/utils/address.utils";
-import {
-  CreatePoolStepsEnum,
-  ProgressStatus,
-} from "@/staking/enum/create-pool-steps.enum";
 import { ProgressModal } from "./dto/progress-modal.dto";
-import { useWeb3React } from "@web3-react/core";
-import { FiArrowRight } from "react-icons/fi";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import useUser from "@/hooks/use.user";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import {
-  CreatePoolCallContractError,
-  CreatePoolCallStaticError,
-  CreatePoolParamsError,
-  CreatePoolUploadBannerError,
-  CreatePoolUploadLogoError,
-  CreatePoolUploadMetadataError,
-  InsufficientFundError,
-  WalletApprovalError,
-  WalletConnectedError,
-} from "@/staking/errors/params.error";
-import { isAddress } from "ethers/lib/utils";
-import { PreLoader } from "@/components/pre.loader";
-import { useStaking } from "@/hooks/staking";
 import {
   claimPeriodOptions,
   firstReward,
   stakingPeriodOptions,
 } from "../constants";
-import { BlockchainRead } from "@/web3/blockchain";
+import DropdownStakingForm from "../_components/dropdown-staking-form";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -116,7 +115,7 @@ const CreateStaking: NextPageWithLayout = () => {
     walletAddress: "",
   });
 
-  const [selectedValue, setSelectedValue] = useState<string>("");
+  const [selectedValue, setSelectedValue] = useState<MultiLevelRewards>("");
   const [inputValues, setInputValues] = useState<levelDataType[]>([]);
 
   const uploadCoverFile = (e: any) => {
@@ -208,22 +207,21 @@ const CreateStaking: NextPageWithLayout = () => {
   // end handle metadata
 
   // start handle level system
+  const handleMultilevelChange = (value: MultiLevelRewards) => {
+    setSelectedValue(value);
 
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    const newSelectedValue: string = event.target.value;
-    setSelectedValue(newSelectedValue);
-    if (newSelectedValue === "No referral") {
+    if (value === "No referral") {
       setInputValues([]);
     } else if (
-      newSelectedValue === "Recurring Return (0 to 6 levels)" ||
-      newSelectedValue === "Fix Commission (0 to 6 levels)"
+      value === "Recurring Return (0 to 6 levels)" ||
+      value === "Fix Commission (0 to 6 levels)"
     ) {
       const numLevels: number = 6;
       const newInputValues: levelDataType[] = Array.from(
         { length: numLevels },
         (_, index) => ({
           level: index + 1,
-          percent: 0, // You can set the default percent value here, if needed
+          percent: 0,
         })
       );
       setInputValues(newInputValues);
@@ -238,23 +236,29 @@ const CreateStaking: NextPageWithLayout = () => {
   ): void => {
     const inputValue: string = event.target.value;
 
-    const numericValue: number = parseFloat(inputValue);
-    if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
+    if (inputValue === "0") {
+      const numericValue: number = parseFloat(inputValue);
       const newInputValues: levelDataType[] = [...inputValues];
       newInputValues[index].percent = numericValue;
       setInputValues(newInputValues);
-
-      // Calculate total percentage and check if it's over 100
-      const totalPercentage = newInputValues.reduce(
-        (total, input) => total + input.percent,
-        0
-      );
-      setTotalPercentageError(totalPercentage > 100);
     } else {
-      // If the input value is not a valid number, set it to an empty string
-      const newInputValues: levelDataType[] = [...inputValues];
-      newInputValues[index].percent = 0; // You can set the default percent value here, if needed
-      setInputValues(newInputValues);
+      const numericValue: number = parseFloat(inputValue);
+      if (!isNaN(numericValue) && isFinite(numericValue) && numericValue >= 0) {
+        const newInputValues: levelDataType[] = [...inputValues];
+        newInputValues[index].percent = numericValue;
+        setInputValues(newInputValues);
+
+        // Calculate total percentage and check if it's over 100
+        const totalPercentage = newInputValues.reduce(
+          (total, input) => total + input.percent,
+          0
+        );
+        setTotalPercentageError(totalPercentage > 100);
+      } else {
+        const newInputValues: levelDataType[] = [...inputValues];
+        newInputValues[index].percent = 0;
+        setInputValues(newInputValues);
+      }
     }
   };
 
@@ -282,11 +286,7 @@ const CreateStaking: NextPageWithLayout = () => {
           id={`level-${index + 1}`}
           placeholder="0%"
           className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-          value={
-            inputValues[index]?.percent === 0
-              ? "0"
-              : inputValues[index]?.percent || ""
-          }
+          value={String(inputValues[index].percent) || ""}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
           }
@@ -332,7 +332,7 @@ const CreateStaking: NextPageWithLayout = () => {
       .optional()
       .allow("")
       .label("staking Reward Token Price Ratio"),
-    staking_period: Joi.string().max(150).label("staking period"),
+    staking_period: Joi.number().label("staking period"),
     start_date: Joi.string().max(150).label("start date"),
     claim_period: Joi.string().max(150).label("claim period"),
     rewards_release_start: Joi.string().max(150).label("rewards release start"),
@@ -631,6 +631,20 @@ const CreateStaking: NextPageWithLayout = () => {
         levelFive: levelFive ? levelFive.percent * 100 : 0,
         levelSix: levelSix ? levelSix.percent * 100 : 0,
       };
+
+      if (
+        affiliateSetting.levelOne +
+          affiliateSetting.levelTwo +
+          affiliateSetting.levelThree +
+          affiliateSetting.levelFour +
+          affiliateSetting.levelFive +
+          affiliateSetting.levelSix <=
+        0
+      ) {
+        throw new InvalidAffiliateSystemSettings(
+          "You need to add percent at least for one level, otherwise use no referral mode."
+        );
+      }
     }
 
     await sdk.createPool(
@@ -845,6 +859,10 @@ const CreateStaking: NextPageWithLayout = () => {
 
       if (error instanceof WalletConnectedError) {
         message = `Wallet:  ${error.message}`;
+      }
+
+      if (error instanceof InvalidAffiliateSystemSettings) {
+        message = `Affiliate setting:  ${error.message}`;
       }
 
       await setProgressModel(null);
@@ -1254,32 +1272,30 @@ const CreateStaking: NextPageWithLayout = () => {
                     Multilevel Rewards System
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <select
-                    {...stakingForm.register("multilevel_rewards")}
-                    id="multilevel_rewards"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
-                    value={selectedValue}
-                    onChange={handleChange}
-                  >
-                    <option value="" className="bg-black text-gray-shade-17">
-                      Select Any
-                    </option>
-                    <option className="bg-black text-white" value="No referral">
-                      No referral
-                    </option>
-                    <option
-                      className="bg-black text-white"
-                      value="Recurring Return (0 to 6 levels)"
-                    >
-                      Recurring Return (0 to 6 levels)
-                    </option>
-                    <option
-                      className="bg-black text-white"
-                      value="Fix Commission (0 to 6 levels)"
-                    >
-                      Fix Commission (0 to 6 levels)
-                    </option>
-                  </select>
+                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                    <DropdownStakingForm
+                      placeholder="Select Any"
+                      options={[
+                        { title: "No referral", value: "No referral" },
+                        {
+                          title: "Recurring Return (0 to 6 levels)",
+                          value: "Recurring Return (0 to 6 levels)",
+                        },
+                        {
+                          title: "Fix Commission (0 to 6 levels)",
+                          value: "Fix Commission (0 to 6 levels)",
+                        },
+                      ]}
+                      selectedValue={stakingForm.watch("multilevel_rewards")}
+                      onSelect={(value) => {
+                        stakingForm.setValue("multilevel_rewards", value);
+                        handleMultilevelChange(value);
+                      }}
+                      error={
+                        stakingForm.formState.errors.multilevel_rewards?.message
+                      }
+                    />
+                  </div>
                   {selectedValue === "Recurring Return (0 to 6 levels)" && (
                     <p
                       className={`text-12px text-gradient pb-2 pt-1 font-medium`}
@@ -1308,30 +1324,26 @@ const CreateStaking: NextPageWithLayout = () => {
                     Staking Period
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <select
-                    {...stakingForm.register("staking_period")}
-                    id="staking_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
-                  >
-                    <option className="bg-black text-gray-shade-17" value="">
-                      Select Any
-                    </option>
-                    {stakingPeriodOptions.map((e, i) => (
-                      <option
-                        className="bg-black text-white"
-                        value={e.value}
-                        key={i}
-                      >
-                        {e.title}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                    <DropdownStakingForm
+                      placeholder="Select Any"
+                      options={stakingPeriodOptions}
+                      selectedValue={+stakingForm.watch("staking_period")}
+                      onSelect={(value) =>
+                        stakingForm.setValue("staking_period", value.toString())
+                      }
+                      error={
+                        stakingForm.formState.errors.staking_period?.message
+                      }
+                    />
+                  </div>
                   {stakingForm.formState.errors.staking_period && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
                       {stakingForm.formState.errors.staking_period.message}
                     </p>
                   )}
                 </div>
+
                 {/*  Is Cancelable */}
                 <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
                   <label
@@ -1473,24 +1485,25 @@ const CreateStaking: NextPageWithLayout = () => {
                     Rewards Release Start
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <select
-                    {...stakingForm.register("rewards_release_start")}
-                    id="rewards_release_start"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
-                  >
-                    <option className="bg-black text-gray-shade-17" value="">
-                      Select Any
-                    </option>
-                    {firstReward.map((e, i) => (
-                      <option
-                        className="bg-black text-white"
-                        value={e.value}
-                        key={i}
-                      >
-                        {e.title}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                    <DropdownStakingForm
+                      placeholder="Select Any"
+                      options={firstReward}
+                      selectedValue={
+                        +stakingForm.watch("rewards_release_start")
+                      }
+                      onSelect={(value) =>
+                        stakingForm.setValue(
+                          "rewards_release_start",
+                          value.toString()
+                        )
+                      }
+                      error={
+                        stakingForm.formState.errors.rewards_release_start
+                          ?.message
+                      }
+                    />
+                  </div>
                   {stakingForm.formState.errors.rewards_release_start && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
                       {
@@ -1509,24 +1522,17 @@ const CreateStaking: NextPageWithLayout = () => {
                     Claim Period
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <select
-                    {...stakingForm.register("claim_period")}
-                    id="claim_period"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 focus:outline-none focus:ring-brand-primary"
-                  >
-                    <option className="bg-black text-gray-shade-17" value="">
-                      Select Any
-                    </option>
-                    {claimPeriodOptions.map((e, i) => (
-                      <option
-                        className="bg-black text-white"
-                        value={e.value}
-                        key={i}
-                      >
-                        {e.title}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                    <DropdownStakingForm
+                      placeholder="Select Any"
+                      options={claimPeriodOptions}
+                      selectedValue={+stakingForm.watch("claim_period")}
+                      onSelect={(value) =>
+                        stakingForm.setValue("claim_period", value.toString())
+                      }
+                      error={stakingForm.formState.errors.claim_period?.message}
+                    />
+                  </div>
                   {stakingForm.formState.errors.claim_period && (
                     <p className={`text-12px pb-2 font-medium text-red-500`}>
                       {stakingForm.formState.errors.claim_period.message}

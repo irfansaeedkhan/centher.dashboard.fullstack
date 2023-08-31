@@ -1,7 +1,14 @@
 import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
-import { BigNumber, ethers } from "ethers";
+import { ethers } from "ethers";
+import { parseEther } from "ethers/lib/utils";
 import { Web3Provider } from "@ethersproject/providers";
+import { CitizenShipType } from "@/store/citizen.store";
+import { InsufficientFundError } from "@/staking/errors/params.error";
+import {
+  AddAffiliateSettingsInput,
+  MappedCreatePoolInput,
+} from "@/staking/types";
 import { ClaimCentherFrom, TokenName, UserReferrer } from "./types";
 import { SmartContractProvider } from "./providers/smart.contract.provider";
 import { SmartContractName } from "./enum/smart.contract.name.enum";
@@ -10,14 +17,6 @@ import { getSigner, simpleRpcProvider } from "./helpers/provider.helper";
 import { normalizeValue } from "./helpers/math.helper";
 import { AddressFactory } from "./providers/address.provider";
 import { BlockchainConfig } from "./config";
-import { ZeroAddress } from "../constants/common";
-import { CitizenShipType } from "@/store/citizen.store";
-import { InsufficientFundError } from "@/staking/errors/params.error";
-import {
-  AddAffiliateSettingsInput,
-  MappedCreatePoolInput,
-} from "@/staking/types";
-import { parseEther } from "ethers/lib/utils";
 
 export class BlockchainRead {
   static async isContractAddress(

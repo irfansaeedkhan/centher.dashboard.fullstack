@@ -1,8 +1,7 @@
-import { CentherStaking } from "@/staking";
-import { OptionalType } from "@/staking/types";
-import { StakingProject } from "@/staking/types/get.projects.interface";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
+import { CentherStaking } from "@/staking";
+import { OptionalType } from "@/staking/types";
 
 export interface CentherStakingStore {
   sdk: OptionalType<CentherStaking>;

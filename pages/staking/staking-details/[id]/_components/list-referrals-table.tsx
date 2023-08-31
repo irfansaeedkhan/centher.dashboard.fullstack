@@ -1,11 +1,14 @@
 import React from "react";
-import FinalButton from "@/components/button/final.button";
-import { TableCell, TableRow } from "./table-types";
-import { Referral } from "@/staking/types/referrals.interface";
 import { formatUnits } from "ethers/lib/utils";
+import FinalButton from "@/components/button/final.button";
+import { Referral } from "@/staking/types/referrals.interface";
 import { OptionalType } from "@/staking/types";
+import { eqAddress } from "@/live/utils/address.utils";
+import { CgSpinner } from "react-icons/cg";
+import { TableCell, TableRow } from "./table-types";
 
 const ListReferralsTable: React.FC<{
+  isClaiming: string;
   data: OptionalType<Referral[]>;
   token: string;
   rewardToken: string;
@@ -14,6 +17,7 @@ const ListReferralsTable: React.FC<{
   decimals: string;
   claimable: boolean;
 }> = ({
+  isClaiming,
   data,
   token,
   claimRefReward,
@@ -74,9 +78,14 @@ const ListReferralsTable: React.FC<{
                 <TableCell element={"td"}>
                   {e.claimableReward && e.claimableReward != "0" ? (
                     <FinalButton
-                      title="Claim Rewards"
+                      title="Claim"
                       variant="primary"
                       onClick={() => claimRefReward(e.id.split("-")[0])}
+                      loaderIcon={
+                        eqAddress(isClaiming, e.id.split("-")[0]) ? (
+                          <CgSpinner className="h-5 animate-spin text-white" />
+                        ) : undefined
+                      }
                     />
                   ) : (
                     "Not available to claim"

@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { BiLockAlt } from "react-icons/bi";
 import { IoWalletOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
-
+import { formatUnits } from "ethers/lib/utils";
+import { useWeb3React } from "@web3-react/core";
+import { FiArrowRight } from "react-icons/fi";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import useUser from "@/hooks/use.user";
-import { useRouter } from "next/router";
 import { useStaking } from "@/hooks/staking";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { formatUnits } from "ethers/lib/utils";
 import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
-import { ListCardDataOBj } from "../../_components/list-card-data";
-import { useWeb3React } from "@web3-react/core";
 import { RewardsStat } from "@/staking/types/rewards.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { PreLoader } from "@/components/pre.loader";
 import { MetamaskIcon2 } from "@/assets/svgs";
-import { FiArrowRight } from "react-icons/fi";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import StakingDetailsWrapper from "./_components/staking-details-wrapper";
+import { ListCardDataOBj } from "../../_components/list-card-data";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();

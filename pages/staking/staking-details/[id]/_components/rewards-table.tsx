@@ -1,10 +1,10 @@
 import React from "react";
-import PaginationDropdown from "./pagination-dropdown";
-import { TableCell, TableRow } from "./table-types";
+import { formatUnits } from "ethers/lib/utils";
 import { ClaimedRewards } from "@/staking/types/rewards.interface";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { formatUnits } from "ethers/lib/utils";
+import PaginationDropdown from "./pagination-dropdown";
+import { TableCell, TableRow } from "./table-types";
 
 const RewardsTable: React.FC<{
   data: ClaimedRewards[];

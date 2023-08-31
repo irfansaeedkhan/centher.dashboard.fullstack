@@ -1,6 +1,6 @@
+import React, { FC } from "react";
 import { WarningGradient } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
-import React, { FC } from "react";
 
 interface IProps {
   onClose: () => void;

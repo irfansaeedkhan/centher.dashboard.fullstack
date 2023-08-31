@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import clsx from "clsx";
-import PaginationDropdown from "./pagination-dropdown";
-import ListClaimedRewardsTable from "./list-claimed-rewards-table";
-import ListReferralsTable from "./list-referrals-table";
 import { RefReward } from "@/staking/types/ref.rewards.interface";
 import { Referral } from "@/staking/types/referrals.interface";
 import { OptionalType } from "@/staking/types";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
+import PaginationDropdown from "./pagination-dropdown";
+import ListClaimedRewardsTable from "./list-claimed-rewards-table";
+import ListReferralsTable from "./list-referrals-table";
 
 const ReferralsTable: React.FC<{
+  isClaiming: string;
   rewards: RefReward[];
   pageSize: string;
   setPageSize: (val: string) => void;
@@ -22,6 +23,7 @@ const ReferralsTable: React.FC<{
   pool: ListCardDataOBj | null;
   claimable: boolean;
 }> = ({
+  isClaiming,
   rewards,
   pageSize,
   setPageSize,
@@ -74,6 +76,7 @@ const ReferralsTable: React.FC<{
           ) : (
             currentTab === "referrals" && (
               <ListReferralsTable
+                isClaiming={isClaiming}
                 claimable={claimable}
                 data={referrals}
                 token={

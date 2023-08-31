@@ -1,31 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CgSpinner } from "react-icons/cg";
+import { ethers } from "ethers";
 import { AiOutlineInfoCircle } from "react-icons/ai";
-
+import axios from "axios";
+import { formatUnits, parseEther } from "ethers/lib/utils";
+import { useWeb3React } from "@web3-react/core";
 import FinalButton from "@/components/button/final.button";
-import useUser from "@/hooks/use.user";
-import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
-import { AppRoutes } from "@/constants/app.routes";
-import StakeNow, { StakingStat } from "./stake-now";
-import Details from "./details";
-import PageButtonsWrapper from "./page-buttons";
 import { useStaking } from "@/hooks/staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { ZeroAddress } from "@/web3/constants/common";
 import { formatIPFSUrl } from "@/utils/format.address";
-import axios from "axios";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
-import { formatUnits, parseEther } from "ethers/lib/utils";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { useWeb3React } from "@web3-react/core";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import StakeNow, { StakingStat } from "./stake-now";
+import Details from "./details";
+import PageButtonsWrapper from "./page-buttons";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
 
@@ -208,16 +204,22 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           return;
         }
 
-        if (+minAmount > 0 && +amount % +minAmount != 0) {
-          modal.createModal(ModalType.failedFuncModal, {
-            message: `Amount must be a coefficient of ${formatUnits(
-              minAmount
-            ).toString()}, eg. ${formatUnits(minAmount).toString()}, ${
-              +formatUnits(minAmount).toString() * 2
-            }, ${+formatUnits(minAmount).toString() * 3}, ...`,
-            title: "Invalid Amount",
-          });
-          return;
+        if (+minAmount > 0) {
+          const div = ethers.FixedNumber.from(amount)
+            .divUnsafe(ethers.FixedNumber.from(minAmount))
+            .toString()
+            .split(".")[1];
+          if (div && +div > 0) {
+            modal.createModal(ModalType.failedFuncModal, {
+              message: `Amount must be a coefficient of ${formatUnits(
+                minAmount
+              ).toString()}, eg. ${formatUnits(minAmount).toString()}, ${
+                +formatUnits(minAmount).toString() * 2
+              }, ${+formatUnits(minAmount).toString() * 3}, ...`,
+              title: "Invalid Amount",
+            });
+            return;
+          }
         }
 
         setStakeLoader(true);
@@ -417,13 +419,15 @@ const StakingDetailsWrapper = ({ children }: Props) => {
             className="rounded-[10px]"
           />
         </Link>
-        <Link href={`/staking/staking-details/${poolId}/referrals`}>
-          <FinalButton
-            title="Referrals"
-            variant={activeTab == "referrals" ? "primary" : "secondary"}
-            className="rounded-[10px]"
-          />
-        </Link>
+        {stakingPool?.multilevel_rewards != "No referral" && (
+          <Link href={`/staking/staking-details/${poolId}/referrals`}>
+            <FinalButton
+              title="Referrals"
+              variant={activeTab == "referrals" ? "primary" : "secondary"}
+              className="rounded-[10px]"
+            />
+          </Link>
+        )}
       </div>
       {children}
       {isLoading && <PreLoader />}

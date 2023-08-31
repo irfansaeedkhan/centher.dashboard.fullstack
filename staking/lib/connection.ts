@@ -1,7 +1,4 @@
-import ws from "ws";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
-import { createClient } from "graphql-ws";
 import { customLog } from "@/utils/custom.log";
 import { IApolloProvider } from "@/live/types/apollo.provider";
 

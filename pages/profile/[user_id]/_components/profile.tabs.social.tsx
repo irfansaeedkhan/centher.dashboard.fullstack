@@ -62,24 +62,26 @@ export const ProfileTabsSocial: React.FC<ProfileProps> = ({ user_id }) => {
       >
         NFTs
       </Link>
-      {loggedInUser && loggedInUser._id === router.query.user_id && (
-        <Link
-          href={{
-            pathname: AppRoutes.profile.followers,
-            query: { user_id },
-          }}
-          className={clsx(
-            router.pathname === AppRoutes.profile.followers ||
-              router.pathname === AppRoutes.profile.following ||
-              router.pathname === AppRoutes.profile.referrals
-              ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
-              : "text-gray-shade-7",
-            "min-w-max cursor-pointer px-4 py-2"
-          )}
-        >
-          Community
-        </Link>
-      )}
+      <Link
+        href={{
+          pathname:
+            loggedInUser && loggedInUser._id === router.query.user_id
+              ? AppRoutes.profile.followers
+              : AppRoutes.profile.team_members,
+          query: { user_id },
+        }}
+        className={clsx(
+          router.pathname === AppRoutes.profile.followers ||
+            router.pathname === AppRoutes.profile.following ||
+            router.pathname === AppRoutes.profile.referrals ||
+            router.pathname === AppRoutes.profile.team_members
+            ? "bg-gradient bg-[length:100%_3px] bg-bottom bg-no-repeat pb-4 font-medium text-white"
+            : "text-gray-shade-7",
+          "min-w-max cursor-pointer px-4 py-2"
+        )}
+      >
+        Community
+      </Link>
     </div>
   );
 };

@@ -2,24 +2,25 @@ import React, { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import clsx from "clsx";
+import { MultiLevelRewards } from "./staking-types";
 
 interface DropdownOption {
-  label: string;
-  value: string;
+  title: string;
+  value: MultiLevelRewards;
 }
 
 interface DropdownProps {
   placeholder?: string;
   options: DropdownOption[];
-  selectedValue?: string;
-  onSelect: (label: string) => void;
+  selectedValue: MultiLevelRewards;
+  onSelect: (value: MultiLevelRewards) => void;
   error?: string;
 }
 
-const StakingDropdown: React.FC<DropdownProps> = ({
+const DropdownStakingForm: React.FC<DropdownProps> = ({
   placeholder,
   options,
-  selectedValue = "",
+  selectedValue,
   onSelect,
   error,
 }) => {
@@ -35,7 +36,7 @@ const StakingDropdown: React.FC<DropdownProps> = ({
     (option) => option.value === selectedValue
   );
 
-  const selectedLabel = selectedOption ? selectedOption.label : "";
+  const selectedLabel = selectedOption ? selectedOption.title : "";
 
   useOnClickOutside(ref, () => {
     setIsOpen(false);
@@ -45,19 +46,20 @@ const StakingDropdown: React.FC<DropdownProps> = ({
     <div
       ref={ref}
       className={clsx(
-        "relative h-9 w-full rounded-lg p-[1px]",
-        isOpen ? "gradient-border-4" : "border border-gray-shade-3"
+        "relative h-11 w-full rounded-lg bg-black-shade-3 p-[1px]",
+        isOpen ? "gradient-border-4" : "border border-black-shade-3"
       )}
     >
       <div
         className={clsx(
-          `text-14px flex h-9 w-full cursor-pointer items-center justify-between rounded-lg px-4 font-semibold text-white`,
+          `text-14px flex h-11 w-full cursor-pointer items-center justify-between rounded-lg px-4 font-semibold text-white`,
           error && "border-red-500"
         )}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex w-full items-center justify-between">
-          {placeholder && <span>{placeholder}</span>}
+          {selectedLabel || placeholder}{" "}
+          {/* Show selected label or placeholder */}
           {isOpen ? (
             <SlArrowUp className="h-2 w-2 fill-gray-400  fsm:h-3 fsm:w-3" />
           ) : (
@@ -78,7 +80,7 @@ const StakingDropdown: React.FC<DropdownProps> = ({
               }`}
               onClick={() => handleOptionClick(option)}
             >
-              {option.label}
+              {option.title}
             </div>
           ))}
         </div>
@@ -87,4 +89,4 @@ const StakingDropdown: React.FC<DropdownProps> = ({
   );
 };
 
-export default StakingDropdown;
+export default DropdownStakingForm;

@@ -1,4 +1,12 @@
+import { BigNumber } from "ethers";
 import { Web3Provider } from "@ethersproject/providers";
+import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
+import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { ZeroAddress } from "@/web3/constants/common";
+import { eqAddress } from "@/live/utils/address.utils";
+import { IApolloProvider } from "@/live/types/apollo.provider";
 import { ICentherStakingConfig } from "./types/config.interface";
 import {
   AddAffiliateSettingsInput,
@@ -9,9 +17,6 @@ import {
   MappedCreatePoolInput,
   OptionalType,
 } from "./types";
-
-import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
-import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { setupCreatePoolData } from "./helpers/mappers.helper";
 import { CreatePoolStepsEnum } from "./enum/create-pool-steps.enum";
 import { CatchError } from "./decorators/catch-error.decorator";
@@ -22,17 +27,12 @@ import {
   InvalidAffiliateSystemSettings,
   WalletApprovalError,
 } from "./errors/params.error";
-import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
-import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
-import { eqAddress } from "@/live/utils/address.utils";
-import { ZeroAddress } from "@/web3/constants/common";
 import {
   GetStakingProjectInput,
   StakingProject,
 } from "./types/get.projects.interface";
 import { QueryFactory } from "./lib/query.factory";
 import { QueryNames } from "./enum/query.name.enum";
-import { IApolloProvider } from "@/live/types/apollo.provider";
 import { getConnection } from "./lib/connection";
 import {
   ClaimedRewards,
@@ -41,7 +41,6 @@ import {
 } from "./types/rewards.interface";
 import { GetRefRewardInput, RefReward } from "./types/ref.rewards.interface";
 import { GetReferralsInput, Referral } from "./types/referrals.interface";
-import { BigNumber } from "ethers";
 
 export class CentherStaking {
   private _connection: IApolloProvider = null;
@@ -227,29 +226,6 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async getTotalClaimedRefReward(
-    poolId: string,
-    user: string
-  ): Promise<string> {
-    const query = QueryFactory.getQuery(
-      QueryNames.GET_USER_TOTAL_CLAIMED_REF_REWARDS
-    );
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        projectId: poolId,
-        referral: user,
-      },
-      fetchPolicy: "no-cache",
-    });
-
-    return result?.data.rewards.reduce(
-      (a: number, b: { amount: string }) => a + +b.amount,
-      0
-    );
-  }
-
-  @CatchError()
   async getClaimedRefRewards(input: GetRefRewardInput): Promise<RefReward[]> {
     try {
       const query = QueryFactory.getQuery(
@@ -260,7 +236,7 @@ export class CentherStaking {
         query,
         variables: {
           projectId: input.poolId,
-          referral: input.user,
+          user: input.user,
           first1: input.getPageSize(),
           skip1: input.getPage(),
         },
@@ -504,6 +480,7 @@ export class CentherStaking {
         input.id.split("-")[0],
         +poolId
       );
+
       input.claimableReward = result;
       return input;
     } catch (error) {

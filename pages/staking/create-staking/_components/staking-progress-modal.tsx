@@ -1,15 +1,9 @@
 import React, { useRef } from "react";
-import { useRouter } from "next/router";
-
-import { AppRoutes } from "@/constants/app.routes";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import FinalButton from "@/components/button/final.button";
-import { MultiColorLoader, SuccessIcon } from "@/assets/svgs";
-import { BiCheckCircle } from "react-icons/bi";
-import { clsx } from "clsx";
+import { MultiColorLoader } from "@/assets/svgs";
 import { ProgressModal } from "../dto/progress-modal.dto";
-import { ProgressStatus } from "@/staking/enum/create-pool-steps.enum";
 
 interface CustomModalProps {
   onClickClose: () => void;
