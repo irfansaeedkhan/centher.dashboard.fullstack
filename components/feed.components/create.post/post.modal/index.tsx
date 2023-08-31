@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import useUser from "@/hooks/use.user";
@@ -14,6 +14,7 @@ interface Props {
 
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
+  const scrollRef = useRef<HTMLTextAreaElement>(null);
   const {
     closeModal,
     isModalOpen,
@@ -35,6 +36,19 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           .length)
     );
   }, [lastPost]);
+
+  useEffect(() => {
+    if (hasMedia) {
+      setTimeout(() => {
+        if (!scrollRef.current) return;
+        scrollRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        });
+      }, 500);
+    }
+  }, [hasMedia]);
 
   if (!user) {
     return null;
@@ -67,7 +81,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
               className={clsx(
                 `text-14px font-semibold text-white`,
                 user.display_name.includes(" ")
-                  ? "text-ellipsis line-clamp-1"
+                  ? "line-clamp-1 text-ellipsis"
                   : "block w-full max-w-full overflow-hidden truncate"
               )}
               title={user.display_name}
@@ -86,12 +100,14 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             ))}
 
             {lastPost && (
-              <div className="">
+              <div>
                 <FilesPreview media={lastPost.media} />
 
                 <div className={clsx(`w-full`, hasMedia && "mt-4")}>
                   <textarea
-                    className={`scrollSet fsm:text-14px block w-full resize-none break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
+                    ref={scrollRef}
+                    autoFocus
+                    className={`scrollSet fsm:text-14px block w-full resize-none overflow-y-auto break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
                     cols={12}
                     rows={3}
                     maxLength={postTextMaxLength}

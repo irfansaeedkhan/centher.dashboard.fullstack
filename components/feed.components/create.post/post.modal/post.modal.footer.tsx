@@ -8,7 +8,11 @@ import { PostTextCounter } from "./post.text.counter";
 import FinalButton from "@/components/button/final.button";
 import { LoaderSpinner } from "@/assets/svgs";
 
-const PostModalFooter: React.FC = () => {
+interface Props {
+  handleScroll: () => void;
+}
+
+const PostModalFooter: React.FC<Props> = ({ handleScroll }) => {
   const {
     isPostModalLoading,
     postTextMaxLength,
@@ -57,7 +61,10 @@ const PostModalFooter: React.FC = () => {
 
         {modalType === "new-post" && (
           <button
-            onClick={() => addNewPost()}
+            onClick={() => {
+              addNewPost();
+              handleScroll();
+            }}
             className="flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg text-brand-primary fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
           >
             +
