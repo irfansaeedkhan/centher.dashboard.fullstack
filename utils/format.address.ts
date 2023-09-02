@@ -39,7 +39,15 @@ export const formatIPFSUrl = (hash: string | undefined) => {
       );
     else return hash;
   } else if (hash.substring(0, 5) === "ipfs:") {
-    return BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(5, hash.length);
+    if (hash.substring(0, 6) === "ipfs:/") {
+      return (
+        BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(6, hash.length)
+      );
+    } else {
+      return (
+        BlockchainConfig.ipfsUrl + "/ipfs/" + hash.substring(5, hash.length)
+      );
+    }
   } else {
     const splitHash = hash.split("/Qm");
     if (splitHash.length >= 2) {
