@@ -45,7 +45,7 @@ import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
-import FollowedComponent from "./followed.component";
+import FollowedComponent from "../community/_components/followed.component";
 import { ChatProfile } from "@/assets/svgs";
 import { useCentherLive } from "@/hooks/chat";
 
