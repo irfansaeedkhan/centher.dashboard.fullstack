@@ -399,7 +399,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
         </div>
       </div>
 
-      <div className={`relative px-2 fsm:px-4`}>
+      <div className={`relative object-contain px-2 fsm:px-4`}>
         {!!loggedInUser &&
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
             <div className="absolute -top-[45px] right-4 hidden w-full max-w-[182px] gap-2 fmd:flex">
