@@ -13,7 +13,7 @@ export const AboutMember: React.FC<AboutMemberProps> = (props) => {
       className={`mb-8 flex items-center justify-end gap-1 text-sm font-medium`}
     >
       <span className={`text-white`}>{props.asked}</span>
-      <span className={`cursor-pointer text-brand-primary`}>
+      <span className={`textGradient cursor-pointer`}>
         <Link href={props.link}>{props.title}</Link>
       </span>
     </div>
