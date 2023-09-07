@@ -77,55 +77,58 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// only public pages - logged in user can not access these pages
+// Only Public Pages - logged in user can not access these pages
 const _onlyPublicPages: string[] = [
   AppRoutes.auth.login,
   AppRoutes.auth.register,
 ];
 const onlyPublicPages = changePaths(_onlyPublicPages);
 
-// public or authenticated pages
+// Public or Authenticated Pages
 const _publicOrAuthenticatedPages: string[] = [AppRoutes.terms];
 const publicOrAuthenticatedPages = changePaths(_publicOrAuthenticatedPages);
 
-// admin specific pages
+// Admin Only Pages
 const _adminPages: string[] = [
   AppRoutes.admin.registration,
   AppRoutes.admin.registration_setting,
 ];
 const adminPages = changePaths(_adminPages);
 
-// only authenticated pages
+// Authenticated pages
 const _authenticatedUserPages: string[] = [
   AppRoutes.home,
   AppRoutes.search,
+  AppRoutes.notifications,
+  AppRoutes.recommended,
+  AppRoutes.citizenship,
 
   AppRoutes.profile.user_id,
   AppRoutes.profile.replies,
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
   AppRoutes.profile.archived_posts,
+  AppRoutes.profile.referrals,
+  AppRoutes.profile.nfts,
+  AppRoutes.profile.owned,
+  AppRoutes.profile.listed,
+  AppRoutes.profile.created,
+  AppRoutes.profile.collection,
+
   AppRoutes.settings.index,
   AppRoutes.settings.about,
   AppRoutes.settings.profile,
   AppRoutes.settings.citizenship,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
-  AppRoutes.settings.citizenship,
-  AppRoutes.profile.nfts,
-  AppRoutes.profile.owned,
-  AppRoutes.profile.listed,
-  AppRoutes.profile.created,
-  AppRoutes.profile.collection,
+
   AppRoutes.chat.index,
   AppRoutes.chat.single_chat,
+
   AppRoutes.feed.index,
   AppRoutes.feed.single_post,
 
-  AppRoutes.notifications,
-
   AppRoutes.marketplace.nft,
-
   AppRoutes.marketplace.explore,
   AppRoutes.marketplace.nfts,
   AppRoutes.marketplace.collections,
@@ -134,8 +137,6 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.launchpad,
   AppRoutes.launchpad_pre_booking.index,
   AppRoutes.launchpad_pre_booking.booking,
-
-  AppRoutes.recommended,
 
   AppRoutes.staking.index,
   AppRoutes.staking.staking_details.index,
@@ -148,8 +149,11 @@ const authenticatedUserPages = changePaths(_authenticatedUserPages);
 const _citizenOnlyPages: string[] = [
   AppRoutes.marketplace.create_nft,
   AppRoutes.marketplace.create_collection,
+
   AppRoutes.settings.citizenship,
+
   AppRoutes.staking.create_staking,
+  AppRoutes.staking.faqs,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
@@ -175,5 +179,6 @@ const _notReadyPages: string[] = [
   AppRoutes.admin.users,
   AppRoutes.admin.network_rewards,
   AppRoutes.admin.network_rewards_marketplace,
+  AppRoutes.admin.network_rewards_UpdateContract,
 ];
 const notReadyPages = changePaths(_notReadyPages);
