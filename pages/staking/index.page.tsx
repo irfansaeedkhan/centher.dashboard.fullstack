@@ -70,7 +70,8 @@ const Staking: NextPageWithLayout = () => {
         } catch (error) {}
       }
 
-      setStakingList(fetchedItems);
+      // FIXME: This is quick fix to hide pool id 1
+      setStakingList(fetchedItems.filter((e) => e.id !== "1"));
     };
 
     if (sdk) {
