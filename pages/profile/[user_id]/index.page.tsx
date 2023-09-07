@@ -196,7 +196,7 @@ const Profile: NextPageWithLayout = () => {
               </div>
             )}
 
-            {(index + 1) % 10 === 0 && (
+            {(index + 1) % 10 === 0 && loggedInUser && (
               <SuggestedCardMobile className={`block f2xl:hidden`} />
             )}
           </>
@@ -227,7 +227,9 @@ const Profile: NextPageWithLayout = () => {
             </p>
           </div>
           <div className="mt-4">
-            <SuggestedCardMobile className={`block f2xl:hidden`} />
+            {loggedInUser && (
+              <SuggestedCardMobile className={`block f2xl:hidden`} />
+            )}
           </div>
           <div className={`mt-4 flex flg:hidden`}>
             <AdsWrapper>
