@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import clsx from "clsx";
@@ -57,22 +58,32 @@ const StakingListContainer: FC<ComponentProp> = ({
   return (
     <div className="mx-auto w-full max-w-[1128px]">
       <div className="flex items-center justify-between gap-10">
-        <div className="flex w-full items-center justify-between gap-5 fsm:w-fit fsm:justify-start flg:gap-6">
+        <div className="flex w-full flex-col gap-5 fsm:w-fit fsm:flex-row fsm:items-center fsm:justify-start flg:gap-6">
           <h5 className="textGradient text-2xl font-semibold">Staking</h5>
-          <FinalButton
-            className="text-14px h-8 flg:h-9"
-            title="Create New Project"
-            variant="primary"
-            borderRounded="10px"
-            onClick={
-              loggedInUser?.membership.status === "citizen"
-                ? () =>
-                    router.push({
-                      pathname: AppRoutes.staking.create_staking,
-                    })
-                : () => setShowBuyCitizenshipModal(true)
-            }
-          />
+          <div className="flex w-full items-center gap-5 flg:gap-6">
+            <FinalButton
+              className="text-14px h-9 w-full fsm:min-w-max"
+              title="Create New Project"
+              variant="primary"
+              borderRounded="10px"
+              onClick={
+                loggedInUser?.membership.status === "citizen"
+                  ? () =>
+                      router.push({
+                        pathname: AppRoutes.staking.create_staking,
+                      })
+                  : () => setShowBuyCitizenshipModal(true)
+              }
+            />
+            <Link href={AppRoutes.staking.faqs} className="w-full">
+              <FinalButton
+                title="FAQs"
+                variant={"secondary"}
+                className="h-9 w-full text-xs fsm:max-w-[68px]"
+                borderRounded="10px"
+              />
+            </Link>
+          </div>
         </div>
         <div className="hidden items-center gap-2 fsm:flex">
           <div className="hidden items-center gap-3 flg:flex">
