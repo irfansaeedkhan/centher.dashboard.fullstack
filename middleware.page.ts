@@ -142,6 +142,8 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.staking.staking_details.index,
   AppRoutes.staking.staking_details.rewards,
   AppRoutes.staking.staking_details.referrals,
+
+  AppRoutes.staking.faqs,
 ];
 const authenticatedUserPages = changePaths(_authenticatedUserPages);
 
@@ -153,7 +155,6 @@ const _citizenOnlyPages: string[] = [
   AppRoutes.settings.citizenship,
 
   AppRoutes.staking.create_staking,
-  AppRoutes.staking.faqs,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 

@@ -76,9 +76,9 @@ export const AppRoutes = {
       rewards: "/staking/staking-details/[id]/rewards",
       referrals: "/staking/staking-details/[id]/referrals",
     },
+    faqs: "/staking/faqs",
     // Citizen Only Start
     create_staking: "/staking/create-staking",
-    faqs: "/staking/faqs",
     // Citizen Only End
   },
   // Authenticated Pages End
