@@ -1,15 +1,23 @@
 export const AppRoutes = {
-  // onlyPublicPages
+  // Only Public Pages Start
   auth: {
     login: "/auth/login",
     register: "/auth/register",
   },
+  // Only Public Pages End
 
-  // Public or Authenticated Pages
+  // Public or Authenticated Pages Start
   terms: "/terms",
+  // Public or Authenticated Pages End
+
+  // Authenticated Pages
+  home: "/",
+  search: "/search",
+  notifications: "/notifications",
+  recommended: "/recommended-people",
+  citizenship: "/citizenship",
 
   profile: {
-    // Authenticated Pages
     user_id: "/profile/[user_id]",
     replies: "/profile/[user_id]/replies",
     following: "/profile/[user_id]/community/following",
@@ -17,22 +25,11 @@ export const AppRoutes = {
     team_members: "/profile/[user_id]/community/team-members",
     referrals: "/profile/[user_id]/community/referrals",
     archived_posts: "/profile/[user_id]/archived-posts",
-
     nfts: "/profile/[user_id]/nfts",
     owned: "/profile/[user_id]/nfts/owned",
     listed: "/profile/[user_id]/nfts/listed",
     created: "/profile/[user_id]/nfts/created",
     collection: "/profile/[user_id]/nfts/collection",
-  },
-
-  marketplace: {
-    nft: "/marketplace/[collection]/[tokenId]",
-    create_nft: "/marketplace/create",
-    create_collection: "/marketplace/create-collection",
-    explore: "/marketplace/explore",
-    nfts: "/marketplace/nfts",
-    collections: "/marketplace/collections",
-    collection: "/marketplace/[collection]",
   },
 
   settings: {
@@ -44,49 +41,68 @@ export const AppRoutes = {
     privacy: "/settings/privacy",
   },
 
+  chat: {
+    index: "/chat",
+    single_chat: "/chat/[chat_id]",
+  },
+
   feed: {
-    // Authenticated Pages
     index: "/feed",
     single_post: "/post/[post_id]",
   },
 
-  // Authenticated Pages
-  home: "/",
-  search: "/search",
-  coming_soon: "/coming-soon",
-  coming_soon_v2: "/coming-soon-v2",
-  notifications: "/notifications",
-  recommended: "/recommended-people",
+  marketplace: {
+    nft: "/marketplace/[collection]/[tokenId]",
+    explore: "/marketplace/explore",
+    nfts: "/marketplace/nfts",
+    collections: "/marketplace/collections",
+    collection: "/marketplace/[collection]",
+    // Citizen Only Start
+    create_collection: "/marketplace/create-collection",
+    create_nft: "/marketplace/create",
+    // Citizen Only End
+  },
+
   launchpad: "/launchpad/[token_address]/[round]",
   launchpad_pre_booking: {
     index: "/launchpad/pre-booking",
     booking: "/launchpad/pre-booking/bookings",
   },
+
   staking: {
     index: "/staking",
-    create_staking: "/staking/create-staking",
     staking_details: {
       index: "/staking/staking-details/[id]",
       rewards: "/staking/staking-details/[id]/rewards",
       referrals: "/staking/staking-details/[id]/referrals",
     },
+    // Citizen Only Start
+    create_staking: "/staking/create-staking",
     faqs: "/staking/faqs",
+    // Citizen Only End
   },
+  // Authenticated Pages End
 
-  // Not ready pages
+  // Coming Soon Pages Start
+  coming_soon: "/coming-soon",
+  coming_soon_v2: "/coming-soon-v2",
+  staking_coming_soon: "/staking-coming-soon",
+  // Coming Soon Pages End
+
+  // Not Ready Pages Start
   referral: {
     network_genealogy: "/network-genealogy",
-    network_rewards: "/network-rewards/rewards",
     overview: "/network-rewards/overview",
+    network_rewards: "/network-rewards/rewards",
     liscense: "/network-rewards/liscense",
   },
 
-  chat: { index: "/chat", single_chat: "/chat/[chat_id]" },
   profits_dashboard: "/profits-dashboard",
   voting_chain: "/voting-chain",
   staking_packs: "/staking-packs",
   liquidity_pool: "/liquidity-pool",
 
+  // Admin Only Start
   admin: {
     index: "/admin",
     staking_packs: "/admin/staking-packs",
@@ -97,11 +113,11 @@ export const AppRoutes = {
     transactions: "/admin/transactions",
     users: "/admin/users",
     network_rewards: "/admin/network-rewards/launchpad",
-    registration: "/admin/registration",
-    registration_setting: "/admin/registration/setting",
     network_rewards_marketplace: "/admin/network-rewards/marketplace",
     network_rewards_UpdateContract: "/admin/network-rewards/update-contract",
+    registration: "/admin/registration",
+    registration_setting: "/admin/registration/setting",
   },
-  staking_coming_soon: "/staking-coming-soon",
-  citizenship: "/citizenship",
+  // Admin Only End
+  // Not Ready Pages End
 } as const;

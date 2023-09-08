@@ -20,6 +20,7 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
   onClickClose,
 }) => {
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
+  const scrollref = useRef<HTMLDivElement>(null);
 
   useEventListener(
     "keydown",
@@ -32,6 +33,14 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
   );
 
   if (!isOpen) return null;
+
+  const handleScroll = () => {
+    // scroll the component to the bottom
+    setTimeout(() => {
+      if (!scrollref.current) return;
+      scrollref.current.scrollTop = scrollref.current.scrollHeight;
+    }, 500);
+  };
 
   return (
     <ModalPortal wrapperId="post-modal-portal">
@@ -47,9 +56,11 @@ export const PostModalContainer: React.FC<CustomModalProps> = ({
           <PostModalHeader title={title} onClickClose={onClickClose} />
 
           {/* Children Wrapper */}
-          <div className="scrollSet overflow-auto">{children}</div>
+          <div className="scrollSet overflow-auto" ref={scrollref}>
+            {children}
+          </div>
 
-          <PostModalFooter />
+          <PostModalFooter handleScroll={handleScroll} />
         </div>
       </div>
     </ModalPortal>

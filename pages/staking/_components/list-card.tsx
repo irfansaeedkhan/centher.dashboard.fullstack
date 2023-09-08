@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { formatUnits } from "ethers/lib/utils";
+import { useFloating, useHover, useInteractions } from "@floating-ui/react";
 import clsx from "clsx";
+import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiArrowUpRight, FiCopy } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -25,6 +27,15 @@ export interface ListCardProps {
 
 const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { refs, floatingStyles, context } = useFloating({
+    open: isOpen,
+    onOpenChange: setIsOpen,
+  });
+  const hover = useHover(context);
+
+  const { getReferenceProps, getFloatingProps } = useInteractions([hover]);
 
   return (
     <div className="flex w-full max-w-full flex-col gap-5 rounded-2xl bg-elevation-1 p-5 fsm:p-8">
@@ -345,10 +356,29 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
 
       {card.liquidity_pool_provided == "no" ? (
         <div
-          className="mt-2 flex items-center rounded-xl bg-[#cf121228] p-6  px-4 py-3 text-sm text-[#fd4040]"
+          className="mt-2 flex items-center gap-2 rounded-xl bg-[#F68D29]/[0.3] p-6  px-4 py-3 text-sm text-[#F68D29]"
           role="alert"
         >
           <p>Warning! This staking pool does not provide Liquidity pool.</p>
+          <p
+            ref={refs.setReference}
+            {...getReferenceProps()}
+            className="relative"
+          >
+            <AiOutlineInfoCircle className="h-5 w-5 hover:text-white" />
+            {isOpen && (
+              <div
+                className="absolute bottom-6 right-0 w-[300px] rounded-lg border border-gray-shade-3 bg-elevation-1 p-3 text-xs text-gray-shade-14 shadow-lg"
+                ref={refs.setFloating}
+                {...getFloatingProps()}
+              >
+                Some projects need an open liquidity pool to utilise the funds
+                staked by users and generate profits to be shared. Other times
+                an open liquidity pool indicates a favourable ground for a scam.
+                That is why you ALWAYS Do Your Own Research before investing.
+              </div>
+            )}
+          </p>
         </div>
       ) : null}
     </div>

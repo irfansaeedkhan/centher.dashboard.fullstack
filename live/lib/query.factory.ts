@@ -149,7 +149,7 @@ const queries: Queries = {
         id
         user_address
         is_pinned
-        messages(order_by: {created_at: desc}, limit: 1) {
+        messages(order_by: {created_at: desc}, limit: 1, where: {isRemoved: {_eq: false}}) {
           type
           id
           created_at

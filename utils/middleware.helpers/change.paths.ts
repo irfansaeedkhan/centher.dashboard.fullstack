@@ -10,7 +10,9 @@ export const changePaths = (paths: string[]) => {
       while (changed?.includes("[")) {
         changed = changed?.replace("[", ":");
       }
-      changed?.replace("]", "");
+      while (changed?.includes("]")) {
+        changed = changed?.replace("]", "");
+      }
       return changed;
     });
   } else {

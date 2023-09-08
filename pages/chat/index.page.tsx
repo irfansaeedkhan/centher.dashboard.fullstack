@@ -1,7 +1,7 @@
 import React from "react";
+import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
-import { ChatMainLoader } from "@/components/loading.skeletons/chat.skeletons";
 import { IconMessage } from "@/assets/svgs";
 import ChatSidebar from "./_components/chat.sidebar";
 
@@ -35,7 +35,15 @@ const ChatPage: React.FC<ChatPageProps> = ({ children }) => {
   return (
     <ChatPagesWrapper pageTitle="Chat">
       {loading ? (
-        <ChatMainLoader /> // Render the Loader component when loading is true
+        <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
+          <Image
+            src="/images/preloader.png"
+            alt="Chat Background"
+            width={64}
+            height={64}
+            className="h-16 w-16 flex-shrink-0 object-cover"
+          />
+        </div>
       ) : (
         <div className="flex">
           <ChatSidebar />

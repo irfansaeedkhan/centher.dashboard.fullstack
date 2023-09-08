@@ -2,15 +2,22 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
 import { useSearchStore } from "@/store/search.store";
-import { axiosApiCenther } from "@/utils/axios";
 import { SearchIcon } from "@/assets/svgs";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
+import {
+  SearchPopupData,
+  createRecentSearch,
+  getRecentSearch,
+  search,
+  deleteAllRecentSearch,
+  deleteSingleRecentSearch,
+} from "@/lib/search";
+import { LoadingState } from "@/models/common";
+import { DeleteRecentSearchModal } from "./delete.recent.search.modal";
 import SearchPopupResult from "./search.popup.result";
 
-interface Props {}
-
-const SearchBar: React.FC<Props> = () => {
+const SearchBar: React.FC = () => {
   const router = useRouter();
 
   const { setSearchQuery } = useSearchStore((state) => ({
@@ -19,7 +26,14 @@ const SearchBar: React.FC<Props> = () => {
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState<SearchPopupData>([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [loading, setLoading] = useState<LoadingState>("idle");
+
+  const hasRecentSearches = result.some(
+    (item) => item.type === "recent_search"
+  );
+  const isResultEmpty = result.length === 0;
 
   const searchAbortControllerRef = useRef<AbortController | null>(null);
 
@@ -45,10 +59,25 @@ const SearchBar: React.FC<Props> = () => {
     }
 
     setSearchQuery(searchQueryInput);
+    createRecentSearchHandler(searchQueryInput);
+
     router.push({
       pathname: AppRoutes.search,
       query: { q: searchQueryInput.trim() },
     });
+  };
+
+  const inputFocusHandler = async () => {
+    try {
+      setLoading("loading");
+      setOpenPopup(true);
+      const recentSearchResults = await getRecentSearch();
+      setResult(recentSearchResults);
+      setLoading("loaded");
+    } catch (error) {
+      customLog(["development"], error);
+      setLoading("failed");
+    }
   };
 
   const handleSearchQueryInput: React.ChangeEventHandler<
@@ -56,7 +85,13 @@ const SearchBar: React.FC<Props> = () => {
   > = async (e) => {
     setSearchQueryInput(e.target.value);
     if (e.target.value.trim() === "") {
-      setOpenPopup(false);
+      try {
+        const recentSearchResults = await getRecentSearch();
+        setResult(recentSearchResults);
+        setOpenPopup(true);
+      } catch (error) {
+        customLog(["development"], error);
+      }
     } else {
       if (searchAbortControllerRef.current) {
         searchAbortControllerRef.current.abort();
@@ -64,25 +99,44 @@ const SearchBar: React.FC<Props> = () => {
 
       searchAbortControllerRef.current = new AbortController();
 
-      await axiosApiCenther
-        .get(`/api/search?q=${e.target.value}&limit=5&offset=0`, {
-          signal: searchAbortControllerRef.current.signal,
-        })
-        .then((res) => {
-          setResult(res.data.search_results);
+      try {
+        const searchResults = await search(e.target.value);
+        setResult(searchResults);
 
-          if (
-            res.data.search_results.length > 0 &&
-            e.target.value.trim() !== ""
-          ) {
-            setOpenPopup(true);
-          } else {
-            setOpenPopup(false);
-          }
-        })
-        .catch((e) => {
-          customLog(["development"], e);
-        });
+        if (searchResults.length > 0 && e.target.value.trim() !== "") {
+          setOpenPopup(true);
+        } else {
+          setOpenPopup(false);
+        }
+      } catch (error) {
+        customLog(["development"], error);
+      }
+    }
+  };
+
+  const createRecentSearchHandler = async (query: string) => {
+    try {
+      await createRecentSearch(query);
+    } catch (error) {
+      customLog(["development"], error);
+    }
+  };
+
+  const deleteAllRecentSearchHandler = async () => {
+    try {
+      await deleteAllRecentSearch();
+      setResult([]);
+    } catch (error) {
+      customLog(["development"], error);
+    }
+  };
+
+  const deleteSingleRecentSearchHandler = async (searchId: string) => {
+    try {
+      await deleteSingleRecentSearch(searchId);
+      setResult((prev) => prev.filter((item) => item._id !== searchId));
+    } catch (error) {
+      customLog(["development"], error);
     }
   };
 
@@ -102,6 +156,7 @@ const SearchBar: React.FC<Props> = () => {
             className="w-full border-0 bg-transparent p-0 text-white focus:outline-none focus:ring-0"
             value={searchQueryInput}
             onChange={(e) => handleSearchQueryInput(e)}
+            onFocus={() => inputFocusHandler()}
           />
           <button type="submit">
             <SearchIcon />
@@ -109,19 +164,49 @@ const SearchBar: React.FC<Props> = () => {
         </div>
         {openPopup && (
           <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
-            <div>
-              {result.map((item: any, i) => (
-                <SearchPopupResult
-                  user={item}
-                  key={item._id}
-                  setOpenPopup={setOpenPopup}
-                  setSearchQueryInput={setSearchQueryInput}
-                />
-              ))}
-            </div>
+            {/* only show when we have recent-search */}
+            {loading === "loaded" && hasRecentSearches && (
+              <div className="flex items-center justify-between pl-5 pr-5 pt-2">
+                <div className=" text-lg font-medium text-white">Recent</div>
+                <div
+                  onClick={() => setIsDeleteModalOpen(true)}
+                  className="textGradient cursor-pointer text-xs font-medium"
+                >
+                  Clear All
+                </div>
+              </div>
+            )}
+
+            {loading === "loaded" && isResultEmpty && (
+              <div className="p-6 text-center text-gray-shade-2">
+                Try searching for people
+              </div>
+            )}
+
+            {loading === "loaded" && (
+              <div>
+                {result.map((item) => (
+                  <SearchPopupResult
+                    item={item}
+                    key={item._id}
+                    deleteSingleRecentSearchHandler={
+                      deleteSingleRecentSearchHandler
+                    }
+                    setOpenPopup={setOpenPopup}
+                    setSearchQueryInput={setSearchQueryInput}
+                    createRecentSearchHandler={createRecentSearchHandler}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
+      <DeleteRecentSearchModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={deleteAllRecentSearchHandler}
+      />
     </form>
   );
 };

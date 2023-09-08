@@ -1,73 +1,20 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { useRouter } from "next/router";
-import clsx from "clsx";
-import { Collection } from "@/models/nft";
-import { useProfileNFTStore } from "@/store/profile.nft.store";
+import React from "react";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import { HotNftEmptyIcon } from "@/assets/svgs";
-import ProfileNftsLayout from "@/layouts/profile.nfts.layout";
-import { NFTCollectionImageCard } from "@/components/nft.collection.image.card";
-import { LoadingStatus } from "@/utils/enums/loading.status.enum";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { ProfilePageWrapper } from "../_components";
+import ProfileNftsLayout from "./_components/profile.nfts.layout";
+import CollectionPage from "./_components/collection-page";
 
 const CollectionNFTS: NextPageWithLayout = () => {
-  const router = useRouter();
-  const account = useMemo(() => {
-    return router.query.user_id as string;
-  }, [router.query.user_id]);
-  const { collections, fetchCollections, loadingCollections } =
-    useProfileNFTStore((state) => ({
-      collections: state.collections,
-      fetchCollections: state.fetchCollections,
-      loadingCollections: state.loadingCollections,
-    }));
-
-  useEffect(() => {
-    if (account) {
-      fetchCollections(account);
-    }
-  }, [account, fetchCollections]);
-
-  const [displayNFTs, setDisplayNFTs] = useState<Collection[]>([]);
-
-  useEffect(() => {
-    if (loadingCollections == LoadingStatus.loaded && collections?.length) {
-      setDisplayNFTs([...collections]);
-    }
-  }, [loadingCollections, collections]);
-
-  return (
-    <>
-      {loadingCollections == LoadingStatus.loaded && displayNFTs?.length ? (
-        <div className={clsx(`grid grid-cols-[1fr,1fr,1fr] gap-2`)}>
-          {displayNFTs.map((collection) => (
-            <NFTCollectionImageCard data={collection} key={collection.id} />
-          ))}
-        </div>
-      ) : (
-        loadingCollections == LoadingStatus.loading && (
-          <div className="!h-[104px] !w-full animate-pulse rounded-xl bg-[#3C3F4A] [@media(min-width:768px)]:!h-[275px] [@media(min-width:768px)]:!w-[275px]"></div>
-        )
-      )}
-      {loadingCollections == LoadingStatus.loaded &&
-        collections &&
-        !collections?.length && (
-          <>
-            <div className="flex items-center justify-center text-white">
-              <HotNftEmptyIcon />
-            </div>
-            <div className="flex items-center justify-center text-[16px] font-semibold text-white">
-              No Collections found yet
-            </div>
-          </>
-        )}
-    </>
-  );
+  return <CollectionPage />;
 };
 
 CollectionNFTS.getLayout = (page) => (
-  <ProfileNftsLayout>
-    <div>{page}</div>
-  </ProfileNftsLayout>
+  <AllPagesWrapper pageTitle="Profile">
+    <ProfilePageWrapper currentTab="nft-profile" messageBox={false}>
+      <ProfileNftsLayout>{page}</ProfileNftsLayout>
+    </ProfilePageWrapper>
+  </AllPagesWrapper>
 );
 
 export default CollectionNFTS;

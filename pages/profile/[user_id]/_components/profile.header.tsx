@@ -45,7 +45,7 @@ import { CoverUploadButton } from "./cover.upload.button";
 import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
-import FollowedComponent from "./followed.component";
+import FollowedComponent from "../community/_components/followed.component";
 import { ChatProfile } from "@/assets/svgs";
 import { useCentherLive } from "@/hooks/chat";
 
@@ -399,7 +399,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
         </div>
       </div>
 
-      <div className={`relative px-2 fsm:px-4`}>
+      <div className={`relative object-contain px-2 fsm:px-4`}>
         {!!loggedInUser &&
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
             <div className="absolute -top-[45px] right-4 hidden w-full max-w-[182px] gap-2 fmd:flex">
