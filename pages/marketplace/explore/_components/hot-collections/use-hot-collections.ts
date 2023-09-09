@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { LoadingState } from "@/models/common";
 import { CollectionCardData } from "@/components/collection.card/collection-card-v2";
 import { getCollectionCardData } from "@/lib/get-collection-card-data";
-import { getCollections } from "@/lib/get-collections";
+import { getHotCollections } from "@/lib/get-collections";
 import { blackListedAddresses } from "@/utils/blacklist_addresses/collection_addresses";
 
 export const useHotCollections = () => {
@@ -19,7 +19,7 @@ export const useHotCollections = () => {
   useEffect(() => {
     (async () => {
       try {
-        const hotCollections = await getCollections({
+        const hotCollections = await getHotCollections({
           limit: 15,
           skip: 0,
         });
@@ -40,11 +40,7 @@ export const useHotCollections = () => {
 
         setState((state) => ({
           ...state,
-          hotCollections: hotCollectionsCardData
-            .map((item) => item.value)
-            .filter(
-              (collection) => collection.creator.membership.status === "citizen"
-            ),
+          hotCollections: hotCollectionsCardData.map((item) => item.value),
           loading: "loaded",
         }));
       } catch (error: any) {

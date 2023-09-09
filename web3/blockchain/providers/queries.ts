@@ -29,6 +29,7 @@ import {
   getCollectionMintedNFTs,
   GET_COLLECTION_ADDITIONAL_INFO,
   GET_USER_TOTAL_SOLD_NFTS,
+  hotCollectionsQuery,
 } from "@/subgraph/querys";
 import { QueryNames } from "../enum/query.names.enum";
 import { IQueryStorage } from "../types";
@@ -36,6 +37,7 @@ import { IQueryStorage } from "../types";
 export class QueryFactory {
   private static _queries: IQueryStorage = {
     ALL_COLLECTIONS: collectionsQuery,
+    HOT_COLLECTIONS: hotCollectionsQuery,
     HOT_NFTS: hotNFTsQuery,
     COLLECTIONS_BY_CATEGORIES: collectionsByCategoryQuery,
     ALL_NFTS: allNFTsQuery,

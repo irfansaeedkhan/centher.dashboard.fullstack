@@ -110,6 +110,25 @@ export class BlockchainRead {
     return data.collections;
   }
 
+  static async getHotCollections(first: number, skip: number): Promise<any[]> {
+    const variables = {
+      first,
+      skip,
+      endOfCitizenShip_gt: Math.floor(+new Date() / 1000),
+    };
+    console.log(variables);
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.HOT_COLLECTIONS,
+      variables
+    );
+    console.log(data);
+    if (error) {
+      throw error;
+    }
+
+    return data.collections;
+  }
+
   static async getAccountCreatedNfts(
     account: string,
     first: number,

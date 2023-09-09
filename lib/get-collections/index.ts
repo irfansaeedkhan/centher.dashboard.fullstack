@@ -16,3 +16,18 @@ export const getCollections = async ({
     throw new AppError(error, "Can not load Collections", "getCollections");
   }
 };
+
+export const getHotCollections = async ({
+  limit = 15,
+  skip = 0,
+}: {
+  limit?: number;
+  skip?: number;
+}): Promise<Collection[]> => {
+  try {
+    const result = await BlockchainRead.getHotCollections(limit, skip);
+    return result;
+  } catch (error: any) {
+    throw new AppError(error, "Can not load Collections", "getHotCollections");
+  }
+};
