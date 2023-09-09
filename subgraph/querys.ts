@@ -43,6 +43,28 @@ export const collectionsQuery = `
   }
 `;
 
+export const hotCollectionsQuery = `
+query ($endOfCitizenShip_gt: BigInt, $first: Int!, $skip: Int!) {
+  collections(
+    orderBy: tradingVolumn
+    orderDirection: desc
+    first: $first
+    skip: $skip
+    where: {creatorUser_: {endOfCitizenShip_gte: $endOfCitizenShip_gt}}
+  ) {
+    collection
+    creator
+    id
+    ipfs
+    maxSupply
+    name
+    symbol
+    totalSupply
+    txTime
+  }
+}
+`;
+
 export const collectionsByCategoryQuery = `
   query($first: Int!, $skip: Int!, $category: String!) {
     collections(orderBy: tradingVolumn, orderDirection: desc, first: $first, skip: $skip, 
