@@ -116,12 +116,10 @@ export class BlockchainRead {
       skip,
       endOfCitizenShip_gt: Math.floor(+new Date() / 1000),
     };
-    console.log(variables);
     const { data, error } = await ApolloProvider.query(
       QueryNames.HOT_COLLECTIONS,
       variables
     );
-    console.log(data);
     if (error) {
       throw error;
     }
