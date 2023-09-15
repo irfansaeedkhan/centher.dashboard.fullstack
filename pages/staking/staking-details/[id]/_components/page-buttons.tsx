@@ -25,18 +25,6 @@ const PageButtonsWrapper: FC<Props> = ({ children }) => {
             borderRounded="10px"
           />
         </Link>
-        <Link href={AppRoutes.staking.faqs}>
-          <FinalButton
-            title="FAQs"
-            variant={
-              router.pathname === AppRoutes.staking.faqs
-                ? "primary"
-                : "secondary"
-            }
-            className="h-9 w-full max-w-[68px] text-xs"
-            borderRounded="10px"
-          />
-        </Link>
       </div>
       {children}
     </div>

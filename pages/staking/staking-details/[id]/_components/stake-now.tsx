@@ -50,7 +50,7 @@ const Booking: React.FC<Props> = ({
   }, [totalStakedAmount, totalStakingCap]);
 
   return (
-    <div className="w-full max-w-[512px] flex-shrink-0">
+    <div className="w-full flex-shrink-0 flg:max-w-[512px]">
       <div className="h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
         <div className="flex items-center justify-between gap-10">
           <h6 className="text-xl font-semibold text-white">Staked</h6>

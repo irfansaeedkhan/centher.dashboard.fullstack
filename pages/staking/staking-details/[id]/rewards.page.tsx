@@ -279,7 +279,7 @@ const ClaimRewards: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-3 fmd:flex-row fmd:items-center">
             <FinalButton
               className="h-9"
               title="Claim Rewards"
@@ -296,7 +296,7 @@ const ClaimRewards: NextPageWithLayout = () => {
               stakingPool?.token_address,
               stakingPool?.reward_token_address
             ) ? (
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-3 fmd:flex-row fmd:items-center">
                 <FinalButton
                   variant="primary"
                   className="h-9"

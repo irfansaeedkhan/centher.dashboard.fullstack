@@ -286,7 +286,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   return stakingStat ? (
     <PageButtonsWrapper>
-      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-10 pb-8 pt-10">
+      <div className="mx-auto h-auto w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 px-5 pb-8 pt-10 fmd:px-10">
         <Details data={stakingPool} />
         <div className="flex h-fit flex-col gap-8 py-8 flg:flex-row">
           {stakingStat && (
@@ -299,7 +299,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
               stakingLoader={stakeLoader}
             />
           )}
-          <div className="h-auto w-full max-w-[512px] rounded-2xl border border-gray-shade-3 p-8">
+          <div className="h-auto w-full rounded-2xl border border-gray-shade-3 p-8 flg:max-w-[512px]">
             <p className="textGradient text-xl font-semibold">
               Reward Calculation
             </p>
@@ -404,19 +404,19 @@ const StakingDetailsWrapper = ({ children }: Props) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center">
+      <div className="scrollSetLight2 flex w-full max-w-[510px] flex-shrink-0 gap-2 overflow-x-auto p-2 sm:items-center">
         <Link href={`/staking/staking-details/${poolId}`}>
           <FinalButton
             title="My Staking overview"
             variant={activeTab == "index" ? "primary" : "secondary"}
-            className="rounded-[10px]"
+            className="w-[215px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
           />
         </Link>
         <Link href={`/staking/staking-details/${poolId}/rewards`}>
           <FinalButton
             title="Claim Rewards"
             variant={activeTab == "rewards" ? "primary" : "secondary"}
-            className="rounded-[10px]"
+            className="w-[162px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
           />
         </Link>
         {stakingPool?.multilevel_rewards != "No referral" && (
@@ -424,7 +424,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
             <FinalButton
               title="Referrals"
               variant={activeTab == "referrals" ? "primary" : "secondary"}
-              className="rounded-[10px]"
+              className="w-[109px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
             />
           </Link>
         )}

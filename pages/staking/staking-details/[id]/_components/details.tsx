@@ -61,6 +61,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 eqAddress(e.walletAddress, e._id)
               )?.jobTitle,
               address: e._id,
+              membership: e.membership,
             };
           });
 

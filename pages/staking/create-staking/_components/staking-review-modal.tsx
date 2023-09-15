@@ -35,6 +35,7 @@ import { ZeroAddress } from "@/web3/constants/common";
 import { useStaking } from "@/hooks/staking";
 import { fetchUsers } from "@/hooks/use.get.multi.users";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { User } from "@/models/user";
 import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
 import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
 
@@ -43,6 +44,7 @@ export interface Memb {
   userImage: string;
   userDisplayName: string;
   address: string;
+  membership: User["membership"];
 }
 
 interface CustomModalProps {
@@ -102,12 +104,14 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
         const displayName = user.display_name;
         const jobTitle = member.jobTitle;
         const address = user._id;
+        const membership = user.membership;
 
         combinedArray.push({
           title: jobTitle,
           userImage: profileImage,
           userDisplayName: displayName,
           address,
+          membership: membership,
         });
       }
     }

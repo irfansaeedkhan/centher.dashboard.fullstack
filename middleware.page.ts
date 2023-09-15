@@ -155,7 +155,6 @@ const _citizenOnlyPages: string[] = [
   AppRoutes.settings.citizenship,
 
   AppRoutes.staking.create_staking,
-  AppRoutes.staking.faqs,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 
