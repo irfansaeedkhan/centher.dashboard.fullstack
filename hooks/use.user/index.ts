@@ -70,12 +70,17 @@ const useUser = () => {
     [mutate, user]
   );
 
+  const refetchUser = useCallback(() => {
+    mutate();
+  }, [mutate]);
+
   return {
     user: user,
     isLoading: !error && !user,
     error,
     updateUser,
     mutateUser,
+    refetchUser,
   };
 };
 

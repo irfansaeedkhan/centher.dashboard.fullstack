@@ -18,8 +18,13 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
   },
   {
     label: "Team Members",
-    link: AppRoutes.settings.citizenship,
+    link: AppRoutes.settings.citizen.team_members,
     available_for: "citizen",
+  },
+  {
+    label: "Team",
+    link: AppRoutes.settings.team,
+    available_for: "non-citizen",
   },
   {
     label: "Privacy",
@@ -31,5 +36,5 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
 type SettingsSidebarItem = {
   label: string;
   link: string;
-  available_for: "citizen" | "verified" | "all";
+  available_for: "citizen" | "verified" | "all" | "non-citizen";
 };

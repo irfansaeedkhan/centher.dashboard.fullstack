@@ -3,96 +3,63 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
-import { User } from "@/models/user";
-import useUser from "@/hooks/use.user";
 
-interface Props {
-  user: User | null;
-}
-
-export const ProfileCommunityTabs: React.FC<Props> = ({ user }) => {
+export const ProfileCommunityTabs: React.FC = () => {
   const router = useRouter();
-  const { user: loggedInUser } = useUser();
 
   return (
     <div className="scrollSetLight2 mb-4 flex w-full space-x-2 overflow-auto rounded-2xl p-1.5 sm:gap-2 fsm:mb-6">
-      {loggedInUser && loggedInUser._id === router.query.user_id && (
-        <>
-          <Link
-            href={{
-              pathname: AppRoutes.profile.followers,
-              query: { user_id: router.query.user_id },
-            }}
-            className="min-w-max"
-          >
-            <FinalButton
-              title="Followers"
-              variant={`${
-                router.pathname === AppRoutes.profile.followers
-                  ? "primary"
-                  : "secondary"
-              }`}
-              className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-            />
-          </Link>
-
-          <Link
-            href={{
-              pathname: AppRoutes.profile.following,
-              query: { user_id: router.query.user_id },
-            }}
-            className="min-w-max"
-          >
-            <FinalButton
-              title="Following"
-              variant={`${
-                router.pathname === AppRoutes.profile.following
-                  ? "primary"
-                  : "secondary"
-              }`}
-              className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-            />
-          </Link>
-        </>
-      )}
-      {user?.membership.status === "citizen" && (
-        <Link
-          href={{
-            pathname: AppRoutes.profile.team_members,
-            query: { user_id: router.query.user_id },
-          }}
-          className="min-w-max"
-        >
-          <FinalButton
-            title="Team"
-            variant={`${
-              router.pathname === AppRoutes.profile.team_members
-                ? "primary"
-                : "secondary"
-            }`}
-            className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-          />
-        </Link>
-      )}
-      {loggedInUser && loggedInUser._id === router.query.user_id && (
-        <Link
-          href={{
-            pathname: AppRoutes.profile.referrals,
-            query: { user_id: router.query.user_id },
-          }}
-          className="min-w-max"
-        >
-          <FinalButton
-            title="Referrals"
-            variant={`${
-              router.pathname === AppRoutes.profile.referrals
-                ? "primary"
-                : "secondary"
-            }`}
-            className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
-          />
-        </Link>
-      )}
+      <Link
+        href={{
+          pathname: AppRoutes.profile.followers,
+          query: { user_id: router.query.user_id },
+        }}
+        className="min-w-max"
+      >
+        <FinalButton
+          title="Followers"
+          variant={`${
+            router.pathname === AppRoutes.profile.followers
+              ? "primary"
+              : "secondary"
+          }`}
+          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
+        />
+      </Link>
+      <Link
+        href={{
+          pathname: AppRoutes.profile.following,
+          query: { user_id: router.query.user_id },
+        }}
+        className="min-w-max"
+      >
+        <FinalButton
+          title="Following"
+          variant={`${
+            router.pathname === AppRoutes.profile.following
+              ? "primary"
+              : "secondary"
+          }`}
+          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
+        />
+      </Link>
+      <Link
+        href={{
+          pathname: AppRoutes.profile.referrals,
+          query: { user_id: router.query.user_id },
+        }}
+        className="min-w-max"
+      >
+        <FinalButton
+          title="Referrals"
+          variant={`${
+            router.pathname === AppRoutes.profile.referrals
+              ? "primary"
+              : "secondary"
+          }`}
+          className="rounded-[14px] text-xs sm:text-base fmd:px-6 fmd:py-2"
+        />
+      </Link>
     </div>
   );
 };

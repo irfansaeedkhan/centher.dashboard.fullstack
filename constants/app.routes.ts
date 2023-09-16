@@ -20,11 +20,11 @@ export const AppRoutes = {
   profile: {
     user_id: "/profile/[user_id]",
     replies: "/profile/[user_id]/replies",
+    archived_posts: "/profile/[user_id]/archived-posts",
+    team: "/profile/[user_id]/team",
     following: "/profile/[user_id]/community/following",
     followers: "/profile/[user_id]/community/followers",
-    team_members: "/profile/[user_id]/community/team-members",
     referrals: "/profile/[user_id]/community/referrals",
-    archived_posts: "/profile/[user_id]/archived-posts",
     nfts: "/profile/[user_id]/nfts",
     owned: "/profile/[user_id]/nfts/owned",
     listed: "/profile/[user_id]/nfts/listed",
@@ -36,9 +36,12 @@ export const AppRoutes = {
     index: "/settings",
     about: "/settings/about",
     profile: "/settings/profile",
-    citizenship: "/settings/citizenship",
     social_links: "/settings/social-links",
     privacy: "/settings/privacy",
+    team: "/settings/team",
+    citizen: {
+      team_members: "/settings/citizen/team-members",
+    },
   },
 
   chat: {

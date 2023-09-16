@@ -1,33 +1,34 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
-
 import { HotNftEmptyIcon } from "@/assets/svgs";
 import { NFTImageCard } from "@/components/nft.image.card";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
 import { GlobalTokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
+import useGetUser from "@/hooks/use.get.user";
+import { AppRoutes } from "@/constants/app.routes";
 
 const CreatedPage = () => {
   const router = useRouter();
   const account = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
+  const { user } = useGetUser(account);
   const { createdNfts, fetchCreatedNFTs, loadingCreatedNFTs } =
     useProfileNFTStore((state) => ({
       createdNfts: state.createdNfts,
       fetchCreatedNFTs: state.fetchCreatedNFTs,
       loadingCreatedNFTs: state.loadingCreatedNFTs,
     }));
+  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
 
   useEffect(() => {
     if (account) {
       fetchCreatedNFTs(account, 0, 100, true);
     }
   }, [account, fetchCreatedNFTs]);
-
-  const [displayNFTs, setDisplayNFTs] = useState<NFTLockedDetailsProps[]>([]);
 
   useEffect(() => {
     if (loadingCreatedNFTs == LoadingStatus.loaded) {
@@ -38,6 +39,16 @@ const CreatedPage = () => {
       ]);
     }
   }, [loadingCreatedNFTs, createdNfts]);
+
+  useEffect(() => {
+    if (user && user?.membership.status !== "citizen") {
+      // Redirect to the owned page if the user is not a citizen
+      router.push({
+        pathname: AppRoutes.profile.owned,
+        query: { user_id: router.query.user_id },
+      });
+    }
+  }, [user, router]);
 
   return (
     <>

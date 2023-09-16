@@ -27,27 +27,26 @@ import dayjs from "dayjs";
 import { useProfileCardStore } from "@/store/profile.card.store";
 import { useFeedStore } from "@/store/feed.store";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import useUser from "@/hooks/use.user";
-import { MutualFollowersData, User } from "@/models/user";
+import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import ProfileModal from "@/components/modal/profile.modal";
 import FinalButton from "@/components/button/final.button";
 import CitizenLabel from "@/components/citizen/citizen.label";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
-import { sliceAccountAddress } from "@/utils/user.helpers";
+import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import { copyText } from "@/utils/copy.text";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
-import { XLogo } from "@/assets/svgs";
+import cn from "@/utils/cn";
+import { useCentherLive } from "@/hooks/chat";
+import { AppRoutes } from "@/constants/app.routes";
+import { XLogo, ChatProfile } from "@/assets/svgs";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
-import { useDragCoverImage } from "./use.drag.cover.image";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
 import FollowedComponent from "../community/_components/followed.component";
-import { ChatProfile } from "@/assets/svgs";
-import { useCentherLive } from "@/hooks/chat";
 
 export type CoverImageWithFile = {
   path: string;
@@ -60,9 +59,14 @@ export type CoverImageWithFile = {
 interface Props {
   mutualFollowersData: MutualFollowersData | null;
   user: User;
+  loggedInUser: LoggedInUser | undefined;
 }
 
-const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
+const ProfileHeader: React.FC<Props> = ({
+  mutualFollowersData,
+  user,
+  loggedInUser,
+}) => {
   const router = useRouter();
   const { adapter } = useCentherLive();
   const profileCardDetails = useGetProfileCardDetails(user);
@@ -76,9 +80,6 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
     removeUnfollowedUserPosts: state.removeUnfollowedUserPosts,
   }));
 
-  const { user: loggedInUser } = useUser();
-
-  const { imagePosition } = useDragCoverImage();
   const [coverImageLoading, setCoverImageLoading] = useState<boolean>(false);
   const [coverImage, setCoverImage] = useState<CoverImageWithFile>({
     path: user?.cover_image,
@@ -467,6 +468,32 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
                     />
                   </span>
                 ) : null}
+                {user.organization && (
+                  <span
+                    className={cn(
+                      "verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] rounded-full fsm:ml-1",
+                      user.membership.status === "citizen" ? "pt-2" : "pt-1"
+                    )}
+                  >
+                    <Image
+                      src={getUserImageUrl(
+                        user.organization.org_id,
+                        "profile-image"
+                      )}
+                      alt={user.organization.org_id}
+                      width={22}
+                      height={22}
+                      className="cursor-pointer rounded-full"
+                      onClick={() => {
+                        if (!user.organization) return;
+                        router.push({
+                          pathname: AppRoutes.profile.user_id,
+                          query: { user_id: user.organization.org_id },
+                        });
+                      }}
+                    />
+                  </span>
+                )}
               </h5>
             </div>
           </div>
@@ -672,7 +699,7 @@ const ProfileHeader: React.FC<Props> = ({ mutualFollowersData, user }) => {
             <FollowedComponent mutualFollowersData={mutualFollowersData} />
           )}
 
-        <ProfileTabsSocial user_id={router.query.user_id} />
+        <ProfileTabsSocial user={user} loggedInUser={loggedInUser} />
       </div>
 
       {isModalOpen && (
