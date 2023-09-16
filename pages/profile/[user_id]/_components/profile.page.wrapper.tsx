@@ -67,6 +67,7 @@ export const ProfilePageWrapper: React.FC<AllPagesWrapperProps> = ({
             {user ? (
               <ProfileHeader
                 user={user}
+                loggedInUser={loggedInUser}
                 mutualFollowersData={mutualFollowersData}
               />
             ) : (

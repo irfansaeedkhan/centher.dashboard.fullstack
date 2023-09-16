@@ -208,8 +208,8 @@ const StakingReferrals: NextPageWithLayout = () => {
         <div className="text-[min(10vw, 20px)] textGradient font-semibold">
           Referrals Overview
         </div>
-        <div className="scrollSetLight2 flex max-w-full flex-grow gap-5 overflow-x-auto">
-          <div className="flex h-[96px] min-w-[352px] gap-4 rounded-xl bg-elevation-1 px-5 py-6">
+        <div className="grid-col-1 mt-5 grid max-w-full flex-grow flex-wrap gap-5 fmd:grid-cols-2 flg:grid-cols-3">
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-brand-primary/60 bg-brand-primary/10">
               <ClaimableReward />
             </div>
@@ -238,7 +238,7 @@ const StakingReferrals: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="flex h-[96px] min-w-[352px] gap-4 rounded-xl bg-elevation-1 px-5 py-6">
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 fmd:col-span-1">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#D35DB9]/60 bg-[#D35DB9]/10">
               <ClaimableReward />
             </div>
@@ -269,7 +269,7 @@ const StakingReferrals: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="flex h-[96px] min-w-[352px] gap-4 rounded-xl bg-elevation-1 px-5 py-6">
+          <div className="col-span-2 flex h-[96px] w-full gap-4 rounded-xl bg-elevation-1 px-5 py-6 flg:col-span-1">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#5F97FF]/60 bg-[#5F97FF]/10">
               <StakingUsers />
             </div>

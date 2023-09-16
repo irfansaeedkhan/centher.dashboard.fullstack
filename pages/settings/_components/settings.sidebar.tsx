@@ -16,6 +16,14 @@ const SettingsSidebar = () => {
       !(
         item.available_for === "citizen" &&
         user?.membership.status !== "citizen"
+      ) &&
+      !(
+        item.available_for === "verified" &&
+        user?.membership.status !== "verified"
+      ) &&
+      !(
+        item.available_for === "non-citizen" &&
+        user?.membership.status === "citizen"
       )
   );
 

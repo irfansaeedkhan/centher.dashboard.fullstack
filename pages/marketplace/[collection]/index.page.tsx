@@ -190,7 +190,7 @@ const Collection: NextPageWithLayout = () => {
                 />
               )}
 
-              <div className={`text-14px absolute right-6 bottom-4`}>
+              <div className={`text-14px absolute bottom-4 right-6`}>
                 <div ref={menuRef} className={`relative`}>
                   <div className="flex items-center justify-center gap-5">
                     {(metadata?.facebook ||

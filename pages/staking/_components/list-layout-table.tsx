@@ -18,7 +18,7 @@ interface Props {
 
 const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
   return (
-    <div className="mt-6 h-[500px] w-full overflow-auto rounded-[14px] border border-gray-shade-3 pt-16">
+    <div className="mt-6 h-auto w-full overflow-auto rounded-[14px] border border-gray-shade-3 pt-16">
       <table className={`w-full max-w-full table-auto`}>
         <thead className={`bg-elevation-1 text-left text-sm text-gray-shade-7`}>
           <tr>
@@ -52,7 +52,10 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                 element={"td"}
                 className="flex min-w-[100px] items-center gap-2"
               >
-                <Link href={"/staking/staking-details/" + item.id}>
+                <Link
+                  href={"/staking/staking-details/" + item.id}
+                  className="flex items-center gap-2"
+                >
                   {item?.metadata?.logo ? (
                     <Image
                       src={item.metadata?.logo}
@@ -80,7 +83,10 @@ const ListLayoutTable: React.FC<Props> = ({ card, coins }) => {
                 element={"td"}
                 className="flex min-w-[100px] items-center gap-2"
               >
-                <Link href={"/staking/staking-details/" + item.id}>
+                <Link
+                  href={"/staking/staking-details/" + item.id}
+                  className="flex items-center gap-2"
+                >
                   {coins.find((e) =>
                     eqAddress(e?.contractAddress, item.token_address)
                   )?.logo?.length ? (

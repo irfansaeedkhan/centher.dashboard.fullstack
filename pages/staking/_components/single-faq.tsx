@@ -1,6 +1,7 @@
 import React, { FC, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { Faq } from "./faqs-data";
+import { clsx } from "clsx";
 
 interface Props {
   faq: Faq;
@@ -8,30 +9,36 @@ interface Props {
 
 const SingleFaq: FC<Props> = ({ faq }) => {
   const [isOpen, setIsOpen] = useState(false);
-  return isOpen ? (
-    <div key={faq.id} className="flex flex-col gap-6">
-      <div className="flex w-full items-center justify-between">
-        <p className="text-lg font-semibold text-white">{faq.question}</p>
-        <FiMinus
-          className="cursor-pointer text-base text-white"
-          onClick={() => setIsOpen(false)}
-        />
-      </div>
-      <p className="text-sm font-normal leading-[22px] tracking-[-.14px] text-gray-shade-14">
-        {faq.answer}
-      </p>
-    </div>
-  ) : (
+  return (
     <div
       key={faq.id}
-      className="flex h-auto min-h-[86px] w-full items-center justify-between rounded-3xl border border-gray-shade-3 bg-background-shade-3 px-8"
+      className={clsx(
+        "flex h-auto min-h-[86px] w-full justify-between gap-2 rounded-xl border border-gray-shade-3 bg-background-shade-3 px-4 py-4 fsm:rounded-3xl fsm:px-8",
+        isOpen ? "" : "items-center"
+      )}
     >
-      <p className="text-lg font-semibold text-white">{faq.question}</p>
+      <div className="flex flex-col gap-6">
+        <p className="text-base font-semibold text-white fsm:text-lg">
+          {faq.question}
+        </p>
+        {isOpen && (
+          <p className="text-sm font-normal leading-[22px] tracking-[-.14px] text-gray-shade-14">
+            {faq.answer}
+          </p>
+        )}
+      </div>
 
-      <FiPlus
-        className="cursor-pointer text-base text-white"
-        onClick={() => setIsOpen(true)}
-      />
+      {isOpen ? (
+        <FiMinus
+          className="flex-shrink-0 cursor-pointer text-base text-white"
+          onClick={() => setIsOpen(false)}
+        />
+      ) : (
+        <FiPlus
+          className="flex-shrink-0 cursor-pointer text-base text-white"
+          onClick={() => setIsOpen(true)}
+        />
+      )}
     </div>
   );
 };

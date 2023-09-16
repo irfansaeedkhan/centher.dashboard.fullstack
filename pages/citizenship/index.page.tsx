@@ -16,7 +16,7 @@ const Citizenship: NextPageWithLayout = () => {
 
   const handleShowBuyCitizenshipModal = () => {
     if (loggedInUser?.membership.status === "citizen") {
-      router.push(AppRoutes.settings.citizenship);
+      router.push(AppRoutes.settings.citizen.team_members);
       return;
     }
     setShowBuyCitizenshipModal(true);

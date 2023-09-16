@@ -144,7 +144,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 }
               : () => {
                   router.push({
-                    pathname: AppRoutes.settings.citizenship,
+                    pathname: AppRoutes.settings.citizen.team_members,
                   });
                 }
           }

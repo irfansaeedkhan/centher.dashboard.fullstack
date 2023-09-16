@@ -25,8 +25,10 @@ const useGetUser = (userId?: string) => {
   }, [userId]);
 
   const mutateUser = useCallback(
-    async (userPartial: Partial<User>) => {
-      if (user) {
+    async (userPartial: Partial<User> | null) => {
+      if (userPartial === null) {
+        setUser(null);
+      } else if (user) {
         setUser((prev) => ({
           ...(prev as User),
           ...userPartial,

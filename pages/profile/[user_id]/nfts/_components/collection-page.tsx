@@ -6,18 +6,22 @@ import { NFTCollectionImageCard } from "@/components/nft.collection.image.card";
 import { Collection } from "@/models/nft";
 import { useProfileNFTStore } from "@/store/profile.nft.store";
 import { LoadingStatus } from "@/utils/enums/loading.status.enum";
+import useGetUser from "@/hooks/use.get.user";
+import { AppRoutes } from "@/constants/app.routes";
 
 const CollectionPage = () => {
   const router = useRouter();
   const account = useMemo(() => {
     return router.query.user_id as string;
   }, [router.query.user_id]);
+  const { user } = useGetUser(account);
   const { collections, fetchCollections, loadingCollections } =
     useProfileNFTStore((state) => ({
       collections: state.collections,
       fetchCollections: state.fetchCollections,
       loadingCollections: state.loadingCollections,
     }));
+  const [displayNFTs, setDisplayNFTs] = useState<Collection[]>([]);
 
   useEffect(() => {
     if (account) {
@@ -25,13 +29,21 @@ const CollectionPage = () => {
     }
   }, [account, fetchCollections]);
 
-  const [displayNFTs, setDisplayNFTs] = useState<Collection[]>([]);
-
   useEffect(() => {
     if (loadingCollections == LoadingStatus.loaded && collections?.length) {
       setDisplayNFTs([...collections]);
     }
   }, [loadingCollections, collections]);
+
+  useEffect(() => {
+    if (user && user?.membership.status !== "citizen") {
+      // Redirect to the owned page if the user is not a citizen
+      router.push({
+        pathname: AppRoutes.profile.owned,
+        query: { user_id: router.query.user_id },
+      });
+    }
+  }, [user, router]);
 
   return (
     <>

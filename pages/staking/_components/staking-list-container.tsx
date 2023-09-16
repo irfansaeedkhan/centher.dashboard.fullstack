@@ -62,7 +62,7 @@ const StakingListContainer: FC<ComponentProp> = ({
           <h5 className="textGradient text-2xl font-semibold">Staking</h5>
           <div className="flex w-full items-center gap-5 flg:gap-6">
             <FinalButton
-              className="text-14px h-9 w-full fsm:min-w-max"
+              className="h-9 w-full text-xs fsm:min-w-max [@media(max-width:330px)]:text-[11px]"
               title="Create New Project"
               variant="primary"
               borderRounded="10px"

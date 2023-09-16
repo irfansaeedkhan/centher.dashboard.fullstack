@@ -108,6 +108,7 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.profile.following,
   AppRoutes.profile.followers,
   AppRoutes.profile.archived_posts,
+  AppRoutes.profile.team,
   AppRoutes.profile.referrals,
   AppRoutes.profile.nfts,
   AppRoutes.profile.owned,
@@ -118,9 +119,9 @@ const _authenticatedUserPages: string[] = [
   AppRoutes.settings.index,
   AppRoutes.settings.about,
   AppRoutes.settings.profile,
-  AppRoutes.settings.citizenship,
   AppRoutes.settings.social_links,
   AppRoutes.settings.privacy,
+  AppRoutes.settings.team,
 
   AppRoutes.chat.index,
   AppRoutes.chat.single_chat,
@@ -152,10 +153,9 @@ const _citizenOnlyPages: string[] = [
   AppRoutes.marketplace.create_nft,
   AppRoutes.marketplace.create_collection,
 
-  AppRoutes.settings.citizenship,
+  AppRoutes.settings.citizen.team_members,
 
   AppRoutes.staking.create_staking,
-  AppRoutes.staking.faqs,
 ];
 const citizenOnlyPages = changePaths(_citizenOnlyPages);
 

@@ -56,7 +56,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </Link> */}
           <FinalButton
             variant="primary"
-            className="h-7"
+            className="h-7 text-[10px]"
             title="View project detail"
             borderRounded="10px"
             onClick={() => router.push("/staking/staking-details/" + card.id)}
@@ -167,7 +167,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           </p>
         </div>
       </div>
-      {!eqAddress(card.token_address, card.reward_token_address) ? (
+      {!eqAddress(card.token_address, card.reward_token_address) && (
         <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
           <div className={section}>
             <p className={label}>Reward Token Address</p>
@@ -249,8 +249,6 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
             </p>
           </div>
         </div>
-      ) : (
-        ""
       )}
       <div className="border-b-2 border-gray-shade-3"></div>
       <div className="grid w-full gap-6 fsm:grid-cols-2 fsm:gap-10 fmd:grid-cols-3 flg:grid-cols-4">
