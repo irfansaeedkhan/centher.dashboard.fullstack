@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import ModalContainer from "@/components/modal/modal-container";
 import { ZeroAddress } from "@/web3/constants/common";
 import { OrgMember, inviteOrgMember } from "@/lib/org-team-members";
+import { SearchResultWithType, search } from "@/lib/search";
+import { SearchedUser } from "./searched-user";
 
 interface Props {
   isOpen: boolean;
@@ -19,6 +21,9 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
     user_id: "",
   });
   const [newMemberError, setNewMemberError] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResultWithType[]>(
+    []
+  );
   const submitButtonRef = React.useRef<HTMLButtonElement>(null);
 
   const handleClose = () => {
@@ -84,6 +89,26 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleNewMemberUserIdChange = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    handleNewMemberInputChange(event);
+
+    const userId = event.target.value;
+
+    if (!userId.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const results = await search(userId);
+      setSearchResults(results);
+    } catch (err: any) {
+      setSearchResults([]);
+    }
+  };
+
   return (
     <ModalContainer
       modalId="invite-member-modal"
@@ -104,7 +129,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
       <div className="mt-6 p-4 pb-0">
         <form onSubmit={handleSendInvite}>
-          <div className="space-y-1.5">
+          <div className="relative space-y-1.5">
             <label htmlFor="user_id" className="text-sm font-normal text-white">
               Account Address
             </label>
@@ -115,8 +140,31 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
               className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
               placeholder={ZeroAddress}
               value={newOrgMember.user_id}
-              onChange={handleNewMemberInputChange}
+              onChange={handleNewMemberUserIdChange}
+              autoComplete="off"
+              onBlur={() => {
+                setTimeout(() => {
+                  setSearchResults([]);
+                }, 200);
+              }}
             />
+            {!!searchResults.length && (
+              <div className="absolute top-full w-full overflow-hidden rounded-10px border border-gray-shade-3 bg-popup-0 shadow-lg">
+                {searchResults.map((result) => (
+                  <SearchedUser
+                    key={result._id}
+                    user={result}
+                    onClick={(user_id) => {
+                      setNewOrgMember((prev) => ({
+                        ...prev,
+                        user_id: user_id,
+                      }));
+                      setSearchResults([]);
+                    }}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <div className="mt-5 space-y-1.5">
             <label htmlFor="title" className="text-sm font-normal text-white">

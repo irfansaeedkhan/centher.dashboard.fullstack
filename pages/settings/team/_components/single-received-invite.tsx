@@ -16,28 +16,29 @@ export const SingleReceivedInvite: React.FC<{
 
   return (
     <div
-      className="flex border-t border-gray-shade-3 px-6 py-4 first:border-none"
+      className="flex gap-x-2 border-t border-gray-shade-3 px-3 py-4 first:border-none fmd:px-6"
       key={invite._id}
     >
-      <div className="flex flex-grow gap-x-3">
-        <div className="shrink-0">
-          <Image
-            src={invite.user.profile_image}
-            alt={invite.user.display_name}
-            width={40}
-            height={40}
-            className="inline-block rounded-full"
-          />
-          <Image
-            src={invite.org.profile_image}
-            alt={invite.org.display_name}
-            width={40}
-            height={40}
-            className="-ml-[20px] inline-block rounded-full"
-          />
-        </div>
-        <div>
-          <p className="text-sm text-white">
+      <div className="shrink-0">
+        <Image
+          src={invite.user.profile_image}
+          alt={invite.user.display_name}
+          width={40}
+          height={40}
+          className="inline-block rounded-full"
+        />
+        <Image
+          src={invite.org.profile_image}
+          alt={invite.org.display_name}
+          width={40}
+          height={40}
+          className="-ml-[20px] inline-block rounded-full"
+        />
+      </div>
+
+      <div className="flex-grow">
+        <div className="flex gap-x-2">
+          <p className="flex-grow text-sm text-white">
             You are invited to join{" "}
             <Link
               href={{
@@ -59,24 +60,25 @@ export const SingleReceivedInvite: React.FC<{
             </Link>
           </p>
 
-          <div className="mt-2">
-            <button
-              className="rounded-md bg-brand-primary/20 px-3 py-1 text-xs font-medium text-brand-primary"
-              onClick={() => handleAcceptInvite(invite._id)}
-            >
-              Accept
-            </button>
-            <button
-              className="rounded-md px-3 py-1 text-xs font-medium text-red-theme"
-              onClick={() => handleRejectInvite(invite._id)}
-            >
-              Reject
-            </button>
+          <div className="shrink-0 text-xs text-gray-shade-14">
+            {dayjs(invite.invited_at).format("DD MMM, YYYY")}
           </div>
         </div>
-      </div>
-      <div className="text-xs text-gray-shade-14">
-        {dayjs(invite.invited_at).format("DD MMM, YYYY")}
+
+        <div className="mt-2">
+          <button
+            className="rounded-md bg-brand-primary/20 px-3 py-1 text-xs font-medium text-brand-primary"
+            onClick={() => handleAcceptInvite(invite._id)}
+          >
+            Accept
+          </button>
+          <button
+            className="rounded-md px-3 py-1 text-xs font-medium text-red-theme"
+            onClick={() => handleRejectInvite(invite._id)}
+          >
+            Reject
+          </button>
+        </div>
       </div>
     </div>
   );
