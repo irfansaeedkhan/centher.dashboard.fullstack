@@ -7,7 +7,7 @@ import {
 import "react-advanced-cropper/dist/style.css";
 import { ModalWrapper } from "@/components/modal";
 import { LoggedInUser, UserImage } from "@/models/user";
-import { CropFunctions } from "../crop-functions";
+import { CropFunctions } from "./crop-functions";
 import FinalButton from "@/components/button/final.button";
 
 interface CropperProps {

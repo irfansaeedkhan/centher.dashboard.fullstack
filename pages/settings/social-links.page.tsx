@@ -2,10 +2,7 @@ import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import ProfileSettingSocialLinksSkeleton from "@/components/loading.skeletons/profile.setting.social.links";
-
-import SettingsSidebar from "./_components/settings.sidebar";
-import { SocialLinksForm } from "./_components/social.links.form";
-import SettingsTopBar from "./_components/settings.topbar";
+import { SettingsPagesWrapper, SocialLinksForm } from "./_components";
 
 const SocialLinks: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -28,15 +25,7 @@ const SocialLinks: NextPageWithLayout = () => {
 SocialLinks.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Settings" showSidebar={false}>
-      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
-        <span className="hidden flg:block">
-          <SettingsSidebar />
-        </span>
-        <span className="block flg:hidden">
-          <SettingsTopBar />
-        </span>
-        {page}
-      </div>
+      <SettingsPagesWrapper>{page}</SettingsPagesWrapper>
     </AllPagesWrapper>
   );
 };

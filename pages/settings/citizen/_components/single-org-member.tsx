@@ -16,25 +16,26 @@ export const SingleOrgMember: React.FC<{
   return (
     <div
       key={member.user_id}
-      className="flex border-t border-gray-shade-3 px-6 py-4 text-white first:border-none"
+      className="flex gap-x-2 border-t border-gray-shade-3 px-3 py-4 text-white first:border-none fmd:px-6"
     >
-      <div className="flex flex-grow items-center gap-x-2">
-        <Image
-          src={member.profile_image}
-          alt={member.display_name}
-          width={40}
-          height={40}
-          className="cursor-pointer rounded-full"
-          onClick={() => {
-            router.push({
-              pathname: AppRoutes.profile.user_id,
-              query: { user_id: member.user_id },
-            });
-          }}
-        />
-        <div>
+      <Image
+        src={member.profile_image}
+        alt={member.display_name}
+        width={40}
+        height={40}
+        className="h-10 w-10 shrink-0 cursor-pointer rounded-full"
+        onClick={() => {
+          router.push({
+            pathname: AppRoutes.profile.user_id,
+            query: { user_id: member.user_id },
+          });
+        }}
+      />
+
+      <div className="flex-grow">
+        <div className="flex items-start gap-x-2">
           <h3
-            className="cursor-pointer text-sm font-semibold text-white"
+            className="word-break flex-grow cursor-pointer text-sm font-semibold text-white"
             onClick={() => {
               router.push({
                 pathname: AppRoutes.profile.user_id,
@@ -53,18 +54,17 @@ export const SingleOrgMember: React.FC<{
               />
             )}
           </h3>
-          <h5 className="mt-1 text-xs font-normal text-gray-shade-18">
-            {member.title}
-          </h5>
+          <button
+            className="shrink-0 text-sm font-medium text-white"
+            onClick={() => handleRemoveOrgMember(member.user_id)}
+          >
+            Remove
+          </button>
         </div>
+        <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
+          {member.title}
+        </h5>
       </div>
-
-      <button
-        className="text-sm font-medium text-white"
-        onClick={() => handleRemoveOrgMember(member.user_id)}
-      >
-        Remove
-      </button>
     </div>
   );
 };

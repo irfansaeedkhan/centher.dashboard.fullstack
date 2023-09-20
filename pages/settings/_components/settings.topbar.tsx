@@ -2,27 +2,19 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import clsx from "clsx";
+import { SettingsSidebarItem } from "./settings.sidebar.data";
 
-import { SettingsSidebarData } from "./settings.sidebar.data";
-import useUser from "@/hooks/use.user";
+interface Props {
+  sidebarData: SettingsSidebarItem[];
+}
 
-const SettingsTopBar = () => {
-  const { user } = useUser();
+const SettingsTopBar: React.FC<Props> = ({ sidebarData }) => {
   const router = useRouter();
-
-  // Filter the sidebar data based on membership status and availableFor field
-  const filteredSidebarData = SettingsSidebarData.filter(
-    (item) =>
-      !(
-        item.available_for === "citizen" &&
-        user?.membership.status !== "citizen"
-      )
-  );
 
   return (
     <div className="mb-8 w-full  flex-shrink-0 overflow-x-auto bg-[#17171A] px-2 py-2 pb-3">
       <div className="justify-centerrounded-3xl flex w-full items-center gap-2">
-        {filteredSidebarData.map((item) => (
+        {sidebarData.map((item) => (
           <Link
             href={item.link}
             className={clsx(

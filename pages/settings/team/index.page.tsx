@@ -1,19 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useUser from "@/hooks/use.user";
 import useGetUser from "@/hooks/use.get.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import {
-  PendingInvite,
   acceptReceivedInvite,
-  getReceivedInvites,
   leaveOrg,
   rejectReceivedInvite,
 } from "@/lib/org-team-members";
-import { LoadingState } from "@/models/common";
-import SettingsSidebar from "../_components/settings.sidebar";
-import SettingsTopBar from "../_components/settings.topbar";
+import { useGetReceivedInvites } from "@/hooks/org-team-members";
+import { SettingsPagesWrapper } from "../_components";
 import { JoinedTeam, SingleReceivedInvite } from "./_components";
 
 const TeamSettings: NextPageWithLayout = () => {
@@ -27,24 +23,11 @@ const TeamSettings: NextPageWithLayout = () => {
     loading: joinedOrgUserLoading,
     mutateUser,
   } = useGetUser(loggedInUser?.organization?.org_id);
-  const [receivedInvites, setReceivedInvites] = useState<PendingInvite[]>([]);
-  const [invitesLoading, setInvitesLoading] = useState<LoadingState>("idle");
-
-  const fetchSentInvites = useCallback(async () => {
-    try {
-      setInvitesLoading("loading");
-      const _receivedInvites = await getReceivedInvites();
-      setReceivedInvites(_receivedInvites);
-      setInvitesLoading("loaded");
-    } catch (err: any) {
-      toast.error(err.message);
-      setInvitesLoading("failed");
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchSentInvites();
-  }, [fetchSentInvites]);
+  const {
+    receivedInvites,
+    loading: invitesLoading,
+    removeReceivedInvite,
+  } = useGetReceivedInvites();
 
   const handleLeaveTeam = async () => {
     try {
@@ -56,17 +39,11 @@ const TeamSettings: NextPageWithLayout = () => {
     }
   };
 
-  const removeInvite = (inviteId: string) => {
-    setReceivedInvites((invites) =>
-      invites.filter((invite) => invite._id !== inviteId)
-    );
-  };
-
   const handleAcceptInvite = async (inviteId: string) => {
     try {
       await acceptReceivedInvite(inviteId);
       refetchUser();
-      removeInvite(inviteId);
+      removeReceivedInvite(inviteId);
       toast.success("You have joined the team");
     } catch (err: any) {
       toast.error(err.message);
@@ -76,7 +53,7 @@ const TeamSettings: NextPageWithLayout = () => {
   const handleRejectInvite = async (inviteId: string) => {
     try {
       await rejectReceivedInvite(inviteId);
-      removeInvite(inviteId);
+      removeReceivedInvite(inviteId);
     } catch (err: any) {
       toast.error(err.message);
     }
@@ -129,15 +106,7 @@ const TeamSettings: NextPageWithLayout = () => {
 TeamSettings.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Team" showSidebar={false}>
-      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
-        <span className="hidden flg:block">
-          <SettingsSidebar />
-        </span>
-        <span className="block flg:hidden">
-          <SettingsTopBar />
-        </span>
-        {page}
-      </div>
+      <SettingsPagesWrapper>{page}</SettingsPagesWrapper>
     </AllPagesWrapper>
   );
 };
