@@ -2,10 +2,7 @@ import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setting.skeleton";
-
-import SettingsSidebar from "./_components/settings.sidebar";
-import { AboutForm } from "./_components/about.form";
-import SettingsTopBar from "./_components/settings.topbar";
+import { SettingsPagesWrapper, AboutForm } from "./_components";
 
 const About: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -24,15 +21,7 @@ const About: NextPageWithLayout = () => {
 About.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Settings" showSidebar={false}>
-      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
-        <span className="hidden flg:block">
-          <SettingsSidebar />
-        </span>
-        <span className="block flg:hidden">
-          <SettingsTopBar />
-        </span>
-        {page}
-      </div>
+      <SettingsPagesWrapper>{page}</SettingsPagesWrapper>
     </AllPagesWrapper>
   );
 };

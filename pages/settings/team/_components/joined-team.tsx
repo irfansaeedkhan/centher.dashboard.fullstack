@@ -45,7 +45,7 @@ export const JoinedTeam: React.FC<{
         />
         <div>
           <h3
-            className="cursor-pointer text-sm font-semibold text-white"
+            className="word-break cursor-pointer text-sm font-semibold text-white"
             onClick={() => {
               router.push({
                 pathname: AppRoutes.profile.user_id,
@@ -65,7 +65,7 @@ export const JoinedTeam: React.FC<{
             )}
           </h3>
           {joinedOrgUser.profile_bio && (
-            <h5 className="mt-1 text-xs font-normal text-gray-shade-18">
+            <h5 className="word-break mt-1 text-xs font-normal text-gray-shade-18">
               {joinedOrgUser.profile_bio}
             </h5>
           )}

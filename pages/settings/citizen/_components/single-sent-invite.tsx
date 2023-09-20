@@ -35,7 +35,7 @@ export const SingleSentInvite: React.FC<{
         <div className="flex items-start gap-x-2">
           <div className="flex-grow">
             <h3
-              className="cursor-pointer text-sm font-medium text-white"
+              className="word-break cursor-pointer text-sm font-medium text-white"
               onClick={() => {
                 router.push({
                   pathname: AppRoutes.profile.user_id,

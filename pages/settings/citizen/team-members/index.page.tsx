@@ -7,8 +7,7 @@ import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setti
 import FinalButton from "@/components/button/final.button";
 import { AppRoutes } from "@/constants/app.routes";
 import cn from "@/utils/cn";
-import SettingsSidebar from "../../_components/settings.sidebar";
-import SettingsTopBar from "../../_components/settings.topbar";
+import { SettingsPagesWrapper } from "../../_components";
 import {
   TeamMembersJoinedTab,
   TeamMembersInvitationsTab,
@@ -97,15 +96,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
 TeamMembersSettings.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Team Members" showSidebar={false}>
-      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
-        <span className="hidden flg:block">
-          <SettingsSidebar />
-        </span>
-        <span className="block flg:hidden">
-          <SettingsTopBar />
-        </span>
-        {page}
-      </div>
+      <SettingsPagesWrapper>{page}</SettingsPagesWrapper>
     </AllPagesWrapper>
   );
 };

@@ -2,10 +2,7 @@ import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import ProfileSettingPrivacySkeleton from "@/components/loading.skeletons/profile.setting.privacy.skeleton";
-
-import SettingsSidebar from "./_components/settings.sidebar";
-import { PrivacyForm } from "./_components/privacy.form";
-import SettingsTopBar from "./_components/settings.topbar";
+import { PrivacyForm, SettingsPagesWrapper } from "./_components";
 
 const Privacy: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -32,15 +29,7 @@ const Privacy: NextPageWithLayout = () => {
 Privacy.getLayout = (page) => {
   return (
     <AllPagesWrapper pageTitle="Settings" showSidebar={false}>
-      <div className="flex flex-col justify-center fsm:gap-5 flg:flex-row flg:gap-10">
-        <span className="hidden flg:block">
-          <SettingsSidebar />
-        </span>
-        <span className="block flg:hidden">
-          <SettingsTopBar />
-        </span>
-        {page}
-      </div>
+      <SettingsPagesWrapper>{page}</SettingsPagesWrapper>
     </AllPagesWrapper>
   );
 };

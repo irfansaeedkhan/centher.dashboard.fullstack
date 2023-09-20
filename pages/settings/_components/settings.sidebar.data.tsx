@@ -33,7 +33,7 @@ export const SettingsSidebarData: SettingsSidebarItem[] = [
   },
 ];
 
-type SettingsSidebarItem = {
+export type SettingsSidebarItem = {
   label: string;
   link: string;
   available_for: "citizen" | "verified" | "all" | "non-citizen";

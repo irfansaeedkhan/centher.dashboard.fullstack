@@ -45,7 +45,7 @@ export const SingleReceivedInvite: React.FC<{
                 pathname: AppRoutes.profile.user_id,
                 query: { user_id: invite.org._id },
               }}
-              className="textGradient font-medium"
+              className="textGradient word-break font-medium"
             >
               <span>{invite.org.display_name}</span>
               {verificationTick && (
