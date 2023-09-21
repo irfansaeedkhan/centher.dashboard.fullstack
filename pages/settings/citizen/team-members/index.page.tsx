@@ -10,19 +10,19 @@ import cn from "@/utils/cn";
 import { SettingsPagesWrapper } from "../../_components";
 import {
   TeamMembersJoinedTab,
-  TeamMembersInvitationsTab,
+  TeamMembersSentInvitationsTab,
   InviteMemberModal,
 } from "../_components";
 
 const TeamMembersSettings: NextPageWithLayout = () => {
   const { user: loggedInUser } = useUser();
   const router = useRouter();
-  const [tab, setTab] = useState<"joined" | "invitations">("joined");
+  const [tab, setTab] = useState<"joined" | "sent_invitations">("joined");
   const [inviteModalOpen, setInviteModalOpen] = useState(false);
 
   useEffect(() => {
     if (router.query.tab === "invitations") {
-      setTab("invitations");
+      setTab("sent_invitations");
     } else {
       setTab("joined");
     }
@@ -48,7 +48,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
             Joined
           </button>
           <button
-            className={cn(tab === "invitations" && "textGradient")}
+            className={cn(tab === "sent_invitations" && "textGradient")}
             onClick={() => {
               router.push({
                 pathname: AppRoutes.settings.citizen.team_members,
@@ -56,7 +56,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
               });
             }}
           >
-            Invitations
+            Sent Invitations
           </button>
         </div>
         <div>
@@ -73,8 +73,8 @@ const TeamMembersSettings: NextPageWithLayout = () => {
       </div>
 
       {loggedInUser ? (
-        tab === "invitations" ? (
-          <TeamMembersInvitationsTab />
+        tab === "sent_invitations" ? (
+          <TeamMembersSentInvitationsTab />
         ) : (
           <TeamMembersJoinedTab loggedInUser={loggedInUser} />
         )
