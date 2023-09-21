@@ -118,7 +118,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
       shouldCloseOnOverlayClick={false}
     >
       <div className="flex items-center">
-        <h3 className="flex-grow text-base font-medium text-white">
+        <h3 className="flex-grow text-base font-semibold text-white">
           Invite member to organization
         </h3>
         <IoClose
@@ -127,7 +127,7 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
         />
       </div>
 
-      <div className="mt-6 p-4 pb-0">
+      <div className="mt-6 py-4 pb-0 fmd:p-4">
         <form onSubmit={handleSendInvite}>
           <div className="relative space-y-1.5">
             <label htmlFor="user_id" className="text-sm font-normal text-white">

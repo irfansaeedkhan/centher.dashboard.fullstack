@@ -4,7 +4,7 @@ import { deleteSentInvite } from "@/lib/org-team-members";
 import { useGetSentInvites } from "@/hooks/org-team-members";
 import { SingleSentInvite } from "./single-sent-invite";
 
-export const TeamMembersInvitationsTab: React.FC = () => {
+export const TeamMembersSentInvitationsTab: React.FC = () => {
   const { sentInvites, removeSentInvite, loading } = useGetSentInvites();
 
   const handleDeleteSentInvite = async (invite_id: string) => {
