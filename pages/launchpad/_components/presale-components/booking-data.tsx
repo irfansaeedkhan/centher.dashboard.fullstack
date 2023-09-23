@@ -353,9 +353,9 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             <p className={"text-[13px] text-gray-shade-14"}>
               <span className="text-red-400">Terms &amp; Conditions:</span>{" "}
               Purchased tokens will be automatically locked for the first 4
-              months, after which 12.5% of the purchased tokens will be released
-              every month for the next 8 months and can be claimed. The vesting
-              contract will then last a total of 12 months.
+              months, after which 10% of the purchased tokens will be released
+              every month for the next 10 months and can be claimed. The vesting
+              contract will then last a total of 14 months.
             </p>
           </div>
         </div>
