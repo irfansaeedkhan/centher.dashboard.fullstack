@@ -29,13 +29,16 @@ export const useGetRoundsInfo = () => {
       let _roundInfos = [];
       for (let i = 0; i < 3; i++) {
         const roundInfo = await presaleContract.roundInfo(i);
+
         const roundStatus = getRoundStatus(roundState, i);
 
         const _roundInfo: RoundInfo = {
           round: i as RoundNumber,
           status: roundStatus,
-          priceForBusd: roundInfo["priceForBusd"].toNumber() / 100000,
-          priceForNtr: roundInfo["priceForNtr"].toNumber() / 100000,
+          // priceForBusd: roundInfo["priceForBusd"].toNumber() / 100000,
+          //   priceForNtr: roundInfo["priceForNtr"].toNumber() / 100000,
+          priceForBusd: roundInfo["priceForBusd"].toString(),
+          priceForNtr: roundInfo["priceForNtr"].toString(),
           busdRaised: Number(ethers.utils.formatUnits(roundInfo["busdRaised"])),
           ntrRaised: Number(ethers.utils.formatUnits(roundInfo["ntrRaised"])),
           startTime: roundInfo["startTime"].toNumber(),
@@ -198,7 +201,7 @@ export const useGetContributionInfo = (
         purchaseTimeForNtr:
           contributionInfoRes["purchaseTimeForNtr"].toNumber() === 0
             ? 0
-            : Number(contributionInfoRes["purchaseTimeForBusd"]),
+            : Number(contributionInfoRes["purchaseTimeForNtr"]),
         claimedTokenAmountForBusd,
         claimedTokenAmountForNtr,
         totalClaimableTokenAmountForBusd,
@@ -228,7 +231,7 @@ export const useGetContributionInfo = (
 
   useEffect(() => {
     if (account && roundInfo) fetchContributionInfo(account);
-  }, [account, fetchContributionInfo]);
+  }, [account, fetchContributionInfo, roundInfo]);
 
   const refreshContributionInfo = useCallback(async () => {
     if (account) fetchContributionInfo(account);

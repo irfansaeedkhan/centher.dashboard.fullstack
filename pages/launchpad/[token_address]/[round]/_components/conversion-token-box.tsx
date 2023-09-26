@@ -1,17 +1,15 @@
 import React, { useRef, useState } from "react";
 import { useOnClickOutside } from "usehooks-ts";
 import clsx from "clsx";
-import { HiChevronDown } from "react-icons/hi";
-
-import { BUSDIcon, NTRIcon } from "@/assets/svgs";
-
+import { HiChevronDown, HiChevronUp } from "react-icons/hi";
+import { NTRIcon, USDTIcon } from "@/assets/svgs";
+import { TokenName } from "@/web3/blockchain/types";
 import {
   inputBox,
   inputBoxLeft,
   inputBoxRight,
   truncateTokenAmount,
 } from "./shared";
-import { TokenName } from "@/web3/blockchain/types";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   tokenName: TokenName;
@@ -26,7 +24,7 @@ export const ConversionTokenBox: React.FC<Props> = ({
   tokenIcon,
   tokenBalance,
   className,
-  hasDropdown = false,
+  hasDropdown = true,
   onChangeSelectedToken = () => {},
   ...props
 }) => {
@@ -43,21 +41,22 @@ export const ConversionTokenBox: React.FC<Props> = ({
         <div className="flex flex-grow items-center justify-between">
           <div className="flex flex-grow items-center">
             {tokenIcon}
-            <span
-              className={`ml-2 inline-block text-xs font-semibold text-white fmd:text-sm`}
-            >
+            <span className="ml-2 inline-block text-xs font-semibold text-white fmd:text-sm">
               {tokenName}
             </span>
           </div>
         </div>
-
-        {hasDropdown && (
-          <div ref={dropdownRef}>
+        {hasDropdown && tokenName !== "DXC" && (
+          <div ref={dropdownRef} className="h-5 w-5 fsm:h-6 fsm:w-6">
             <button
-              className="p-2"
+              className=""
               onClick={() => setIsDropdownOpen((prev) => !prev)}
             >
-              <HiChevronDown className="h-5 w-5 fill-white fsm:h-6 fsm:w-6" />
+              {isDropdownOpen ? (
+                <HiChevronUp className="h-5 w-5 fill-white fsm:h-6 fsm:w-6" />
+              ) : (
+                <HiChevronDown className="h-5 w-5 fill-white fsm:h-6 fsm:w-6" />
+              )}
             </button>
 
             {isDropdownOpen && (
@@ -65,12 +64,14 @@ export const ConversionTokenBox: React.FC<Props> = ({
                 <div
                   className="flex cursor-pointer items-center border-b border-gray-shade-border-color px-5 py-3"
                   onClick={() => {
-                    onChangeSelectedToken("BUSD");
+                    onChangeSelectedToken("USDT");
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <BUSDIcon className="h-8 w-8" />
-                  <span className="ml-3 inline-block">BUSD</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20">
+                    <USDTIcon />
+                  </span>
+                  <span className="ml-3 inline-block">USDT</span>
                 </div>
                 <div
                   className="flex cursor-pointer items-center px-5 py-3"
@@ -89,13 +90,11 @@ export const ConversionTokenBox: React.FC<Props> = ({
       </div>
       <div className={inputBoxRight}>
         <div>
-          <div
-            className={`text-xs font-semibold text-gray-shade-7 fmd:text-sm`}
-          >
+          <div className="text-xs font-semibold text-gray-shade-7 fmd:text-sm">
             Balance
           </div>
           <span
-            className={`text-xs font-semibold text-white fmd:text-sm`}
+            className="text-xs font-semibold text-white fmd:text-sm"
             title={tokenBalance.toString()}
           >
             {truncateTokenAmount(tokenBalance, 9999999)}

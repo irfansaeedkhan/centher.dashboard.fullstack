@@ -53,9 +53,9 @@ export class SmartContractProvider {
     signer?: SignerOrProvider
   ): any {
     let tokenContractName;
-    if (tokenName == "BUSD") {
-      tokenContractName = SmartContractName.BUSD;
-    } else if (tokenName == "NTR") {
+    if (tokenName === "USDT") {
+      tokenContractName = SmartContractName.USDT;
+    } else if (tokenName === "NTR") {
       tokenContractName = SmartContractName.NTR;
     } else {
       tokenContractName = SmartContractName.DXC;

@@ -6,6 +6,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
   variant?: "primary" | "secondary" | "danger";
   Icon?: React.ReactNode;
+  IconEnd?: React.ReactNode;
   borderRounded?: string;
   backgroundColor?: string;
   loaderIcon?: React.ReactNode;
@@ -20,6 +21,7 @@ const FinalButton: React.FC<ButtonProps> = ({
   className,
   Icon,
   loaderIcon,
+  IconEnd,
   borderRounded = "14px",
   backgroundColor = "#17171A",
   ...props
@@ -54,6 +56,7 @@ const FinalButton: React.FC<ButtonProps> = ({
       <span className="primary-gradient-btn-text relative">
         {loaderIcon ? loaderIcon : title}
       </span>
+      {IconEnd && IconEnd}
     </button>
   );
 };
