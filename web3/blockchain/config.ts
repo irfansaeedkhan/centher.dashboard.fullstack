@@ -36,7 +36,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     PRESALE: {
       // Presale Contract Address
-      56: "0x23a376C486CD5536674fE84f42A1c3b81B00E5ca",
+      56: "0x01F0f48596c4Abae49418210385b7aF882A3cb4e",
       // 5: "0x1Ee9fD67ceA1E5Ea130a6ceAAe51EA8c7BF65Ec8", // "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
       5: "0x5Eaf2D08FA62220AC064Df5e47521cB7cc16F964",
     },
