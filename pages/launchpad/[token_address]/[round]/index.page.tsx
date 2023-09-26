@@ -1,54 +1,46 @@
-import React from "react";
-import Image from "next/image";
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
-import {
-  BuyCentherWrapper,
-  PresaleCard,
-  PurchaseCentherCard,
-  RoundStats,
-} from "./_components";
+import { AppRoutes } from "@/constants/app.routes";
+import { PurchaseCentherCardV2 } from "../../_components/purchase-centher-card-v2";
+import LaunchpadComingSoon from "../../_components/lauchpad.comingsoon";
 
-const Launchpad: NextPageWithLayout = () => {
+const BuyTokenPage: NextPageWithLayout = () => {
   const router = useRouter();
-  const round_number = router.query.round
-    ? Number(router.query.round?.toString())
-    : undefined;
   const { roundsInfo, refreshRoundsInfo } = useGetRoundsInfo();
 
-  if (!round_number) return null;
-
-  return roundsInfo[round_number - 1] ? (
-    <div className="flex flex-col gap-5">
-      <PresaleCard roundInfo={roundsInfo[round_number - 1]} />
-      <RoundStats roundInfo={roundsInfo[round_number - 1]} />
-      <PurchaseCentherCard
-        roundInfo={roundsInfo[round_number - 1]}
+  return (
+    <div>
+      {/* <PresaleCardV2 roundInfo={roundsInfo[Number(router.query.round)]} /> */}
+      <PurchaseCentherCardV2
+        roundInfo={roundsInfo[Number(router.query.round)]}
         refreshRoundsInfo={refreshRoundsInfo}
-      />
-    </div>
-  ) : (
-    <div className="flex h-[calc(100vh-60px)] w-full items-center justify-center">
-      <Image
-        src="/images/preloader.png"
-        alt="Chat Background"
-        width={64}
-        height={64}
-        className="h-16 w-16 flex-shrink-0 object-cover"
       />
     </div>
   );
 };
 
-Launchpad.getLayout = (page) => (
+BuyTokenPage.getLayout = (page) => (
   <AllPagesWrapper pageTitle="Launchpad">
-    <div className="mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto">
-      <BuyCentherWrapper />
+    <div
+      className={`mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto`}
+    >
+      {/* <BuyCentherWrapper /> */}
+      <LaunchpadComingSoon />
       {page}
     </div>
   </AllPagesWrapper>
 );
 
-export default Launchpad;
+export default BuyTokenPage;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  return {
+    redirect: {
+      destination: AppRoutes.launchpad_pre_booking.index,
+      permanent: false,
+    },
+  };
+};

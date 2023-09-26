@@ -3,7 +3,6 @@ import CentherIconImgBg from "./centher.icon.bg.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
 import DXCIconImg from "./dexa-logo.png";
-import DXCIconNewImg from "./dexa-logo-new.png";
 import VerifiedIconImg from "./verifiedmark.png";
 import LockedIconImg from "./lock-icon.png";
 import HammerIconImg from "./hammer-icon.png";
@@ -172,7 +171,6 @@ export { default as TeamMemberIcon } from "./team-member-icon.svg";
 export { default as IconFailure } from "./icon-failure.svg";
 export { default as XLogo } from "./x-logo.svg";
 export { default as ChatProfile } from "./chat-profile-icon.svg";
-export { default as USDTIcon } from "./usdt-icon.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (
@@ -256,19 +254,6 @@ export const VerifiedIcon: React.FC<IconProps> = (props) => {
       sizes="256px"
       width={24}
       height={24}
-    />
-  );
-};
-
-export const DXCIconNew: React.FC<IconProps> = (props) => {
-  return (
-    <img
-      className={props.className}
-      src={DXCIconNewImg.src}
-      alt="DXC Icon BG"
-      sizes="256px"
-      width={40}
-      height={40}
     />
   );
 };

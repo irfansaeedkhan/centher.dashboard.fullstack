@@ -13,7 +13,7 @@ export type SignerOrProvider = Signer | providers.Provider;
 export type SystemSmartContractAbiHolder = Record<SmartContractName, any>;
 export type SmartContractNameWithERC721 = ERC721Name | SmartContractName;
 export type SmartContractAbisHolder = Record<SmartContractNameWithERC721, any>;
-export type TokenName = "BUSD" | "NTR" | "CTHR" | "DXC" | "USDT";
+export type TokenName = "BUSD" | "NTR" | "CTHR" | "DXC";
 export type ClaimCentherFrom = "BUSD" | "NTR";
 export interface Explorer {
   name: string;

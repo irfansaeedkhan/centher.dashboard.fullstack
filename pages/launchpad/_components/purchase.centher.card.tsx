@@ -1,23 +1,23 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
-import clsx from "clsx";
-import toast from "react-hot-toast";
-import { formatEther } from "ethers/lib/utils";
 import { useWeb3React } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
-import { LockedIcon, DXCIconBG, USDTIcon } from "@/assets/svgs";
+import toast from "react-hot-toast";
+import clsx from "clsx";
+
 import {
   getTokenBalance,
   getTokenAllowance,
   useGetContributionInfo,
 } from "@/web3/hooks/use.contracts.functions";
-import { BlockchainWrite } from "@/web3/blockchain";
+import Button from "@/components/button";
 import { RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
-import FinalButton from "@/components/button/final.button";
+import { BUSDIconBG, LockedIcon, CentherIconBG } from "@/assets/svgs";
+
+import { ConversionContainer } from "./conversion.container";
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { ConversionContainer } from "./conversion-container";
-import { TimelinePeriod } from "./timeline-period";
+import { CentherTable } from "./centher.table";
+import { BlockchainWrite } from "@/web3/blockchain";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -34,37 +34,33 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     account,
     roundInfo
   );
-  const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
-    tokenName: "USDT",
-    tokenIcon: (
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/5">
-        <USDTIcon />
-      </span>
-    ),
-    tokenBalance: 0,
-    minContribution: roundInfo ? roundInfo.minContributionForBusd : 0,
-    maxContribution: roundInfo ? roundInfo.maxContributionForBusd : 0,
-    rate: roundInfo ? roundInfo.priceForBusd : 0,
 
-    inputValue: roundInfo ? roundInfo.minContributionForBusd : 0,
-    inputMinValue: roundInfo ? roundInfo.minContributionForBusd : 0,
-    inputMaxValue: roundInfo ? roundInfo.maxContributionForBusd : 0,
+  const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
+    tokenName: "BUSD",
+    tokenIcon: <BUSDIconBG className="h-10 w-10" />,
+    tokenBalance: 0,
+    minContribution: roundInfo.minContributionForBusd,
+    maxContribution: roundInfo.maxContributionForBusd,
+    rate: roundInfo.priceForBusd,
+
+    inputValue: roundInfo.minContributionForBusd,
+    inputMinValue: roundInfo.minContributionForBusd,
+    inputMaxValue: roundInfo.maxContributionForBusd,
   });
+
   const [selectedTokenB, setSelectedTokenB] = useState<SelectedTokenB>({
     tokenName: "CTHR",
-    tokenIcon: <DXCIconBG className="h-10 w-10" />,
+    tokenIcon: <CentherIconBG className="h-10 w-10" />,
     tokenBalance: 0,
-    inputValue: roundInfo
-      ? roundInfo.minContributionForBusd /
-        Number(formatEther(roundInfo.priceForBusd.toString()))
-      : 0,
+    inputValue: roundInfo.minContributionForBusd / roundInfo.priceForBusd,
   });
+
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     status: "warning",
     title: "Authorization Contract",
-    subtitle: `Allow BUSD to use your ${selectedTokenA.tokenName} token`,
-    bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the DeXa contract.`,
+    subtitle: `Allow Centher to use your ${selectedTokenA.tokenName} token`,
+    bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Centher contract.`,
     confirmButtonText: "Authorize",
     onClose: () => {
       setModal((prev) => ({
@@ -74,26 +70,6 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     },
     onClickConfirm: () => {},
   });
-
-  useEffect(() => {
-    if (!account || !library || !roundInfo) return;
-    setSelectedTokenA((prev) => ({
-      ...prev,
-      tokenName: "USDT",
-      tokenIcon: (
-        <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/5">
-          <USDTIcon />
-        </span>
-      ),
-      minContribution: roundInfo?.minContributionForBusd,
-      maxContribution: roundInfo?.maxContributionForBusd,
-      rate: roundInfo?.priceForBusd,
-
-      inputValue: roundInfo?.minContributionForBusd,
-      inputMinValue: roundInfo?.minContributionForBusd,
-      inputMaxValue: roundInfo?.maxContributionForBusd,
-    }));
-  }, [account, library, roundInfo]);
 
   // Get selectedTokenA balance
   useEffect(() => {
@@ -158,8 +134,8 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       isOpen: true,
       status: "warning",
       title: "Authorization Contract",
-      subtitle: `Allow USDT to use your ${selectedTokenA.tokenName} token`,
-      bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the DeXa contract.`,
+      subtitle: `Allow Centher to use your ${selectedTokenA.tokenName} token`,
+      bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the Centher contract.`,
       confirmButtonText: "Authorize",
       onClickConfirm: handleClickAuthorize,
     }));
@@ -210,35 +186,33 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       isOpen: true,
       status: "buy-cthr",
       title: "Buy Now",
-      subtitle: `Do you want to buy DXC?`,
-      bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} DXC.`,
+      subtitle: `Do you want to buy CENTHER?`,
+      bodyText: `Confirm that you pay ${selectedTokenA.inputValue} ${selectedTokenA.tokenName} to buy ${selectedTokenB.inputValue} ${selectedTokenB.tokenName}.`,
       confirmButtonText: "Buy Now",
       onClickConfirm: handleBuyCenther,
     }));
   };
 
   const handleBuyCenther = async () => {
+    if (!account || !library || !selectedTokenA.inputValue) return;
+
+    setModal((prev) => ({
+      ...prev,
+      status: "progress",
+    }));
     try {
-      if (!account || !library || !selectedTokenA.inputValue) return;
-
-      setModal((prev) => ({
-        ...prev,
-        status: "progress",
-      }));
-
-      await BlockchainWrite.buyToken(
+      await BlockchainWrite.buyCenther(
         selectedTokenA.tokenName,
         selectedTokenA.inputValue,
         library
       );
-
       refreshContributionInfo();
       refreshRoundsInfo();
       setModal((prev) => ({
         ...prev,
         title: "Success",
         subtitle: "Purchase Successful",
-        bodyText: `You have bought DXC. DXC will be locked for ${roundInfo?.lockMonths} months. You can claim when unlocked.`,
+        bodyText: `You have bought CENTHER tokens. CENTHER will be locked for ${roundInfo.lockMonths} months. You can claim when unlocked.`,
         status: "success",
       }));
     } catch (error) {
@@ -252,29 +226,33 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   };
 
   return (
-    <div className="relative mt-4">
-      {roundInfo.status === "not-started" && (
-        <div className="absolute left-0 top-0 z-[1000] flex h-[390px] w-full items-center justify-center">
-          <div className="flex flex-col items-center justify-center gap-10">
+    <div className="relative">
+      {roundInfo.status === "active" && (
+        <div
+          className={`absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center`}
+        >
+          <div className={`flex flex-col items-center justify-center gap-10`}>
             <LockedIcon className="h-[80px] w-[80px]" />
-            <h6 className="text-20px font-semibold text-white">Coming Soon</h6>
+            <h6 className={`text-20px font-semibold text-white`}>
+              Wait for the presale to start
+            </h6>
           </div>
         </div>
       )}
+
       <div
         className={clsx(
-          (roundInfo.status === "not-started" ||
-            (contributionInfo &&
-              (contributionInfo.contributedBusdAmount > 0 ||
-                contributionInfo.contributedNtrAmount > 0) &&
-              roundInfo.status !== "ended")) &&
-            "pointer-events-none relative bg-black-shade-3/60 blur-xl"
+          roundInfo.status === "active" &&
+            "pointer-events-none bg-black-shade-3/60 blur-xl"
         )}
       >
-        <div className="rounded-xl bg-background-shade-3">
-          <h1 className="border-b-2 border-b-gray-shade-3 px-5 py-6 text-center text-sm font-semibold text-white fsm:px-8 fsm:text-xl fmd:py-8 flg:text-2xl">
-            Enter DXC amount you&apos;d like to purchase
+        <div className={`rounded-xl bg-background-shade-3`}>
+          <h1
+            className={`border-b-2 border-b-gray-shade-3 px-5 py-6 text-center text-sm font-semibold text-white fsm:px-8 fsm:text-xl fmd:py-8 flg:text-2xl`}
+          >
+            Please Enter CENTHER amount you&apos;d like to purchase
           </h1>
+
           <div className="px-3 py-6 fsm:px-6 fsm:py-8 flg:p-12">
             <ConversionContainer
               selectedTokenA={selectedTokenA}
@@ -283,17 +261,22 @@ export const PurchaseCentherCard: React.FC<Props> = ({
               setSelectedTokenB={setSelectedTokenB}
               roundInfo={roundInfo}
             />
-            {roundInfo?.status === "active" && (
-              <div className="mx-auto max-w-[442px] pt-8 text-center lg:pt-12">
-                <h6 className="pb-4 text-xs font-semibold text-gray-shade-7 fmd:text-sm">
+
+            {roundInfo.status === "active" && (
+              <div
+                className={`mx-auto max-w-[442px] pt-8 text-center lg:pt-12`}
+              >
+                <h6
+                  className={`pb-4 text-xs font-semibold text-gray-shade-7 fmd:text-sm`}
+                >
                   Minimum Buy:{" "}
                   <span className={`text-white`}>
                     {selectedTokenA.minContribution} {selectedTokenA.tokenName}
                   </span>
                 </h6>
-                <FinalButton
+                <Button
                   title={isApproved ? "Buy now" : "Authorize"}
-                  variant="primary"
+                  variant="v1"
                   onClick={
                     !account
                       ? () => {
@@ -303,8 +286,9 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                       ? openBuyModal
                       : openAuthorizeModal
                   }
-                  className="w-full py-3"
+                  className="py-3"
                 />
+
                 <StandardModal
                   isOpen={modal.isOpen}
                   status={modal.status}
@@ -317,53 +301,31 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                 />
               </div>
             )}
-            {roundInfo?.status === "ended" && (
-              <div className="mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 px-5 py-2 text-center lg:mt-12">
-                <p className="text-sm font-semibold text-[#E6535A] fsm:text-base fmd:text-base">
-                  Round {roundInfo?.round + 1} is over!{" "}
-                  {roundInfo.round !== 2 && (
-                    <span>Wait for the next round.</span>
-                  )}
+
+            {roundInfo.status === "ended" && (
+              <div
+                className={`mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 px-5 py-2 text-center lg:mt-12`}
+              >
+                <p
+                  className={`text-sm font-semibold text-[#E6535A] fsm:text-base fmd:text-base`}
+                >
+                  Round {roundInfo.round + 1} is over! Buy another available or
+                  wait for the next round.
                 </p>
               </div>
             )}
-
-            <div className="mx-auto mt-6 w-fit text-center">
-              <p className="text-xs text-gray-shade-7">
-                <span className="text-[#E6535A]">Terms & Conditions:</span>{" "}
-                Purchased tokens will be automatically locked for the first 4
-                months, after which 12.5% of the purchased tokens will be
-                released every month for the next 8 months and can be claimed.
-                The vesting contract will then last a total of 12 months.
-              </p>
-            </div>
           </div>
         </div>
       </div>
-      {contributionInfo ? (
-        <TimelinePeriod
-          isBUSD={contributionInfo.contributedBusdAmount > 0}
+
+      {!contributionInfo ||
+      (!contributionInfo.contributedBusdAmount &&
+        !contributionInfo.contributedNtrAmount) ? null : (
+        <CentherTable
           roundInfo={roundInfo}
-          library={library}
           contributionInfo={contributionInfo}
           refetchContributionInfo={refreshContributionInfo}
         />
-      ) : !contributionInfo && account ? (
-        <div className="mt-5 flex w-full items-center justify-center">
-          <Image
-            src="/images/preloader.png"
-            alt="Chat Background"
-            width={64}
-            height={64}
-            className="h-16 w-16 flex-shrink-0 object-cover"
-          />
-        </div>
-      ) : (
-        <div className="mt-5 flex w-full items-center justify-center">
-          <p className="text-xl font-semibold text-white">
-            Please Connect your Wallet
-          </p>
-        </div>
       )}
     </div>
   );

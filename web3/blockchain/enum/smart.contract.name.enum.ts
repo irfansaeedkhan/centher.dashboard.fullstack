@@ -8,7 +8,6 @@ export enum SmartContractName {
   PANCAKE_ROUTER = "PANCAKE_ROUTER",
   WBNB = "WBNB",
   BUSD = "BUSD",
-  USDT = "USDT",
   NTR = "NTR",
   NATIVE_COLLECTION = "NATIVE_COLLECTION",
   DXC = "DXC",

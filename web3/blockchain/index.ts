@@ -893,6 +893,74 @@ export class BlockchainWrite {
     }
   }
 
+  static async adminChangeReferralRate(
+    library: Web3Provider,
+    rates: number[]
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.setReferralRate(rates);
+      const tx = await presaleContract.functions.setReferralRate(rates);
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeReferralRate");
+      throw error;
+    }
+  }
+
+  static async adminChangeCompanyAddress(
+    library: Web3Provider,
+    newAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.changeCompanyAddress(newAddress);
+      const tx = await presaleContract.functions.changeCompanyAddress(
+        newAddress
+      );
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeCompanyAddress");
+      throw error;
+    }
+  }
+
+  static async adminChangeCoreTeamAddress(
+    library: Web3Provider,
+    newAddress: string
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.changeCoreTeamAddress(newAddress);
+      const tx = await presaleContract.functions.changeCoreTeamAddress(
+        newAddress
+      );
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminChangeCoreTeamAddress");
+      throw error;
+    }
+  }
+
   static async adminClaimRegistrationBNB(
     library: Web3Provider
   ): Promise<string> {
@@ -908,6 +976,171 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "adminClaimRegistrationBNB");
+      throw error;
+    }
+  }
+
+  static async adminCallUpdateRoundInfo(
+    library: Web3Provider,
+    roundIndex: number,
+    startTime: number,
+    endTime: number,
+    lockMonths: number,
+    centherPriceForBusd: number,
+    centherPriceForNtr: number,
+    maxCentherAmountToSell: number,
+    minBusdAmountPerUser: number,
+    maxBusdAmountPerUser: number,
+    minNtrAmountPerUser: number,
+    maxNtrAmountPerUser: number,
+    enableBusd: boolean
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let tx;
+      if (enableBusd) {
+        await presaleContract.callStatic.setRoundInfoForBusd(
+          roundIndex,
+          centherPriceForBusd * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell + ""),
+          ethers.utils.parseEther(minBusdAmountPerUser + ""),
+          ethers.utils.parseEther(maxBusdAmountPerUser + "")
+        );
+
+        tx = await presaleContract.functions.setRoundInfoForBusd(
+          roundIndex,
+          centherPriceForBusd * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minBusdAmountPerUser.toString()),
+          ethers.utils.parseEther(maxBusdAmountPerUser.toString())
+        );
+      } else {
+        await presaleContract.callStatic.setRoundInfoForNtr(
+          roundIndex,
+          centherPriceForNtr * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+        );
+
+        tx = await presaleContract.functions.setRoundInfoForNtr(
+          roundIndex,
+          centherPriceForNtr * 100000,
+          Math.floor(startTime),
+          Math.floor(endTime),
+          lockMonths,
+          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
+          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
+          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
+        );
+      }
+
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallUpdateRoundInfo");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimNtrForCoreTeam(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawNtrForCoreTeam();
+
+      const tx = await presaleContract.functions.withdrawNtrForCoreTeam();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimNtrForCoreTeam");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimBusdForCoreTeam(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawBusdForCoreTeam();
+
+      const tx = await presaleContract.functions.withdrawBusdForCoreTeam();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimBusdForCoreTeam");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimNtrForCompany(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawNtr();
+
+      const tx = await presaleContract.functions.withdrawNtr();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimNtrForCompany");
+      throw error;
+    }
+  }
+
+  static async adminCallClaimBusdForCompany(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.withdrawBUSD();
+
+      const tx = await presaleContract.functions.withdrawBUSD();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "adminCallClaimBusdForCompany");
       throw error;
     }
   }
@@ -1293,6 +1526,147 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "callApproveNFTToMarketplace");
+      throw error;
+    }
+  }
+
+  static async callClaimNTRForReferral(library: Web3Provider): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefRewardNTR();
+
+      const tx = await presaleContract.functions.claimRefRewardNTR();
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callClaimNTRForReferral");
+      throw error;
+    }
+  }
+
+  static async callClaimBUSDForReferral(
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      await presaleContract.callStatic.claimRefRewardBUSD();
+
+      const tx = await presaleContract.functions.claimRefRewardBUSD();
+      await tx.wait();
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "callClaimBUSDForReferral");
+      throw error;
+    }
+  }
+
+  static async claimNtrTokens(
+    library: Web3Provider,
+    round: number,
+    claimFrom: ClaimCentherFrom
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let claimFunction;
+      if (claimFrom === "BUSD") {
+        await presaleContract.callStatic.claimTokensFromBusd(round);
+        claimFunction = presaleContract.functions.claimTokensFromBusd;
+      } else if (claimFrom === "NTR") {
+        await presaleContract.callStatic.claimTokensFromNtr(round);
+        claimFunction = presaleContract.functions.claimTokensFromNtr;
+      } else {
+        throw new Error("Can not claim tokens");
+      }
+
+      const tx = await claimFunction(round);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "claimNtrTokens");
+      throw error;
+    }
+  }
+
+  static async buyCenther(
+    tokenName: TokenName,
+    amount: number,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleContract = SmartContractProvider.getContract(
+        SmartContractName.PRESALE,
+        signer
+      );
+
+      let tokenPurchase;
+      const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
+
+      if (tokenName === "BUSD") {
+        await presaleContract.callStatic.tokenPurchaseWithBUSD(purchaseAmount);
+        tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
+      } else if (tokenName === "NTR") {
+        await presaleContract.callStatic.tokenPurchaseWithNtr(purchaseAmount);
+        tokenPurchase = presaleContract.functions.tokenPurchaseWithNtr;
+      }
+
+      if (!tokenPurchase) {
+        throw new Error("Token cannot be purchased");
+      }
+
+      const tx = await tokenPurchase(purchaseAmount);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "buyCenther");
+      throw error;
+    }
+  }
+
+  static async getTokenApproval(
+    tokenName: TokenName,
+    library: Web3Provider
+  ): Promise<string> {
+    try {
+      const signer = getSigner(library);
+      const presaleAddress = AddressFactory.getContractAddress(
+        SmartContractName.PRESALE
+      );
+
+      const tokenContract = SmartContractProvider.getTokenContract(
+        tokenName,
+        signer
+      );
+
+      const amount = ethers.utils.parseUnits(
+        BlockchainConfig.maxSupply.toString()
+      );
+
+      await tokenContract.callStatic.approve(presaleAddress, amount);
+      const tx = await tokenContract.functions.approve(presaleAddress, amount);
+      await tx.wait();
+
+      return tx.hash;
+    } catch (error: any) {
+      logger(error, "getTokenApproval");
       throw error;
     }
   }
@@ -1811,379 +2185,6 @@ export class BlockchainWrite {
       return tx.hash;
     } catch (error: any) {
       logger(error, "restake");
-      throw error;
-    }
-  }
-
-  //launchpadV1
-  static async buyToken(
-    tokenName: TokenName,
-    amount: number,
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      let tokenPurchase;
-      const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
-
-      if (tokenName === "USDT") {
-        await presaleContract.callStatic.tokenPurchaseWithBUSD(purchaseAmount);
-        tokenPurchase = presaleContract.functions.tokenPurchaseWithBUSD;
-      } else if (tokenName === "NTR") {
-        await presaleContract.callStatic.tokenPurchaseWithNTR(purchaseAmount);
-        tokenPurchase = presaleContract.functions.tokenPurchaseWithNTR;
-      }
-
-      if (!tokenPurchase) {
-        throw new Error("Token cannot be purchased");
-      }
-
-      const tx = await tokenPurchase(purchaseAmount);
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "buyToken");
-      throw error;
-    }
-  }
-  static async adminCallUpdateRoundInfo(
-    library: Web3Provider,
-    roundIndex: number,
-    startTime: number,
-    endTime: number,
-    lockMonths: number,
-    centherPriceForBusd: number,
-    centherPriceForNtr: number,
-    maxCentherAmountToSell: number,
-    minBusdAmountPerUser: number,
-    maxBusdAmountPerUser: number,
-    minNtrAmountPerUser: number,
-    maxNtrAmountPerUser: number,
-    enableBusd: boolean
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      let tx;
-      if (enableBusd) {
-        await presaleContract.callStatic.setRoundInfoForBusd(
-          roundIndex,
-          centherPriceForBusd * 100000,
-          Math.floor(startTime),
-          Math.floor(endTime),
-          lockMonths,
-          ethers.utils.parseEther(maxCentherAmountToSell + ""),
-          ethers.utils.parseEther(minBusdAmountPerUser + ""),
-          ethers.utils.parseEther(maxBusdAmountPerUser + "")
-        );
-
-        tx = await presaleContract.functions.setRoundInfoForBusd(
-          roundIndex,
-          centherPriceForBusd * 100000,
-          Math.floor(startTime),
-          Math.floor(endTime),
-          lockMonths,
-          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
-          ethers.utils.parseEther(minBusdAmountPerUser.toString()),
-          ethers.utils.parseEther(maxBusdAmountPerUser.toString())
-        );
-      } else {
-        await presaleContract.callStatic.setRoundInfoForNtr(
-          roundIndex,
-          centherPriceForNtr * 100000,
-          Math.floor(startTime),
-          Math.floor(endTime),
-          lockMonths,
-          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
-          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
-          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
-        );
-
-        tx = await presaleContract.functions.setRoundInfoForNtr(
-          roundIndex,
-          centherPriceForNtr * 100000,
-          Math.floor(startTime),
-          Math.floor(endTime),
-          lockMonths,
-          ethers.utils.parseEther(maxCentherAmountToSell.toString()),
-          ethers.utils.parseEther(minNtrAmountPerUser.toString()),
-          ethers.utils.parseEther(maxNtrAmountPerUser.toString())
-        );
-      }
-
-      await tx.wait();
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminCallUpdateRoundInfo");
-      throw error;
-    }
-  }
-
-  static async adminCallClaimNtrForCoreTeam(
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.withdrawNtrForCoreTeam();
-
-      const tx = await presaleContract.functions.withdrawNtrForCoreTeam();
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminCallClaimNtrForCoreTeam");
-      throw error;
-    }
-  }
-
-  static async adminCallClaimBusdForCoreTeam(
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.withdrawBusdForCoreTeam();
-
-      const tx = await presaleContract.functions.withdrawBusdForCoreTeam();
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminCallClaimBusdForCoreTeam");
-      throw error;
-    }
-  }
-
-  static async adminCallClaimNtrForCompany(
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.withdrawNtr();
-
-      const tx = await presaleContract.functions.withdrawNtr();
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminCallClaimNtrForCompany");
-      throw error;
-    }
-  }
-
-  static async adminCallClaimBusdForCompany(
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.withdrawBUSD();
-
-      const tx = await presaleContract.functions.withdrawBUSD();
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminCallClaimBusdForCompany");
-      throw error;
-    }
-  }
-
-  static async getTokenApproval(
-    tokenName: TokenName,
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleAddress = AddressFactory.getContractAddress(
-        SmartContractName.PRESALE
-      );
-
-      const tokenContract = SmartContractProvider.getTokenContract(
-        tokenName,
-        signer
-      );
-
-      const amount = ethers.utils.parseUnits(
-        BlockchainConfig.maxSupply.toString()
-      );
-
-      await tokenContract.callStatic.approve(presaleAddress, amount);
-      const tx = await tokenContract.functions.approve(presaleAddress, amount);
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "getTokenApproval");
-      throw error;
-    }
-  }
-  static async callClaimNTRForReferral(library: Web3Provider): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.claimRefRewardNTR();
-
-      const tx = await presaleContract.functions.claimRefRewardNTR();
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "callClaimNTRForReferral");
-      throw error;
-    }
-  }
-
-  static async callClaimBUSDForReferral(
-    library: Web3Provider
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.claimRefRewardBUSD();
-
-      const tx = await presaleContract.functions.claimRefRewardBUSD();
-      await tx.wait();
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "callClaimBUSDForReferral");
-      throw error;
-    }
-  }
-
-  static async claimTokens(
-    library: Web3Provider,
-    round: number,
-    claimFrom: ClaimCentherFrom
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      let claimFunction;
-      if (claimFrom === "BUSD") {
-        await presaleContract.callStatic.claimTokensFromBusd(round);
-        claimFunction = presaleContract.functions.claimTokensFromBusd;
-      } else if (claimFrom === "NTR") {
-        await presaleContract.callStatic.claimTokensFromNtr(round);
-        claimFunction = presaleContract.functions.claimTokensFromNtr;
-      } else {
-        throw new Error("Can not claim tokens");
-      }
-
-      const tx = await claimFunction(round);
-      await tx.wait();
-
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "claimTokens");
-      throw error;
-    }
-  }
-
-  static async adminChangeReferralRate(
-    library: Web3Provider,
-    rates: number[]
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.setReferralRate(rates);
-      const tx = await presaleContract.functions.setReferralRate(rates);
-      await tx.wait();
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminChangeReferralRate");
-      throw error;
-    }
-  }
-
-  static async adminChangeCompanyAddress(
-    library: Web3Provider,
-    newAddress: string
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.changeCompanyAddress(newAddress);
-      const tx = await presaleContract.functions.changeCompanyAddress(
-        newAddress
-      );
-
-      await tx.wait();
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminChangeCompanyAddress");
-      throw error;
-    }
-  }
-
-  static async adminChangeCoreTeamAddress(
-    library: Web3Provider,
-    newAddress: string
-  ): Promise<string> {
-    try {
-      const signer = getSigner(library);
-      const presaleContract = SmartContractProvider.getContract(
-        SmartContractName.PRESALE,
-        signer
-      );
-
-      await presaleContract.callStatic.changeCoreTeamAddress(newAddress);
-      const tx = await presaleContract.functions.changeCoreTeamAddress(
-        newAddress
-      );
-      await tx.wait();
-      return tx.hash;
-    } catch (error: any) {
-      logger(error, "adminChangeCoreTeamAddress");
       throw error;
     }
   }

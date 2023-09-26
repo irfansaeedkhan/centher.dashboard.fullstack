@@ -1,15 +1,21 @@
 import React from "react";
 import { useWeb3React } from "@web3-react/core";
-import { formatEther } from "ethers/lib/utils";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
-import { TokenName } from "@/web3/blockchain/types";
+
 import { RoundInfo } from "@/web3/constants/types";
-import { LeftArrowIcon, NTRIconBG, DXCIconBG, USDTIcon } from "@/assets/svgs";
+import {
+  BUSDIconBG,
+  LeftArrowIcon,
+  CentherIconBG,
+  NTRIconBG,
+  DXCIconBG,
+} from "@/assets/svgs";
+
 import { SelectedTokenA, SelectedTokenB } from "./types";
-import { ConversionTokenBox } from "./conversion-token-box";
+import { ConversionTokenBox } from "./conversion.token.box";
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
+import { TokenName } from "@/web3/blockchain/types";
 
 interface Props {
   selectedTokenA: SelectedTokenA;
@@ -19,7 +25,7 @@ interface Props {
   roundInfo: RoundInfo;
 }
 
-export const ConversionContainer: React.FC<Props> = ({
+export const ConversionContainerV2: React.FC<Props> = ({
   selectedTokenA,
   setSelectedTokenA,
   selectedTokenB,
@@ -27,16 +33,13 @@ export const ConversionContainer: React.FC<Props> = ({
   roundInfo,
 }) => {
   const { account } = useWeb3React();
+
   const handleChangeSelectedToken = (tokenName: TokenName) => {
-    if (tokenName === "USDT") {
+    if (tokenName === "BUSD") {
       setSelectedTokenA((prev) => ({
         ...prev,
-        tokenName: "USDT",
-        tokenIcon: (
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/5">
-            <USDTIcon />
-          </span>
-        ),
+        tokenName: "BUSD",
+        tokenIcon: <BUSDIconBG className="h-10 w-10" />,
         minContribution: roundInfo.minContributionForBusd,
         maxContribution: roundInfo.maxContributionForBusd,
         rate: roundInfo.priceForBusd,
@@ -44,12 +47,6 @@ export const ConversionContainer: React.FC<Props> = ({
         inputValue: roundInfo.minContributionForBusd,
         inputMinValue: roundInfo.minContributionForBusd,
         inputMaxValue: roundInfo.maxContributionForBusd,
-      }));
-      setSelectedTokenB((prev) => ({
-        ...prev,
-        inputValue:
-          roundInfo.minContributionForBusd /
-          Number(formatEther(roundInfo.priceForBusd.toString())),
       }));
     } else if (tokenName === "NTR") {
       setSelectedTokenA((prev) => ({
@@ -64,17 +61,13 @@ export const ConversionContainer: React.FC<Props> = ({
         inputMinValue: roundInfo.minContributionForNtr,
         inputMaxValue: roundInfo.maxContributionForNtr,
       }));
-      setSelectedTokenB((prev) => ({
-        ...prev,
-        inputValue:
-          roundInfo.minContributionForNtr /
-          Number(formatEther(roundInfo.priceForNtr.toString())),
-      }));
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-between gap-5 flg:flex-row">
+    <div
+      className={`flex flex-col items-center justify-between gap-5 flg:flex-row`}
+    >
       <div className={conversionInputContainer}>
         <ConversionTokenBox
           tokenIcon={selectedTokenA.tokenIcon}
@@ -83,10 +76,10 @@ export const ConversionContainer: React.FC<Props> = ({
           // hasDropdown={true}
           onChangeSelectedToken={handleChangeSelectedToken}
         />
+
         <div className={inputBox}>
           <div className={clsx(inputBoxLeft)}>
             <input
-              readOnly={roundInfo.status === "ended"}
               className={inputClasses}
               type="number"
               placeholder={selectedTokenA.inputMinValue?.toFixed(2)}
@@ -103,25 +96,24 @@ export const ConversionContainer: React.FC<Props> = ({
                 }));
                 setSelectedTokenB((prev) => ({
                   ...prev,
-                  inputValue:
-                    (value === "" ? 0 : value) /
-                    Number(formatEther(selectedTokenA.rate.toString())),
+                  inputValue: (value === "" ? 0 : value) / selectedTokenA.rate,
                 }));
               }}
               min={selectedTokenA?.inputMinValue}
               max={selectedTokenA?.inputMaxValue}
             />
           </div>
+
           <div className={inputBoxRight}>
-            <div className="flex flex-grow justify-center">
-              <FinalButton
-                title="Max"
-                className="text-xs"
+            <div className={`flex flex-grow justify-center`}>
+              <button
+                className={`hover:bg-yellow-theme cursor-pointer rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-3 py-1 text-xs font-medium text-brand-primary text-gray-shade-7 transition hover:border-0 hover:text-white fmd:text-sm`}
                 onClick={() => {
                   if (!account) {
                     toast.error("Please connect your wallet");
                     return;
                   }
+
                   setSelectedTokenA((prev) => ({
                     ...prev,
                     inputValue: selectedTokenA.tokenBalance,
@@ -129,23 +121,26 @@ export const ConversionContainer: React.FC<Props> = ({
                   setSelectedTokenB((prev) => ({
                     ...prev,
                     inputValue:
-                      selectedTokenA.tokenBalance /
-                      Number(formatEther(selectedTokenA.rate.toString())),
+                      selectedTokenA.tokenBalance / selectedTokenA.rate,
                   }));
                 }}
-                disabled={roundInfo.status === "ended"}
-              />
+              >
+                Max
+              </button>
             </div>
           </div>
         </div>
       </div>
+
       <ConversionArrowLeft />
+
       <div className={conversionInputContainer}>
         <ConversionTokenBox
           tokenIcon={<DXCIconBG className="h-10 w-10" />}
           tokenName="DXC"
           tokenBalance={selectedTokenB.tokenBalance}
         />
+
         <div className={inputBox}>
           <div className={inputBoxLeft}>
             <input
@@ -164,13 +159,14 @@ export const ConversionContainer: React.FC<Props> = ({
   );
 };
 
-const conversionInputContainer =
-  "space-y-3 w-full fmd:max-w-[656px] flg:max-w-[354px]";
-const inputClasses =
-  "inputClasses flex-grow w-4/5 focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 text-sm text-white font-semibold";
+const conversionInputContainer = `space-y-3 w-full fmd:max-w-[656px] flg:max-w-[354px]`;
+const inputClasses = `inputClasses flex-grow w-4/5 focus:outline-none focus:ring-0 outline-0 bg-transparent border-0 text-sm text-gray-shade-7 font-semibold`;
+
 const ConversionArrowLeft = () => {
   return (
-    <div className="flex h-16 w-16 rotate-90 transform cursor-pointer items-center justify-center rounded-full border-2 border-gray-shade-3 bg-gray-shade-9 transition hover:scale-110 fmd:h-20 fmd:w-20 flg:rotate-0 f2xl:h-[100px] f2xl:w-[100px]">
+    <div
+      className={`flex h-16 w-16 rotate-90 transform cursor-pointer items-center justify-center rounded-full border-2 border-gray-shade-3 bg-gray-shade-9 transition hover:scale-110 fmd:h-20 fmd:w-20 flg:rotate-0 f2xl:h-[100px] f2xl:w-[100px]`}
+    >
       <LeftArrowIcon />
     </div>
   );

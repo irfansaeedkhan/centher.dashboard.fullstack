@@ -1,10 +1,42 @@
-import { CreateCollection, Explore, Launchpad, CreateNFT } from "@/assets/svgs";
+import {
+  Feed,
+  Chat,
+  CreateCollection,
+  Explore,
+  Notification,
+  Launchpad,
+  Staking,
+  CreateNFT,
+} from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { SidebarData } from "./shared";
-import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
-import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 export const sidebarData: SidebarData = {
+  // social_network: {
+  //   label: "SOCIAL NETWORK",
+  //   items: [
+  //     {
+  //       label: "Feed",
+  //       url: AppRoutes.feed.index,
+  //       icon: Feed,
+  //       activeList: [AppRoutes.feed.index, AppRoutes.feed.single_post],
+  //     },
+  //     {
+  //       label: "Notifications",
+  //       url: AppRoutes.notifications,
+  //       icon: Notification,
+  //       countType: "notifications",
+  //       activeList: [AppRoutes.notifications],
+  //     },
+  //     {
+  //       label: "Chat",
+  //       url: AppRoutes.chat.index,
+  //       icon: Chat,
+  //       countType: "chats",
+  //       activeList: [AppRoutes.chat.index, AppRoutes.chat.single_chat],
+  //     },
+  //   ],
+  // },
   nft_marketplace: {
     label: "NFT MARKETPLACE",
     items: [
@@ -58,14 +90,12 @@ export const sidebarData: SidebarData = {
     items: [
       {
         label: "Launchpad",
-        url: `/launchpad/${AddressFactory.getContractAddress(
-          SmartContractName.DXC
-        )}/1`,
+        url: AppRoutes.launchpad_pre_booking.index,
         icon: Launchpad,
         available_for: "all",
         activeList: [
-          AppRoutes.launchpad,
           AppRoutes.launchpad_pre_booking.index,
+          AppRoutes.launchpad,
           AppRoutes.launchpad_pre_booking.booking,
         ],
       },
@@ -74,6 +104,7 @@ export const sidebarData: SidebarData = {
 };
 
 export const SidebarSections = [
+  // sidebarData.social_network,
   sidebarData.nft_marketplace,
   sidebarData.dao_government,
 ];

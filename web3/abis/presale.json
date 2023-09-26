@@ -1,104 +1,5 @@
 [
   {
-    "inputs": [],
-    "name": "InvalidInputLength",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidInputValue",
-    "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "depositedAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "currentBalance",
-        "type": "uint256"
-      }
-    ],
-    "name": "BusdRewardAmountDeposited",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "withdrawnAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "BusdRewardAmountWithdrawn",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldCompanyAccount",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newCompanyAccount",
-        "type": "address"
-      }
-    ],
-    "name": "CompanyAccountUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "oldCoreTeamAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newCoreTeamAddress",
-        "type": "address"
-      }
-    ],
-    "name": "CoreTeamAccountUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "deXa",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_deXa",
-        "type": "address"
-      }
-    ],
-    "name": "DexaContractUpdated",
-    "type": "event"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
@@ -134,25 +35,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldRate",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newRate",
-        "type": "uint256"
-      }
-    ],
-    "name": "RateUpdatedForCoreTeam",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": true,
         "internalType": "address",
         "name": "referrer",
@@ -172,38 +54,19 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "register",
+        "name": "referrer",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "_register",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "RegistrationContractUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "releaseMonth",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "_releaseMonths",
-        "type": "uint32"
-      }
-    ],
-    "name": "ReleaseMonthsUpdated",
+    "name": "RefRewardClaimNTR",
     "type": "event"
   },
   {
@@ -241,6 +104,43 @@
       }
     ],
     "name": "SetRefRewardBUSD",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "level",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "round",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetRefRewardNTR",
     "type": "event"
   },
   {
@@ -317,13 +217,13 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "busdAmount",
+        "name": "ntrAmount",
         "type": "uint256"
       },
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "busdAmountForOwner",
+        "name": "ntrAmountForOwner",
         "type": "uint256"
       }
     ],
@@ -331,106 +231,10 @@
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_busdAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_round",
-        "type": "uint256"
-      }
-    ],
-    "name": "allowanceToBusdUser",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_ntrAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_round",
-        "type": "uint256"
-      }
-    ],
-    "name": "allowanceToNtrUser",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_users",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_busdAmounts",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_rounds",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "batchAllowanceToBusdUsers",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address[]",
-        "name": "_users",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_ntrAmounts",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "uint256[]",
-        "name": "_rounds",
-        "type": "uint256[]"
-      }
-    ],
-    "name": "batchAllowanceToNtrUsers",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "busd",
     "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -438,49 +242,20 @@
   {
     "inputs": [],
     "name": "busdAmountForCoreTeam",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "busdAmountForOwner",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "busdBalanceForReward",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newAddress",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
     "name": "changeCompanyAddress",
     "outputs": [],
@@ -489,11 +264,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_coreTeamAddress",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
     "name": "changeCoreTeamAddress",
     "outputs": [],
@@ -502,11 +273,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_deXa",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
     "name": "changeDexaAddress",
     "outputs": [],
@@ -515,11 +282,16 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_register",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
+    ],
+    "name": "changeNtrAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_newAddress", "type": "address" }
     ],
     "name": "changeRegisterAddress",
     "outputs": [],
@@ -527,26 +299,28 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      }
-    ],
+    "inputs": [],
+    "name": "claimRefRewardBUSD",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claimRefRewardNTR",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
     "name": "claimTokensFromBusd",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      }
-    ],
+    "inputs": [{ "internalType": "uint8", "name": "_round", "type": "uint8" }],
     "name": "claimTokensFromNtr",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -555,115 +329,50 @@
   {
     "inputs": [],
     "name": "companyAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "coreTeamAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "deXa",
+    "name": "dexa",
     "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_busdAmount",
-        "type": "uint256"
-      }
-    ],
-    "name": "depositBusdForReward",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "address", "name": "_user", "type": "address" }
     ],
     "name": "getClaimableTokenAmountFromBusd",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      },
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      }
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "address", "name": "_user", "type": "address" }
     ],
     "name": "getClaimableTokenAmountFromNtr",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      }
+      { "internalType": "address", "name": "_user", "type": "address" },
+      { "internalType": "uint8", "name": "_round", "type": "uint8" }
     ],
     "name": "getContribute",
     "outputs": [
@@ -708,19 +417,9 @@
             "internalType": "uint256",
             "name": "totalClaimableTokenAmountForNtr",
             "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lastClaimedTimeForBusd",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lastClaimedTimeForNtr",
-            "type": "uint256"
           }
         ],
-        "internalType": "struct IDeXaPresale.ContributionInfo",
+        "internalType": "struct DeXaPresale.ContributionInfo",
         "name": "",
         "type": "tuple"
       }
@@ -733,14 +432,14 @@
     "name": "getReferralRateAndAddresses",
     "outputs": [
       {
-        "internalType": "uint16[6]",
+        "internalType": "uint8[6]",
         "name": "_referralRate",
-        "type": "uint16[6]"
+        "type": "uint8[6]"
       },
       {
-        "internalType": "uint256",
+        "internalType": "uint32",
         "name": "_percentForCoreTeam",
-        "type": "uint256"
+        "type": "uint32"
       },
       {
         "internalType": "address",
@@ -759,72 +458,28 @@
   {
     "inputs": [],
     "name": "getRound",
-    "outputs": [
-      {
-        "internalType": "int8",
-        "name": "",
-        "type": "int8"
-      }
-    ],
+    "outputs": [{ "internalType": "int8", "name": "", "type": "int8" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_round",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bool",
-        "name": "_isBusd",
-        "type": "bool"
-      }
+      { "internalType": "uint8", "name": "_round", "type": "uint8" },
+      { "internalType": "bool", "name": "_isBusd", "type": "bool" }
     ],
     "name": "hasSoldOut",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_deXa",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_ntr",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_busd",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_register",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_coreTeam",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_company",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_dexa", "type": "address" },
+      { "internalType": "address", "name": "_ntr", "type": "address" },
+      { "internalType": "address", "name": "_busd", "type": "address" },
+      { "internalType": "address", "name": "_register", "type": "address" },
+      { "internalType": "address", "name": "_company", "type": "address" },
+      { "internalType": "address", "name": "_coreTeam", "type": "address" }
     ],
     "name": "initialize",
     "outputs": [],
@@ -835,89 +490,64 @@
     "inputs": [],
     "name": "ntr",
     "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
+      { "internalType": "contract IERC20", "name": "", "type": "address" }
     ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ntrAmountForCoreTeam",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ntrAmountForOwner",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "percentForCoreTeam",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "name": "refRewardByBUSD",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "refRewardByNTR",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "referralDeep",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "referralRate",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
+    "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -926,7 +556,7 @@
     "name": "register",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract IRegistration",
         "name": "",
         "type": "address"
       }
@@ -937,13 +567,7 @@
   {
     "inputs": [],
     "name": "releaseMonth",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "",
-        "type": "uint32"
-      }
-    ],
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -955,65 +579,23 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "name": "roundInfo",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "priceForBusd",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "priceForNtr",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "lockMonths",
-        "type": "uint8"
-      },
+      { "internalType": "uint256", "name": "priceForBusd", "type": "uint256" },
+      { "internalType": "uint256", "name": "priceForNtr", "type": "uint256" },
+      { "internalType": "uint256", "name": "startTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "endTime", "type": "uint256" },
+      { "internalType": "uint8", "name": "lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
         "name": "maxDexaAmountToSell",
         "type": "uint256"
       },
-      {
-        "internalType": "bool",
-        "name": "busdEnabled",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "ntrEnabled",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "busdRaised",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "ntrRaised",
-        "type": "uint256"
-      },
+      { "internalType": "bool", "name": "busdEnabled", "type": "bool" },
+      { "internalType": "bool", "name": "ntrEnabled", "type": "bool" },
+      { "internalType": "uint256", "name": "busdRaised", "type": "uint256" },
+      { "internalType": "uint256", "name": "ntrRaised", "type": "uint256" },
       {
         "internalType": "uint256",
         "name": "minContributionForBusd",
@@ -1021,12 +603,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "maxContributionForBusd",
+        "name": "minContributionForNtr",
         "type": "uint256"
       },
       {
         "internalType": "uint256",
-        "name": "minContributionForNtr",
+        "name": "maxContributionForBusd",
         "type": "uint256"
       },
       {
@@ -1039,13 +621,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_rate",
-        "type": "uint256"
-      }
-    ],
+    "inputs": [{ "internalType": "uint32", "name": "_rate", "type": "uint32" }],
     "name": "setRateForCoreTeam",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1053,11 +629,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint16[]",
-        "name": "_rates",
-        "type": "uint16[]"
-      }
+      { "internalType": "uint8[]", "name": "_rates", "type": "uint8[]" }
     ],
     "name": "setReferralRate",
     "outputs": [],
@@ -1066,11 +638,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint32",
-        "name": "_releaseMonths",
-        "type": "uint32"
-      }
+      { "internalType": "uint32", "name": "_releaseMonths", "type": "uint32" }
     ],
     "name": "setReleaseMonths",
     "outputs": [],
@@ -1079,31 +647,11 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_index",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_priceForBusd",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_startTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_endTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_lockMonths",
-        "type": "uint8"
-      },
+      { "internalType": "uint8", "name": "_index", "type": "uint8" },
+      { "internalType": "uint256", "name": "_priceForBusd", "type": "uint256" },
+      { "internalType": "uint256", "name": "_startTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "_endTime", "type": "uint256" },
+      { "internalType": "uint8", "name": "_lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
         "name": "_maxDexaAmountToSell",
@@ -1127,14 +675,14 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "_index",
-        "type": "uint8"
-      },
+      { "internalType": "uint8", "name": "_index", "type": "uint8" },
+      { "internalType": "uint256", "name": "_priceForNtr", "type": "uint256" },
+      { "internalType": "uint256", "name": "_startTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "_endTime", "type": "uint256" },
+      { "internalType": "uint8", "name": "_lockMonths", "type": "uint8" },
       {
         "internalType": "uint256",
-        "name": "_priceForNtr",
+        "name": "_maxDexaAmountToSell",
         "type": "uint256"
       },
       {
@@ -1155,11 +703,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_busdAmount",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "_busdAmount", "type": "uint256" }
     ],
     "name": "tokenPurchaseWithBUSD",
     "outputs": [],
@@ -1168,66 +712,20 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_ntrAmount",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "_ntrAmount", "type": "uint256" }
     ],
-    "name": "tokenPurchaseWithNTR",
+    "name": "tokenPurchaseWithNtr",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "newOwner", "type": "address" }
     ],
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userBusdDeposits",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "userNtrDeposits",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1245,21 +743,22 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_receiver",
-        "type": "address"
-      }
-    ],
-    "name": "withdrawBusdForReward",
+    "inputs": [],
+    "name": "withdrawDexa",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "withdrawDexa",
+    "name": "withdrawNtr",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawNtrForCoreTeam",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

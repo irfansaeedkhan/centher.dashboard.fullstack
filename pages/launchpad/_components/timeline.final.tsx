@@ -1,10 +1,10 @@
 import React from "react";
+
 import { formatNum2DispNum } from "@/utils/format.address";
 import { ContributionInfo } from "@/web3/constants/types";
 
 interface Props {
   contributionInfo: ContributionInfo;
-  isBUSD: boolean;
 }
 
 interface SingleCardProps {
@@ -12,52 +12,36 @@ interface SingleCardProps {
   amount: number;
 }
 
-export const TimelineFinal: React.FC<Props> = ({
-  contributionInfo,
-  isBUSD,
-}) => {
+const TimelineFinal: React.FC<Props> = ({ contributionInfo }) => {
   return (
     <div className="flex w-full items-center gap-4 ">
       <div className="!h-11 !min-w-[44px] rounded-full "></div>
       <div className="scrollSetLight2 flex max-w-full flex-grow gap-10 overflow-x-auto">
-        <SingleCard
+        {/* <SingleCard
           title="Total Amount can Receive"
-          amount={
-            isBUSD
-              ? contributionInfo.totalClaimableTokenAmountForBusd
-              : contributionInfo.totalClaimableTokenAmountForNtr
-          }
-        />
+          amount={contributionInfo.totalClaimableTokenAmountForBusd}
+        /> */}
         <SingleCard
           title="Total Claimable Now"
-          amount={
-            isBUSD
-              ? contributionInfo.claimableTokenAmountForBusd
-              : contributionInfo.claimableTokenAmountForNtr
-          }
+          amount={contributionInfo.claimableTokenAmountForBusd}
         />
         <SingleCard
           title="Total Locked"
           amount={
-            isBUSD
-              ? contributionInfo.totalClaimableTokenAmountForBusd -
-                contributionInfo.claimedTokenAmountForBusd
-              : contributionInfo.totalClaimableTokenAmountForNtr -
-                contributionInfo.claimedTokenAmountForNtr
+            contributionInfo.totalClaimableTokenAmountForBusd -
+            contributionInfo.claimedTokenAmountForBusd
           }
         />
         <SingleCard
           title="Total Claimed"
-          amount={
-            isBUSD
-              ? contributionInfo.claimedTokenAmountForBusd
-              : contributionInfo.claimedTokenAmountForNtr
-          }
+          amount={contributionInfo.claimedTokenAmountForBusd}
         />
       </div>
     </div>
   );
 };
+
+export default TimelineFinal;
 
 const SingleCard: React.FC<SingleCardProps> = ({ title, amount }) => {
   return (

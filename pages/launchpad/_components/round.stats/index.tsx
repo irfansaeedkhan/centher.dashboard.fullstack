@@ -1,7 +1,10 @@
 import React, { HTMLAttributes } from "react";
 import clsx from "clsx";
+
 import { RoundInfo } from "@/web3/constants/types";
-import { DXCIconNew, USDTIcon } from "@/assets/svgs";
+import { BUSDIconBG, CentherIconBG } from "@/assets/svgs";
+
+import { truncateTokenAmount } from "../shared";
 import Arrow from "./arrow.svg";
 
 interface Props {
@@ -14,22 +17,22 @@ export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
       <div className="relative flex w-full max-w-full gap-x-4 md:max-w-[300px]">
         <Arrow className="relative top-[16%] hidden md:block" />
         <AmountCard
-          icon={
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/5">
-              <USDTIcon />
-            </span>
-          }
-          title="USDT Rising Amount"
-          amount={roundInfo?.busdRaised}
-          tokenName="USDT"
+          icon={<BUSDIconBG className="h-10 w-10" />}
+          title="BUSD Raised Amount"
+          amount={roundInfo.busdRaised}
+          tokenName="BUSD"
         />
       </div>
       <div className="relative flex w-full max-w-full gap-x-4 md:max-w-[300px]">
         <AmountCard
-          icon={<DXCIconNew className="h-10 w-10" />}
-          title="DXC to be distributed"
-          amount={200000}
-          tokenName="NTR"
+          icon={<CentherIconBG className="h-10 w-10" />}
+          title="CTHR To Be Distributed"
+          amount={
+            roundInfo.priceForBusd !== 0
+              ? roundInfo.busdRaised / roundInfo.priceForBusd
+              : 0
+          }
+          tokenName="CTHR"
         />
         {/* Flip the arrow vertically */}
         <Arrow className="relative top-[16%] hidden -scale-x-100 transform md:block" />
@@ -42,10 +45,10 @@ interface AmountCardProps extends HTMLAttributes<HTMLDivElement> {
   icon: React.ReactNode;
   title: string;
   amount: number;
-  tokenName: "USDT" | "NTR";
+  tokenName: "BUSD" | "CTHR";
 }
 
-export const AmountCard: React.FC<AmountCardProps> = ({
+const AmountCard: React.FC<AmountCardProps> = ({
   icon,
   title,
   amount,
@@ -69,11 +72,14 @@ export const AmountCard: React.FC<AmountCardProps> = ({
         <div className="text-sm font-normal text-gray-shade-7">{title}</div>
         <div
           className="mt-0.5 text-sm font-semibold text-white"
-          title={`${amount?.toString()} ${tokenName}`}
+          title={`${amount.toString()} ${tokenName}`}
         >
+          <span>{truncateTokenAmount(amount, 9999999999999)}</span>{" "}
           <span>{tokenName}</span>
         </div>
       </div>
     </div>
   );
 };
+
+export default AmountCard;
