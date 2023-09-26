@@ -12,6 +12,7 @@ import {
   NTRIconBG,
   DXCIconBG,
 } from "@/assets/svgs";
+import FinalButton from "../button/final.button";
 
 export interface ModalState {
   isOpen: boolean;
@@ -72,9 +73,9 @@ export const StandardModal: React.FC<ModalProps> = ({
   return (
     <ModalPortal wrapperId="authorize-modal">
       <div className="fixed inset-0 z-[1000] flex items-center justify-center overflow-y-auto overflow-x-hidden font-monto backdrop-blur-md backdrop-filter">
-        <div className="w-full max-w-[656px] overflow-hidden bg-black-shade-12 text-white fsm:mx-2 fsm:max-h-[90%] fsm:rounded-2xl md:mx-0">
+        <div className="w-full max-w-[656px] overflow-hidden bg-black-shade-12 p-4 text-white fsm:mx-2 fsm:max-h-[90%] fsm:rounded-2xl md:mx-0">
           {/* Header */}
-          <div className="flex justify-between border-b border-b-gray-shade-border-color p-4">
+          <div className="flex justify-between">
             <h3 className="font-semibold">{title}</h3>
             <button
               onClick={status === "progress" ? () => {} : onClickClose}
@@ -119,22 +120,21 @@ export const StandardModal: React.FC<ModalProps> = ({
 
           {/* Action Buttons */}
           {status !== "success" && (
-            <div className="mt-2 flex font-semibold">
-              <button
-                className="w-full bg-gray-shade-3 p-4 text-center text-white"
+            <div className="mt-2 flex gap-2 font-semibold">
+              <FinalButton
+                variant="secondary"
+                title="Cancel"
+                className="w-full"
                 onClick={status === "progress" ? () => {} : onClickClose}
                 disabled={status === "progress"}
-              >
-                Cancel
-              </button>
-
-              <button
-                className="w-full bg-brand-primary p-4 text-center text-black"
+              />
+              <FinalButton
+                variant="primary"
+                title={confirmButtonText}
+                className="w-full"
                 onClick={status === "progress" ? () => {} : onClickConfirm}
                 disabled={status === "progress"}
-              >
-                {confirmButtonText}
-              </button>
+              />
             </div>
           )}
         </div>

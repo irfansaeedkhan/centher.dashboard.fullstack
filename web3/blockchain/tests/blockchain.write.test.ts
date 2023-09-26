@@ -3042,7 +3042,7 @@ describe("BlockchainWrite", () => {
     }
   });
 
-  it('should call "claimNtrTokens" and call smart contract provider with params', async () => {
+  it('should call "claimTokens" and call smart contract provider with params', async () => {
     const model = {
       claimTokensFromBusd: (round: number) => {
         return {
@@ -3066,11 +3066,11 @@ describe("BlockchainWrite", () => {
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
-    await BlockchainWrite.claimNtrTokens(signer as any, 1, "BUSD");
+    await BlockchainWrite.claimTokens(signer as any, 1, "BUSD");
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
 
-  it('should call "claimNtrTokens" and return "test_hash"', async () => {
+  it('should call "claimTokens" and return "test_hash"', async () => {
     const model = {
       claimTokensFromBusd: (round: number) => {
         return {
@@ -3094,15 +3094,11 @@ describe("BlockchainWrite", () => {
     jest
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
-    const result = await BlockchainWrite.claimNtrTokens(
-      signer as any,
-      1,
-      "BUSD"
-    );
+    const result = await BlockchainWrite.claimTokens(signer as any, 1, "BUSD");
     expect(result).toEqual(model.claimTokensFromBusd(1).hash);
   });
 
-  it('should call "claimNtrTokens" and call contract with params"', async () => {
+  it('should call "claimTokens" and call contract with params"', async () => {
     const model = {
       claimTokensFromBusd: (round: number) => {
         return {
@@ -3127,11 +3123,11 @@ describe("BlockchainWrite", () => {
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
     const spy = jest.spyOn(model, "claimTokensFromBusd");
-    await BlockchainWrite.claimNtrTokens(signer as any, 1, "BUSD");
+    await BlockchainWrite.claimTokens(signer as any, 1, "BUSD");
     expect(spy).toBeCalledWith(1);
   });
 
-  it('should call "claimNtrTokens" and throw error', async () => {
+  it('should call "claimTokens" and throw error', async () => {
     const model = {
       claimTokensFromBusd: (round: number) => {
         return {
@@ -3160,7 +3156,7 @@ describe("BlockchainWrite", () => {
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
     try {
-      const result = await BlockchainWrite.claimNtrTokens(
+      const result = await BlockchainWrite.claimTokens(
         signer as any,
         1,
         "BUSD"
@@ -3170,7 +3166,7 @@ describe("BlockchainWrite", () => {
     }
   });
 
-  it('should call "buyCenther" and call smart contract provider with params', async () => {
+  it('should call "buyToken" and call smart contract provider with params', async () => {
     const model = {
       tokenPurchaseWithBUSD: (amount: number) => {
         return {
@@ -3178,7 +3174,7 @@ describe("BlockchainWrite", () => {
           wait: jest.fn(),
         };
       },
-      tokenPurchaseWithNtr: (amount: number) => {
+      tokenPurchaseWithNTR: (amount: number) => {
         return {
           hash: "test_hash",
           wait: jest.fn(),
@@ -3194,11 +3190,11 @@ describe("BlockchainWrite", () => {
     const spy = jest
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
-    await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
+    await BlockchainWrite.buyToken("USDT", 1, signer as any);
     expect(spy).toBeCalledWith(SmartContractName.PRESALE, {});
   });
 
-  it('should call "buyCenther" and return "test_hash"', async () => {
+  it('should call "buyToken" and return "test_hash"', async () => {
     const model = {
       tokenPurchaseWithBUSD: (round: number) => {
         return {
@@ -3206,7 +3202,7 @@ describe("BlockchainWrite", () => {
           wait: jest.fn(),
         };
       },
-      tokenPurchaseWithNtr: (round: number) => {
+      tokenPurchaseWithNTR: (round: number) => {
         return {
           hash: "test_hash",
           wait: jest.fn(),
@@ -3222,11 +3218,11 @@ describe("BlockchainWrite", () => {
     jest
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
-    const result = await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
+    const result = await BlockchainWrite.buyToken("USDT", 1, signer as any);
     expect(result).toEqual(model.tokenPurchaseWithBUSD(1).hash);
   });
 
-  it('should call "buyCenther" and call contract with params"', async () => {
+  it('should call "buyToken" and call contract with params"', async () => {
     const model = {
       tokenPurchaseWithBUSD: (amount: number) => {
         return {
@@ -3234,7 +3230,7 @@ describe("BlockchainWrite", () => {
           wait: jest.fn(),
         };
       },
-      tokenPurchaseWithNtr: (amount: number) => {
+      tokenPurchaseWithNTR: (amount: number) => {
         return {
           hash: "test_hash",
           wait: jest.fn(),
@@ -3253,11 +3249,11 @@ describe("BlockchainWrite", () => {
     const spy = jest.spyOn(model, "tokenPurchaseWithBUSD");
     const amount = 1;
     const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
-    await BlockchainWrite.buyCenther("BUSD", amount, signer as any);
+    await BlockchainWrite.buyToken("USDT", amount, signer as any);
     expect(spy).toBeCalledWith(purchaseAmount);
   });
 
-  it('should call "buyCenther" and call contract with params"', async () => {
+  it('should call "buyToken" and call contract with params"', async () => {
     const model = {
       tokenPurchaseWithBUSD: (amount: number) => {
         return {
@@ -3265,7 +3261,7 @@ describe("BlockchainWrite", () => {
           wait: jest.fn(),
         };
       },
-      tokenPurchaseWithNtr: (amount: number) => {
+      tokenPurchaseWithNTR: (amount: number) => {
         return {
           hash: "test_hash",
           wait: jest.fn(),
@@ -3281,14 +3277,14 @@ describe("BlockchainWrite", () => {
     jest
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
-    const spy = jest.spyOn(model, "tokenPurchaseWithNtr");
+    const spy = jest.spyOn(model, "tokenPurchaseWithNTR");
     const amount = 1;
-    await BlockchainWrite.buyCenther("NTR", amount, signer as any);
+    await BlockchainWrite.buyToken("NTR", amount, signer as any);
     const purchaseAmount = ethers.utils.parseUnits(amount.toString(), 18);
     expect(spy).toBeCalledWith(purchaseAmount);
   });
 
-  it('should call "buyCenther" and throw error', async () => {
+  it('should call "buyToken" and throw error', async () => {
     const model = {
       tokenPurchaseWithBUSD: (amount: number) => {
         return {
@@ -3298,7 +3294,7 @@ describe("BlockchainWrite", () => {
           },
         };
       },
-      tokenPurchaseWithNtr: (amount: number) => {
+      tokenPurchaseWithNTR: (amount: number) => {
         return {
           hash: "test_hash",
           wait: () => {
@@ -3317,13 +3313,13 @@ describe("BlockchainWrite", () => {
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
     try {
-      const result = await BlockchainWrite.buyCenther("BUSD", 1, signer as any);
+      const result = await BlockchainWrite.buyToken("USDT", 1, signer as any);
     } catch (error: any) {
       expect(error.message).toEqual("test_error_busd");
     }
   });
 
-  it('should call "buyCenther" and throw error', async () => {
+  it('should call "buyToken" and throw error', async () => {
     const model = {
       tokenPurchaseWithBUSD: (amount: number) => {
         return {
@@ -3333,7 +3329,7 @@ describe("BlockchainWrite", () => {
           },
         };
       },
-      tokenPurchaseWithNtr: (amount: number) => {
+      tokenPurchaseWithNTR: (amount: number) => {
         return {
           hash: "test_hash",
           wait: () => {
@@ -3352,7 +3348,7 @@ describe("BlockchainWrite", () => {
       .spyOn(SmartContractProvider, "getContract")
       .mockReturnValue(contract as any);
     try {
-      const result = await BlockchainWrite.buyCenther("NTR", 1, signer as any);
+      const result = await BlockchainWrite.buyToken("NTR", 1, signer as any);
     } catch (error: any) {
       expect(error.message).toEqual("test_error_ntr");
     }

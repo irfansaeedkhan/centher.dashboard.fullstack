@@ -2,6 +2,7 @@ import { Networks } from "./enum/networks.enum";
 import { IBlockchainConfig } from "./types";
 
 import dxcAbi from "../abis/dxc.json";
+import usdtAbi from "../abis/usdt.json";
 import centherAbi from "../abis/centher.json";
 import presaleAbi from "../abis/presale.json";
 import marketplaceAbi from "../abis/marketplace.json";
@@ -36,7 +37,8 @@ export const BlockchainConfig: IBlockchainConfig = {
     PRESALE: {
       // Presale Contract Address
       56: "0x23a376C486CD5536674fE84f42A1c3b81B00E5ca",
-      5: "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
+      // 5: "0x1Ee9fD67ceA1E5Ea130a6ceAAe51EA8c7BF65Ec8", // "0x2E4BcE6cD74133a68FADb5855AcA92EAE77BE303",
+      5: "0x5Eaf2D08FA62220AC064Df5e47521cB7cc16F964",
     },
     MARKETPALCE: {
       56: "0x08c4153B3fDa5215cd284c58e7Cb641df0f54d29",
@@ -61,18 +63,22 @@ export const BlockchainConfig: IBlockchainConfig = {
     },
     BUSD: {
       56: "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
-      5: "0x60194b3eDF9b95A6087FE1940275AE7036641dd8",
+      5: "0x143c4546F845d3883B16dd2D90CfA371A2bB3EB9", // "0x60194b3eDF9b95A6087FE1940275AE7036641dd8",
+    },
+    USDT: {
+      56: "0x55d398326f99059fF775485246999027B3197955",
+      5: "0x1B855BF0e0eDBF394cB8F74D906d8d93A1C2D6e0",
     },
     NTR: {
-      56: "0x0000000000000000000000000000000000000000",
-      5: "0x4fF5719EF59e28aA5fd86c50Af2a3563cC01905B",
+      56: "0x8182ac1C5512EB67756A89C40fadB2311757bD32",
+      5: "0x82844F286e6f441827610D9f06E6831635bE252c", // "0x4fF5719EF59e28aA5fd86c50Af2a3563cC01905B",
     },
     NATIVE_COLLECTION: {
       56: "0x67d19ebb78a0c4610f9a51a95b41868e39864d04",
       5: "0x0fb63a3666bf6078d0beb546ea82cb39d85a3b55",
     },
     DXC: {
-      56: "0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A",
+      56: "0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c", //"0x1981D10B9Bb0990A4637126b4bdFA0e8e0bA903A"
       5: "0xBA6FF371D403A7710335BB426A4889773f8FAD1e",
     },
     NFT_ADAPTER: {
@@ -106,6 +112,7 @@ export const BlockchainConfig: IBlockchainConfig = {
     NATIVE_COLLECTION: {},
     ERC721: ERC721Abi,
     DXC: dxcAbi,
+    USDT: usdtAbi,
     NFT_ADAPTER: nftadapter,
     STAKING: stakingAbi,
   },
@@ -158,8 +165,8 @@ export const BlockchainConfig: IBlockchainConfig = {
     "https://centher-staging.infura-ipfs.io",
   subgraphUrl:
     process.env.NEXT_PUBLIC_APP_ENV === "production"
-      ? "https://api.thegraph.com/subgraphs/name/rezahssini/centher-prod"
-      : "https://api.thegraph.com/subgraphs/name/rezahssini/citizen-collection",
+      ? "https://api.thegraph.com/subgraphs/name/sasimraza/centher-production"
+      : "https://api.thegraph.com/subgraphs/name/sasimraza/centher-launchpad-v1", // "https://api.thegraph.com/subgraphs/name/rezahssini/citizen-collection"
 };
 
 export const SwapCollection =
