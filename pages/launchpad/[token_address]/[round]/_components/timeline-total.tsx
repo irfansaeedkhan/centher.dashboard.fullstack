@@ -27,7 +27,7 @@ export const TimelineTotal: React.FC<TimelineTotalProps> = ({
             {nowTime < endTime ? title1 : title2}
           </h4>
           <p className="mt-[6px] text-sm text-gray-shade-14">
-            DXC tokens will be released 12% monthly.
+            DXC tokens will be released 10% monthly.
           </p>
         </div>
         <Countdown
