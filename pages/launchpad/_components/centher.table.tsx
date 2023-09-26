@@ -41,7 +41,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      await BlockchainWrite.claimNtrTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimTokens(library, roundInfo.round, claimFrom);
       refetchContributionInfo();
       setModal((prev) => ({
         ...prev,
