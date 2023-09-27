@@ -183,13 +183,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
               title={is_sold_out ? "Pre Booking Ended" : "Pre Booking Live"}
             />
           </div>
-          <div className="relative mt-3 flex h-14 w-full max-w-[275px] items-center gap-2 px-3">
+          <div className="relative mt-3 flex h-14 w-full items-center justify-between gap-2 px-3 fmd:max-w-[275px]">
             <Image
               src={"/images/timer.png"}
               alt="timer"
               width={275}
               height={56}
-              className="absolute left-0 top-0 m-auto fmd:inset-0"
+              className="absolute left-0 top-0 m-auto h-[56px] w-full fmd:inset-0 fmd:w-[275px]"
             />
             <p className="text-sm font-medium text-gray-shade-14">
               The presale will start in
