@@ -72,7 +72,7 @@ export const Timeline: React.FC<TimelineProps> = ({
             {lock > 0 ? "Locked" : claimable > 0 ? "Claimable Now" : "Claimed"})
           </p>
           <h4 className="mt-[6px] text-sm font-semibold text-white">
-            {formatNum2DispNum(claimablePerMonth)}DXC (12%) {statusText}
+            {formatNum2DispNum(claimablePerMonth)} DXC (10%) {statusText}
           </h4>
         </div>
         <Countdown date={new Date(claimTime)} renderer={countdownRenderer} />
