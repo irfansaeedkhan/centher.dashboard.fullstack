@@ -160,20 +160,20 @@ export class CentherStaking {
 
   @CatchError()
   async getProject(poolId: number): Promise<StakingProject> {
-    if (cacheIsOn && process.env.NEXT_PUBLIC_APP_ENV === "production") {
-      return staking_projects.find((e) => +e.id == poolId) as any;
-    } else {
-      const query = QueryFactory.getQuery(QueryNames.GET_PROJECT);
-      const result = await this._connection?.query({
-        query,
-        variables: {
-          id: poolId + "",
-        },
-        fetchPolicy: "no-cache",
-      });
+    // if (cacheIsOn && process.env.NEXT_PUBLIC_APP_ENV === "production") {
+    //   return staking_projects.find((e) => +e.id == poolId) as any;
+    // } else {
+    const query = QueryFactory.getQuery(QueryNames.GET_PROJECT);
+    const result = await this._connection?.query({
+      query,
+      variables: {
+        id: poolId + "",
+      },
+      fetchPolicy: "no-cache",
+    });
 
-      return result?.data.pools[0];
-    }
+    return result?.data.pools[0];
+    // }
   }
 
   @CatchError()
