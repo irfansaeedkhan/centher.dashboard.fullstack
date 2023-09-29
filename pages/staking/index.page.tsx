@@ -19,6 +19,7 @@ import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import StakingListContainer from "./_components/staking-list-container";
 import { ListCardDataOBj } from "./_components/list-card-data";
+import { project_metadata } from "@/staking/cache";
 
 const Staking: NextPageWithLayout = () => {
   const router = useRouter();
@@ -61,11 +62,23 @@ const Staking: NextPageWithLayout = () => {
       const fetchedItems = [];
       for (const item of inputs) {
         try {
-          const metadata = await axios.get(formatIPFSUrl(item.metadataUrl));
-          const buff = inputs.find((e) => e.metadataUrl == item.metadataUrl);
-          if (buff) {
-            buff.metadata = metadata.data;
-            fetchedItems.push(buff);
+          const cachedMetadata = project_metadata.find(
+            (e) => e.ipfsAddress == item.metadataUrl
+          );
+
+          if (!cachedMetadata) {
+            const metadata = await axios.get(formatIPFSUrl(item.metadataUrl));
+            const buff = inputs.find((e) => e.metadataUrl == item.metadataUrl);
+            if (buff) {
+              buff.metadata = metadata.data;
+              fetchedItems.push(buff);
+            }
+          } else {
+            const buff = inputs.find((e) => e.metadataUrl == item.metadataUrl);
+            if (buff) {
+              buff.metadata = cachedMetadata;
+              fetchedItems.push(buff);
+            }
           }
         } catch (error) {}
       }
