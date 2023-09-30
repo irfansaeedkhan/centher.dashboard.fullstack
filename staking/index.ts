@@ -41,6 +41,7 @@ import {
 } from "./types/rewards.interface";
 import { GetRefRewardInput, RefReward } from "./types/ref.rewards.interface";
 import { GetReferralsInput, Referral } from "./types/referrals.interface";
+import { cacheIsOn, staking_projects } from "./cache";
 
 export class CentherStaking {
   private _connection: IApolloProvider = null;
@@ -140,21 +141,28 @@ export class CentherStaking {
 
   @CatchError()
   async getProjects(input: GetStakingProjectInput): Promise<StakingProject[]> {
-    const query = QueryFactory.getQuery(QueryNames.GET_PROJECTS);
-    const result = await this._connection?.query({
-      query,
-      variables: {
-        skip: input.getPage(),
-        first: input.getPageSize(),
-      },
-      fetchPolicy: "no-cache",
-    });
+    if (cacheIsOn && process.env.NEXT_PUBLIC_APP_ENV === "production") {
+      return staking_projects as any;
+    } else {
+      const query = QueryFactory.getQuery(QueryNames.GET_PROJECTS);
+      const result = await this._connection?.query({
+        query,
+        variables: {
+          skip: input.getPage(),
+          first: input.getPageSize(),
+        },
+        fetchPolicy: "no-cache",
+      });
 
-    return result?.data.pools;
+      return result?.data.pools;
+    }
   }
 
   @CatchError()
   async getProject(poolId: number): Promise<StakingProject> {
+    // if (cacheIsOn && process.env.NEXT_PUBLIC_APP_ENV === "production") {
+    //   return staking_projects.find((e) => +e.id == poolId) as any;
+    // } else {
     const query = QueryFactory.getQuery(QueryNames.GET_PROJECT);
     const result = await this._connection?.query({
       query,
@@ -165,6 +173,7 @@ export class CentherStaking {
     });
 
     return result?.data.pools[0];
+    // }
   }
 
   @CatchError()
