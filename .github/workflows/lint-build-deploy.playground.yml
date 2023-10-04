@@ -94,6 +94,8 @@ jobs:
           echo "NEXT_PUBLIC_RECAPTCHA_SERVICE_API_HOST=${{ vars.NEXT_PUBLIC_RECAPTCHA_SERVICE_API_HOST }}" >> .env.staging
           echo "NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}" >> .env.staging
           echo "NEXT_PUBLIC_HASURA_URL=${{ vars.NEXT_PUBLIC_HASURA_URL }}" >> .env.staging
+          echo "NEXT_PUBLIC_WALLET_SERVICE_URL=${{ vars.NEXT_PUBLIC_WALLET_SERVICE_URL }}" >> .env.staging
+          echo "NEXT_PUBLIC_WALLET_SERVICE_API_KEY=${{ vars.NEXT_PUBLIC_WALLET_SERVICE_API_KEY }}" >> .env.staging
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1-node16
