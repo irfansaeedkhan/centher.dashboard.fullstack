@@ -1,6 +1,10 @@
 import { axiosApiCenther } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
-import { SearchResult, SearchResultWithType, SearchType } from "./types";
+import {
+  SearchResult,
+  SearchResultWithType,
+  SearchResponseType,
+} from "./types";
 
 export const search = async (
   query: string
@@ -11,7 +15,7 @@ export const search = async (
     }>(`/api/search?q=${query}&limit=5&offset=0`);
 
     return response.data.search_results.map((searchResult) => ({
-      type: SearchType.search_result,
+      response_type: SearchResponseType.search_result,
       ...searchResult,
     }));
   } catch (error: any) {

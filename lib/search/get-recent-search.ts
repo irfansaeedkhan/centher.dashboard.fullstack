@@ -1,15 +1,21 @@
 import { axiosApiCenther } from "@/utils/axios";
 import { AppError } from "@/utils/app-error";
-import { RecentSearch, RecentSearchWithType, SearchType } from "./types";
+import {
+  RecentSearchExtended,
+  RecentSearchExtendedWithType,
+  SearchResponseType,
+} from "./types";
 
-export const getRecentSearch = async (): Promise<RecentSearchWithType[]> => {
+export const getRecentSearch = async (): Promise<
+  RecentSearchExtendedWithType[]
+> => {
   try {
     const response = await axiosApiCenther.get<{
-      recent_search: RecentSearch[];
+      recent_search: RecentSearchExtended[];
     }>("/api/search/recent");
 
     return response.data.recent_search.map((recentSearch) => ({
-      type: SearchType.recent_search,
+      response_type: SearchResponseType.recent_search,
       ...recentSearch,
     }));
   } catch (error: any) {

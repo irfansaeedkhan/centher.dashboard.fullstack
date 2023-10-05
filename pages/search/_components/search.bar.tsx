@@ -12,15 +12,14 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { customLog } from "@/utils/custom.log";
 import {
-  RecentSearchWithType,
-  SearchPopupData,
-  SearchResultWithType,
-  SearchType,
+  SearchPopupItem,
+  SearchResponseType,
   createRecentSearch,
   getRecentSearch,
   search,
   deleteAllRecentSearch,
   deleteSingleRecentSearch,
+  CreateRecentSearchParams,
 } from "@/lib/search";
 import { DeleteRecentSearchModal } from "@/components/header/delete.recent.search.modal";
 import { LoadingState } from "@/models/common";
@@ -35,12 +34,12 @@ const Searchbar = () => {
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
-  const [result, setResult] = useState<SearchPopupData>([]);
+  const [result, setResult] = useState<SearchPopupItem[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   const hasRecentSearches = result.some(
-    (item) => item.type === "recent_search"
+    (item) => item.response_type === "recent_search"
   );
   const isResultEmpty = result.length === 0;
 
@@ -79,7 +78,10 @@ const Searchbar = () => {
     }
 
     setSearchQuery(searchQueryInput);
-    createRecentSearchHandler(searchQueryInput);
+    createRecentSearchHandler({
+      search_type: "query",
+      query: searchQueryInput.trim(),
+    });
 
     router.push({
       pathname: AppRoutes.search,
@@ -115,9 +117,9 @@ const Searchbar = () => {
     }
   };
 
-  const createRecentSearchHandler = async (query: string) => {
+  const createRecentSearchHandler = async (data: CreateRecentSearchParams) => {
     try {
-      await createRecentSearch(query);
+      await createRecentSearch(data);
     } catch (error) {
       customLog(["development"], error);
     }
@@ -158,7 +160,7 @@ const Searchbar = () => {
         {openPopup && (
           <div
             ref={ref}
-            className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3 shadow-md"
+            className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full overflow-y-auto rounded-xl bg-background-shade-3 shadow-md"
           >
             {/* only show when we have recent-search */}
             {loading === "loaded" && hasRecentSearches && (
@@ -186,10 +188,6 @@ const Searchbar = () => {
                     <SearchResultItem
                       item={item}
                       key={item._id}
-                      onClick={() => {
-                        setSearchQueryInput("");
-                        setOpenPopup(false);
-                      }}
                       deleteSingleRecentSearchHandler={
                         deleteSingleRecentSearchHandler
                       }
@@ -216,9 +214,8 @@ const Searchbar = () => {
 export default Searchbar;
 
 interface SearchResultItemProps {
-  item: SearchResultWithType | RecentSearchWithType;
-  onClick: () => void;
-  createRecentSearchHandler: (query: string) => void;
+  item: SearchPopupItem;
+  createRecentSearchHandler: (data: CreateRecentSearchParams) => void;
   setSearchQueryInput: (value: string) => void;
   setOpenPopup: (value: boolean) => void;
   deleteSingleRecentSearchHandler: (query: string) => void;
@@ -226,86 +223,185 @@ interface SearchResultItemProps {
 
 const SearchResultItem: React.FC<SearchResultItemProps> = ({
   item,
-  onClick,
   createRecentSearchHandler,
   setSearchQueryInput,
   setOpenPopup,
   deleteSingleRecentSearchHandler,
 }) => {
+  const router = useRouter();
   const verificationTick = useVerificationTick({
-    user: item.type === SearchType.search_result ? item : null,
+    user:
+      item.response_type === SearchResponseType.search_result
+        ? item
+        : item.response_type === SearchResponseType.recent_search &&
+          item.search_type === "user"
+        ? item.user_data
+        : null,
   });
 
   const handleItemClick = () => {
-    if (item.type === SearchType.search_result) {
-      createRecentSearchHandler(item.display_name);
+    if (item.response_type === SearchResponseType.search_result) {
+      createRecentSearchHandler({
+        search_type: "user",
+        searched_user: item._id,
+      });
     }
-    setSearchQueryInput(""); // Clear the search input
-    setOpenPopup(false); // Close the search result popup
+    setSearchQueryInput("");
+    setOpenPopup(false);
   };
 
   return (
-    <div className="flex items-start gap-2 p-4">
-      {/* <SearchIcon /> */}
-      {item.type === SearchType.search_result ? (
-        <Link
-          onClick={() => {
-            handleItemClick();
-            onClick();
-          }}
-          href={{
-            pathname: AppRoutes.profile.user_id,
-            query: { user_id: item._id },
-          }}
-          className={clsx(
-            `word-break flex w-full items-center truncate text-sm font-medium text-white hover:text-brand-primary`
-          )}
-        >
-          <span
-            title={item.display_name}
-            className={clsx(`block overflow-hidden truncate`)}
-          >
-            {sliceDisplayName(item.display_name)}
-          </span>
-          {!!verificationTick && (
-            <span className="verifiedIcon ml-0.5 inline-block h-5 w-5 min-w-[1.25rem]  fsm:ml-1">
+    <div className="group flex items-center gap-2 p-4">
+      {item.response_type === SearchResponseType.recent_search &&
+        item.search_type === "user" && (
+          <>
+            {item.user_data.profile_image && (
               <Image
-                src={verificationTick}
-                alt={
-                  item.membership.status === "citizen" ? "Citizen" : "Verified"
-                }
-                width={16}
-                height={16}
+                src={item.user_data.profile_image}
+                alt={item.user_data.display_name}
+                width={40}
+                height={40}
+                className={`mr-2 h-[40px] w-[40px] cursor-pointer rounded-full object-cover`}
+                sizes={"256px"}
+                onClick={() => {
+                  handleItemClick();
+                  router.push({
+                    pathname: AppRoutes.profile.user_id,
+                    query: {
+                      user_id: item.user_data._id,
+                    },
+                  });
+                }}
               />
-            </span>
-          )}
-        </Link>
-      ) : (
+            )}
+            <Link
+              className="word-break flex w-full flex-grow cursor-pointer items-center truncate text-sm font-medium text-white"
+              onClick={() => handleItemClick()}
+              href={{
+                pathname: AppRoutes.profile.user_id,
+                query: {
+                  user_id: item.user_data._id,
+                },
+              }}
+            >
+              <span
+                title={item.user_data.display_name}
+                className={clsx(
+                  `group-hover:textGradient block overflow-hidden truncate`
+                )}
+              >
+                {item && sliceDisplayName(item.user_data.display_name)}
+              </span>
+              {verificationTick && (
+                <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                  <Image
+                    src={verificationTick}
+                    alt={
+                      item.user_data.membership.status === "citizen"
+                        ? "Citizen"
+                        : "Verified"
+                    }
+                    width={16}
+                    height={16}
+                  />
+                </span>
+              )}
+            </Link>
+            <IoClose
+              onClick={() => {
+                deleteSingleRecentSearchHandler(item._id);
+              }}
+              className="cursor-pointer text-white"
+            />
+          </>
+        )}
+
+      {item.response_type === SearchResponseType.recent_search &&
+        item.search_type !== "user" && ( // Not using `item.search_type === "query"` because in old data it might not be present
+          <>
+            <SearchIcon />
+            <Link
+              className="word-break flex flex-grow cursor-pointer items-center truncate text-sm font-medium text-white"
+              onClick={() => handleItemClick()}
+              href={{
+                pathname: AppRoutes.search,
+                query: {
+                  q: item.query,
+                },
+              }}
+            >
+              <span
+                title={item.query}
+                className={clsx(
+                  `group-hover:textGradient block w-full overflow-hidden truncate`
+                )}
+              >
+                {item.query}
+              </span>
+            </Link>
+            <IoClose
+              onClick={() => {
+                deleteSingleRecentSearchHandler(item._id);
+              }}
+              className="cursor-pointer text-white"
+            />
+          </>
+        )}
+
+      {item.response_type === SearchResponseType.search_result && (
         <>
-          <SearchIcon className="shrink-0" />
+          {item.profile_image && (
+            <Image
+              src={item.profile_image}
+              alt={item.display_name}
+              width={40}
+              height={40}
+              className={`mr-2 h-[40px] w-[40px] cursor-pointer rounded-full object-cover`}
+              sizes={"256px"}
+              onClick={() => {
+                handleItemClick();
+                router.push({
+                  pathname: AppRoutes.profile.user_id,
+                  query: {
+                    user_id: item._id,
+                  },
+                });
+              }}
+            />
+          )}
           <Link
-            className="word-break flex flex-grow items-center truncate text-sm font-medium text-white hover:text-brand-primary"
+            className="word-break flex w-full flex-grow cursor-pointer items-center truncate text-sm font-medium text-white"
             onClick={() => handleItemClick()}
             href={{
-              pathname: AppRoutes.search,
+              pathname: AppRoutes.profile.user_id,
               query: {
-                q: item.query,
+                user_id: item._id,
               },
             }}
           >
             <span
-              title={item.query}
-              className={clsx(`block w-full overflow-hidden truncate`)}
+              title={item.display_name}
+              className={clsx(
+                `group-hover:textGradient block overflow-hidden truncate`
+              )}
             >
-              {item.query}
+              {item && sliceDisplayName(item.display_name)}
             </span>
+            {verificationTick && (
+              <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                <Image
+                  src={verificationTick}
+                  alt={
+                    item.membership.status === "citizen"
+                      ? "Citizen"
+                      : "Verified"
+                  }
+                  width={16}
+                  height={16}
+                />
+              </span>
+            )}
           </Link>
-          <IoClose
-            onClick={() => {
-              deleteSingleRecentSearchHandler(item._id);
-            }}
-            className="shrink-0 cursor-pointer text-white"
-          />
         </>
       )}
     </div>
