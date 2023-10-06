@@ -32,7 +32,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
             className="block w-fit"
           >
             <FinalButton
-              className="w-fit rounded-lg py-2 px-4 text-sm font-semibold"
+              className="w-fit rounded-lg px-4 py-2 text-sm font-semibold"
               title="Book Now"
               variant="primary"
               borderRounded="14px"

@@ -67,7 +67,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                       {sliceDisplayName(buyer.display_name)}
                     </span>
                     {verificationTickBuyer && (
-                      <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                      <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
                         <Image
                           src={verificationTickBuyer}
                           alt={
@@ -103,7 +103,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
                       {sliceDisplayName(seller.display_name)}
                     </span>
                     {verificationTickSeller && (
-                      <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                      <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
                         <Image
                           src={verificationTickSeller}
                           alt={

@@ -181,7 +181,7 @@ export const NFTRightSideComponent = ({
                   {sliceDisplayName(user.display_name)}
                 </span>
                 {verificationTick && (
-                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon inline-flexh-[18px] ml-0.5 w-[18px] min-w-[18px] fsm:ml-1">
                     <Image
                       src={verificationTick}
                       alt={
@@ -229,7 +229,7 @@ export const NFTRightSideComponent = ({
                   {sliceDisplayName(nftOwner.display_name)}
                 </span>
                 {verificationOwnerTick && (
-                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
                     <Image
                       src={verificationOwnerTick}
                       alt={
@@ -260,7 +260,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-14px text-ellipsis font-semibold text-white line-clamp-1 hover:text-brand-primary-dark"
+                  "text-14px line-clamp-1 text-ellipsis font-semibold text-white hover:text-brand-primary-dark"
                 }
               >
                 {formatAddress(data?.collection)}
