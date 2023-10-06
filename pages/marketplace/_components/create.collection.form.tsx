@@ -255,7 +255,7 @@ export const CreateNFTCollectionForm = ({
               id="url"
               autoComplete="off"
               {...register("url")}
-              placeholder="eg. https://centher.io/collection/ skull- Price"
+              placeholder="eg. https://centher.io/collection/skull-price"
               className={!formState.errors.url ? inputField : inputFieldError}
             />
           </div>
@@ -301,7 +301,7 @@ export const CreateNFTCollectionForm = ({
                     id="facebook"
                     autoComplete="off"
                     {...register("facebook")}
-                    placeholder="eg. https://facebook.com/your profile"
+                    placeholder="eg. https://facebook.com/username"
                     className={
                       !formState.errors.facebook ? linkField : linkFieldError
                     }
