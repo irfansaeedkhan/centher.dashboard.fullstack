@@ -44,14 +44,25 @@ export const Section: React.FC<SectionProps> = (props) => {
               )}
             >
               <div className={`flex items-center gap-2`}>
-                <item.icon
-                  className={clsx(
-                    "h-5 w-5",
-                    item.activeList.indexOf(router.pathname) !== -1
-                      ? `stroke-white stroke-[1.5]`
-                      : `stroke-gray-shade-7 stroke-[1.5]`
+                <div className="relative">
+                  <item.icon
+                    className={clsx(
+                      "h-5 w-5",
+                      item.activeList.indexOf(router.pathname) !== -1
+                        ? `stroke-white stroke-[1.5]`
+                        : `stroke-gray-shade-7 stroke-[1.5]`
+                    )}
+                  />
+                  {item.badge === "citizen" && (
+                    <Image
+                      src="/images/citizen-icon.svg"
+                      alt="Citizen"
+                      width={10}
+                      height={10}
+                      className="absolute bottom-0 right-0 inline-block"
+                    />
                   )}
-                />
+                </div>
                 <Link
                   href={
                     item.available_for === "citizen"
@@ -68,15 +79,6 @@ export const Section: React.FC<SectionProps> = (props) => {
                   }
                 >
                   <span>{item.label}</span>
-                  {item.badge === "citizen" && (
-                    <Image
-                      src="/images/citizen-icon.svg"
-                      alt="Citizen"
-                      width={16}
-                      height={16}
-                      className="ml-1 inline-block"
-                    />
-                  )}
                 </Link>
               </div>
               {!!count && props.user && (

@@ -130,7 +130,7 @@ export const PostHeader: React.FC<Props> = ({
                 {postUser && sliceDisplayName(postUser.display_name)}
               </span>
               {verificationTickPostCreator && (
-                <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
                   <Image
                     src={verificationTickPostCreator}
                     alt={
@@ -184,7 +184,7 @@ export const PostHeader: React.FC<Props> = ({
                   {post && sliceDisplayName(parentPost.user.display_name)}
                 </span>
                 {verificationTickReplyingTo && (
-                  <span className="verifiedIcon ml-0.5 inline-flex h-[22px] w-[22px] min-w-[22px] fsm:ml-1">
+                  <span className="verifiedIcon ml-0.5 inline-flex h-[18px] w-[18px] min-w-[18px] fsm:ml-1">
                     <Image
                       src={verificationTickReplyingTo}
                       alt={

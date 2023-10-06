@@ -7,13 +7,25 @@ export interface CreateRecentSearch {
   result_count: number;
 }
 
+type CreateRecentSearchUserType = {
+  search_type: "user";
+  searched_user: string;
+};
+
+type CreateRecentSearchQueryType = {
+  search_type: "query";
+  query: string;
+};
+
+export type CreateRecentSearchParams =
+  | CreateRecentSearchUserType
+  | CreateRecentSearchQueryType;
+
 export const createRecentSearch = async (
-  query: string
+  data: CreateRecentSearchParams
 ): Promise<CreateRecentSearch> => {
   try {
-    const response = await axiosApiCenther.post("/api/search/recent", {
-      query,
-    });
+    const response = await axiosApiCenther.post("/api/search/recent", data);
 
     return response.data;
   } catch (error: any) {

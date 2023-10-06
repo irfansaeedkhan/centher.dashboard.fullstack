@@ -22,8 +22,8 @@ export const CitizenShipFailureModal: React.FC<CustomModalProps> = ({
         <p className="text-14px font-medium text-gray-shade-14">
           Sorry, we couldn&apos;t verify your{" "}
           <span className="text-gradient">Centher Passport CITIZEN </span>{" "}
-          Membership subscription. Please make sure that you&apos;re connected
-          to the Internet.
+          Membership subscription. Please make sure that you have enough BNB in
+          your wallet.
         </p>
       </div>
 

@@ -31,7 +31,6 @@ import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import ProfileModal from "@/components/modal/profile.modal";
 import FinalButton from "@/components/button/final.button";
-import CitizenLabel from "@/components/citizen/citizen.label";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
 import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
@@ -455,14 +454,11 @@ const ProfileHeader: React.FC<Props> = ({
                 <span title={user.display_name}>
                   {sliceDisplayName(user.display_name)}
                 </span>
-                {user.membership.status === "citizen" ? (
-                  <CitizenLabel />
-                ) : user.membership.status === "verified" &&
-                  verificationTick ? (
+                {verificationTick ? (
                   <span className="verifiedIcon ml-0.5 inline-block h-[22px] w-[22px] min-w-[22px] pt-1 fsm:ml-1">
                     <Image
                       src={verificationTick}
-                      alt={"Verified"}
+                      alt={"Membership"}
                       width={22}
                       height={22}
                     />

@@ -6,12 +6,13 @@ import { SearchIcon } from "@/assets/svgs";
 import { customLog } from "@/utils/custom.log";
 import { AppRoutes } from "@/constants/app.routes";
 import {
-  SearchPopupData,
+  SearchPopupItem,
   createRecentSearch,
   getRecentSearch,
   search,
   deleteAllRecentSearch,
   deleteSingleRecentSearch,
+  CreateRecentSearchParams,
 } from "@/lib/search";
 import { LoadingState } from "@/models/common";
 import { DeleteRecentSearchModal } from "./delete.recent.search.modal";
@@ -26,12 +27,12 @@ const SearchBar: React.FC = () => {
 
   const [searchQueryInput, setSearchQueryInput] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
-  const [result, setResult] = useState<SearchPopupData>([]);
+  const [result, setResult] = useState<SearchPopupItem[]>([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [loading, setLoading] = useState<LoadingState>("idle");
 
   const hasRecentSearches = result.some(
-    (item) => item.type === "recent_search"
+    (item) => item.response_type === "recent_search"
   );
   const isResultEmpty = result.length === 0;
 
@@ -59,7 +60,10 @@ const SearchBar: React.FC = () => {
     }
 
     setSearchQuery(searchQueryInput);
-    createRecentSearchHandler(searchQueryInput);
+    createRecentSearchHandler({
+      search_type: "query",
+      query: searchQueryInput.trim(),
+    });
 
     router.push({
       pathname: AppRoutes.search,
@@ -114,9 +118,9 @@ const SearchBar: React.FC = () => {
     }
   };
 
-  const createRecentSearchHandler = async (query: string) => {
+  const createRecentSearchHandler = async (data: CreateRecentSearchParams) => {
     try {
-      await createRecentSearch(query);
+      await createRecentSearch(data);
     } catch (error) {
       customLog(["development"], error);
     }
@@ -163,7 +167,7 @@ const SearchBar: React.FC = () => {
           </button>
         </div>
         {openPopup && (
-          <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full rounded-xl bg-background-shade-3">
+          <div className="absolute left-0 top-12 z-[200] h-auto max-h-[400px] w-full overflow-y-auto rounded-xl bg-background-shade-3">
             {/* only show when we have recent-search */}
             {loading === "loaded" && hasRecentSearches && (
               <div className="flex items-center justify-between pl-5 pr-5 pt-2">
