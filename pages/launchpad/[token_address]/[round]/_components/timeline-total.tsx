@@ -21,8 +21,8 @@ export const TimelineTotal: React.FC<TimelineTotalProps> = ({
           nowTime > endTime ? "border-gray-shade-16" : "border-gray-shade-12"
         }`}
       ></div>
-      <div className="scrollSetLight2 gradient-border-3 flex h-[88px] max-w-full flex-grow items-center justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 p-[2px] ">
-        <div className="min-w-[350px] pl-6">
+      <div className="rainbow-scroll gradient-border-3 flex h-[88px] max-w-full flex-grow items-center justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 p-[2px] ">
+        <div className="min-w-[360px] pl-6">
           <h4 className="font-semibold text-white">
             {nowTime < endTime ? title1 : title2}
           </h4>

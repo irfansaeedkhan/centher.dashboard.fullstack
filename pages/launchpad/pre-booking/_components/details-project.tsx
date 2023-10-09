@@ -1,6 +1,6 @@
 import React from "react";
 import { FiInstagram, FiYoutube } from "react-icons/fi";
-import { CgSpinner } from "react-icons/cg";
+import Image from "next/image";
 import { SiBinance } from "react-icons/si";
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
@@ -27,8 +27,14 @@ const DetailsProject = () => {
 
   if (loading === "loading" || loading === "idle") {
     return (
-      <div className="text-center">
-        <CgSpinner className="inline-block h-6 w-6 animate-spin text-gray-500" />
+      <div className="mt-5 flex w-full items-center justify-center">
+        <Image
+          src="/images/preloader.png"
+          alt="Preloader"
+          width={64}
+          height={64}
+          className="h-16 w-16 flex-shrink-0 object-cover"
+        />
       </div>
     );
   }

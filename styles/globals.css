@@ -23,6 +23,35 @@
     background: var(--primary) !important;
     border-radius: 18px !important;
   }
+
+  /* width */
+  .rainbow-scroll::-webkit-scrollbar {
+    width: 1px !important;
+    height: 2px;
+    background-color: transparent !important;
+    padding: 0 !important;
+    scrollbar-width: thin !important;
+  }
+
+  /* Track */
+  .rainbow-scroll::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: transparent;
+  }
+
+  /* Handle */
+  .rainbow-scroll::-webkit-scrollbar-thumb {
+    border: 0 !important;
+    background: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+
   /* Firefox */
   .customScrollbar2 {
     scrollbar-width: 2px !important;

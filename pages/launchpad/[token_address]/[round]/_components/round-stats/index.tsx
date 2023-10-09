@@ -29,7 +29,7 @@ export const RoundStats: React.FC<Props> = ({ roundInfo }) => {
           icon={<DXCIconNew className="h-10 w-10" />}
           title="DXC to be distributed"
           amount={200000}
-          tokenName="NTR"
+          tokenName="DXC"
         />
         {/* Flip the arrow vertically */}
         <Arrow className="relative top-[16%] hidden -scale-x-100 transform md:block" />
@@ -42,7 +42,7 @@ interface AmountCardProps extends HTMLAttributes<HTMLDivElement> {
   icon: React.ReactNode;
   title: string;
   amount: number;
-  tokenName: "USDT" | "NTR";
+  tokenName: "USDT" | "DXC";
 }
 
 export const AmountCard: React.FC<AmountCardProps> = ({
