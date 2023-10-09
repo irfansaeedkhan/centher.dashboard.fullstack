@@ -19,7 +19,7 @@ const Check_PreBooking_Form_TransactionHash = (booking: Booking) => {
         href={`https://app.centher.io/profile/0x571bc57d15e319b926b3b8fc67710c90a7591e63`}
         target="_blank"
         rel="noreferrer noopener"
-        className="hover:text-brand-primary"
+        className="hover:text-gradient"
       >
         {booking.trx_hash.slice(0, 6)}...
         {booking.trx_hash.endsWith("-1")
@@ -37,7 +37,7 @@ const Check_PreBooking_Form_TransactionHash = (booking: Booking) => {
         }`}
         target="_blank"
         rel="noreferrer noopener"
-        className="hover:text-brand-primary"
+        className="hover:text-gradient"
       >
         {booking.trx_hash.slice(0, 6)}...
         {booking.trx_hash.endsWith("-1")
@@ -85,7 +85,7 @@ export const BookingList: React.FC<Props> = ({
                     href={`${BlockchainConfig.scanner.url}/address/${booking.sender_address}`}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="hover:text-brand-primary"
+                    className="hover:text-gradient"
                   >
                     {booking.sender_address.slice(0, 6)}...
                     {booking.sender_address.slice(-4)}

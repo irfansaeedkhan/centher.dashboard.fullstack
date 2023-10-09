@@ -22,10 +22,10 @@ export const PresaleCard: React.FC<PresaleCardProps> = ({ roundInfo }) => {
           </h1>
           <div className="relative flex flex-col items-center justify-center gap-2 fsm:flex-row flg:justify-start">
             <div className="w-full max-w-[150px] rounded-10px border border-solid border-white/[0.10] bg-white/[0.04] px-2 py-1 text-center text-[10px] font-semibold text-white backdrop-blur-lg fsm:text-xs">
-              1 USDT = {busdPrice} DXC
+              1 DXC = {busdPrice} USDT
             </div>
             <div className="w-full max-w-[150px] rounded-10px border border-solid border-white/[0.10] bg-white/[0.04] px-2 py-1 text-center text-[10px] font-semibold text-white backdrop-blur-lg fsm:text-xs">
-              {ntrPrice} NTR = 1 DXC
+              1 DXC = {ntrPrice} NTR
             </div>
           </div>
         </div>

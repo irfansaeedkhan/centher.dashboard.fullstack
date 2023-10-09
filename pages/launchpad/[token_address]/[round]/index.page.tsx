@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { useGetRoundsInfo } from "@/web3/hooks/use.contracts.functions";
@@ -12,6 +13,7 @@ import {
 } from "./_components";
 
 const Launchpad: NextPageWithLayout = () => {
+  const { user } = useUser();
   const router = useRouter();
   const round_number = router.query.round
     ? Number(router.query.round?.toString())
@@ -25,6 +27,7 @@ const Launchpad: NextPageWithLayout = () => {
       <PresaleCard roundInfo={roundsInfo[round_number - 1]} />
       <RoundStats roundInfo={roundsInfo[round_number - 1]} />
       <PurchaseCentherCard
+        currentUserAddress={user?._id}
         roundInfo={roundsInfo[round_number - 1]}
         refreshRoundsInfo={refreshRoundsInfo}
       />

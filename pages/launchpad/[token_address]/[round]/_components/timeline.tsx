@@ -65,7 +65,7 @@ export const Timeline: React.FC<TimelineProps> = ({
       >
         {title}
       </div>
-      <div className="scrollSetLight2 flex h-auto min-h-[88px] max-w-full flex-grow items-center justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 px-6 py-5">
+      <div className="rainbow-scroll flex h-auto min-h-[88px] max-w-full flex-grow items-center justify-between gap-10 overflow-x-auto rounded-[14px] bg-elevation-1 px-6 py-5">
         <div className="min-w-[260px]">
           <p className="text-sm text-gray-shade-7">
             Amount (

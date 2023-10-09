@@ -1,0 +1,95 @@
+import React, { useState } from "react";
+import Image from "next/image";
+import clsx from "clsx";
+import useUser from "@/hooks/use.user";
+import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
+import { BookingList } from "../../_components/presale-components/booking-list";
+import { RewardsList } from "../../_components/presale-components/rewards-list";
+
+const BookingMain = () => {
+  const { user } = useUser();
+  const { loading, preBookingStats } = usePreBookingStats(user?._id);
+  const [bookingsTab, setBookingsTab] = useState<
+    "recent-bookings" | "my-bookings" | "my-rewards"
+  >("recent-bookings");
+
+  if (loading === "failed") {
+    return (
+      <div className="text-center font-medium text-red-400">
+        Failed to load data!
+      </div>
+    );
+  }
+
+  if (loading === "loading" || loading === "idle") {
+    return (
+      <div className="mt-5 flex w-full items-center justify-center">
+        <Image
+          src="/images/preloader.png"
+          alt="Preloader"
+          width={64}
+          height={64}
+          className="h-16 w-16 flex-shrink-0 object-cover"
+        />
+      </div>
+    );
+  }
+
+  if (!preBookingStats) return null;
+
+  return (
+    <div className="h-auto w-full overflow-hidden rounded-[14px] border border-gray-shade-3 bg-black-shade-3">
+      <div className="flex items-center gap-6 overflow-x-auto rounded-t-[14px] bg-elevation-1 px-4 py-6 font-semibold text-white fsm:gap-8 fsm:px-8">
+        <button
+          onClick={() => setBookingsTab("recent-bookings")}
+          className={clsx(
+            `whitespace-nowrap text-sm fsm:text-base`,
+            bookingsTab === "recent-bookings" && "text-gradient"
+          )}
+        >
+          Recent Bookings
+        </button>
+        <button
+          onClick={() => setBookingsTab("my-bookings")}
+          className={clsx(
+            `whitespace-nowrap text-sm fsm:text-base`,
+            bookingsTab === "my-bookings" && "text-gradient"
+          )}
+        >
+          My Bookings
+        </button>
+        <button
+          onClick={() => setBookingsTab("my-rewards")}
+          className={clsx(
+            `whitespace-nowrap text-sm fsm:text-base`,
+            bookingsTab === "my-rewards" && "text-gradient"
+          )}
+        >
+          My Rewards
+        </button>
+      </div>
+
+      <hr className="border border-gray-shade-3" />
+
+      {(bookingsTab === "recent-bookings" || bookingsTab === "my-bookings") && (
+        <BookingList
+          recievableTokenSymbol={preBookingStats.receivable_token_symbol}
+          rounds={preBookingStats.pre_booking.rounds}
+          bookings={
+            bookingsTab === "recent-bookings"
+              ? preBookingStats.bookings.recent_bookings
+              : bookingsTab === "my-bookings"
+              ? preBookingStats.bookings.my_bookings
+              : []
+          }
+        />
+      )}
+
+      {bookingsTab === "my-rewards" && (
+        <RewardsList rewards={preBookingStats.my_rewards ?? []} />
+      )}
+    </div>
+  );
+};
+
+export default BookingMain;

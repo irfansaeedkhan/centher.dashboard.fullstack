@@ -1,10 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import clsx from "clsx";
-import { AppRoutes } from "@/constants/app.routes";
-import { Rocket, RocketShadow } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
 import Image from "next/image";
+import clsx from "clsx";
+import FinalButton from "@/components/button/final.button";
+import { AppRoutes } from "@/constants/app.routes";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -36,6 +37,12 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
         <Link
           href={{
             pathname: AppRoutes.launchpad,
+            query: {
+              token_address: AddressFactory.getContractAddress(
+                SmartContractName.DXC
+              ),
+              round: 1,
+            },
           }}
         >
           <FinalButton

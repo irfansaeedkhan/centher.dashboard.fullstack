@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Countdown, { CountdownRendererFn } from "react-countdown";
 import { RoundInfo } from "@/web3/constants/types";
 
@@ -8,41 +9,40 @@ interface TimeCountProps {
 
 export const TimeCount: React.FC<TimeCountProps> = ({ roundInfo }) => {
   let startTime = roundInfo?.startTime;
+  let endTime = roundInfo?.endTime;
+  // getCurrentTime
+  let currentTime = Math.floor(Date.now() / 1000);
+
   return (
-    <div>
-      <div className="mb-4 flex flex-col items-start text-xs font-semibold text-white fsm:text-sm">
+    <div className="flex flex-col items-center">
+      <div className="mb-4 flex flex-col items-center text-xs font-semibold text-white fsm:text-sm flg:items-start">
         {roundInfo?.status === "not-started" && (
           <>Presale for round {roundInfo.round + 1} starts in</>
         )}
         <p className="textGradient mb-2">
-          The time remaining to participate in Presale Round
+          The time remaining to{" "}
+          {startTime <= currentTime ? "end" : "participate"} in Presale Round{" "}
+          {roundInfo.round + 1}
         </p>
 
-        <Countdown
-          date={new Date(startTime * 1000)}
-          renderer={countdownRenderer}
-        />
+        <div className="relative mt-3 flex h-14 w-full max-w-[275px] items-center gap-2 px-3 ">
+          <Image
+            src={"/images/timer.png"}
+            alt="timer"
+            width={275}
+            height={56}
+            className="absolute left-0 top-0 m-auto fmd:inset-0 flg:max-w-full"
+          />
+          <Countdown
+            date={
+              startTime <= currentTime
+                ? new Date(endTime * 1000)
+                : new Date(startTime * 1000)
+            }
+            renderer={countdownRenderer}
+          />
+        </div>
       </div>
-    </div>
-  );
-};
-
-interface SingleUnitBoxProps {
-  value: number;
-  unit: string;
-}
-
-const SingleUnitBox: React.FC<SingleUnitBoxProps> = ({ value, unit }) => {
-  return (
-    <div className={"box flex flex-col items-center gap-2"}>
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl border-white/25 bg-[#F3F4F7] fsm:h-10 fsm:w-10 flg:h-12 flg:w-12 f2xl:h-[60px] f2xl:w-[60px]">
-        <h1 className="text-xl font-semibold text-black-shade-3 fsm:text-xl flg:text-[24px]">
-          {value}
-        </h1>
-      </div>
-      <p className="fsm:text-14px text-[10px] font-semibold text-gray-shade-7 ">
-        {unit}
-      </p>
     </div>
   );
 };
@@ -55,11 +55,23 @@ const countdownRenderer: CountdownRendererFn = ({
   seconds,
 }) => {
   return (
-    <div className="timer flex items-center justify-center gap-5 fsm:gap-8">
-      <SingleUnitBox value={days} unit="Days" />
-      <SingleUnitBox value={hours} unit="Hours" />
-      <SingleUnitBox value={minutes} unit="Minutes" />
-      <SingleUnitBox value={seconds} unit="Seconds" />
+    <div className="mx-auto flex w-full justify-center gap-5">
+      <div className="flex flex-col items-center">
+        <h6 className="text-sm font-semibold text-white">{days}</h6>
+        <p className="text-xs font-medium text-white">DAYS</p>
+      </div>
+      <div className="flex flex-col items-center">
+        <h6 className="text-sm font-semibold text-white">{hours}</h6>
+        <p className="text-xs font-medium text-white">HOURS</p>
+      </div>
+      <div className="flex flex-col items-center">
+        <h6 className="text-sm font-semibold text-white">{minutes}</h6>
+        <p className="text-xs font-medium text-white">MIN</p>
+      </div>
+      <div className="flex flex-col items-center">
+        <h6 className="text-sm font-semibold text-white">{seconds}</h6>
+        <p className="text-xs font-medium text-white">SEC</p>
+      </div>
     </div>
   );
 };
