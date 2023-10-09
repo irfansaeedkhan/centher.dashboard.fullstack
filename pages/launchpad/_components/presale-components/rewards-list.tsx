@@ -20,7 +20,7 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
             <th className="whitespace-nowrap px-4 py-2 text-start">
               Receivable
             </th>
-            <th className="whitespace-nowrap px-4 py-2 text-start text-brand-primary">
+            <th className="text-gradient whitespace-nowrap px-4 py-2 text-start">
               Your Reward
             </th>
             <th className="whitespace-nowrap px-4 py-2 text-start">Trx Hash</th>
@@ -39,7 +39,7 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
                     href={`${BlockchainConfig.scanner.url}/address/${booking.sender_address}`}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="hover:text-brand-primary"
+                    className="hover:text-gradient"
                   >
                     {booking.sender_address.slice(0, 6)}...
                     {booking.sender_address.slice(-4)}
@@ -57,7 +57,7 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
                     : booking.receivable_token_amount}{" "}
                   {booking.receivable_token_symbol}
                 </td>
-                <td className="whitespace-nowrap px-4 py-2 text-brand-primary">
+                <td className="text-gradient whitespace-nowrap px-4 py-2">
                   {booking.reward_token_amount.toString().includes(".")
                     ? booking.reward_token_amount.toFixed(2)
                     : booking.reward_token_amount}{" "}
@@ -72,7 +72,7 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
                     }`}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="hover:text-brand-primary"
+                    className="hover:text-gradient"
                   >
                     {booking.trx_hash.slice(0, 6)}...
                     {booking.trx_hash.endsWith("-1")

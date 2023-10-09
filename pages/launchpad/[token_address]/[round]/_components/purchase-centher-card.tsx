@@ -15,6 +15,8 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
 import FinalButton from "@/components/button/final.button";
+import DetailsProject from "@/pages/launchpad/pre-booking/_components/details-project";
+import BookingMain from "@/pages/launchpad/pre-booking/_components/booking-main";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionContainer } from "./conversion-container";
 import { TimelinePeriod } from "./timeline-period";
@@ -22,16 +24,22 @@ import { TimelinePeriod } from "./timeline-period";
 interface Props {
   roundInfo: RoundInfo;
   refreshRoundsInfo: () => void;
+  currentUserAddress: string | undefined;
 }
 
 export const PurchaseCentherCard: React.FC<Props> = ({
   roundInfo,
   refreshRoundsInfo,
+  currentUserAddress,
 }) => {
   const { account, library } = useWeb3React<Web3Provider>();
+  const [currentTab, setCurrentTab] = useState<
+    "rewards" | "details" | "booking"
+  >("rewards");
+
   const [isApproved, setIsApproved] = useState(false);
   const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
-    account,
+    currentUserAddress,
     roundInfo
   );
   const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
@@ -63,7 +71,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     isOpen: false,
     status: "warning",
     title: "Authorization Contract",
-    subtitle: `Allow BUSD to use your ${selectedTokenA.tokenName} token`,
+    subtitle: `Allow launchpad to use your ${selectedTokenA.tokenName} token`,
     bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the DeXa contract.`,
     confirmButtonText: "Authorize",
     onClose: () => {
@@ -76,7 +84,19 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   });
 
   useEffect(() => {
-    if (!account || !library || !roundInfo) return;
+    if (
+      contributionInfo &&
+      (contributionInfo.contributedBusdAmount > 0 ||
+        contributionInfo.contributedNtrAmount > 0)
+    ) {
+      setCurrentTab("rewards");
+    } else {
+      setCurrentTab("details");
+    }
+  }, [contributionInfo]);
+
+  useEffect(() => {
+    if (!currentUserAddress || !library || !roundInfo) return;
     setSelectedTokenA((prev) => ({
       ...prev,
       tokenName: "USDT",
@@ -93,37 +113,45 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       inputMinValue: roundInfo?.minContributionForBusd,
       inputMaxValue: roundInfo?.maxContributionForBusd,
     }));
-  }, [account, library, roundInfo]);
+  }, [currentUserAddress, library, roundInfo]);
 
   // Get selectedTokenA balance
   useEffect(() => {
-    if (!account || !library) return;
+    if (!currentUserAddress || !library) return;
     const getSelectedTokenBalance = async () => {
-      getTokenBalance(selectedTokenA.tokenName, 18, account, library).then(
-        (tokenBalanace) =>
-          setSelectedTokenA((prev) => ({
-            ...prev,
-            tokenBalance: tokenBalanace,
-          }))
+      getTokenBalance(
+        selectedTokenA.tokenName,
+        18,
+        currentUserAddress,
+        library
+      ).then((tokenBalanace) =>
+        setSelectedTokenA((prev) => ({
+          ...prev,
+          tokenBalance: tokenBalanace,
+        }))
       );
     };
     getSelectedTokenBalance();
-  }, [account, selectedTokenA.tokenName, library]);
+  }, [currentUserAddress, selectedTokenA.tokenName, library]);
 
   // Get selectedTokenB balance
   useEffect(() => {
-    if (!account || !library) return;
+    if (!currentUserAddress || !library) return;
     const getSelectedTokenBalance = async () => {
-      getTokenBalance(selectedTokenB.tokenName, 18, account, library).then(
-        (tokenBalanace) =>
-          setSelectedTokenB((prev) => ({
-            ...prev,
-            tokenBalance: tokenBalanace,
-          }))
+      getTokenBalance(
+        selectedTokenB.tokenName,
+        18,
+        currentUserAddress,
+        library
+      ).then((tokenBalanace) =>
+        setSelectedTokenB((prev) => ({
+          ...prev,
+          tokenBalance: tokenBalanace,
+        }))
       );
     };
     getSelectedTokenBalance();
-  }, [account, selectedTokenB.tokenName, library]);
+  }, [currentUserAddress, selectedTokenB.tokenName, library]);
 
   const checkSelectedTokenAllowance = useCallback(async () => {
     if (!account || !library) return;
@@ -158,7 +186,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       isOpen: true,
       status: "warning",
       title: "Authorization Contract",
-      subtitle: `Allow USDT to use your ${selectedTokenA.tokenName} token`,
+      subtitle: `Allow launchpad to use your ${selectedTokenA.tokenName} token`,
       bodyText: `Confirmation of the ${selectedTokenA.tokenName} token to interact with the DeXa contract.`,
       confirmButtonText: "Authorize",
       onClickConfirm: handleClickAuthorize,
@@ -321,9 +349,6 @@ export const PurchaseCentherCard: React.FC<Props> = ({
               <div className="mx-auto mt-8 w-fit rounded-xl bg-[#E6535A]/10 px-5 py-2 text-center lg:mt-12">
                 <p className="text-sm font-semibold text-[#E6535A] fsm:text-base fmd:text-base">
                   Round {roundInfo?.round + 1} is over!{" "}
-                  {roundInfo.round !== 2 && (
-                    <span>Wait for the next round.</span>
-                  )}
                 </p>
               </div>
             )}
@@ -340,31 +365,65 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           </div>
         </div>
       </div>
-      {contributionInfo ? (
-        <TimelinePeriod
-          isBUSD={contributionInfo.contributedBusdAmount > 0}
-          roundInfo={roundInfo}
-          library={library}
-          contributionInfo={contributionInfo}
-          refetchContributionInfo={refreshContributionInfo}
+      <div className="my-4 flex items-center gap-2">
+        {contributionInfo &&
+          (contributionInfo.contributedBusdAmount > 0 ||
+            contributionInfo.contributedNtrAmount > 0) && (
+            <FinalButton
+              title="Claim Rewards"
+              variant={currentTab === "rewards" ? "primary" : "secondary"}
+              className="rounded-[10px]"
+              onClick={() => setCurrentTab("rewards")}
+            />
+          )}
+        <FinalButton
+          title="Project Details"
+          variant={currentTab === "details" ? "primary" : "secondary"}
+          className="rounded-[10px]"
+          onClick={() => setCurrentTab("details")}
         />
-      ) : !contributionInfo && account ? (
-        <div className="mt-5 flex w-full items-center justify-center">
-          <Image
-            src="/images/preloader.png"
-            alt="Chat Background"
-            width={64}
-            height={64}
-            className="h-16 w-16 flex-shrink-0 object-cover"
+        <FinalButton
+          title="Booking"
+          variant={currentTab === "booking" ? "primary" : "secondary"}
+          className="rounded-[10px]"
+          onClick={() => setCurrentTab("booking")}
+        />
+      </div>
+      {currentTab === "rewards" ? (
+        contributionInfo &&
+        (contributionInfo.contributedBusdAmount > 0 ||
+          contributionInfo.contributedNtrAmount > 0) ? (
+          <TimelinePeriod
+            isBUSD={contributionInfo.contributedBusdAmount > 0}
+            roundInfo={roundInfo}
+            library={library}
+            contributionInfo={contributionInfo}
+            refetchContributionInfo={refreshContributionInfo}
           />
-        </div>
-      ) : (
-        <div className="mt-5 flex w-full items-center justify-center">
-          <p className="text-xl font-semibold text-white">
-            Please Connect your Wallet
-          </p>
-        </div>
-      )}
+        ) : !contributionInfo && account ? (
+          <div className="mt-5 flex w-full items-center justify-center">
+            <Image
+              src="/images/preloader.png"
+              alt="Preloader"
+              width={64}
+              height={64}
+              className="h-16 w-16 flex-shrink-0 object-cover"
+            />
+          </div>
+        ) : (
+          !account && (
+            <div className="mt-5 flex w-full items-center justify-center">
+              <p className="text-xl font-semibold text-white">
+                Please Connect your Wallet
+              </p>
+            </div>
+          )
+        )
+      ) : currentTab === "details" ? (
+        <DetailsProject />
+      ) : currentTab === "booking" ? (
+        <BookingMain />
+      ) : null}
     </div>
   );
 };
