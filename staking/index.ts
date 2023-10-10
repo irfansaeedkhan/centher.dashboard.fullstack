@@ -182,22 +182,31 @@ export class CentherStaking {
     poolId: number,
     userAddress: string
   ): Promise<RewardsStat> {
-    const result = await BlockchainRead.getUserStakingRewards(
-      library,
-      poolId,
-      userAddress
-    );
+    try {
+      const result = await BlockchainRead.getUserStakingRewards(
+        library,
+        poolId,
+        userAddress
+      );
 
-    return {
-      totalClaimableReward: BigNumber.from(
-        result.totalClaimableReward
-      ).toString(),
-      totalReward: BigNumber.from(result.totalReward).toString(),
-      totalStakeAmount: BigNumber.from(result.totalStakeAmount).toString(),
-      totolUnclaimableReward: BigNumber.from(
-        result.totolUnclaimableReward
-      ).toString(),
-    };
+      return {
+        totalClaimableReward: BigNumber.from(
+          result.totalClaimableReward
+        ).toString(),
+        totalReward: BigNumber.from(result.totalReward).toString(),
+        totalStakeAmount: BigNumber.from(result.totalStakeAmount).toString(),
+        totolUnclaimableReward: BigNumber.from(
+          result.totolUnclaimableReward
+        ).toString(),
+      };
+    } catch (error) {
+      return {
+        totalClaimableReward: "0",
+        totalReward: "0",
+        totalStakeAmount: "0",
+        totolUnclaimableReward: "0",
+      };
+    }
   }
 
   @CatchError()

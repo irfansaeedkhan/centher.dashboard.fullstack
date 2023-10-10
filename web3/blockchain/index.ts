@@ -780,19 +780,23 @@ export class BlockchainRead {
     poolId: number,
     user: string
   ): Promise<string> {
-    const signer = getSigner(library);
-    const stakingContract = SmartContractProvider.getContract(
-      SmartContractName.STAKING,
-      signer
-    );
-
-    const result =
-      await stakingContract.functions.calculateClaimableRewardForRef(
-        poolId,
-        user
+    try {
+      const signer = getSigner(library);
+      const stakingContract = SmartContractProvider.getContract(
+        SmartContractName.STAKING,
+        signer
       );
 
-    return result[0];
+      const result =
+        await stakingContract.functions.calculateClaimableRewardForRef(
+          poolId,
+          user
+        );
+
+      return result["claimableReward"];
+    } catch (e) {
+      return "0";
+    }
   }
 
   static async getCollectionAdditionalInfo(
