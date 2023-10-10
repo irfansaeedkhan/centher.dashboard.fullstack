@@ -357,9 +357,9 @@ export const PurchaseCentherCard: React.FC<Props> = ({
               <p className="text-xs text-gray-shade-7">
                 <span className="text-[#E6535A]">Terms & Conditions:</span>{" "}
                 Purchased tokens will be automatically locked for the first 4
-                months, after which 12.5% of the purchased tokens will be
-                released every month for the next 8 months and can be claimed.
-                The vesting contract will then last a total of 12 months.
+                months, after which 10% of the purchased tokens will be released
+                every month for the next 10 months and can be claimed. The
+                vesting contract will then last a total of 14 months.
               </p>
             </div>
           </div>
