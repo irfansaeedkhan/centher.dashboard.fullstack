@@ -1,5 +1,6 @@
 [
   { "inputs": [], "name": "AlreadySetted", "type": "error" },
+  { "inputs": [], "name": "AmountIsZero", "type": "error" },
   {
     "inputs": [],
     "name": "CannotSetAffiliateSettingForActivePool",
@@ -16,8 +17,10 @@
   { "inputs": [], "name": "InvalidUnstakeAmount", "type": "error" },
   { "inputs": [], "name": "Locked", "type": "error" },
   { "inputs": [], "name": "MaxStakableAmountReached", "type": "error" },
+  { "inputs": [], "name": "NotCitizen", "type": "error" },
   { "inputs": [], "name": "NotRegistered", "type": "error" },
   { "inputs": [], "name": "NotValidReferral", "type": "error" },
+  { "inputs": [], "name": "OnlyOwner", "type": "error" },
   { "inputs": [], "name": "OnlyPoolOwnerCanAccess", "type": "error" },
   { "inputs": [], "name": "PoolNotActive", "type": "error" },
   { "inputs": [], "name": "PoolNotEligibleForRestake", "type": "error" },
@@ -128,6 +131,25 @@
       }
     ],
     "name": "AmountUnstaked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "oldFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "updatedFees",
+        "type": "uint256"
+      }
+    ],
+    "name": "PlatformFeesUpdated",
     "type": "event"
   },
   {
@@ -301,6 +323,31 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "referrer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "poolId",
+        "type": "uint256"
+      }
+    ],
+    "name": "ReferrerSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "poolId",
         "type": "uint256"
@@ -316,6 +363,12 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isRef",
+        "type": "bool"
       }
     ],
     "name": "RewardClaimed",
@@ -345,7 +398,8 @@
         "internalType": "uint256",
         "name": "claimableReward",
         "type": "uint256"
-      }
+      },
+      { "internalType": "uint256", "name": "passdTime", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -394,6 +448,24 @@
     "name": "claimRewardForRef",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "poolId", "type": "uint256" },
+      { "internalType": "address", "name": "referrer", "type": "address" },
+      { "internalType": "address", "name": "referral", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "stakingDuration",
+        "type": "uint256"
+      }
+    ],
+    "name": "createKey",
+    "outputs": [
+      { "internalType": "bytes32", "name": "key", "type": "bytes32" }
+    ],
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -576,6 +648,13 @@
     "type": "function"
   },
   {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "refDetails",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "register",
     "outputs": [
@@ -626,6 +705,17 @@
   {
     "inputs": [
       { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
+      { "internalType": "address", "name": "user", "type": "address" },
+      { "internalType": "address", "name": "referrer", "type": "address" }
+    ],
+    "name": "setReferrer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
       { "internalType": "uint256", "name": "_amount", "type": "uint256" },
       { "internalType": "address", "name": "referrer", "type": "address" }
     ],
@@ -650,6 +740,41 @@
       { "internalType": "uint256", "name": "_amount", "type": "uint256" }
     ],
     "name": "unstake",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_poolId", "type": "uint256" },
+      {
+        "components": [
+          { "internalType": "uint256", "name": "levelOne", "type": "uint256" },
+          { "internalType": "uint256", "name": "levelTwo", "type": "uint256" },
+          {
+            "internalType": "uint256",
+            "name": "levelThree",
+            "type": "uint256"
+          },
+          { "internalType": "uint256", "name": "levelFour", "type": "uint256" },
+          { "internalType": "uint256", "name": "levelFive", "type": "uint256" },
+          { "internalType": "uint256", "name": "levelSix", "type": "uint256" }
+        ],
+        "internalType": "struct ICentherStaking.AffiliateSettingInput",
+        "name": "_setting",
+        "type": "tuple"
+      }
+    ],
+    "name": "updateAffiliateSetting",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "_newFees", "type": "uint256" }
+    ],
+    "name": "updatePlatformFees",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
