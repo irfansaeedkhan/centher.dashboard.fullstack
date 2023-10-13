@@ -3,8 +3,6 @@ import Image from "next/image";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import { formatEther } from "ethers/lib/utils";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
 import { LockedIcon, DXCIconBG, USDTIcon } from "@/assets/svgs";
 import {
   getTokenBalance,
@@ -14,12 +12,13 @@ import {
 import { BlockchainWrite } from "@/web3/blockchain";
 import { RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
-import FinalButton from "@/components/button/final.button";
 import DetailsProject from "@/pages/launchpad/pre-booking/_components/details-project";
 import BookingMain from "@/pages/launchpad/pre-booking/_components/booking-main";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionContainer } from "./conversion-container";
 import { TimelinePeriod } from "./timeline-period";
+import { useWallet } from "@/web3/hooks/use.wallet";
+import FinalButton from "@/components/button/final.button";
 
 interface Props {
   roundInfo: RoundInfo;
@@ -32,14 +31,13 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   refreshRoundsInfo,
   currentUserAddress,
 }) => {
-  const { account, library } = useWeb3React<Web3Provider>();
+  const { connectedAddress, getSigner } = useWallet();
+  const [isApproved, setIsApproved] = useState(false);
   const [currentTab, setCurrentTab] = useState<
     "rewards" | "details" | "booking"
   >("rewards");
-
-  const [isApproved, setIsApproved] = useState(false);
   const { contributionInfo, refreshContributionInfo } = useGetContributionInfo(
-    currentUserAddress,
+    connectedAddress,
     roundInfo
   );
   const [selectedTokenA, setSelectedTokenA] = useState<SelectedTokenA>({
@@ -96,7 +94,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   }, [contributionInfo]);
 
   useEffect(() => {
-    if (!currentUserAddress || !library || !roundInfo) return;
+    if (!connectedAddress || !getSigner() || !roundInfo) return;
     setSelectedTokenA((prev) => ({
       ...prev,
       tokenName: "USDT",
@@ -113,17 +111,17 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       inputMinValue: roundInfo?.minContributionForBusd,
       inputMaxValue: roundInfo?.maxContributionForBusd,
     }));
-  }, [currentUserAddress, library, roundInfo]);
+  }, [currentUserAddress, getSigner, roundInfo, connectedAddress]);
 
   // Get selectedTokenA balance
   useEffect(() => {
-    if (!currentUserAddress || !library) return;
+    if (!currentUserAddress || !getSigner()) return;
     const getSelectedTokenBalance = async () => {
       getTokenBalance(
         selectedTokenA.tokenName,
         18,
         currentUserAddress,
-        library
+        getSigner()
       ).then((tokenBalanace) =>
         setSelectedTokenA((prev) => ({
           ...prev,
@@ -132,17 +130,17 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       );
     };
     getSelectedTokenBalance();
-  }, [currentUserAddress, selectedTokenA.tokenName, library]);
+  }, [currentUserAddress, selectedTokenA.tokenName, getSigner]);
 
   // Get selectedTokenB balance
   useEffect(() => {
-    if (!currentUserAddress || !library) return;
+    if (!currentUserAddress || !getSigner()) return;
     const getSelectedTokenBalance = async () => {
       getTokenBalance(
         selectedTokenB.tokenName,
         18,
         currentUserAddress,
-        library
+        getSigner()
       ).then((tokenBalanace) =>
         setSelectedTokenB((prev) => ({
           ...prev,
@@ -151,14 +149,14 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       );
     };
     getSelectedTokenBalance();
-  }, [currentUserAddress, selectedTokenB.tokenName, library]);
+  }, [currentUserAddress, selectedTokenB.tokenName, getSigner]);
 
   const checkSelectedTokenAllowance = useCallback(async () => {
-    if (!account || !library) return;
+    if (!connectedAddress || !getSigner) return;
     const tokenAllowance = await getTokenAllowance(
       selectedTokenA.tokenName,
-      account,
-      library
+      connectedAddress,
+      getSigner()
     );
     if (
       tokenAllowance !== 0 &&
@@ -169,10 +167,10 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       setIsApproved(false);
     }
   }, [
-    account,
+    connectedAddress,
     selectedTokenA.minContribution,
     selectedTokenA.tokenName,
-    library,
+    getSigner,
   ]);
 
   // Get selected token allowance
@@ -194,14 +192,17 @@ export const PurchaseCentherCard: React.FC<Props> = ({
   };
 
   const handleClickAuthorize = async () => {
-    if (!account || !library) return;
+    if (!connectedAddress || !getSigner()) return;
     setModal((prev) => ({
       ...prev,
       status: "progress",
     }));
 
     try {
-      await BlockchainWrite.getTokenApproval(selectedTokenA.tokenName, library);
+      await BlockchainWrite.getTokenApproval(
+        selectedTokenA.tokenName,
+        getSigner()
+      );
       toast.success("Authorization successful");
       setModal((prev) => ({
         ...prev,
@@ -247,7 +248,8 @@ export const PurchaseCentherCard: React.FC<Props> = ({
 
   const handleBuyCenther = async () => {
     try {
-      if (!account || !library || !selectedTokenA.inputValue) return;
+      if (!connectedAddress || !getSigner() || !selectedTokenA.inputValue)
+        return;
 
       setModal((prev) => ({
         ...prev,
@@ -257,7 +259,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       await BlockchainWrite.buyToken(
         selectedTokenA.tokenName,
         selectedTokenA.inputValue,
-        library
+        getSigner()
       );
 
       refreshContributionInfo();
@@ -323,7 +325,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                   title={isApproved ? "Buy now" : "Authorize"}
                   variant="primary"
                   onClick={
-                    !account
+                    !connectedAddress
                       ? () => {
                           toast.error("Please connect your wallet");
                         }
@@ -396,11 +398,11 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           <TimelinePeriod
             isBUSD={contributionInfo.contributedBusdAmount > 0}
             roundInfo={roundInfo}
-            library={library}
+            signer={getSigner()}
             contributionInfo={contributionInfo}
             refetchContributionInfo={refreshContributionInfo}
           />
-        ) : !contributionInfo && account ? (
+        ) : !contributionInfo && getSigner() ? (
           <div className="mt-5 flex w-full items-center justify-center">
             <Image
               src="/images/preloader.png"
@@ -411,7 +413,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
             />
           </div>
         ) : (
-          !account && (
+          !connectedAddress && (
             <div className="mt-5 flex w-full items-center justify-center">
               <p className="text-xl font-semibold text-white">
                 Please Connect your Wallet

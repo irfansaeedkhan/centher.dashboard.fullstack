@@ -34,7 +34,7 @@ export const ModalPortal: React.FC<Props> = ({ children, wrapperId }) => {
   // wrapperElement state will be null on the very first render.
   if (wrapperElement === null) return null;
 
-  return createPortal(children, wrapperElement);
+  return <>{createPortal(children, wrapperElement)}</>;
 };
 
 // Create portal wrapper element and append to body

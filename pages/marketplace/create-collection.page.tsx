@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -18,6 +17,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { AppRoutes } from "@/constants/app.routes";
 import { ICollectionData } from "./_components/create.collection.form";
 import { UploadNFTCollection, CreateNFTCollectionForm } from "./_components";
+import { useWallet } from "@/web3/hooks/use.wallet";
 // import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
 
 const collectionsRemoteBasePath = "ipfs:/";
@@ -40,7 +40,8 @@ const CreateNFTCollection: NextPageWithLayout = () => {
 
   const router = useRouter();
 
-  const { account, library } = useWeb3React();
+  const { connectedAddress, getSigner } = useWallet();
+
   const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (collectionData: any) => {
@@ -94,7 +95,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       const { name, symbol, category, totalsupply } = collectionData;
 
       await BlockchainWrite.callCreateCollection(
-        library,
+        getSigner(),
         name,
         symbol,
         category,
@@ -112,7 +113,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
     }
   };
   const createCollection = (values: ICollectionData) => {
-    if (!account || !library) {
+    if (!connectedAddress || !getSigner()) {
       toastError("Please connect your wallet for creating collection!");
       return;
     }
@@ -120,7 +121,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       toastError("Please login for creating collection!");
       return;
     }
-    if (user._id.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -133,7 +134,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       return;
     }
 
-    if (!library) {
+    if (!getSigner()) {
       toastError("Connect your wallet");
       return;
     }
@@ -234,7 +235,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                   setClearForm(true);
                   router.push({
                     pathname: AppRoutes.profile.collection,
-                    query: { user_id: account },
+                    query: { user_id: connectedAddress },
                   });
                 }}
                 className="w-full hover:scale-95"
@@ -264,7 +265,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
@@ -284,7 +285,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         />
         <CreateNFTCollectionForm
           createCollection={createCollection}
-          library={library}
+          signer={getSigner()}
           clearForm={clearForm}
           profile={profile}
           cover={cover}

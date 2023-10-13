@@ -1,5 +1,4 @@
 import ctl from "@netlify/classnames-template-literals";
-import Link from "next/link";
 import React, { useMemo } from "react";
 import { useTable } from "react-table";
 
@@ -34,7 +33,7 @@ export const AdminFeeDetailsTable = () => {
                   const { key, ...restHeaderProps } = column.getHeaderProps();
                   return (
                     <th className={header} key={key} {...restHeaderProps}>
-                      {column.render("Header")}
+                      <>{column.render("Header")}</>
                     </th>
                   );
                 })}
@@ -52,7 +51,7 @@ export const AdminFeeDetailsTable = () => {
                   const { key, ...restCellProps } = cell.getCellProps();
                   return (
                     <td className={tablecolumn} key={key} {...restCellProps}>
-                      {cell.render("Cell")}
+                      <>{cell?.render("Cell")}</>
                     </td>
                   );
                 })}
@@ -88,8 +87,4 @@ bg-transparent text-white text-sm
 const tablecolumn = ctl(`
 px-4 py-3
 
-`);
-
-const tableLink = ctl(`
-hover:text-brand-primary
 `);

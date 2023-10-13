@@ -25,6 +25,7 @@ import {
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import FinalButton from "@/components/button/final.button";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -41,8 +42,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
-  const { connectWallet, disconnectWallet } = useConnectWallet();
-  const { active, account, deactivate } = useWeb3React();
+  const { connectWallet, connectedAddress, disconnectWallet } = useWallet();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -57,13 +57,13 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   useOnClickOutside(ref, handleClickOutside);
 
   useEffect(() => {
-    if (!account || !loggedInUser) {
+    if (!connectedAddress || !loggedInUser) {
       return;
     }
-    if (loggedInUser._id.toLowerCase() !== account.toLowerCase()) {
-      deactivate();
+    if (loggedInUser._id.toLowerCase() !== connectedAddress.toLowerCase()) {
+      disconnectWallet();
     }
-  }, [deactivate, loggedInUser, account]);
+  }, [disconnectWallet, loggedInUser, connectedAddress]);
 
   const verificationTick = useVerificationTick({ user: loggedInUser });
 
@@ -293,7 +293,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
         </p>
       </div>
       <div className="px-5 py-4">
-        {active ? (
+        {connectedAddress ? (
           <button
             className="flex items-center gap-3 stroke-red-theme text-red-theme"
             onClick={() => {
@@ -311,7 +311,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
               const _account = await connectWallet();
               if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
                 toast.error("Please connect to correct account");
-                deactivate();
+                disconnectWallet();
               }
             }}
           >

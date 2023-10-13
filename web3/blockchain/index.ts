@@ -2,7 +2,7 @@ import { QueryNames } from "./enum/query.names.enum";
 import { ApolloProvider } from "./providers/apollo.provider";
 import { ethers } from "ethers";
 import { parseEther } from "ethers/lib/utils";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { CitizenShipType } from "@/store/citizen.store";
 import { InsufficientFundError } from "@/staking/errors/params.error";
 import {
@@ -20,11 +20,11 @@ import { BlockchainConfig } from "./config";
 
 export class BlockchainRead {
   static async isContractAddress(
-    library: Web3Provider,
+    library: JsonRpcSigner,
     address: string
   ): Promise<boolean> {
     try {
-      const code = await library.getCode(address);
+      const code = await library.provider.getCode(address);
       return code == "0x" ? false : true;
     } catch (error) {
       logger(error, "isContractAddress");
@@ -72,11 +72,10 @@ export class BlockchainRead {
   }
 
   static async getReferrersAddress(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     userAddress: string
   ): Promise<string[]> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
@@ -619,11 +618,10 @@ export class BlockchainRead {
   }
 
   static async isCurrentMarketplaceOwner(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<boolean> {
-    const signer = getSigner(library);
     const nftContract = SmartContractProvider.getNFTContract(
       collection,
       signer
@@ -662,11 +660,10 @@ export class BlockchainRead {
   }
 
   static async isTokenSwaped(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<boolean> {
-    const signer = getSigner(library);
     const nftAdapterContract = SmartContractProvider.getContract(
       SmartContractName.NFT_ADAPTER,
       signer
@@ -681,10 +678,9 @@ export class BlockchainRead {
   }
 
   static async isCitizen(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     address: string
   ): Promise<string> {
-    const signer = getSigner(library);
     const registrationContract = SmartContractProvider.getContract(
       SmartContractName.REGISTRATION,
       signer
@@ -696,10 +692,9 @@ export class BlockchainRead {
   }
 
   static async getCitizenPrice(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     type: CitizenShipType
   ): Promise<string[]> {
-    const signer = getSigner(library);
     const registrationContract = SmartContractProvider.getContract(
       SmartContractName.REGISTRATION,
       signer
@@ -734,11 +729,10 @@ export class BlockchainRead {
   }
 
   static async getUserClaimableStakingRewards(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     user: string
   ): Promise<string> {
-    const signer = getSigner(library);
     const stakingContract = SmartContractProvider.getContract(
       SmartContractName.STAKING,
       signer
@@ -753,12 +747,11 @@ export class BlockchainRead {
   }
 
   static async getUserStakingRewards(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     user: string
   ): Promise<any> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -776,12 +769,11 @@ export class BlockchainRead {
   }
 
   static async getRefClaimableReward(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     user: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -821,10 +813,9 @@ export class BlockchainRead {
 }
 export class BlockchainWrite {
   static async adminUnPauseRegistration(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
@@ -841,9 +832,8 @@ export class BlockchainWrite {
     }
   }
 
-  static async adminPauseRegistration(library: Web3Provider): Promise<string> {
+  static async adminPauseRegistration(signer: JsonRpcSigner): Promise<string> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
@@ -861,12 +851,11 @@ export class BlockchainWrite {
   }
 
   static async adminChangeRegistrationFees(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     feeWithReferralLink: number,
     feeWithoutReferralLink: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
@@ -898,10 +887,9 @@ export class BlockchainWrite {
   }
 
   static async adminClaimRegistrationBNB(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
@@ -917,12 +905,11 @@ export class BlockchainWrite {
   }
 
   static async callCancelAuction(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -944,12 +931,11 @@ export class BlockchainWrite {
   }
 
   static async callEndAuction(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -971,13 +957,12 @@ export class BlockchainWrite {
   }
 
   static async callBidOnAuction(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     price: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1006,14 +991,13 @@ export class BlockchainWrite {
   }
 
   static async callCreateAuction(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     startPrice: number,
     period: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1046,13 +1030,12 @@ export class BlockchainWrite {
   }
 
   static async callBuyListedItem(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     price: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1079,13 +1062,12 @@ export class BlockchainWrite {
   }
 
   static async callListItemForSale(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     newPrice: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1116,13 +1098,12 @@ export class BlockchainWrite {
   }
 
   static async callEditItemForSale(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     newPrice: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1153,12 +1134,11 @@ export class BlockchainWrite {
   }
 
   static async callCancelItemForSale(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1184,7 +1164,7 @@ export class BlockchainWrite {
   }
 
   static async callCreateNFT(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenUri: string,
     supply: number,
@@ -1194,12 +1174,10 @@ export class BlockchainWrite {
     fee: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
       );
-
       const normalizedValue = ethers.utils.parseEther(price.toFixed(18));
       const castedFee = ethers.utils.parseEther(fee.toFixed(18));
 
@@ -1232,7 +1210,7 @@ export class BlockchainWrite {
   }
 
   static async callCreateCollection(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     name: string,
     symbol: string,
     category: string,
@@ -1241,7 +1219,6 @@ export class BlockchainWrite {
     fee: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1275,11 +1252,10 @@ export class BlockchainWrite {
   }
 
   static async callApproveNFTToMarketplace(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const nftContract = SmartContractProvider.getNFTContract(
         collection,
         signer
@@ -1302,14 +1278,13 @@ export class BlockchainWrite {
   }
 
   static async transferNftWithLock(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: String,
     tokenId: number,
     receiver: string,
     periodTimeSpan: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.MARKETPALCE,
         signer
@@ -1338,14 +1313,13 @@ export class BlockchainWrite {
   }
 
   static async transferNftToCurrentMarketplace(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number,
     price: number,
     endTime: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const marketplaceContract = SmartContractProvider.getContract(
         SmartContractName.OLD_MARKETPALCE,
         signer
@@ -1366,7 +1340,7 @@ export class BlockchainWrite {
         }
 
         const approveTx = await this.callApproveNFTToMarketplace(
-          library,
+          signer,
           collection
         );
 
@@ -1376,7 +1350,7 @@ export class BlockchainWrite {
 
         endTime = Math.floor(endTime - +Date.now() / 1000);
         const tx = await this.callCreateAuction(
-          library,
+          signer,
           collection,
           tokenId,
           price,
@@ -1403,7 +1377,7 @@ export class BlockchainWrite {
         }
 
         const approveTx = await this.callApproveNFTToMarketplace(
-          library,
+          signer,
           collection
         );
 
@@ -1412,7 +1386,7 @@ export class BlockchainWrite {
         }
 
         const tx = await this.callListItemForSale(
-          library,
+          signer,
           collection,
           tokenId,
           price
@@ -1430,10 +1404,9 @@ export class BlockchainWrite {
     paymentAmountRaw: number,
     paymentAddress: string,
     paymentTokenAddress: string,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const paymentTokenAbi = BlockchainConfig.abis.BUSD; // TODO: change to ERC20 abi for generic usage
       const paymentTokenContract = SmartContractProvider.getContractInstance(
         paymentTokenAbi,
@@ -1466,11 +1439,10 @@ export class BlockchainWrite {
   }
 
   static async swapDexagon(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     collection: string,
     tokenId: number
   ): Promise<string> {
-    const signer = getSigner(library);
     const nftAdapterContract = SmartContractProvider.getContract(
       SmartContractName.NFT_ADAPTER,
       signer
@@ -1482,20 +1454,6 @@ export class BlockchainWrite {
     );
 
     const lockTime = 0;
-
-    // try {
-    //   lockTime = await BlockchainRead.getTokenUnlockTimeFromContract(
-    //     collection,
-    //     tokenId,
-    //     library
-    //   );
-    // } catch (error) {
-    //   throw new Error("cannot get token lock time");
-    // }
-
-    // if (+lockTime != 0) {
-    //   lockTime = (lockTime - +new Date() / 1000).toFixed(0);
-    // }
 
     try {
       const approvalTx = await nftContract.functions.setApprovalForAll(
@@ -1526,16 +1484,14 @@ export class BlockchainWrite {
 
   static async buyCitizenShip(
     value: number,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const registrationContract = SmartContractProvider.getContract(
         SmartContractName.REGISTRATION,
         signer
       );
-
-      await registrationContract.callStatic.buyMemberShip({ value });
+      // await registrationContract.callStatic.buyMemberShip({ value });
 
       const tx = await registrationContract.functions.buyMemberShip({ value });
 
@@ -1549,20 +1505,19 @@ export class BlockchainWrite {
   }
 
   static async createStakingPool(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     data: MappedCreatePoolInput,
     ownerAddress: string,
     preflight: boolean
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
       );
 
       if (data.showOnCenther) {
-        const balance = await library.getBalance(ownerAddress);
+        const balance = await signer.getBalance(ownerAddress);
         const price = await stakingContract.functions.platformFees();
 
         if (+balance.toString() < +price.toString()) {
@@ -1579,8 +1534,7 @@ export class BlockchainWrite {
           const tx = await stakingContract.functions.createPool(data, {
             value: price.toString(),
           });
-          await tx.wait();
-          await library.waitForTransaction(tx.hash, 2);
+          await tx.wait(2);
           return tx.hash;
         }
 
@@ -1589,8 +1543,7 @@ export class BlockchainWrite {
         await stakingContract.callStatic.createPool(data);
         if (!preflight) {
           const tx = await stakingContract.functions.createPool(data);
-          await tx.wait();
-          await library.waitForTransaction(tx.hash, 2);
+          await tx.wait(2);
           return tx.hash;
         }
 
@@ -1603,13 +1556,12 @@ export class BlockchainWrite {
   }
 
   static async SetApprovalForWallet(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     tokenAddress: string,
     userAddress: string,
     spenderAddress: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const tokenContract = SmartContractProvider.getErc20Contract(
         tokenAddress,
         signer
@@ -1623,8 +1575,7 @@ export class BlockchainWrite {
         maxUintRange
       );
 
-      await tx.wait();
-      await library.waitForTransaction(tx.hash, 2);
+      await tx.wait(2);
 
       return tx.hash;
     } catch (error: any) {
@@ -1634,12 +1585,11 @@ export class BlockchainWrite {
   }
 
   static async setStakingPoolAffiliateSettings(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     data: AddAffiliateSettingsInput,
     poolId: number
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1651,8 +1601,7 @@ export class BlockchainWrite {
         data
       );
 
-      await tx.wait();
-      await library.waitForTransaction(tx.hash, 2);
+      await tx.wait(2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "setStakingPoolAffiliateSettings");
@@ -1660,9 +1609,8 @@ export class BlockchainWrite {
     }
   }
 
-  static async getCurrentStakingPoolId(library: Web3Provider): Promise<number> {
+  static async getCurrentStakingPoolId(signer: JsonRpcSigner): Promise<number> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1677,7 +1625,7 @@ export class BlockchainWrite {
   }
 
   static async stake(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: string,
     amount: string,
     referrer: string,
@@ -1685,7 +1633,6 @@ export class BlockchainWrite {
     spenderAddress: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1701,8 +1648,7 @@ export class BlockchainWrite {
         amount
       );
 
-      await approvalTx.wait();
-      await library.waitForTransaction(approvalTx.hash, 2);
+      await approvalTx.wait(2);
 
       const tx = await stakingContract.functions.stake(
         poolId,
@@ -1710,8 +1656,7 @@ export class BlockchainWrite {
         referrer
       );
 
-      await tx.wait();
-      await library.waitForTransaction(tx.hash, 2);
+      await tx.wait(2);
       return tx.hash;
     } catch (error: any) {
       logger(error, "stake");
@@ -1720,11 +1665,10 @@ export class BlockchainWrite {
   }
 
   static async claimReward(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1741,12 +1685,11 @@ export class BlockchainWrite {
   }
 
   static async claimRefReward(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: string,
     user: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1766,7 +1709,7 @@ export class BlockchainWrite {
   }
 
   static async unstake(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: string,
     amount: string
   ): Promise<string> {
@@ -1775,7 +1718,6 @@ export class BlockchainWrite {
         throw new Error("Invalid amount");
       }
 
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1799,9 +1741,8 @@ export class BlockchainWrite {
     }
   }
 
-  static async restake(library: Web3Provider, poolId: string): Promise<string> {
+  static async restake(signer: JsonRpcSigner, poolId: string): Promise<string> {
     try {
-      const signer = getSigner(library);
       const stakingContract = SmartContractProvider.getContract(
         SmartContractName.STAKING,
         signer
@@ -1823,10 +1764,9 @@ export class BlockchainWrite {
   static async buyToken(
     tokenName: TokenName,
     amount: number,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -1857,7 +1797,7 @@ export class BlockchainWrite {
     }
   }
   static async adminCallUpdateRoundInfo(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     roundIndex: number,
     startTime: number,
     endTime: number,
@@ -1872,7 +1812,6 @@ export class BlockchainWrite {
     enableBusd: boolean
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -1934,10 +1873,9 @@ export class BlockchainWrite {
   }
 
   static async adminCallClaimNtrForCoreTeam(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -1956,10 +1894,9 @@ export class BlockchainWrite {
   }
 
   static async adminCallClaimBusdForCoreTeam(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -1978,10 +1915,9 @@ export class BlockchainWrite {
   }
 
   static async adminCallClaimNtrForCompany(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2000,10 +1936,9 @@ export class BlockchainWrite {
   }
 
   static async adminCallClaimBusdForCompany(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2023,10 +1958,9 @@ export class BlockchainWrite {
 
   static async getTokenApproval(
     tokenName: TokenName,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleAddress = AddressFactory.getContractAddress(
         SmartContractName.PRESALE
       );
@@ -2050,9 +1984,8 @@ export class BlockchainWrite {
       throw error;
     }
   }
-  static async callClaimNTRForReferral(library: Web3Provider): Promise<string> {
+  static async callClaimNTRForReferral(signer: JsonRpcSigner): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2071,10 +2004,9 @@ export class BlockchainWrite {
   }
 
   static async callClaimBUSDForReferral(
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2092,12 +2024,11 @@ export class BlockchainWrite {
   }
 
   static async claimTokens(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     round: number,
     claimFrom: ClaimCentherFrom
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2125,17 +2056,16 @@ export class BlockchainWrite {
   }
 
   static async adminChangeReferralRate(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     rates: number[]
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
       );
 
-      await presaleContract.callStatic.setReferralRate(rates);
+      // await presaleContract.callStatic.setReferralRate(rates);
       const tx = await presaleContract.functions.setReferralRate(rates);
       await tx.wait();
       return tx.hash;
@@ -2146,11 +2076,10 @@ export class BlockchainWrite {
   }
 
   static async adminChangeCompanyAddress(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     newAddress: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer
@@ -2170,11 +2099,10 @@ export class BlockchainWrite {
   }
 
   static async adminChangeCoreTeamAddress(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     newAddress: string
   ): Promise<string> {
     try {
-      const signer = getSigner(library);
       const presaleContract = SmartContractProvider.getContract(
         SmartContractName.PRESALE,
         signer

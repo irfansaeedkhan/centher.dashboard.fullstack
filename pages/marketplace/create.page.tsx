@@ -2,7 +2,6 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import FinalButton from "@/components/button/final.button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -11,17 +10,15 @@ import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
-// import { useRecaptcha } from "@/utils/google.recaptcha/google-recaptcha";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { readFileAsync } from "@/utils/file.reader.util";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { INFTData } from "./_components/create.nft.form";
 import { UploadNFT, CreateNFTForm } from "./_components";
 import { customLog } from "@/utils/custom.log";
-// import GoogleReCaptchaWrapper from "./google-re-captcha-wrapper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -39,13 +36,12 @@ const CreateNFT: NextPageWithLayout = () => {
     title: "",
     content: "",
   });
-  // const { submitRecaptcha } = useRecaptcha();
   const [asset, setAsset] = useState<Blob | undefined>(undefined);
   const [assetTab, setAssetTab] = useState("Image");
 
   const bnbPrice = useBNBPrice();
 
-  const { account, library } = useWeb3React();
+  const { connectedAddress, getSigner } = useWallet();
   const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
@@ -89,7 +85,7 @@ const CreateNFT: NextPageWithLayout = () => {
       );
 
       const result = await BlockchainWrite.callCreateNFT(
-        library,
+        getSigner(),
         castedNftData.collection,
         "ipfs:/" + nftMetadataPath,
         castedNftData.supply,
@@ -112,7 +108,7 @@ const CreateNFT: NextPageWithLayout = () => {
   };
 
   const createNFT = (values: INFTData) => {
-    if (!account || !library) {
+    if (!connectedAddress || !getSigner()) {
       toastError("Please connect your wallet for creating NFT!");
       return;
     }
@@ -120,7 +116,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("Please login for creating NFT!");
       return;
     }
-    if (user._id.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
       toastError("Please connect your wallet to correct account!");
       return;
     }
@@ -225,7 +221,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
-                  router.push(`/profile/${account}/nfts/created`);
+                  router.push(`/profile/${connectedAddress}/nfts/created`);
                 }}
               />
             ) : (
@@ -262,7 +258,7 @@ const CreateNFT: NextPageWithLayout = () => {
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
@@ -281,7 +277,7 @@ const CreateNFT: NextPageWithLayout = () => {
           clearForm={clearForm}
         />
         <CreateNFTForm
-          library={library}
+          library={getSigner()}
           createNFT={createNFT}
           clearForm={clearForm}
           asset={asset}

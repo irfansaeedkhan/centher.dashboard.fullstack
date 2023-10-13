@@ -3,18 +3,19 @@ import React, { useState } from "react";
 
 // App imports
 import FinalButton from "@/components/button/final.button";
-import { useWeb3React } from "@web3-react/core";
 import { useGetMyCollections } from "@/hooks/use.get.my.collections";
 
 // same directory Imports
 import FixedPriceForm from "./fixed.price.form";
 import AuctionForm from "./auction.form";
+import { JsonRpcSigner } from "@ethersproject/providers";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 export interface CreateNFTFormProps {
   createNFT: any;
   clearForm: boolean;
   asset: Blob | undefined;
-  library: any;
+  library: JsonRpcSigner;
 }
 export interface IProperty {
   Type: string;
@@ -37,8 +38,8 @@ export const CreateNFTForm = ({
   library,
 }: CreateNFTFormProps) => {
   const [tab, setTab] = useState("Fixed");
-  const { account } = useWeb3React();
-  const collections = useGetMyCollections(account);
+  const { connectedAddress } = useWallet();
+  const collections = useGetMyCollections(connectedAddress);
 
   return (
     <div
@@ -64,7 +65,7 @@ export const CreateNFTForm = ({
       </div>
       {tab === "Fixed" && (
         <FixedPriceForm
-          library={library}
+          signer={library}
           createNFT={createNFT}
           collections={collections}
           clearForm={clearForm}

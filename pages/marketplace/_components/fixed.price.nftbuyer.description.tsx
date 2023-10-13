@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import FinalButton from "@/components/button/final.button";
@@ -19,6 +18,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface FixedPriceNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -38,8 +38,7 @@ export const FixedPriceNFTBuyerDescription = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
-  const { library, deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
+  const { getSigner, disconnectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [isMigrated, setIsMigrated] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
@@ -52,7 +51,7 @@ export const FixedPriceNFTBuyerDescription = ({
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          library,
+          getSigner(),
           data.collection,
           data.nftId
         );
@@ -61,7 +60,7 @@ export const FixedPriceNFTBuyerDescription = ({
     };
 
     CheckStatus();
-  }, [data, library]);
+  }, [data, getSigner]);
 
   const bnbPrice = useBNBPrice();
 
@@ -95,9 +94,9 @@ export const FixedPriceNFTBuyerDescription = ({
   const handleBuyNFT = async () => {
     try {
       ProceedFunc();
-      if (!data || !loggedInUser || !library) return;
+      if (!data || !loggedInUser || !getSigner()) return;
 
-      const balance = await library.getBalance(loggedInUser._id);
+      const balance = await getSigner().getBalance(loggedInUser._id);
 
       if (balance && balance.lt(`${data.listInfo.price}`)) {
         SuccessFunc(false, "Insufficient balance");
@@ -105,7 +104,7 @@ export const FixedPriceNFTBuyerDescription = ({
       }
 
       const result = await BlockchainWrite.callBuyListedItem(
-        library,
+        getSigner(),
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId,
         (data as INFTDetailData).listInfo.price
@@ -229,7 +228,7 @@ export const FixedPriceNFTBuyerDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
@@ -260,7 +259,7 @@ export const FixedPriceNFTBuyerDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center">
-        {library ? (
+        {getSigner() ? (
           <FinalButton
             title={"Buy Now"}
             disabled={!isMigrated}
@@ -329,7 +328,7 @@ export const FixedPriceNFTBuyerDescription = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

@@ -3,8 +3,6 @@ import { useRouter } from "next/router";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import ctl from "@netlify/classnames-template-literals";
-import { useWeb3React } from "@web3-react/core";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
@@ -21,6 +19,7 @@ import {
   getRegistrationFee,
   registerWithSmartContract,
 } from "./register.with.smart.contract";
+import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
 // Initial Signup State
 const initialSignupState: SignupState = {
@@ -42,42 +41,42 @@ export const RegisterForm: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   const router = useRouter();
-  const { account, library } = useWeb3React();
-  const { connectWallet } = useConnectWallet();
+  const { connectWallet, connectedAddress, getSigner, openWallet } =
+    useWallet();
 
   // Set account address and referred by address
   useEffect(() => {
     setSignupState((prev) => ({
       ...prev,
-      account_address: account ?? prev.account_address ?? "",
+      account_address: connectedAddress ?? prev.account_address ?? "",
       referred_by:
         router.query.referred_by?.toString() ?? prev.referred_by ?? "",
     }));
-  }, [account, router.query.referred_by]);
+  }, [connectedAddress, router.query.referred_by]);
 
   // Pay registration fee and register user
   const payFee: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-
     if (feeModal.fee === "--") {
       toast.error("Please wait for the fee to load");
-      return;
+      return false;
     }
-
     setFeeModal((prev) => ({ ...prev, status: "progress" }));
     try {
-      const res = await registerWithSmartContract(
-        library,
+      let res;
+      res = await registerWithSmartContract(
+        getSigner(),
         signupState,
         feeModal.fee
       );
 
-      toast.success(res.message_description);
+      toast.success(res!.message_description);
       setFeeModal((prev) => ({ ...prev, status: "end", isOpen: false }));
 
       // Redirect to login page
       router.push(AppRoutes.auth.login);
     } catch (err: any) {
+      console.log(err);
       process.env.NEXT_PUBLIC_APP_ENV === "development" && console.log(err);
       setFeeModal((prev) => ({ ...prev, status: "start" }));
       toast.error(err.message_description || "Something went wrong");
@@ -86,7 +85,7 @@ export const RegisterForm: React.FC = () => {
 
   // Open fee modal and get registration fee from smart contract
   const openFeeModal = async () => {
-    if (!account) {
+    if (!connectedAddress) {
       toast.error("Please connect wallet first!");
       return;
     }
@@ -94,7 +93,10 @@ export const RegisterForm: React.FC = () => {
     setFeeModal((prev) => ({ ...prev, isOpen: true }));
 
     try {
-      const registrationFee = await getRegistrationFee(library, signupState);
+      const registrationFee = await getRegistrationFee(
+        getSigner(),
+        signupState
+      );
       setFeeModal((prev) => ({ ...prev, fee: registrationFee }));
     } catch (err: any) {
       toast.error(err.message_description ?? "Could not get registration fee!");
@@ -105,34 +107,41 @@ export const RegisterForm: React.FC = () => {
   return (
     <>
       <form className={wrapper} onSubmit={payFee}>
-        {account ? (
-          <>
-            <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
-              <span className="!h-12 !w-12">
-                <MetamaskIcon />
-              </span>
-              <div className="flex flex-grow flex-col">
-                <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
-                  Metamask wallet connected
+        {connectedAddress ? (
+          <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
+            <span onClick={() => openWallet()} className="!h-12 !w-12">
+              <MetamaskIcon />
+            </span>
+            <div className="flex flex-grow flex-col">
+              <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
+                Metamask wallet connected
+              </p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-[#6B7280]">Wallet Address:</p>
+                <p className="text-sm text-white">
+                  {sliceAccountAddress(connectedAddress)}
                 </p>
-                <div className="flex items-center gap-1">
-                  <p className="text-sm text-[#6B7280]">Wallet Address:</p>
-                  <p className="text-sm text-white">
-                    {sliceAccountAddress(signupState.account_address)}
-                  </p>
-                </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
-          <FinalButton
-            type="button"
-            title={"Connect"}
-            onClick={() => connectWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
+          <>
+            <FinalButton
+              title={"Connect Metamask"}
+              onClick={() => connectWallet()}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+
+            <FinalButton
+              title={"Connect Wallet"}
+              onClick={() => connectWallet(WalletEnum.WALLET_SERVICE)}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+          </>
         )}
 
         <InputField

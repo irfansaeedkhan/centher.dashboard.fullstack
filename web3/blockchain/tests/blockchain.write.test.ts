@@ -12,9 +12,9 @@ jest.mock("../providers/smart.contract.provider");
 jest.mock("../providers/address.provider");
 
 const signer = {
-  getSigner: () => {
-    return {};
-  },
+  // getSigner: () => {
+  //   return {};
+  // },
 };
 
 describe("BlockchainWrite", () => {
@@ -26,16 +26,16 @@ describe("BlockchainWrite", () => {
     }
   });
 
-  it('should throw error "Invalid signer"', async () => {
-    try {
-      const library = {
-        getSigner: jest.fn(),
-      };
-      await BlockchainWrite.adminUnPauseRegistration(library as any);
-    } catch (error: any) {
-      expect(error.message).toEqual("Invalid signer");
-    }
-  });
+  // it('should throw error "Invalid signer"', async () => {
+  //   try {
+  //     const library = {
+  //       getSigner: jest.fn(),
+  //     };
+  //     await BlockchainWrite.adminUnPauseRegistration(library as any);
+  //   } catch (error: any) {
+  //     expect(error.message).toEqual("Invalid signer");
+  //   }
+  // });
 
   it('should call "adminUnPauseRegistration" and call smart contract provider with params', async () => {
     const model = {

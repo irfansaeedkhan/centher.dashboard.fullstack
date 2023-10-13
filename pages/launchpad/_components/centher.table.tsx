@@ -1,5 +1,4 @@
 import React, { HTMLAttributes, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -8,6 +7,7 @@ import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalProps } from "@/components/modal/standard.modal";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { ClaimCentherFrom } from "@/web3/blockchain/types";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface CentherTableProps {
   roundInfo: RoundInfo;
@@ -20,7 +20,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
   contributionInfo,
   refetchContributionInfo,
 }) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
 
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
@@ -41,7 +41,11 @@ export const CentherTable: React.FC<CentherTableProps> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      await BlockchainWrite.claimTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimTokens(
+        getSigner(),
+        roundInfo.round,
+        claimFrom
+      );
       refetchContributionInfo();
       setModal((prev) => ({
         ...prev,

@@ -1,7 +1,5 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 
 // App imports
 import FinalButton from "@/components/button/final.button";
@@ -26,6 +24,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -43,7 +42,7 @@ export const AuctionNftDescription = ({
   data,
   setNftData,
 }: AuctionNftDescriptionProps) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -147,7 +146,7 @@ export const AuctionNftDescription = ({
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
-        library,
+        getSigner(),
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -166,7 +165,7 @@ export const AuctionNftDescription = ({
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callCancelAuction(
-        library,
+        getSigner(),
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -318,7 +317,7 @@ export const AuctionNftDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }

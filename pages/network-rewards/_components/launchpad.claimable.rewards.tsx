@@ -10,12 +10,12 @@ import { ReferralClaimItem, RewardsEachAsset } from "@/models/referral";
 import { formatAddress } from "@/utils/format.address";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useNTRPrice } from "@/hooks/use.get.ntr.price.ts";
-import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { ModalState, StandardModal } from "@/components/modal/standard.modal";
-import { RoundState, RoundStatus } from "@/web3/constants/types";
+import { RoundState } from "@/web3/constants/types";
 import { getRoundState } from "@/web3/hooks/use.contracts.functions";
 import { BlockchainWrite } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 export interface ClaimableRewardsProps {
   rewardState: "launchpad-rewards" | "marketplace-rewards";
@@ -24,7 +24,7 @@ export interface ClaimableRewardsProps {
 const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
   rewardState,
 }) => {
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const { user: loggedInUser } = useUser();
   const {
     rewardsInLaunchpad,
@@ -113,14 +113,14 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
   const handleClaimNTR = async () => {
     try {
-      if (!account || !library) return;
+      if (!connectedAddress || !getSigner) return;
 
       setModal((prev) => ({
         ...prev,
         status: "progress",
       }));
 
-      const result = await BlockchainWrite.callClaimNTRForReferral(library);
+      const result = await BlockchainWrite.callClaimNTRForReferral(getSigner());
 
       if (result?.length) {
         setModal((prev) => ({
@@ -168,14 +168,16 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
   const handleClaimBUSD = async () => {
     try {
-      if (!account || !library) return;
+      if (!connectedAddress || !getSigner()) return;
 
       setModal((prev) => ({
         ...prev,
         status: "progress",
       }));
 
-      const result = await BlockchainWrite.callClaimBUSDForReferral(library);
+      const result = await BlockchainWrite.callClaimBUSDForReferral(
+        getSigner()
+      );
 
       if (result?.length) {
         setModal((prev) => ({
@@ -244,7 +246,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             <button
               disabled={claimableBusd === 0}
               onClick={
-                !account
+                !connectedAddress
                   ? () => {
                       toast.error("Please connect your wallet");
                     }
@@ -283,7 +285,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             <button
               disabled={true}
               onClick={
-                !account
+                !connectedAddress
                   ? () => {
                       toast.error("Please connect your wallet");
                     }

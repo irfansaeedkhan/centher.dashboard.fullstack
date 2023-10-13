@@ -5,7 +5,6 @@ import { useIsClient } from "usehooks-ts";
 import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
 import { PreBookingStats } from "@/lib/get-pre-bookings-stats/types";
 import NewButton from "@/components/button/new.button";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -15,6 +14,7 @@ import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
 import { BUSDNEW, GreenTick } from "@/assets/svgs";
 import FinalButton from "@/components/button/final.button";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface Props {
   preBookingStats: PreBookingStats;
@@ -103,7 +103,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       ? paymentForm.paymentTokenAmount / rate
       : 0;
 
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
 
   const bookNow = async (e: React.MouseEvent<HTMLButtonElement>) => {
     setIsLoading("loading");
@@ -116,13 +116,13 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
       return;
     }
 
-    if (!account || !library) {
+    if (!connectedAddress || !getSigner) {
       toast.error("Please connect your wallet for booking!");
       setIsLoading("loaded");
       return;
     }
 
-    if (user._id.toLowerCase() !== account.toLowerCase()) {
+    if (user._id.toLowerCase() !== connectedAddress.toLowerCase()) {
       toast.error("Please connect your wallet to correct account!");
       setIsLoading("loaded");
       return;
@@ -137,7 +137,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
         paymentForm.paymentTokenAmount,
         payment_wallet_address,
         contractAddress,
-        library
+        getSigner()
       );
 
       setPaymentForm({

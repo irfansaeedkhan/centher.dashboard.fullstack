@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
@@ -16,6 +15,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 export interface NFTCardProps {
   data: NFTLockedDetailsProps;
@@ -23,7 +23,7 @@ export interface NFTCardProps {
 
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
   const [imageUrl, setImageUrl] = useState("");
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
 
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
 
@@ -56,7 +56,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
 
     const setSwapHistory = async () => {
       const isSwaped = await BlockchainRead.isTokenSwaped(
-        library,
+        getSigner(),
         data.collection,
         data.tokenId
       );
@@ -66,7 +66,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       fetchMetadata(data.ipfs);
       setSwapHistory();
     }
-  }, [data, library]);
+  }, [data, getSigner]);
 
   const [lockedTimer, setLockedTimer] = useState({
     days: 0,
@@ -186,7 +186,11 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
         throw new Error("Token is already swaped");
       }
 
-      await BlockchainWrite.swapDexagon(library, data.collection, data.tokenId);
+      await BlockchainWrite.swapDexagon(
+        getSigner(),
+        data.collection,
+        data.tokenId
+      );
       setShowSwapingDetails(false);
       toast.success("Swapped successfully");
       router.reload();
@@ -568,7 +572,8 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h6>
               </div>
             </div>
-            {account?.toLowerCase() == data.owner?._id?.toLowerCase() &&
+            {connectedAddress?.toLowerCase() ==
+              data.owner?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
                 <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7">

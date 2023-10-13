@@ -1,7 +1,6 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -16,6 +15,7 @@ import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import FinalButton from "@/components/button/final.button";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -31,7 +31,7 @@ export const NonNFTBuyerDescription = ({
   data,
   setNftData,
 }: NonNFTBuyerDescriptionProps) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -47,13 +47,11 @@ export const NonNFTBuyerDescription = ({
   const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
 
-  useEffect(() => {}, [data, library]);
-
   useEffect(() => {
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          library,
+          getSigner(),
           data.collection,
           data.nftId
         );
@@ -104,7 +102,7 @@ export const NonNFTBuyerDescription = ({
     return () => {
       clearInterval(updateTime);
     };
-  }, [library, data]);
+  }, [getSigner, data]);
 
   const buyNFTStep1Func = () => {
     try {
@@ -118,9 +116,9 @@ export const NonNFTBuyerDescription = ({
   const handleBuyNFT = async () => {
     ProceedFunc();
     try {
-      if (!library || !data) throw new Error("invalid dependencies");
+      if (!getSigner() || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
-        library,
+        getSigner(),
         data.collection,
         data.nftId,
         data.listInfo.price
@@ -252,7 +250,7 @@ export const NonNFTBuyerDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
