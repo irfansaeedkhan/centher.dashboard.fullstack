@@ -7,7 +7,7 @@ import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
@@ -340,16 +340,16 @@ export const CreateNFTCollectionForm = ({
           </div>
         </div>
         {!library ? (
-          <FinalButton
+          <Button
             title={"Connect Wallet"}
             variant="primary"
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="mt-2 w-full py-4 hover:scale-75"
+            className="mt-2 w-full py-4"
           />
         ) : (
-          <FinalButton
+          <Button
             title={"Create Collection"}
             variant={
               formState.isValid &&
@@ -366,7 +366,7 @@ export const CreateNFTCollectionForm = ({
               categoryError
             }
             onClick={handleSubmit(onSubmit)}
-            className="mt-2 w-full py-4 hover:scale-95"
+            className="mt-2 w-full py-4"
           />
         )}
       </div>

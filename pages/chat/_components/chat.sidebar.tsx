@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { FiTrash2 } from "react-icons/fi";
 import clsx from "clsx";
 import { getUserByIdFromDB } from "@/lib/get-user-by-id";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { ChatFriendListSkeleton } from "@/components/loading.skeletons/chat.skeletons";
 import { useCentherLive } from "@/hooks/chat";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -273,7 +273,7 @@ const ChatSidebar = () => {
               Direct Messages are private conversations between you and other
               people on Centher.
             </p>
-            <FinalButton
+            <Button
               title="Start conversation"
               variant="primary"
               className="mt-6"

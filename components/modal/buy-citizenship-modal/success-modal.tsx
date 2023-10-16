@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import FinalButton from "../../button/final.button";
+import Button from "../../button";
 import { ModalPortal } from "../modal.portal";
 
 interface CustomModalProps {}
@@ -32,7 +32,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
                 Membership. Enjoy the best experience with us.
               </p>
             </div>
-            <FinalButton
+            <Button
               onClick={() => {
                 window.location.href = window.location.origin;
               }}

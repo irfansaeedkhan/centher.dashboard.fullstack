@@ -24,4 +24,4 @@ const iconWrapper = ctl(
   `w-[94px] h-[94px] rounded-full bg-[#222531] flex justify-center items-center`
 );
 
-const text = ctl(`text-brand-primary font-bold text-2xl text-center`);
+const text = ctl(`textGradient font-bold text-2xl text-center`);

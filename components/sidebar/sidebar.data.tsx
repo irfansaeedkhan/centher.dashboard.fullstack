@@ -60,7 +60,7 @@ export const sidebarData: SidebarData = {
         label: "Launchpad",
         url: `/launchpad/${AddressFactory.getContractAddress(
           SmartContractName.DXC
-        )}/1`,
+        )}/3`,
         icon: Launchpad,
         available_for: "all",
         activeList: [

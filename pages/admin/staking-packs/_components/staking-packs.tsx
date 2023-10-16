@@ -20,28 +20,28 @@ export const StakingPacks: NextPage = () => {
       <div className={btnContainer}>
         <Button
           title={"Coin Pack"}
-          variant={tab === "CoinPack" ? "v1" : "v2"}
+          variant={tab === "CoinPack" ? "primary" : "secondary"}
           onClick={() => {
             setTab("CoinPack");
           }}
         />
         <Button
           title={"Staking fee details"}
-          variant={tab === "StakingFeeDetails" ? "v1" : "v2"}
+          variant={tab === "StakingFeeDetails" ? "primary" : "secondary"}
           onClick={() => {
             setTab("StakingFeeDetails");
           }}
         />
         <Button
           title={"Staking Purchase"}
-          variant={tab === "StakingPurchase" ? "v1" : "v2"}
+          variant={tab === "StakingPurchase" ? "primary" : "secondary"}
           onClick={() => {
             setTab("StakingPurchase");
           }}
         />
         <Button
           title={"Pack Claim Rewards"}
-          variant={tab === "PackClaimRewards" ? "v1" : "v2"}
+          variant={tab === "PackClaimRewards" ? "primary" : "secondary"}
           onClick={() => {
             setTab("PackClaimRewards");
           }}

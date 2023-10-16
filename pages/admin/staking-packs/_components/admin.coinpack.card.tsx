@@ -24,7 +24,6 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
         <div className="max-w-[70px] rounded-lg bg-gray-shade-3 p-2">
           <DeleteIconBtnCoinPack className="" />
         </div>
-        {/* <Button title={""} className="max-w-[70px] bg-gray-shade-3" /> */}
       </div>
       <div className={StackCardContent}>
         <div className={StackCardContentWrap}>
@@ -57,7 +56,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
           </div>
         </div>
         <Link href={AppRoutes.admin.update_staking_pack} className="block">
-          <Button title={"Update"} variant={"v3"} />
+          <Button title={"Update"} variant={"secondary"} />
         </Link>
       </div>
     </div>

@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import { AppRoutes } from "@/constants/app.routes";
@@ -38,7 +38,7 @@ const PreBookingWrapper = ({ children }: Props) => {
       <BookingData preBookingStats={preBookingStats} />
       <div className="flex items-center gap-2">
         <Link href={AppRoutes.launchpad_pre_booking.index}>
-          <FinalButton
+          <Button
             title="Project Details"
             variant={
               router.pathname === AppRoutes.launchpad_pre_booking.index
@@ -49,7 +49,7 @@ const PreBookingWrapper = ({ children }: Props) => {
           />
         </Link>
         <Link href={AppRoutes.launchpad_pre_booking.booking}>
-          <FinalButton
+          <Button
             title="Booking"
             variant={
               router.pathname === AppRoutes.launchpad_pre_booking.booking

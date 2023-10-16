@@ -26,7 +26,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
         <h3 className={CardTitle}>Staking Pack</h3>
         <Button
           title={"Authorize NTR"}
-          variant={"v1"}
+          variant={"primary"}
           className="max-w-[155px]"
           onClick={AuthorizeFunction}
         />
@@ -79,7 +79,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             <div className="flex w-1/3 flex-col"></div>
           </div>
         </div>
-        <Button title={"Buy now"} variant={"v3"} className="py-4" />
+        <Button title={"Buy now"} variant={"secondary"} className="py-4" />
       </div>
 
       <ModalWrapper

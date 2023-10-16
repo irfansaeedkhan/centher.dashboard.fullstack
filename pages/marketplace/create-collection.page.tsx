@@ -6,7 +6,7 @@ import { useWeb3React } from "@web3-react/core";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { LoaderIcon } from "@/assets/svgs";
 import { CollectionUploader } from "@/utils/upload.tools/collection.uploader.util";
@@ -172,11 +172,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             )} BNB`}
           </h3>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Checkout"}
               variant="primary"
               onClick={() => handleCreateCollection(collectionData)}
-              className="w-full rounded-[14px] hover:scale-90"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -214,7 +214,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
           )}
           <div className={footerBtnContainer}>
             {!txStatus && (
-              <FinalButton
+              <Button
                 title={"Try Again"}
                 variant="secondary"
                 onClick={() => {
@@ -226,7 +226,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             )}
 
             {txStatus && (
-              <FinalButton
+              <Button
                 title={"View Collection"}
                 variant="primary"
                 onClick={() => {
@@ -237,7 +237,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
                     query: { user_id: account },
                   });
                 }}
-                className="w-full hover:scale-95"
+                className="w-full"
               />
             )}
           </div>

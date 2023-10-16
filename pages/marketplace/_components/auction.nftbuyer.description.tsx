@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { IModalProps } from "@/components/modal/standard.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import {
   BNBIcon,
   LoaderIcon,
@@ -245,13 +245,13 @@ export const AuctionNFTBuyerDescription = ({
               {msg ?? "Transaction Failed."}
             </p>
           )}
-          <FinalButton
+          <Button
             title={"View item"}
             variant="primary"
             onClick={() => {
               modal.dismissModal();
             }}
-            className="w-full rounded-[14px] hover:scale-95"
+            className="w-full rounded-[14px]"
           />
         </div>
       ),
@@ -271,7 +271,7 @@ export const AuctionNFTBuyerDescription = ({
             will receive the NFT
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -279,7 +279,7 @@ export const AuctionNFTBuyerDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={handleEndAuction}
               variant="primary"
@@ -371,18 +371,18 @@ export const AuctionNFTBuyerDescription = ({
         </div>
       </div>
       {!library ? (
-        <FinalButton
+        <Button
           title={"Connect Wallet"}
           variant="primary"
           onClick={() => {
             setConnectWalletModal(true);
           }}
-          className="w-full rounded-[14px] hover:scale-75"
+          className="w-full rounded-[14px]"
         />
       ) : (
         <div className="buttonContainer flex items-center">
           {nowTime < endTime && (
-            <FinalButton
+            <Button
               title={"Place bid"}
               variant={end ? "primary" : "primary"}
               disabled={end}
@@ -399,7 +399,7 @@ export const AuctionNFTBuyerDescription = ({
             />
           )}
           {nowTime > endTime && isUserWinner && (
-            <FinalButton
+            <Button
               title={"Claim NFT"}
               variant={"primary"}
               className="w-full rounded-[14px]"

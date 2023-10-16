@@ -4,7 +4,7 @@ import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 const SignalServiceComingSoon: NextPageWithLayout = () => {
   return (
@@ -40,15 +40,12 @@ const SignalServiceComingSoon: NextPageWithLayout = () => {
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Only for Centher Citizens. You {"haven't"} gotten your Centher
             Passport yet?{" "}
-            <Link
-              href={AppRoutes.citizenship}
-              className="cursor-pointer text-brand-primary hover:text-brand-primary-dark"
-            >
+            <Link href={AppRoutes.citizenship} className="text-gradient">
               Click Here
             </Link>{" "}
           </div>
           <Link href={AppRoutes.feed.index}>
-            <FinalButton
+            <Button
               title="Back to feed"
               variant="primary"
               className="h-10 w-[200px] text-[14px]"

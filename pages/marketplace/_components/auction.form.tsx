@@ -8,7 +8,7 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
 import Joi from "joi";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
@@ -252,7 +252,7 @@ const AuctionForm = ({
           Starting price for NFT <span className="text-red-500">*</span>{" "}
         </label>
         <div className="relative">
-          <span className="text-14px  absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
+          <span className="text-14px textGradient absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
             BNB
           </span>
           <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
@@ -330,16 +330,15 @@ const AuctionForm = ({
         </div>
       )}
       {!library ? (
-        <FinalButton
+        <Button
           title={"Connect Wallet"}
           variant="primary"
           onClick={() => {
             setConnectWalletModal(true);
           }}
-          className="hover:scale-75"
         />
       ) : (
-        <FinalButton
+        <Button
           title={"Create NFT"}
           variant={
             formState.isValid && asset !== undefined && collectionErrorMsg == ""
@@ -348,7 +347,7 @@ const AuctionForm = ({
           }
           disabled={!formState.isValid || asset === undefined}
           onClick={handleSubmit(onSubmit)}
-          className="mt-2 hover:scale-95"
+          className="mt-2"
         />
       )}
       {propertyModal && (
@@ -392,11 +391,11 @@ const AuctionForm = ({
             {propertyErr && (
               <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
             )}
-            <FinalButton
+            <Button
               title={"Save"}
               variant="primary"
               onClick={addNewPropertyFunc}
-              className="mt-2 hover:scale-75"
+              className="mt-2"
             />
           </div>
         </CustomModal>

@@ -1,6 +1,6 @@
 import React from "react";
 
-import FinalButton from "../../button/final.button";
+import Button from "../../button";
 import { IconFailure } from "@/assets/svgs";
 
 interface CustomModalProps {
@@ -28,17 +28,17 @@ export const CitizenShipFailureModal: React.FC<CustomModalProps> = ({
       </div>
 
       <div className="flex items-center gap-5">
-        <FinalButton
+        <Button
           onClick={onClickClose}
           title="Cancel"
           variant="secondary"
-          className="text-14px w-full rounded-[14px] py-3 hover:text-black"
+          className="text-14px w-full rounded-[14px] py-3"
         />
-        <FinalButton
+        <Button
           onClick={retryFunc}
           title="Retry"
           variant="primary"
-          className="text-14px w-full py-3 hover:text-black"
+          className="text-14px w-full py-3"
         />
       </div>
     </div>

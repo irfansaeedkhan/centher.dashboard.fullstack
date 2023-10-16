@@ -5,7 +5,7 @@ import Image from "next/image";
 import Webcam from "react-webcam";
 import { CameraCustomModal } from "@/components/modal/camera-modal";
 import { useNewPostStore } from "@/store/new.post.store";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface Props {
   onClose: () => void;
@@ -183,64 +183,64 @@ const CameraModal = ({ onClose }: Props) => {
       </div>
       <div className="mt-10 space-y-2 px-6">
         {videoUrl || picture ? (
-          <FinalButton
+          <Button
             title={"Save and continue"}
             onClick={() => saveSelectedFile(fileData)}
             disabled={!fileData ? true : false}
             variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         ) : (
           !isRecording && (
-            <FinalButton
+            <Button
               title={"Capture"}
               onClick={(e) => {
                 e.preventDefault();
                 capture();
               }}
               variant="primary"
-              className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
               borderRounded="14px"
             />
           )
         )}
         {videoUrl ? (
-          <FinalButton
+          <Button
             title={"Record Again"}
             onClick={(e) => {
               e.preventDefault();
               handleResetClick();
             }}
             variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         ) : picture ? (
-          <FinalButton
+          <Button
             title={"Retake"}
             onClick={(e) => {
               e.preventDefault();
               handleResetClick();
             }}
             variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         ) : isRecording ? (
-          <FinalButton
+          <Button
             title={"Stop Video"}
             onClick={() => startnStop?.stop()}
             variant="primary"
-            className="mb-2 flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="mb-2 flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         ) : (
-          <FinalButton
+          <Button
             title={"Record Video"}
             onClick={handleRecordClick}
             variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px] hover:scale-90"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         )}

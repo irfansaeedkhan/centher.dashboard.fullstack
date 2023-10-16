@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 
 const ErrorPage: NextPageWithLayout = () => {
@@ -19,7 +19,7 @@ const ErrorPage: NextPageWithLayout = () => {
             here.
           </div>
           <Link href={AppRoutes.feed.index}>
-            <FinalButton
+            <Button
               title="Back to home"
               variant={"primary"}
               className="rounded-[14px]"

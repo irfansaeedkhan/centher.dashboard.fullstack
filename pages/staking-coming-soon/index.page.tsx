@@ -4,7 +4,7 @@ import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 const StakingComingSoon: NextPageWithLayout = () => {
   return (
@@ -33,17 +33,14 @@ const StakingComingSoon: NextPageWithLayout = () => {
           </div>
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             Get a Business Account and become a{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.citizenship}
-            >
+            <Link className="text-gradient" href={AppRoutes.citizenship}>
               Centher Citizen
             </Link>{" "}
             to enjoy the premium packages offered to Citizens. Stay tuned for
             more exciting news!
           </div>
           <Link href={AppRoutes.feed.index}>
-            <FinalButton
+            <Button
               title="Back to feed"
               variant="primary"
               className="h-10 w-[150px] text-[14px]"

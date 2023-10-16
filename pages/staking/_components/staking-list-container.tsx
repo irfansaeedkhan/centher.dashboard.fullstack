@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import clsx from "clsx";
 import { LayoutGrid } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
@@ -61,8 +61,8 @@ const StakingListContainer: FC<ComponentProp> = ({
         <div className="flex w-full flex-col gap-5 fsm:w-fit fsm:flex-row fsm:items-center fsm:justify-start flg:gap-6">
           <h5 className="textGradient text-2xl font-semibold">Staking</h5>
           <div className="flex w-full items-center gap-5 flg:gap-6">
-            <FinalButton
-              className="h-9 w-full text-xs fsm:min-w-max [@media(max-width:330px)]:text-[11px]"
+            <Button
+              className="text-14px h-9 w-full fsm:min-w-max"
               title="Create New Project"
               variant="primary"
               borderRounded="10px"
@@ -76,7 +76,7 @@ const StakingListContainer: FC<ComponentProp> = ({
               }
             />
             <Link href={AppRoutes.staking.faqs} className="w-full">
-              <FinalButton
+              <Button
                 title="FAQs"
                 variant={"secondary"}
                 className="h-9 w-full text-xs fsm:max-w-[68px]"

@@ -6,7 +6,7 @@ import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import { FiArrowRight } from "react-icons/fi";
-import clsx from "clsx";
+import cn from "@/utils/cn";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import { CitizenShipType, useCitizenStore } from "@/store/citizen.store";
 import useUser from "@/hooks/use.user";
@@ -15,7 +15,7 @@ import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { MetamaskIcon2 } from "@/assets/svgs";
-import FinalButton from "../../button/final.button";
+import Button from "../../button";
 import { CustomNewModal } from "../custom.new.modal";
 import { CitizenShipSuccessModal } from "./success-modal";
 import { CitizenShipFailureModal } from "./failure-modal";
@@ -150,60 +150,36 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
               </div>
               <div className="mx-auto flex w-[90%] items-center justify-center gap-2">
                 <button
-                  onClick={() => setTab(CitizenShipType.annualMemberShipPrice)}
-                  className={clsx(
-                    `primary-gradient-btn text-14px flex-2 relative flex items-center justify-center gap-2 overflow-hidden rounded-[10px] bg-[#17171A] p-[1px] ${
-                      tab === CitizenShipType.annualMemberShipPrice
-                        ? "bg-gradient-pattern"
-                        : "bg-gray-shade-3"
-                    }`
+                  className={cn(
+                    " relative flex w-full cursor-pointer items-center justify-center  gap-1 !rounded-[10px] py-[6px] text-xs font-semibold transition duration-100 ease-in-out before:rounded-[10px] before:bg-black-shade-8 after:rounded-[10px]",
+                    tab === CitizenShipType.annualMemberShipPrice
+                      ? "primary-gradient-btn bg-white"
+                      : "border border-white bg-black-shade-8 text-white"
                   )}
+                  onClick={() => setTab(CitizenShipType.annualMemberShipPrice)}
                 >
-                  <div className="default-button-styling flex h-full w-full flex-grow items-center gap-2 rounded-[10px] bg-[#0B0B0B] ">
-                    <span
-                      className={clsx(
-                        `relative ${
-                          tab === CitizenShipType.annualMemberShipPrice
-                            ? "primary-gradient-btn-text custom"
-                            : "text-white"
-                        }`
-                      )}
-                    >
-                      Annualy
-                    </span>
-                    <span className="rounded-full bg-background-shade-3 px-2 py-[2px]">
-                      <span className="primary-gradient-btn-text custom relative text-xs font-medium">
-                        Save 12%
-                      </span>
-                    </span>
+                  <span className="primary-gradient-btn-text primary-btn-text-gradient relative py-1">
+                    Annualy
+                  </span>
+                  <div className="z-30 rounded-full bg-[#17171A] px-2 py-[2px]">
+                    <div className="primary-gradient-btn-text block w-max min-w-max text-xs font-medium">
+                      Save 12%
+                    </div>
                   </div>
                 </button>
-                <button
+                <Button
+                  title="Monthly"
                   onClick={() =>
                     setTab(CitizenShipType.oneMonthMemberShipPrice)
                   }
-                  className={clsx(
-                    `primary-gradient-btn text-14px relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-[10px] bg-[#17171A]  p-[1px] ${
-                      tab === CitizenShipType.oneMonthMemberShipPrice
-                        ? "bg-gradient-pattern"
-                        : "bg-gray-shade-3"
-                    }`
-                  )}
-                >
-                  <div className="default-button-styling flex h-full w-full flex-grow items-center justify-center gap-2 rounded-[10px] bg-[#0B0B0B] ">
-                    <span
-                      className={clsx(
-                        `relative ${
-                          tab === CitizenShipType.oneMonthMemberShipPrice
-                            ? "primary-gradient-btn-text custom"
-                            : "text-white"
-                        }`
-                      )}
-                    >
-                      Monthly
-                    </span>
-                  </div>
-                </button>
+                  variant={
+                    tab === CitizenShipType.oneMonthMemberShipPrice
+                      ? "primary"
+                      : "secondary"
+                  }
+                  className="w-full py-[10px] text-xs"
+                  borderRounded="10px"
+                />
               </div>
               <Image
                 src={"/images/passport-banner.png"}
@@ -254,20 +230,20 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                         ""
                       )} */}
                   {!isConnected ? (
-                    <FinalButton
+                    <Button
                       title={"Connect Wallet"}
                       variant="primary"
                       onClick={() => {
                         setConnectWalletModal(true);
                       }}
-                      className="text-14px mt-6 w-full py-3 hover:!scale-90 hover:text-black"
+                      className="text-14px mx-auto mb-2 mt-6 w-[95%] py-3"
                     />
                   ) : (
-                    <FinalButton
+                    <Button
                       onClick={buyMemberShip}
                       title={priceMapper(tab)}
                       variant="primary"
-                      className="text-14px mt-6 w-full py-3 hover:!scale-90 hover:text-black"
+                      className="text-14px mx-auto mb-2 mt-6 w-[95%] py-3"
                       loaderIcon={
                         updatePricesLoading || buyCitizenShipLoading ? (
                           <CgSpinner className="h-5 animate-spin text-white" />

@@ -173,7 +173,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={clsx(
-                  `text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
+                  `text-14px text-gradient-hover flex max-w-[230px] items-center font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
                 )}
                 title={user.display_name}
               >
@@ -222,7 +222,7 @@ export const NFTRightSideComponent = ({
                     user_id: nftOwnerAddress,
                   },
                 }}
-                className={`text-14px flex max-w-[230px] items-center font-semibold text-white hover:text-brand-primary-dark f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
+                className={`text-14px text-gradient-hover flex max-w-[230px] items-center font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
                 title={nftOwner.display_name}
               >
                 <span className="block truncate break-words ">
@@ -260,7 +260,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-14px line-clamp-1 text-ellipsis font-semibold text-white hover:text-brand-primary-dark"
+                  "text-14px text-gradient-hover line-clamp-1 text-ellipsis font-semibold text-white"
                 }
               >
                 {formatAddress(data?.collection)}

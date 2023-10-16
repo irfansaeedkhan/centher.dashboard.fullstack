@@ -13,7 +13,7 @@ import { getUserByIdFromDB } from "@/lib/get-user-by-id";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { User } from "@/models/user";
 import { ChatPagesWrapper } from "@/components/all.pages.wrapper/chat.pages.wrapper";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { customLog } from "@/utils/custom.log";
 import {
   CrossIcon,
@@ -414,7 +414,7 @@ const SingleChat: NextPageWithLayout = () => {
               />
               {editModal ? (
                 <div className="flex w-full flex-col-reverse items-center gap-3 fsm:w-auto fsm:flex-row">
-                  <FinalButton
+                  <Button
                     title="Cancel"
                     variant="secondary"
                     className="text-14px w-full rounded-[8px] border-gray-shade-7 px-2 py-1 leading-[14px] fsm:w-auto"
@@ -422,7 +422,7 @@ const SingleChat: NextPageWithLayout = () => {
                       closeEdit();
                     }}
                   />
-                  <FinalButton
+                  <Button
                     title="Save"
                     variant="primary"
                     className="text-14px w-full rounded-[8px] px-2 py-1 leading-[14px] fsm:w-auto"

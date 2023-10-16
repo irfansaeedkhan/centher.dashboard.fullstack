@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import clsx from "clsx";
 
 // App imports
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import {
@@ -329,7 +329,7 @@ export const NonNFTDescription = ({
             confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -337,7 +337,7 @@ export const NonNFTDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
@@ -363,7 +363,7 @@ export const NonNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -371,7 +371,7 @@ export const NonNFTDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={() =>
                 handleAuctionProc(StartingNFTPrice, AuctionEndTime)
@@ -432,13 +432,13 @@ export const NonNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full hover:scale-95"
+              className="w-full"
             />
           </div>
         </div>
@@ -471,7 +471,7 @@ export const NonNFTDescription = ({
             )} BNB.`}
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -479,7 +479,7 @@ export const NonNFTDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={() => handleListing(listingPrice)}
               variant="primary"
@@ -511,14 +511,14 @@ export const NonNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="primary"
               onClick={() => {
                 modal.dismissModal();
                 window.location.reload();
               }}
-              className="w-full hover:scale-95"
+              className="w-full"
             />
           </div>
         </div>
@@ -563,14 +563,7 @@ export const NonNFTDescription = ({
       </div>
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center gap-4">
-          {/* <NewButton
-            title={"Auction"}
-            variant="v1"
-            onClick={() => {
-              setupAuctionModal();
-            }}
-          /> */}
-          <FinalButton
+          <Button
             title="Sell"
             onClick={listingFunc}
             variant="primary"
@@ -578,7 +571,7 @@ export const NonNFTDescription = ({
             borderRounded="14px"
           />
           {transferable && (
-            <FinalButton
+            <Button
               title={"Send"}
               onClick={() => setSendNftModal(true)}
               variant="secondary"

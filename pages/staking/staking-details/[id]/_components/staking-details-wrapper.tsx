@@ -6,7 +6,7 @@ import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
 import { formatUnits, parseEther } from "ethers/lib/utils";
 import { useWeb3React } from "@web3-react/core";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { useStaking } from "@/hooks/staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
@@ -406,14 +406,14 @@ const StakingDetailsWrapper = ({ children }: Props) => {
       </div>
       <div className="scrollSetLight2 flex w-full max-w-[510px] flex-shrink-0 gap-2 overflow-x-auto p-2 sm:items-center">
         <Link href={`/staking/staking-details/${poolId}`}>
-          <FinalButton
+          <Button
             title="My Staking overview"
             variant={activeTab == "index" ? "primary" : "secondary"}
             className="w-[215px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
           />
         </Link>
         <Link href={`/staking/staking-details/${poolId}/rewards`}>
-          <FinalButton
+          <Button
             title="Claim Rewards"
             variant={activeTab == "rewards" ? "primary" : "secondary"}
             className="w-[162px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"
@@ -421,7 +421,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
         </Link>
         {stakingPool?.multilevel_rewards != "No referral" && (
           <Link href={`/staking/staking-details/${poolId}/referrals`}>
-            <FinalButton
+            <Button
               title="Referrals"
               variant={activeTab == "referrals" ? "primary" : "secondary"}
               className="w-[109px] flex-shrink-0 rounded-[10px] text-sm fsm:text-base"

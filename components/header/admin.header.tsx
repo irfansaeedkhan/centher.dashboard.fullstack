@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PlusIconBtn } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
+import Button from "../button";
 
 export interface AdminHeaderProps {
   title: string;
@@ -40,12 +41,18 @@ const AdminHeader: React.FC<AdminHeaderProps> = (props) => {
           {props.url && (
             <Link
               href={props.url}
-              className={`group flex cursor-pointer items-center gap-2 rounded-lg bg-brand-primary px-3 py-2 text-sm font-semibold text-black-shade-2 hover:bg-gray-shade-3  hover:text-brand-primary`}
+              className={`group flex cursor-pointer items-center`}
             >
-              <PlusIconBtn
-                className={`stroke-black group-hover:stroke-brand-primary`}
+              <Button
+                title={"Create New"}
+                variant="primary"
+                className="px-3 py-2 text-sm font-semibold"
+                Icon={
+                  <PlusIconBtn
+                    className={`stroke-black group-hover:stroke-brand-primary`}
+                  />
+                }
               />
-              <span>Create New</span>
             </Link>
           )}
         </div>

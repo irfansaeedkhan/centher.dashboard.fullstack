@@ -4,7 +4,7 @@ import { IoMdLock } from "react-icons/io";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 const LaunchpadComingSoon: NextPageWithLayout = () => {
   return (
@@ -13,7 +13,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
         <h3 className="text-base font-medium text-white">
           Token Contract Address
         </h3>{" "}
-        <FinalButton
+        <Button
           className="h-[28px] w-[100px] p-1 text-sm"
           title="Locked"
           variant="primary"
@@ -31,7 +31,7 @@ const LaunchpadComingSoon: NextPageWithLayout = () => {
             href={AppRoutes.launchpad_pre_booking.index}
             className="block w-fit"
           >
-            <FinalButton
+            <Button
               className="w-fit rounded-lg px-4 py-2 text-sm font-semibold"
               title="Book Now"
               variant="primary"

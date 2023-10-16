@@ -30,7 +30,7 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import ProfileModal from "@/components/modal/profile.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
 import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
@@ -40,12 +40,12 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
 import { useCentherLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
-import { XLogo, ChatProfile } from "@/assets/svgs";
+import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
+import FollowedComponent from "../community/_components/followed.component";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
-import FollowedComponent from "../community/_components/followed.component";
 
 export type CoverImageWithFile = {
   path: string;
@@ -323,23 +323,23 @@ const ProfileHeader: React.FC<Props> = ({
                 </CoverUploadButton>
               )}
               {coverImage.newImage && (
-                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-3">
+                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-0">
                   <CoverUploadButton
                     variant="cancel"
                     onClick={setInitialCoverImage}
                   >
-                    <FinalButton
+                    <Button
                       loaderIcon={<MdClose className="h-4 w-4" />}
                       title=""
                       variant="secondary"
                       className="inline-block fmd:hidden"
                       borderRounded="14px"
                     />
-                    <FinalButton
+                    <Button
                       Icon={<MdClose className="h-4 w-4" />}
                       title="Cancel"
                       variant="secondary"
-                      className=" hidden w-fit fmd:flex"
+                      className="hidden w-max bg-[#18191d] fmd:flex"
                       borderRounded="14px"
                     />
                   </CoverUploadButton>
@@ -348,17 +348,17 @@ const ProfileHeader: React.FC<Props> = ({
                     className={`group`}
                     variant="upload-cover"
                   >
-                    <FinalButton
+                    <Button
                       title="Save"
                       variant="primary"
                       className="group flex fmd:hidden"
                       borderRounded="14px"
                     />
 
-                    <FinalButton
+                    <Button
                       title="Upload Cover"
                       variant="primary"
-                      className="hidden h-9 w-[124px] fmd:inline-block"
+                      className="hidden w-max fmd:inline-block"
                       borderRounded="14px"
                       loaderIcon={
                         coverImageLoading && (
@@ -404,30 +404,23 @@ const ProfileHeader: React.FC<Props> = ({
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
             <div className="absolute -top-[45px] right-4 hidden w-full max-w-[182px] gap-2 fmd:flex">
               <div
-                className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
                 onClick={chatHandler}
               >
                 <ChatProfile />
               </div>
-              {loadingState ? (
-                <FinalButton
-                  title=""
-                  loaderIcon={
+              <Button
+                title={follow ? "Following" : "Follow"}
+                onClick={() => followUser(user._id)}
+                loaderIcon={
+                  loadingState && (
                     <CgSpinner className="animate-spin text-2xl text-white" />
-                  }
-                  variant="primary"
-                  className="flex h-11 w-full items-center justify-center text-[14px]"
-                  borderRounded="14px"
-                />
-              ) : (
-                <FinalButton
-                  title={follow ? "Following" : "Follow"}
-                  onClick={() => followUser(user._id)}
-                  variant="primary"
-                  className="flex h-11 w-full items-center justify-center text-[14px]"
-                  borderRounded="14px"
-                />
-              )}
+                  )
+                }
+                variant="primary"
+                className="flex h-10 w-full items-center justify-center text-[14px]"
+                borderRounded="14px"
+              />
             </div>
           )}
 
@@ -505,7 +498,7 @@ const ProfileHeader: React.FC<Props> = ({
                   toast.success("Address copied!");
                 }}
               >
-                <FiCopy className="h-4 w-4 text-gray-shade-7 hover:text-brand-primary" />
+                <FiCopy className="text-gradient-hover h-4 w-4 text-gray-shade-7" />
               </button>
             </div>
 
@@ -515,32 +508,36 @@ const ProfileHeader: React.FC<Props> = ({
 
             {!!loggedInUser &&
               loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
-                <div className="mt-2 flex w-full max-w-[182px] justify-center gap-2 fmd:hidden">
+                <div className="mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden">
                   <div
-                    className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                    className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
                     onClick={chatHandler}
                   >
                     <ChatProfile />
                   </div>
-                  {loadingState ? (
-                    <FinalButton
-                      title=""
-                      loaderIcon={
-                        <CgSpinner className="animate-spin text-2xl text-white" />
-                      }
-                      variant="primary"
-                      className="flex h-11 w-full items-center justify-center text-[14px]"
-                      borderRounded="14px"
-                    />
-                  ) : (
-                    <FinalButton
-                      title={follow ? "Following" : "Follow"}
-                      onClick={() => followUser(user._id)}
-                      variant="primary"
-                      className="flex h-11 w-full items-center justify-center text-[14px]"
-                      borderRounded="14px"
-                    />
-                  )}
+                  <div
+                    title={follow ? "Unfollow" : "Follow"}
+                    className={clsx(
+                      "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+                      follow
+                        ? " border-gray-shade-3"
+                        : " gradient-border-3 p-[1px]"
+                    )}
+                    onClick={() => followUser(user._id)}
+                  >
+                    {loadingState ? (
+                      <CgSpinner className="animate-spin text-xl text-white" />
+                    ) : follow ? (
+                      <EyeOffFollow />
+                    ) : (
+                      <Image
+                        src={"/images/gradient-eye.png"}
+                        alt={"Follow"}
+                        width={24}
+                        height={24}
+                      />
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -707,4 +704,4 @@ const ProfileHeader: React.FC<Props> = ({
 export default ProfileHeader;
 
 // styling
-const socialLinks = `text-white w-4 h-4 hover:text-brand-primary`;
+const socialLinks = `text-white w-4 h-4 text-gradient-hover`;

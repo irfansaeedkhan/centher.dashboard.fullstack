@@ -5,7 +5,7 @@ import { useNewPostStore } from "@/store/new.post.store";
 
 import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
 import { PostTextCounter } from "./post.text.counter";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { LoaderSpinner } from "@/assets/svgs";
 
 interface Props {
@@ -65,13 +65,13 @@ const PostModalFooter: React.FC<Props> = ({ handleScroll }) => {
               addNewPost();
               handleScroll();
             }}
-            className="flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg text-brand-primary fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
+            className="textGradient flex h-7 w-7 items-center justify-center rounded-lg border-[1.5px] border-gray-shade-3 text-lg fsm:mr-2 fsm:h-10 fsm:w-10 fsm:rounded-xl fsm:text-2xl"
           >
             +
           </button>
         )}
       </div>
-      <FinalButton
+      <Button
         loaderIcon={
           isPostModalLoading &&
           ((

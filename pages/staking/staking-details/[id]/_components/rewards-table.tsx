@@ -23,7 +23,7 @@ const RewardsTable: React.FC<{
         }`}
         target="_blank"
         rel="noreferrer noopener"
-        className="hover:text-brand-primary"
+        className="text-gradient-hover"
       >
         {reward.transactionHash.slice(0, 6)}...
         {reward.transactionHash.endsWith("-1")

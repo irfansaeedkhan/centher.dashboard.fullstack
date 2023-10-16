@@ -10,7 +10,7 @@ import { LoadingState } from "@/models/common";
 import { MetamaskIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { getNonce, login } from "@/lib/auth";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
@@ -84,7 +84,7 @@ export const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          <FinalButton
+          <Button
             title={
               isLoading === "loading"
                 ? ButtonsText.loading
@@ -97,7 +97,7 @@ export const LoginForm: React.FC = () => {
           />
         </>
       ) : (
-        <FinalButton
+        <Button
           title={ButtonsText.connect_metamask}
           onClick={async () => await connectWallet()}
           variant="primary"
@@ -123,6 +123,3 @@ export const LoginFormSchema = Joi.object()
   .messages({
     "string.empty": `{#label} is required`,
   });
-
-// Styles
-const button = `mt-2 py-3 flex gap-2 w-full font-bold rounded-lg items-center text-gray-shade-5 justify-center bg-brand-primary hover:bg-brand-primary-dark`;

@@ -92,7 +92,7 @@ const Search: NextPageWithLayout = () => {
             )}
 
             {searchLoadingState === "failed" && (
-              <div className="font-semibold text-brand-primary">
+              <div className="textGradient font-semibold">
                 Something went wrong!
               </div>
             )}

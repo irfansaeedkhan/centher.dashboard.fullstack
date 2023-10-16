@@ -17,7 +17,7 @@ const ListClaimedRewardsTable: React.FC<{
         }`}
         target="_blank"
         rel="noreferrer noopener"
-        className="hover:text-brand-primary"
+        className="text-gradient-hover"
       >
         {reward.txId.slice(0, 6)}...
         {reward.txId.endsWith("-1")

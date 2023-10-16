@@ -3,7 +3,7 @@ import Link from "next/link";
 import clsx from "clsx";
 
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -28,7 +28,7 @@ export const PromotionCard6: React.FC<Props> = ({ className, ...props }) => {
           pathname: AppRoutes.staking.index,
         }}
       >
-        <FinalButton
+        <Button
           title="Stake Now!"
           variant="primary"
           borderRounded="10px"

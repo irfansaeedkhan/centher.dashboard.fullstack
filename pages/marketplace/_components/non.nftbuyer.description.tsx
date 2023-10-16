@@ -15,7 +15,7 @@ import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -174,11 +174,11 @@ export const NonNFTBuyerDescription = ({
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
           </h6>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Checkout"}
               variant="primary"
               onClick={handleBuyNFT}
-              className="w-full rounded-[14px] hover:scale-90"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -235,10 +235,10 @@ export const NonNFTBuyerDescription = ({
           className={footerBtnContainer}
         > */}
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="primary"
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px]"
               onClick={() => {
                 modal.dismissModal();
               }}
@@ -285,12 +285,12 @@ export const NonNFTBuyerDescription = ({
 
       {data!.unlock < +new Date() / 1000 ? (
         <div className="buttonContainer flex items-center">
-          <FinalButton
+          <Button
             title={"Buy Now"}
-            variant={data?.saleState === "NON" ? "primary" : "primary"}
+            variant={data?.saleState === "NON" ? "primary" : "secondary"}
             disabled={data?.saleState === "NON" || isMigrated}
             onClick={buyNFTStep1Func}
-            className="w-full hover:scale-90"
+            className="w-full"
           />
         </div>
       ) : (

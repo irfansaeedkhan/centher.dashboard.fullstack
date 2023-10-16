@@ -37,7 +37,7 @@ export const PostTextCounter: React.FC<Props> = ({
           "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform",
           {
             "text-red-500": thresholdReached,
-            "text-brand-primary": !thresholdReached,
+            textGradient: !thresholdReached,
           },
           counterClassName ? counterClassName : "text-[9px] font-semibold"
         )}

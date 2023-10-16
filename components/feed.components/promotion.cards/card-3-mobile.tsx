@@ -2,7 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -40,7 +40,7 @@ export const PromotionCard3Mobile: React.FC<Props> = ({
             pathname: AppRoutes.marketplace.explore,
           }}
         >
-          <FinalButton
+          <Button
             title="Check it out"
             variant="primary"
             borderRounded="10px"

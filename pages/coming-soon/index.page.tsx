@@ -3,6 +3,7 @@ import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
+import Button from "@/components/button";
 
 const ComingSoonPage: NextPageWithLayout = () => {
   return (
@@ -15,11 +16,12 @@ const ComingSoonPage: NextPageWithLayout = () => {
           More interesting things are coming soon to our platform, in the
           meantime you can explore for great things with us.
         </div>
-        <Link
-          href={AppRoutes.feed.index}
-          className="w-[197px] rounded-lg bg-brand-primary py-2 text-center text-sm font-bold text-black-shade-3 hover:bg-brand-primary-dark"
-        >
-          Go to Feed
+        <Link href={AppRoutes.feed.index} className="text-center">
+          <Button
+            title={"Go to Feed"}
+            variant="primary"
+            className="w-[197px] text-sm"
+          />
         </Link>
       </div>
     </div>

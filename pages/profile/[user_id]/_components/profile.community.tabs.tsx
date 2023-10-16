@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 
 export const ProfileCommunityTabs: React.FC = () => {
@@ -16,7 +16,7 @@ export const ProfileCommunityTabs: React.FC = () => {
         }}
         className="min-w-max"
       >
-        <FinalButton
+        <Button
           title="Followers"
           variant={`${
             router.pathname === AppRoutes.profile.followers
@@ -33,7 +33,7 @@ export const ProfileCommunityTabs: React.FC = () => {
         }}
         className="min-w-max"
       >
-        <FinalButton
+        <Button
           title="Following"
           variant={`${
             router.pathname === AppRoutes.profile.following
@@ -50,7 +50,7 @@ export const ProfileCommunityTabs: React.FC = () => {
         }}
         className="min-w-max"
       >
-        <FinalButton
+        <Button
           title="Referrals"
           variant={`${
             router.pathname === AppRoutes.profile.referrals

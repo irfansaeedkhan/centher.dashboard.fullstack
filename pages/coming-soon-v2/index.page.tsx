@@ -3,6 +3,7 @@ import Link from "next/link";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
+import Button from "@/components/button";
 
 const V2: NextPageWithLayout = () => {
   return (
@@ -21,9 +22,13 @@ const V2: NextPageWithLayout = () => {
           </div>
           <Link
             href={AppRoutes.marketplace.explore}
-            className="w-[137px] rounded-lg bg-brand-primary py-3 text-center text-sm font-bold text-black-shade-3 hover:bg-brand-primary-dark"
+            className="w-[137px] text-center text-sm"
           >
-            Explore NFT
+            <Button
+              title={"Explore NFT"}
+              variant="primary"
+              className="w-full py-3 font-bold"
+            />
           </Link>
         </div>
       </div>

@@ -6,7 +6,7 @@ import TopCreatorsSkeleton from "@/components/loading.skeletons/top.creator";
 import { useTopCreators } from "./use-top-creators";
 import CreatorCard from "./creator-card";
 import styles from "./styles.module.css";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 export const TopCreators = () => {
   const { topCreators, loading } = useTopCreators();
@@ -26,13 +26,14 @@ export const TopCreators = () => {
       <div
         className={`relative -mx-2 flex h-[80px] items-center justify-between overflow-hidden border-gray-shade-3 bg-[url(/images/bg-top-creators.png)] bg-cover bg-center bg-no-repeat fsm:-mx-4 fmd:mx-0 fmd:h-[100px] fmd:rounded-2xl fmd:border-2 flg:h-[120px]`}
       >
-        <FinalButton
+        <Button
           title=""
           loaderIcon={
             <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18" />
           }
           onClick={() => scroll(-200)}
           className={clsx(scrollButton, `left-2`)}
+          borderRounded="9999px"
         />
         <div
           ref={ref}
@@ -64,13 +65,14 @@ export const TopCreators = () => {
             </>
           ) : null}
         </div>
-        <FinalButton
+        <Button
           title=""
           loaderIcon={
             <BsArrowRightShort className="h-6 w-6 fill-gray-shade-18" />
           }
           onClick={() => scroll(200)}
           className={clsx(scrollButton, `right-2`)}
+          borderRounded="9999px"
         />
       </div>
     </div>
