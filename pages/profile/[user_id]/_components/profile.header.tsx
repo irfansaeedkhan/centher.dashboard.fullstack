@@ -40,7 +40,7 @@ import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import cn from "@/utils/cn";
 import { useCentherLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
-import { XLogo, ChatProfile } from "@/assets/svgs";
+import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
 import Profile3DotsMenu from "./profile.3.dots.menu";
@@ -404,30 +404,23 @@ const ProfileHeader: React.FC<Props> = ({
           loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
             <div className="absolute -top-[45px] right-4 hidden w-full max-w-[182px] gap-2 fmd:flex">
               <div
-                className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
                 onClick={chatHandler}
               >
                 <ChatProfile />
               </div>
-              {loadingState ? (
-                <FinalButton
-                  title=""
-                  loaderIcon={
+              <FinalButton
+                title={follow ? "Following" : "Follow"}
+                onClick={() => followUser(user._id)}
+                loaderIcon={
+                  loadingState && (
                     <CgSpinner className="animate-spin text-2xl text-white" />
-                  }
-                  variant="primary"
-                  className="flex h-11 w-full items-center justify-center text-[14px]"
-                  borderRounded="14px"
-                />
-              ) : (
-                <FinalButton
-                  title={follow ? "Following" : "Follow"}
-                  onClick={() => followUser(user._id)}
-                  variant="primary"
-                  className="flex h-11 w-full items-center justify-center text-[14px]"
-                  borderRounded="14px"
-                />
-              )}
+                  )
+                }
+                variant="primary"
+                className="flex h-10 w-full items-center justify-center text-[14px]"
+                borderRounded="14px"
+              />
             </div>
           )}
 
@@ -515,32 +508,36 @@ const ProfileHeader: React.FC<Props> = ({
 
             {!!loggedInUser &&
               loggedInUser?._id.toLowerCase() !== user._id.toLowerCase() && (
-                <div className="mt-2 flex w-full max-w-[182px] justify-center gap-2 fmd:hidden">
+                <div className="mt-2 flex w-full max-w-[106px] justify-center gap-2 fmd:hidden">
                   <div
-                    className="flex h-10 w-[52px] cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
+                    className="flex h-10 w-[52px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border border-gray-shade-3"
                     onClick={chatHandler}
                   >
                     <ChatProfile />
                   </div>
-                  {loadingState ? (
-                    <FinalButton
-                      title=""
-                      loaderIcon={
-                        <CgSpinner className="animate-spin text-2xl text-white" />
-                      }
-                      variant="primary"
-                      className="flex h-11 w-full items-center justify-center text-[14px]"
-                      borderRounded="14px"
-                    />
-                  ) : (
-                    <FinalButton
-                      title={follow ? "Following" : "Follow"}
-                      onClick={() => followUser(user._id)}
-                      variant="primary"
-                      className="flex h-11 w-full items-center justify-center text-[14px]"
-                      borderRounded="14px"
-                    />
-                  )}
+                  <div
+                    title={follow ? "Unfollow" : "Follow"}
+                    className={clsx(
+                      "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+                      follow
+                        ? " border-gray-shade-3"
+                        : " gradient-border-3 p-[1px]"
+                    )}
+                    onClick={() => followUser(user._id)}
+                  >
+                    {loadingState ? (
+                      <CgSpinner className="animate-spin text-xl text-white" />
+                    ) : follow ? (
+                      <EyeOffFollow />
+                    ) : (
+                      <Image
+                        src={"/images/gradient-eye.png"}
+                        alt={"Follow"}
+                        width={24}
+                        height={24}
+                      />
+                    )}
+                  </div>
                 </div>
               )}
 
