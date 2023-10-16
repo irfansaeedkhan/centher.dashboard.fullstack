@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
 import { updateCookiesConsent } from "@/lib/cookies-consent";
@@ -85,7 +85,7 @@ export const PrivacyForm = () => {
           selectedState={selectedCookieOption}
         />
 
-        <FinalButton
+        <Button
           title={ButtonsText.update_profile}
           variant={"primary"}
           onClick={changePrivacy}

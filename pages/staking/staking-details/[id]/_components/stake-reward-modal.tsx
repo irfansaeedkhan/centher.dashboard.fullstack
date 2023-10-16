@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { WarningGradient } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface IProps {
   onClose: () => void;
@@ -24,14 +24,14 @@ const StakeRewardModal: FC<IProps> = ({ onClose, onConfirm }) => {
         </p> */}
       </div>
       <div className="flex w-full items-center gap-2">
-        <FinalButton
+        <Button
           className="h-11 w-full"
           title="Go back"
           borderRounded="14px"
           variant="secondary"
           onClick={onClose}
         />
-        <FinalButton
+        <Button
           className="h-11 w-full"
           title="Proceed"
           borderRounded="14px"

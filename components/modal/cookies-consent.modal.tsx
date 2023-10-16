@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 
 import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { updateCookiesConsent } from "@/lib/cookies-consent";
 import { CookiesIcon } from "@/assets/svgs";
@@ -89,8 +89,8 @@ export const CookiesConstentModal: React.FC = () => {
                 experience.
               </p>
             </div>
-            <div className="flex w-full flex-col-reverse items-center gap-3 fsm:w-auto fsm:flex-row">
-              <FinalButton
+            <div className="flex w-full flex-col-reverse items-center gap-3 p-3 fsm:w-auto fsm:flex-row">
+              <Button
                 title="Decline"
                 variant="secondary"
                 className="w-full rounded-[14px] text-sm fsm:w-auto"
@@ -98,7 +98,7 @@ export const CookiesConstentModal: React.FC = () => {
                   handleCookiesConsent(false);
                 }}
               />
-              <FinalButton
+              <Button
                 title="Allow"
                 variant="primary"
                 className="w-full rounded-[14px] text-sm fsm:w-auto"

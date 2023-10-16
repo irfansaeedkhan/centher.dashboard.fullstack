@@ -20,14 +20,14 @@ const StakingPackPage: NextPageWithLayout = () => {
       <div className={btnContainer}>
         <Button
           title={"Pack List"}
-          variant={`${tab === "PackList" ? "v1" : "v2"}`}
+          variant={`${tab === "PackList" ? "primary" : "secondary"}`}
           onClick={() => {
             setTab("PackList");
           }}
         />
         <Button
           title={"Activated"}
-          variant={`${tab === "Activated" ? "v1" : "v2"}`}
+          variant={`${tab === "Activated" ? "primary" : "secondary"}`}
           onClick={() => {
             setTab("Activated");
           }}

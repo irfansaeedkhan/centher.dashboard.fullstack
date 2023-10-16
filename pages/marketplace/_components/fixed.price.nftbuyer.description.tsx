@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { BNBIcon, LoaderIcon, MetamaskIcon2 } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -157,10 +157,10 @@ export const FixedPriceNFTBuyerDescription = ({
             </span>
           </h6>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Checkout"}
               variant="primary"
-              className="hover:scale- w-full rounded-[14px] hover:scale-90"
+              className="w-full rounded-[14px]"
               onClick={handleBuyNFT}
             />
           </div>
@@ -212,13 +212,13 @@ export const FixedPriceNFTBuyerDescription = ({
           )}
 
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="secondary"
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -261,10 +261,10 @@ export const FixedPriceNFTBuyerDescription = ({
       </div>
       <div className="buttonContainer flex items-center">
         {library ? (
-          <FinalButton
+          <Button
             title={"Buy Now"}
             disabled={!isMigrated}
-            variant={isMigrated ? "primary" : "primary"}
+            variant={isMigrated ? "primary" : "secondary"}
             onClick={async () => {
               if (!loggedInUser) {
                 toast.error("Please login to buy this nft");
@@ -272,16 +272,16 @@ export const FixedPriceNFTBuyerDescription = ({
               }
               buyNFTStep1Func();
             }}
-            className="w-full rounded-[14px] hover:scale-90"
+            className="w-full rounded-[14px]"
           />
         ) : (
-          <FinalButton
+          <Button
             title={"Connect Wallet"}
             variant="primary"
             onClick={() => {
               setConnectWalletModal(true);
             }}
-            className="w-full rounded-[14px] hover:scale-75"
+            className="w-full rounded-[14px]"
           />
         )}
       </div>

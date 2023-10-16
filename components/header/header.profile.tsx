@@ -24,7 +24,7 @@ import {
 } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -119,18 +119,18 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             className={`group flex items-center gap-1 text-white`}
           >
             <span
-              className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+              className={`text-xs text-gray-shade-7 group-hover:text-white/75`}
             >
               View on {BlockchainConfig.scanner.name}
             </span>
             <FiArrowUpRight
-              className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+              className={`cursor-pointer text-sm group-hover:text-white/75`}
             />
           </a>
         </div>
       </div>
       <div className="border-b border-gray-shade-border-color p-4 ">
-        <FinalButton
+        <Button
           title={
             loggedInUser?.membership.status !== "citizen"
               ? "Subscribe to Citizen Passport"
@@ -149,7 +149,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 }
           }
           variant="primary"
-          className="text-14px hover:scale-105"
+          className="text-14px"
           borderRounded="10px"
         />
       </div>
@@ -305,7 +305,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </button>
         ) : (
           <button
-            className="flex items-center gap-3 stroke-brand-primary text-brand-primary"
+            className="textGradient flex items-center gap-3 stroke-brand-primary"
             onClick={async () => {
               if (!loggedInUser) return;
               const _account = await connectWallet();

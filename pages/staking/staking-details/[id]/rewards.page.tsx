@@ -9,7 +9,7 @@ import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { ZeroAddress } from "@/web3/constants/common";
 import { setupUiModels } from "@/staking/helpers/mappers.helper";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
@@ -279,8 +279,8 @@ const ClaimRewards: NextPageWithLayout = () => {
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 fmd:flex-row fmd:items-center">
-            <FinalButton
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <Button
               className="h-9"
               title="Claim Rewards"
               borderRounded="10px"
@@ -296,8 +296,8 @@ const ClaimRewards: NextPageWithLayout = () => {
               stakingPool?.token_address,
               stakingPool?.reward_token_address
             ) ? (
-              <div className="flex flex-col gap-3 fmd:flex-row fmd:items-center">
-                <FinalButton
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button
                   variant="primary"
                   className="h-9"
                   title="Restake Rewards"
@@ -315,7 +315,7 @@ const ClaimRewards: NextPageWithLayout = () => {
               ""
             )}
             {stakingPool?.is_cancelable == "yes" ? (
-              <FinalButton
+              <Button
                 variant="danger"
                 className="h-9"
                 title="Cancel Staking"

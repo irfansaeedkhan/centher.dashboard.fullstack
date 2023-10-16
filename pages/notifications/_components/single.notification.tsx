@@ -109,7 +109,7 @@ const getNotificationMessage = (
           query: { user_id: notification.by._id },
         }}
         className={clsx(
-          `break-words hover:text-brand-primary`,
+          `text-gradient-hover break-words`,
           !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
             `notifcation-page-displayname word-break inline break-words md:w-full`

@@ -44,7 +44,7 @@ export const ShowThread: React.FC<Props> = ({ post, shouldShowThread }) => {
             post_id: post._id,
           },
         }}
-        className="rounded-[40px] bg-brand-primary/10 px-3 py-1.5 text-xs font-medium text-brand-primary"
+        className="textGradient rounded-[40px] bg-brand-primary/10 px-3 py-1.5 text-xs font-medium"
       >
         Show Thread
       </Link>

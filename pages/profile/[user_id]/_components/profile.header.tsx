@@ -30,7 +30,7 @@ import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { LoggedInUser, MutualFollowersData, User } from "@/models/user";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
 import ProfileModal from "@/components/modal/profile.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { useGetProfileCardDetails } from "@/components/feed.components/profile.detail.card/use.get.profile.card.details";
 import { axiosApiCenther } from "@/utils/axios";
 import { getUserImageUrl, sliceAccountAddress } from "@/utils/user.helpers";
@@ -41,11 +41,11 @@ import cn from "@/utils/cn";
 import { useCentherLive } from "@/hooks/chat";
 import { AppRoutes } from "@/constants/app.routes";
 import { XLogo, ChatProfile, EyeOffFollow } from "@/assets/svgs";
+import FollowedComponent from "../community/_components/followed.component";
 import { ProfileTabsSocial } from "./profile.tabs.social";
 import { CoverUploadButton } from "./cover.upload.button";
 import Profile3DotsMenu from "./profile.3.dots.menu";
 import CropperImage from "./cropper.image";
-import FollowedComponent from "../community/_components/followed.component";
 
 export type CoverImageWithFile = {
   path: string;
@@ -323,23 +323,23 @@ const ProfileHeader: React.FC<Props> = ({
                 </CoverUploadButton>
               )}
               {coverImage.newImage && (
-                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-3">
+                <div className="flex flex-col items-end gap-2 fsm:flex-row fsm:gap-0">
                   <CoverUploadButton
                     variant="cancel"
                     onClick={setInitialCoverImage}
                   >
-                    <FinalButton
+                    <Button
                       loaderIcon={<MdClose className="h-4 w-4" />}
                       title=""
                       variant="secondary"
                       className="inline-block fmd:hidden"
                       borderRounded="14px"
                     />
-                    <FinalButton
+                    <Button
                       Icon={<MdClose className="h-4 w-4" />}
                       title="Cancel"
                       variant="secondary"
-                      className=" hidden w-fit fmd:flex"
+                      className="hidden w-max bg-[#18191d] fmd:flex"
                       borderRounded="14px"
                     />
                   </CoverUploadButton>
@@ -348,17 +348,17 @@ const ProfileHeader: React.FC<Props> = ({
                     className={`group`}
                     variant="upload-cover"
                   >
-                    <FinalButton
+                    <Button
                       title="Save"
                       variant="primary"
                       className="group flex fmd:hidden"
                       borderRounded="14px"
                     />
 
-                    <FinalButton
+                    <Button
                       title="Upload Cover"
                       variant="primary"
-                      className="hidden h-9 w-[124px] fmd:inline-block"
+                      className="hidden w-max fmd:inline-block"
                       borderRounded="14px"
                       loaderIcon={
                         coverImageLoading && (
@@ -409,7 +409,7 @@ const ProfileHeader: React.FC<Props> = ({
               >
                 <ChatProfile />
               </div>
-              <FinalButton
+              <Button
                 title={follow ? "Following" : "Follow"}
                 onClick={() => followUser(user._id)}
                 loaderIcon={
@@ -498,7 +498,7 @@ const ProfileHeader: React.FC<Props> = ({
                   toast.success("Address copied!");
                 }}
               >
-                <FiCopy className="h-4 w-4 text-gray-shade-7 hover:text-brand-primary" />
+                <FiCopy className="text-gradient-hover h-4 w-4 text-gray-shade-7" />
               </button>
             </div>
 
@@ -704,4 +704,4 @@ const ProfileHeader: React.FC<Props> = ({
 export default ProfileHeader;
 
 // styling
-const socialLinks = `text-white w-4 h-4 hover:text-brand-primary`;
+const socialLinks = `text-white w-4 h-4 text-gradient-hover`;

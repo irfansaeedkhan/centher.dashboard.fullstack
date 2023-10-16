@@ -51,7 +51,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
         {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
       </div>
       {isOpen && (
-        <div className="absolute z-10 mt-2 w-full rounded-2xl border border-gray-shade-3 bg-black-shade-3 text-white shadow-lg">
+        <div className="absolute z-50 mt-2 w-full rounded-2xl border border-gray-shade-3 bg-black-shade-3 text-white shadow-lg">
           {options.map((option) => (
             <div
               key={option.value}

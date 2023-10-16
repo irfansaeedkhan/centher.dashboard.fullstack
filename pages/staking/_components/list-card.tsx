@@ -15,7 +15,7 @@ import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
 import { Staking } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { claimPeriodOptions, stakingPeriodOptions } from "../constants";
 import { metaDataType } from "./staking-types";
 import { ListCardDataOBj } from "./list-card-data";
@@ -54,7 +54,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           >
             View project detail
           </Link> */}
-          <FinalButton
+          <Button
             variant="primary"
             className="h-7 text-[10px]"
             title="View project detail"
@@ -64,7 +64,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
           <div
             className={clsx(
               "w-fit rounded-[10px] bg-black-shade-3 px-3 py-[6px] text-xs font-semibold",
-              card.is_active ? "text-[#76E268]" : "text-brand-primary"
+              card.is_active ? "text-[#76E268]" : "textGradient"
             )}
           >
             {card.is_active ? "Active" : "Unbalanced"}
@@ -155,9 +155,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
               title="View on Explorer"
               className={`group flex items-center gap-1 text-white`}
             >
-              <span
-                className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
-              >
+              <span className={`text-gradient-hover text-xs text-gray-shade-7`}>
                 View on {BlockchainConfig.scanner.name}
               </span>
               <FiArrowUpRight
@@ -238,7 +236,7 @@ const GridLayoutCard: React.FC<ListCardProps> = ({ card, coins }) => {
                 className={`group flex items-center gap-1 text-white`}
               >
                 <span
-                  className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                  className={`text-gradient-hover text-xs text-gray-shade-7`}
                 >
                   View on {BlockchainConfig.scanner.name}
                 </span>

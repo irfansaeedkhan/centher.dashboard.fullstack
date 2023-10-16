@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { IoClose } from "react-icons/io5";
 import { ModalPortal } from "@/components/modal/modal.portal";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface Props {
   isOpen: boolean;
@@ -55,7 +55,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 </h3>
                 <div>
                   <Link href={AppRoutes.auth.login}>
-                    <FinalButton
+                    <Button
                       title={"Login"}
                       variant={"primary"}
                       className={"mb-2 w-full"}
@@ -63,7 +63,7 @@ export const LoggedInModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   </Link>
 
                   <Link href={AppRoutes.auth.register}>
-                    <FinalButton
+                    <Button
                       title={"Register"}
                       variant={"primary"}
                       className={"w-full"}

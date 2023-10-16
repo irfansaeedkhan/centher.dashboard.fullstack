@@ -13,7 +13,7 @@ import {
   PostUser,
 } from "@/models/post";
 import { LoggedInUser } from "@/models/user";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { PostActionMenu } from "./post.action.meu";
@@ -122,7 +122,7 @@ export const PostHeader: React.FC<Props> = ({
                 query: { user_id: postUser._id },
               }}
               className={clsx(
-                `word-break flex w-full max-w-max items-center truncate text-sm font-semibold text-white hover:text-brand-primary`
+                `word-break text-gradient-hover flex w-full max-w-max items-center truncate text-sm font-semibold text-white`
               )}
               title={postUser.display_name}
             >
@@ -176,7 +176,7 @@ export const PostHeader: React.FC<Props> = ({
                 </span>
                 <span
                   className={clsx(
-                    `group-hover:text-brand-primary`,
+                    `group-hover:text-white/75`,
                     `block truncate break-words`
                   )}
                   title={parentPost.user.display_name}
@@ -241,14 +241,14 @@ export const PostHeader: React.FC<Props> = ({
               },
             }}
           >
-            <FinalButton
+            <Button
               title={
                 postType === "thread-post-w-parent-header"
                   ? "View Thread"
                   : "View Post"
               }
               variant="primary"
-              className="h-10 w-[100px] text-[14px] hover:scale-95"
+              className="h-10 w-[100px] text-[14px]"
               borderRounded="14px"
             />
           </Link>

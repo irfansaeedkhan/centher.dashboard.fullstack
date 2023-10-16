@@ -18,7 +18,7 @@ const SingleNetworkDownline = ({ data }: any) => {
     <div className="h-[228px] w-full flex-grow rounded-xl bg-elevation-1 py-6 fsm:w-[256px] fmd:w-[352px] flg:w-[315px] flg:max-w-[368px] fxl:w-[317px] fxl:max-w-[368px] f2xl:w-[364px] f2xl:max-w-[364px]">
       <div className="flex items-center justify-between gap-10 border-b border-gray-shade-3 px-6 pb-4 text-sm font-semibold leading-6">
         <p className="text-gray-shade-7">{level}</p>
-        {/* <p className="text-brand-primary">{`${data.percent}%`}</p> */}
+        {/* <p className="textGradient">{`${data.percent}%`}</p> */}
 
         <div
           className={`flex h-8 w-8 items-center justify-center rounded-lg border-2

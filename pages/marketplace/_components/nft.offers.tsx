@@ -76,7 +76,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                                 ${formatBNB2USD(item.price, bnbPrice)}
                               </td>
                               <td className={td}>{month.toFixed(2)} month</td>
-                              <td className={`${td} !text-brand-primary`}>
+                              <td className={`${td} textGradient`}>
                                 <Link
                                   href={{
                                     pathname: AppRoutes.profile.nfts,

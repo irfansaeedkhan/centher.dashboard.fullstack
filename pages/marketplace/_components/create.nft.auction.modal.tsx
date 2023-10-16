@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import ctl from "@netlify/classnames-template-literals";
 
-import NewButton from "@/components/button/new.button";
+import Button from "@/components/button";
 
 interface CreateNFTAuctionModalProps {
   handleAuction: any;
@@ -70,7 +70,7 @@ const CreateNFTAuctionModal = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Starting price for NFT</label>
         <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
-          <span className="text-14px absolute right-2 top-[50%] translate-x-[-50%] leading-[0] text-brand-primary">
+          <span className="text-14px textGradient absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
             BNB
           </span>
           <input
@@ -89,9 +89,9 @@ const CreateNFTAuctionModal = ({
           </p>
         )}
       </div>
-      <NewButton
+      <Button
         title={"Next"}
-        variant={auctionForm.formState.isValid ? "v1" : "v10"}
+        variant={auctionForm.formState.isValid ? "primary" : "secondary"}
         disabled={!auctionForm.formState.isValid}
         onClick={auctionForm.handleSubmit(handleAuctionData)}
         className="mt-2"

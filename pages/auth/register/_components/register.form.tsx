@@ -8,7 +8,7 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { ModalWrapper } from "@/components/modal";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import {
   SpinIcon2,
   Successfully,
@@ -125,8 +125,7 @@ export const RegisterForm: React.FC = () => {
             </div>
           </>
         ) : (
-          <FinalButton
-            type="button"
+          <Button
             title={"Connect"}
             onClick={() => connectWallet()}
             variant="primary"
@@ -173,8 +172,7 @@ export const RegisterForm: React.FC = () => {
         </div>
 
         {isChecked ? (
-          <FinalButton
-            type="button"
+          <Button
             title={"Register"}
             onClick={openFeeModal}
             variant="primary"
@@ -182,8 +180,7 @@ export const RegisterForm: React.FC = () => {
             borderRounded="14px"
           />
         ) : (
-          <FinalButton
-            type="button"
+          <Button
             title={"Register"}
             disabled
             variant="primary"
@@ -246,8 +243,7 @@ export const RegisterForm: React.FC = () => {
             </div>
             <div>
               {feeModal.status === "start" ? (
-                <FinalButton
-                  type="submit"
+                <Button
                   title={Number(feeModal.fee) === 0 ? "Join For Free" : "Pay"}
                   variant="primary"
                   className="flex h-11 w-full items-center justify-center text-[14px]"
@@ -256,8 +252,7 @@ export const RegisterForm: React.FC = () => {
               ) : (
                 (feeModal.status === "progress" ||
                   feeModal.status === "end") && (
-                  <FinalButton
-                    type="button"
+                  <Button
                     title={"Ok"}
                     disabled
                     variant="primary"
@@ -291,7 +286,7 @@ const feeModalWrapper = ctl(`flex justify-center`);
 const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
 
 const textFee = ctl(
-  `text-brand-primary text-center font-semibold tracking-wider text-base`
+  `textGradient text-center font-semibold tracking-wider text-base`
 );
 
 const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);

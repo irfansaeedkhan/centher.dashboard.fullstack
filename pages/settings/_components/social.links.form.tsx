@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSWRConfig } from "swr";
 import { CgSpinner } from "react-icons/cg";
 import toast from "react-hot-toast";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
 import { updateMe } from "@/lib/user";
@@ -216,7 +216,7 @@ export const SocialLinksForm: React.FC<EditProfileFormProps> = (props) => {
           }}
         />
 
-        <FinalButton
+        <Button
           title={ButtonsText.update_profile}
           variant={isModified ? "primary" : "secondary"}
           onClick={updateProfile}

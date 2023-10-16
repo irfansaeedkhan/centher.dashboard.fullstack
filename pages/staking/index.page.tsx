@@ -5,7 +5,7 @@ import clsx from "clsx";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import useUser from "@/hooks/use.user";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { NoStakingIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
@@ -134,7 +134,7 @@ const Staking: NextPageWithLayout = () => {
             yourself!
           </p>
           {/* if member go to staking form other wise membership modal */}
-          <FinalButton
+          <Button
             title="Create New"
             onClick={
               loggedInUser?.membership.status === "citizen"

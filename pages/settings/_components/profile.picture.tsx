@@ -5,7 +5,7 @@ import { useOnClickOutside } from "usehooks-ts";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import { getUserImageUploadUrl, updateUserImage } from "@/lib/user";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { AvatarIcon, UploadIcon } from "@/assets/svgs";
 import AvatarModal from "./avatar.modal";
@@ -154,7 +154,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
       <div className="relative mt-4">
         {profileImageData.path ? (
           <div className="flex items-center gap-5">
-            <FinalButton
+            <Button
               title="Discard"
               variant="secondary"
               className="w-[100px] rounded-[14px]"
@@ -167,7 +167,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
                 setUploadFile(undefined);
               }}
             />
-            <FinalButton
+            <Button
               title="Upload"
               variant="primary"
               className="w-[100px] rounded-[14px]"
@@ -180,7 +180,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             />
           </div>
         ) : (
-          <FinalButton
+          <Button
             title="Choose Image"
             variant="primary"
             className="text-14px"
@@ -193,7 +193,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             className="absolute top-[calc(100%+0.5rem)] flex h-auto w-[380px] flex-col gap-6 rounded-xl bg-black-shade-12 p-6"
           >
             {/* Choose Avatar */}
-            <div className="flex cursor-pointer items-center gap-2 text-white hover:text-brand-primary">
+            <div className="text-gradient-hover flex cursor-pointer items-center gap-2 text-white">
               <AvatarIcon />
               <span
                 className="text-sm font-medium  "
@@ -207,7 +207,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             <div className="flex cursor-pointer items-center gap-2 text-white">
               <UploadIcon />
               <label className="cursor-pointer">
-                <span className="text-sm font-medium hover:text-brand-primary">
+                <span className="text-gradient-hover text-sm font-medium">
                   Upload Image
                 </span>
                 <input
@@ -223,7 +223,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             {/* <div className="flex gap-2 items-center">
                 <CameraIcon2 />
                 <span
-                  className="text-sm font-medium hover:text-brand-primary"
+                  className="text-sm font-medium text-gradient-hover"
                   onClick={() => setProfileModal("selfie")}
                 >
                   Take Selfie
@@ -234,7 +234,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
             {/* <div className="flex gap-2 items-center">
                 <NFTIcon />
                 <span
-                  className="text-sm font-medium hover:text-brand-primary"
+                  className="text-sm font-medium text-gradient-hover"
                   onClick={() => setProfileModal("nft")}
                 >
                   Choose NFT

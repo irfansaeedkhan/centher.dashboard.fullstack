@@ -59,7 +59,7 @@ export const SuggestedCardMobile: React.FC<Props> = ({
         >
           <Link href={AppRoutes.recommended}>
             <button
-              className={`text-14px hover: p-4 font-medium text-white hover:text-brand-primary`}
+              className={`text-14px hover: text-gradient-hover p-4 font-medium text-white`}
             >
               View all recommendations
             </button>

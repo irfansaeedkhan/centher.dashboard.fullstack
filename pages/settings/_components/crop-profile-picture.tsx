@@ -8,7 +8,7 @@ import "react-advanced-cropper/dist/style.css";
 import { ModalWrapper } from "@/components/modal";
 import { LoggedInUser, UserImage } from "@/models/user";
 import { CropFunctions } from "./crop-functions";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface CropperProps {
   isOpen: boolean;
@@ -80,7 +80,7 @@ const CropProfilePicture: React.FC<CropperProps> = ({
         <div className="relative mt-5 flex w-full flex-col items-center justify-center">
           <CropFunctions cropperRef={cropperRef} />
           <div className="mt-2 flex w-[82.55px]  flex-shrink-0 justify-center text-center">
-            <FinalButton
+            <Button
               title="Crop"
               variant="primary"
               className="h-10 w-[150px] text-[14px]"

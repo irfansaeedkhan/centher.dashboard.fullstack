@@ -5,7 +5,7 @@ import useUser from "@/hooks/use.user";
 import { AppRoutes } from "@/constants/app.routes";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { NextPageWithLayout } from "../_app.page";
 import { faqsData } from "./_components/faqs-data";
 import SingleFaq from "./_components/single-faq";
@@ -25,7 +25,7 @@ const Faqs: NextPageWithLayout = () => {
             Staking
           </Link>
           <div className="flex w-full items-center gap-5 flg:gap-6">
-            <FinalButton
+            <Button
               className="h-9 w-full text-xs fsm:min-w-max [@media(max-width:330px)]:text-[11px]"
               title="Create New Project"
               variant="secondary"
@@ -40,7 +40,7 @@ const Faqs: NextPageWithLayout = () => {
               }
             />
             <Link href={AppRoutes.staking.faqs} className="w-full">
-              <FinalButton
+              <Button
                 title="FAQs"
                 variant={"primary"}
                 className="h-9 w-full text-xs fsm:max-w-[68px]"

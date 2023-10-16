@@ -10,7 +10,7 @@ import { MenuClose } from "@/assets/svgs";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import { useCentherLive } from "@/hooks/chat";
 import { SidebarMobile } from "../sidebar/sidebar.mobile";
-import FinalButton from "../button/final.button";
+import Button from "../button";
 import HeaderProfile from "./header.profile";
 import SearchBar from "./search";
 
@@ -80,7 +80,7 @@ const Header = () => {
 
         {!user && !isUserLoading && (
           <Link href={AppRoutes.auth.login}>
-            <FinalButton
+            <Button
               title={"Connect"}
               variant="primary"
               className="h-9 w-[98px] text-[14px]"

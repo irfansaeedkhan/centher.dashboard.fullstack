@@ -3,7 +3,7 @@ import { useWeb3React } from "@web3-react/core";
 import { formatEther } from "ethers/lib/utils";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { TokenName } from "@/web3/blockchain/types";
 import { RoundInfo } from "@/web3/constants/types";
 import { LeftArrowIcon, NTRIconBG, DXCIconBG, USDTIcon } from "@/assets/svgs";
@@ -114,7 +114,7 @@ export const ConversionContainer: React.FC<Props> = ({
           </div>
           <div className={inputBoxRight}>
             <div className="flex flex-grow justify-center">
-              <FinalButton
+              <Button
                 title="Max"
                 className="text-xs"
                 onClick={() => {

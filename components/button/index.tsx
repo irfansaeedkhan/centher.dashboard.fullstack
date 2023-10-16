@@ -1,37 +1,63 @@
-import clsx from "clsx";
 import React from "react";
+import cn from "@/utils/cn";
+import styles from "./button.module.css";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
-  variant?: "v1" | "v2" | "v3" | "v4" | "v5" | "v6" | "v7" | "v8";
+  variant?: "primary" | "secondary" | "danger";
   Icon?: React.ReactNode;
+  IconEnd?: React.ReactNode;
+  borderRounded?: string;
+  backgroundColor?: string;
+  loaderIcon?: React.ReactNode;
 }
-
+interface CustomCSSProperties extends React.CSSProperties {
+  "--border-rounded": string;
+  "--background-color": string;
+}
 const Button: React.FC<ButtonProps> = ({
   title,
-  variant = "v1",
+  variant = "primary",
   className,
   Icon,
+  IconEnd,
+  loaderIcon,
+  borderRounded = "14px",
+  backgroundColor = "#17171A",
   ...props
 }) => {
+  const customStyles: CustomCSSProperties = {
+    "--border-rounded": borderRounded,
+    "--background-color": backgroundColor,
+  };
+
   return (
     <button
-      className={clsx(
-        variant === "v1" && "bg-brand-primary text-black-shade-3",
-        variant === "v2" && "bg-background-shade-2 text-gray-shade-7",
-        variant === "v3" && "bg-black-shade-7 text-gray-shade-8",
-        variant === "v4" && "bg-black-shade-7 text-brand-primary",
-        variant === "v5" && "bg-gray-shade-20 text-[#E5E5FF80]/50",
-        variant === "v6" && "bg-black-shade-6 text-gray-shade-7",
-        variant === "v7" && "border border-danger bg-transparent text-danger",
-        variant === "v8" && "bg-black-shade-3 text-gray-shade-7",
-        `flex w-full items-center justify-center gap-3 rounded-xl px-2 py-2 text-sm font-bold`,
+      className={cn(
+        "relative flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-base font-semibold transition duration-100 ease-in-out",
+        variant === "primary" && styles["primary-gradient-btn"],
+        variant === "secondary" &&
+          "border border-[#1E202B] bg-transparent font-semibold hover:bg-[#1E202B]",
+        variant === "danger" &&
+          "border border-[#FF424D] bg-transparent font-semibold text-[#FF424D] hover:border-transparent hover:bg-[#FF424D] hover:text-white",
+        `${props.disabled && "pointer-events-none opacity-50"}`,
         className && className
       )}
+      style={variant === "primary" ? customStyles : undefined}
       {...props}
+      disabled={props.disabled}
     >
       {Icon && Icon}
-      {title}
+      <span
+        className={cn(
+          "primary-gradient-btn-text relative",
+          variant === "primary" && "primary-btn-text-gradient",
+          variant === "secondary" && "text-white"
+        )}
+      >
+        {loaderIcon ? loaderIcon : title}
+      </span>
+      {IconEnd && IconEnd}
     </button>
   );
 };

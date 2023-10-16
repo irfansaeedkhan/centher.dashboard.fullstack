@@ -33,7 +33,7 @@ import {
   TwitterSvg,
   HotNftEmptyIcon,
 } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -473,7 +473,7 @@ const Collection: NextPageWithLayout = () => {
               className={`flex w-full max-w-[640px] flex-col items-center justify-center gap-3 fsm:flex-row fsm:justify-end fsm:gap-5`}
             >
               <div className="flex w-full max-w-[640px] flex-row  items-center justify-center gap-3 fsm:justify-end fsm:gap-5">
-                <FinalButton
+                <Button
                   title={"All"}
                   variant={filter === "All" ? "primary" : "secondary"}
                   className="px-4 py-2  fsm:max-w-fit fsm:py-4"
@@ -483,7 +483,7 @@ const Collection: NextPageWithLayout = () => {
                   }}
                 />
 
-                <FinalButton
+                <Button
                   title={"Listed For Sale"}
                   variant={filter === "List" ? "primary" : "secondary"}
                   className="px-4 py-2  fsm:max-w-fit fsm:py-4"

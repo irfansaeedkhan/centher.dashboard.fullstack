@@ -14,7 +14,7 @@ import {
 import { BlockchainWrite } from "@/web3/blockchain";
 import { RoundInfo } from "@/web3/constants/types";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import DetailsProject from "@/pages/launchpad/pre-booking/_components/details-project";
 import BookingMain from "@/pages/launchpad/pre-booking/_components/booking-main";
 import { SelectedTokenA, SelectedTokenB } from "./types";
@@ -319,7 +319,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
                     {selectedTokenA.minContribution} {selectedTokenA.tokenName}
                   </span>
                 </h6>
-                <FinalButton
+                <Button
                   title={isApproved ? "Buy now" : "Authorize"}
                   variant="primary"
                   onClick={
@@ -369,20 +369,20 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         {contributionInfo &&
           (contributionInfo.contributedBusdAmount > 0 ||
             contributionInfo.contributedNtrAmount > 0) && (
-            <FinalButton
+            <Button
               title="Claim Rewards"
               variant={currentTab === "rewards" ? "primary" : "secondary"}
               className="rounded-[10px]"
               onClick={() => setCurrentTab("rewards")}
             />
           )}
-        <FinalButton
+        <Button
           title="Project Details"
           variant={currentTab === "details" ? "primary" : "secondary"}
           className="rounded-[10px]"
           onClick={() => setCurrentTab("details")}
         />
-        <FinalButton
+        <Button
           title="Booking"
           variant={currentTab === "booking" ? "primary" : "secondary"}
           className="rounded-[10px]"

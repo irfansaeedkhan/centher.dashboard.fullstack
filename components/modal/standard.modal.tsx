@@ -12,7 +12,7 @@ import {
   NTRIconBG,
   DXCIconBG,
 } from "@/assets/svgs";
-import FinalButton from "../button/final.button";
+import Button from "../button";
 
 export interface ModalState {
   isOpen: boolean;
@@ -121,14 +121,14 @@ export const StandardModal: React.FC<ModalProps> = ({
           {/* Action Buttons */}
           {status !== "success" && (
             <div className="mt-2 flex gap-2 font-semibold">
-              <FinalButton
+              <Button
                 variant="secondary"
                 title="Cancel"
                 className="w-full"
                 onClick={status === "progress" ? () => {} : onClickClose}
                 disabled={status === "progress"}
               />
-              <FinalButton
+              <Button
                 variant="primary"
                 title={confirmButtonText}
                 className="w-full"

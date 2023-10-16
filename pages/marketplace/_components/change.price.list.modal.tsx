@@ -4,7 +4,7 @@ import clsx from "clsx";
 
 import { BNBIcon } from "@/assets/svgs";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 
@@ -50,13 +50,13 @@ const ChangePriceListModal: React.FC<Props> = ({
   return (
     <div className={`mt-4 flex w-full flex-col gap-4 px-2 pt-4 text-center`}>
       <div className="flex items-center justify-center gap-4">
-        <FinalButton
+        <Button
           title="Fixed Price"
           variant={activeButton === "fixedPrice" ? "primary" : "secondary"}
           className={clsx(activeButton === "auction" && "rounded-[14px]")}
           onClick={() => setActiveButton("fixedPrice")}
         />
-        <FinalButton
+        <Button
           title="Auction"
           variant={activeButton === "auction" ? "primary" : "secondary"}
           className={clsx(activeButton === "fixedPrice" && "rounded-[14px]")}
@@ -167,19 +167,19 @@ const ChangePriceListModal: React.FC<Props> = ({
       </div>
 
       {activeButton === "auction" ? (
-        <FinalButton
+        <Button
           title="Complete listing"
           variant="primary"
-          className="mt-2 hover:scale-95"
+          className="mt-2"
           onClick={() => handleAuctionData(auctionData)}
           disabled={changeNFTPrice === null || nftPriceError ? true : false}
         />
       ) : (
         activeButton === "fixedPrice" && (
-          <FinalButton
+          <Button
             title="Complete listing"
             variant="primary"
-            className="mt-2 hover:scale-95"
+            className="mt-2"
             onClick={() => handleListNFT(changeNFTPrice)}
             disabled={changeNFTPrice === null || nftPriceError ? true : false}
           />

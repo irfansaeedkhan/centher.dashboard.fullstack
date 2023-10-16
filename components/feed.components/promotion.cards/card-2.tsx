@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
@@ -34,7 +34,7 @@ export const PromotionCard2: React.FC<Props> = ({ className, ...props }) => {
             },
           }}
         >
-          <FinalButton
+          <Button
             title="Buy DeXa Token"
             variant="primary"
             borderRounded="10px"

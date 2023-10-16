@@ -1,7 +1,7 @@
 import React from "react";
 import { useRouter } from "next/router";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface Props extends React.HTMLAttributes<HTMLButtonElement> {}
 
@@ -28,7 +28,7 @@ export const BackButton: React.FC<Props> = ({
     // >
     //   Back
     // </button>
-    <FinalButton
+    <Button
       title="Back"
       variant="primary"
       className="mb-3 h-8 w-[80px] text-[14px]"

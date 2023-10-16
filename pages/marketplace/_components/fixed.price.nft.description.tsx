@@ -4,7 +4,7 @@ import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -78,13 +78,13 @@ export const FixedPriceNFTDescription = ({
                 </div>
                 <h3 className="mb-2 flex w-full justify-center space-x-1 text-sm font-semibold text-white fsm:text-lg">
                   <span>Migrate your</span>
-                  <span className="text-brand-primary"> listed tokens</span>
+                  <span className="textGradient"> listed tokens</span>
                 </h3>
                 <p className="mb-6 text-center text-xs text-white fsm:text-sm">
                   Migrate your tokens to our new marketplace for uninterrupted
                   rewards and benefits. Don&apos;t miss out - act now!
                 </p>
-                <FinalButton
+                <Button
                   title={"Migrate Now"}
                   variant="primary"
                   className="w-full rounded-[14px]"
@@ -248,7 +248,7 @@ export const FixedPriceNFTDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -256,7 +256,7 @@ export const FixedPriceNFTDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={handleCancelListing}
               variant="primary"
@@ -291,7 +291,7 @@ export const FixedPriceNFTDescription = ({
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -299,7 +299,7 @@ export const FixedPriceNFTDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={() => handleEditPrice(newPrice)}
               variant="primary"
@@ -360,13 +360,13 @@ export const FixedPriceNFTDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px]"
             />
           </div>
         </div>
@@ -414,19 +414,19 @@ export const FixedPriceNFTDescription = ({
         </p>
       </div>
       <div className="buttonContainer flex items-center gap-4">
-        <FinalButton
+        <Button
           title={"Cancel Listing"}
           variant="secondary"
           onClick={setupCancelItemPriceModal}
-          className="w-full rounded-[14px] hover:scale-95"
+          className="w-full rounded-[14px]"
         />
-        <FinalButton
+        <Button
           title={"Edit"}
           onClick={() => {
             setupBidNftModal();
           }}
           variant="primary"
-          className="w-full hover:scale-95"
+          className="w-full"
         />
       </div>
 

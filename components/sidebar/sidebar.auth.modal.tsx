@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "../button/final.button";
+import Button from "../button";
 
 const SidebarAuthModal: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const SidebarAuthModal: React.FC = () => {
         Get in to trading
       </div>
       <Link href={AppRoutes.auth.register}>
-        <FinalButton
+        <Button
           title={"Register"}
           variant="primary"
           className="h-10 w-[98px] text-[14px]"
@@ -20,7 +20,7 @@ const SidebarAuthModal: React.FC = () => {
         />
       </Link>
       <Link href={AppRoutes.auth.login}>
-        <FinalButton
+        <Button
           title={"Connect"}
           variant="primary"
           className="h-10 w-[98px] text-[14px]"
