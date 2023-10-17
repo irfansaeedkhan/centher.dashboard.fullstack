@@ -108,6 +108,7 @@ export const registerWithSmartContract = async (
     }
 
     await tx.wait();
+    await library.waitForTransaction(tx.hash, 2);
 
     return {
       status: "success",
