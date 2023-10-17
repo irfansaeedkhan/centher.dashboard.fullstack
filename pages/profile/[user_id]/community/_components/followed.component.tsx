@@ -53,7 +53,7 @@ const FollowedComponent: React.FC<Props> = ({ mutualFollowersData }) => {
                 }}
                 key={user._id}
                 className={clsx(
-                  `hover:text-brand-primary fmd:leading-[24px]`,
+                  `text-gradient-hover fmd:leading-[24px]`,
                   !user.display_name.includes(" ") &&
                     user.display_name.length > 20
                     ? "word-break inline  "

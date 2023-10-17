@@ -1,7 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
@@ -27,7 +27,7 @@ export const PromotionCard5: React.FC<Props> = ({ className, ...props }) => {
           pathname: AppRoutes.citizenship,
         }}
       >
-        <FinalButton
+        <Button
           title="Become a Citizen!"
           variant="primary"
           borderRounded="10px"

@@ -1,6 +1,6 @@
 import React from "react";
 import { formatUnits } from "ethers/lib/utils";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { Referral } from "@/staking/types/referrals.interface";
 import { OptionalType } from "@/staking/types";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -77,7 +77,7 @@ const ListReferralsTable: React.FC<{
               {claimable ? (
                 <TableCell element={"td"}>
                   {e.claimableReward && e.claimableReward != "0" ? (
-                    <FinalButton
+                    <Button
                       title="Claim"
                       variant="primary"
                       onClick={() => claimRefReward(e.id.split("-")[0])}

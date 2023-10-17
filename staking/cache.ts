@@ -32,63 +32,12 @@ export const staking_projects = [
     createdAt: "1693238639",
     cancellationFees: "0",
     annualStakingRewardRate: "4500",
-    transfers: [
-      {
-        endAt: "1740576381",
-        createdAt: "1693488381",
-      },
-      {
-        endAt: "1740412670",
-        createdAt: "1693324670",
-      },
-      {
-        endAt: "1740735521",
-        createdAt: "1693647521",
-      },
-      {
-        endAt: "1740412714",
-        createdAt: "1693324714",
-      },
-      {
-        endAt: "1740501287",
-        createdAt: "1693413287",
-      },
-      {
-        endAt: "1740406540",
-        createdAt: "1693318540",
-      },
-    ],
-    users: [
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693324714",
-        id: "0x1dce7b96d0d446f5e0946aaadb9962eeadc86382-1",
-      },
-      {
-        referrer: "0x571bc57d15e319b926b3b8fc67710c90a7591e63",
-        joinedAt: "1693318540",
-        id: "0x6f9c909a131f26b490c0628a820e5c848ff4394e-1",
-      },
-      {
-        referrer: "0x571bc57d15e319b926b3b8fc67710c90a7591e63",
-        joinedAt: "1693647521",
-        id: "0xbc9521c6836f560115adf10b6d336d2c35194e04-1",
-      },
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693488381",
-        id: "0xde1419bff9e9980ce384591a469612f7c6a88c25-1",
-      },
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693413287",
-        id: "0xf8f9db9f460278fe88531164cb99e10af670cfb3-1",
-      },
-    ],
+    transfers: [],
+    users: [],
   },
   {
-    totalStakedAmount: "47000000000000000000000",
-    totalPaidReward: "0",
+    totalStakedAmount: "48111819539835164835164",
+    totalPaidReward: "1106819539835164835164",
     startTime: "1693838013",
     stakingDurationPeriod: "47088000",
     stakeToken: "0x55d398326f99059ff775485246999027b3197955",
@@ -118,73 +67,43 @@ export const staking_projects = [
     createdAt: "1693836376",
     cancellationFees: "0",
     annualStakingRewardRate: "4500",
-    transfers: [
-      {
-        endAt: "1741071236",
-        createdAt: "1693983236",
-      },
-      {
-        endAt: "1741072292",
-        createdAt: "1693984292",
-      },
-      {
-        endAt: "1743095596",
-        createdAt: "1696007596",
-      },
-      {
-        endAt: "1742140273",
-        createdAt: "1695052273",
-      },
-      {
-        endAt: "1741072199",
-        createdAt: "1693984199",
-      },
-      {
-        endAt: "1741071892",
-        createdAt: "1693983892",
-      },
-      {
-        endAt: "1741072079",
-        createdAt: "1693984079",
-      },
-    ],
-    users: [
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693983892",
-        id: "0x1dce7b96d0d446f5e0946aaadb9962eeadc86382-2",
-      },
-      {
-        referrer: "0x571bc57d15e319b926b3b8fc67710c90a7591e63",
-        joinedAt: "1696007596",
-        id: "0x44768f2b941fae4caf22280e91633c425d711ea1-2",
-      },
-      {
-        referrer: "0xf8f9db9f460278fe88531164cb99e10af670cfb3",
-        joinedAt: "1695052273",
-        id: "0x66f170aa699e22bcc2cefa2387f8d26334f5903e-2",
-      },
-      {
-        referrer: "0x571bc57d15e319b926b3b8fc67710c90a7591e63",
-        joinedAt: "1693983236",
-        id: "0x6f9c909a131f26b490c0628a820e5c848ff4394e-2",
-      },
-      {
-        referrer: "0x571bc57d15e319b926b3b8fc67710c90a7591e63",
-        joinedAt: "1693984292",
-        id: "0xbc9521c6836f560115adf10b6d336d2c35194e04-2",
-      },
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693984199",
-        id: "0xde1419bff9e9980ce384591a469612f7c6a88c25-2",
-      },
-      {
-        referrer: "0x6f9c909a131f26b490c0628a820e5c848ff4394e",
-        joinedAt: "1693984079",
-        id: "0xf8f9db9f460278fe88531164cb99e10af670cfb3-2",
-      },
-    ],
+    transfers: [],
+    users: [],
+  },
+  {
+    totalStakedAmount: "0",
+    totalPaidReward: "0",
+    startTime: "1697068800",
+    stakingDurationPeriod: "31536000",
+    stakeToken: "0xecb4c542de0d7af3aa294c5c4ae0befe8e93bd9c",
+    showOnCenther: true,
+    rewardToken: "0xecb4c542de0d7af3aa294c5c4ae0befe8e93bd9c",
+    rate: "1000000000000000000",
+    rewardModeForRef: 2,
+    poolOwner: "0xa638d0182d075278a9ea6480c1430c6e7fb490c9",
+    name: "DXC Metaverse Rewards",
+    minStakeAmount: "50000000000000000000",
+    metadataUri:
+      "ipfs:QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
+    maxStakableAmount: "2000000000000000000000000",
+    maxStakeAmount: "0",
+    levelTwo: "50",
+    levelThree: "50",
+    levelSix: "50",
+    levelOne: "50",
+    levelFour: "50",
+    levelFive: "50",
+    isUnstakable: false,
+    isLP: true,
+    isActive: true,
+    id: "3",
+    firstRewardDuration: "10",
+    claimDuration: "2592000",
+    createdAt: "1697005778",
+    cancellationFees: "0",
+    annualStakingRewardRate: "3600",
+    transfers: [],
+    users: [],
   },
 ];
 export const project_metadata = [
@@ -223,6 +142,61 @@ export const project_metadata = [
       {
         jobTitle: "Organization",
         walletAddress: "0x571bc57D15E319b926b3b8fc67710C90a7591e63",
+      },
+    ],
+  },
+  {
+    ipfsAddress:
+      "ipfs:QmNNq2ikQWXW6B7dVoXs6m8AMAisBtDUmtYkBd4XPvm1wa/centher/67f49e30-67ff-11ee-87e2-81594cb5404d.json",
+    library: [],
+    banner:
+      "QmVviQHR1ZTwAsZttR4SKYLdpuxn3ACY7HiGPTgEL7ZnQm/centher/66292d00-67ff-11ee-87e2-81594cb5404d",
+    icon: "QmUzJbW1YKz2DN1UMiZkgtYaaqhj6jJHZzmofxaZuAsLaa/centher/678a91c0-67ff-11ee-87e2-81594cb5404d",
+    socialMedias: [
+      { name: "website_url", link: "https://dexagon.io/" },
+      {
+        name: "whitepaper",
+        link: "https://dexagon.io/wp-content/uploads/2023/04/Dexagon-White-Paper-1.pdf",
+      },
+      { name: "facebook", link: "" },
+      { name: "twitter", link: "https://twitter.com/officialdexagon" },
+      { name: "github", link: "" },
+      { name: "telegram", link: "https://t.me/officialdexagon" },
+      { name: "instagram", link: "https://www.instagram.com/dexagonofficial/" },
+      { name: "discord", link: "" },
+      { name: "reddit", link: "" },
+      {
+        name: "explorers",
+        link: "https://bscscan.com/token/0xEcb4c542DE0d7AF3aA294c5c4Ae0BefE8E93bD9c",
+      },
+    ],
+    categories: [{ value: "Metaverse", label: "Metaverse" }],
+    description:
+      "The First Metaverse Staking Project to Land on Centher! Buy DXC and stake them here to maximise your rewards!\nAt Dexagon we want to open the Gate to the Virtual Life, revealing a new way of approaching the virtual world.  It’s a new approach that involves all the senses, bringing you in a complete different experience: the immersiverse.",
+    team: [
+      {
+        jobTitle: "Chief Metaverse Officer",
+        walletAddress: "0x8a437ec0843d57abbff57bf5a77f0cd88f1b0e7a",
+      },
+      {
+        jobTitle: "Chief Marketing Officer",
+        walletAddress: "0x12fdc603d1a702b878d3757a348cd8e30abf754c",
+      },
+      {
+        jobTitle: "Chief Technology Officer",
+        walletAddress: "0x5e377fcf96c8280891aa84e6b3b4698c2cc5229a",
+      },
+      {
+        jobTitle: "Environment and Lands Designer",
+        walletAddress: "0x7e8b98369ce4afa606b32652bbf9ca37ab20e294",
+      },
+      {
+        jobTitle: "Blockchain Tech Lead",
+        walletAddress: "0x7ebd9a0c89fb0b63e0358a39de48de01cd7091aa",
+      },
+      {
+        jobTitle: "Chief Italian Community",
+        walletAddress: "0x26c2f9bd296c5c2c92820d94906fb0b063d31bc6",
       },
     ],
   },

@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
@@ -177,10 +177,10 @@ const CreateNFT: NextPageWithLayout = () => {
               </span>
             </h6>
             <div className={footerBtnContainer}>
-              <FinalButton
+              <Button
                 title={"Checkout"}
                 variant="primary"
-                className="w-full hover:scale-90"
+                className="w-full"
                 onClick={() => handleCreateCollection(nftData)}
               />
             </div>
@@ -214,10 +214,10 @@ const CreateNFT: NextPageWithLayout = () => {
           )}
           <div className={footerBtnContainer}>
             {txStatus ? (
-              <FinalButton
+              <Button
                 title={"View on Profile"}
                 variant="primary"
-                className="w-full hover:scale-95"
+                className="w-full"
                 onClick={() => {
                   modal.dismissModal();
                   setClearForm(true);
@@ -225,10 +225,10 @@ const CreateNFT: NextPageWithLayout = () => {
                 }}
               />
             ) : (
-              <FinalButton
+              <Button
                 title={"Try Again"}
                 variant="secondary"
-                className="w-full hover:scale-95"
+                className="w-full"
                 onClick={() => {
                   modal.dismissModal();
                 }}

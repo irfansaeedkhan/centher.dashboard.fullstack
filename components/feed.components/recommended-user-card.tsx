@@ -6,7 +6,7 @@ import { RecommendedPeople } from "@/lib/recommended-people";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 interface RecommendedUserCardProps {
   user: RecommendedPeople;
@@ -64,7 +64,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
               title={user.display_name}
             >
               <h5
-                className={`text-14px word-break max-w-[70px] truncate font-semibold text-white hover:text-brand-primary`}
+                className={`text-14px word-break text-gradient-hover max-w-[70px] truncate font-semibold text-white`}
               >
                 {sliceDisplayName(user.display_name)}
               </h5>
@@ -77,7 +77,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
         </div>
       </div>
 
-      <FinalButton
+      <Button
         title={user.is_followed_by_loggedin_user ? "Following" : "Follow"}
         onClick={() => followUser(user._id)}
         variant="primary"

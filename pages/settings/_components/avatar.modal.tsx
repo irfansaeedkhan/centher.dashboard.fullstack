@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AvatarModalWrapper } from "@/components/modal/avatar.modal.wrapper";
 import { useAvatars } from "@/hooks/use.avatars";
 import { UserImage } from "@/models/user";
@@ -61,7 +61,7 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
       </div>
       <div className="w-full px-4">
         {slectedAvatar ? (
-          <FinalButton
+          <Button
             title="Choose"
             variant="primary"
             onClick={() => {
@@ -70,14 +70,14 @@ const AvatarModal: React.FC<AvatarModalProps> = ({
               setSlectedAvatar(null);
             }}
             disabled={!slectedAvatar}
-            className="w-full hover:scale-95"
+            className="w-full"
           />
         ) : (
-          <FinalButton
+          <Button
             title="Choose"
             variant="primary"
             disabled={!slectedAvatar}
-            className="w-full hover:scale-95"
+            className="w-full"
           />
         )}
       </div>

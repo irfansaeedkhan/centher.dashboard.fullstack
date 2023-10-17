@@ -173,6 +173,7 @@ export { default as IconFailure } from "./icon-failure.svg";
 export { default as XLogo } from "./x-logo.svg";
 export { default as ChatProfile } from "./chat-profile-icon.svg";
 export { default as USDTIcon } from "./usdt-icon.svg";
+export { default as EyeOffFollow } from "./eye-off-following.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

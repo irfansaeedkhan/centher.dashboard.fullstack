@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 // App imports
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import {
   BNBIcon,
@@ -197,7 +197,7 @@ export const AuctionNftDescription = ({
             will be asked to confirm the transaction through your wallet.
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -205,7 +205,7 @@ export const AuctionNftDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               variant="primary"
               onClick={handleCancelAuction}
@@ -266,13 +266,13 @@ export const AuctionNftDescription = ({
             </p>
           )}
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"View item"}
               variant="primary"
               onClick={() => {
                 modal.dismissModal();
               }}
-              className="w-full rounded-[14px] hover:scale-95"
+              className="w-full rounded-[14px]"
             />
             {/* </Link> */}
           </div>
@@ -294,7 +294,7 @@ export const AuctionNftDescription = ({
             receive {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB
           </p>
           <div className={footerBtnContainer}>
-            <FinalButton
+            <Button
               title={"Go back"}
               variant="secondary"
               onClick={() => {
@@ -302,7 +302,7 @@ export const AuctionNftDescription = ({
               }}
               className="w-full rounded-[14px]"
             />
-            <FinalButton
+            <Button
               title={"Proceed"}
               onClick={handleEndAuction}
               variant="primary"
@@ -391,15 +391,15 @@ export const AuctionNftDescription = ({
       </div>
       <div className="buttonContainer flex items-center gap-4">
         {nowTime < endTime && (
-          <FinalButton
+          <Button
             title={"Cancel Auction"}
             variant="primary"
             onClick={cancelAuctionFunc}
-            className="w-full rounded-[14px] hover:scale-95"
+            className="w-full rounded-[14px]"
           />
         )}
         {nowTime > endTime && (
-          <FinalButton
+          <Button
             title={hasBid ? "Announce Winner" : "End Auction"}
             variant="primary"
             onClick={hasBid ? endAuctionFunc : cancelAuctionFunc}

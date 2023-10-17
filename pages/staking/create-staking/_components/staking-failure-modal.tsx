@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useRouter } from "next/router";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { IconFailure } from "@/assets/svgs";
 
 interface CustomModalProps {
@@ -60,13 +60,13 @@ export const StakingFailureModal: React.FC<CustomModalProps> = ({
             </div>
 
             <div className="flex items-center gap-5">
-              <FinalButton
+              <Button
                 onClick={onClickClose}
                 title="Cancel"
                 variant="secondary"
                 className="text-14px w-full rounded-[14px] py-3 hover:text-black"
               />
-              <FinalButton
+              <Button
                 onClick={retryFunc}
                 title="Retry"
                 variant="primary"

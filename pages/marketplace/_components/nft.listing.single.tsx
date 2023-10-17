@@ -39,13 +39,11 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
   }
   return (
     <div className="flex gap-3">
-      <div className="mt-1 h-2 w-2 rounded-full bg-brand-primary"></div>
+      <div className="mt-1 h-2 w-2 rounded-full bg-gradient-pattern"></div>
       <div className="flex flex-col gap-3">
         <h5 className="text-12px flex items-center gap-2 font-normal text-white">
           <span className="min-w-max">{prefix} by </span>
-          <span
-            className={`cursor-pointer  font-semibold hover:text-brand-primary-dark  `}
-          >
+          <span className={`text-gradient-hover cursor-pointer font-semibold`}>
             {item.type === "BuyItem" ||
             item.type === "AcceptBid" ||
             item.type === "EndAuction" ? (

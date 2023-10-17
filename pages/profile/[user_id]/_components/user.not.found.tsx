@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 
 export const UserNotFound: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ export const UserNotFound: React.FC = () => {
             Please try again.
           </div>
           <Link href={AppRoutes.feed.index}>
-            <FinalButton
+            <Button
               title="Back to home"
               variant="primary"
               className="mb-3 h-10 w-[150px] text-[14px]"

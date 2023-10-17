@@ -5,7 +5,7 @@ import { FiCopy } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { copyText } from "@/utils/copy.text";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 
 export const BuyCentherWrapper = () => {
@@ -25,7 +25,7 @@ export const BuyCentherWrapper = () => {
             },
           }}
         >
-          <FinalButton
+          <Button
             className=""
             title="Round 1"
             variant={router.query.round === "1" ? "primary" : "secondary"}
@@ -40,7 +40,7 @@ export const BuyCentherWrapper = () => {
             },
           }}
         >
-          <FinalButton
+          <Button
             className="rounded-[14px]"
             title="Round 2"
             variant={router.query.round === "2" ? "primary" : "secondary"}
@@ -56,7 +56,7 @@ export const BuyCentherWrapper = () => {
             },
           }}
         >
-          <FinalButton
+          <Button
             className="rounded-[14px]"
             title="Round 3"
             variant={router.query.round === "3" ? "primary" : "secondary"}
@@ -68,7 +68,7 @@ export const BuyCentherWrapper = () => {
         <h3 className="min-w-fit max-w-max text-base text-white">
           Token Contract Address
         </h3>
-        <FinalButton
+        <Button
           className="h-8 px-[10px] text-sm"
           title={sliceAccountAddress(token_address)}
           variant="primary"

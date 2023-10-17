@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
 
 const UnstakeModal: React.FC<{
@@ -21,7 +21,7 @@ const UnstakeModal: React.FC<{
         />
         <p className="m-1 text-sm text-danger">{errors}</p>
       </div>
-      <FinalButton
+      <Button
         className="mt-4 h-11 w-full"
         title="Unstake"
         borderRounded="14px"

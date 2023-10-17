@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import { BNBIcon } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
@@ -94,7 +94,7 @@ const ChangePriceBidModal = ({
         )}
       </div>
 
-      <FinalButton
+      <Button
         title={"Next"}
         variant={
           changeNFTPrice === null || nftPriceError ? "primary" : "primary"

@@ -7,7 +7,7 @@ import clsx from "clsx";
 import Joi from "joi";
 import moment from "moment";
 
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 
 const lockOptions = [
@@ -172,7 +172,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
               </p>
               <div className="flex w-full flex-wrap items-center gap-2">
                 {lockOptions.map((option) => (
-                  <FinalButton
+                  <Button
                     type="button"
                     key={option.value}
                     title={option.label}
@@ -187,7 +187,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
               </div>
             </div>
 
-            <FinalButton
+            <Button
               type="submit"
               title={"Send"}
               variant={"primary"}

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { AppRoutes } from "@/constants/app.routes";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { BuyCitizenshipModal } from "@/components/modal/buy-citizenship-modal";
 import useUser from "@/hooks/use.user";
 
@@ -48,16 +48,13 @@ const Citizenship: NextPageWithLayout = () => {
           <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
             This Passport will grant the users access to premium features like{" "}
             <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
+              className="text-gradient"
               href={AppRoutes.staking_coming_soon}
             >
               Staking as a Service
             </Link>
             , Create Collections, Bulk messaging via{" "}
-            <Link
-              className="text-brand-primary hover:text-brand-primary-dark"
-              href={AppRoutes.chat.index}
-            >
+            <Link className="text-gradient" href={AppRoutes.chat.index}>
               Premium Chat Service
             </Link>
             , Advertising and much, much more!
@@ -65,14 +62,12 @@ const Citizenship: NextPageWithLayout = () => {
           {loggedInUser?.membership.status !== "citizen" && (
             <div className="max-w-[300px] text-center text-sm text-gray-shade-7 md:max-w-[534px]">
               Get your Passport now and become a{" "}
-              <span className="text-brand-primary hover:text-brand-primary-dark">
-                Centher Citizen
-              </span>{" "}
-              to power up your business!
+              <span className="text-gradient">Centher Citizen</span> to power up
+              your business!
             </div>
           )}
 
-          <FinalButton
+          <Button
             title={
               loggedInUser?.membership.status !== "citizen"
                 ? "Get your passport"

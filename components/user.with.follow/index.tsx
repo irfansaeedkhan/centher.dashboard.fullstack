@@ -4,7 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import useUser from "@/hooks/use.user";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosApiCenther } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -78,7 +78,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
               <span
                 title={_result.display_name}
                 className={clsx(
-                  `inline-block max-w-max items-center text-sm font-medium text-white hover:text-brand-primary fsm:text-base fsm:font-semibold`,
+                  `text-gradient-hover inline-block max-w-max items-center text-sm font-medium text-white fsm:text-base fsm:font-semibold`,
                   `block w-full overflow-hidden truncate break-words`
                 )}
               >
@@ -105,7 +105,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           </div>
         </div>
         {loggedInUser?._id !== _result._id && (
-          <FinalButton
+          <Button
             title={
               _result.is_followed_by_loggedin_user ? "Following" : "Follow"
             }

@@ -4,7 +4,7 @@ import { formatUnits } from "ethers/lib/utils";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { ZeroAddress } from "@/web3/constants/common";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
 import { eqAddress } from "@/live/utils/address.utils";
@@ -189,7 +189,7 @@ const Booking: React.FC<Props> = ({
               : null}{" "}
           </small>
           {+new Date(+start * 1000) <= +new Date() ? (
-            <FinalButton
+            <Button
               variant={"primary"}
               title="Stake Now"
               borderRounded={"14px"}

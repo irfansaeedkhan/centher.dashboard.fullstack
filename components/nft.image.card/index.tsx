@@ -455,7 +455,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                     query: { collection: data.collection },
                   }}
                 >
-                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
                     {data.collection}
                   </h6>
                 </Link>
@@ -469,7 +469,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                   target="_blank"
                   rel="noreferrer noopener"
                 >
-                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
                     {data.mintHash}
                   </h6>
                 </Link>
@@ -551,7 +551,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                <h6 className="text-14px textGradient inline-block break-words font-semibold">
                   {data.collection}
                 </h6>
               </div>
@@ -559,7 +559,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                <h6 className="text-14px textGradient inline-block break-words font-semibold">
                   {data.mintHash}
                 </h6>
               </div>
@@ -582,7 +582,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
               ) : (
                 <Button
                   title={"Swap NFT"}
-                  variant="v1"
+                  variant="primary"
                   className="mt-6"
                   onClick={handleSwapNft}
                 />
@@ -655,7 +655,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                <h6 className="text-14px textGradient inline-block break-words font-semibold">
                   {data.collection}
                 </h6>
               </div>
@@ -663,7 +663,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 <h5 className="text-14px font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                <h6 className="text-14px textGradient inline-block break-words font-semibold">
                   {data.mintHash}
                 </h6>
               </div>

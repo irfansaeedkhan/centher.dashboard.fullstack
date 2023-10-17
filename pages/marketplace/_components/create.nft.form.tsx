@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 // App imports
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { useGetMyCollections } from "@/hooks/use.get.my.collections";
 
 // same directory Imports
@@ -46,7 +46,7 @@ export const CreateNFTForm = ({
       className={`relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-6 py-8`}
     >
       <div className={`flex w-full max-w-[290px] gap-4`}>
-        <FinalButton
+        <Button
           title={"Fixed Price"}
           variant={tab === "Fixed" ? "primary" : "secondary"}
           onClick={() => {
@@ -54,7 +54,7 @@ export const CreateNFTForm = ({
           }}
           className={`${Tab} ${tab === "Fixed" && activeTab}`}
         />
-        <FinalButton
+        <Button
           title={"Auction"}
           variant={tab === "Auction" ? "primary" : "secondary"}
           onClick={() => {
@@ -86,5 +86,5 @@ export const CreateNFTForm = ({
 };
 // styling
 
-const Tab = `w-full cursor-pointer hover:bg-brand-primary rounded-[14px]`;
+const Tab = `w-full cursor-pointer rounded-[14px]`;
 const activeTab = `text-black-shade-3 [&>*>*]:stroke-black-shade-3`;

@@ -3,7 +3,7 @@ import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
 import clsx from "clsx";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { PostTextCounter } from "@/components/feed.components/create.post/post.modal/post.text.counter";
 import { LoadingState } from "@/models/common";
 import { LoggedInUser } from "@/models/user";
@@ -90,7 +90,7 @@ export const AboutForm: React.FC<EditProfileFormProps> = (props) => {
           )}
         </div>
 
-        <FinalButton
+        <Button
           title={ButtonsText.update_profile}
           variant={isModified ? "primary" : "secondary"}
           onClick={updateProfile}

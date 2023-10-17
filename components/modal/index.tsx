@@ -12,7 +12,7 @@ interface ModalWrapperProps {
 export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
   return props.isOpen ? (
     <div
-      className={`fixed inset-0 z-50 mx-3 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none backdrop-blur-lg backdrop-filter focus:outline-none 
+      className={`fixed inset-0 z-[150] mx-3 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none backdrop-blur-lg backdrop-filter focus:outline-none 
     `}
     >
       {/* content */}

@@ -31,8 +31,8 @@ export const Heading: React.FC<HeadingProps> = (props) => {
 };
 
 const baseClassName = ctl(`
-text-brand-primary
-font-bold
+textGradient
+  font-bold
   text-center
 `);
 

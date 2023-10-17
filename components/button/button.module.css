@@ -2,7 +2,17 @@
 .primary-gradient-btn {
   border-radius: var(--border-rounded) !important;
   transition: all 0.2s linear !important;
+  border: none;
+  background-image: linear-gradient(
+    270.23deg,
+    #5691ff -9.34%,
+    #72f6d1 17.09%,
+    #76e268 48.54%,
+    #ffd505 78.11%,
+    #ff5e52 107.63%
+  );
 }
+
 .primary-gradient-btn::before {
   content: "";
   position: absolute;
@@ -10,4 +20,76 @@
   background-color: var(--background-color);
   border-radius: var(--border-rounded);
   transition: all 0.2s linear !important;
+  z-index: 2;
+}
+
+.primary-gradient-btn:after {
+  content: "";
+  animation: primary-button-animation 2s linear infinite;
+  background-image: linear-gradient(
+    to left,
+    #faa49e,
+    #fed365,
+    #a0ed8d,
+    #72f6d1,
+    #a9cdff
+  );
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-size: 300%;
+  z-index: -1;
+  filter: blur(4px);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: var(--border-rounded);
+  z-index: 1;
+}
+
+@keyframes primary-button-animation {
+  0% {
+    background-position: 0 100%;
+  }
+
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+.primary-gradient-btn:hover {
+  animation: primary-button-animation 2s linear infinite;
+  background-image: linear-gradient(
+    to left,
+    #faa49e,
+    #fed365,
+    #a0ed8d,
+    #72f6d1,
+    #a9cdff
+  );
+  background-size: 300%;
+  color: #fefefe;
+}
+
+.primary-gradient-btn:hover span {
+  cursor: pointer;
+  animation: primary-button-animation 2s linear infinite;
+  background-image: linear-gradient(
+    to left,
+    #faa49e,
+    #fed365,
+    #a0ed8d,
+    #72f6d1,
+    #a9cdff
+  );
+  background-size: 300%;
+  color: #fefefe;
+}
+
+.primary-gradient-btn:hover:after {
+  opacity: 1;
 }

@@ -26,7 +26,7 @@ import {
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { copyText } from "@/utils/copy.text";
 import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { eqAddress } from "@/live/utils/address.utils";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
@@ -191,7 +191,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                   Review your project
                 </h3>
                 <div className="flex items-center gap-2">
-                  <FinalButton
+                  <Button
                     title="Edit"
                     onClick={() => {
                       onClickClose();
@@ -199,7 +199,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                     variant="secondary"
                     className="text-xs"
                   />
-                  <FinalButton
+                  <Button
                     title="Submit"
                     onClick={() => createStaking(data)}
                     variant="primary"
@@ -308,12 +308,12 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           className={`group flex items-center gap-1 text-white`}
                         >
                           <span
-                            className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                            className={`text-gradient-hover text-xs text-gray-shade-7`}
                           >
                             View on {BlockchainConfig.scanner.name}
                           </span>
                           <FiArrowUpRight
-                            className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                            className={`text-gradient-hover cursor-pointer text-sm`}
                           />
                         </a>
                       </p>
@@ -408,12 +408,12 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                             className={`group flex items-center gap-1 text-white`}
                           >
                             <span
-                              className={`text-xs text-gray-shade-7 group-hover:text-brand-primary`}
+                              className={`text-gradient-hover text-xs text-gray-shade-7`}
                             >
                               View on {BlockchainConfig.scanner.name}
                             </span>
                             <FiArrowUpRight
-                              className={`cursor-pointer text-sm group-hover:text-brand-primary`}
+                              className={`text-gradient-hover cursor-pointer text-sm`}
                             />
                           </a>
                         </p>

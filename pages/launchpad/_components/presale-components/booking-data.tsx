@@ -6,14 +6,13 @@ import clsx from "clsx";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
 import { PreBookingStats } from "@/lib/get-pre-bookings-stats/types";
-import NewButton from "@/components/button/new.button";
+import Button from "@/components/button";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import { BlockchainWrite } from "@/web3/blockchain";
 import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
 import { BUSDNEW, GreenTick } from "@/assets/svgs";
-import FinalButton from "@/components/button/final.button";
 import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface Props {
@@ -178,8 +177,8 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
             <h5 className="mb-2 text-2xl font-semibold text-white">
               {receivable_token_name}
             </h5>
-            <NewButton
-              variant={is_sold_out ? "v12" : "v11"}
+            <Button
+              variant={is_sold_out ? "danger" : "secondary"}
               title={is_sold_out ? "Pre Booking Ended" : "Pre Booking Live"}
             />
           </div>
@@ -211,7 +210,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
           <div className="mt-3 h-[140px] rounded-2xl bg-[#1b1c22] bg-[url(/images/bg-launchpad.png)] bg-cover p-4 fsm:p-6 fmd:h-[158px] flg:p-8">
             <div className="flex items-center justify-between gap-10">
               <h6 className="text-xl font-semibold text-white">Booking</h6>
-              <NewButton variant="v11" title={`Round: ${current_round}`} />
+              <Button variant="secondary" title={`Round: ${current_round}`} />
             </div>
             <div
               className={clsx(
@@ -298,7 +297,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                     <span className="h-5 w-5 flex-shrink-0 object-cover">
                       <BUSDNEW />
                     </span>
-                    <p className="text-xs font-semibold text-brand-primary">
+                    <p className="textGradient text-xs font-semibold">
                       {payment_token_symbol}
                     </p>
                   </div>
@@ -310,7 +309,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
                   <CgSpinner className="h-5 w-5 animate-spin" />
                 </button>
               ) : (
-                <FinalButton
+                <Button
                   variant={"primary"}
                   title="Book Now"
                   borderRounded={"8px"}

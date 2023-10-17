@@ -16,7 +16,7 @@ import cn from "@/utils/cn";
 import { CrossIcon, MetamaskIcon2, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { CustomModal } from "@/components/modal/custom.modal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
@@ -1817,7 +1817,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 )}
               </div>
               {!isConnected ? (
-                <FinalButton
+                <Button
                   title={"Connect Wallet"}
                   variant="primary"
                   onClick={() => {
@@ -1826,7 +1826,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   className="text-14px mx-auto mt-5 w-[45%]"
                 />
               ) : (
-                <FinalButton
+                <Button
                   title="Next"
                   variant="primary"
                   className={cn("text-14px mx-auto mt-5 w-[45%]", {
@@ -1879,7 +1879,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       {metaDataErr}
                     </p>
                   )}
-                  <FinalButton
+                  <Button
                     title={"Save"}
                     variant="primary"
                     onClick={addNewMetaDataFunc}
@@ -2231,7 +2231,7 @@ const CreateStaking: NextPageWithLayout = () => {
 
                     {/* Button aligned to the right */}
                     <div className="flex justify-end px-6 py-5">
-                      <FinalButton
+                      <Button
                         title="Add Members"
                         onClick={handleAddMember}
                         variant="primary"
@@ -2268,7 +2268,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
 
               {!isConnected ? (
-                <FinalButton
+                <Button
                   title={"Connect Wallet"}
                   variant="primary"
                   onClick={() => {
@@ -2277,7 +2277,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   className="text-14px mx-auto mt-5 w-[45%]"
                 />
               ) : (
-                <FinalButton
+                <Button
                   title="Review and Submit"
                   onClick={stakingForm.handleSubmit(submitForm)}
                   variant="primary"
@@ -2329,7 +2329,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   setConnectWalletModal(false);
                 }}
               >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
+                <FiArrowRight className="textGradient h-6 w-6 fsm:h-8 fsm:w-8" />
               </button>
             </div>
           </div>

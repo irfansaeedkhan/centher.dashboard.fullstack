@@ -4,7 +4,7 @@ import useUser from "@/hooks/use.user";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import ProfileSettingSkeleton from "@/components/loading.skeletons/profile.setting.skeleton";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import cn from "@/utils/cn";
 import { SettingsPagesWrapper } from "../../_components";
@@ -60,7 +60,7 @@ const TeamMembersSettings: NextPageWithLayout = () => {
           </button>
         </div>
         <div>
-          <FinalButton
+          <Button
             title={"Invite Member"}
             onClick={() => {
               setInviteModalOpen(true);

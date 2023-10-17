@@ -464,7 +464,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                     query: { collection: data.collection },
                   }}
                 >
-                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
                     {data.collection}
                   </h6>
                 </Link>
@@ -476,7 +476,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 <Link
                   href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
                 >
-                  <h6 className="text-14px inline-block break-words font-semibold text-brand-primary">
+                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
                     {data.mintHash}
                   </h6>
                 </Link>

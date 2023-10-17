@@ -243,7 +243,7 @@ const iconClassesCreatePostCard = `w-5 h-5`;
 const buttonVariants = cva("flex items-center font-medium cursor-pointer", {
   variants: {
     color: {
-      primary: "hover:text-brand-primary",
+      primary: "hover:text-white/75",
       blue: "hover:text-[#5F97FF]",
       green: "hover:text-[#00BF96]",
       light_green: "hover:text-[#76E268]",

@@ -66,7 +66,7 @@ const TeamRewards = ({ data, reload, setReload }: any) => {
           <div className="mb-3 mt-4 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimable.busd} (BUSD)</p>
             <button
-              className="text-12px font-semibold text-brand-primary "
+              className="text-12px textGradient font-semibold"
               onClick={handleClaimBusd}
             >
               Claim now
@@ -75,7 +75,7 @@ const TeamRewards = ({ data, reload, setReload }: any) => {
           <div className="flex items-center justify-between gap-2 text-sm  font-semibold">
             <p className="text-white">{data.claimable.ntr} (NTR)</p>
             <button
-              className="text-12px font-semibold text-brand-primary "
+              className="text-12px textGradient font-semibold"
               onClick={handleClaimNtr}
             >
               Claim now

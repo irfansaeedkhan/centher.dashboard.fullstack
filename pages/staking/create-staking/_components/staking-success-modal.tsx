@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { AppRoutes } from "@/constants/app.routes";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { SuccessIcon } from "@/assets/svgs";
 
 interface CustomModalProps {
@@ -52,7 +52,7 @@ export const StakingSuccessModal: React.FC<CustomModalProps> = ({
                 platform click on view Staking to view your Pack
               </p>
             </div>
-            <FinalButton
+            <Button
               onClick={() => {
                 router.push({
                   pathname: AppRoutes.staking.index,

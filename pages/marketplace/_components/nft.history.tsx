@@ -7,6 +7,7 @@ import { CustomModal } from "@/components/modal/custom.modal";
 import { LineChart } from "@/components/charts";
 import { IListHistory } from "@/hooks/use.get.nft.data.ts";
 import { formatEther2Number } from "@/utils/format.address";
+import Button from "@/components/button";
 interface PriceHistory {
   price: number;
   txTime: number;
@@ -173,7 +174,7 @@ export const NFTHistory = ({ prices }: any) => {
                       <h5 className="text-12px text-white">
                         {duration} days avg. price
                       </h5>
-                      <h5 className="text-14px text-brand-primary">
+                      <h5 className="text-14px textGradient">
                         {" "}
                         {priceAverage ? priceAverage.toFixed(4) : " No Data"}
                       </h5>
@@ -205,7 +206,7 @@ export const NFTHistory = ({ prices }: any) => {
                     <LineChart data={data} />
                   ) : (
                     <div className="flex h-28 w-full items-center justify-center">
-                      <h6 className="text-14px font-medium text-brand-primary">
+                      <h6 className="text-14px textGradient font-medium">
                         No event has occured yet!
                       </h6>
                     </div>
@@ -214,14 +215,14 @@ export const NFTHistory = ({ prices }: any) => {
 
                 <div className="flex w-full justify-end p-3">
                   {tableDataArray.length > 0 && (
-                    <button
+                    <Button
+                      title={"Details"}
+                      variant="primary"
+                      className="w-max px-6"
                       onClick={() => {
                         setShowModal(true);
                       }}
-                      className="flex w-max items-center rounded-lg bg-brand-primary px-6 py-2 text-sm font-semibold text-black-shade-2 hover:bg-brand-primary-dark"
-                    >
-                      Details
-                    </button>
+                    />
                   )}
                 </div>
               </div>

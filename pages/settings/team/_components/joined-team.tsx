@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { User } from "@/models/user";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { AppRoutes } from "@/constants/app.routes";
@@ -20,7 +20,7 @@ export const JoinedTeam: React.FC<{
         <h3 className="flex-grow font-semibold text-white">
           You are member of
         </h3>
-        <FinalButton
+        <Button
           title="Leave Team"
           variant="secondary"
           className="text-sm"

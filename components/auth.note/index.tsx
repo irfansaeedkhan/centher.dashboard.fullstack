@@ -47,7 +47,7 @@ export const AuthNote: React.FC<AuthNoteProps> = (props) => {
   font-medium 
   text-white 
   underline
-  hover:text-brand-primary
+  hover:scale-105
 `}
         >
           Forgot password

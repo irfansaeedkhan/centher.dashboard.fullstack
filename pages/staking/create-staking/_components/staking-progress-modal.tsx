@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { ModalPortal } from "@/components/modal/modal.portal";
-import FinalButton from "@/components/button/final.button";
+import Button from "@/components/button";
 import { MultiColorLoader } from "@/assets/svgs";
 import { ProgressModal } from "../dto/progress-modal.dto";
 
@@ -64,7 +64,7 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
                 </div>
               </div>
             </div>
-            <FinalButton
+            <Button
               onClick={() => {
                 onClickClose();
               }}
