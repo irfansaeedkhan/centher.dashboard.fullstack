@@ -110,7 +110,7 @@ export const registerWithSmartContract = async (
         value: ethers.utils.hexlify(registrationFee),
         gasPrice: ethers.utils.hexlify(gasPrice),
       });
-      await tx.wait();
+      await tx.wait(2);
     }
 
     return {

@@ -37,7 +37,7 @@ const TeamMembers: React.FC = () => {
           href={member.url}
           key={key}
           target="_blank"
-          className="flex items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2"
+          className="flex w-full items-center gap-3 rounded-[14px] bg-background-shade-3 px-3 py-2 sm:w-fit"
         >
           <Image
             src={member.image}
