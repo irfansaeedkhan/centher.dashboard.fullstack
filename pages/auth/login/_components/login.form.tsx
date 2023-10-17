@@ -12,7 +12,7 @@ import { useWallet, WalletEnum } from "@/web3/hooks/use.wallet";
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
   login_metamask: "Continue",
-  connect_wallet: "Connect To Wallet",
+  connect_wallet: "Connect To Centher Wallet",
   loading: "Continue...",
 };
 
@@ -20,7 +20,8 @@ export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
 
-  const { connectWallet, connectedAddress, signMessage } = useWallet();
+  const { connectWallet, connectedAddress, signMessage, disconnectWallet } =
+    useWallet();
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
 
   const handleLogin = async (
@@ -58,10 +59,10 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className={`flex h-auto w-full flex-col gap-6`}>
+    <div className={`flex h-auto w-full flex-col gap-3`}>
       {connectedAddress ? (
         <>
-          <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
+          <div className="mb-3 flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
             <div className="flex flex-grow flex-col">
               <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
                 wallet connected
@@ -84,6 +85,13 @@ export const LoginForm: React.FC = () => {
                 : ButtonsText.login_metamask
             }
             onClick={handleLogin}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+          <Button
+            title="Disconnect"
+            onClick={() => disconnectWallet()}
             variant="primary"
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
