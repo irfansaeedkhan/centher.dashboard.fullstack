@@ -34,6 +34,7 @@ import {
   HotNftEmptyIcon,
 } from "@/assets/svgs";
 import Button from "@/components/button";
+import cn from "@/utils/cn";
 
 const Collection: NextPageWithLayout = () => {
   const router = useRouter();
@@ -190,7 +191,7 @@ const Collection: NextPageWithLayout = () => {
                 />
               )}
 
-              <div className={`text-14px absolute bottom-4 right-6`}>
+              <div className={`absolute bottom-4 right-6 text-sm`}>
                 <div ref={menuRef} className={`relative`}>
                   <div className="flex items-center justify-center gap-5">
                     {(metadata?.facebook ||
@@ -360,9 +361,7 @@ const Collection: NextPageWithLayout = () => {
                 <div className="w-full">
                   <h5 className={collectionName}>{info?.name}</h5>
                   <div className="lg:flex-start mt-1 flex justify-center gap-1 text-left md:items-center lg:justify-start">
-                    <h6 className="text-14px min-w-max text-white">
-                      Created by
-                    </h6>
+                    <h6 className="min-w-max text-sm text-white">Created by</h6>
                     <Link
                       href={{
                         pathname: AppRoutes.profile.nfts,
@@ -371,7 +370,7 @@ const Collection: NextPageWithLayout = () => {
                         },
                       }}
                       className={clsx(
-                        `text-14px ml-1 flex max-w-[calc(100vw-140px)] items-center font-semibold  text-gray-shade-18 hover:text-brand-primary`
+                        `ml-1 flex max-w-[calc(100vw-140px)] items-center text-sm font-semibold  text-gray-shade-18 hover:text-brand-primary`
                       )}
                       title={user?.display_name}
                     >
@@ -505,8 +504,12 @@ const Collection: NextPageWithLayout = () => {
               </div>
             </div>
           </div>
-          <div className="tabsContent mt-10">
-            <div className={`${nftCardWrapper} nftCardContainer`}>
+          <div className="mt-10">
+            <div
+              className={cn(
+                `mx-auto grid w-max grid-cols-[minmax(0,280px)] gap-5 fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)]`
+              )}
+            >
               {filteredNFTs.map((data) => {
                 return <NFTCard data={data} key={data.id} />;
               })}
@@ -544,42 +547,34 @@ Collection.getLayout = (page) => (
 export default Collection;
 
 // styling
-const dashboardContentContainer = ctl(`
-  bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10
-`);
-const title = ctl(`
-  textGradient leading-[42px] animationTextHeading lg:text-[24px] sm:text-xl
-`);
-const MainContentContainer = ctl(`
-flex flex-col gap-5
-`);
-const coverCard = ctl(`
-bg-background-shade-3 rounded-xl
-`);
-const profileImage = ctl(`
- h-[112px] !w-[112px] cursor-pointer absolute translate-x-[-50%] left-[50%] lg:left-6 lg:translate-x-[0] -bottom-12
-`);
-const coverDetails = ctl(`
-mt-8 lg:mt-6 px-7 pt-7 pb-2
-`);
-
-const collectionName = ctl(`
-text-white text-20px font-semibold word-break
-`);
-
-const profileDescription = ctl(`
-text-14px font-normal leading-6 text-gray-shade-16 word-break
-`);
-const collectionProfileImage = ctl(`
- h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7 
-`);
+const dashboardContentContainer = ctl(
+  `bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10`
+);
+const title = ctl(
+  `textGradient leading-[42px] animationTextHeading lg:text-[24px] sm:text-xl`
+);
+const MainContentContainer = ctl(`flex flex-col gap-5`);
+const coverCard = ctl(`bg-background-shade-3 rounded-xl`);
+const profileImage = ctl(
+  `h-[112px] !w-[112px] cursor-pointer absolute translate-x-[-50%] left-[50%] lg:left-6 lg:translate-x-[0] -bottom-12`
+);
+const coverDetails = ctl(`mt-8 lg:mt-6 px-7 pt-7 pb-2`);
+const collectionName = ctl(
+  `text-white text-base f2xl:text-xl font-semibold word-break`
+);
+const profileDescription = ctl(
+  `text-sm font-normal leading-6 text-gray-shade-16 word-break`
+);
+const collectionProfileImage = ctl(
+  `h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7`
+);
 const menuButton = ctl(
-  `w-full text-14px font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`
+  `w-full text-sm font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`
 );
 const icon = ctl(`w-[24px] h-[24px] [&>*]:stroke-white`);
-const threeDotsBtn = ctl(`
-w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px `);
-
+const threeDotsBtn = ctl(
+  `w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px`
+);
 const inputField = ctl(`
   fsm:w-[400px]
   fmd:w-[200px]
@@ -593,12 +588,5 @@ const inputField = ctl(`
   focus:ring-0
   fsm:max-w-max
 `);
-const nftCardWrapper = ctl(
-  `mx-auto grid fsm:w-max fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] fmd:grid-cols-[minmax(0,235px)_minmax(0,235px)_minmax(0,235px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-x-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)] f2xl:gap-x-6`
-);
-const detailsCardTitle = ctl(`
-text-12px font-semibold text-gray-shade-7 mb-2
-`);
-const detailsCardValue = ctl(`
-text-14px font-semibold text-white
-`);
+const detailsCardTitle = ctl(`text-xs font-semibold text-gray-shade-7 mb-2`);
+const detailsCardValue = ctl(`text-sm font-semibold text-white`);

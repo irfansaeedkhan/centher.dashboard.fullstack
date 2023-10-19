@@ -58,7 +58,9 @@ const AdminNetworkRewards: NextPageWithLayout = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-18px font-semibold text-white ">Overview</h1>
+      <h1 className="text-base font-semibold text-white f2xl:text-lg ">
+        Overview
+      </h1>
       {loadingPurchaseWithBusdHistory === "loaded" &&
       loadingPurchaseWithNtrHistory === "loaded" &&
       loadingClaimHistory === "loaded" ? (

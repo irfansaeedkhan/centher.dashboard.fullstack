@@ -49,12 +49,12 @@ export const StakingFailureModal: React.FC<CustomModalProps> = ({
               <h2 className="text-base font-semibold text-white fsm:text-lg">
                 Couldn&apos;t Create Staking
               </h2>
-              {/* <p className="text-14px font-medium text-gray-shade-14">
+              {/* <p className="text-sm font-medium text-gray-shade-14">
                 Sorry, we couldn&apos;t Create your{" "}
                 <span className="text-white">Staking</span> right now, Please
                 make sure that you&apos;re connected to the Internet.
               </p> */}
-              <p className="text-14px font-medium text-gray-shade-14">
+              <p className="text-sm font-medium text-gray-shade-14">
                 {message}
               </p>
             </div>
@@ -64,13 +64,13 @@ export const StakingFailureModal: React.FC<CustomModalProps> = ({
                 onClick={onClickClose}
                 title="Cancel"
                 variant="secondary"
-                className="text-14px w-full rounded-[14px] py-3 hover:text-black"
+                className="w-full rounded-[14px] py-3 text-sm hover:text-black"
               />
               <Button
                 onClick={retryFunc}
                 title="Retry"
                 variant="primary"
-                className="text-14px w-full py-3 hover:text-black"
+                className="w-full py-3 text-sm hover:text-black"
               />
             </div>
           </div>

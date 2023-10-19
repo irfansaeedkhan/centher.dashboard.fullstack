@@ -53,7 +53,7 @@ const CurrentUserHoveredList: React.FC<CurrentUserHoveredListProps> = ({
           />
           {isEmojiOpen && emojiBar && (
             <div
-              className="text-14px absolute left-[50%] right-0 top-[-10px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="absolute left-[50%] right-0 top-[-10px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5 text-sm"
               onMouseLeave={handleMouseLeave}
             >
               <Image
@@ -125,7 +125,7 @@ const CurrentUserHoveredList: React.FC<CurrentUserHoveredListProps> = ({
             onClick={() => setIsOpen((prev) => !prev)}
           />
           {isOpen && (
-            <div className="text-14px max-w-screen-md:left-0 absolute top-[40px] z-[500] rounded-10px bg-black-shade-12  fmd:right-0">
+            <div className="max-w-screen-md:left-0 absolute top-[40px] z-[500] rounded-10px bg-black-shade-12 text-sm  fmd:right-0">
               <span
                 className={`absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `}

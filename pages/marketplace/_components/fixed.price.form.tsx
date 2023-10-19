@@ -218,7 +218,7 @@ const FixedPriceForm = ({
         </label>
 
         <div className="relative">
-          <span className="text-14px textGradient absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="textGradient absolute right-2 top-[50%] translate-x-[-50%] text-sm leading-[0]">
             BNB
           </span>
           <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
@@ -300,7 +300,7 @@ const FixedPriceForm = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>
           Properties{"  "}
-          <span className="text-14px  font-normal text-gray-shade-7">
+          <span className="text-sm  font-normal text-gray-shade-7">
             (optional)
           </span>
         </label>
@@ -473,26 +473,26 @@ const formContainer = `
  flex flex-col gap-4
 `;
 const errMessage = `
-pb-2 text-12px font-medium
+pb-2 text-xs font-medium
 `;
 const fieldWrapper = `
   flex gap-2 flex-col w-full
 `;
 const fieldTitle = `
-text-14px text-start font-normal text-white
+text-sm text-start font-normal text-white
 `;
 const inputField = `
-w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-0
+w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0
 `;
 const inputFieldModal = `
-w-full py-3 px-5 !bg-black-shade-2 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-0 active:!ring-brand-primary
+w-full py-3 px-5 !bg-black-shade-2 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-0 active:!ring-brand-primary
 `;
 const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
 `;
 const addPropertyBtn = `
-flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
+flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
 `;
 const modalBodyWrapper = `
 flex flex-col gap-2 w-full mt-8 text-center p-[2px]
@@ -502,8 +502,8 @@ const properyCard = `
 gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
 `;
 const PropertyName = `
-text-12px font-medium textGradient
+text-xs font-medium textGradient
 `;
 const Type = `
-text-14px font-semibold text-white
+text-sm font-semibold text-white
 `;

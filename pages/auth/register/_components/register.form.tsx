@@ -126,6 +126,7 @@ export const RegisterForm: React.FC = () => {
           </>
         ) : (
           <Button
+            type="button"
             title={"Connect"}
             onClick={() => connectWallet()}
             variant="primary"
@@ -173,6 +174,7 @@ export const RegisterForm: React.FC = () => {
 
         {isChecked ? (
           <Button
+            type="button"
             title={"Register"}
             onClick={openFeeModal}
             variant="primary"
@@ -181,6 +183,7 @@ export const RegisterForm: React.FC = () => {
           />
         ) : (
           <Button
+            type="button"
             title={"Register"}
             disabled
             variant="primary"
@@ -244,6 +247,7 @@ export const RegisterForm: React.FC = () => {
             <div>
               {feeModal.status === "start" ? (
                 <Button
+                  type="submit"
                   title={Number(feeModal.fee) === 0 ? "Join For Free" : "Pay"}
                   variant="primary"
                   className="flex h-11 w-full items-center justify-center text-[14px]"
@@ -253,6 +257,7 @@ export const RegisterForm: React.FC = () => {
                 (feeModal.status === "progress" ||
                   feeModal.status === "end") && (
                   <Button
+                    type="button"
                     title={"Ok"}
                     disabled
                     variant="primary"

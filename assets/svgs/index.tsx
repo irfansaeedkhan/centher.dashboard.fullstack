@@ -274,29 +274,6 @@ export const DXCIconNew: React.FC<IconProps> = (props) => {
   );
 };
 
-export const DefaultCircle: React.FC<IconProps> = ({ className }) => {
-  return (
-    <svg
-      className={className}
-      width="114"
-      height="114"
-      viewBox="0 0 114 114"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <rect
-        x="1"
-        y="1"
-        width="112"
-        height="112"
-        rx="56"
-        stroke="#1B1C22"
-        strokeWidth="3"
-        className="Animatecircle"
-      />
-    </svg>
-  );
-};
 export const RainbowCircle: React.FC<IconProps> = ({ className }) => {
   return (
     <svg

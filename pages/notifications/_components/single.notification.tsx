@@ -11,6 +11,7 @@ import {
 import { AppRoutes } from "@/constants/app.routes";
 import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
+import cn from "@/utils/cn";
 
 interface SingleNotificationProps {
   notification: Notification;
@@ -108,11 +109,12 @@ const getNotificationMessage = (
           pathname: AppRoutes.profile.user_id,
           query: { user_id: notification.by._id },
         }}
-        className={clsx(
+        className={cn(
           `text-gradient-hover break-words`,
           !notification.by.display_name.includes(" ") &&
             notification.by.display_name.length > 20 &&
-            `notifcation-page-displayname word-break inline break-words md:w-full`
+            `word-break inline break-words md:w-full`,
+          `max-w-[calc(100vw-100px)] [@media(min-width:1000px)]:max-w-[730px] [@media(min-width:560px)_and_(max-width:999px)]:max-w-[60vw]`
         )}
       >
         <span className="font-medium" title={notification.by.display_name}>

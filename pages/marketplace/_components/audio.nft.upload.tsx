@@ -79,13 +79,13 @@ const uploadBoxContent = ctl(`
 flex flex-col items-center justify-center gap-5
   `);
 const formatName = ctl(`
-  text-gray-shade-7 text-12px font-semibold
+  text-gray-shade-7 text-xs font-semibold
     `);
 const uploadBtnContainer = ctl(`
   relative w-[132px] h-10
     `);
 const chooseFileBtn = ctl(`
-z-10  absolute w-full h-full text-14px text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
+z-10  absolute w-full h-full text-sm text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
     `);
 const chooseFileBtn2 = ctl(`
   absolute w-full h-full  opacity-0

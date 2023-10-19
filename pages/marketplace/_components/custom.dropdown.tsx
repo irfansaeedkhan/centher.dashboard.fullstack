@@ -35,7 +35,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
   return (
     <div className="relative ">
       <div
-        className={`focus:border-ring-yellow-theme text-14px focus:!ring-yellow-theme active:!ring-yellow-theme w-full cursor-pointer rounded-lg border-0 !bg-black-shade-3 px-4 py-4 font-semibold text-white shadow-md focus:outline-none ${
+        className={`focus:border-ring-yellow-theme focus:!ring-yellow-theme active:!ring-yellow-theme w-full cursor-pointer rounded-lg border-0 !bg-black-shade-3 px-4 py-4 text-sm font-semibold text-white shadow-md focus:outline-none ${
           error ? "border-red-500" : ""
         }`}
         onClick={() => setIsOpen(!isOpen)}

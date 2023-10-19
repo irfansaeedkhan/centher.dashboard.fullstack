@@ -77,7 +77,7 @@ const ChangePriceListModal: React.FC<Props> = ({
       )}
       {activeButton === "auction" && (
         <div className={`flex w-full flex-col gap-2`}>
-          <label className={`text-14px text-start font-normal text-white`}>
+          <label className={`text-start text-sm font-normal text-white`}>
             Set time
           </label>
           <CustomDropdown
@@ -97,7 +97,7 @@ const ChangePriceListModal: React.FC<Props> = ({
         </div>
       )}
       <div className={`flex w-full flex-col gap-2`}>
-        <label className={`text-14px text-start font-normal text-white`}>
+        <label className={`text-start text-sm font-normal text-white`}>
           Price
         </label>
         <div
@@ -160,7 +160,7 @@ const ChangePriceListModal: React.FC<Props> = ({
           />
         </div>
         {nftPriceError !== "" && (
-          <p className={`text-12px pb-2 font-medium text-red-500`}>
+          <p className={`pb-2 text-xs font-medium text-red-500`}>
             {nftPriceError}
           </p>
         )}

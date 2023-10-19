@@ -41,7 +41,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
                       className={`w-full overflow-hidden rounded-2xl border-2 border-gray-shade-3 bg-black-shade-4 text-left text-sm text-gray-500`}
                     >
                       <thead
-                        className={`text-14px bg-background-shade-3 uppercase text-gray-shade-7`}
+                        className={`bg-background-shade-3 text-sm uppercase text-gray-shade-7`}
                       >
                         <tr>
                           <th scope="col" className={th}>
@@ -112,7 +112,7 @@ export const NFTOffers = ({ data }: NFTOffersProps) => {
 // styling
 
 const AccordionButton = `
-accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
+accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-sm font-semibold border-b-2 border-gray-shade-3 mb-3
 `;
 const th = `py-4 lg:py-7 px-5 lg:px-3`;
-const td = `text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium`;
+const td = `text-sm py-4 lg:py-7 px-5 lg:px-3 text-white font-medium`;

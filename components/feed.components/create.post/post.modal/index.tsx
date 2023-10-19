@@ -79,7 +79,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
             />
             <h5
               className={clsx(
-                `text-14px font-semibold text-white`,
+                `text-sm font-semibold text-white`,
                 user.display_name.includes(" ")
                   ? "line-clamp-1 text-ellipsis"
                   : "block w-full max-w-full overflow-hidden truncate"
@@ -107,7 +107,7 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
                   <textarea
                     ref={scrollRef}
                     autoFocus
-                    className={`scrollSet fsm:text-14px block w-full resize-none overflow-y-auto break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0`}
+                    className={`scrollSet block w-full resize-none overflow-y-auto break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0 fsm:text-sm`}
                     cols={12}
                     rows={3}
                     maxLength={postTextMaxLength}

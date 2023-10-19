@@ -207,7 +207,7 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>
             Description <span className="text-red-500">*</span>
           </label>
-          <span className="text-12px leading-4 text-[#B7BBCC]">
+          <span className="text-xs leading-4 text-[#B7BBCC]">
             The description will be included in the collection page underneath
             its image.{" "}
           </span>
@@ -425,30 +425,30 @@ const formContainer = `
  flex flex-col gap-5
 `;
 const errMessage = `
-pb-2 text-12px font-medium
+pb-2 text-xs font-medium
 `;
 const fieldWrapper = `
   flex gap-2 flex-col w-full
 `;
 const fieldTitle = `
-  text-14px  font-normal text-white
+  text-sm  font-normal text-white
 `;
 const inputField = `
-  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0
+  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0
 `;
 const inputFieldError = `
   ${inputField}
    focus:!ring-red-500
 `;
 const linkField = `
-absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0
+absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0
 `;
 const linkFieldError = `
   ${linkField}
    focus:!ring-red-500
 `;
 const linkInputContainer = `
-inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-14px rounded-lg border-0 focus:outline-none focus:!ring-0 relative
+inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0 relative
 `;
 const linkIcon = `
 z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] h-5 w-5

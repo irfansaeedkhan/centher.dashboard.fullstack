@@ -164,6 +164,6 @@ export const ProfileDetailCard: React.FC<ProfileDetailCardProps> = ({
   );
 };
 
-const label = `text-12px font-medium text-gray-shade-7`;
-const count = `text-14px font-semibold text-white`;
-const countBrand = `text-12px font-semibold textGradient`;
+const label = `text-xs font-medium text-gray-shade-7`;
+const count = `text-sm font-semibold text-white`;
+const countBrand = `text-xs font-semibold textGradient`;

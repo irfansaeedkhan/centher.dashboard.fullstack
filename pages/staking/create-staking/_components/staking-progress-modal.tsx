@@ -42,7 +42,7 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
           className={`flex h-full w-full max-w-[656px] flex-col overflow-auto border border-solid  border-[#2a2d3c] bg-black-shade-8 p-6 fsm:mx-2 fsm:h-auto fsm:max-h-[90%] fsm:rounded-3xl md:mx-0`}
           ref={PassportModalRef}
         >
-          <h2 className="text-18px pb-7 font-semibold text-white">
+          <h2 className="pb-7 text-base font-semibold text-white f2xl:text-lg">
             Setting things for you
           </h2>
           <div className="flex flex-col gap-5 text-center">
@@ -50,17 +50,15 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
               <h2 className="text-base font-semibold text-white fsm:text-lg">
                 You are almost there!
               </h2>
-              <p className="text-14px font-medium text-gray-shade-14">
+              <p className="text-sm font-medium text-gray-shade-14">
                 Please be patient, we are setting up things for you
               </p>
             </div>
             <div className="flex flex-col gap-4 rounded-2xl border border-gray-shade-border-color bg-black-shade-9 p-4">
               <div className="flex items-center justify-between">
-                <h5 className="text-14px font-medium text-white">
-                  {item.title}
-                </h5>
+                <h5 className="text-sm font-medium text-white">{item.title}</h5>
                 <div className="value">
-                  <MultiColorLoader className="spinner-2s mx-auto w-16" />
+                  <MultiColorLoader className="mx-auto w-16 animate-spin duration-[2000ms]" />
                 </div>
               </div>
             </div>
@@ -70,7 +68,7 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
               }}
               title="Hide"
               variant="secondary"
-              className="text-14px w-full rounded-[14px] py-3 hover:text-white"
+              className="w-full rounded-[14px] py-3 text-sm hover:text-white"
             />
           </div>
         </div>

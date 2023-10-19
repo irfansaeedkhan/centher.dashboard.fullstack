@@ -171,19 +171,19 @@ export const NFTHistory = ({ prices }: any) => {
                 <div className={`overflow-x-auto`}>
                   <div className="top flex  justify-between bg-[#1C1F29] px-6 py-3">
                     <div className={graphDetailBox}>
-                      <h5 className="text-12px text-white">
+                      <h5 className="text-xs text-white">
                         {duration} days avg. price
                       </h5>
-                      <h5 className="text-14px textGradient">
+                      <h5 className="textGradient text-sm">
                         {" "}
                         {priceAverage ? priceAverage.toFixed(4) : " No Data"}
                       </h5>
                     </div>
                     <div className={graphDetailBox}>
-                      <h5 className="text-12px text-white">
+                      <h5 className="text-xs text-white">
                         {duration} days volume
                       </h5>
-                      <h5 className="text-14px text-[#5F97FF]">
+                      <h5 className="text-sm text-[#5F97FF]">
                         {" "}
                         {priceVolume ? priceVolume.toFixed(4) : " No Data"}
                       </h5>
@@ -206,7 +206,7 @@ export const NFTHistory = ({ prices }: any) => {
                     <LineChart data={data} />
                   ) : (
                     <div className="flex h-28 w-full items-center justify-center">
-                      <h6 className="text-14px textGradient font-medium">
+                      <h6 className="textGradient text-sm font-medium">
                         No event has occured yet!
                       </h6>
                     </div>
@@ -237,7 +237,7 @@ export const NFTHistory = ({ prices }: any) => {
               className={`w-full overflow-hidden rounded-2xl border-2 border-gray-shade-3 bg-black-shade-4 text-left text-sm text-gray-500`}
             >
               <thead
-                className={`text-14px bg-background-shade-3 uppercase text-gray-shade-7`}
+                className={`bg-background-shade-3 text-sm uppercase text-gray-shade-7`}
               >
                 <tr>
                   <th scope="col" className={th}>
@@ -274,7 +274,7 @@ export const NFTHistory = ({ prices }: any) => {
 };
 // styling
 
-const AccordionButton = `accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3`;
+const AccordionButton = `accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-sm font-semibold border-b-2 border-gray-shade-3 mb-3`;
 const graphDetailBox = `flex flex-col gap-2`;
 const th = `py-4 lg:py-7 px-5 lg:px-3`;
-const td = `text-14px py-4 lg:py-7 px-5 lg:px-3 text-white font-medium`;
+const td = `text-sm py-4 lg:py-7 px-5 lg:px-3 text-white font-medium`;

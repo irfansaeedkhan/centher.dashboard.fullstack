@@ -133,7 +133,7 @@ export const FixedPriceNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="fmd:text-18px word-break text-base font-semibold text-white">
+          <h2 className="word-break text-base font-semibold text-white fmd:text-lg">
             {data?.name}
           </h2>
           <h3 className="text-xs font-normal text-white fmd:text-sm">
@@ -173,7 +173,7 @@ export const FixedPriceNFTBuyerDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px text-base font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white fmd:text-lg">
             Transaction in progress
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -194,7 +194,7 @@ export const FixedPriceNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="fmd:text-18px text-base font-semibold text-white">
+          <h2 className="text-base font-semibold text-white fmd:text-lg">
             {txStatus ? "Purchased" : "Failed!"}
           </h2>
           {txStatus && (
@@ -360,11 +360,11 @@ const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
 `;
 const greyTxt = `
-text-14px font-normal text-gray-shade-7
+text-sm font-normal text-gray-shade-7
 `;
 const desTitle = `
-text-14px font-semibold text-white
+text-sm font-semibold text-white
 `;
 const BnBNum = `
-text-16px font-bold text-white
+text-base font-bold text-white
 `;

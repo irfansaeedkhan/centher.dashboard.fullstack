@@ -139,7 +139,7 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
               </div>
 
               {nftForm.formState.errors.ReceiverAddress && (
-                <p className={`text-12px pb-2 font-medium text-red-500`}>
+                <p className={`pb-2 text-xs font-medium text-red-500`}>
                   {nftForm.formState.errors.ReceiverAddress.message}
                 </p>
               )}
@@ -206,4 +206,4 @@ export default SendNFTModal;
 // styling
 const fieldWrapper = `flex gap-2 flex-col w-full`;
 
-const fieldTitle = `text-14px text-start font-normal text-white`;
+const fieldTitle = `text-sm text-start font-normal text-white`;

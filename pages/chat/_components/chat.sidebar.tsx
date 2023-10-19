@@ -338,7 +338,7 @@ const ChatSidebar = () => {
         </div>
       )}
       {isSelectConversation && (
-        <div className="text-14px absolute bottom-0 flex w-full items-center justify-between bg-background-shade-3 px-4 py-6">
+        <div className="absolute bottom-0 flex w-full items-center justify-between bg-background-shade-3 px-4 py-6 text-sm">
           <button className="flex items-center justify-start gap-3  text-white">
             <EyeIcon className="h-auto -scale-90" />
             <span className="min-w-max">Mark as read</span>

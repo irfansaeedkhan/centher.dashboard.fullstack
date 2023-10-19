@@ -84,7 +84,7 @@ export const CookiesConstentModal: React.FC = () => {
           <div className="scrollSet flex flex-col items-center gap-3 overflow-auto fsm:flex-row">
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
               <CookiesIcon className="h-11 w-11 shrink-0 fmd:h-12 fmd:w-12" />
-              <p className="text-14px text-center font-normal text-white fsm:text-left">
+              <p className="text-center text-sm font-normal text-white fsm:text-left">
                 We use third-party cookies in order to personalize your site
                 experience.
               </p>

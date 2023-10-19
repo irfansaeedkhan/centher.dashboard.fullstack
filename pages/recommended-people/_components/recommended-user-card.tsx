@@ -56,7 +56,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
               title={user.display_name}
             >
               <h5
-                className={`text-14px word-break text-gradient-hover max-w-[100px] truncate font-semibold text-white fsm:max-w-[200px] `}
+                className={`word-break text-gradient-hover max-w-[100px] truncate text-sm font-semibold text-white fsm:max-w-[200px] `}
               >
                 {sliceDisplayName(user.display_name)}
               </h5>
@@ -77,7 +77,7 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
             )}
           </div>
 
-          <h6 className={`text-12px font-ligth text-gray-shade-7`}>
+          <h6 className={`font-ligth text-xs text-gray-shade-7`}>
             {sliceAccountAddress(user._id)}
           </h6>
         </div>
