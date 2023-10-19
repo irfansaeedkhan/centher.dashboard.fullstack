@@ -359,7 +359,7 @@ const SingleChatSidebar: React.FC<ComponentProp> = ({
                   onClick={() => setIsOpen((prev) => !prev)}
                 />
                 {isOpen && (
-                  <div className="text-14px absolute right-0 top-[30px] z-[500]  rounded-10px bg-black-shade-12">
+                  <div className="absolute right-0 top-[30px] z-[500] rounded-10px  bg-black-shade-12 text-sm">
                     <span
                       className={clsx(
                         `absolute right-[18px] top-[-3px] h-3 w-3 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12

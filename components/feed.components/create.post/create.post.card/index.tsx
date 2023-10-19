@@ -28,7 +28,7 @@ export const CreatePostCard: React.FC<Props> = () => {
           sizes={"256px"}
         />
         <button
-          className={`text-14px h-10 flex-grow rounded-10px border-2 border-gray-shade-3 bg-transparent px-6 text-left font-medium text-gray-shade-7 outline-none focus:outline-none md:h-12`}
+          className={`h-10 flex-grow rounded-10px border-2 border-gray-shade-3 bg-transparent px-6 text-left text-sm font-medium text-gray-shade-7 outline-none focus:outline-none md:h-12`}
           onClick={() => {
             setIsNewPostModalOpen(true);
             openModal({

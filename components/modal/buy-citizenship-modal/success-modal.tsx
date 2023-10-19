@@ -26,7 +26,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
               <h2 className="text-base font-semibold text-white fsm:text-lg">
                 You are all Set!
               </h2>
-              <p className="text-14px font-medium text-gray-shade-14">
+              <p className="text-sm font-medium text-gray-shade-14">
                 Congratulations! you have successfully subscribed to{" "}
                 <span className="text-gradient"> Centher CITIZEN Passport</span>{" "}
                 Membership. Enjoy the best experience with us.
@@ -38,7 +38,7 @@ export const CitizenShipSuccessModal: React.FC<CustomModalProps> = () => {
               }}
               title="Continue"
               variant="primary"
-              className="text-14px w-full py-3 hover:text-black"
+              className="w-full py-3 text-sm hover:text-black"
             />
           </div>
         </div>

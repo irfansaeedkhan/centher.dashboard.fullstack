@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
-import useEmblaCarousel from "embla-carousel-react";
 import clsx from "clsx";
 
 import { ArchivedPost, CompletedPost } from "@/models/post";

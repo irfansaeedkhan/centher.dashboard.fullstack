@@ -43,7 +43,7 @@ const EmojiSenderList: React.FC<ClientHoveredListProps> = ({
           {true && (
             <div
               className={clsx(
-                `text-14px absolute  top-[46px] z-[500] flex w-full min-w-max max-w-[220px] flex-col items-center justify-between gap-5 rounded-10px bg-black-shade-12 p-3 ${
+                `absolute top-[46px]  z-[500] flex w-full min-w-max max-w-[220px] flex-col items-center justify-between gap-5 rounded-10px bg-black-shade-12 p-3 text-sm ${
                   clientSide ? "left-0" : "right-0"
                 }`
               )}

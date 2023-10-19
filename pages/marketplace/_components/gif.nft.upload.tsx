@@ -89,7 +89,7 @@ const uploadBoxContent = `
 flex flex-col items-center justify-center gap-5
   `;
 const formatName = `
-  text-gray-shade-7 text-12px font-semibold
+  text-gray-shade-7 text-xs font-semibold
     `;
 const uploadBtnContainer = `
   relative w-[132px] h-10

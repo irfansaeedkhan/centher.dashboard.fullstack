@@ -285,7 +285,9 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         <div className="absolute left-0 top-0 z-[1000] flex h-[390px] w-full items-center justify-center">
           <div className="flex flex-col items-center justify-center gap-10">
             <LockedIcon className="h-[80px] w-[80px]" />
-            <h6 className="text-20px font-semibold text-white">Coming Soon</h6>
+            <h6 className="text-base font-semibold text-white f2xl:text-xl">
+              Coming Soon
+            </h6>
           </div>
         </div>
       )}

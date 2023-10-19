@@ -183,7 +183,7 @@ const ProfilePicture: React.FC<ProfilePictureProps> = ({ user }) => {
           <Button
             title="Choose Image"
             variant="primary"
-            className="text-14px"
+            className="text-sm"
             onClick={() => setIsMenuOpen(true)}
           />
         )}

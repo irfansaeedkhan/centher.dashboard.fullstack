@@ -76,6 +76,7 @@ export const NonNFTDescription = ({
       setNowTime(now);
       setEndTime(endtime);
 
+      // TODO: Use react-countdown package
       var updateTime = setInterval(() => {
         var now = new Date().getTime();
 
@@ -112,6 +113,7 @@ export const NonNFTDescription = ({
       clearInterval(updateTime);
     };
   }, [data]);
+
   const handleListNFT = async (bidPrice: any) => {
     try {
       validateProvider();
@@ -321,7 +323,7 @@ export const NonNFTDescription = ({
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Are you sure you want to setup auction?
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -355,7 +357,7 @@ export const NonNFTDescription = ({
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Are you sure you want to cancel your Listing?
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -389,7 +391,7 @@ export const NonNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Transaction in progress
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -405,7 +407,7 @@ export const NonNFTDescription = ({
         <div className={modalBodyWrapper}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+            <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -462,7 +464,7 @@ export const NonNFTDescription = ({
       content: (listingPrice: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Are you sure you want to List your NFT to sell?
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm ">
@@ -496,7 +498,7 @@ export const NonNFTDescription = ({
         <div className={modalBodyWrapper}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+            <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? <span>NFT Send Successfully!</span> : "Failed!"}
             </h2>
           </div>
@@ -587,39 +589,41 @@ export const NonNFTDescription = ({
           <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
             <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
               <AuctionIcon />
-              <h4 className="text-14px font-normal text-white">
+              <h4 className="text-sm font-normal text-white">
                 This NFT will unlock in
               </h4>
             </div>
             <div className="flex w-full justify-center p-4">
               <div className="timerBox flex items-center gap-5">
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">{days}</h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
+                    {days}
+                  </h5>
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Days
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {hours}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Hours
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {minutes}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Minutes
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {seconds}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Seconds
                   </h6>
                 </div>
@@ -656,6 +660,6 @@ const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2
 const footerBtnContainer = `flex items-center gap-4 mt-2`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const greyTxt = `text-14px font-normal text-gray-shade-7`;
-const desTitle = `text-14px font-semibold text-white`;
-const BnBNum = `text-16px font-bold text-white`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
+const desTitle = `text-sm font-semibold text-white`;
+const BnBNum = `text-base font-bold text-white`;

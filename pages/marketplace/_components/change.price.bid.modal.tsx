@@ -114,14 +114,14 @@ const modalBodyWrapper = `
   flex flex-col gap-4 w-full px-4 pt-4 text-center
 `;
 const errMessage = `
-pb-2 text-12px font-medium
+pb-2 text-xs font-medium
 `;
 const fieldWrapper = `
   flex gap-2 flex-col w-full
 `;
 const fieldTitle = `
-  text-14px font-normal text-white text-start
+  text-sm font-normal text-white text-start
 `;
 const inputFieldModal = `
-  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-14px rounded-lg border-0 focus-within:outline-none focus-within:ring-2 focus-within:!ring-brand-primary active:!ring-yellow-theme
+  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus-within:outline-none focus-within:ring-2 focus-within:!ring-brand-primary active:!ring-yellow-theme
 `;

@@ -48,7 +48,7 @@ const ClientHoveredList: React.FC<ClientHoveredListProps> = ({
           />
           {isEmojiOpen && emojiBar && (
             <div
-              className="text-14px absolute left-[50%]  right-0 top-[-20px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="absolute left-[50%] right-0  top-[-20px] z-[500] flex w-[225px] translate-x-[-50%] translate-y-[-100%] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5 text-sm"
               onMouseLeave={handleMouseLeave}
             >
               <span className="translate-[-50%] absolute bottom-[-10%] left-[50%] h-5 w-5 translate-y-[50%] scale-x-[3] text-black-shade-12">
@@ -123,7 +123,7 @@ const ClientHoveredList: React.FC<ClientHoveredListProps> = ({
             onClick={() => setIsOpen((prev) => !prev)}
           />
           {isOpen && (
-            <div className="text-14px absolute right-0 top-[40px] z-[500] rounded-10px bg-black-shade-12">
+            <div className="absolute right-0 top-[40px] z-[500] rounded-10px bg-black-shade-12 text-sm">
               <span
                 className={`absolute right-[-10px] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `}

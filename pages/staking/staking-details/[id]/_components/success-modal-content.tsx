@@ -9,11 +9,11 @@ const SuccessModalContent: React.FC<{ message?: string; title?: string }> = ({
     <div className={modalBodyWrapper1}>
       <div className="flex flex-col items-center justify-center">
         <GreenTick />
-        <h2 className="text-18px font-semibold text-white">
+        <h2 className="text-base font-semibold text-white f2xl:text-lg">
           {title?.length ? title : `Staking Project Created Successfully`}
         </h2>
       </div>
-      <p className="text-14px text-center font-normal leading-6 text-gray-shade-2">
+      <p className="text-center text-sm font-normal leading-6 text-gray-shade-2">
         {message?.length
           ? message
           : `Congratulations! you have successfully create your Staking Project on

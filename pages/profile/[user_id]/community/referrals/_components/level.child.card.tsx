@@ -49,7 +49,7 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
               title={user.display_name}
             >
               <h5
-                className="text-12px dark flex-shrink-0 text-ellipsis whitespace-nowrap font-medium text-white"
+                className="dark flex-shrink-0 text-ellipsis whitespace-nowrap text-xs font-medium text-white"
                 title={user.display_name}
               >
                 {sliceDisplayName(user.display_name, "cropname")}
@@ -83,21 +83,19 @@ export const LevelChildCard = ({ childData, handleCard }: any) => {
         }`}
       >
         <div className="flex flex-col gap-2">
-          <h5 className="light text-12px font-medium text-gray-shade-19">
+          <h5 className="light text-xs font-medium text-gray-shade-19">
             Generated
           </h5>
-          <h6 className="text-14px dark font-semibold text-white-shade-1">
+          <h6 className="dark text-sm font-semibold text-white-shade-1">
             {`${childData?.generatedBUSD} BUSD`}
           </h6>
-          {/* <h6 className="dark text-white-shade-1 text-14px font-semibold">
+          {/* <h6 className="dark text-white-shade-1 text-sm font-semibold">
             {`${childData?.generatedNTR} NTR`}
           </h6> */}
         </div>
         <div className="flex flex-col items-end gap-2">
-          <h5 className="light text-12px font-medium text-gray-shade-19">
-            Line
-          </h5>
-          <h6 className="text-14px dark font-semibold text-white-shade-1">
+          <h5 className="light text-xs font-medium text-gray-shade-19">Line</h5>
+          <h6 className="dark text-sm font-semibold text-white-shade-1">
             {`${childData?.people} People`}
           </h6>
         </div>

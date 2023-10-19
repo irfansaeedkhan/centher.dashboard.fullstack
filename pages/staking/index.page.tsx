@@ -126,10 +126,10 @@ const Staking: NextPageWithLayout = () => {
       ) : (
         <div className="flex max-w-[330px] flex-col items-center justify-center gap-2 text-center">
           <NoStakingIcon className="mb-6" />
-          <h3 className="text-16px font-semibold text-white ">
+          <h3 className="text-base font-semibold text-white ">
             No Staking Projects yet!
           </h3>
-          <p className="text-14px font-normal text-gray-shade-14">
+          <p className="text-sm font-normal text-gray-shade-14">
             There are currently no Staking Projects available. Create one
             yourself!
           </p>
@@ -145,7 +145,7 @@ const Staking: NextPageWithLayout = () => {
                 : () => setShowBuyCitizenshipModal(true)
             }
             variant="primary"
-            className="text-14px mt-6 px-5 py-3"
+            className="mt-6 px-5 py-3 text-sm"
           />
         </div>
       )}

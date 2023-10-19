@@ -11,7 +11,7 @@ export const RecentActivitiesCard = () => {
     >
       <h5
         className={`
-  text-14px pb-6 font-semibold text-white
+  pb-6 text-sm font-semibold text-white
 `}
       >
         Recent activities
@@ -62,11 +62,11 @@ const RADetail = `
   flex items-center justify-center gap-3 pb-4
 `;
 const RAName = `
-  text-14px font-semibold text-white 
+  text-sm font-semibold text-white 
 `;
 const RATime = `
-  text-14px font-light text-white 
+  text-sm font-light text-white 
 `;
 const cdTime = `
-  text-12px font-ligth text-gray-shade-7
+  text-xs font-ligth text-gray-shade-7
 `;

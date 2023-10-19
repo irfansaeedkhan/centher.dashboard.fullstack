@@ -52,5 +52,5 @@ export const NFTListing = ({ data }: NFTListingProps) => {
 // styling
 
 const AccordionButton = `
-accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-14px font-semibold border-b-2 border-gray-shade-3 mb-3
+accordion-button relative flex items-center w-full py-4  text-base text-white text-left !bg-transparent  rounded-none transition focus:outline-none text-sm font-semibold border-b-2 border-gray-shade-3 mb-3
 `;

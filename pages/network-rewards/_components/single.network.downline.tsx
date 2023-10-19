@@ -31,7 +31,7 @@ const SingleNetworkDownline = ({ data }: any) => {
         `}
         >
           <h6
-            className={`text-12px font-medium 
+            className={`text-xs font-medium 
             ${data?.level === "01" && "text-[#FEBF32]"}
             ${data?.level === "02" && "text-[#D35DB9]"}
             ${data?.level === "03" && "text-[#45F0D1]"}

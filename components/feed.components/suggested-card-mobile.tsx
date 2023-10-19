@@ -44,7 +44,7 @@ export const SuggestedCardMobile: React.FC<Props> = ({
     >
       <div className={`relative rounded-10px bg-background-shade-3 `}>
         <div className={`p-4`}>
-          <h5 className={`text-14px pb-2 font-semibold text-white`}>
+          <h5 className={`pb-2 text-sm font-semibold text-white`}>
             Recommended people
           </h5>
           <RecommendedCard
@@ -59,7 +59,7 @@ export const SuggestedCardMobile: React.FC<Props> = ({
         >
           <Link href={AppRoutes.recommended}>
             <button
-              className={`text-14px hover: text-gradient-hover p-4 font-medium text-white`}
+              className={`hover: text-gradient-hover p-4 text-sm font-medium text-white`}
             >
               View all recommendations
             </button>

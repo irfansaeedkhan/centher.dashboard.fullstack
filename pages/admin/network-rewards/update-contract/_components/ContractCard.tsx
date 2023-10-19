@@ -180,7 +180,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   return (
     <div className="card flex max-w-[470px] flex-col  overflow-hidden rounded-xl bg-elevation-1">
       <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
-        <h2 className="cardTitle text-14px font-semibold text-gray-shade-7">
+        <h2 className="cardTitle text-sm font-semibold text-gray-shade-7">
           Round
         </h2>
         <h3 className="font-14px font-semibold text-white">{data.round + 1}</h3>
@@ -188,7 +188,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
       <div className="cardBody px-5 py-6">
         <div className="flex flex-col gap-5">
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">BUSD</label>
+            <label className="label text-sm text-gray-shade-7">BUSD</label>
             <div className=" flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
@@ -201,12 +201,12 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   type="checkbox"
                   className="rounded-md border-0 focus:outline-none focus:ring-[#000]"
                 />
-                <h6 className="text-14px text-gray-shade-7">Enable</h6>
+                <h6 className="text-sm text-gray-shade-7">Enable</h6>
               </div>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">NTR</label>
+            <label className="label text-sm text-gray-shade-7">NTR</label>
             <div className=" flex min-w-[180px] flex-col gap-2">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
@@ -219,13 +219,13 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   type="checkbox"
                   className="rounded-md border-0 focus:outline-none focus:ring-[#000]"
                 />
-                <h6 className="text-14px text-gray-shade-7">Enable</h6>
+                <h6 className="text-sm text-gray-shade-7">Enable</h6>
               </div>
             </div>
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Start date
             </label>
 
@@ -237,14 +237,12 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setStartTime(e.target.value);
                 }}
                 type="datetime-local"
-                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-xs font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
-              End date
-            </label>
+            <label className="label text-sm text-gray-shade-7">End date</label>
 
             <div className=" flex min-w-[180px] flex-col gap-2">
               <input
@@ -252,12 +250,12 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 type="datetime-local"
-                className="text-12px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-xs font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Lock Duration
             </label>
             <div className="flex items-center justify-center">
@@ -267,16 +265,16 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   value={lockMonths}
                   onChange={(e) => setLockMonths(Number(e.target.value))}
                   type="number"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                  className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
                 />
               </div>
-              <label className="label text-14px text-gray-shade-7">
+              <label className="label text-sm text-gray-shade-7">
                 (Months)
               </label>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               CTHR Price
             </label>
             <div className="flex items-center justify-center">
@@ -290,16 +288,16 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                       : setCentherPriceForNtr(Number(e.target.value))
                   }
                   type="number"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                  className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
                 />
               </div>
-              <label className="label text-14px text-gray-shade-7">
+              <label className="label text-sm text-gray-shade-7">
                 {enableBusd ? "(BUSD)" : "(NTR)"}
               </label>
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Max DXC amount to sell in round {data.round + 1}
             </label>
             <div className="flex min-w-[180px] flex-col gap-2">
@@ -310,12 +308,12 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                   setMaxCentherAmountToSell(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Min {enableBusd ? "BUSD" : "NTR"} amount per User to purchase CTHR
             </label>
             <div className="flex min-w-[180px] flex-col gap-2">
@@ -328,12 +326,12 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMinNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Max {enableBusd ? "BUSD" : "NTR"} amount per User to purchase CTHR
             </label>
             <div className="flex min-w-[180px] flex-col gap-2">
@@ -346,7 +344,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
                     : setMaxNtrAmountPerUser(Number(e.target.value))
                 }
                 type="number"
-                className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
               />
             </div>
           </div>
@@ -354,7 +352,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
       </div>
       <div className="cardFooter px-5 pb-7 pt-4">
         <button
-          className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
+          className="w-full rounded-lg bg-brand-primary p-3 text-sm font-semibold text-black-shade-3"
           onClick={handleUpdateContract}
         >
           {pendingTx ? "Updating..." : "Update contract"}
@@ -384,7 +382,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   // return (
   //   <div className="card bg-elevation-1 rounded-xl max-w-[470px] overflow-hidden flex flex-col ">
   //     <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
-  //       <h2 className="cardTitle text-gray-shade-7 text-14px font-semibold">
+  //       <h2 className="cardTitle text-gray-shade-7 text-sm font-semibold">
   //         Round
   //       </h2>
   //       <h3 className="text-white font-14px font-semibold">{data.round + 1}</h3>
@@ -392,7 +390,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //     <div className="cardBody py-6 px-5">
   //       <div className="flex flex-col gap-5">
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             Start date
   //           </label>
 
@@ -401,7 +399,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               id="StartDate"
   //               {...register("StartDate")}
   //               type="datetime-local"
-  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-12px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-xs  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.StartDate && (
   //               <p className="text-red-500">
@@ -411,7 +409,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             End date
   //           </label>
 
@@ -420,7 +418,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               id="EndDate"
   //               {...register("EndDate")}
   //               type="datetime-local"
-  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-12px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-xs  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.EndDate && (
   //               <p className="text-red-500">
@@ -430,7 +428,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             CTHR Price
   //           </label>
   //           <div className="flex items-center justify-center">
@@ -439,7 +437,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 id="CTHR_BUSD"
   //                 {...register("CTHR_BUSD")}
   //                 type="number"
-  //                 className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //                 className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //               />
   //               {formState.errors.CTHR_BUSD && (
   //                 <p className="text-red-500">
@@ -447,13 +445,13 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 </p>
   //               )}
   //             </div>
-  //             <label className="label text-gray-shade-7 text-14px">
+  //             <label className="label text-gray-shade-7 text-sm">
   //               (BUSD)
   //             </label>
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             Max CTHR amount to sell in round {data.round + 1}
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -461,7 +459,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               id="MaxCTHR"
   //               {...register("MaxCTHR")}
   //               type="number"
-  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MaxCTHR && (
   //               <p className="text-red-500">
@@ -471,7 +469,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             Min BUSD amount per User to purchase CTHR
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -479,7 +477,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               id="MinBUSD"
   //               {...register("MinBUSD")}
   //               type="number"
-  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MinBUSD && (
   //               <p className="text-red-500">
@@ -489,7 +487,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             Max BUSD amount per User to purchase CTHR
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -497,7 +495,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //               id="MaxBUSD"
   //               {...register("MaxBUSD")}
   //               type="number"
-  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+  //               className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
   //             />
   //             {formState.errors.MaxBUSD && (
   //               <p className="text-red-500">
@@ -508,7 +506,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //         </div>
 
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             BUSD
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -519,7 +517,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 type="checkbox"
   //                 className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
   //               />
-  //               <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+  //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.BUSD && (
   //               <p className="text-red-500">
@@ -529,7 +527,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //           NTR
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -540,7 +538,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 type="checkbox"
   //                 className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
   //               />
-  //               <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+  //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.NTR && (
   //               <p className="text-red-500">
@@ -550,7 +548,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         {/* <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //             BUSD
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -561,7 +559,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 type="checkbox"
   //                 className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
   //               />
-  //               <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+  //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.BUSD && (
   //               <p className="text-red-500">
@@ -571,7 +569,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //           </div>
   //         </div>
   //         <div className="flex items-center justify-between gap-3">
-  //           <label className="label text-gray-shade-7 text-14px">
+  //           <label className="label text-gray-shade-7 text-sm">
   //           NTR
   //           </label>
   //           <div className=" flex gap-2 flex-col min-w-[180px]">
@@ -582,7 +580,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //                 type="checkbox"
   //                 className=" rounded-md border-0 focus:outline-none   focus:ring-[#000]  "
   //               />
-  //               <h6 className="text-gray-shade-7 text-14px">Enable</h6>
+  //               <h6 className="text-gray-shade-7 text-sm">Enable</h6>
   //             </div>
   //             {formState.errors.NTR && (
   //               <p className="text-red-500">
@@ -595,7 +593,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
   //     </div>
   //     <div className="cardFooter pt-4 pb-7 px-5">
   //       <button
-  //         className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-yellow-theme rounded-lg"
+  //         className="text-black-shade-3 text-sm font-semibold p-3 w-full bg-yellow-theme rounded-lg"
   //         onClick={handleSubmit(onSubmit)}
   //       >
   //         Update contract

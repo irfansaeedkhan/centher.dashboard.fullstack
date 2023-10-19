@@ -70,7 +70,7 @@ const CreateNFTAuctionModal = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Starting price for NFT</label>
         <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
-          <span className="text-14px textGradient absolute right-2 top-[50%] translate-x-[-50%] leading-[0]">
+          <span className="textGradient absolute right-2 top-[50%] translate-x-[-50%] text-sm leading-[0]">
             BNB
           </span>
           <input
@@ -107,11 +107,11 @@ const modalBodyWrapper = ctl(`
   flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
 `);
 const errMessage = ctl(`
-pb-2 text-12px font-medium
+pb-2 text-xs font-medium
 `);
 const fieldWrapper = ctl(`
   flex gap-2 flex-col w-full
 `);
 const fieldTitle = ctl(`
-  text-14px text-start font-normal text-white
+  text-sm text-start font-normal text-white
 `);

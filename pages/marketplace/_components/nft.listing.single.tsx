@@ -41,7 +41,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
     <div className="flex gap-3">
       <div className="mt-1 h-2 w-2 rounded-full bg-gradient-pattern"></div>
       <div className="flex flex-col gap-3">
-        <h5 className="text-12px flex items-center gap-2 font-normal text-white">
+        <h5 className="flex items-center gap-2 text-xs font-normal text-white">
           <span className="min-w-max">{prefix} by </span>
           <span className={`text-gradient-hover cursor-pointer font-semibold`}>
             {item.type === "BuyItem" ||
@@ -122,7 +122,7 @@ export const NFTListingSingle: React.FC<Props> = ({ item }) => {
             )}
           </span>
         </h5>
-        <h6 className="text-12px font-normal text-gray-shade-2">
+        <h6 className="text-xs font-normal text-gray-shade-2">
           {new Date(item.txTime * 1000).toString()}
         </h6>
       </div>
