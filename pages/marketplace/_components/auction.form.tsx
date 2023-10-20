@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useWeb3React } from "@web3-react/core";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
@@ -19,6 +18,7 @@ import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
 import CustomDropdown from "./custom.dropdown";
 import cn from "@/utils/cn";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -66,8 +66,7 @@ const AuctionForm = ({
   library,
 }: AuctionFormProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
+  const { disconnectWallet, connectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [AuctionEndTimeErr, setAuctionEndTimeErr] = useState(false);
@@ -435,7 +434,7 @@ const AuctionForm = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

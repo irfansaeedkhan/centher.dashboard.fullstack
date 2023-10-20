@@ -10,7 +10,6 @@ import Select, { StylesConfig } from "react-select";
 import { IoClose } from "react-icons/io5";
 import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
-import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
 import cn from "@/utils/cn";
@@ -21,7 +20,6 @@ import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import {
@@ -65,6 +63,7 @@ import {
   stakingPeriodOptions,
 } from "../constants";
 import DropdownStakingForm from "../_components/dropdown-staking-form";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -92,9 +91,9 @@ const CreateStaking: NextPageWithLayout = () => {
   );
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const { connectWallet } = useConnectWallet();
   const { user: loggedInUser } = useUser();
-  const { deactivate, library, account } = useWeb3React();
+  const { connectWallet, disconnectWallet, getSigner, connectedAddress } =
+    useWallet();
   const [isLoading, setIsLoading] = useState(false);
   const { sdk } = useStaking();
   const [isDifferentTokens, setIsDifferentTokens] = useState(false);
@@ -152,10 +151,10 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   useEffect(() => {
-    if (library && account?.length) {
+    if (getSigner() && connectedAddress?.length) {
       setIsConnected(true);
     } else setIsConnected(false);
-  }, [library, account]);
+  }, [getSigner, connectedAddress]);
 
   useEffect(() => {
     if (clearForm) {
@@ -496,7 +495,7 @@ const CreateStaking: NextPageWithLayout = () => {
     };
 
     const isTokenAddressValid = await BlockchainRead.isContractAddress(
-      library,
+      getSigner(),
       finalData.token_address
     );
 
@@ -517,7 +516,7 @@ const CreateStaking: NextPageWithLayout = () => {
       !eqAddress(finalData.token_address, finalData.reward_token_address)
     ) {
       const isTokenAddressValid = await BlockchainRead.isContractAddress(
-        library,
+        getSigner(),
         finalData.reward_token_address
       );
 
@@ -539,7 +538,7 @@ const CreateStaking: NextPageWithLayout = () => {
   };
 
   const afterSubmitMapper = async (data: stakingFormInterface) => {
-    if (!library || !account?.length) {
+    if (!getSigner() || !connectedAddress?.length) {
       throw new WalletConnectedError("connect you wallet");
     }
 
@@ -573,7 +572,7 @@ const CreateStaking: NextPageWithLayout = () => {
     const input: CreatePoolInput = {
       name: data.staking_name,
       startTime: data.start_date,
-      ownerAddress: account as string,
+      ownerAddress: connectedAddress as string,
       stakeToken: data.token_address,
       rewardToken: data.reward_token_address,
       rate:
@@ -648,7 +647,7 @@ const CreateStaking: NextPageWithLayout = () => {
     }
 
     await sdk.createPool(
-      library,
+      getSigner(),
       input,
       files,
       affiliateSetting,
@@ -2311,7 +2310,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

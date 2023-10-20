@@ -4,7 +4,6 @@ import { BiLockAlt } from "react-icons/bi";
 import { IoWalletOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { formatUnits } from "ethers/lib/utils";
-import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -23,6 +22,7 @@ import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import { ListCardDataOBj } from "../../_components/list-card-data";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();
@@ -38,7 +38,7 @@ const StakingDetails: NextPageWithLayout = () => {
   const [connectWalletModal, setConnectWalletModal] = useState(false);
 
   const [expireTime, setExpireTime] = useState(0);
-  const { library, deactivate } = useWeb3React();
+  const { getSigner, disconnectWallet } = useWallet();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -85,20 +85,20 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [poolId, router]);
 
   useEffect(() => {
-    if (!library) {
+    if (!getSigner()) {
       setConnectWalletModal(true);
     } else {
       setConnectWalletModal(false);
     }
-  }, [library]);
+  }, [getSigner]);
 
   useEffect(() => {
-    if (sdk && poolId && user && library) {
-      sdk.getUserStakes(library, +poolId, user._id).then((data) => {
+    if (sdk && poolId && user && getSigner()) {
+      sdk.getUserStakes(getSigner(), +poolId, user._id).then((data) => {
         setUserStaked(data);
       });
     }
-  }, [poolId, sdk, user, library]);
+  }, [poolId, sdk, user, getSigner]);
 
   useEffect(() => {
     if (stakingPool) {
@@ -225,7 +225,7 @@ const StakingDetails: NextPageWithLayout = () => {
                   const _account = await connectWallet();
                   if (user._id.toLowerCase() !== _account?.toLowerCase()) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

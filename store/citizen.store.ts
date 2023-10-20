@@ -1,5 +1,5 @@
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import { ethers } from "ethers";
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
@@ -24,10 +24,10 @@ export interface CitizenStore {
   buyCitizenShipLoading: boolean;
   subscriptionEndAt: string;
 
-  updateCitizenShipStatus: (library: Web3Provider, account: string) => void;
-  updatePrices: (library: Web3Provider) => void;
+  updateCitizenShipStatus: (signer: JsonRpcSigner, account: string) => void;
+  updatePrices: (signer: JsonRpcSigner) => void;
   buyCitizenShip: (
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     type: CitizenShipType,
     account: string
   ) => Promise<void>;
@@ -43,17 +43,17 @@ export const useCitizenStore = create<CitizenStore>()(
       buyCitizenShipLoading: false,
       subscriptionEndAt: +new Date() + "",
       updateCitizenShipStatus: async (
-        library: Web3Provider,
+        signer: JsonRpcSigner,
         account: string
       ) => {
         try {
           validateAccount(account);
-          validateProvider(library);
+          validateProvider(signer);
 
           set({ updateStatusLoading: true });
 
           const subscriptionEndAt = await BlockchainRead.isCitizen(
-            library,
+            signer,
             account
           );
 
@@ -69,15 +69,15 @@ export const useCitizenStore = create<CitizenStore>()(
           throw error;
         }
       },
-      updatePrices: async (library: Web3Provider) => {
+      updatePrices: async (signer: JsonRpcSigner) => {
         try {
-          validateProvider(library);
+          validateProvider(signer);
 
           set({ updatePricesLoading: true });
 
           const getPriceRequests = Object.keys(CitizenShipType).map(
             (e: string) =>
-              BlockchainRead.getCitizenPrice(library, e as CitizenShipType)
+              BlockchainRead.getCitizenPrice(signer, e as CitizenShipType)
           );
 
           const result = await Promise.all(getPriceRequests);
@@ -91,16 +91,16 @@ export const useCitizenStore = create<CitizenStore>()(
         }
       },
       buyCitizenShip: async (
-        library: Web3Provider,
+        signer: JsonRpcSigner,
         type: CitizenShipType,
         account: string
       ) => {
         try {
-          validateProvider(library);
+          validateProvider(signer);
           set({ buyCitizenShipLoading: true });
 
           if (get().prices[type] == 0) {
-            await get().updatePrices(library);
+            await get().updatePrices(signer);
           }
 
           const price = get().prices[type];
@@ -109,14 +109,14 @@ export const useCitizenStore = create<CitizenStore>()(
             throw new Error("Invalid price");
           }
 
-          const txHash = await BlockchainWrite.buyCitizenShip(price, library);
+          const txHash = await BlockchainWrite.buyCitizenShip(price, signer);
           if (!txHash?.length) {
             throw new Error("Invalid tx hash");
           }
 
           set({ buyCitizenShipLoading: false });
 
-          await get().updateCitizenShipStatus(library, account);
+          await get().updateCitizenShipStatus(signer, account);
         } catch (error) {
           set({ buyCitizenShipLoading: false });
           throw error;
@@ -133,8 +133,8 @@ const validateAccount = (account: string) => {
   }
 };
 
-const validateProvider = (library: Web3Provider) => {
-  if (!library) {
+const validateProvider = (signer: JsonRpcSigner) => {
+  if (!signer) {
     throw new Error("Invalid Web3 Provider");
   }
 };

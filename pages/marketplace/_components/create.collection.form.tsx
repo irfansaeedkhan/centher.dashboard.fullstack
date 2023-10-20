@@ -3,18 +3,18 @@ import { ethers } from "ethers";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
 import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import CustomDropdown from "./custom.dropdown";
+import { JsonRpcSigner } from "@ethersproject/providers";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -74,7 +74,7 @@ interface CreateNFTCollectionFormProps {
   clearForm: boolean;
   cover: Blob | undefined;
   profile: Blob | undefined;
-  library: any;
+  signer: JsonRpcSigner;
 }
 export interface ICollectionData {
   name: string;
@@ -92,14 +92,12 @@ export const CreateNFTCollectionForm = ({
   clearForm,
   cover,
   profile,
-  library,
+  signer,
 }: CreateNFTCollectionFormProps) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
+  const { disconnectWallet, getSigner, connectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
 
   const handleSelectOption = (value: string) => {
@@ -339,7 +337,7 @@ export const CreateNFTCollectionForm = ({
             </div>
           </div>
         </div>
-        {!library ? (
+        {!getSigner() ? (
           <Button
             title={"Connect Wallet"}
             variant="primary"
@@ -403,7 +401,7 @@ export const CreateNFTCollectionForm = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

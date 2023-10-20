@@ -7,7 +7,6 @@ import { SiWhatsapp } from "react-icons/si";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
@@ -26,10 +25,10 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
-import { BlockchainConfig } from "@/web3/blockchain/config";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { eqAddress } from "@/live/utils/address.utils";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -40,7 +39,7 @@ export const NFTRightSideComponent = ({
   setNftData,
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
-  const { account } = useWeb3React();
+  const { connectedAddress } = useWallet();
   const router = useRouter();
   const { user } = useGetUser(data?.creator);
   const [nftState, setNftState] = useState("auctionNFTBuyer");
@@ -100,7 +99,7 @@ export const NFTRightSideComponent = ({
 
   useEffect(() => {
     if (data) {
-      if (account && eqAddress(account, nftOwnerAddress)) {
+      if (connectedAddress && eqAddress(connectedAddress, nftOwnerAddress)) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
         else if (data.saleState === "NON") setNftState("nonNFT");
@@ -110,7 +109,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data, nftOwnerAddress]);
+  }, [connectedAddress, data, nftOwnerAddress]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {

@@ -1,7 +1,5 @@
 // React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -29,6 +27,7 @@ import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
 import SendNFTModal from "./send.nft.modal";
 import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -50,7 +49,7 @@ export const NonNFTDescription = ({
   data,
   setNftData,
 }: NonNFTDescriptionProps) => {
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -66,7 +65,7 @@ export const NonNFTDescription = ({
   const [sendNftModal, setSendNftModal] = useState(false);
   const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
-  const isApproved = useGetApprovedForAll(account, data?.collection);
+  const isApproved = useGetApprovedForAll(connectedAddress, data?.collection);
 
   useEffect(() => {
     if (data) {
@@ -144,12 +143,12 @@ export const NonNFTDescription = ({
 
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
-    if (library && data) {
+    if (getSigner() && data) {
       try {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              getSigner(),
               data.collection
             );
 
@@ -159,7 +158,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.callListItemForSale(
-          library,
+          getSigner(),
           data.collection,
           data.nftId,
           listingPrice
@@ -203,11 +202,11 @@ export const NonNFTDescription = ({
 
     let response = { success: false, message: "" };
     try {
-      if (library && data) {
+      if (getSigner() && data) {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              getSigner(),
               data.collection
             );
 
@@ -217,7 +216,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.callCreateAuction(
-          library,
+          getSigner(),
           data.collection,
           data.nftId,
           Number(auctionPrice),
@@ -241,12 +240,12 @@ export const NonNFTDescription = ({
     LockEndTime: number;
   }) => {
     ProceedFunc();
-    if (library && data) {
+    if (getSigner() && data) {
       try {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              getSigner(),
               data.collection
             );
 
@@ -256,7 +255,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.transferNftWithLock(
-          library,
+          getSigner(),
           data.collection,
           data.nftId,
           input.ReceiverAddress,
@@ -531,7 +530,7 @@ export const NonNFTDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }

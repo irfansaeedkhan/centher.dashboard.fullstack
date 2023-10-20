@@ -1,5 +1,5 @@
 import { BigNumber } from "ethers";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import { StakingUploader } from "@/utils/upload.tools/staking.metadata.uploader.utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
@@ -54,7 +54,7 @@ export class CentherStaking {
 
   @CatchError()
   async createPool(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     input: CreatePoolInput,
     files: StakingFiles,
     affiliateSettings: OptionalType<AddAffiliateSettingsInput>,
@@ -73,7 +73,7 @@ export class CentherStaking {
     try {
       // set approval
       await this.handleTokenApprovals(
-        library,
+        signer,
         mappedData,
         input.ownerAddress,
         statusController
@@ -86,7 +86,7 @@ export class CentherStaking {
       // contract callstatic
       statusController(CreatePoolStepsEnum.examinate, 0);
       await BlockchainWrite.createStakingPool(
-        library,
+        signer,
         mappedData,
         input.ownerAddress,
         true
@@ -114,7 +114,7 @@ export class CentherStaking {
       // call contract
       statusController(CreatePoolStepsEnum.contract, 0);
       await BlockchainWrite.createStakingPool(
-        library,
+        signer,
         mappedData,
         input.ownerAddress,
         false
@@ -127,10 +127,10 @@ export class CentherStaking {
       );
     }
 
-    const poolId = await BlockchainWrite.getCurrentStakingPoolId(library);
+    const poolId = await BlockchainWrite.getCurrentStakingPoolId(signer);
     if (affiliateSettings) {
       statusController(CreatePoolStepsEnum.affiliate, 0);
-      await this.addAffiliateSettings(library, affiliateSettings, poolId);
+      await this.addAffiliateSettings(signer, affiliateSettings, poolId);
       statusController(CreatePoolStepsEnum.affiliate, 100);
     } else if (mappedData.rewardModeForRef != 0) {
       throw new InvalidAffiliateSystemSettings(
@@ -178,13 +178,13 @@ export class CentherStaking {
 
   @CatchError()
   async getUserStakes(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     userAddress: string
   ): Promise<RewardsStat> {
     try {
       const result = await BlockchainRead.getUserStakingRewards(
-        library,
+        signer,
         poolId,
         userAddress
       );
@@ -211,12 +211,12 @@ export class CentherStaking {
 
   @CatchError()
   async getUserClaimableRewards(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     user: string
   ): Promise<string> {
     const result = await BlockchainRead.getUserClaimableStakingRewards(
-      library,
+      signer,
       poolId,
       user
     );
@@ -269,7 +269,7 @@ export class CentherStaking {
 
   @CatchError()
   async getUserReferrals(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     input: GetReferralsInput
   ): Promise<{ count: number; data: Referral[]; totalRewards: number }> {
     let firstLevel: Referral[] = [];
@@ -345,7 +345,7 @@ export class CentherStaking {
 
     if (finalResult.length) {
       const getUsersStakes = finalResult.map((e) =>
-        this.calcStakedAmount(e, input.poolId, library)
+        this.calcStakedAmount(e, input.poolId, signer)
       );
 
       finalResult = await Promise.all(getUsersStakes);
@@ -353,7 +353,7 @@ export class CentherStaking {
 
     if (finalResult.length && input.isClaimable) {
       const getUserRefRewards = finalResult.map((e) =>
-        this.getUserLevelRefRewards(e, input.poolId, library)
+        this.getUserLevelRefRewards(e, input.poolId, signer)
       );
 
       finalResult = await Promise.all(getUserRefRewards);
@@ -374,7 +374,7 @@ export class CentherStaking {
 
   @CatchError()
   async stake(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     userAddress: string,
     amount: string,
@@ -382,14 +382,14 @@ export class CentherStaking {
   ): Promise<void> {
     try {
       const referrers = await BlockchainRead.getReferrersAddress(
-        library,
+        signer,
         userAddress
       );
 
       const referrer = referrers[0];
 
       const result = await BlockchainWrite.stake(
-        library,
+        signer,
         poolId + "",
         amount,
         referrer,
@@ -406,9 +406,9 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async claimReward(library: Web3Provider, poolId: number): Promise<void> {
+  async claimReward(signer: JsonRpcSigner, poolId: number): Promise<void> {
     try {
-      const result = await BlockchainWrite.claimReward(library, poolId + "");
+      const result = await BlockchainWrite.claimReward(signer, poolId + "");
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -420,13 +420,13 @@ export class CentherStaking {
 
   @CatchError()
   async claimRefReward(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     user: string
   ): Promise<void> {
     try {
       const result = await BlockchainWrite.claimRefReward(
-        library,
+        signer,
         poolId + "",
         user
       );
@@ -441,16 +441,12 @@ export class CentherStaking {
 
   @CatchError()
   async unstake(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     poolId: number,
     amount: string
   ): Promise<void> {
     try {
-      const result = await BlockchainWrite.unstake(
-        library,
-        poolId + "",
-        amount
-      );
+      const result = await BlockchainWrite.unstake(signer, poolId + "", amount);
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -461,9 +457,9 @@ export class CentherStaking {
   }
 
   @CatchError()
-  async restake(library: Web3Provider, poolId: number): Promise<void> {
+  async restake(signer: JsonRpcSigner, poolId: number): Promise<void> {
     try {
-      const result = await BlockchainWrite.restake(library, poolId + "");
+      const result = await BlockchainWrite.restake(signer, poolId + "");
 
       if (!result?.length) {
         throw new Error("Invalid transaction");
@@ -474,12 +470,12 @@ export class CentherStaking {
   }
 
   async getReferralClaimableReward(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     user: string,
     poolId: number
   ): Promise<string> {
     const result = await BlockchainRead.getRefClaimableReward(
-      library,
+      signer,
       poolId,
       user
     );
@@ -490,11 +486,11 @@ export class CentherStaking {
   private async getUserLevelRefRewards(
     input: Referral,
     poolId: string,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<Referral> {
     try {
       const result = await this.getReferralClaimableReward(
-        library,
+        signer,
         input.id.split("-")[0],
         +poolId
       );
@@ -534,10 +530,10 @@ export class CentherStaking {
   private async calcStakedAmount(
     input: Referral,
     poolId: string,
-    library: Web3Provider
+    signer: JsonRpcSigner
   ): Promise<Referral> {
     const data = await this.getUserStakes(
-      library,
+      signer,
       +poolId,
       input.id.split("-")[0]
     );
@@ -547,13 +543,13 @@ export class CentherStaking {
   }
 
   private async addAffiliateSettings(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     input: AddAffiliateSettingsInput,
     poolId: number
   ): Promise<void> {
     try {
       await BlockchainWrite.setStakingPoolAffiliateSettings(
-        library,
+        signer,
         input,
         poolId
       );
@@ -579,7 +575,7 @@ export class CentherStaking {
   }
 
   private async handleTokenApprovals(
-    library: Web3Provider,
+    signer: JsonRpcSigner,
     input: MappedCreatePoolInput,
     ownerAddress: string,
     statusController: ProgressCallback
@@ -589,7 +585,7 @@ export class CentherStaking {
       statusController(CreatePoolStepsEnum.stake_approval, 20);
 
       await BlockchainWrite.SetApprovalForWallet(
-        library,
+        signer,
         input.stakeToken,
         ownerAddress,
         AddressFactory.getContractAddress(SmartContractName.STAKING)
@@ -617,7 +613,7 @@ export class CentherStaking {
         statusController(CreatePoolStepsEnum.reward_approval, 20);
 
         await BlockchainWrite.SetApprovalForWallet(
-          library,
+          signer,
           input.rewardToken,
           ownerAddress,
           AddressFactory.getContractAddress(SmartContractName.STAKING)

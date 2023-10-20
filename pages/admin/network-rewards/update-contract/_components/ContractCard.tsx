@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import Joi from "joi";
-import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 
 import { BlockchainWrite } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -52,7 +52,7 @@ interface ContractFormFields {
 }
 
 export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
 
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
@@ -154,7 +154,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
     setPendingTx(true);
     try {
       await BlockchainWrite.adminCallUpdateRoundInfo(
-        library,
+        getSigner(),
         data.round,
         _startTime,
         _endTime,

@@ -1,17 +1,17 @@
 import { BlockchainWrite } from "@/web3/blockchain";
-import { useWeb3React } from "@web3-react/core";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import React from "react";
 import { toast } from "react-hot-toast";
 
 const TeamRewards = ({ data, reload, setReload }: any) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const handleClaimBusd = async () => {
     if (data.claimable.busd <= 0) {
       toast.error("Nothing to Claim!");
       return;
     }
     try {
-      await BlockchainWrite.adminCallClaimBusdForCoreTeam(library);
+      await BlockchainWrite.adminCallClaimBusdForCoreTeam(getSigner());
       setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong!");
@@ -23,7 +23,7 @@ const TeamRewards = ({ data, reload, setReload }: any) => {
       return;
     }
     try {
-      await BlockchainWrite.adminCallClaimNtrForCoreTeam(library);
+      await BlockchainWrite.adminCallClaimNtrForCoreTeam(getSigner());
       setReload(!reload);
     } catch (error) {
       toast.error("Something Went Wrong!");

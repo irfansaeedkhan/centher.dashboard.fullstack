@@ -33,7 +33,7 @@ export const AdminFeeDetailsTable = () => {
                   const { key, ...restHeaderProps } = column.getHeaderProps();
                   return (
                     <th className={header} key={key} {...restHeaderProps}>
-                      {column.render("Header")}
+                      <>{column.render("Header")}</>
                     </th>
                   );
                 })}
@@ -51,7 +51,7 @@ export const AdminFeeDetailsTable = () => {
                   const { key, ...restCellProps } = cell.getCellProps();
                   return (
                     <td className={tablecolumn} key={key} {...restCellProps}>
-                      {cell?.render("Cell")}
+                      <>{cell?.render("Cell")}</>
                     </td>
                   );
                 })}

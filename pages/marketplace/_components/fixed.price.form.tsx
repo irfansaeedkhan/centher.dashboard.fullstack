@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { IoIosClose } from "react-icons/io";
 import { toast } from "react-hot-toast";
@@ -18,6 +17,8 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import useUser from "@/hooks/use.user";
 import CustomDropdown from "./custom.dropdown";
+import { JsonRpcSigner } from "@ethersproject/providers";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 // form validations
 const schema = Joi.object({
@@ -36,7 +37,7 @@ interface FixedPriceFormProps {
   collections: IMyCollection[];
   clearForm: boolean;
   asset: Blob | undefined;
-  library: any;
+  signer: JsonRpcSigner;
 }
 interface FormFields {
   NFTName: String;
@@ -52,11 +53,10 @@ const FixedPriceForm = ({
   collections,
   clearForm,
   asset,
-  library,
+  signer: library,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
+  const { connectWallet, disconnectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -451,7 +451,7 @@ const FixedPriceForm = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

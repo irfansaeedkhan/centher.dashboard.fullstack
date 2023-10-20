@@ -7,10 +7,11 @@ import { ModalState, StandardModal } from "@/components/modal/standard.modal";
 import { Timeline } from "./timeline";
 import { TimelineFinal } from "./timeline-final";
 import { TimelineTotal } from "./timeline-total";
+import { JsonRpcSigner } from "@ethersproject/providers";
 
 interface Props {
   roundInfo: RoundInfo;
-  library: any;
+  signer: JsonRpcSigner;
   contributionInfo: ContributionInfo;
   refetchContributionInfo: () => void;
   isBUSD: boolean;
@@ -18,7 +19,7 @@ interface Props {
 
 export const TimelinePeriod: React.FC<Props> = ({
   roundInfo,
-  library,
+  signer,
   contributionInfo,
   refetchContributionInfo,
   isBUSD,
@@ -43,7 +44,7 @@ export const TimelinePeriod: React.FC<Props> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      await BlockchainWrite.claimTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimTokens(signer, roundInfo.round, claimFrom);
       refetchContributionInfo();
       setModal((prev) => ({
         ...prev,

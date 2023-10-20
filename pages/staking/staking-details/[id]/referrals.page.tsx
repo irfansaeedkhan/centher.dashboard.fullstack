@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { formatUnits, isAddress } from "ethers/lib/utils";
 import { FiArrowRight } from "react-icons/fi";
 import toast from "react-hot-toast";
@@ -33,6 +32,7 @@ import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import ReferralsTable from "./_components/referrals-table";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   successFuncModal = "successFuncModal",
@@ -40,7 +40,7 @@ enum ModalType {
 }
 
 const StakingReferrals: NextPageWithLayout = () => {
-  const { library, deactivate } = useWeb3React();
+  const { getSigner, disconnectWallet } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -74,12 +74,12 @@ const StakingReferrals: NextPageWithLayout = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!library) {
+    if (!getSigner()) {
       setConnectWalletModal(true);
     } else {
       setConnectWalletModal(false);
     }
-  }, [library]);
+  }, [getSigner]);
 
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
@@ -146,7 +146,7 @@ const StakingReferrals: NextPageWithLayout = () => {
           ?.level || 6;
       sdk
         .getUserReferrals(
-          library,
+          getSigner(),
           new GetReferralsInput(
             poolId,
             user._id,
@@ -167,7 +167,7 @@ const StakingReferrals: NextPageWithLayout = () => {
     try {
       if (isAddress(user) && sdk && poolId) {
         setClaimRefRewardInProgress(user);
-        await sdk.claimRefReward(library, +poolId, user);
+        await sdk.claimRefReward(getSigner(), +poolId, user);
         modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {
@@ -341,7 +341,7 @@ const StakingReferrals: NextPageWithLayout = () => {
                   const _account = await connectWallet();
                   if (user._id.toLowerCase() !== _account?.toLowerCase()) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

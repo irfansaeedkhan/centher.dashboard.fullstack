@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -24,6 +22,7 @@ import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalMigrate } from "@/components/modal/modal.migrate";
 
 import ChangePriceBidModal from "./change.price.bid.modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   cancelPrice = "cancelPrice",
@@ -47,7 +46,7 @@ export const FixedPriceNFTDescription = ({
   data,
   setNftData,
 }: FixedPriceNFTDescriptionProps) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -63,7 +62,7 @@ export const FixedPriceNFTDescription = ({
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          library,
+          getSigner(),
           data.collection,
           data.nftId
         );
@@ -103,7 +102,7 @@ export const FixedPriceNFTDescription = ({
         setMigrateModal({ ...migrateModal, visibility: false });
         setupWaitingModal();
         const result = await BlockchainWrite.transferNftToCurrentMarketplace(
-          library,
+          getSigner(),
           data?.collection as string,
           data?.nftId as number,
           data?.listInfo?.price as number,
@@ -128,7 +127,7 @@ export const FixedPriceNFTDescription = ({
     };
     CheckStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, library]);
+  }, [data, getSigner]);
 
   const bnbPrice = useBNBPrice();
 
@@ -180,7 +179,7 @@ export const FixedPriceNFTDescription = ({
     let success = false;
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
-        library,
+        getSigner(),
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -212,7 +211,7 @@ export const FixedPriceNFTDescription = ({
       }
 
       result = await BlockchainWrite.callEditItemForSale(
-        library,
+        getSigner(),
         data.collection,
         data.nftId,
         newPrice
@@ -377,7 +376,7 @@ export const FixedPriceNFTDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }

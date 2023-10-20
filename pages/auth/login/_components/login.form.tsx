@@ -2,33 +2,32 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
-import { useWeb3React } from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
 import Joi from "joi";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { LoadingState } from "@/models/common";
-import { MetamaskIcon } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { getNonce, login } from "@/lib/auth";
 import Button from "@/components/button";
+import { useWallet, WalletEnum } from "@/web3/hooks/use.wallet";
 
 const ButtonsText = {
   connect_metamask: "Connect to Metamask",
   login_metamask: "Continue",
+  connect_wallet: "Connect To Centher Wallet",
   loading: "Continue...",
 };
 
 export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
-  const { connectWallet } = useConnectWallet();
-  const { account, library } = useWeb3React();
+
+  const { connectWallet, connectedAddress, signMessage, disconnectWallet } =
+    useWallet();
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
 
-  const handleMetamaskLogin = async (
+  const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    if (!account) return;
+    if (!connectedAddress) return;
 
     const button = e.currentTarget;
     button.disabled = true;
@@ -37,13 +36,9 @@ export const LoginForm: React.FC = () => {
 
     // Get Nonce from backend
     try {
-      const nonceResponse = await getNonce(account);
-
-      const signature = await (library as Web3Provider)
-        .getSigner()
-        .signMessage(nonceResponse.nonce_with_message);
-
-      const loginResponse = await login(account, signature);
+      const nonceResponse = await getNonce(connectedAddress);
+      const signature = await signMessage(nonceResponse.nonce_with_message);
+      const loginResponse = await login(connectedAddress, signature);
 
       toast.success(loginResponse.message);
       setIsLoading("loaded");
@@ -64,21 +59,20 @@ export const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className={`flex h-auto w-full flex-col gap-6`}>
-      {account ? (
+    <div className={`flex h-auto w-full flex-col gap-3`}>
+      {connectedAddress ? (
         <>
-          <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
-            <span className="!h-12 !w-12">
-              <MetamaskIcon />
-            </span>
+          <div className="mb-3 flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
             <div className="flex flex-grow flex-col">
               <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
-                Metamask wallet connected
+                wallet connected
               </p>
               <div className="flex items-center gap-1">
                 <p className="text-sm text-[#6B7280]">Wallet Address:</p>
                 <p className="text-sm text-white">
-                  {account.slice(0, 6) + "..." + account.slice(38, 42)}
+                  {connectedAddress.slice(0, 6) +
+                    "..." +
+                    connectedAddress.slice(38, 42)}
                 </p>
               </div>
             </div>
@@ -90,20 +84,37 @@ export const LoginForm: React.FC = () => {
                 ? ButtonsText.loading
                 : ButtonsText.login_metamask
             }
-            onClick={handleMetamaskLogin}
+            onClick={handleLogin}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+          <Button
+            title="Disconnect"
+            onClick={() => disconnectWallet()}
             variant="primary"
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
         </>
       ) : (
-        <Button
-          title={ButtonsText.connect_metamask}
-          onClick={async () => await connectWallet()}
-          variant="primary"
-          className="flex h-11 w-full items-center justify-center text-[14px]"
-          borderRounded="14px"
-        />
+        <div>
+          <Button
+            title={ButtonsText.connect_metamask}
+            onClick={async () => await connectWallet(WalletEnum.METAMASK)}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+
+          <Button
+            title={ButtonsText.connect_wallet}
+            onClick={async () => await connectWallet(WalletEnum.WALLET_SERVICE)}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+        </div>
       )}
     </div>
   );

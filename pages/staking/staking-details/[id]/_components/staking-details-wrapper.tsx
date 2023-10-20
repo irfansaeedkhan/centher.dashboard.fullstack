@@ -24,6 +24,7 @@ import Details from "./details";
 import PageButtonsWrapper from "./page-buttons";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const oneYearInSec = 31449600;
 
@@ -37,7 +38,7 @@ enum ModalType {
 }
 
 const StakingDetailsWrapper = ({ children }: Props) => {
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -172,7 +173,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   const stakeSubmit = async (referrer: string) => {
     try {
-      if (!library || !account?.length) {
+      if (!getSigner() || !connectedAddress?.length) {
         throw new Error("Connect wallet");
       }
 
@@ -224,9 +225,9 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
         setStakeLoader(true);
         await sdk.stake(
-          library,
+          getSigner(),
           +poolId,
-          account,
+          connectedAddress,
           amount,
           stakingPool?.token_address as string
         );

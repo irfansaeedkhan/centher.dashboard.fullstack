@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
 import { FiArrowRight } from "react-icons/fi";
 import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
@@ -29,6 +28,7 @@ import { BlockchainWrite } from "@/web3/blockchain";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import AuctionBidModal from "./auction.bid.modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -45,8 +45,6 @@ export const AuctionNFTBuyerDescription = ({
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [BidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
@@ -55,9 +53,10 @@ export const AuctionNFTBuyerDescription = ({
     title: "",
     content: "",
   });
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
+    useWallet();
 
-  const bnbBalance = useGetBNBBalance(account);
+  const bnbBalance = useGetBNBBalance(connectedAddress);
 
   const price =
     Number(data?.auctionInfo.highestBidPrice) === 0
@@ -82,7 +81,7 @@ export const AuctionNFTBuyerDescription = ({
       setEndTime(endtime);
 
       if (
-        account?.toLowerCase() ==
+        connectedAddress?.toLowerCase() ==
         data?.auctionInfo.highestBidAddress?.toLowerCase()
       ) {
         SetIsUserWinner(true);
@@ -161,9 +160,9 @@ export const AuctionNFTBuyerDescription = ({
       setBidModal(false);
       ProceedFunc();
       try {
-        if (library && data) {
+        if (getSigner && data) {
           const result = await BlockchainWrite.callBidOnAuction(
-            library,
+            getSigner(),
             data.collection,
             data.nftId,
             bidPriceVal
@@ -178,13 +177,13 @@ export const AuctionNFTBuyerDescription = ({
         SuccessFunc(false, "Something went wrong, auction failed");
       }
     },
-    [SuccessFunc, bnbBalance, data, library, price]
+    [SuccessFunc, bnbBalance, data, getSigner, price]
   );
   const handleEndAuction = async () => {
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
-        library,
+        getSigner(),
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -303,7 +302,7 @@ export const AuctionNFTBuyerDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner) {
       throw new Error("Connect your wallet");
     }
   }
@@ -370,7 +369,7 @@ export const AuctionNFTBuyerDescription = ({
           </div>
         </div>
       </div>
-      {!library ? (
+      {!getSigner() ? (
         <Button
           title={"Connect Wallet"}
           variant="primary"
@@ -388,11 +387,11 @@ export const AuctionNFTBuyerDescription = ({
               disabled={end}
               className="w-full rounded-[14px]"
               onClick={() => {
-                if (!library) {
+                if (!getSigner) {
                   toast.error("Connect your wallet");
                   return;
                 }
-                if (library) {
+                if (getSigner()) {
                   setBidModal(true);
                 }
               }}
@@ -467,7 +466,7 @@ export const AuctionNFTBuyerDescription = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}
