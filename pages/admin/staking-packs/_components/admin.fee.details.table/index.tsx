@@ -65,16 +65,14 @@ export const AdminFeeDetailsTable = () => {
 };
 
 const componentWrapper = ctl(`
-inline-block min-w-full shadow rounded-lg bordersetall overflow-auto my-4 h-auto
+inline-block min-w-full shadow rounded-lg border border-gray-shade-3 overflow-auto my-4 h-auto
 `);
 
 const tableContainer = ctl(`
 min-w-full leading-normal
 `);
 
-const tableRowContainer = ctl(`
-bordersetbottom text-white 
-`);
+const tableRowContainer = ctl(`text-white border-b border-gray-shade-3`);
 
 const header = ctl(`
 pl-4 pr-2 py-3  text-left text-xs font-semibold uppercase tracking-wider

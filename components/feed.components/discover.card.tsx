@@ -9,7 +9,7 @@ export const DiscoverCard = () => {
     >
       <h5
         className={`
-  text-14px pb-4 font-semibold text-white
+  pb-4 text-sm font-semibold text-white
 `}
       >
         Discover
@@ -24,5 +24,5 @@ export const DiscoverCard = () => {
 // styling
 
 const DCTags = `
-  text-12px font-medium text-gray-shade-7 pb-3
+  text-xs font-medium text-gray-shade-7 pb-3
 `;

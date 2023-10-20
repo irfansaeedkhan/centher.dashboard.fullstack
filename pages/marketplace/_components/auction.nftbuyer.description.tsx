@@ -202,10 +202,10 @@ export const AuctionNFTBuyerDescription = ({
       content: () => (
         <div className={modalBodyWrapper1}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -218,7 +218,7 @@ export const AuctionNFTBuyerDescription = ({
         <div className={modalBodyWrapper1}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+            <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -233,14 +233,14 @@ export const AuctionNFTBuyerDescription = ({
             </h2>
           </div>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name} </span>{" "}
               NFT on <b> Centher </b>
               platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg ?? "Transaction Failed."}
             </p>
           )}
@@ -261,10 +261,10 @@ export const AuctionNFTBuyerDescription = ({
       content: () => (
         <div className={modalBodyWrapper1}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Click Proceed to collect your NFT!
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             {formatAddress(data?.owner)} receives
             {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
             will receive the NFT
@@ -325,10 +325,10 @@ export const AuctionNFTBuyerDescription = ({
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
         <div className="w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-[length:85%] bg-center bg-no-repeat ">
-          <div className="text-14px flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
+          <div className="flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-sm text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
             <div className="flex flex-col items-center gap-3 text-center  fsm:max-w-[138px]">
               <HammerIconBG className="scale-150" />
-              <h4 className="text-14px font-normal text-white">
+              <h4 className="text-sm font-normal text-white">
                 This Auction will end in
               </h4>
             </div>
@@ -484,9 +484,9 @@ export const AuctionNFTBuyerDescription = ({
 const modalBodyWrapper1 = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 items-center`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const greyTxt = `text-14px font-normal text-gray-shade-7`;
-const desTitle = `text-14px font-semibold text-white`;
-const BnBNum = `text-16px font-bold text-white`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
+const desTitle = `text-sm font-semibold text-white`;
+const BnBNum = `text-base font-bold text-white`;
 const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;
 const footerBtnContainer = `flex items-center gap-4`;
 const infoBox = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6 items-center w-full`;

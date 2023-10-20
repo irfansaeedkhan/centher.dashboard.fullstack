@@ -36,7 +36,9 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
   return (
     <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
       <div className="flex  w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
-        <h4 className="text-18px font-semibold text-white">Company Rewards</h4>
+        <h4 className="text-base font-semibold text-white f2xl:text-lg">
+          Company Rewards
+        </h4>
       </div>
       <div className="flex gap-10 p-6 pl-6 pr-6 md:pl-10 md:pr-10">
         <div className="w-full min-w-[200px] max-w-[338px]  border-r-2 border-black-shade-7 f2xl:max-w-[338px]  ">
@@ -68,7 +70,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
           <div className="mb-3 mt-4 flex items-center justify-between gap-2 text-sm font-semibold">
             <p className="text-white">{data.claimable.busd} (BUSD)</p>
             <button
-              className="text-12px textGradient font-semibold"
+              className="textGradient text-xs font-semibold"
               onClick={handleClaimBusd}
             >
               Claim now
@@ -77,7 +79,7 @@ const CompanyRewards = ({ data, reload, setReload }: any) => {
           <div className="flex items-center justify-between gap-2 text-sm  font-semibold">
             <p className="text-white">{data.claimable.ntr} (NTR)</p>
             <button
-              className="text-12px textGradient font-semibold"
+              className="textGradient text-xs font-semibold"
               onClick={handleClaimNtr}
             >
               Claim now

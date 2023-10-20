@@ -8,7 +8,9 @@ import NetworkTabs from "../_components/network.tabs";
 const AdminMarketplace: NextPageWithLayout = () => {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-18px font-semibold text-white ">Marketplace</h1>
+      <h1 className="text-base font-semibold text-white f2xl:text-lg ">
+        Marketplace
+      </h1>
     </div>
   );
 };

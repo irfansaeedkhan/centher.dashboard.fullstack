@@ -164,9 +164,11 @@ export const NonNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">Maradona sport</h2>
-          <h3 className="text-14px font-normal text-white">Gas fee 10%</h3>
-          <h6 className="text-14px flex items-center justify-center gap-2 font-bold text-white">
+          <h2 className="text-base font-semibold text-white f2xl:text-lg">
+            Maradona sport
+          </h2>
+          <h3 className="text-sm font-normal text-white">Gas fee 10%</h3>
+          <h6 className="flex items-center justify-center gap-2 text-sm font-bold text-white">
             <span>Price:</span>
             <BNBIcon />
             89.08 BNB <span className="text-gray-shade-2 "> =$24190.19</span>
@@ -188,10 +190,10 @@ export const NonNFTBuyerDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -209,18 +211,18 @@ export const NonNFTBuyerDescription = ({
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="text-base font-semibold text-white f2xl:text-lg">
             {txStatus ? "Success!" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher</b>
               platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg ?? "Transaction Failed."}
             </p>
           )}
@@ -299,39 +301,41 @@ export const NonNFTBuyerDescription = ({
           <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
             <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
               <AuctionIcon />
-              <h4 className="text-14px font-normal text-white">
+              <h4 className="text-sm font-normal text-white">
                 This NFT will unlock in
               </h4>
             </div>
             <div className="flex w-full justify-center p-4">
               <div className="timerBox flex items-center gap-5">
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">{days}</h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
+                    {days}
+                  </h5>
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Days
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {hours}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Hours
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {minutes}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Minutes
                   </h6>
                 </div>
                 <div className="dateBix flex flex-col items-center gap-2">
-                  <h5 className="text-20px font-semibold text-white">
+                  <h5 className="text-base font-semibold text-white f2xl:text-xl">
                     {seconds}
                   </h5>
-                  <h6 className="text-12px font-normal text-gray-shade-7">
+                  <h6 className="text-xs font-normal text-gray-shade-7">
                     Seconds
                   </h6>
                 </div>
@@ -372,11 +376,11 @@ const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6
 `;
 const greyTxt = `
-text-14px font-normal text-gray-shade-7
+text-sm font-normal text-gray-shade-7
 `;
 const desTitle = `
-text-14px font-semibold text-white
+text-sm font-semibold text-white
 `;
 const BnBNum = `
-text-16px font-bold text-white
+text-base font-bold text-white
 `;

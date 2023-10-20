@@ -279,7 +279,7 @@ const CurrentUserSide: React.FC<{
 
               <div
                 className={clsx(
-                  `word-break text-14px  z-10 leading-[17.07px] text-white`
+                  `word-break z-10  text-sm leading-[17.07px] text-white`
                 )}
                 dangerouslySetInnerHTML={{
                   __html: urlify(data.message.content),
@@ -394,14 +394,14 @@ const CurrentUserSide: React.FC<{
             >
               {/* <p
                 className={clsx(
-                  `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`
+                  `word-break text-sm z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`
                 )}
               >
                 {urlify(data.message.content)}
               </p> */}
               <div
                 className={clsx(
-                  `word-break text-14px z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words leading-[17.07px] text-white`
+                  `word-break z-10 max-w-[calc(90%-10px)] justify-between gap-2 whitespace-pre-wrap break-words text-sm leading-[17.07px] text-white`
                 )}
                 dangerouslySetInnerHTML={{
                   __html: urlify(data.message.content),

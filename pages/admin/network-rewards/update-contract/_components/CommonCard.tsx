@@ -77,7 +77,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
   return (
     <div className="card flex max-w-[470px] flex-col overflow-hidden rounded-xl bg-elevation-1 ">
       <div className="cardHeader flex items-center justify-between bg-elevation-2 p-5">
-        <h2 className="cardTitle text-14px font-semibold text-gray-shade-7">
+        <h2 className="cardTitle text-sm font-semibold text-gray-shade-7">
           Set Referral Rate
         </h2>
       </div>
@@ -90,7 +90,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   className="flex items-center justify-between gap-3"
                   key={index}
                 >
-                  <label className="label text-14px text-gray-shade-7">
+                  <label className="label text-sm text-gray-shade-7">
                     Level {index + 1}
                   </label>
                   <div className="flex min-w-[180px] flex-col gap-2">
@@ -102,9 +102,9 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                           handleSetRate(e.target.value, index);
                         }}
                         type="number"
-                        className="text-14px focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                        className="focus:ring-yellow-theme w-full max-w-[180px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
                       />
-                      <h6 className="text-14px text-gray-shade-7">%</h6>
+                      <h6 className="text-sm text-gray-shade-7">%</h6>
                     </div>
                   </div>
                 </div>
@@ -113,7 +113,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
 
           <div className="cardFooter px-5 pb-7 pt-4">
             <button
-              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
+              className="w-full rounded-lg bg-brand-primary p-3 text-sm font-semibold text-black-shade-3"
               onClick={handleReferralRate}
             >
               {pendingReferralRateTx
@@ -122,7 +122,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
             </button>
           </div>
           {/* <div className="flex items-center justify-between gap-3">
-            <label className="label text-gray-shade-7 text-14px">Core Team Percentage</label>
+            <label className="label text-gray-shade-7 text-sm">Core Team Percentage</label>
             <div className=" flex gap-2 flex-col min-w-[180px]">
               <div className="checkbox flex items-center justify-end gap-2">
                 <input
@@ -130,15 +130,15 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={coreTeamPercentage}
                   onChange={(e) => setCoreTeamPercentage(Number(e.target.value))}
                   type="number"
-                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-14px  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
+                  className="text-white  rounded-md   py-3 px-3  !bg-black-shade-3   font-semibold text-sm  border-0 focus:outline-none   focus:ring-yellow-theme w-full max-w-[180px]"
                 />
-                <h6 className="text-gray-shade-7 text-14px">%</h6>
+                <h6 className="text-gray-shade-7 text-sm">%</h6>
               </div>
             </div>
           </div>
           <div className="cardFooter pt-4 pb-7 px-5">
             <button
-              className="text-black-shade-3 text-14px font-semibold p-3 w-full bg-brand-primary rounded-lg"
+              className="text-black-shade-3 text-sm font-semibold p-3 w-full bg-brand-primary rounded-lg"
               onClick={handleTeamPercentage}
             >
               {pendingTx ? "Updating..." : "Change Core Team Percentage"}
@@ -146,7 +146,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           </div> */}
 
           <div className="flex items-center justify-between">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Company Address
             </label>
             <div className=" flex min-w-[50px] flex-col gap-2">
@@ -156,14 +156,14 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={companyAddress}
                   onChange={(e) => setCompanyAddress(e.target.value)}
                   type="text"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                  className="focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
           <div className="cardFooter px-5 pb-7 pt-4">
             <button
-              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
+              className="w-full rounded-lg bg-brand-primary p-3 text-sm font-semibold text-black-shade-3"
               onClick={handleCompanyAddress}
             >
               {pendingCompanyAddressTx
@@ -173,7 +173,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
           </div>
 
           <div className="flex items-center justify-between gap-3">
-            <label className="label text-14px text-gray-shade-7">
+            <label className="label text-sm text-gray-shade-7">
               Core Team Address
             </label>
             <div className="flex min-w-[180px] flex-col gap-2">
@@ -183,14 +183,14 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
                   value={coreTeamAddress}
                   onChange={(e) => setCoreTeamAddress(e.target.value)}
                   type="text"
-                  className="text-14px focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 font-semibold text-white focus:outline-none"
+                  className="focus:ring-yellow-theme w-full max-w-[280px] rounded-md border-0 !bg-black-shade-3 px-3 py-3 text-sm font-semibold text-white focus:outline-none"
                 />
               </div>
             </div>
           </div>
           <div className="cardFooter px-5 pb-7 pt-4">
             <button
-              className="text-14px w-full rounded-lg bg-brand-primary p-3 font-semibold text-black-shade-3"
+              className="w-full rounded-lg bg-brand-primary p-3 text-sm font-semibold text-black-shade-3"
               onClick={handleCoreTeamAddress}
             >
               {pendingTeamAddressTx

@@ -91,7 +91,7 @@ const PostModalFooter: React.FC<Props> = ({ handleScroll }) => {
         }}
         variant="primary"
         className={clsx(
-          `text-14px block select-none rounded-xl px-8 py-2 text-center fsm:col-span-1`,
+          `block select-none rounded-xl px-8 py-2 text-center text-sm fsm:col-span-1`,
           {
             "col-span-full mt-4 fsm:mt-0": modalType !== "edit",
           }

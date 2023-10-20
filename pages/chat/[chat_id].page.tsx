@@ -417,7 +417,7 @@ const SingleChat: NextPageWithLayout = () => {
                   <Button
                     title="Cancel"
                     variant="secondary"
-                    className="text-14px w-full rounded-[8px] border-gray-shade-7 px-2 py-1 leading-[14px] fsm:w-auto"
+                    className="w-full rounded-[8px] border-gray-shade-7 px-2 py-1 text-sm leading-[14px] fsm:w-auto"
                     onClick={() => {
                       closeEdit();
                     }}
@@ -425,7 +425,7 @@ const SingleChat: NextPageWithLayout = () => {
                   <Button
                     title="Save"
                     variant="primary"
-                    className="text-14px w-full rounded-[8px] px-2 py-1 leading-[14px] fsm:w-auto"
+                    className="w-full rounded-[8px] px-2 py-1 text-sm leading-[14px] fsm:w-auto"
                     borderRounded="8px"
                     onClick={sendMessage}
                   />

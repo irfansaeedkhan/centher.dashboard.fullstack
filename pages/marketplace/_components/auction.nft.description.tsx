@@ -189,7 +189,7 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Are you sure you want to cancel your Auction?
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -221,7 +221,7 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Transaction in progress
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -239,7 +239,7 @@ export const AuctionNftDescription = ({
         <div className={modalBodyWrapper}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+            <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -285,7 +285,7 @@ export const AuctionNftDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Click Proceed to announce winner of your NFT!
           </h3>
           <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -345,10 +345,10 @@ export const AuctionNftDescription = ({
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
         <div className="w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-[length:85%] bg-center bg-no-repeat ">
-          <div className="text-14px flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
+          <div className="flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-sm text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
             <div className="flex flex-col items-center gap-3 text-center  fsm:max-w-[138px]">
               <HammerIconBG className="scale-150" />
-              <h4 className="text-14px font-normal text-white">
+              <h4 className="text-sm font-normal text-white">
                 This Auction will end in
               </h4>
             </div>
@@ -427,7 +427,7 @@ const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2
 const footerBtnContainer = `flex items-center gap-4 mt-2`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const greyTxt = `text-14px font-normal text-gray-shade-7`;
-const desTitle = `text-14px font-semibold text-white`;
-const BnBNum = `text-16px font-bold text-white`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
+const desTitle = `text-sm font-semibold text-white`;
+const BnBNum = `text-base font-bold text-white`;
 const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;

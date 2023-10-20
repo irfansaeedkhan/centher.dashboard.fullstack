@@ -34,7 +34,7 @@ const RegistrationRewards = ({
   return (
     <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
       <div className="flex  w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
-        <h4 className="text-18px font-semibold text-white">
+        <h4 className="text-base font-semibold text-white f2xl:text-lg">
           Rewards From Registration
         </h4>
       </div>
@@ -70,7 +70,7 @@ const RegistrationRewards = ({
               {`${normalizeValue(formatNum2DispNum(claimableBNB))} (BNB)`}
             </p>
             <button
-              className="text-12px bg-yellow-theme w-full max-w-[120px] rounded-lg p-3 font-semibold text-black-shade-3"
+              className="bg-yellow-theme w-full max-w-[120px] rounded-lg p-3 text-xs font-semibold text-black-shade-3"
               onClick={handleClaimBNB}
               disabled={pendingTx}
             >

@@ -81,14 +81,14 @@ const RegistrationSetting: NextPageWithLayout = () => {
       {!registrationDetail.loading ? (
         <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
           <div className="flex w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
-            <h4 className="text-18px font-semibold text-white">
+            <h4 className="text-base font-semibold text-white f2xl:text-lg">
               Current Contract Status
             </h4>
             {/* <button
             onClick={() => {
               setEdit(true);
             }}
-            className="text-black-shade-3 text-14px font-bold p-3 w-full bg-yellow-theme rounded-xl max-w-[80px]"
+            className="text-black-shade-3 text-sm font-bold p-3 w-full bg-yellow-theme rounded-xl max-w-[80px]"
           >
             Edit
           </button> */}
@@ -137,7 +137,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
       {!registrationDetail.loading ? (
         <div className="h-auto w-full overflow-x-auto rounded-[14px] bg-elevation-1">
           <div className="flex w-full min-w-[800px] flex-col justify-between gap-4 rounded-t-[14px] bg-[#2E2B22] bg-[url(/images/patern1.png)] bg-cover bg-center bg-no-repeat py-7 pl-3 pr-3 fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4">
-            <h4 className="text-18px font-semibold text-white">
+            <h4 className="text-base font-semibold text-white f2xl:text-lg">
               Update Contract
             </h4>
           </div>
@@ -178,13 +178,13 @@ const RegistrationSetting: NextPageWithLayout = () => {
             <div className="w-full max-w-[180px]">
               <button
                 onClick={handleChangeFees}
-                className="text-14px bg-yellow-theme max-h-[50px] w-full max-w-[180px] rounded-xl p-3 font-bold text-black-shade-3"
+                className="bg-yellow-theme max-h-[50px] w-full max-w-[180px] rounded-xl p-3 text-sm font-bold text-black-shade-3"
               >
                 {changeFeeTx ? "Process..." : "Change Fees"}
               </button>
               <button
                 onClick={handleChangeState}
-                className="text-14px bg-yellow-theme mt-5 max-h-[50px] w-full max-w-[180px] rounded-xl p-3 font-bold text-black-shade-3"
+                className="bg-yellow-theme mt-5 max-h-[50px] w-full max-w-[180px] rounded-xl p-3 text-sm font-bold text-black-shade-3"
               >
                 {changeStatusTx
                   ? "Process..."

@@ -245,7 +245,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           {auction && (
             <div className="absolute left-[50%] top-[54%] h-[56px] w-[90%] translate-x-[-50%] overflow-hidden rounded-xl border border-solid border-black/10 bg-gray-800 bg-opacity-25 bg-center bg-no-repeat px-[6px] backdrop-blur-[20px]">
               <div
-                className={`text-12px flex h-full w-full items-center justify-center rounded-xl text-white `}
+                className={`flex h-full w-full items-center justify-center rounded-xl text-xs text-white `}
               >
                 <div className="flex w-full items-center justify-evenly">
                   <span className="text-10px max-w-[112px] font-medium text-white">
@@ -306,7 +306,7 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="-mt-[6px] px-[6px] pb-[6px]">
             <div className="h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat">
               <div
-                className={`text-12px bg-[rgba(20, 20, 22, 0.08)] flex h-full w-full items-center justify-center rounded-xl text-white backdrop-blur-[20px]`}
+                className={`bg-[rgba(20, 20, 22, 0.08)] flex h-full w-full items-center justify-center rounded-xl text-xs text-white backdrop-blur-[20px]`}
               >
                 <div className="flex w-full items-center justify-evenly">
                   <span className="text-10px max-w-[112px] font-medium text-white">
@@ -374,11 +374,11 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                 className="h-[120px] w-[120px] rounded-xl object-cover"
               />
               <div className="flex w-full flex-col gap-2 fsm:max-w-[280px] fmd:gap-4">
-                <h5 className="text-18px word-break text-center font-semibold text-white fsm:text-left">
+                <h5 className="word-break text-center text-base font-semibold text-white fsm:text-left f2xl:text-lg">
                   {data.name}
                 </h5>
                 <div className="my-2 h-[56px] w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-center bg-no-repeat p-[2px] fmd:mt-0">
-                  <div className="text-12px bg-[rgba(20, 20, 22, 0.08)]  flex h-full w-full items-center justify-evenly gap-5 overflow-hidden px-4 py-2 text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left">
+                  <div className="bg-[rgba(20, 20, 22, 0.08)] flex  h-full w-full items-center justify-evenly gap-5 overflow-hidden px-4 py-2 text-xs text-white backdrop-blur-[20px] fsm:m-0 fmd:mb-0 fmd:text-left">
                     <h4 className="min-w-[80px] max-w-[114px] text-[11px] font-bold text-white">
                       This NFT will unlock in
                     </h4>
@@ -423,11 +423,11 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               <div className="flex min-w-fit items-center justify-center gap-3">
                 <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#F76E64]"></div>
                 <div className="flex flex-col gap-1">
-                  <h5 className="text-12px font-normal text-gray-shade-18">
+                  <h5 className="text-xs font-normal text-gray-shade-18">
                     Creater
                   </h5>
 
-                  <h5 className="word-break text-14px font-semibold text-white">
+                  <h5 className="word-break text-sm font-semibold text-white">
                     {data.creator?.display_name}
                   </h5>
                 </div>
@@ -435,10 +435,10 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
               <div className="flex min-w-fit items-center justify-center gap-3">
                 <div className="min-h-[32px] min-w-[32px] rounded-full bg-gradient-to-r from-[#70A2FF] to-[#54F0D1]"></div>
                 <div className="flex flex-col gap-1">
-                  <h5 className="text-12px font-normal text-gray-shade-18">
+                  <h5 className="text-xs font-normal text-gray-shade-18">
                     Owner
                   </h5>
-                  <h5 className="word-break text-14px  font-semibold text-white">
+                  <h5 className="word-break text-sm  font-semibold text-white">
                     {data.owner?.display_name}
                   </h5>
                 </div>
@@ -446,15 +446,15 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
             </div>
             <div className="mt-6 flex flex-col gap-6">
               <div className="flex flex-col gap-2">
-                <h5 className="text-14px font-normal text-gray-shade-18">
+                <h5 className="text-sm font-normal text-gray-shade-18">
                   Description
                 </h5>
-                <h6 className="text-14px font-semibold text-white">
+                <h6 className="text-sm font-semibold text-white">
                   {data.description}
                 </h6>
               </div>
               <div className="flex flex-col gap-2">
-                <h5 className="text-14px font-normal text-gray-shade-18">
+                <h5 className="text-sm font-normal text-gray-shade-18">
                   Collection Address
                 </h5>
                 <Link
@@ -464,28 +464,28 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
                     query: { collection: data.collection },
                   }}
                 >
-                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
+                  <h6 className="textGradient inline-block break-words text-sm font-semibold">
                     {data.collection}
                   </h6>
                 </Link>
               </div>
               <div className="flex flex-col gap-2">
-                <h5 className="text-14px font-normal text-gray-shade-18">
+                <h5 className="text-sm font-normal text-gray-shade-18">
                   Mint Transaction
                 </h5>
                 <Link
                   href={BlockchainConfig.scanner.url + "/tx/" + data.mintHash}
                 >
-                  <h6 className="text-14px textGradient inline-block break-words font-semibold">
+                  <h6 className="textGradient inline-block break-words text-sm font-semibold">
                     {data.mintHash}
                   </h6>
                 </Link>
               </div>
               <div className="flex flex-col gap-2">
-                <h5 className="text-14px font-normal text-gray-shade-18">
+                <h5 className="text-sm font-normal text-gray-shade-18">
                   Token ID
                 </h5>
-                <h6 className="text-14px inline-block break-words font-semibold text-white">
+                <h6 className="inline-block break-words text-sm font-semibold text-white">
                   {data.tokenId}
                 </h6>
               </div>

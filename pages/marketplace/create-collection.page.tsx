@@ -164,10 +164,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             height={64}
             width={64}
           />
-          <h2 className="text-18px word-break font-semibold text-white">
+          <h2 className="word-break text-base font-semibold text-white f2xl:text-lg">
             {collectionData?.name}
           </h2>
-          <h3 className="text-14px font-normal text-white">
+          <h3 className="text-sm font-normal text-white">
             {`Marketplace fee ${normalizeValue(
               BlockchainConfig.fee.createCollectionFee
             )} BNB`}
@@ -195,11 +195,11 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             height={64}
             width={64}
           />
-          <h2 className="text-18px font-semibold text-white">
+          <h2 className="text-base font-semibold text-white f2xl:text-lg">
             {txStatus ? "Collection Created Successfully" : "Failed!"}
           </h2>
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
               <span className="word-break text-white">
                 {collectionData?.name}
@@ -209,7 +209,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               Transaction Failed.
             </p>
           )}
@@ -251,10 +251,10 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>

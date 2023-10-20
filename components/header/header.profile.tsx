@@ -149,7 +149,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
                 }
           }
           variant="primary"
-          className="text-14px"
+          className="text-sm"
           borderRounded="10px"
         />
       </div>

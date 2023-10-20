@@ -46,7 +46,7 @@ export const StakingSuccessModal: React.FC<CustomModalProps> = ({
               <h2 className="text-base font-semibold text-white fsm:text-lg">
                 Staking Pack Created Successfully
               </h2>
-              <p className="text-14px font-medium text-gray-shade-14">
+              <p className="text-sm font-medium text-gray-shade-14">
                 Congratulations! you have successfully created your{" "}
                 <span className="text-white">Staking Pack</span> on centher
                 platform click on view Staking to view your Pack
@@ -60,7 +60,7 @@ export const StakingSuccessModal: React.FC<CustomModalProps> = ({
               }}
               title="View Staking pack"
               variant="primary"
-              className="text-14px   w-full py-3 hover:text-black"
+              className="w-full   py-3 text-sm hover:text-black"
             />
           </div>
         </div>

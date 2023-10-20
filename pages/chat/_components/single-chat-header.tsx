@@ -232,7 +232,7 @@ const SingleChatHeader: React.FC<{ users: UsersDetails[] }> = ({ users }) => {
             onClick={() => setIsOpen((prev) => !prev)}
           />
           {isOpen && (
-            <div className="text-14px absolute right-0 top-full z-[500] overflow-hidden rounded-10px bg-black-shade-12">
+            <div className="text-sm absolute right-0 top-full z-[500] overflow-hidden rounded-10px bg-black-shade-12">
               <button
                 className="flex w-full items-center justify-start gap-3 py-4 px-7 text-white hover:bg-[#202025]"
                 onClick={onClicktogglePin}

@@ -19,7 +19,7 @@ export const CitizenShipFailureModal: React.FC<CustomModalProps> = ({
         <h2 className="text-base font-semibold text-white fsm:text-lg">
           Couldn&apos;t Verify Subscription
         </h2>
-        <p className="text-14px font-medium text-gray-shade-14">
+        <p className="text-sm font-medium text-gray-shade-14">
           Sorry, we couldn&apos;t verify your{" "}
           <span className="text-gradient">Centher Passport CITIZEN </span>{" "}
           Membership subscription. Please make sure that you have enough BNB in
@@ -32,13 +32,13 @@ export const CitizenShipFailureModal: React.FC<CustomModalProps> = ({
           onClick={onClickClose}
           title="Cancel"
           variant="secondary"
-          className="text-14px w-full rounded-[14px] py-3"
+          className="w-full rounded-[14px] py-3 text-sm"
         />
         <Button
           onClick={retryFunc}
           title="Retry"
           variant="primary"
-          className="text-14px w-full py-3"
+          className="w-full py-3 text-sm"
         />
       </div>
     </div>

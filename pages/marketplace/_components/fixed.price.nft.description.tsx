@@ -239,7 +239,7 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="fmd:text-18px mt-2 text-base font-semibold leading-6 text-white">
+          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
             Are you sure you want to cancel your Listing?
           </h3>
           <p className="mb-2 text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
@@ -283,10 +283,10 @@ export const FixedPriceNFTDescription = ({
       content: (newPrice: any) => (
         <div className={modalBodyWrapper}>
           <WarningIcon className="mx-auto" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Are you sure you want to edit your Listing Price?
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Listing Price will be changed.
           </p>
           <div className={footerBtnContainer}>
@@ -315,10 +315,10 @@ export const FixedPriceNFTDescription = ({
       content: () => (
         <div className={modalBodyWrapper}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>
@@ -331,7 +331,7 @@ export const FixedPriceNFTDescription = ({
         <div className={modalBodyWrapper}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px font-semibold text-white">
+            <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -347,14 +347,14 @@ export const FixedPriceNFTDescription = ({
           </div>
 
           {txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               on
               <b> Centher </b> NFT platform.
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg ?? "Transaction Failed."}
             </p>
           )}
@@ -470,13 +470,13 @@ const greyBoxContainer = `
 bg-background-shade-3 rounded-10px flex flex-col gap-2 p-3 fsm:p-6 
 `;
 const greyTxt = `
-text-14px font-normal text-gray-shade-7
+text-sm font-normal text-gray-shade-7
 `;
 const desTitle = `
-text-14px font-semibold text-white
+text-sm font-semibold text-white
 `;
 const BnBNum = `
-text-16px font-bold text-white
+text-base font-bold text-white
 `;
 const ImgStyling = `
 w-[64px] h-[64px]  rounded-2xl object-contain mx-auto

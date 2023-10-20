@@ -189,7 +189,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
               <div className="scrollSet mt-5 overflow-auto">
                 <div className="content w-full">
                   <div className="box rounded-xl border border-gray-shade-3 p-4">
-                    <ul className="text-14px flex flex-col gap-2 font-medium text-white">
+                    <ul className="flex flex-col gap-2 text-sm font-medium text-white">
                       <li className="list-item-with-image">
                         Giveaway as a service
                       </li>
@@ -234,14 +234,14 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                       onClick={() => {
                         setConnectWalletModal(true);
                       }}
-                      className="text-14px mx-auto mb-2 mt-6 w-[95%] py-3"
+                      className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm"
                     />
                   ) : (
                     <Button
                       onClick={buyMemberShip}
                       title={priceMapper(tab)}
                       variant="primary"
-                      className="text-14px mx-auto mb-2 mt-6 w-[95%] py-3"
+                      className="mx-auto mb-2 mt-6 w-[95%] py-3 text-sm"
                       loaderIcon={
                         updatePricesLoading || buyCitizenShipLoading ? (
                           <CgSpinner className="h-5 animate-spin text-white" />

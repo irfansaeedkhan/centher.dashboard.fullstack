@@ -43,7 +43,7 @@ const SelfieModal: React.FC<SelfieModalProps> = ({ isOpen, onClose }) => {
         <div className="flex w-full items-center justify-center">
           <Webcam
             ref={webRef}
-            className="borderselfiall mb-4 h-60 w-60 object-cover"
+            className="mb-4 h-60 w-60 !rounded-full !border !border-gray-shade-3 object-cover"
           />
         </div>
         <button

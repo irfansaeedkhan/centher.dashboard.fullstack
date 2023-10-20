@@ -187,7 +187,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
           <div className="flex flex-col gap-8 text-left">
             <div className="flex flex-col gap-6 pb-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-24px text-gradient font-semibold">
+                <h3 className="text-gradient text-xl font-semibold f2xl:text-2xl">
                   Review your project
                 </h3>
                 <div className="flex items-center gap-2">

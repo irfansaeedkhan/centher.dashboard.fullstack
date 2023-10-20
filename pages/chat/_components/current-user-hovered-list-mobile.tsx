@@ -44,7 +44,7 @@ const CurrentUserHoveredListMobile: React.FC<CurrentUserHoveredListProps> = ({
         <div className="" ref={emojiRef}>
           {emojiBarMobile && (
             <div
-              className="text-14px absolute right-0  top-[-48px] z-[500] flex w-[225px] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5"
+              className="absolute right-0 top-[-48px]  z-[500] flex w-[225px] items-center justify-between gap-4 rounded-10px bg-black-shade-12 p-2 px-5 text-sm"
               onMouseLeave={handleMouseLeave}
             >
               <span className="translate-[-50%] absolute bottom-[-10%] left-[50%] h-5 w-5 translate-y-[50%] scale-x-[3] text-black-shade-12">
@@ -130,7 +130,7 @@ const CurrentUserHoveredListMobile: React.FC<CurrentUserHoveredListProps> = ({
         </div>
         <div>
           {emojiBarMobile && (
-            <div className="text-14px absolute bottom-[-20px] right-0 z-[500] translate-y-[100%] rounded-10px bg-black-shade-12">
+            <div className="absolute bottom-[-20px] right-0 z-[500] translate-y-[100%] rounded-10px bg-black-shade-12 text-sm">
               <span
                 className={`absolute left-[50%] top-[-3px] h-3 w-7 origin-center translate-y-[-100%] scale-x-[3] text-black-shade-12
                           `}

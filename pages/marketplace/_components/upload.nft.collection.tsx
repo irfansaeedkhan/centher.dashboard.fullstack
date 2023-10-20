@@ -204,10 +204,10 @@ export const UploadNFTCollection = ({
 };
 // styling
 const title = `
-text-14px font-semibold text-white pb-2
+text-sm font-semibold text-white pb-2
 `;
 const description = `
-text-14px font-normal text-[#B7BBCC] leading-6
+text-sm font-normal text-[#B7BBCC] leading-6
 `;
 const imgBox = `
 bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-full  mt-3 p-6 flex flex-col gap-5
@@ -232,7 +232,7 @@ const uploadBoxContent = `
 flex flex-col items-center justify-center gap-5
   `;
 const formatName = `
-  text-gray-shade-7 text-12px font-semibold
+  text-gray-shade-7 text-xs font-semibold
     `;
 const uploadBtnContainer = `
   relative w-[132px] h-10

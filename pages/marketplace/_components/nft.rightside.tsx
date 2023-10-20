@@ -172,7 +172,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={clsx(
-                  `text-14px text-gradient-hover flex max-w-[230px] items-center font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
+                  `text-gradient-hover flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
                 )}
                 title={user.display_name}
               >
@@ -221,7 +221,7 @@ export const NFTRightSideComponent = ({
                     user_id: nftOwnerAddress,
                   },
                 }}
-                className={`text-14px text-gradient-hover flex max-w-[230px] items-center font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
+                className={`text-gradient-hover flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
                 title={nftOwner.display_name}
               >
                 <span className="block truncate break-words ">
@@ -259,7 +259,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-14px text-gradient-hover line-clamp-1 text-ellipsis font-semibold text-white"
+                  "text-gradient-hover line-clamp-1 text-ellipsis text-sm font-semibold text-white"
                 }
               >
                 {formatAddress(data?.collection)}
@@ -301,9 +301,9 @@ export const NFTRightSideComponent = ({
 // styling
 const rightSideContainer = `w-full flex flex-col gap-6`;
 const titleContainer = `flex items-end fmd:items-start  justify-between`;
-const title = `word-break textGradient  font-semibold leading-[42px]  animationTextHeading text-34px`;
+const title = `word-break textGradient  font-semibold leading-[42px]  animationTextHeading text-2xl f2xl:text-4x`;
 const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
-const toggleListBtn = `w-full text-14px font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
+const toggleListBtn = `w-full text-sm font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
 const toggleListIcons = `w-[24px] h-[24px] stroke-white`;
 const nameBox = `flex items-start gap-3 flex-grow`;
-const nameBoxTitle = `text-12px font-normal text-gray-shade-2`;
+const nameBoxTitle = `text-xs font-normal text-gray-shade-2`;

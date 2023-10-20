@@ -268,7 +268,7 @@ const CreateStaking: NextPageWithLayout = () => {
       <div
         key={index}
         className={clsx(
-          `text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0 ${
+          `col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0 ${
             index === numLevels - 1 && index % 2 === 0 && "col-span-2"
           }`
         )}
@@ -284,7 +284,7 @@ const CreateStaking: NextPageWithLayout = () => {
           name={`level-${index + 1}`}
           id={`level-${index + 1}`}
           placeholder="0%"
-          className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+          className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
           value={String(inputValues[index].percent) || ""}
           onChange={(event: ChangeEvent<HTMLInputElement>) =>
             handleInputChange(event, index)
@@ -1000,7 +1000,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     <span className="text-gradient">( * )</span>{" "}
                     <span className="text-gradient">is required</span>
                   </p>
-                  <h4 className="text-14px pb-2 font-semibold text-white">
+                  <h4 className="pb-2 text-sm font-semibold text-white">
                     Upload Logo Image <span className="text-gradient">*</span>
                   </h4>
                   <p
@@ -1013,7 +1013,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     recommended.
                   </p>
                   {profileErr && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       Profile image is required
                     </p>
                   )}
@@ -1088,7 +1088,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-14px pb-2 font-semibold text-white">
+                  <h4 className="pb-2 text-sm font-semibold text-white">
                     Upload banner image <span className="text-gradient">*</span>
                   </h4>
                   <p className="w-full max-w-[544px] text-xs font-normal leading-6 text-[#A0A4BB]">
@@ -1097,7 +1097,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     350 recommended.
                   </p>
                   {coverErr && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       Cover image is required
                     </p>
                   )}
@@ -1124,7 +1124,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     ) : (
                       <div className="absolute flex h-full w-full items-center justify-center">
                         <div className="flex flex-col items-center justify-center gap-5">
-                          <span className="text-12px font-semibold text-gray-shade-7">
+                          <span className="text-xs font-semibold text-gray-shade-7">
                             PNG, JPG, GIF
                           </span>
                           <div className="relative h-10 w-[132px]">
@@ -1150,7 +1150,7 @@ const CreateStaking: NextPageWithLayout = () => {
               </div>
               <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 {/* staking name */}
-                <div className="text-14px col-span-2  w-full font-medium text-white md:col-span-2">
+                <div className="col-span-2 w-full  text-sm font-medium text-white md:col-span-2">
                   <label
                     htmlFor="staking_name"
                     className="block font-normal tracking-wide"
@@ -1163,16 +1163,16 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("staking_name")}
                     id="staking_name"
                     placeholder="For example: DeXa Pack 1"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.staking_name && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.staking_name.message}
                     </p>
                   )}
                 </div>
                 {/* token address */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="token_address"
                     className="block font-normal tracking-wide"
@@ -1188,16 +1188,16 @@ const CreateStaking: NextPageWithLayout = () => {
                     }}
                     id="token_address"
                     placeholder="Add address here"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.token_address && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.token_address.message}
                     </p>
                   )}
                 </div>
                 {/* Reward Token Address */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="reward_token_address"
                     className="block font-normal tracking-wide"
@@ -1210,16 +1210,14 @@ const CreateStaking: NextPageWithLayout = () => {
                     id="reward_token_address"
                     placeholder="Add address here"
                     onChange={rewardTokenChanged}
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
-                  <p
-                    className={`text-12px text-gradient pb-2 pt-1 font-medium`}
-                  >
+                  <p className={`text-gradient pb-2 pt-1 text-xs font-medium`}>
                     If you leave this empty, token address will be use as Reward
                     token address
                   </p>
                   {stakingForm.formState.errors.reward_token_address && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {
                         stakingForm.formState.errors.reward_token_address
                           .message
@@ -1231,7 +1229,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 {
                   /* Staking / Reward Token Price Ratio */
                   isDifferentTokens && (
-                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                    <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                       <label
                         htmlFor="staking_reward_token_price_ratio"
                         className="block font-normal tracking-wide"
@@ -1245,13 +1243,11 @@ const CreateStaking: NextPageWithLayout = () => {
                         )}
                         id="staking_reward_token_price_ratio"
                         placeholder="only numbers"
-                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                        className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                       />
                       {stakingForm.formState.errors
                         .staking_reward_token_price_ratio && (
-                        <p
-                          className={`text-12px pb-2 font-medium text-red-500`}
-                        >
+                        <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {
                             stakingForm.formState.errors
                               .staking_reward_token_price_ratio.message
@@ -1263,7 +1259,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 }
 
                 {/* multi level reward system */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="multilevel_rewards"
                     className="block font-normal tracking-wide"
@@ -1271,7 +1267,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Multilevel Rewards System
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                  <div className="mt-2 block w-full appearance-none rounded-lg border-0 text-sm">
                     <DropdownStakingForm
                       placeholder="Select Any"
                       options={[
@@ -1297,25 +1293,25 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                   {selectedValue === "Recurring Return (0 to 6 levels)" && (
                     <p
-                      className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                      className={`text-gradient pb-2 pt-1 text-xs font-medium`}
                     >
                       Referral rewards are claimable according to Claim Period
                     </p>
                   )}
                   {stakingForm.formState.errors.multilevel_rewards && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.multilevel_rewards.message}
                     </p>
                   )}
                   {totalPercentageError && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       Total percentage cannot exceed 100%
                     </p>
                   )}
                 </div>
                 {renderInputFields()}
                 {/* Staking Period */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="staking_period"
                     className="block font-normal tracking-wide"
@@ -1323,7 +1319,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Staking Period
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                  <div className="mt-2 block w-full appearance-none rounded-lg border-0 text-sm">
                     <DropdownStakingForm
                       placeholder="Select Any"
                       options={stakingPeriodOptions}
@@ -1337,14 +1333,14 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.staking_period && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.staking_period.message}
                     </p>
                   )}
                 </div>
 
                 {/*  Is Cancelable */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="is_cancelable"
                     className="block font-normal tracking-wide"
@@ -1365,7 +1361,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="no"
                           {...stakingForm.register("is_cancelable")}
-                          className="red-radio text-14px h-4 w-4"
+                          className="red-radio h-4 w-4 text-sm"
                           onClick={() => setIsCancelable("no")}
                         />
                         <label
@@ -1381,7 +1377,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="yes"
                           {...stakingForm.register("is_cancelable")}
-                          className="green-radio text-14px h-4 w-4"
+                          className="green-radio h-4 w-4 text-sm"
                           onClick={() => setIsCancelable("yes")}
                         />
                         <label
@@ -1394,7 +1390,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </div>
                   </div>
                   {stakingForm.formState.errors.is_cancelable && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.is_cancelable.message}
                     </p>
                   )}
@@ -1402,7 +1398,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 {
                   /*   Charge Fee on Cancel */
                   isCancelable == "yes" && (
-                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                    <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                       <label
                         htmlFor="charge_fee_on_cancel"
                         className="block font-normal tracking-wide"
@@ -1415,12 +1411,10 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("charge_fee_on_cancel")}
                         id="charge_fee_on_cancel"
                         placeholder="0%"
-                        className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                        className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                       />
                       {stakingForm.formState.errors.charge_fee_on_cancel && (
-                        <p
-                          className={`text-12px pb-2 font-medium text-red-500`}
-                        >
+                        <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {
                             stakingForm.formState.errors.charge_fee_on_cancel
                               .message
@@ -1432,7 +1426,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 }
 
                 {/* APY */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="apy"
                     className="block font-normal tracking-wide"
@@ -1445,16 +1439,16 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("apy")}
                     id="apy"
                     placeholder="For example: 2%"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.apy && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.apy.message}
                     </p>
                   )}
                 </div>
                 {/* start date */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1">
                   <label
                     htmlFor="start_date"
                     className="block font-normal tracking-wide"
@@ -1467,16 +1461,16 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("start_date")}
                     id="start_date"
                     placeholder="For example: DeXa Pack 1"
-                    className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
                   {stakingForm.formState.errors.start_date && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.start_date.message}
                     </p>
                   )}
                 </div>
                 {/* Rewards Release Start  */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="rewards_release_start"
                     className="block font-normal tracking-wide"
@@ -1484,7 +1478,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Rewards Release Start
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                  <div className="mt-2 block w-full appearance-none rounded-lg border-0 text-sm">
                     <DropdownStakingForm
                       placeholder="Select Any"
                       options={firstReward}
@@ -1504,7 +1498,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.rewards_release_start && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {
                         stakingForm.formState.errors.rewards_release_start
                           .message
@@ -1513,7 +1507,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   )}
                 </div>
                 {/* claim period */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="claim_period"
                     className="block font-normal tracking-wide"
@@ -1521,7 +1515,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     Claim Period
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <div className="text-14px mt-2 block w-full appearance-none rounded-lg border-0">
+                  <div className="mt-2 block w-full appearance-none rounded-lg border-0 text-sm">
                     <DropdownStakingForm
                       placeholder="Select Any"
                       options={claimPeriodOptions}
@@ -1533,13 +1527,13 @@ const CreateStaking: NextPageWithLayout = () => {
                     />
                   </div>
                   {stakingForm.formState.errors.claim_period && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.claim_period.message}
                     </p>
                   )}
                 </div>
                 {/*  Show on Centher */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="show_on_centher"
                     className="block font-normal tracking-wide"
@@ -1560,7 +1554,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="no"
                           {...stakingForm.register("show_on_centher")}
-                          className="red-radio text-14px h-4 w-4"
+                          className="red-radio h-4 w-4 text-sm"
                         />
                         <label
                           htmlFor="red-radio1"
@@ -1575,7 +1569,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="yes"
                           {...stakingForm.register("show_on_centher")}
-                          className="green-radio text-14px h-4 w-4"
+                          className="green-radio h-4 w-4 text-sm"
                         />
                         <label
                           htmlFor="green-radio1"
@@ -1588,19 +1582,19 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                   {stakingForm.watch("show_on_centher") === "yes" && (
                     <p
-                      className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                      className={`text-gradient pb-2 pt-1 text-xs font-medium`}
                     >
                       This option costs 1 BNB when selecting YES
                     </p>
                   )}
                   {stakingForm.formState.errors.show_on_centher && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.show_on_centher.message}
                     </p>
                   )}
                 </div>
                 {/* Liquidity Pool Provided */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="liquidity_pool_provided"
                     className="block font-normal tracking-wide"
@@ -1621,7 +1615,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="no"
                           {...stakingForm.register("liquidity_pool_provided")}
-                          className="red-radio text-14px h-4 w-4"
+                          className="red-radio h-4 w-4 text-sm"
                           onClick={() => setIsLP("no")}
                         />
                         <label
@@ -1637,7 +1631,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           type="radio"
                           value="yes"
                           {...stakingForm.register("liquidity_pool_provided")}
-                          className="green-radio text-14px h-4 w-4"
+                          className="green-radio h-4 w-4 text-sm"
                           onClick={() => setIsLP("yes")}
                         />
                         <label
@@ -1650,7 +1644,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     </div>
                   </div>
                   {stakingForm.formState.errors.liquidity_pool_provided && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {
                         stakingForm.formState.errors.liquidity_pool_provided
                           .message
@@ -1659,7 +1653,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   )}
                 </div>
                 {/*    Minimum Stakable Amount */}
-                <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                   <label
                     htmlFor="min_staking_amount"
                     className="block font-normal tracking-wide"
@@ -1672,17 +1666,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     {...stakingForm.register("min_staking_amount")}
                     id="min_staking_amount"
                     placeholder="Example: 1000"
-                    className="text-14px mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                   />
-                  <p
-                    className={`text-12px text-gradient pb-2 pt-1 font-medium`}
-                  >
+                  <p className={`text-gradient pb-2 pt-1 text-xs font-medium`}>
                     if you set a min value then staking amount is always a
                     coefficient of this value, for example if min value is 250,
                     then allowed amounts are 250,500,750,1000,etc
                   </p>
                   {stakingForm.formState.errors.min_staking_amount && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.min_staking_amount.message}
                     </p>
                   )}
@@ -1690,7 +1682,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 {
                   /* Maximum Stakable Amount */
                   isLP == "yes" ? (
-                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                    <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                       <label
                         htmlFor="max_staking_amount"
                         className="block font-normal tracking-wide"
@@ -1707,9 +1699,7 @@ const CreateStaking: NextPageWithLayout = () => {
                       />
 
                       {stakingForm.formState.errors.max_staking_amount && (
-                        <p
-                          className={`text-12px pb-2 font-medium text-red-500`}
-                        >
+                        <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {
                             stakingForm.formState.errors.max_staking_amount
                               .message
@@ -1723,7 +1713,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 {
                   /* Total Supply */
                   isLP == "yes" ? (
-                    <div className="text-14px col-span-2 mb-6 w-full font-medium text-white md:col-span-1 md:mb-0">
+                    <div className="col-span-2 mb-6 w-full text-sm font-medium text-white md:col-span-1 md:mb-0">
                       <label
                         htmlFor="total_supply"
                         className="block font-normal tracking-wide"
@@ -1739,15 +1729,13 @@ const CreateStaking: NextPageWithLayout = () => {
                         className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
                       />
                       <p
-                        className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                        className={`text-gradient pb-2 pt-1 text-xs font-medium`}
                       >
                         How much of the Token you want to make available for
                         staking
                       </p>
                       {stakingForm.formState.errors.total_supply && (
-                        <p
-                          className={`text-12px pb-2 font-medium text-red-500`}
-                        >
+                        <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {stakingForm.formState.errors.total_supply.message}
                         </p>
                       )}
@@ -1756,12 +1744,12 @@ const CreateStaking: NextPageWithLayout = () => {
                 }
 
                 {/*  Metadata */}
-                <div className="text-14px col-span-2 w-full font-medium text-white">
+                <div className="col-span-2 w-full text-sm font-medium text-white">
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
                   </label>
                   <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
-                    <span className="text-14px text-gray-shade-17">
+                    <span className="text-sm text-gray-shade-17">
                       Add metadata here{" "}
                     </span>
                     {metaDataList.length < 8 && (
@@ -1776,7 +1764,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   </div>
                   {metaDataErr && (
                     <p
-                      className={`text-12px pb-2 pt-[2px] font-medium text-red-500`}
+                      className={`pb-2 pt-[2px] text-xs font-medium text-red-500`}
                     >
                       {metaDataErr}
                     </p>
@@ -1803,10 +1791,10 @@ const CreateStaking: NextPageWithLayout = () => {
                             >
                               <IoIosClose className="text-xl text-white" />
                             </button>
-                            <h5 className="text-12px textGradient font-medium">
+                            <h5 className="textGradient text-xs font-medium">
                               {item.title}
                             </h5>
-                            <h6 className="text-14px font-semibold text-white">
+                            <h6 className="text-sm font-semibold text-white">
                               {item.data}
                             </h6>
                           </div>
@@ -1823,13 +1811,13 @@ const CreateStaking: NextPageWithLayout = () => {
                   onClick={() => {
                     setConnectWalletModal(true);
                   }}
-                  className="text-14px mx-auto mt-5 w-[45%]"
+                  className="mx-auto mt-5 w-[45%] text-sm"
                 />
               ) : (
                 <Button
                   title="Next"
                   variant="primary"
-                  className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                  className={cn("mx-auto mt-5 w-[45%] text-sm", {
                     hidden: formStep == 1,
                   })}
                   onClick={handleNext}
@@ -1845,7 +1833,7 @@ const CreateStaking: NextPageWithLayout = () => {
               >
                 <div className="mt-8 flex w-full flex-col gap-2 p-[2px] text-center">
                   <div className="flex w-full flex-col gap-2">
-                    <label className="text-14px text-start font-normal text-white">
+                    <label className="text-start text-sm font-normal text-white">
                       Type
                     </label>
                     <input
@@ -1854,13 +1842,13 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="title"
                       autoComplete="off"
                       placeholder="Project"
-                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  px-5 py-3 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
+                      className="w-full rounded-lg border-0  !bg-black-shade-2 px-5  py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
                       onChange={handleMetaDataChange}
                       value={metaDataDetails.title}
                     />
                   </div>
                   <div className="flex w-full flex-col gap-2">
-                    <label className="text-14px text-start font-normal text-white">
+                    <label className="text-start text-sm font-normal text-white">
                       Name
                     </label>
                     <input
@@ -1869,13 +1857,13 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="data"
                       autoComplete="off"
                       placeholder="Premium"
-                      className="text-14px w-full rounded-lg  border-0 !bg-black-shade-2  px-5 py-3 font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
+                      className="w-full rounded-lg border-0  !bg-black-shade-2 px-5  py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
                       onChange={handleMetaDataChange}
                       value={metaDataDetails.data}
                     />
                   </div>
                   {metaDataErr && (
-                    <p className={`text-12px pb-2 font-medium text-red-500`}>
+                    <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {metaDataErr}
                     </p>
                   )}
@@ -1901,7 +1889,7 @@ const CreateStaking: NextPageWithLayout = () => {
             <div className="flex w-full flex-col gap-6 rounded-[20px] border-2 border-gray-shade-3 bg-black-shade-9  p-3 fmd:p-6">
               <div className="mb-2 grid w-full gap-4 fmd:grid-cols-2 fmd:gap-6">
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
-                  <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="whitepaper"
                       className="block font-normal tracking-wide"
@@ -1914,15 +1902,15 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       id="whitepaper"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.whitepaper && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.whitepaper.message}
                       </p>
                     )}
                   </div>
-                  <div className="text-14px col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="website_url"
                       className="block font-normal tracking-wide"
@@ -1935,10 +1923,10 @@ const CreateStaking: NextPageWithLayout = () => {
                       type="text"
                       id="website_url"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.website_url && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.website_url.message}
                       </p>
                     )}
@@ -1946,7 +1934,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
 
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="facebook"
                       className="block font-normal tracking-wide"
@@ -1958,16 +1946,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("facebook")}
                       id="facebook"
                       placeholder="Example: yourlogo.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.facebook && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.facebook.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="twitter"
                       className="block font-normal tracking-wide"
@@ -1979,16 +1967,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("twitter")}
                       id="twitter"
                       placeholder="Example: t.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.twitter && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.twitter.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="github"
                       className="block font-normal tracking-wide"
@@ -2000,16 +1988,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("github")}
                       id="github"
                       placeholder="Example: github.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.github && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.github.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="telegram"
                       className="block font-normal tracking-wide"
@@ -2021,16 +2009,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("telegram")}
                       id="telegram"
                       placeholder="Example: yourtel.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.telegram && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.telegram.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="instagram"
                       className="block font-normal tracking-wide"
@@ -2042,16 +2030,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("instagram")}
                       id="instagram"
                       placeholder="Example: instagram.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.instagram && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.instagram.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="discord"
                       className="block font-normal tracking-wide"
@@ -2063,16 +2051,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("discord")}
                       id="discord"
                       placeholder="Example: yourweb.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.discord && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.discord.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="reddit"
                       className="block font-normal tracking-wide"
@@ -2084,10 +2072,10 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("reddit")}
                       id="reddit"
                       placeholder="Example: reddit.com/"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.reddit && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.reddit.message}
                       </p>
                     )}
@@ -2095,7 +2083,7 @@ const CreateStaking: NextPageWithLayout = () => {
                 </div>
 
                 <div className="col-span-2 mb-2 grid w-full gap-6 border-b-2 border-gray-shade-3 pb-8 md:grid-cols-2">
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="explorers"
                       className="block font-normal tracking-wide"
@@ -2108,16 +2096,16 @@ const CreateStaking: NextPageWithLayout = () => {
                       {...stakingForm.register("explorers")}
                       id="explorers"
                       placeholder="Example: BscScan"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.explorers && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.explorers.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px  col-span-2 w-full font-medium text-white md:col-span-1">
+                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="category"
                       className="block font-normal tracking-wide"
@@ -2140,18 +2128,18 @@ const CreateStaking: NextPageWithLayout = () => {
                       )}
                     />
                     <p
-                      className={`text-12px text-gradient pb-2 pt-1 font-medium`}
+                      className={`text-gradient pb-2 pt-1 text-xs font-medium`}
                     >
                       You can select multiple as categories
                     </p>
                     {stakingForm.formState.errors.category && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.category.message}
                       </p>
                     )}
                   </div>
 
-                  <div className="text-14px col-span-2 w-full font-medium text-white">
+                  <div className="col-span-2 w-full text-sm font-medium text-white">
                     <label
                       htmlFor="description"
                       className="block font-normal tracking-wide"
@@ -2164,17 +2152,17 @@ const CreateStaking: NextPageWithLayout = () => {
                       id="description"
                       rows={4}
                       placeholder="Example: This is the best project"
-                      className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                     />
                     {stakingForm.formState.errors.description && (
-                      <p className={`text-12px pb-2 font-medium text-red-500`}>
+                      <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.description.message}
                       </p>
                     )}
                   </div>
                 </div>
 
-                <div className="text-14px col-span-2 w-full font-medium text-white">
+                <div className="col-span-2 w-full text-sm font-medium text-white">
                   <label
                     htmlFor="jobTitle"
                     className="block font-normal tracking-wide"
@@ -2184,7 +2172,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <div className="mt-4 w-full rounded-lg border-[1px] border-gray-shade-3">
                     <div className="grid gap-6 p-6 pb-0  md:grid-cols-2">
                       {/* Job title input */}
-                      <div className="text-14px w-full font-medium text-white">
+                      <div className="w-full text-sm font-medium text-white">
                         <label
                           htmlFor="jobTitle"
                           className="block font-normal tracking-wide"
@@ -2196,14 +2184,14 @@ const CreateStaking: NextPageWithLayout = () => {
                           name="jobTitle"
                           id="jobTitle"
                           placeholder="Example: CEO, CTO, COO etc"
-                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                          className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                           value={memberData.jobTitle}
                           onChange={handleMemberInputChange}
                         />
                       </div>
 
                       {/* Wallet public address input */}
-                      <div className="text-14px w-full font-medium text-white">
+                      <div className="w-full text-sm font-medium text-white">
                         <label
                           htmlFor="walletAddress"
                           className="block font-normal tracking-wide"
@@ -2215,15 +2203,13 @@ const CreateStaking: NextPageWithLayout = () => {
                           name="walletAddress"
                           id="walletAddress"
                           placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
-                          className="text-14px mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
+                          className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
                           value={memberData.walletAddress}
                           onChange={handleMemberInputChange}
                         />
                       </div>
                       {memberError && (
-                        <p
-                          className={`text-12px pb-2 font-medium text-red-500`}
-                        >
+                        <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {memberError}
                         </p>
                       )}
@@ -2235,7 +2221,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         title="Add Members"
                         onClick={handleAddMember}
                         variant="primary"
-                        className="text-14px max-w-fit"
+                        className="max-w-fit text-sm"
                         disabled={
                           !memberData.jobTitle || !memberData.walletAddress
                         }
@@ -2274,14 +2260,14 @@ const CreateStaking: NextPageWithLayout = () => {
                   onClick={() => {
                     setConnectWalletModal(true);
                   }}
-                  className="text-14px mx-auto mt-5 w-[45%]"
+                  className="mx-auto mt-5 w-[45%] text-sm"
                 />
               ) : (
                 <Button
                   title="Review and Submit"
                   onClick={stakingForm.handleSubmit(submitForm)}
                   variant="primary"
-                  className={cn("text-14px mx-auto mt-5 w-[45%]", {
+                  className={cn("mx-auto mt-5 w-[45%] text-sm", {
                     hidden: formStep == 0,
                   })}
                   disabled={!stakingForm.formState.isValid}

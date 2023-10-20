@@ -5,8 +5,8 @@ export const LevelParentCard = ({ parentData }: any) => {
     <div className="w-full rounded-t-lg  bg-background-shade-3  ">
       <div className="flex items-center justify-between gap-2 p-3 pb-5">
         <div className="flex flex-col gap-2">
-          <h5 className="text-12px font-medium text-gray-shade-19">LEVEL</h5>
-          <h6 className="text-14px font-semibold text-white-shade-1">
+          <h5 className="text-xs font-medium text-gray-shade-19">LEVEL</h5>
+          <h6 className="text-sm font-semibold text-white-shade-1">
             {parentData?.level}
           </h6>
         </div>
@@ -21,7 +21,7 @@ export const LevelParentCard = ({ parentData }: any) => {
         `}
         >
           <h6
-            className={`text-12px font-medium 
+            className={`text-xs font-medium 
             ${parentData?.level === "01" && "text-[#FEBF32]"}
             ${parentData?.level === "02" && "text-[#D35DB9]"}
             ${parentData?.level === "03" && "text-[#45F0D1]"}
@@ -36,19 +36,19 @@ export const LevelParentCard = ({ parentData }: any) => {
       </div>
       <div className="flex justify-between gap-2 border-t-2 border-gray-shade-3 bg-background-shade-2 p-3 pb-4">
         <div className="flex flex-col gap-2">
-          <h5 className="text-12px font-medium text-gray-shade-19">People</h5>
-          <h6 className="text-14px font-semibold text-white-shade-1">
+          <h5 className="text-xs font-medium text-gray-shade-19">People</h5>
+          <h6 className="text-sm font-semibold text-white-shade-1">
             {parentData?.people}
           </h6>
         </div>
         <div className="flex flex-col items-end  gap-2">
-          <h5 className=" text-12px font-medium text-gray-shade-19 ">
+          <h5 className=" text-xs font-medium text-gray-shade-19 ">
             Total BUSD Generated
           </h5>
-          <h6 className="text-14px font-semibold text-white-shade-1">
+          <h6 className="text-sm font-semibold text-white-shade-1">
             {`${parentData?.generatedBUSD} BUSD`}
           </h6>
-          {/* <h6 className="text-white-shade-1 text-14px font-semibold">
+          {/* <h6 className="text-white-shade-1 text-sm font-semibold">
             {`${parentData?.generatedNTR} NTR`}
           </h6> */}
         </div>

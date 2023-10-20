@@ -52,7 +52,7 @@ const DropdownStakingForm: React.FC<DropdownProps> = ({
     >
       <div
         className={clsx(
-          `text-14px flex h-11 w-full cursor-pointer items-center justify-between rounded-lg px-4 font-semibold text-white`,
+          `flex h-11 w-full cursor-pointer items-center justify-between rounded-lg px-4 text-sm font-semibold text-white`,
           error && "border-red-500"
         )}
         onClick={() => setIsOpen(!isOpen)}

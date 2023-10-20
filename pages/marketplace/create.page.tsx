@@ -156,15 +156,15 @@ const CreateNFT: NextPageWithLayout = () => {
                 className="h-16 w-16 rounded-xl object-cover"
               />
             </div>
-            <h2 className="text-18px word-break font-semibold text-white">
+            <h2 className="word-break text-base font-semibold text-white f2xl:text-lg">
               {nftData?.name}
             </h2>
-            <h3 className="text-14px font-normal text-white">
+            <h3 className="text-sm font-normal text-white">
               {`Marketplace fee ${normalizeValue(
                 BlockchainConfig.fee.createItemFeeForMarketplace
               )} BNB`}
             </h3>
-            <h6 className="text-14px mt-2 flex items-center justify-center gap-2 font-bold text-white">
+            <h6 className="mt-2 flex items-center justify-center gap-2 text-sm font-bold text-white">
               <span>Price:</span>
               <BNBIcon />
               {normalizeValue(nftData?.price)} BNB{" "}
@@ -195,12 +195,12 @@ const CreateNFT: NextPageWithLayout = () => {
         <div className={modalBodyWrapper2}>
           <div className="flex flex-col items-center justify-center">
             {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-18px mt-2 font-semibold text-white">
+            <h2 className="mt-2 text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? "NFT Created Successfully" : "Failed!"}
             </h2>
           </div>
           {txStatus && (
-            <p className="text-14px mt-2 font-normal leading-6 text-gray-shade-2">
+            <p className="mt-2 text-sm font-normal leading-6 text-gray-shade-2">
               Congratulations! You have successfully created{" "}
               <span className="word-break text-white">{nftData?.name} </span>{" "}
               NFT on <b> Centher </b> NFT platform, Click view on profile to
@@ -208,7 +208,7 @@ const CreateNFT: NextPageWithLayout = () => {
             </p>
           )}
           {!txStatus && (
-            <p className="text-14px font-normal leading-6 text-gray-shade-2">
+            <p className="text-sm font-normal leading-6 text-gray-shade-2">
               Transaction Failed.
             </p>
           )}
@@ -244,10 +244,10 @@ const CreateNFT: NextPageWithLayout = () => {
       content: () => (
         <div className={modalBodyWrapper2}>
           <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-18px font-semibold leading-6 text-white">
+          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
             Transaction in progress
           </h3>
-          <p className="text-14px font-normal leading-6 text-gray-shade-2">
+          <p className="text-sm font-normal leading-6 text-gray-shade-2">
             Your transaction is in progress, Please wait.
           </p>
         </div>
