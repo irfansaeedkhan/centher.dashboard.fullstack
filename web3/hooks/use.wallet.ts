@@ -33,7 +33,7 @@ export const useWallet = () => {
   const getSigner = useCallback(() => {
     const connected_wallet = getWalletType();
     if (connected_wallet) {
-      if (connected_wallet == WalletEnum.METAMASK) {
+      if (connected_wallet == WalletEnum.METAMASK && library != undefined) {
         return library.getSigner();
       } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
         return signer;
