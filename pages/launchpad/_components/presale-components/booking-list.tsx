@@ -1,16 +1,16 @@
 import React from "react";
-
-import { Booking, PreBookingRounds } from "@/lib/get-pre-bookings-stats/types";
+import { PreBookingRounds } from "@/lib/get-pre-bookings-stats/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { PurchaseHistory } from "../../pre-booking";
 
 interface Props {
   recievableTokenSymbol: string;
-  bookings: Booking[];
+  bookings: PurchaseHistory[];
   rounds: PreBookingRounds;
 }
 
 // TODO: Move this function to library file
-const Check_PreBooking_Form_TransactionHash = (booking: Booking) => {
+const Check_PreBooking_Form_TransactionHash = (booking: PurchaseHistory) => {
   if (booking.trx_hash.includes("SEED")) {
     return <p>SEED TRX</p>;
   } else if (booking.trx_hash.includes("Apex")) {
@@ -51,7 +51,6 @@ const Check_PreBooking_Form_TransactionHash = (booking: Booking) => {
 export const BookingList: React.FC<Props> = ({
   recievableTokenSymbol,
   bookings,
-  rounds,
 }) => {
   return (
     <div className="scrollSetLight2 overflow-x-auto">
@@ -77,7 +76,7 @@ export const BookingList: React.FC<Props> = ({
           {bookings.map((booking) => {
             return (
               <tr
-                key={booking.id}
+                key={booking.trx_hash}
                 className="h-[64px] border-b border-gray-shade-3 bg-transparent text-sm font-medium text-white last:border-none"
               >
                 <td className="whitespace-nowrap px-4 py-2 fsm:px-8">
@@ -93,20 +92,21 @@ export const BookingList: React.FC<Props> = ({
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
                   {booking.payment_token_amount.toString().includes(".")
-                    ? booking.payment_token_amount.toFixed(2)
+                    ? Number(booking.payment_token_amount).toFixed(2)
                     : booking.payment_token_amount}{" "}
                   {booking.payment_token_symbol}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
                   {booking.receivable_token_amount.toString().includes(".")
-                    ? booking.receivable_token_amount.toFixed(2)
+                    ? Number(booking.receivable_token_amount).toFixed(2)
                     : booking.receivable_token_amount}{" "}
                   {booking.receivable_token_symbol}
                 </td>
                 <td className="whitespace-nowrap px-4 py-2">
                   {
-                    rounds[booking.round]
-                      .receivable_token_price_in_payment_token
+                    // rounds[booking.round]
+                    //   .receivable_token_price_in_payment_token
+                    booking.roundPrice
                   }{" "}
                   {booking.payment_token_symbol}
                 </td>
