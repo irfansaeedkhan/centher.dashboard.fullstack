@@ -55,6 +55,7 @@ export interface Booking {
   receivable_token_amount: number;
   receivable_token_name: string;
   receivable_token_symbol: string;
+  roundPrice: string;
   trx_hash: string;
   round: number;
   createdAt: number;

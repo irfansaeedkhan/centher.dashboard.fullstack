@@ -66,6 +66,7 @@ export const preBookingStatistics: PreBookingStats = {
         receivable_token_amount: 100 / 0.8,
         receivable_token_name: "DeXa Coin",
         receivable_token_symbol: "DXC",
+        roundPrice: "0.8",
         createdAt: 1620187200,
       },
       {
@@ -79,6 +80,7 @@ export const preBookingStatistics: PreBookingStats = {
         receivable_token_amount: 179910 / 1.8,
         receivable_token_name: "DeXa Coin",
         receivable_token_symbol: "DXC",
+        roundPrice: "1.2",
         createdAt: 1620197200,
       },
     ],
@@ -94,6 +96,7 @@ export const preBookingStatistics: PreBookingStats = {
         receivable_token_amount: 179910 / 1.8, // 179820 BUSD / 1.8 BUSD = 99900 DeXa
         receivable_token_name: "DeXa Coin",
         receivable_token_symbol: "DXC",
+        roundPrice: "1.5",
         createdAt: 1620197200,
       },
     ],

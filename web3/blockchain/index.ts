@@ -523,7 +523,6 @@ export class BlockchainRead {
     if (error) {
       throw error;
     }
-
     return data.presaleGenealogyHistories;
   }
 
@@ -567,6 +566,50 @@ export class BlockchainRead {
     };
     const { data, error } = await ApolloProvider.query(
       QueryNames.PURCHASE_WITH_NTR,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    return data.presalePurchaseWithNtrHistories;
+  }
+
+  static async purchaseInBUSDByUser(
+    first: number,
+    skip: number,
+    publicKey: string
+  ): Promise<any[]> {
+    const variables = {
+      first,
+      skip,
+      publicKey,
+    };
+
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.PURCHASE_WITH_BUSD_BY_USER,
+      variables
+    );
+
+    if (error) {
+      throw error;
+    }
+    return data.presalePurchaseWithBusdHistories;
+  }
+
+  static async purchaseInNTRByUser(
+    first: number,
+    skip: number,
+    publicKey: string
+  ): Promise<any> {
+    const variables = {
+      first,
+      skip,
+      publicKey,
+    };
+    const { data, error } = await ApolloProvider.query(
+      QueryNames.PURCHASE_WITH_NTR_BY_USER,
       variables
     );
 

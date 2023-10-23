@@ -495,6 +495,7 @@ export const referralRewardsInPresaleQuery = `
       id
       createdAt
       amount
+      txId
     }
   }
 `;
@@ -521,6 +522,7 @@ export const purchaseWithBusdHistory = `
       createdAt
       busdAmountForOwner
       busdAmount
+      txId
     }
   }
 `;
@@ -533,6 +535,33 @@ export const purchaseWithNtrHistory = `
       ntrAmountForOwner
       ntrAmount
       createdAt
+      txId
+    }
+  }
+`;
+
+export const purchaseWithBusdHistoryByUser = `
+  query MyQuery($first: Int!, $skip: Int!, $publicKey: Bytes = "") {
+    presalePurchaseWithBusdHistories(skip: $skip, first: $first, where: {publicKey: $publicKey}) {
+      roundIndex
+      publicKey
+      createdAt
+      busdAmountForOwner
+      busdAmount
+      txId
+    }
+  }
+`;
+
+export const purchaseWithNtrHistoryByUser = `
+  query MyQuery($first: Int!, $skip: Int!, $publicKey: Bytes = "") {
+    presalePurchaseWithNtrHistories(first: $first, skip: $skip, where: {publicKey: $publicKey}) {
+      roundIndex
+      publicKey
+      ntrAmountForOwner
+      ntrAmount
+      createdAt
+      txId
     }
   }
 `;
