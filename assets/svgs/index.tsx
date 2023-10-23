@@ -172,6 +172,9 @@ export { default as TeamMemberIcon } from "./team-member-icon.svg";
 export { default as IconFailure } from "./icon-failure.svg";
 export { default as XLogo } from "./x-logo.svg";
 export { default as ChatProfile } from "./chat-profile-icon.svg";
+export { default as XIcon } from "./x-icon.svg";
+export { default as FacebookIcon } from "./facebook-circle.svg";
+export { default as LinkIconCollection } from "./link-icon.svg";
 export { default as USDTIcon } from "./usdt-icon.svg";
 export { default as EyeOffFollow } from "./eye-off-following.svg";
 
