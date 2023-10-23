@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Button from "@/components/button";
+import { clsx } from "clsx";
+import { EyeOffFollow } from "@/assets/svgs";
 import { AppRoutes } from "@/constants/app.routes";
 import { RecommendedPeople } from "@/lib/recommended-people";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -82,14 +83,27 @@ const RecommendedUserCard: React.FC<RecommendedUserCardProps> = ({
           </h6>
         </div>
       </div>
-
-      <Button
-        title={user.is_followed_by_loggedin_user ? "Following" : "Follow"}
+      <div
+        title={user.is_followed_by_loggedin_user ? "Unfollow" : "Follow"}
+        className={clsx(
+          "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+          user.is_followed_by_loggedin_user
+            ? " border-gray-shade-3"
+            : " gradient-border-3 p-[1px]"
+        )}
         onClick={() => followUser(user._id)}
-        variant="primary"
-        className="h-10 w-[98px] text-[14px]"
-        borderRounded="14px"
-      />
+      >
+        {user.is_followed_by_loggedin_user ? (
+          <EyeOffFollow />
+        ) : (
+          <Image
+            src={"/images/gradient-eye.png"}
+            alt={"Follow"}
+            width={24}
+            height={24}
+          />
+        )}
+      </div>
     </div>
   );
 };

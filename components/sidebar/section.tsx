@@ -38,9 +38,10 @@ export const Section: React.FC<SectionProps> = (props) => {
             <div
               key={item.label}
               className={clsx(
-                item.activeList.indexOf(router.pathname) !== -1 &&
-                  "bg-black-shade-7",
-                "flex items-center justify-between py-[6px] pl-6 pr-4"
+                item.activeList.indexOf(router.pathname) !== -1
+                  ? "bg-black-shade-7"
+                  : "hover:bg-black-shade-7/50",
+                "group flex items-center justify-between py-[6px] pl-6 pr-4"
               )}
             >
               <div className={`flex items-center gap-2`}>
@@ -50,7 +51,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                       "h-5 w-5",
                       item.activeList.indexOf(router.pathname) !== -1
                         ? `stroke-white stroke-[1.5]`
-                        : `stroke-gray-shade-7 stroke-[1.5]`
+                        : `stroke-gray-shade-7 stroke-[1.5] group-hover:stroke-white`
                     )}
                   />
                   {item.badge === "citizen" && (
@@ -75,7 +76,7 @@ export const Section: React.FC<SectionProps> = (props) => {
                   className={
                     item.activeList.indexOf(router.pathname) !== -1
                       ? `text-sm font-medium text-white`
-                      : `text-sm font-medium text-gray-shade-7`
+                      : `text-sm font-medium text-gray-shade-7 group-hover:text-white`
                   }
                 >
                   <span>{item.label}</span>
