@@ -60,6 +60,12 @@ const BookingMain = () => {
 
   const GetRefRewards = useCallback(() => {
     getRefRewards(String(user?._id)).then((items) => {
+      items.sort((a, b) => {
+        return (
+          new Date(b.createdAt * 1000).getTime() -
+          new Date(a.createdAt * 1000).getTime()
+        );
+      });
       setRewards(items);
     });
   }, [user?._id]);
@@ -80,8 +86,22 @@ const BookingMain = () => {
 
   useEffect(() => {
     const allPurchases = [...purchaseBusdData, ...purchaseNtrData];
+    const allPurchasesSorted = allPurchases
+      .sort((a, b) => {
+        return (
+          new Date(b.createdAt * 1000).getTime() -
+          new Date(a.createdAt * 1000).getTime()
+        );
+      })
+      .slice(0, 20);
     const myBookings = [...myBusdBookings, ...myNtrBookings];
-    setAllPurchases(allPurchases);
+    myBookings.sort((a, b) => {
+      return (
+        new Date(b.createdAt * 1000).getTime() -
+        new Date(a.createdAt * 1000).getTime()
+      );
+    });
+    setAllPurchases(allPurchasesSorted);
     setMyBookings(myBookings);
     setRewards(rewards);
   }, [
@@ -161,19 +181,9 @@ const BookingMain = () => {
           rounds={preBookingStats.pre_booking.rounds}
           bookings={
             bookingsTab === "recent-bookings"
-              ? allPurchases.sort((a: any, b: any) => {
-                  return (
-                    new Date(b.createdAt * 1000).getTime() -
-                    new Date(a.createdAt * 1000).getTime()
-                  );
-                })
+              ? allPurchases
               : bookingsTab === "my-bookings"
-              ? myBookings.sort((a: any, b: any) => {
-                  return (
-                    new Date(b.createdAt * 1000).getTime() -
-                    new Date(a.createdAt * 1000).getTime()
-                  );
-                })
+              ? myBookings
               : []
           }
         />
