@@ -146,7 +146,7 @@ const StakingReferrals: NextPageWithLayout = () => {
           ?.level || 6;
       sdk
         .getUserReferrals(
-          getSigner(),
+          getSigner()!,
           new GetReferralsInput(
             poolId,
             user._id,
@@ -167,7 +167,7 @@ const StakingReferrals: NextPageWithLayout = () => {
     try {
       if (isAddress(user) && sdk && poolId) {
         setClaimRefRewardInProgress(user);
-        await sdk.claimRefReward(getSigner(), +poolId, user);
+        await sdk.claimRefReward(getSigner()!, +poolId, user);
         modal.createModal(ModalType.successFuncModal);
       } else throw new Error("invalid params");
     } catch (error) {

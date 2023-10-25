@@ -143,12 +143,13 @@ export const NonNFTDescription = ({
 
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
-    if (getSigner() && data) {
+    const signer = getSigner();
+    if (signer && data) {
       try {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              getSigner(),
+              signer!,
               data.collection
             );
 
@@ -158,7 +159,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.callListItemForSale(
-          getSigner(),
+          signer!,
           data.collection,
           data.nftId,
           listingPrice
@@ -206,7 +207,7 @@ export const NonNFTDescription = ({
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              getSigner(),
+              getSigner()!,
               data.collection
             );
 
@@ -216,7 +217,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.callCreateAuction(
-          getSigner(),
+          getSigner()!,
           data.collection,
           data.nftId,
           Number(auctionPrice),
@@ -245,7 +246,7 @@ export const NonNFTDescription = ({
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              getSigner(),
+              getSigner()!,
               data.collection
             );
 
@@ -255,7 +256,7 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.transferNftWithLock(
-          getSigner(),
+          getSigner()!,
           data.collection,
           data.nftId,
           input.ReceiverAddress,

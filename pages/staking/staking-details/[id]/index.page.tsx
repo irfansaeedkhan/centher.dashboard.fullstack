@@ -93,8 +93,9 @@ const StakingDetails: NextPageWithLayout = () => {
   }, [getSigner]);
 
   useEffect(() => {
-    if (sdk && poolId && user && getSigner()) {
-      sdk.getUserStakes(getSigner(), +poolId, user._id).then((data) => {
+    const signer = getSigner();
+    if (sdk && poolId && user && signer) {
+      sdk.getUserStakes(signer!, +poolId, user._id).then((data) => {
         setUserStaked(data);
       });
     }

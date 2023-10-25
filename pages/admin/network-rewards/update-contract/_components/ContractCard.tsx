@@ -154,7 +154,7 @@ export const ContractCard = ({ data, refreshRoundsInfo }: any) => {
     setPendingTx(true);
     try {
       await BlockchainWrite.adminCallUpdateRoundInfo(
-        getSigner(),
+        getSigner()!,
         data.round,
         _startTime,
         _endTime,

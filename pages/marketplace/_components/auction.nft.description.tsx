@@ -146,7 +146,7 @@ export const AuctionNftDescription = ({
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
-        getSigner(),
+        getSigner()!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -165,7 +165,7 @@ export const AuctionNftDescription = ({
     try {
       ProceedFunc();
       const result = await BlockchainWrite.callCancelAuction(
-        getSigner(),
+        getSigner()!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );

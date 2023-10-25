@@ -65,7 +65,7 @@ export const RegisterForm: React.FC = () => {
     try {
       let res;
       res = await registerWithSmartContract(
-        getSigner(),
+        getSigner()!,
         signupState,
         feeModal.fee
       );
@@ -94,7 +94,7 @@ export const RegisterForm: React.FC = () => {
 
     try {
       const registrationFee = await getRegistrationFee(
-        getSigner(),
+        getSigner()!,
         signupState
       );
       setFeeModal((prev) => ({ ...prev, fee: registrationFee }));

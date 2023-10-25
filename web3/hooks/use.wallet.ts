@@ -1,12 +1,14 @@
 import { useWeb3React } from "@web3-react/core";
 import { ethers } from "ethers";
-import React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { injectedConnector } from "@/web3/connector";
 import toast from "react-hot-toast";
 import { useWalletService } from "./use.wallet.service";
-import { TransactionReceipt, Web3Provider } from "@ethersproject/providers";
-import { MetamaskIcon } from "@/assets/svgs";
+import {
+  JsonRpcSigner,
+  TransactionReceipt,
+  Web3Provider,
+} from "@ethersproject/providers";
 export enum WalletEnum {
   METAMASK = "METAMASK",
   WALLET_SERVICE = "WALLET_SERVICE",
@@ -30,16 +32,21 @@ export const useWallet = () => {
     }
   }, [account, address]);
 
-  const getSigner = useCallback(() => {
+  const getSigner = useCallback((): JsonRpcSigner | null => {
     const connected_wallet = getWalletType();
     if (connected_wallet) {
-      if (connected_wallet == WalletEnum.METAMASK && library != undefined) {
+      if (
+        connected_wallet == WalletEnum.METAMASK &&
+        account &&
+        library != undefined
+      ) {
         return library.getSigner();
       } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
         return signer;
       }
     }
-  }, [library, signer]);
+    return null;
+  }, [account, library, signer]);
 
   const updateConnectedAddress = useCallback(async () => {
     const connectedAccount = await getConnectedAccount();

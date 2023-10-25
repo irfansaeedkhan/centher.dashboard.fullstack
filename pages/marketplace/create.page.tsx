@@ -85,7 +85,7 @@ const CreateNFT: NextPageWithLayout = () => {
       );
 
       const result = await BlockchainWrite.callCreateNFT(
-        getSigner(),
+        getSigner()!,
         castedNftData.collection,
         "ipfs:/" + nftMetadataPath,
         castedNftData.supply,
@@ -277,7 +277,7 @@ const CreateNFT: NextPageWithLayout = () => {
           clearForm={clearForm}
         />
         <CreateNFTForm
-          library={getSigner()}
+          library={getSigner()!}
           createNFT={createNFT}
           clearForm={clearForm}
           asset={asset}

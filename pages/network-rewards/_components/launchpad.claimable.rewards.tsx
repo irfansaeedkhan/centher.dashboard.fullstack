@@ -113,14 +113,15 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
   const handleClaimNTR = async () => {
     try {
-      if (!connectedAddress || !getSigner) return;
+      const signer = getSigner();
+      if (!connectedAddress || !signer) return;
 
       setModal((prev) => ({
         ...prev,
         status: "progress",
       }));
 
-      const result = await BlockchainWrite.callClaimNTRForReferral(getSigner());
+      const result = await BlockchainWrite.callClaimNTRForReferral(signer!);
 
       if (result?.length) {
         setModal((prev) => ({
@@ -176,7 +177,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
       }));
 
       const result = await BlockchainWrite.callClaimBUSDForReferral(
-        getSigner()
+        getSigner()!
       );
 
       if (result?.length) {

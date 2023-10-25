@@ -29,7 +29,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
   const handleReferralRate = async () => {
     setPendingReferralRateTx(true);
     try {
-      await BlockchainWrite.adminChangeReferralRate(getSigner(), rates);
+      await BlockchainWrite.adminChangeReferralRate(getSigner()!, rates);
       toast.success("Changed Referral Percentage Successfully");
     } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
@@ -42,7 +42,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
     setPendingTeamAddressTx(true);
     try {
       await BlockchainWrite.adminChangeCompanyAddress(
-        getSigner(),
+        getSigner()!,
         coreTeamAddress
       );
       toast.success("Changed Core Team Address Successfully");
@@ -57,7 +57,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
     setPendingCompanyAddressTx(true);
     try {
       await BlockchainWrite.adminChangeCoreTeamAddress(
-        getSigner(),
+        getSigner()!,
         companyAddress
       );
       toast.success("Changed Company Address Successfully");

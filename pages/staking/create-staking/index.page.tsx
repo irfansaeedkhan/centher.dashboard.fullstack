@@ -495,7 +495,7 @@ const CreateStaking: NextPageWithLayout = () => {
     };
 
     const isTokenAddressValid = await BlockchainRead.isContractAddress(
-      getSigner(),
+      getSigner()!,
       finalData.token_address
     );
 
@@ -516,7 +516,7 @@ const CreateStaking: NextPageWithLayout = () => {
       !eqAddress(finalData.token_address, finalData.reward_token_address)
     ) {
       const isTokenAddressValid = await BlockchainRead.isContractAddress(
-        getSigner(),
+        getSigner()!,
         finalData.reward_token_address
       );
 
@@ -572,7 +572,7 @@ const CreateStaking: NextPageWithLayout = () => {
     const input: CreatePoolInput = {
       name: data.staking_name,
       startTime: data.start_date,
-      ownerAddress: connectedAddress as string,
+      ownerAddress: connectedAddress,
       stakeToken: data.token_address,
       rewardToken: data.reward_token_address,
       rate:
@@ -647,7 +647,7 @@ const CreateStaking: NextPageWithLayout = () => {
     }
 
     await sdk.createPool(
-      getSigner(),
+      getSigner()!,
       input,
       files,
       affiliateSetting,

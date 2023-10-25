@@ -21,7 +21,7 @@ const RegistrationRewards = ({
 
     setPendingTx(true);
     try {
-      await BlockchainWrite.adminClaimRegistrationBNB(getSigner());
+      await BlockchainWrite.adminClaimRegistrationBNB(getSigner()!);
       setReload(!reload);
       toast.success("Claimed Successfully!");
     } catch (error) {

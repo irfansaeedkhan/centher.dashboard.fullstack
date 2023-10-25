@@ -34,7 +34,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
     setChangeFeeTx(true);
     try {
       await BlockchainWrite.adminChangeRegistrationFees(
-        getSigner(),
+        getSigner()!,
         updateRegistrationFeeWithReferral,
         updateRegistrationFeeWithoutReferral
       );
@@ -51,9 +51,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
     setChangeStatusTx(true);
     try {
       if (registrationDetail.isActive) {
-        await BlockchainWrite.adminPauseRegistration(getSigner());
+        await BlockchainWrite.adminPauseRegistration(getSigner()!);
       } else {
-        await BlockchainWrite.adminUnPauseRegistration(getSigner());
+        await BlockchainWrite.adminUnPauseRegistration(getSigner()!);
       }
 
       toast.success("Changed Registration Statue Successfully");

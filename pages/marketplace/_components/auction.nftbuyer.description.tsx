@@ -160,9 +160,10 @@ export const AuctionNFTBuyerDescription = ({
       setBidModal(false);
       ProceedFunc();
       try {
-        if (getSigner && data) {
+        const signer = getSigner();
+        if (signer && data) {
           const result = await BlockchainWrite.callBidOnAuction(
-            getSigner(),
+            signer!,
             data.collection,
             data.nftId,
             bidPriceVal
@@ -183,7 +184,7 @@ export const AuctionNFTBuyerDescription = ({
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
-        getSigner(),
+        getSigner()!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );

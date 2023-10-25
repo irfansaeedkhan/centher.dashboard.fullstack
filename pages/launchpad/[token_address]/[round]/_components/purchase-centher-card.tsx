@@ -121,7 +121,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         selectedTokenA.tokenName,
         18,
         currentUserAddress,
-        getSigner()
+        getSigner()!
       ).then((tokenBalanace) =>
         setSelectedTokenA((prev) => ({
           ...prev,
@@ -140,7 +140,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
         selectedTokenB.tokenName,
         18,
         currentUserAddress,
-        getSigner()
+        getSigner()!
       ).then((tokenBalanace) =>
         setSelectedTokenB((prev) => ({
           ...prev,
@@ -156,7 +156,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     const tokenAllowance = await getTokenAllowance(
       selectedTokenA.tokenName,
       connectedAddress,
-      getSigner()
+      getSigner()!
     );
     if (
       tokenAllowance !== 0 &&
@@ -201,7 +201,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
     try {
       await BlockchainWrite.getTokenApproval(
         selectedTokenA.tokenName,
-        getSigner()
+        getSigner()!
       );
       toast.success("Authorization successful");
       setModal((prev) => ({
@@ -259,7 +259,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
       await BlockchainWrite.buyToken(
         selectedTokenA.tokenName,
         selectedTokenA.inputValue,
-        getSigner()
+        getSigner()!
       );
 
       refreshContributionInfo();
@@ -400,7 +400,7 @@ export const PurchaseCentherCard: React.FC<Props> = ({
           <TimelinePeriod
             isBUSD={contributionInfo.contributedBusdAmount > 0}
             roundInfo={roundInfo}
-            signer={getSigner()}
+            signer={getSigner()!}
             contributionInfo={contributionInfo}
             refetchContributionInfo={refreshContributionInfo}
           />

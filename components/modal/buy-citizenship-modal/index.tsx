@@ -53,20 +53,23 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   const { user: loggedInUser } = useUser();
 
   useEffect(() => {
-    if (getSigner() && connectedAddress?.length) {
+    const signer = getSigner();
+    if (signer && connectedAddress?.length) {
       setIsConnected(true);
     } else setIsConnected(false);
   }, [getSigner, connectedAddress]);
 
   useEffect(() => {
-    if (getSigner() && connectedAddress) {
-      updateCitizenShipStatus(getSigner(), connectedAddress as string);
+    const signer = getSigner();
+    if (signer && connectedAddress) {
+      updateCitizenShipStatus(signer!, connectedAddress);
     }
   }, [isCitizen, getSigner, connectedAddress, updateCitizenShipStatus]);
 
   useEffect(() => {
-    if (getSigner()) {
-      updatePrices(getSigner());
+    const signer = getSigner();
+    if (signer) {
+      updatePrices(signer!);
     }
   }, [getSigner, updatePrices]);
 
@@ -104,8 +107,10 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
 
   const buyMemberShip = async () => {
     try {
-      await buyCitizenShip(getSigner(), tab, connectedAddress as string);
-      setshowMsg(<CitizenShipSuccessModal />);
+      if (connectedAddress) {
+        await buyCitizenShip(getSigner()!, tab, connectedAddress);
+        setshowMsg(<CitizenShipSuccessModal />);
+      }
     } catch (error: any) {
       setshowMsg(
         <CitizenShipFailureModal

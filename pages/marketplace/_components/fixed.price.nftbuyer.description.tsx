@@ -51,7 +51,7 @@ export const FixedPriceNFTBuyerDescription = ({
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner(),
+          getSigner()!,
           data.collection,
           data.nftId
         );
@@ -94,17 +94,17 @@ export const FixedPriceNFTBuyerDescription = ({
   const handleBuyNFT = async () => {
     try {
       ProceedFunc();
-      if (!data || !loggedInUser || !getSigner()) return;
+      const signer = getSigner();
+      if (!data || !loggedInUser || !signer) return;
 
-      const balance = await getSigner().getBalance(loggedInUser._id);
-
+      const balance = await signer!.getBalance();
       if (balance && balance.lt(`${data.listInfo.price}`)) {
         SuccessFunc(false, "Insufficient balance");
         return;
       }
 
       const result = await BlockchainWrite.callBuyListedItem(
-        getSigner(),
+        signer!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId,
         (data as INFTDetailData).listInfo.price

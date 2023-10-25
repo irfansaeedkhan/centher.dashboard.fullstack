@@ -56,13 +56,13 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
 
     const setSwapHistory = async () => {
       const isSwaped = await BlockchainRead.isTokenSwaped(
-        getSigner(),
+        getSigner()!,
         data.collection,
         data.tokenId
       );
       setSwapedBefore(isSwaped);
     };
-    if (data && data.ipfs) {
+    if (data && data.ipfs && getSigner()) {
       fetchMetadata(data.ipfs);
       setSwapHistory();
     }
@@ -187,7 +187,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       }
 
       await BlockchainWrite.swapDexagon(
-        getSigner(),
+        getSigner()!,
         data.collection,
         data.tokenId
       );

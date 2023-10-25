@@ -95,7 +95,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
       const { name, symbol, category, totalsupply } = collectionData;
 
       await BlockchainWrite.callCreateCollection(
-        getSigner(),
+        getSigner()!,
         name,
         symbol,
         category,
@@ -285,7 +285,7 @@ const CreateNFTCollection: NextPageWithLayout = () => {
         />
         <CreateNFTCollectionForm
           createCollection={createCollection}
-          signer={getSigner()}
+          signer={getSigner()!}
           clearForm={clearForm}
           profile={profile}
           cover={cover}

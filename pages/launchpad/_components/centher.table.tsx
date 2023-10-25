@@ -42,7 +42,7 @@ export const CentherTable: React.FC<CentherTableProps> = ({
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
       await BlockchainWrite.claimTokens(
-        getSigner(),
+        getSigner()!,
         roundInfo.round,
         claimFrom
       );

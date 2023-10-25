@@ -136,7 +136,7 @@ const BookingData: React.FC<Props> = ({ preBookingStats }) => {
         paymentForm.paymentTokenAmount,
         payment_wallet_address,
         contractAddress,
-        getSigner()
+        getSigner()!
       );
 
       setPaymentForm({

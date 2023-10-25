@@ -62,7 +62,7 @@ export const FixedPriceNFTDescription = ({
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner(),
+          getSigner()!,
           data.collection,
           data.nftId
         );
@@ -102,7 +102,7 @@ export const FixedPriceNFTDescription = ({
         setMigrateModal({ ...migrateModal, visibility: false });
         setupWaitingModal();
         const result = await BlockchainWrite.transferNftToCurrentMarketplace(
-          getSigner(),
+          getSigner()!,
           data?.collection as string,
           data?.nftId as number,
           data?.listInfo?.price as number,
@@ -179,7 +179,7 @@ export const FixedPriceNFTDescription = ({
     let success = false;
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
-        getSigner(),
+        getSigner()!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
@@ -204,14 +204,15 @@ export const FixedPriceNFTDescription = ({
     setupWaitingModal();
     try {
       validateProvider();
-      if (!data?.collection || !data?.nftId || !newPrice) {
+      const signer = getSigner();
+      if (!data?.collection || !data?.nftId || !newPrice || !signer) {
         throw new Error(
           "Something went wrong. please refresh the page or try later."
         );
       }
 
       result = await BlockchainWrite.callEditItemForSale(
-        getSigner(),
+        signer!,
         data.collection,
         data.nftId,
         newPrice

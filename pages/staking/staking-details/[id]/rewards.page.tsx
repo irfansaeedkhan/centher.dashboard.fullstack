@@ -80,7 +80,7 @@ const ClaimRewards: NextPageWithLayout = () => {
     try {
       if (sdk && poolId) {
         setClaimInProcess(true);
-        await sdk.claimReward(getSigner(), +poolId);
+        await sdk.claimReward(getSigner()!, +poolId);
         setClaimInProcess(false);
         modal.createModal(ModalType.successFuncModal, {
           message:
@@ -111,7 +111,7 @@ const ClaimRewards: NextPageWithLayout = () => {
       if (sdk && poolId) {
         modal.dismissModal();
         setCancelInProcess(true);
-        await sdk.unstake(getSigner(), +poolId, cancelAmount);
+        await sdk.unstake(getSigner()!, +poolId, cancelAmount);
         modal.createModal(ModalType.successFuncModal, {
           title: "Cancel Staking",
           message:
@@ -132,7 +132,7 @@ const ClaimRewards: NextPageWithLayout = () => {
     try {
       if (sdk && poolId) {
         setRestakeInProgress(true);
-        await sdk.restake(getSigner(), +poolId);
+        await sdk.restake(getSigner()!, +poolId);
         setRestakeInProgress(false);
         modal.createModal(ModalType.successFuncModal, {
           message:
@@ -218,7 +218,7 @@ const ClaimRewards: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (poolId && getSigner() && user && claimableReward == "0") {
-      sdk?.getUserStakes(getSigner(), +poolId, user._id).then((data) => {
+      sdk?.getUserStakes(getSigner()!, +poolId, user._id).then((data) => {
         setClaimableReward(data.totalClaimableReward);
       });
     }
@@ -238,7 +238,7 @@ const ClaimRewards: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (sdk && poolId && user && getSigner()) {
-      sdk.getUserStakes(getSigner(), +poolId, user._id).then((data) => {
+      sdk.getUserStakes(getSigner()!, +poolId, user._id).then((data) => {
         setUserStaked(data);
       });
     }

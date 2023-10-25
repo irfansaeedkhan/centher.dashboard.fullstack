@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber, ethers } from "ethers";
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
 import dayjs from "dayjs";
 
 import { customLog } from "@/utils/custom.log";
@@ -254,7 +254,7 @@ export const getTokenBalance = async (
   tokenName: TokenName,
   tokenDecimals: number,
   account: string,
-  library: Web3Provider
+  library: JsonRpcSigner
 ) => {
   const tokenContract = SmartContractProvider.getTokenContract(
     tokenName,
@@ -274,7 +274,7 @@ export const getTokenBalance = async (
 export const getTokenAllowance = async (
   tokenName: TokenName,
   account: string,
-  library: Web3Provider
+  library: JsonRpcSigner
 ) => {
   const tokenContract = SmartContractProvider.getTokenContract(
     tokenName,

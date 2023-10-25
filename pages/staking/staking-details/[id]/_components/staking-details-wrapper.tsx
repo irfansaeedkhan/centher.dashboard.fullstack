@@ -225,7 +225,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
         setStakeLoader(true);
         await sdk.stake(
-          getSigner(),
+          getSigner()!,
           +poolId,
           connectedAddress,
           amount,

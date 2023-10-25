@@ -51,7 +51,7 @@ export const NonNFTBuyerDescription = ({
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          getSigner(),
+          getSigner()!,
           data.collection,
           data.nftId
         );
@@ -116,9 +116,10 @@ export const NonNFTBuyerDescription = ({
   const handleBuyNFT = async () => {
     ProceedFunc();
     try {
-      if (!getSigner() || !data) throw new Error("invalid dependencies");
+      const signer = getSigner();
+      if (!signer || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
-        getSigner(),
+        signer!,
         data.collection,
         data.nftId,
         data.listInfo.price
