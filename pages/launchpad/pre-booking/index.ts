@@ -30,7 +30,7 @@ export type RewardBlockchain = Pick<
 >;
 
 export async function getPurchaseWithBusd(): Promise<PurchaseHistory[]> {
-  let result = await BlockchainRead.purchaseInBUSD(500, 0);
+  let result = await BlockchainRead.purchaseInBUSD(20, 0);
 
   let finalResult: PurchaseHistory[] = [];
   let roundPrice: string = "0";
@@ -66,7 +66,7 @@ export async function getPurchaseWithBusd(): Promise<PurchaseHistory[]> {
 }
 
 export async function getPurchaseWithNtr(): Promise<PurchaseHistory[]> {
-  let result = await BlockchainRead.purchaseInNTR(500, 0);
+  let result = await BlockchainRead.purchaseInNTR(20, 0);
   let finalResult: PurchaseHistory[] = [];
   let roundPriceInBusd: string = "0";
   let roundPriceInNtr: string = "0";
@@ -216,7 +216,7 @@ export async function getRefRewards(
       sender_address: result[i]?.user,
       reward_token_name: "USDT Token",
       reward_token_symbol: "USDT",
-      reward_token_amount: result[i]?.amount,
+      reward_token_amount: Number(formatEther(result[i]?.amount)),
       level: result[i]?.level,
       createdAt: Number(result[i]?.createdAt),
       trx_hash: result[i]?.txId,
