@@ -4,7 +4,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import toast from "react-hot-toast";
 import useUser from "@/hooks/use.user";
-import Button from "@/components/button";
+import { EyeOffFollow } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { axiosApiCenther } from "@/utils/axios";
 import { sliceAccountAddress } from "@/utils/user.helpers";
@@ -42,7 +42,7 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
     return (
       <div
         ref={ref}
-        className="flex items-center justify-between gap-4  border-b border-gray-shade-3 bg-background-shade-3 p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 fsm:gap-10"
+        className="flex items-center justify-between gap-4 border-b border-gray-shade-3 bg-background-shade-3 p-4 first:rounded-t-lg last:rounded-b-lg last:border-0 fsm:gap-10"
       >
         <div className="word-break flex items-center gap-2 truncate">
           <Link
@@ -105,13 +105,27 @@ const UserWithFollow = React.forwardRef<HTMLDivElement, SingleSearchUserProps>(
           </div>
         </div>
         {loggedInUser?._id !== _result._id && (
-          <Button
-            title={
-              _result.is_followed_by_loggedin_user ? "Following" : "Follow"
-            }
-            className="text-sm"
+          <div
+            title={_result.is_followed_by_loggedin_user ? "Unfollow" : "Follow"}
+            className={clsx(
+              "flex h-10 w-[54px] flex-shrink-0 cursor-pointer items-center justify-center rounded-[14px] border",
+              _result.is_followed_by_loggedin_user
+                ? " border-gray-shade-3"
+                : " gradient-border-3 p-[1px]"
+            )}
             onClick={() => followUser(_result._id)}
-          />
+          >
+            {_result.is_followed_by_loggedin_user ? (
+              <EyeOffFollow />
+            ) : (
+              <Image
+                src={"/images/gradient-eye.png"}
+                alt={"Follow"}
+                width={24}
+                height={24}
+              />
+            )}
+          </div>
         )}
       </div>
     );

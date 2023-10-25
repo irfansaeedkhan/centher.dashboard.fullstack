@@ -47,7 +47,7 @@ export const Sidebar = () => {
               <div className={`flex items-center gap-2`}>
                 <Logout />
                 <button
-                  className={`text-sm font-semibold text-gray-shade-7`}
+                  className={`text-sm font-semibold text-gray-shade-7 group-hover:text-white`}
                   onClick={handleLogout}
                 >
                   Logout
@@ -63,4 +63,4 @@ export const Sidebar = () => {
   );
 };
 
-const sectionWrapper2 = `flex gap-6 flex-col`;
+const sectionWrapper2 = `flex gap-6 flex-col group`;

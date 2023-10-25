@@ -1,5 +1,5 @@
 # 1. Install dependencies and build app
-FROM node:18.17.1-bullseye AS builder
+FROM node:18.18.2-bullseye AS builder
 
 WORKDIR /app
 
@@ -16,7 +16,7 @@ COPY .env.production .env.production
 RUN yarn build
 
 # 2. Production image, copy all the files and run next
-FROM node:18.17.1-bullseye-slim AS runner
+FROM node:18.18.2-bullseye-slim AS runner
 
 WORKDIR /app
 

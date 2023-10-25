@@ -1,10 +1,10 @@
 import React from "react";
 
-import { Reward } from "@/lib/get-pre-bookings-stats/types";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { RewardBlockchain } from "../../pre-booking";
 
 interface Props {
-  rewards: Reward[];
+  rewards: RewardBlockchain[];
 }
 
 export const RewardsList: React.FC<Props> = ({ rewards }) => {
@@ -16,10 +16,10 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
             <th className="whitespace-nowrap px-4 py-2 text-start fsm:px-8">
               Account Address
             </th>
-            <th className="whitespace-nowrap px-4 py-2 text-start">Payment</th>
-            <th className="whitespace-nowrap px-4 py-2 text-start">
+            {/* <th className="whitespace-nowrap px-4 py-2 text-start">Payment</th> */}
+            {/* <th className="whitespace-nowrap px-4 py-2 text-start">
               Receivable
-            </th>
+            </th> */}
             <th className="text-gradient whitespace-nowrap px-4 py-2 text-start">
               Your Reward
             </th>
@@ -45,18 +45,18 @@ export const RewardsList: React.FC<Props> = ({ rewards }) => {
                     {booking.sender_address.slice(-4)}
                   </a>
                 </td>
-                <td className="whitespace-nowrap px-4 py-2">
-                  {booking.payment_token_amount.toString().includes(".")
+                {/* <td className="whitespace-nowrap px-4 py-2">
+                  {booking.payment_token_amount //.toString().includes(".")
                     ? booking.payment_token_amount.toFixed(2)
                     : booking.payment_token_amount}{" "}
                   {booking.payment_token_symbol}
-                </td>
-                <td className="whitespace-nowrap px-4 py-2">
+                </td> */}
+                {/* <td className="whitespace-nowrap px-4 py-2">
                   {booking.receivable_token_amount.toString().includes(".")
                     ? booking.receivable_token_amount.toFixed(2)
                     : booking.receivable_token_amount}{" "}
                   {booking.receivable_token_symbol}
-                </td>
+                </td> */}
                 <td className="text-gradient whitespace-nowrap px-4 py-2">
                   {booking.reward_token_amount.toString().includes(".")
                     ? booking.reward_token_amount.toFixed(2)

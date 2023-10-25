@@ -30,6 +30,8 @@ import {
   GET_COLLECTION_ADDITIONAL_INFO,
   GET_USER_TOTAL_SOLD_NFTS,
   hotCollectionsQuery,
+  purchaseWithBusdHistoryByUser,
+  purchaseWithNtrHistoryByUser,
 } from "@/subgraph/querys";
 import { QueryNames } from "../enum/query.names.enum";
 import { IQueryStorage } from "../types";
@@ -62,6 +64,8 @@ export class QueryFactory {
     REFERRER_CLAIM_PRESALE: referrerClaimPresaleQuery,
     PURCHASE_WITH_BUSD: purchaseWithBusdHistory,
     PURCHASE_WITH_NTR: purchaseWithNtrHistory,
+    PURCHASE_WITH_BUSD_BY_USER: purchaseWithBusdHistoryByUser,
+    PURCHASE_WITH_NTR_BY_USER: purchaseWithNtrHistoryByUser,
     CLAIM_CENTHER_HISTORY: claimCentherHistory,
     REGISTRATION_HISTORY: registrationHistory,
     GET_COLLECTION_MINTED_NFTS: getCollectionMintedNFTs,

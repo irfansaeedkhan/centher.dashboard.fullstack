@@ -1,17 +1,101 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
 import useUser from "@/hooks/use.user";
 import { usePreBookingStats } from "@/hooks/use-pre-booking-stats";
 import { BookingList } from "../../_components/presale-components/booking-list";
 import { RewardsList } from "../../_components/presale-components/rewards-list";
+import {
+  PurchaseHistory,
+  RewardBlockchain,
+  getPurchaseWithBusd,
+  getPurchaseWithBusdByUser,
+  getPurchaseWithNtr,
+  getPurchaseWithNtrByUser,
+  getRefRewards,
+} from "..";
 
 const BookingMain = () => {
   const { user } = useUser();
+  const [purchaseBusdData, setPurchaseBusdData] = useState<PurchaseHistory[]>(
+    []
+  );
+  const [purchaseNtrData, setPurchaseNtrData] = useState<PurchaseHistory[]>([]);
+  const [myBusdBookings, setMyBusdBookings] = useState<PurchaseHistory[]>([]);
+  const [myNtrBookings, setMyNtrBookings] = useState<PurchaseHistory[]>([]);
+  const [myBookings, setMyBookings] = useState<PurchaseHistory[]>([]);
+  const [allPurchases, setAllPurchases] = useState<PurchaseHistory[]>([]);
+  const [rewards, setRewards] = useState<RewardBlockchain[]>([]);
+
   const { loading, preBookingStats } = usePreBookingStats(user?._id);
   const [bookingsTab, setBookingsTab] = useState<
     "recent-bookings" | "my-bookings" | "my-rewards"
   >("recent-bookings");
+
+  const GetPurchaseWithBusd = useCallback(() => {
+    getPurchaseWithBusd().then((items) => {
+      setPurchaseBusdData(items);
+    });
+  }, []);
+
+  const GetPurchaseWithNtr = useCallback(() => {
+    getPurchaseWithNtr().then((items) => {
+      setPurchaseNtrData(items);
+    });
+  }, []);
+
+  const GetPurchaseWithBusdByUser = useCallback(() => {
+    if (!user?._id) return;
+    getPurchaseWithBusdByUser(user?._id).then((items) => {
+      setMyBusdBookings(items);
+    });
+  }, [user?._id]);
+
+  const GetPurchaseWithNtrByUser = useCallback(() => {
+    if (!user?._id) return;
+    getPurchaseWithNtrByUser(String(user?._id)).then((items) => {
+      setMyNtrBookings(items);
+    });
+  }, [user?._id]);
+
+  const GetRefRewards = useCallback(() => {
+    getRefRewards(String(user?._id)).then((items) => {
+      setRewards(items);
+    });
+  }, [user?._id]);
+
+  useEffect(() => {
+    GetPurchaseWithBusd();
+    GetPurchaseWithNtr();
+    GetPurchaseWithBusdByUser();
+    GetPurchaseWithNtrByUser();
+    GetRefRewards();
+  }, [
+    GetPurchaseWithBusd,
+    GetPurchaseWithNtr,
+    GetPurchaseWithBusdByUser,
+    GetPurchaseWithNtrByUser,
+    GetRefRewards,
+  ]);
+
+  useEffect(() => {
+    const allPurchases = [...purchaseBusdData, ...purchaseNtrData];
+    const myBookings = [...myBusdBookings, ...myNtrBookings];
+    setAllPurchases(allPurchases);
+    setMyBookings(myBookings);
+    setRewards(rewards);
+  }, [
+    purchaseBusdData,
+    purchaseNtrData,
+    myBusdBookings,
+    myNtrBookings,
+    rewards,
+  ]);
+
+  if (!purchaseBusdData && !purchaseNtrData) return null;
+  if (!allPurchases) return null;
+  if (!myBookings) return null;
+  if (!rewards) return null;
 
   if (loading === "failed") {
     return (
@@ -77,17 +161,25 @@ const BookingMain = () => {
           rounds={preBookingStats.pre_booking.rounds}
           bookings={
             bookingsTab === "recent-bookings"
-              ? preBookingStats.bookings.recent_bookings
+              ? allPurchases.sort((a: any, b: any) => {
+                  return (
+                    new Date(b.createdAt * 1000).getTime() -
+                    new Date(a.createdAt * 1000).getTime()
+                  );
+                })
               : bookingsTab === "my-bookings"
-              ? preBookingStats.bookings.my_bookings
+              ? myBookings.sort((a: any, b: any) => {
+                  return (
+                    new Date(b.createdAt * 1000).getTime() -
+                    new Date(a.createdAt * 1000).getTime()
+                  );
+                })
               : []
           }
         />
       )}
 
-      {bookingsTab === "my-rewards" && (
-        <RewardsList rewards={preBookingStats.my_rewards ?? []} />
-      )}
+      {bookingsTab === "my-rewards" && <RewardsList rewards={rewards ?? []} />}
     </div>
   );
 };
