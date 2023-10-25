@@ -9,12 +9,18 @@ import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import useUser from "@/hooks/use.user";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
-import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
-import { MetamaskIcon2 } from "@/assets/svgs";
+import { GreyWorldIcon, GreyFBIcon, XLogo, MetamaskIcon2 } from "@/assets/svgs";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
 import CustomDropdown from "./custom.dropdown";
+import CollectionPreview from "./collection-preview";
+
+enum ModalType {
+  previewCollection = "previewCollection",
+}
 
 // form validations
 const schema = Joi.object({
@@ -99,16 +105,15 @@ export const CreateNFTCollectionForm = ({
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { deactivate } = useWeb3React();
-  const [Modal, setModal] = useState(false);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
 
-  const handleSelectOption = (value: string) => {
-    setSelectedOption(value);
-    setCategoryError(false);
-  };
-
-  const { handleSubmit, register, formState, reset } = useForm<ICollectionData>(
-    {
+  const { handleSubmit, register, formState, reset, watch } =
+    useForm<ICollectionData>({
       mode: "onChange",
       resolver: joiResolver(schema),
       defaultValues: {
@@ -120,8 +125,30 @@ export const CreateNFTCollectionForm = ({
         facebook: "",
         twitter: "",
       },
-    }
-  );
+    });
+
+  const modalTemplateCollection: TemplateCollection = {
+    previewCollection: {
+      title: "Preview Collection",
+      visibility: true,
+      content: () => (
+        <CollectionPreview
+          watch={watch}
+          onClose={() => modal.dismissModal()}
+          cover={cover}
+          profile={profile}
+          loggedInUser={loggedInUser!}
+        />
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
+  const handleSelectOption = (value: string) => {
+    setSelectedOption(value);
+    setCategoryError(false);
+  };
 
   const onSubmit = async (data: any) => {
     if (selectedOption) {
@@ -349,25 +376,44 @@ export const CreateNFTCollectionForm = ({
             className="mt-2 w-full py-4"
           />
         ) : (
-          <Button
-            title={"Create Collection"}
-            variant={
-              formState.isValid &&
-              profile != undefined &&
-              cover != undefined &&
-              categoryError === false
-                ? "primary"
-                : "primary"
-            }
-            disabled={
-              !formState.isValid &&
-              profile === undefined &&
-              cover === undefined &&
-              categoryError
-            }
-            onClick={handleSubmit(onSubmit)}
-            className="mt-2 w-full py-4"
-          />
+          <div className="flex flex-col items-center gap-2 fsm:flex-row">
+            <Button
+              title={"Preview"}
+              variant={"secondary"}
+              disabled={
+                !formState.isValid ||
+                watch("name") === "" ||
+                watch("symbol") === "" ||
+                watch("description") === "" ||
+                profile === undefined ||
+                cover === undefined ||
+                categoryError
+              }
+              onClick={() => {
+                modal.createModal(ModalType.previewCollection);
+              }}
+              className="mt-2 w-full hover:scale-95"
+            />
+            <Button
+              title={"Create Collection"}
+              variant={
+                formState.isValid &&
+                profile != undefined &&
+                cover != undefined &&
+                categoryError === false
+                  ? "primary"
+                  : "primary"
+              }
+              disabled={
+                !formState.isValid ||
+                profile === undefined ||
+                cover === undefined ||
+                categoryError
+              }
+              onClick={handleSubmit(onSubmit)}
+              className="mt-2 w-full hover:scale-95"
+            />
+          </div>
         )}
       </div>
       {connectWalletModal && (
@@ -394,7 +440,7 @@ export const CreateNFTCollectionForm = ({
               <button
                 onClick={async () => {
                   if (!loggedInUser) {
-                    toast.error("Please login to buy this nft");
+                    toast.error("Please login to continue");
                     setConnectWalletModal(false);
                     return;
                   }
@@ -413,6 +459,17 @@ export const CreateNFTCollectionForm = ({
             </div>
           </div>
         </CustomNewModal>
+      )}
+      {ModalModel.visibility && (
+        <CollectionPreviewModal
+          onClose={() => {
+            modal.dismissModal();
+          }}
+          title={ModalModel.title as string}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {ModalModel.content}
+        </CollectionPreviewModal>
       )}
     </div>
   );
