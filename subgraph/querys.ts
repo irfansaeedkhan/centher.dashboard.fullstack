@@ -481,7 +481,7 @@ export const genealogyAtLevelQuery = `
 export const referralRewardsInPresaleQuery = `
   query MyQuery($referrer: Bytes, $skip: Int, $first: Int) {
     presaleGenealogyHistories(
-      where: {referrer: $referrer}
+      where: {amount_gt:"0", referrer: $referrer}
       orderDirection: desc
       orderBy: createdAt
       skip: $skip

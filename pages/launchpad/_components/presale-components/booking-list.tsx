@@ -73,10 +73,10 @@ export const BookingList: React.FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {bookings.map((booking) => {
+          {bookings.map((booking, i) => {
             return (
               <tr
-                key={booking.trx_hash}
+                key={i}
                 className="h-[64px] border-b border-gray-shade-3 bg-transparent text-sm font-medium text-white last:border-none"
               >
                 <td className="whitespace-nowrap px-4 py-2 fsm:px-8">
