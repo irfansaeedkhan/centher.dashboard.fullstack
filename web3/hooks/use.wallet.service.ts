@@ -72,7 +72,8 @@ export const useWalletService = () => {
         setSigner(signer);
       }
     }
-  }, [address, sendTransaction]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
 
   function getProvider(): JsonRpcProvider {
     const rpc = localStorage.getItem(RPC_KEY);
