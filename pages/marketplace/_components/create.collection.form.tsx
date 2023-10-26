@@ -6,16 +6,15 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import Button from "@/components/button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import useUser from "@/hooks/use.user";
 import { categories } from "@/models/nft";
-import { GreyWorldIcon, GreyFBIcon, XLogo } from "@/assets/svgs";
-import { MetamaskIcon2 } from "@/assets/svgs";
-import { JsonRpcSigner } from "@ethersproject/providers";
-import { useWallet } from "@/web3/hooks/use.wallet";
+import { GreyWorldIcon, GreyFBIcon, XLogo, MetamaskIcon2 } from "@/assets/svgs";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import CollectionPreview from "./collection-preview";
 
@@ -83,6 +82,7 @@ interface CreateNFTCollectionFormProps {
   profile: Blob | undefined;
   signer: JsonRpcSigner;
 }
+
 export interface ICollectionData {
   name: string;
   symbol: string;
@@ -94,6 +94,7 @@ export interface ICollectionData {
   facebook: string;
   twitter: string;
 }
+
 export const CreateNFTCollectionForm = ({
   createCollection,
   clearForm,
