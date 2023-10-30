@@ -1,11 +1,12 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import axios from "axios";
+import clsx from "clsx";
+import { useRouter } from "next/router";
+import { useWeb3React } from "@web3-react/core";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
-import clsx from "clsx";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
 import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
@@ -22,32 +23,52 @@ export interface NFTCardProps {
 }
 
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
-  const [imageUrl, setImageUrl] = useState("");
+  const router = useRouter();
   const { getSigner, connectedAddress } = useWallet();
-
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
   const internal = !data.external;
+
+  const [name, setName] = useState();
+  const [nftType, setNftType] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [videoThumbnail, setVideoThumbnail] = useState("");
+  const [description, setDescription] = useState();
+  const [swapedBefore, setSwapedBefore] = useState(false);
+  const [swapIsLoading, setSwapIsLoading] = useState("loaded");
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [showSwapingDetails, setShowSwapingDetails] = useState(false);
   const [showExternalDetails, setShowExternalDetails] = useState(false);
-  const [swapIsLoading, setSwapIsLoading] = useState("loaded");
-  const [swapedBefore, setSwapedBefore] = useState(false);
-
-  const router = useRouter();
-
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
+  const [lockedTimer, setLockedTimer] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+  const [auctionTimer, setAuctionTimer] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
   useEffect(() => {
     const fetchMetadata = async (ipfs: string) => {
       try {
         const formattedUrl = formatIPFSUrl(ipfs);
         const _metadata = await axios.get(formattedUrl);
+        if (_metadata.data.type.includes("video")) {
+          if (!_metadata.data.videoThumbnail) {
+            setImageUrl("/images/placeholder-square.svg");
+            return;
+          }
+          const formattedUrl = formatIPFSUrl(_metadata.data.videoThumbnail);
+          setVideoThumbnail(formattedUrl);
+        }
         const imgUrl = formatIPFSUrl(_metadata.data.image);
         setImageUrl(imgUrl);
         setName(_metadata.data.name);
+        setNftType(_metadata.data.type);
         setDescription(_metadata.data.description);
       } catch (error) {
         setImageUrl("/images/placeholder-square.svg");
@@ -67,19 +88,6 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       setSwapHistory();
     }
   }, [data, getSigner]);
-
-  const [lockedTimer, setLockedTimer] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
-  const [auctionTimer, setAuctionTimer] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
 
   useEffect(() => {
     if (data.endTime === 0) {
@@ -151,12 +159,15 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       seconds: _seconds <= 0 ? 0 : _seconds,
     });
   };
+
   const onClickClose = () => {
     setShowLockedDetails(false);
   };
+
   const onViewClickClose = () => {
     setShowExternalDetails(false);
   };
+
   const onSwapClickClose = () => {
     setShowSwapingDetails(false);
   };
@@ -218,10 +229,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
         >
           {imageUrl ? (
-            <img
+            <Image
               src={
-                imageUrl.includes("mp3")
+                nftType.includes("audio")
                   ? "/images/default-music.png"
+                  : nftType.includes("video")
+                  ? videoThumbnail
                   : imageUrl
               }
               alt="nft"
@@ -353,7 +366,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -495,7 +508,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -599,7 +612,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}

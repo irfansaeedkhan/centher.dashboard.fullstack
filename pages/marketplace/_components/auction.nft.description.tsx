@@ -1,14 +1,12 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-
-// App imports
+import toast from "react-hot-toast";
+import Countdown from "react-countdown";
 import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import {
   BNBIcon,
   WarningIcon,
   LoaderIcon,
-  HammerIconBG,
   GreenTick,
   CircularClose,
 } from "@/assets/svgs";
@@ -19,12 +17,12 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
-import toast from "react-hot-toast";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import AuctionCountdownRenderer from "./auction-countdown.renderer";
 
 interface AuctionNftDescriptionProps {
   data: INFTDetailData | undefined;
@@ -48,11 +46,6 @@ export const AuctionNftDescription = ({
     title: "",
     content: "",
   });
-  const [end, setEnd] = useState(true);
-  const [days, setDays] = useState<number>(0);
-  const [hours, setHours] = useState<number>(0);
-  const [minutes, setMinutes] = useState<number>(0);
-  const [seconds, setSeconds] = useState<number>(0);
   const [nowTime, setNowTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [hasBid, sethasBid] = useState(false);
@@ -67,43 +60,7 @@ export const AuctionNftDescription = ({
       setNowTime(now);
       setEndTime(endtime);
       sethasBid(hasBid);
-
-      var updateTime = setInterval(() => {
-        var now = new Date().getTime();
-
-        var difference = data.auctionInfo.endTime * 1000 - now;
-
-        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-        var newHours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        var newMinutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        setDays(newDays);
-        setHours(newHours);
-        setMinutes(newMinutes);
-        setSeconds(newSeconds);
-
-        if (difference <= 0) {
-          clearInterval(updateTime);
-          setDays(0);
-          setHours(0);
-          setMinutes(0);
-          setSeconds(0);
-          setEnd(true);
-          setNftData();
-        } else {
-          setEnd(false);
-        }
-      }, 1000);
     }
-
-    return () => {
-      clearInterval(updateTime);
-    };
   }, [data, setNftData]);
 
   const cancelAuctionFunc = () => {
@@ -115,6 +72,7 @@ export const AuctionNftDescription = ({
       toastError("something went wrong");
     }
   };
+
   const endAuctionFunc = () => {
     try {
       validateProvider();
@@ -124,6 +82,7 @@ export const AuctionNftDescription = ({
       toastError("something went wrong");
     }
   };
+
   const ProceedFunc = () => {
     try {
       validateProvider();
@@ -133,6 +92,7 @@ export const AuctionNftDescription = ({
       toastError("something went wrong");
     }
   };
+
   const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
       validateProvider();
@@ -142,6 +102,7 @@ export const AuctionNftDescription = ({
       toastError("Something went wrong");
     }
   };
+
   const handleEndAuction = async () => {
     ProceedFunc();
     try {
@@ -161,6 +122,7 @@ export const AuctionNftDescription = ({
       SuccessFunc(false, "Something went wrong");
     }
   };
+
   const handleCancelAuction = async () => {
     try {
       ProceedFunc();
@@ -321,9 +283,11 @@ export const AuctionNftDescription = ({
       throw new Error("Connect your wallet");
     }
   }
+
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -344,50 +308,12 @@ export const AuctionNftDescription = ({
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
-        <div className="w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-[length:85%] bg-center bg-no-repeat ">
-          <div className="flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-sm text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
-            <div className="flex flex-col items-center gap-3 text-center  fsm:max-w-[138px]">
-              <HammerIconBG className="scale-150" />
-              <h4 className="text-sm font-normal text-white">
-                This Auction will end in
-              </h4>
-            </div>
-            <div className="flex h-full w-full max-w-[280px] items-center justify-evenly gap-2 fsm:justify-end fsm:gap-8">
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {days}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  DAYS
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {hours}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  HOURS
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {minutes}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  MIN
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {seconds}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  Seconds
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {data && data.auctionInfo.endTime && (
+          <Countdown
+            date={new Date(data.auctionInfo.endTime * 1000)}
+            renderer={AuctionCountdownRenderer}
+          />
+        )}
       </div>
       <div className="buttonContainer flex items-center gap-4">
         {nowTime < endTime && (
@@ -404,7 +330,9 @@ export const AuctionNftDescription = ({
             variant="primary"
             onClick={hasBid ? endAuctionFunc : cancelAuctionFunc}
             className="w-full rounded-[14px]"
-            disabled={!end}
+            disabled={
+              data && nowTime > new Date(data?.auctionInfo.endTime * 1000)
+            }
           />
         )}
       </div>
@@ -423,11 +351,10 @@ export const AuctionNftDescription = ({
   );
 };
 // styling
-const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
+const BnBNum = `text-base font-bold text-white`;
+const desTitle = `text-sm font-semibold text-white`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
 const footerBtnContainer = `flex items-center gap-4 mt-2`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const desTitle = `text-sm font-semibold text-white`;
-const BnBNum = `text-base font-bold text-white`;
-const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;
+const modalBodyWrapper = `flex flex-col gap-2 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;

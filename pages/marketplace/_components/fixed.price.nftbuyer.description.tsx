@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FiArrowRight } from "react-icons/fi";
-import { useRouter } from "next/router";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import clsx from "clsx";
@@ -35,7 +34,6 @@ export const FixedPriceNFTBuyerDescription = ({
   data,
   setNftData,
 }: FixedPriceNFTBuyerDescriptionProps) => {
-  const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { connectWallet } = useConnectWallet();
   const { getSigner, disconnectWallet } = useWallet();
@@ -125,13 +123,21 @@ export const FixedPriceNFTBuyerDescription = ({
       visibility: true,
       content: () => (
         <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
+          {data && (
+            <Image
+              className={ImgStyling}
+              src={
+                data.type.includes("audio")
+                  ? "/images/default-music.png"
+                  : data.type.includes("video")
+                  ? data.videoThumbnail || "/images/default-music.png"
+                  : data.image
+              }
+              alt="image"
+              height={64}
+              width={64}
+            />
+          )}
           <h2 className="word-break text-base font-semibold text-white fmd:text-lg">
             {data?.name}
           </h2>

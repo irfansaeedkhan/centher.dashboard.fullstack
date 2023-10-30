@@ -66,7 +66,13 @@ const ChangePriceListModal: React.FC<Props> = ({
       {data && (
         <div className="mt-2 flex flex-col items-center justify-center">
           <Image
-            src={data.image}
+            src={
+              data.type.includes("audio")
+                ? "/images/default-music.png"
+                : data.type.includes("video")
+                ? data.videoThumbnail || "/images/default-music.png"
+                : data.image
+            }
             width={266}
             height={190}
             alt="img"
@@ -101,9 +107,9 @@ const ChangePriceListModal: React.FC<Props> = ({
           Price
         </label>
         <div
-          className={`flex h-[48px] w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 !p-0 !px-3 py-3 text-sm font-semibold text-gray-shade-17 focus-within:ring-1 focus-within:ring-brand-primary focus:outline-none active:!ring-brand-primary`}
+          className={`focus-within:gradient-border-3 flex h-[48px] w-full items-center justify-between gap-2 !rounded-lg bg-black-shade-3 !p-[1px] text-sm font-semibold text-gray-shade-17`}
         >
-          <BNBIcon className="h-4 w-4" />
+          <BNBIcon className="ml-3 h-4 w-4" />
           <CustomNumberInput
             id="bidPrice"
             autoComplete="off"

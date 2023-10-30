@@ -2367,11 +2367,6 @@
     uint8-varint "^2.0.1"
     uint8arrays "^4.0.2"
 
-"@netlify/classnames-template-literals@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@netlify/classnames-template-literals/-/classnames-template-literals-1.0.3.tgz#1c551ef454395ee4f72ce58e14915e9f411fa18d"
-  integrity sha512-1y/RV1E7A8/5uT0LyEz5rrOomQpuO5lEqOs10t6CKE9vR2nCBI3ytk7BK6sQS8HuEuCmKa+cL6YXondTYuLCEg==
-
 "@next/bundle-analyzer@^13.0.1":
   version "13.5.6"
   resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-13.5.6.tgz#3c73f2e15ff5507317b37b87ce984bac5a5d7ad0"

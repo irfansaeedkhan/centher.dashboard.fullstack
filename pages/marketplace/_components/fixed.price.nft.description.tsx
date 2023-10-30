@@ -176,7 +176,6 @@ export const FixedPriceNFTDescription = ({
 
   const handleCancelListing = async () => {
     setupWaitingModal();
-    let success = false;
     try {
       const result = await BlockchainWrite.callCancelItemForSale(
         getSigner()!,
@@ -187,7 +186,7 @@ export const FixedPriceNFTDescription = ({
       if (result?.length) {
         setNftData();
         setupSuccessModal(
-          success,
+          true,
           "Congratulations! You have successfully canceled your listing of NFT "
         );
       } else throw new Error();

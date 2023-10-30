@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import axios from "axios";
-import ctl from "@netlify/classnames-template-literals";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import { useOnClickOutside } from "usehooks-ts";
@@ -169,16 +168,14 @@ const Collection: NextPageWithLayout = () => {
   }
 
   return (
-    <div className={dashboardContentContainer}>
-      <div className={MainContentContainer}>
+    <div className="mx-auto min-h-screen w-full max-w-[1144px] bg-black-shade-3 pb-10 font-monto">
+      <div className="flex flex-col gap-5">
         {loadingCollectionInfo === "loading" ||
         loadingCollectionInfo === "idle" ? (
           <NftCollectionProfileSkeleton />
         ) : (
-          <div className={coverCard}>
-            <div
-              className={`relative h-[31vh] w-full rounded-t-2xl border-b border-gray-shade-5`}
-            >
+          <div className="rounded-xl bg-background-shade-3">
+            <div className="relative h-[31vh] w-full rounded-t-2xl border-b border-gray-shade-5">
               {metadata && metadata.coverIPFSHash && (
                 <Image
                   src={coverImageUrl}
@@ -191,8 +188,8 @@ const Collection: NextPageWithLayout = () => {
                 />
               )}
 
-              <div className={`absolute bottom-4 right-6 text-sm`}>
-                <div ref={menuRef} className={`relative`}>
+              <div className="absolute bottom-4 right-6 text-sm">
+                <div ref={menuRef} className="relative">
                   <div className="flex items-center justify-center gap-5">
                     {(metadata?.facebook ||
                       metadata?.twitter ||
@@ -215,7 +212,7 @@ const Collection: NextPageWithLayout = () => {
                               target="_blank"
                               rel="noreferrer"
                             >
-                              <TiSocialTwitter className=" text-lg text-white hover:text-brand-primary" />
+                              <TiSocialTwitter className="text-lg text-white hover:text-brand-primary" />
                             </a>
                           )}
 
@@ -233,20 +230,20 @@ const Collection: NextPageWithLayout = () => {
                     )}
 
                     <button
-                      className={clsx(`hidden fsm:flex`, threeDotsBtn)}
+                      className={clsx("hidden fsm:flex", threeDotsBtn)}
                       onClick={toggleMenu}
                     >
-                      <RiShareForwardLine className="h-[17px] w-[20px]   [&>*]:fill-white [&>*]:stroke-white" />
+                      <RiShareForwardLine className="h-[17px] w-[20px] [&>*]:fill-white [&>*]:stroke-white" />
                     </button>
                     <button
-                      className={clsx(`flex fsm:hidden`, threeDotsBtn)}
+                      className={clsx("flex fsm:hidden", threeDotsBtn)}
                       onClick={toggleMobileMenu}
                     >
-                      <DotsIcon className=" [&>*]:fill-white [&>*]:stroke-white" />
+                      <DotsIcon className="[&>*]:fill-white [&>*]:stroke-white" />
                     </button>
                     <div
                       className={clsx(
-                        `absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm`,
+                        "absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm",
                         isMenuVisible ? "z-40 block" : "hidden"
                       )}
                     >
@@ -281,7 +278,7 @@ const Collection: NextPageWithLayout = () => {
                     </div>
                     <div
                       className={clsx(
-                        `absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm`,
+                        "absolute right-0 top-10 w-[229px] overflow-hidden rounded-10px bg-black-shade-12 shadow-sm",
                         isMobileMenuVisible ? "z-40 block" : "hidden"
                       )}
                     >
@@ -312,8 +309,7 @@ const Collection: NextPageWithLayout = () => {
                           rel="noreferrer"
                           className={menuButton}
                         >
-                          <TbWorld className={`h-[24px] w-[24px]`} /> Website
-                          Link
+                          <TbWorld className="h-6 w-6" /> Website Link
                         </a>
                       )}
 
@@ -339,13 +335,13 @@ const Collection: NextPageWithLayout = () => {
               </div>
 
               {metadata && metadata.profileIPFSHash && (
-                <div className={profileImage}>
+                <div className="absolute -bottom-12 left-[50%] h-[112px] !w-[112px] translate-x-[-50%] cursor-pointer lg:left-6 lg:translate-x-[0]">
                   <Image
                     src={profileImageUrl}
                     alt={"profile image"}
                     width={112}
                     height={112}
-                    className={collectionProfileImage}
+                    className="h-[112px] w-[112px] rounded-full border-2 border-background-shade-3 bg-black-shade-7 object-cover"
                     sizes={"512px"}
                     onError={() =>
                       setProfileImageUrl("/images/placeholder-square.svg")
@@ -354,12 +350,12 @@ const Collection: NextPageWithLayout = () => {
                 </div>
               )}
             </div>
-            <div className={coverDetails}>
-              <div
-                className={` flex flex-col items-center justify-center gap-5 text-center lg:flex-row lg:items-baseline lg:justify-between lg:text-left`}
-              >
+            <div className="mt-8 px-7 pb-2 pt-7 lg:mt-6">
+              <div className="flex flex-col items-center justify-center gap-5 text-center lg:flex-row lg:items-baseline lg:justify-between lg:text-left">
                 <div className="w-full">
-                  <h5 className={collectionName}>{info?.name}</h5>
+                  <h5 className="word-break text-base font-semibold text-white f2xl:text-xl">
+                    {info?.name}
+                  </h5>
                   <div className="lg:flex-start mt-1 flex justify-center gap-1 text-left md:items-center lg:justify-start">
                     <h6 className="min-w-max text-sm text-white">Created by</h6>
                     <Link
@@ -369,9 +365,7 @@ const Collection: NextPageWithLayout = () => {
                           user_id: info?.creator,
                         },
                       }}
-                      className={clsx(
-                        `ml-1 flex max-w-[calc(100vw-140px)] items-center text-sm font-semibold  text-gray-shade-18 hover:text-brand-primary`
-                      )}
+                      className="ml-1 flex max-w-[calc(100vw-140px)] items-center text-sm font-semibold text-gray-shade-18 hover:text-brand-primary"
                       title={user?.display_name}
                     >
                       <span className="block truncate break-words">
@@ -394,9 +388,7 @@ const Collection: NextPageWithLayout = () => {
                     </Link>
                   </div>
                 </div>
-                <div
-                  className={`flex w-full max-w-fit flex-row flex-wrap items-center justify-between gap-5 rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-7 py-4 fsm:w-auto fsm:gap-8 fmd:min-w-max flg:justify-center [&>*]:w-[44%] fsm:[&>*]:w-[28%] fmd:[&>*]:w-auto`}
-                >
+                <div className="flex w-full max-w-fit flex-row flex-wrap items-center justify-between gap-5 rounded-2xl border-2 border-gray-shade-3 bg-gray-shade-9 px-7 py-4 fsm:w-auto fsm:gap-8 fmd:min-w-max flg:justify-center [&>*]:w-[44%] fsm:[&>*]:w-[28%] fmd:[&>*]:w-auto">
                   <div className="text-left fmd:text-center">
                     <h4 className={detailsCardTitle}>Items</h4>
                     <h5 className={detailsCardValue}>{info?.totalSupply}</h5>
@@ -456,21 +448,21 @@ const Collection: NextPageWithLayout = () => {
                   </div>
                 </div>
               </div>
-              <div className={`mb-4 mt-6`}>
-                <p className={profileDescription}>{metadata?.description}</p>
+              <div className="mb-4 mt-6">
+                <p className="word-break text-sm font-normal leading-6 text-gray-shade-16">
+                  {metadata?.description}
+                </p>
               </div>
             </div>
           </div>
         )}
         {/* nft tabs */}
         <div className="mt-6">
-          <div
-            className={`flex flex-col items-center justify-between gap-5 fsm:flex-row`}
-          >
-            <div className={title}>NFTS</div>
-            <div
-              className={`flex w-full max-w-[640px] flex-col items-center justify-center gap-3 fsm:flex-row fsm:justify-end fsm:gap-5`}
-            >
+          <div className="flex flex-col items-center justify-between gap-5 fsm:flex-row">
+            <div className="textGradient animationTextHeading leading-[42px] sm:text-xl lg:text-[24px]">
+              NFTS
+            </div>
+            <div className="flex w-full max-w-[640px] flex-col items-center justify-center gap-3 fsm:flex-row fsm:justify-end fsm:gap-5">
               <div className="flex w-full max-w-[640px] flex-row  items-center justify-center gap-3 fsm:justify-end fsm:gap-5">
                 <Button
                   title={"All"}
@@ -507,7 +499,7 @@ const Collection: NextPageWithLayout = () => {
           <div className="mt-10">
             <div
               className={cn(
-                `mx-auto grid w-max grid-cols-[minmax(0,280px)] gap-5 fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)]`
+                "mx-auto grid w-max grid-cols-[minmax(0,280px)] gap-5 fsm:grid-cols-[minmax(0,235px)_minmax(0,235px)] fmd:grid-cols-[minmax(0,255px)_minmax(0,255px)] flg:grid-cols-[minmax(0,310px)_minmax(0,310px)_minmax(0,310px)] flg:gap-6 f2xl:grid-cols-[minmax(0,267px)_minmax(0,267px)_minmax(0,267px)_minmax(0,267px)]"
               )}
             >
               {filteredNFTs.map((data) => {
@@ -546,47 +538,9 @@ Collection.getLayout = (page) => (
 
 export default Collection;
 
-// styling
-const dashboardContentContainer = ctl(
-  `bg-black-shade-3 w-full max-w-[1144px] min-h-screen font-monto mx-auto pb-10`
-);
-const title = ctl(
-  `textGradient leading-[42px] animationTextHeading lg:text-[24px] sm:text-xl`
-);
-const MainContentContainer = ctl(`flex flex-col gap-5`);
-const coverCard = ctl(`bg-background-shade-3 rounded-xl`);
-const profileImage = ctl(
-  `h-[112px] !w-[112px] cursor-pointer absolute translate-x-[-50%] left-[50%] lg:left-6 lg:translate-x-[0] -bottom-12`
-);
-const coverDetails = ctl(`mt-8 lg:mt-6 px-7 pt-7 pb-2`);
-const collectionName = ctl(
-  `text-white text-base f2xl:text-xl font-semibold word-break`
-);
-const profileDescription = ctl(
-  `text-sm font-normal leading-6 text-gray-shade-16 word-break`
-);
-const collectionProfileImage = ctl(
-  `h-[112px] w-[112px] object-cover border-2 border-background-shade-3 rounded-full bg-black-shade-7`
-);
-const menuButton = ctl(
-  `w-full text-sm font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`
-);
-const icon = ctl(`w-[24px] h-[24px] [&>*]:stroke-white`);
-const threeDotsBtn = ctl(
-  `w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px`
-);
-const inputField = ctl(`
-  fsm:w-[400px]
-  fmd:w-[200px]
-  fsm:py-3 
-  fsm:px-10 
-  bg-black-shade-7 
-  text-white 
-  rounded-lg
-  border-0
-  focus:outline-none 
-  focus:ring-0
-  fsm:max-w-max
-`);
-const detailsCardTitle = ctl(`text-xs font-semibold text-gray-shade-7 mb-2`);
-const detailsCardValue = ctl(`text-sm font-semibold text-white`);
+const menuButton = `w-full text-sm font-semibold text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
+const icon = `w-[24px] h-[24px] [&>*]:stroke-white`;
+const threeDotsBtn = `w-[44px] h-[44px] !bg-[#17171A]/30 flex items-center justify-center rounded-10px`;
+const inputField = `fsm:w-[400px] fmd:w-[200px] fsm:py-3 fsm:px-10 bg-black-shade-7 text-white rounded-lg border-0 focus:outline-none focus:ring-0 fsm:max-w-max`;
+const detailsCardTitle = `text-xs font-semibold text-gray-shade-7 mb-2`;
+const detailsCardValue = `text-sm font-semibold text-white`;

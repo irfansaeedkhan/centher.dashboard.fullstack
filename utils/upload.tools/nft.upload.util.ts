@@ -21,29 +21,42 @@ export class NFTUploader {
   async uploadNFT(
     file: any,
     nftData: INFTData,
-    nameWrapper: safeNameType
-  ): Promise<INFTDetails> {
+    nameWrapper: safeNameType,
+    videoThumbnail?: any
+  ): Promise<string> {
+    let imagePath = "";
+    let thumbnailPath = "";
+
     if (!file) {
       throw new Error("invalid file.");
     }
 
-    const uploadImageDto = {
-      path: this._uploader.makePath(),
+    imagePath = await this.uploadFile(file);
+
+    if (videoThumbnail) {
+      thumbnailPath = await this.uploadFile(videoThumbnail);
+    }
+
+    const metadata = this.createMetaData(
+      nftData,
+      imagePath,
+      nameWrapper,
+      thumbnailPath
+    );
+
+    const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
+
+    return this.uploadFile(metaDataBuffered, "json");
+  }
+
+  private async uploadFile(file: any, extention?: string): Promise<string> {
+    const fileDto = {
+      path: this._uploader.makePath(extention),
       content: file,
     };
 
-    const imagePath = await this._uploader.upload(uploadImageDto);
-    const metadata = this.createMetaData(nftData, imagePath, nameWrapper);
-    const metaDataBuffered = this.toBuffer(JSON.stringify(metadata));
-    const uploadMetaDataDto = {
-      path: this._uploader.makePath("json"),
-      content: metaDataBuffered,
-    };
-
-    const metaDataPath = await this._uploader.upload(uploadMetaDataDto);
-    return metaDataPath;
+    return this._uploader.upload(fileDto);
   }
-
   private toBuffer(input: any): Buffer {
     return Buffer.from(input);
   }
@@ -51,7 +64,8 @@ export class NFTUploader {
   private createMetaData(
     nftData: INFTData,
     path: string,
-    nameWrapper: safeNameType
+    nameWrapper: safeNameType,
+    videoThumbnail?: any
   ): NFTMetaData {
     return {
       name: nftData.name,
@@ -61,6 +75,7 @@ export class NFTUploader {
       type: nameWrapper.type,
       collection: nftData.collection,
       attributes: nftData.properties,
+      videoThumbnail: this._imagesBasePath + videoThumbnail,
     };
   }
 }

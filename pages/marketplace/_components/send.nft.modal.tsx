@@ -59,30 +59,27 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
   };
 
   return (
-    <div
-      className={`fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none backdrop-blur-lg backdrop-filter focus:outline-none 
-    `}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden outline-none backdrop-blur-lg backdrop-filter focus:outline-none">
       {/*content*/}
-      <div
-        className={`relative mx-3 flex h-auto max-h-[800px] w-full flex-col rounded-3xl bg-popup-0 pb-6 focus:outline-none fmd:w-164`}
-      >
+      <div className="relative mx-3 flex h-auto max-h-[800px] w-full flex-col rounded-3xl bg-popup-0 pb-6 focus:outline-none fmd:w-164">
         {/*header*/}
-        <button
-          className={`absolute right-6 top-6 text-white`}
-          onClick={onClose}
-        >
+        <button className="absolute right-6 top-6 text-white" onClick={onClose}>
           <IoClose className="h-6 w-6" />
         </button>
 
         <div>
           {data && (
             <Image
-              src={data.image}
+              src={
+                data.type.includes("audio")
+                  ? "/images/default-music.png"
+                  : data.type.includes("video")
+                  ? data.videoThumbnail || "/images/default-video.png"
+                  : data.image
+              }
               alt={data.name}
               width={100}
               height={193}
-              loading="lazy"
               className="h-[193px] !w-full rounded-t-3xl object-cover"
             />
           )}
@@ -92,7 +89,13 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
             <div className="absolute -top-14 flex w-full flex-col items-center justify-center">
               <div className="relative flex h-[116px] w-[112px] rounded-xl">
                 <Image
-                  src={data.image}
+                  src={
+                    data.type.includes("audio")
+                      ? "/images/default-music.png"
+                      : data.type.includes("video")
+                      ? data.videoThumbnail || "/images/default-music.png"
+                      : data.image
+                  }
                   alt={data.name}
                   width={112}
                   height={112}
@@ -115,9 +118,9 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
           )}
         </div>
 
-        <div className={`h-full max-h-[729px] overflow-y-auto pt-[100px]`}>
+        <div className="h-full max-h-[729px] overflow-y-auto pt-[100px]">
           <form
-            className={`flex w-full flex-col gap-4 px-4 pt-2 text-center fmd:px-6 fmd:pt-4`}
+            className="flex w-full flex-col gap-4 px-4 pt-2 text-center fmd:px-6 fmd:pt-4"
             onSubmit={nftForm.handleSubmit(handleSendData)}
           >
             <div className={fieldWrapper}>
@@ -137,28 +140,12 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
                   )}
                 />
               </div>
-
               {nftForm.formState.errors.ReceiverAddress && (
-                <p className={`pb-2 text-xs font-medium text-red-500`}>
+                <p className="pb-2 text-xs font-medium text-red-500">
                   {nftForm.formState.errors.ReceiverAddress.message}
                 </p>
               )}
             </div>
-            {/* <div className={fieldWrapper}>
-              <label className={fieldTitle}>Write message to your friend</label>
-              <div className="relative rounded-lg !bg-black-shade-3">
-                <textarea
-                  rows={3}
-                  id="message"
-                  autoComplete="off"
-                  {...nftForm.register("message")}
-                  placeholder="Example: I think you appreciate this gift"
-                  className={clsx(
-                    "w-full rounded-lg !border-0 bg-transparent text-white focus:ring-1 focus:ring-brand-primary"
-                  )}
-                ></textarea>
-              </div>
-            </div> */}
             <div className={fieldWrapper}>
               <div className="flex items-center justify-between gap-10">
                 <label className={fieldTitle}>Set Lock End Time</label>
@@ -204,6 +191,5 @@ const SendNFTModal = ({ handleSend, onClose, data }: SendNFTModalProps) => {
 export default SendNFTModal;
 
 // styling
-const fieldWrapper = `flex gap-2 flex-col w-full`;
-
-const fieldTitle = `text-sm text-start font-normal text-white`;
+const fieldWrapper = "flex gap-2 flex-col w-full";
+const fieldTitle = "text-sm text-start font-normal text-white";

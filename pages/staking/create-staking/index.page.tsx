@@ -1024,7 +1024,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     {showProfileImage && (
                       <button
-                        className="leading-0 absolute right-5  top-4 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                        className="leading-0 absolute right-5 top-4 z-30 flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-gray-shade-3 bg-gray-shade-3/50 font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition"
                         onClick={() => {
                           setShowProfileImage(false);
                           setProfile(undefined);
@@ -1112,7 +1112,7 @@ const CreateStaking: NextPageWithLayout = () => {
                           width={270}
                         />
                         <button
-                          className="leading-0 absolute right-5  top-4 z-30 flex h-[34px] w-[34px]  items-center justify-center rounded-xl border border-gray-shade-3  bg-gray-shade-3/50  font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition [&>*]:hover:scale-125"
+                          className="leading-0 [&>*] absolute right-5 top-4 z-30 flex h-[34px] w-[34px] items-center justify-center rounded-xl border border-gray-shade-3 bg-gray-shade-3/50 font-semibold leading-none opacity-100 outline-none backdrop-blur-lg focus:outline-none [&>*>*]:stroke-white [&>*]:transition"
                           onClick={() => {
                             setShowCoverImage(false);
                             setCover(undefined);
@@ -1695,7 +1695,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("max_staking_amount")}
                         id="max_staking_amount"
                         placeholder="Only numbers here"
-                        className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
+                        className="focus:ring-brand-primar mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none"
                       />
 
                       {stakingForm.formState.errors.max_staking_amount && (
@@ -1726,7 +1726,7 @@ const CreateStaking: NextPageWithLayout = () => {
                         {...stakingForm.register("total_supply")}
                         id="total_supply"
                         placeholder="Only numbers here"
-                        className="focus:ring-brand-primar text-14pxy mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none"
+                        className="focus:ring-brand-primar mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none"
                       />
                       <p
                         className={`text-gradient pb-2 pt-1 text-xs font-medium`}

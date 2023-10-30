@@ -2,8 +2,6 @@ import React from "react";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import ctl from "@netlify/classnames-template-literals";
-
 import Button from "@/components/button";
 
 interface CreateNFTAuctionModalProps {
@@ -50,9 +48,11 @@ const CreateNFTAuctionModal = ({
   };
 
   return (
-    <form className={modalBodyWrapper}>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Set Auction End Time</label>
+    <form className="flex w-full flex-col gap-4 px-2 pt-2 text-center fmd:px-4 fmd:pt-4">
+      <div className="flex w-full flex-col gap-2">
+        <label className="text-start text-sm font-normal text-white">
+          Set Auction End Time
+        </label>
         <input
           type="datetime-local"
           id="AuctionEndTime"
@@ -62,13 +62,15 @@ const CreateNFTAuctionModal = ({
           className="h-[48px] w-full rounded-lg !border-0 !bg-black-shade-3 bg-transparent text-white !ring-0"
         />
         {auctionForm.formState.errors.AuctionEndTime && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className="pb-2 text-xs font-medium text-red-500">
             {auctionForm.formState.errors.AuctionEndTime.message}
           </p>
         )}
       </div>
-      <div className={fieldWrapper}>
-        <label className={fieldTitle}>Starting price for NFT</label>
+      <div className="flex w-full flex-col gap-2">
+        <label className="text-start text-sm font-normal text-white">
+          Starting price for NFT
+        </label>
         <div className="relative h-[48px] rounded-lg !bg-black-shade-3">
           <span className="textGradient absolute right-2 top-[50%] translate-x-[-50%] text-sm leading-[0]">
             BNB
@@ -84,7 +86,7 @@ const CreateNFTAuctionModal = ({
         </div>
 
         {auctionForm.formState.errors.StartingNFTPrice && (
-          <p className={`text-red-500 ${errMessage}`}>
+          <p className="pb-2 text-xs font-medium text-red-500">
             {auctionForm.formState.errors.StartingNFTPrice.message}
           </p>
         )}
@@ -101,17 +103,3 @@ const CreateNFTAuctionModal = ({
 };
 
 export default CreateNFTAuctionModal;
-
-// styling
-const modalBodyWrapper = ctl(`
-  flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center
-`);
-const errMessage = ctl(`
-pb-2 text-xs font-medium
-`);
-const fieldWrapper = ctl(`
-  flex gap-2 flex-col w-full
-`);
-const fieldTitle = ctl(`
-  text-sm text-start font-normal text-white
-`);

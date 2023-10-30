@@ -177,6 +177,8 @@ export { default as FacebookIcon } from "./facebook-circle.svg";
 export { default as LinkIconCollection } from "./link-icon.svg";
 export { default as USDTIcon } from "./usdt-icon.svg";
 export { default as EyeOffFollow } from "./eye-off-following.svg";
+export { default as GradientArrowFill } from "./gradient-fill.svg";
+export { default as GradientArrowOutline } from "./gradient-outline.svg";
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

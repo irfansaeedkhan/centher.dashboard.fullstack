@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 
 interface AuthNoteProps {
   title: string;
@@ -8,47 +8,13 @@ interface AuthNoteProps {
 
 export const AuthNote: React.FC<AuthNoteProps> = (props) => {
   return (
-    <div
-      className={`
-  flex 
-  flex-col 
-  gap-[6px] 
-  rounded-lg 
-  border 
-  border-gray-shade-5 
-  bg-gray-shade-6 
-  px-4 
-  py-3 
-`}
-    >
-      <div
-        className={`
-  text-sm 
-  font-medium
-  text-white 
-`}
-      >
-        Note:
-      </div>
-      <p
-        className={`
-  text-[11px] 
-  font-medium 
-  text-gray-shade-4 
-`}
-      >
-        {props.title}
-      </p>
+    <div className="flex flex-col gap-[6px] rounded-lg border border-gray-shade-5 bg-gray-shade-6 px-4 py-3">
+      <div className="text-sm font-medium text-white">Note:</div>
+      <p className="text-[11px] font-medium text-gray-shade-4">{props.title}</p>
       {props.link === "/forgot-password" && (
         <Link
           href={props.link}
-          className={`
-  text-xs 
-  font-medium 
-  text-white 
-  underline
-  hover:scale-105
-`}
+          className="text-xs font-medium text-white underline"
         >
           Forgot password
         </Link>

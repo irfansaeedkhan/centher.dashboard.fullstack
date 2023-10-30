@@ -1,6 +1,5 @@
-import clsx from "clsx";
 import React, { useEffect, useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
+import clsx from "clsx";
 import { useGetClaimableNtrForReferral } from "@/web3/hooks/use.get.claimable.ntr.for.referral";
 import { useGetClaimableBusdForReferral } from "@/web3/hooks/use.get.claimable.busd.for.referral";
 import { useNetworkRewards } from "@/store/network.rewards";
@@ -211,7 +210,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
       <div className="h-auto w-full rounded-[14px] bg-elevation-1">
         <div
           className={clsx(
-            `flex h-auto w-full  flex-col justify-between gap-4 rounded-t-[14px] bg-cover bg-center bg-no-repeat py-5 pl-3 pr-3 fsm:h-[92px] fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4`,
+            "flex h-auto w-full  flex-col justify-between gap-4 rounded-t-[14px] bg-cover bg-center bg-no-repeat py-5 pl-3 pr-3 fsm:h-[92px] fsm:flex-row fsm:items-center fsm:pl-7 fsm:pr-4",
             rewardState === "marketplace-rewards"
               ? "bg-[url(/images/liscense1.png)]"
               : "bg-[url(/images/liscense3.png)]"
@@ -222,8 +221,6 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
                 <p>{`${rewardsTotal.busd} BUSD`}</p>
-                {/* <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${rewardsTotal.ntr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
@@ -235,8 +232,6 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
             {rewardState === "launchpad-rewards" ? (
               <span className="flex items-center gap-2 font-semibold">
                 <p>{`${claimableBusd} BUSD`}</p>
-                {/* <span className="h-3 border-l border-white/[0.1]" />
-                <p>{`${claimableNtr} (NTR)`}</p> */}
               </span>
             ) : rewardState === "marketplace-rewards" ? (
               <p className="flex items-center gap-2 font-semibold">00 (BNB)</p>
@@ -254,34 +249,15 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                   : openClaimBUSDModal
               }
               className={clsx(
-                `h-10 w-full rounded-xl text-center text-sm font-bold fsm:w-[172px]`,
+                "h-10 w-full rounded-xl text-center text-sm font-bold fsm:w-[172px]",
                 claimableBusd === 0 &&
-                  `bg-background-shade-2 text-gray-shade-7`,
-                !(claimableBusd === 0) && `bg-brand-primary text-black-shade-3`
+                  "bg-background-shade-2 text-gray-shade-7",
+                !(claimableBusd === 0) && "bg-brand-primary text-black-shade-3"
               )}
             >
               Claim BUSD
             </button>
           )}
-          {/* {rewardState === "launchpad-rewards" && (
-            <button
-              disabled={claimableNtr === 0}
-              onClick={
-                !account
-                  ? () => {
-                      toast.error("Please connect your wallet");
-                    }
-                  : openClaimNTRModal
-              }
-              className={clsx(
-                `h-10 w-full rounded-xl text-center text-sm font-bold fsm:w-[172px]`,
-                claimableNtr === 0 && `bg-background-shade-2 text-gray-shade-7`,
-                !(claimableNtr === 0) && `bg-brand-primary text-black-shade-3`
-              )}
-            >
-              Claim NTR
-            </button>
-          )} */}
           {rewardState === "marketplace-rewards" && (
             <button
               disabled={true}
@@ -292,9 +268,7 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                     }
                   : openClaimBNBModal
               }
-              className={clsx(
-                `h-10 w-full rounded-xl bg-background-shade-2 text-center text-sm font-bold text-gray-shade-7 fsm:w-[172px]`
-              )}
+              className="h-10 w-full rounded-xl bg-background-shade-2 text-center text-sm font-bold text-gray-shade-7 fsm:w-[172px]"
             >
               Claim BNB
             </button>
@@ -362,18 +336,6 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
                       ? claimsInLaunchpad.busd
                       : claimsInLaunchpad.ntr;
                     let state;
-                    // if (roundState !== RoundState.RoundsEnded) {
-                    //   state = "Locked";
-                    // } else {
-                    //   if (claims.length > 0) {
-                    //     state =
-                    //       item.createdAt > claims[0].createdAt
-                    //         ? "Claimable"
-                    //         : "Claimed";
-                    //   } else {
-                    //     state = "Claimable";
-                    //   }
-                    // }
                     if (claims.length > 0) {
                       state =
                         item.createdAt > claims[0].createdAt
@@ -461,24 +423,10 @@ const LaunchpadClaimableRewards: React.FC<ClaimableRewardsProps> = ({
 
 export default LaunchpadClaimableRewards;
 
-const TableTitle = ctl(` 
-p-5  lg:p-8 lg:pb-5 text-base f2xl:text-xl font-semibold text-white
-`);
-const TableContainer = ctl(` 
-overflow-x-auto relative bg-background-shade-3 shadow-md rounded-2xl mt-8 lg:mt-12
-`);
-const table = ctl(` 
-overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-background-shade-3 
-`);
-const thead = ctl(` 
-text-sm text-gray-shade-7  uppercase bg-background-shade-3 
-`);
-const th = ctl(` 
-py-4 lg:py-7 first:px-8 last:px-8 px-5 lg:px-6 capitalize
-`);
-const td = ctl(` 
-first:px-8 last:px-8 px-5 lg:px-6 text-sm py-4 lg:py-7  text-white font-medium
-`);
-const tbodyTR = ctl(` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`);
+const th = `py-4 lg:py-7 first:px-8 last:px-8 px-5 lg:px-6 capitalize`;
+const thead = `text-sm text-gray-shade-7 uppercase bg-background-shade-3 `;
+const TableTitle = `p-5 lg:p-8 lg:pb-5 text-base f2xl:text-xl font-semibold text-white`;
+const td = `first:px-8 last:px-8 px-5 lg:px-6 text-sm py-4 lg:py-7 text-white font-medium`;
+const tbodyTR = `border-b border-gray-shade-3 odd:bg-black-shade-3 even:bg-black-shade-11`;
+const TableContainer = `overflow-x-auto relative bg-background-shade-3 shadow-md rounded-2xl mt-8 lg:mt-12`;
+const table = `overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-background-shade-3`;

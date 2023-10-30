@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
-import { toast } from "react-hot-toast";
-import { FiArrowRight } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
 import moment from "moment";
 import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
-import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useUser from "@/hooks/use.user";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
-import CustomDropdown from "./custom.dropdown";
-import cn from "@/utils/cn";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { AddIcon } from "@/assets/svgs";
+import cn from "@/utils/cn";
+import CustomDropdown from "./custom.dropdown";
+import ConnectWalletModal from "./connect-wallet-modal";
+import AddPropertiesModal from "./add-properties-modal";
 
 // form validations
 const schema = Joi.object({
@@ -252,23 +249,24 @@ const AuctionForm = ({
         <label className={fieldTitle}>
           Starting price for NFT <span className="text-red-500">*</span>{" "}
         </label>
-        <div className="relative">
-          <span className="textGradient absolute right-2 top-[50%] translate-x-[-50%] text-sm leading-[0]">
-            BNB
-          </span>
-          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+        <div
+          className={clsx(
+            "!rounded-lg p-[1px]",
+            !formState.errors.StartingNFTPrice
+              ? "focus-within:gradient-border-3"
+              : "focus-within:ring-1 focus-within:ring-red-500"
+          )}
+        >
+          <div className="flex items-center justify-between gap-3 !rounded-lg bg-black-shade-3 px-5 py-3">
             <CustomNumberInput
               {...register("StartingNFTPrice")}
               id="StartingNFTPrice"
               autoComplete="off"
               placeholder="Enter NFT Price"
-              className={
-                !formState.errors.StartingNFTPrice
-                  ? inputField
-                  : inputFieldError
-              }
               min={0}
+              className="w-full border-0 bg-transparent p-0 text-sm font-semibold text-white focus:outline-none focus:ring-0"
             />
+            <span className="text-gradient w-fit text-sm">BNB</span>
           </div>
         </div>
         {formState.errors.StartingNFTPrice && (
@@ -352,98 +350,21 @@ const AuctionForm = ({
         />
       )}
       {propertyModal && (
-        <CustomModal
-          onClose={() => {
-            setPropertyModal(false);
-          }}
-          title={"Add new properties"}
-        >
-          <div className={modalBodyWrapper}>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Name</label>
-              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                <input
-                  type="text"
-                  name="PropertyName"
-                  id="PropertyName"
-                  autoComplete="off"
-                  placeholder="Male"
-                  className={inputFieldModal}
-                  onChange={handlePropertyChange}
-                  value={propertyDetails.PropertyName}
-                />
-              </div>
-            </div>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Type</label>
-              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                <input
-                  type="text"
-                  name="Type"
-                  id="Type"
-                  autoComplete="off"
-                  placeholder="Character"
-                  className={inputFieldModal}
-                  onChange={handlePropertyChange}
-                  value={propertyDetails.Type}
-                />
-              </div>
-            </div>
-            {propertyErr && (
-              <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
-            )}
-            <Button
-              title={"Save"}
-              variant="primary"
-              onClick={addNewPropertyFunc}
-              className="mt-2"
-            />
-          </div>
-        </CustomModal>
+        <AddPropertiesModal
+          addNewPropertyFunc={addNewPropertyFunc}
+          handlePropertyChange={handlePropertyChange}
+          propertyDetails={propertyDetails}
+          setPropertyModal={setPropertyModal}
+          propertyErr={propertyErr}
+        />
       )}
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to buy this nft");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          connectWallet={connectWallet}
+          deactivate={disconnectWallet}
+          loggedInUser={loggedInUser}
+          setConnectWalletModal={setConnectWalletModal}
+        />
       )}
     </div>
   );
@@ -451,41 +372,14 @@ const AuctionForm = ({
 
 export default AuctionForm;
 
-const formContainer = `
- flex flex-col gap-4
-`;
-const errMessage = `
-pb-2 text-xs font-medium
-`;
-const fieldWrapper = `
-  flex gap-2 flex-col w-full
-`;
-const fieldTitle = `
-  text-sm text-start font-normal text-white
-`;
-const inputField = `
-  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0 active:!ring-brand-primary
-`;
-const inputFieldError = `
-  ${inputField}
-   focus:!ring-red-500
-`;
-const addPropertyBtn = `
-flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
-`;
-const modalBodyWrapper = `
-flex flex-col gap-2 w-full mt-8 text-center p-[2px]
-`;
-
-const properyCard = `
-gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
-`;
-const PropertyName = `
-text-xs font-medium textGradient
-`;
-const Type = `
-text-sm font-semibold text-white
-`;
-const inputFieldModal = `
-  w-full py-3 px-5  !bg-black-shade-2 text-white  font-semibold text-sm rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-0 active:!ring-brand-primary
-`;
+// styling
+const formContainer = `flex flex-col gap-4`;
+const errMessage = `pb-2 text-xs font-medium`;
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+const Type = `text-sm font-semibold text-white`;
+const PropertyName = `text-xs font-medium textGradient`;
+const fieldTitle = `text-sm text-start font-normal text-white`;
+const inputField = `w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0`;
+const inputFieldError = `${inputField} focus:!ring-red-500`;
+const addPropertyBtn = `flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]`;
+const properyCard = `gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative`;

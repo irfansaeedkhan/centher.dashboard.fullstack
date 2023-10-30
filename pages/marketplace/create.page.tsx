@@ -1,7 +1,7 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import Button from "@/components/button";
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
@@ -10,15 +10,15 @@ import { BNBIcon, LoaderIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import useUser from "@/hooks/use.user";
 import { NFTUploader } from "@/utils/upload.tools/nft.upload.util";
+import { customLog } from "@/utils/custom.log";
 import { safeNameType } from "@/utils/upload.tools/interfaces/safe.file.wrapper.interface";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
-import { BlockchainConfig } from "@/web3/blockchain/config";
 import { INFTData } from "./_components/create.nft.form";
-import { UploadNFT, CreateNFTForm } from "./_components";
-import { customLog } from "@/utils/custom.log";
+import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { UploadNFT, CreateNFTForm } from "./_components";
 
 const nftRemoteBasePath = "ipfs:/";
 
@@ -28,21 +28,30 @@ enum ModalType {
   proceedFuncModal = "proceedFuncModal",
 }
 
+export enum CreateNftUploadFormType {
+  Image = "Image",
+  Gif = "Gif",
+  Video = "Video",
+  Audio = "Audio",
+}
+
 const CreateNFT: NextPageWithLayout = () => {
   const router = useRouter();
+  const { user } = useUser();
+  const bnbPrice = useBNBPrice();
+  const { connectedAddress, getSigner } = useWallet();
   const [clearForm, setClearForm] = useState(false);
+  const [asset, setAsset] = useState<Blob | undefined>(undefined);
+  const [videoThumbnail, setVideoThumbnail] = useState<Blob | undefined>(
+    undefined
+  );
+  const [assetTab, setAssetTab] = useState(CreateNftUploadFormType.Image);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
-  const [asset, setAsset] = useState<Blob | undefined>(undefined);
-  const [assetTab, setAssetTab] = useState("Image");
 
-  const bnbPrice = useBNBPrice();
-
-  const { connectedAddress, getSigner } = useWallet();
-  const { user } = useUser();
   // creating modals
   const buyNFTStep1Func = (nftData: any) => {
     try {
@@ -53,6 +62,7 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("something went wrong");
     }
   };
+
   const buyNFTSuccessFunc = (txStatus: boolean, nftData: any) => {
     try {
       validateProvider();
@@ -66,13 +76,8 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("something went wrong");
     }
   };
-  const handleCreateCollection = async (nftData: any) => {
-    // const success = await submitRecaptcha();
-    // if (!success) {
-    //   toastError("Please verify you are not a robot");
-    //   return;
-    // }
 
+  const handleCreateNFT = async (nftData: any) => {
     ProceedFunc();
     let nfdCreated = false;
     try {
@@ -81,7 +86,8 @@ const CreateNFT: NextPageWithLayout = () => {
       const nftMetadataPath = await nftUploader.uploadNFT(
         asset,
         castedNftData,
-        asset as any as safeNameType
+        asset as any as safeNameType,
+        videoThumbnail as any
       );
 
       const result = await BlockchainWrite.callCreateNFT(
@@ -124,7 +130,13 @@ const CreateNFT: NextPageWithLayout = () => {
       toastError("Choose file.");
       return;
     }
-
+    if (
+      assetTab === CreateNftUploadFormType.Video &&
+      videoThumbnail === undefined
+    ) {
+      toastError("Choose video thumbnail.");
+      return;
+    }
     validateProvider();
     buyNFTStep1Func(values);
   };
@@ -149,7 +161,13 @@ const CreateNFT: NextPageWithLayout = () => {
           <div className={modalBodyWrapper2}>
             <div className="mb-4 flex w-full justify-center">
               <Image
-                src={src}
+                src={
+                  assetTab === "Audio"
+                    ? "/images/default-music.png"
+                    : assetTab === "Video"
+                    ? URL.createObjectURL(videoThumbnail!)
+                    : src
+                }
                 alt="nft"
                 width={64}
                 height={64}
@@ -181,7 +199,7 @@ const CreateNFT: NextPageWithLayout = () => {
                 title={"Checkout"}
                 variant="primary"
                 className="w-full"
-                onClick={() => handleCreateCollection(nftData)}
+                onClick={() => handleCreateNFT(nftData)}
               />
             </div>
           </div>
@@ -262,19 +280,23 @@ const CreateNFT: NextPageWithLayout = () => {
       throw new Error("Connect your wallet");
     }
   }
+
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
+
   return (
     <div className="w-full pb-16">
       <h1 className={title}>Create an NFT</h1>
       <div className="flex items-start gap-9 [@media(max-width:1279px)]:flex-col">
         <UploadNFT
+          setVideoThumbnail={setVideoThumbnail}
           asset={asset}
           setAsset={setAsset}
           assetTab={assetTab}
-          setAssetTab={setAssetTab}
+          setAssetTab={setAssetTab as Dispatch<SetStateAction<string>>}
           clearForm={clearForm}
+          setClearForm={setClearForm}
         />
         <CreateNFTForm
           library={getSigner()!}
@@ -287,6 +309,7 @@ const CreateNFT: NextPageWithLayout = () => {
         <CustomModal
           onClose={() => {
             modal.dismissModal();
+            setClearForm(true);
           }}
           title={ModalModel.title as string}
           disable={ModalModel.title === "Transaction in progress" ? "yes" : ""}
@@ -302,11 +325,7 @@ CreateNFT.getLayout = (page: any) => {
   return (
     <AllPagesWrapper pageTitle="Create NFT">
       <div className={dashboardContentContainer}>
-        {/* <GoogleReCaptchaWrapper
-          reCaptchaKey={process.env.NEXT_PUBLIC_GOOGLE_SITE_KEY!}
-        > */}
         <div className={feedContainer}>{page}</div>
-        {/* </GoogleReCaptchaWrapper> */}
       </div>
     </AllPagesWrapper>
   );

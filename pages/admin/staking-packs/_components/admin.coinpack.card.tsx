@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
 import Button from "@/components/button";
 import { AppRoutes } from "@/constants/app.routes";
 import { DeleteIconBtnCoinPack } from "@/assets/svgs";
@@ -63,39 +62,15 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
   );
 };
 
-const StackCard = ctl(`
-  stakingCard overflow-hidden bg-background-shade-3 rounded-2xl   max-w-[655px]
-`);
-const StackCardTop = ctl(`
-  flex justify-between items-center bg-background-shade-2 p-5
-`);
-const CardTitle = ctl(`
-  text-16  f2xl:text-20 font-bold text-white
-`);
-const StackCardContent = ctl(`
-  pt-10 pb-4 px-5
-`);
-const StackCardContentWrap = ctl(`
-  flex flex-wrap pb-10 lg:pb-2 gap-x-8 gap-y-6 lg:gap-0
-`);
-const StackCardContentItem = ctl(`
- w-max lg:w-1/3  lg:mb-10 
-`);
-const ContentItemTitle = ctl(`
-  text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4 
-`);
-const ContentItemTitleMax = ctl(`
-  text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4 w-max 
-`);
-const ContentItemData = ctl(`
-  text-16 f2xl:text-22 textGradient  font-semibold
-`);
-const ContentItemData2 = ctl(`
-  text-16 f2xl:text-22 text-white font-semibold
-`);
-const rateContainer = ctl(`
-  flex flex-col items-baseline lg:flex-row lg:items-center space-x-1 
-`);
-const ContentItemRate = ctl(`
-  text-12 f2xl:text-14 text-gray-shade-7
-`);
+const StackCardContent = `pt-10 pb-4 px-5`;
+const StackCardContentItem = `w-max lg:w-1/3 lg:mb-10`;
+const CardTitle = `text-16 f2xl:text-20 font-bold text-white`;
+const ContentItemRate = `text-12 f2xl:text-14 text-gray-shade-7`;
+const ContentItemData2 = `text-16 f2xl:text-22 text-white font-semibold`;
+const ContentItemData = `text-16 f2xl:text-22 textGradient font-semibold`;
+const StackCardTop = `flex justify-between items-center bg-background-shade-2 p-5`;
+const StackCardContentWrap = `flex flex-wrap pb-10 lg:pb-2 gap-x-8 gap-y-6 lg:gap-0`;
+const ContentItemTitle = `text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4`;
+const rateContainer = `flex flex-col items-baseline lg:flex-row lg:items-center space-x-1`;
+const StackCard = `stakingCard overflow-hidden bg-background-shade-3 rounded-2xl max-w-[655px]`;
+const ContentItemTitleMax = `text-12 f2xl:text-14 leading-[18px] text-gray-shade-7 pb-4 w-max`;

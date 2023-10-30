@@ -1,18 +1,14 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
-
-// App imports
+import clsx from "clsx";
 import Button from "@/components/button";
 import { useGetMyCollections } from "@/hooks/use.get.my.collections";
-
-// same directory Imports
-import FixedPriceForm from "./fixed.price.form";
-import AuctionForm from "./auction.form";
 import { JsonRpcSigner } from "@ethersproject/providers";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import AuctionForm from "./auction.form";
+import FixedPriceForm from "./fixed.price.form";
 
 export interface CreateNFTFormProps {
-  createNFT: any;
+  createNFT: (values: INFTData) => void;
   clearForm: boolean;
   asset: Blob | undefined;
   library: JsonRpcSigner;
@@ -37,9 +33,9 @@ export const CreateNFTForm = ({
   asset,
   library,
 }: CreateNFTFormProps) => {
-  const [tab, setTab] = useState("Fixed");
   const { connectedAddress } = useWallet();
   const collections = useGetMyCollections(connectedAddress);
+  const [tab, setTab] = useState("fixed");
 
   return (
     <div
@@ -47,23 +43,23 @@ export const CreateNFTForm = ({
     >
       <div className={`flex w-full max-w-[290px] gap-4`}>
         <Button
-          title={"Fixed Price"}
-          variant={tab === "Fixed" ? "primary" : "secondary"}
+          title={"fixed Price"}
+          variant={tab === "fixed" ? "primary" : "secondary"}
+          className={clsx(Tab, tab === "fixed" && activeTab)}
           onClick={() => {
-            setTab("Fixed");
+            setTab("fixed");
           }}
-          className={`${Tab} ${tab === "Fixed" && activeTab}`}
         />
         <Button
           title={"Auction"}
-          variant={tab === "Auction" ? "primary" : "secondary"}
+          variant={tab === "auction" ? "primary" : "secondary"}
+          className={clsx(Tab, tab === "auction" && activeTab)}
           onClick={() => {
-            setTab("Auction");
+            setTab("auction");
           }}
-          className={`${Tab} ${tab === "Auction" && activeTab}`}
         />
       </div>
-      {tab === "Fixed" && (
+      {tab === "fixed" && (
         <FixedPriceForm
           signer={library}
           createNFT={createNFT}
@@ -72,7 +68,7 @@ export const CreateNFTForm = ({
           asset={asset}
         />
       )}
-      {tab === "Auction" && (
+      {tab === "auction" && (
         <AuctionForm
           library={library}
           createNFT={createNFT}

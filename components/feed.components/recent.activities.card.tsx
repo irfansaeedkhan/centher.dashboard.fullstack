@@ -1,19 +1,10 @@
 // React, Next, NPM Packages
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
 
 export const RecentActivitiesCard = () => {
   return (
-    <div
-      className={`
-  w-full max-w-[272px] rounded-10px bg-background-shade-3 p-4 pb-2
-`}
-    >
-      <h5
-        className={`
-  pb-6 text-sm font-semibold text-white
-`}
-      >
+    <div className="p-4pb-2 w-full max-w-[272px] rounded-10px bg-background-shade-3">
+      <h5 className="pb-6 text-sm font-semibold text-white">
         Recent activities
       </h5>
       <div className={RADetail}>
@@ -58,15 +49,7 @@ export const RecentActivitiesCard = () => {
 
 // styling
 
-const RADetail = `
-  flex items-center justify-center gap-3 pb-4
-`;
-const RAName = `
-  text-sm font-semibold text-white 
-`;
-const RATime = `
-  text-sm font-light text-white 
-`;
-const cdTime = `
-  text-xs font-ligth text-gray-shade-7
-`;
+const RATime = `text-sm font-light text-white`;
+const RAName = `text-sm font-semibold text-white`;
+const cdTime = `text-xs font-ligth text-gray-shade-7`;
+const RADetail = `flex items-center justify-center gap-3 pb-4`;

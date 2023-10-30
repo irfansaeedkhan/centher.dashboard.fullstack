@@ -393,7 +393,7 @@ export const CreateNFTCollectionForm = ({
               onClick={() => {
                 modal.createModal(ModalType.previewCollection);
               }}
-              className="mt-2 w-full hover:scale-95"
+              className="mt-2 w-full"
             />
             <Button
               title={"Create Collection"}
@@ -412,7 +412,7 @@ export const CreateNFTCollectionForm = ({
                 categoryError
               }
               onClick={handleSubmit(onSubmit)}
-              className="mt-2 w-full hover:scale-95"
+              className="mt-2 w-full"
             />
           </div>
         )}
