@@ -3,13 +3,7 @@ import Countdown from "react-countdown";
 import toast from "react-hot-toast";
 import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
-import {
-  BNBIcon,
-  LoaderIcon,
-  WarningIcon,
-  GreenTick,
-  CircularClose,
-} from "@/assets/svgs";
+import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
@@ -17,6 +11,9 @@ import {
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import TrxInProgressModal from "@/utils/modal/trx-modal";
+import MessageModal from "@/utils/modal/message-modal";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
@@ -78,27 +75,34 @@ export const AuctionNFTBuyerDescription = ({
     }
   }, [connectedAddress, data]);
 
+  useEffect(() => {
+    if (ModalModel.visibility) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [ModalModel.visibility]);
+
   const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError("Something went wrong, please try again later.");
+      !txStatus && toastError("Something went wrong, please try again later.");
     }
   };
 
   const ProceedFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.proceedFuncModal);
-    } catch (err: any) {
-      toastError("Something went wrong, please try again later.");
-    }
+    modal.dismissModal();
+    modal.createModal(ModalType.proceedFuncModal);
   };
 
   const onSubmit = async (bidPriceVal: any) => {
+    validateProvider();
+    let response = { success: false, message: "" };
     if (Number(bidPriceVal) <= formatEther2Number(price)) {
       toast.error(
         `Bid price must be greater than ${formatEther2Number(price)}.`
@@ -109,6 +113,7 @@ export const AuctionNFTBuyerDescription = ({
       toast.error("Insufficient BNB Balance in your wallet.");
       return;
     }
+
     setBidModal(false);
     ProceedFunc();
     try {
@@ -120,17 +125,23 @@ export const AuctionNFTBuyerDescription = ({
           data.nftId,
           bidPriceVal
         );
-        if (result?.length) {
+
+        if (!!result?.length) {
           setNftData();
-          SuccessFunc(true, "Bid placed successfully on auctioned on");
+          response.success = true;
+          response.message = "Bid placed successfully on auctioned on ";
         } else throw new Error();
       }
     } catch (error) {
-      SuccessFunc(false, "Something went wrong, auction failed");
+      response.success = false;
+      response.message = "Something went wrong, auction failed";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
 
   const handleEndAuction = async () => {
+    let response = { success: false, message: "" };
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
@@ -140,10 +151,14 @@ export const AuctionNFTBuyerDescription = ({
       );
       if (result?.length) {
         setNftData();
-        SuccessFunc(true, "Auction has ended for ");
+        response.success = true;
+        response.message = "Auction has ended for ";
       } else throw new Error();
     } catch (err: any) {
-      SuccessFunc(false, "Something went wrong ");
+      response.success = false;
+      response.message = "Something went wrong";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
 
@@ -151,26 +166,15 @@ export const AuctionNFTBuyerDescription = ({
     proceedFuncModal: {
       title: "Transaction in progress",
       visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper1}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
-            Transaction in progress
-          </h3>
-          <p className="text-sm font-normal leading-6 text-gray-shade-2">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
+      content: () => <TrxInProgressModal />,
     },
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper1}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-base font-semibold text-white f2xl:text-lg">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -183,61 +187,38 @@ export const AuctionNFTBuyerDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
-            <p className="text-sm font-normal leading-6 text-gray-shade-2">
+          }
+          subHeading={
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name} </span>{" "}
               NFT on <b> Centher </b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-sm font-normal leading-6 text-gray-shade-2">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <Button
-            title={"View item"}
-            variant="primary"
-            onClick={() => {
-              modal.dismissModal();
-            }}
-            className="w-full rounded-[14px]"
-          />
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     endAuctionFuncModal: {
       title: "Collect NFT",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper1}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
-            Click Proceed to collect your NFT!
-          </h3>
-          <p className="text-sm font-normal leading-6 text-gray-shade-2">
-            {formatAddress(data?.owner)} receives
-            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
-            will receive the NFT
-          </p>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <Button
-              title={"Proceed"}
-              onClick={handleEndAuction}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Click Proceed to collect your NFT!"
+          subHeading={`${formatAddress(data?.owner)} receives
+        ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
+        will receive the NFT`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleEndAuction}
+        />
       ),
     },
   };

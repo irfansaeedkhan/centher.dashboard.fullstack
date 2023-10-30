@@ -23,7 +23,7 @@ export const ModalMigrate: React.FC<Props> = (props) => {
           className={`relative mb-4 flex h-[28px] items-center justify-between rounded-t px-6`}
         >
           <span
-            className={`text-[16px] font-semibold text-white fmd:text-[18px]`}
+            className={`word-break text-[16px] font-semibold text-white fmd:text-[18px]`}
           >
             {props.title}
           </span>
@@ -33,7 +33,7 @@ export const ModalMigrate: React.FC<Props> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-[600px] overflow-y-auto px-6`}>
+        <div className={`customScrollbar max-h-[600px] overflow-y-auto px-6`}>
           {props.children}
         </div>
       </div>

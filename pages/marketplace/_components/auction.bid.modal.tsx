@@ -18,15 +18,15 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
 
   return (
     <CustomModal onClose={onClose} title={"Place a bid"}>
-      <div className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
+      <div className="flex w-full flex-col gap-4 px-2 pt-2 text-center fmd:px-4 fmd:pt-4">
+        <div className="mt-7 flex w-full flex-col gap-2">
           <label className={fieldTitle}>Blockchain</label>
           <div className={`${inputFieldModal} flex items-center gap-3 pl-2`}>
             <BNBIcon />{" "}
             <h6 className="text-sm font-semibold text-white">BNB</h6>
           </div>
         </div>
-        <div className={fieldWrapper}>
+        <div className="flex w-full flex-col gap-2">
           <label className={fieldTitle}>Price</label>
           <div
             className={`${inputFieldModal} gradient-border-3 flex items-center justify-between gap-3 p-[1px] `}
@@ -78,7 +78,5 @@ export default AuctionBidModal;
 
 // styling
 const errMessage = `pb-2 text-xs font-medium`;
-const fieldWrapper = `flex gap-2 flex-col w-full`;
 const fieldTitle = `text-sm text-start font-normal text-white`;
-const modalBodyWrapper = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center`;
 const inputFieldModal = `w-full h-[48px] bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none`;

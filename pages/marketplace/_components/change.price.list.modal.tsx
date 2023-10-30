@@ -48,7 +48,7 @@ const ChangePriceListModal: React.FC<Props> = ({
   };
 
   return (
-    <div className={`mt-4 flex w-full flex-col gap-4 px-2 pt-4 text-center`}>
+    <div className={`flex h-full w-full flex-col gap-4 px-2 pt-4 text-center`}>
       <div className="flex items-center justify-center gap-4">
         <Button
           title="Fixed Price"
@@ -78,7 +78,9 @@ const ChangePriceListModal: React.FC<Props> = ({
             alt="img"
             className="w-full max-w-[266px] rounded-xl object-cover"
           />
-          <h3 className="mt-6 text-lg font-semibold text-white">{data.name}</h3>
+          <h3 className="word-break word-break mt-6 text-lg font-semibold text-white">
+            {data.name}
+          </h3>
         </div>
       )}
       {activeButton === "auction" && (

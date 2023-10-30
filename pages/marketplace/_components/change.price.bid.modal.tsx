@@ -28,7 +28,7 @@ const ChangePriceBidModal = ({
   return (
     <div className={modalBodyWrapper}>
       {data && (
-        <div className="flex flex-col items-center justify-center gap-6">
+        <div className="flex flex-col items-center justify-center gap-3">
           <Image
             src={
               data.type.includes("audio")
@@ -42,7 +42,7 @@ const ChangePriceBidModal = ({
             height={64}
             className="!h-[64px] flex-shrink-0 rounded-xl object-cover"
           />
-          <h4 className="text-center text-lg font-semibold text-white">
+          <h4 className="word-break text-center text-lg font-semibold text-white">
             {data.name}
           </h4>
         </div>

@@ -41,7 +41,7 @@ const CustomDropdown: React.FC<DropdownProps> = ({
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center justify-between">
-          <span>{selectedLabel}</span>
+          <span className="word-break">{selectedLabel}</span>
           {isOpen ? (
             <SlArrowUp className="h-2 w-2 fill-gray-400  fsm:h-3 fsm:w-3" />
           ) : (

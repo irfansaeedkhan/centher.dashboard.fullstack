@@ -9,7 +9,7 @@ import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
+import { HammerIconBG, LockIcon, CentherIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
@@ -248,28 +248,32 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {internal && (
             <div
-              className={`absolute left-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute left-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
             >
-              <div className="flex items-center gap-[6px]">CENTHER</div>
+              <div className="flex items-center gap-[6px]">
+                {" "}
+                <CentherIcon className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">CENTHER</span>
+              </div>
             </div>
           )}
           {locked && (
             <div
-              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
             >
               <div className="flex items-center gap-[6px]">
-                <LockIcon className="w-[28%]" />
-                LOCKED
+                <LockIcon className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">LOCKED</span>
               </div>
             </div>
           )}
           {auction && (
             <div
-              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md  bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex  f2xl:h-[28px] f2xl:w-[80px]`}
             >
               <div className="flex items-center gap-[6px]">
-                <HammerIconBG className="w-[28%]" />
-                AUCTION
+                <HammerIconBG className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">AUCTION</span>
               </div>
             </div>
           )}

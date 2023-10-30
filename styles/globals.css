@@ -861,6 +861,51 @@
   .blur-local > .not-blur {
     filter: none;
   }
+
+  /* chat gradient border */
+
+  .gradient-chat-box::before {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    background-color: #17171a;
+    border-radius: 10px;
+  }
+  .modal-open {
+    overflow: hidden;
+  }
+  .border-gradient-top {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
+  .border-gradient-left {
+    border: 1px solid;
+    border-image-slice: 1;
+    border-width: 1px;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    border-image-source: linear-gradient(
+      270.23deg,
+      #5691ff -9.34%,
+      #72f6d1 17.09%,
+      #76e268 48.54%,
+      #ffd505 78.11%,
+      #ff5e52 107.63%
+    );
+  }
 }
 
 @layer utilities {

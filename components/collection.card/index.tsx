@@ -65,7 +65,9 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
           )}
         </div>
         <div className={`flex flex-col items-center px-4`}>
-          <div className={`text-base font-bold text-white`}>{data.name}</div>
+          <div className={`word-break text-base font-bold text-white `}>
+            {data.name}
+          </div>
           <span
             className={clsx(
               `mt-1 text-sm font-semibold text-white`,
