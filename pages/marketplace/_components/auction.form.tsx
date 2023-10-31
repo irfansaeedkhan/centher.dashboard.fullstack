@@ -7,6 +7,7 @@ import Joi from "joi";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { formatAddress } from "@/utils/format.address";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import useUser from "@/hooks/use.user";
@@ -14,7 +15,6 @@ import { useWallet } from "@/web3/hooks/use.wallet";
 import { AddIcon } from "@/assets/svgs";
 import cn from "@/utils/cn";
 import CustomDropdown from "./custom.dropdown";
-import ConnectWalletModal from "./connect-wallet-modal";
 import AddPropertiesModal from "./add-properties-modal";
 
 // form validations

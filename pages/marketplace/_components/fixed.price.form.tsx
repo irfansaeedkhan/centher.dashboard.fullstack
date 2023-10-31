@@ -7,6 +7,7 @@ import { JsonRpcSigner } from "@ethersproject/providers";
 import { AddIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { formatAddress } from "@/utils/format.address";
 import useUser from "@/hooks/use.user";
 import { joiResolver } from "@hookform/resolvers/joi";
@@ -15,7 +16,6 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import { INFTData } from "./create.nft.form";
-import ConnectWalletModal from "./connect-wallet-modal";
 import AddPropertiesModal from "./add-properties-modal";
 
 // form validations

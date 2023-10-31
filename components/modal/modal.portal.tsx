@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 interface Props {
@@ -11,7 +11,7 @@ export const ModalPortal: React.FC<Props> = ({ children, wrapperId }) => {
     null
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let element = document.getElementById(wrapperId);
     let systemCreated = false;
 

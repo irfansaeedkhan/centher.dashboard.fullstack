@@ -10,10 +10,9 @@ import Select, { StylesConfig } from "react-select";
 import { IoClose } from "react-icons/io5";
 import { IoIosClose } from "react-icons/io";
 import { BsArrowLeftShort, BsPlusCircle } from "react-icons/bs";
-import { FiArrowRight } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
 import cn from "@/utils/cn";
-import { CrossIcon, MetamaskIcon2, TeamMemberIcon } from "@/assets/svgs";
+import { CrossIcon, TeamMemberIcon } from "@/assets/svgs";
 import { NextPageWithLayout } from "@/pages/_app.page";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
@@ -21,7 +20,7 @@ import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CreatePoolStepsEnum } from "@/staking/enum/create-pool-steps.enum";
 import useUser from "@/hooks/use.user";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import {
   CreatePoolCallContractError,
   CreatePoolCallStaticError,
@@ -37,6 +36,7 @@ import {
 import { PreLoader } from "@/components/pre.loader";
 import { useStaking } from "@/hooks/staking";
 import { BlockchainRead } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { StakingSuccessModal } from "./_components/staking-success-modal";
 import {
   MultiLevelRewards,
@@ -63,7 +63,6 @@ import {
   stakingPeriodOptions,
 } from "../constants";
 import DropdownStakingForm from "../_components/dropdown-staking-form";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 const categoryOptions = [
   { value: "Metaverse", label: "Metaverse" },
@@ -279,19 +278,21 @@ const CreateStaking: NextPageWithLayout = () => {
         >
           Level {index + 1}
         </label>
-        <input
-          type="number"
-          name={`level-${index + 1}`}
-          id={`level-${index + 1}`}
-          placeholder="0%"
-          className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-          value={String(inputValues[index].percent) || ""}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            handleInputChange(event, index)
-          }
-          title="Please enter numbers only"
-          required
-        />
+        <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+          <input
+            type="number"
+            name={`level-${index + 1}`}
+            id={`level-${index + 1}`}
+            placeholder="0%"
+            className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+            value={String(inputValues[index].percent) || ""}
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              handleInputChange(event, index)
+            }
+            title="Please enter numbers only"
+            required
+          />
+        </div>
       </div>
     ));
   };
@@ -665,7 +666,7 @@ const CreateStaking: NextPageWithLayout = () => {
         value,
       });
     },
-    [progressModel, setProgressModel]
+    [setProgressModel]
   );
 
   const retryFunc = () => {
@@ -905,13 +906,13 @@ const CreateStaking: NextPageWithLayout = () => {
       color: state.isFocused ? "#febf32" : "white",
       cursor: "pointer",
     }),
-    menu: (provided: any, state: any) => ({
+    menu: (provided: any) => ({
       ...provided,
       background: "#17171a",
       zIndex: 2,
       color: "white",
     }),
-    menuList: (provided: any, state: any) => ({
+    menuList: (provided: any) => ({
       ...provided,
       background: "17171a",
       color: "white",
@@ -923,11 +924,11 @@ const CreateStaking: NextPageWithLayout = () => {
       borderRadius: "8px",
       color: "white",
     }),
-    multiValueLabel: (provided: any, state: any) => ({
+    multiValueLabel: (provided: any) => ({
       ...provided,
       color: "white",
     }),
-    multiValueRemove: (provided: any, state: any) => ({
+    multiValueRemove: (provided: any) => ({
       ...provided,
       color: "white",
       backgroundColor: "transparent",
@@ -967,13 +968,13 @@ const CreateStaking: NextPageWithLayout = () => {
               setFormStep(0);
             }}
             className={cn(
-              "group flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 hover:bg-brand-primary",
+              "hover:gradient-border-3 group flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gray-shade-9 p-[1px]",
               {
                 hidden: formStep == 0,
               }
             )}
           >
-            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-gray-shade-3" />
+            <BsArrowLeftShort className="h-6 w-6 fill-gray-shade-18 group-hover:fill-white" />
           </button>
           <h1 className="textGradient font-semibold leading-[42px] sm:text-2xl ">
             {formStep == 0
@@ -1158,13 +1159,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     Staking Name
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("staking_name")}
-                    id="staking_name"
-                    placeholder="For example: DeXa Pack 1"
-                    className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      {...stakingForm.register("staking_name")}
+                      id="staking_name"
+                      placeholder="For example: DeXa Pack 1"
+                      className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   {stakingForm.formState.errors.staking_name && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.staking_name.message}
@@ -1180,16 +1183,18 @@ const CreateStaking: NextPageWithLayout = () => {
                     Token Address
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("token_address")}
-                    onChange={(e: any) => {
-                      setStakingToken(e.target.value);
-                    }}
-                    id="token_address"
-                    placeholder="Add address here"
-                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      {...stakingForm.register("token_address")}
+                      onChange={(e: any) => {
+                        setStakingToken(e.target.value);
+                      }}
+                      id="token_address"
+                      placeholder="Add address here"
+                      className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   {stakingForm.formState.errors.token_address && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.token_address.message}
@@ -1204,14 +1209,16 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Reward Token Address
                   </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("reward_token_address")}
-                    id="reward_token_address"
-                    placeholder="Add address here"
-                    onChange={rewardTokenChanged}
-                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      {...stakingForm.register("reward_token_address")}
+                      id="reward_token_address"
+                      placeholder="Add address here"
+                      onChange={rewardTokenChanged}
+                      className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   <p className={`text-gradient pb-2 pt-1 text-xs font-medium`}>
                     If you leave this empty, token address will be use as Reward
                     token address
@@ -1236,15 +1243,17 @@ const CreateStaking: NextPageWithLayout = () => {
                       >
                         Staking / Reward Token Price Ratio
                       </label>
-                      <input
-                        type="number"
-                        {...stakingForm.register(
-                          "staking_reward_token_price_ratio"
-                        )}
-                        id="staking_reward_token_price_ratio"
-                        placeholder="only numbers"
-                        className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      />
+                      <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                        <input
+                          type="number"
+                          {...stakingForm.register(
+                            "staking_reward_token_price_ratio"
+                          )}
+                          id="staking_reward_token_price_ratio"
+                          placeholder="only numbers"
+                          className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        />
+                      </div>
                       {stakingForm.formState.errors
                         .staking_reward_token_price_ratio && (
                         <p className={`pb-2 text-xs font-medium text-red-500`}>
@@ -1347,7 +1356,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Is Cancelable
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <label
                       htmlFor="is_cancelable"
                       className="block font-normal tracking-wide"
@@ -1406,13 +1415,15 @@ const CreateStaking: NextPageWithLayout = () => {
                         Charge Fee on Cancel
                         <span className="text-gradient ml-[2px]">*</span>
                       </label>
-                      <input
-                        type="number"
-                        {...stakingForm.register("charge_fee_on_cancel")}
-                        id="charge_fee_on_cancel"
-                        placeholder="0%"
-                        className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                      />
+                      <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                        <input
+                          type="number"
+                          {...stakingForm.register("charge_fee_on_cancel")}
+                          id="charge_fee_on_cancel"
+                          placeholder="0%"
+                          className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        />
+                      </div>
                       {stakingForm.formState.errors.charge_fee_on_cancel && (
                         <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {
@@ -1434,13 +1445,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     APY
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <input
-                    type="number"
-                    {...stakingForm.register("apy")}
-                    id="apy"
-                    placeholder="For example: 2%"
-                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="number"
+                      {...stakingForm.register("apy")}
+                      id="apy"
+                      placeholder="For example: 2%"
+                      className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   {stakingForm.formState.errors.apy && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.apy.message}
@@ -1456,13 +1469,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     Start Date
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <input
-                    type="date"
-                    {...stakingForm.register("start_date")}
-                    id="start_date"
-                    placeholder="For example: DeXa Pack 1"
-                    className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="date"
+                      {...stakingForm.register("start_date")}
+                      id="start_date"
+                      placeholder="For example: DeXa Pack 1"
+                      className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm accent-yellow-400 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   {stakingForm.formState.errors.start_date && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
                       {stakingForm.formState.errors.start_date.message}
@@ -1540,7 +1555,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Show on Centher
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <label
                       htmlFor="show_on_centher"
                       className="block font-normal tracking-wide"
@@ -1601,7 +1616,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   >
                     Liquidity Pool Provided
                   </label>
-                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full appearance-none items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <label
                       htmlFor="liquidity_pool_provided"
                       className="block font-normal tracking-wide"
@@ -1661,13 +1676,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     Minimum Stakable Amount
                     <span className="text-gradient ml-[2px]">*</span>
                   </label>
-                  <input
-                    type="text"
-                    {...stakingForm.register("min_staking_amount")}
-                    id="min_staking_amount"
-                    placeholder="Example: 1000"
-                    className="mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                  />
+                  <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                    <input
+                      type="text"
+                      {...stakingForm.register("min_staking_amount")}
+                      id="min_staking_amount"
+                      placeholder="Example: 1000"
+                      className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                    />
+                  </div>
                   <p className={`text-gradient pb-2 pt-1 text-xs font-medium`}>
                     if you set a min value then staking amount is always a
                     coefficient of this value, for example if min value is 250,
@@ -1690,14 +1707,15 @@ const CreateStaking: NextPageWithLayout = () => {
                         Maximum Stakable Amount
                         <span className="text-gradient ml-[2px]">*</span>
                       </label>
-                      <input
-                        type="text"
-                        {...stakingForm.register("max_staking_amount")}
-                        id="max_staking_amount"
-                        placeholder="Only numbers here"
-                        className="focus:ring-brand-primar mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none"
-                      />
-
+                      <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                        <input
+                          type="text"
+                          {...stakingForm.register("max_staking_amount")}
+                          id="max_staking_amount"
+                          placeholder="Only numbers here"
+                          className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        />
+                      </div>
                       {stakingForm.formState.errors.max_staking_amount && (
                         <p className={`pb-2 text-xs font-medium text-red-500`}>
                           {
@@ -1748,7 +1766,7 @@ const CreateStaking: NextPageWithLayout = () => {
                   <label htmlFor="test" className="block font-normal">
                     Project Metadata
                   </label>
-                  <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary">
+                  <div className="mt-2 flex w-full  items-center justify-between rounded-lg border-0 bg-black-shade-3 px-5 py-3 placeholder:text-gray-shade-17 focus:outline-none focus:ring-0">
                     <span className="text-sm text-gray-shade-17">
                       Add metadata here{" "}
                     </span>
@@ -1774,14 +1792,14 @@ const CreateStaking: NextPageWithLayout = () => {
                   <div className="col-span-2 flex w-full rounded-lg bg-black-shade-3 px-6 py-5">
                     <div
                       className={
-                        "grid w-full gap-[2%] rounded-[14px]  md:grid-cols-4"
+                        "grid w-full gap-[2%] rounded-[14px] md:grid-cols-4"
                       }
                     >
                       {metaDataList.map((item: metaDataType, index: number) => {
                         return (
                           <div
                             key={index}
-                            className="gradientborders2 relative mb-[2%] flex h-[98px] w-full flex-col items-center justify-center gap-3 rounded-10px bg-background-shade-3 p-[2px] "
+                            className="gradientborders2 relative mb-[2%] flex h-[98px] w-full flex-col items-center justify-center gap-3 rounded-10px bg-background-shade-3 p-[2px]"
                           >
                             <button
                               className="absolute right-[-4px] top-[-4px] flex h-5 w-5 items-center justify-center rounded-full border border-gray-shade-3 bg-elevation-1 text-center"
@@ -1836,31 +1854,35 @@ const CreateStaking: NextPageWithLayout = () => {
                     <label className="text-start text-sm font-normal text-white">
                       Type
                     </label>
-                    <input
-                      type="text"
-                      name="title"
-                      id="title"
-                      autoComplete="off"
-                      placeholder="Project"
-                      className="w-full rounded-lg border-0  !bg-black-shade-2 px-5  py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
-                      onChange={handleMetaDataChange}
-                      value={metaDataDetails.title}
-                    />
+                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        autoComplete="off"
+                        placeholder="Project"
+                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-0"
+                        onChange={handleMetaDataChange}
+                        value={metaDataDetails.title}
+                      />
+                    </div>
                   </div>
                   <div className="flex w-full flex-col gap-2">
                     <label className="text-start text-sm font-normal text-white">
                       Name
                     </label>
-                    <input
-                      type="text"
-                      name="data"
-                      id="data"
-                      autoComplete="off"
-                      placeholder="Premium"
-                      className="w-full rounded-lg border-0  !bg-black-shade-2 px-5  py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:!ring-brand-primary active:!ring-brand-primary"
-                      onChange={handleMetaDataChange}
-                      value={metaDataDetails.data}
-                    />
+                    <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        name="data"
+                        id="data"
+                        autoComplete="off"
+                        placeholder="Premium"
+                        className="w-full rounded-lg border-0 !bg-black-shade-2 px-5 py-3 text-sm font-semibold text-white ring-2 ring-black-shade-7 focus:outline-none focus:ring-0"
+                        onChange={handleMetaDataChange}
+                        value={metaDataDetails.data}
+                      />
+                    </div>
                   </div>
                   {metaDataErr && (
                     <p className={`pb-2 text-xs font-medium text-red-500`}>
@@ -1871,7 +1893,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     title={"Save"}
                     variant="primary"
                     onClick={addNewMetaDataFunc}
-                    className="mt-2 hover:!scale-95"
+                    className="mt-2"
                   />
                 </div>
               </CustomModal>
@@ -1897,13 +1919,15 @@ const CreateStaking: NextPageWithLayout = () => {
                       Whitepaper
                       <span className="text-gradient ml-[2px]">*</span>
                     </label>
-                    <input
-                      {...stakingForm.register("whitepaper")}
-                      type="text"
-                      id="whitepaper"
-                      placeholder="Example: yourweb.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        {...stakingForm.register("whitepaper")}
+                        type="text"
+                        id="whitepaper"
+                        placeholder="Example: yourweb.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.whitepaper && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.whitepaper.message}
@@ -1918,13 +1942,15 @@ const CreateStaking: NextPageWithLayout = () => {
                       Website URL
                       <span className="text-gradient ml-[2px]">*</span>
                     </label>
-                    <input
-                      {...stakingForm.register("website_url")}
-                      type="text"
-                      id="website_url"
-                      placeholder="Example: yourweb.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        {...stakingForm.register("website_url")}
+                        type="text"
+                        id="website_url"
+                        placeholder="Example: yourweb.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.website_url && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.website_url.message}
@@ -1941,13 +1967,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Facebook
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("facebook")}
-                      id="facebook"
-                      placeholder="Example: yourlogo.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("facebook")}
+                        id="facebook"
+                        placeholder="Example: yourlogo.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.facebook && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.facebook.message}
@@ -1962,13 +1990,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       X.com
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("twitter")}
-                      id="twitter"
-                      placeholder="Example: t.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("twitter")}
+                        id="twitter"
+                        placeholder="Example: t.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.twitter && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.twitter.message}
@@ -1983,13 +2013,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Github
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("github")}
-                      id="github"
-                      placeholder="Example: github.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("github")}
+                        id="github"
+                        placeholder="Example: github.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.github && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.github.message}
@@ -2004,13 +2036,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Telegram
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("telegram")}
-                      id="telegram"
-                      placeholder="Example: yourtel.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("telegram")}
+                        id="telegram"
+                        placeholder="Example: yourtel.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.telegram && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.telegram.message}
@@ -2025,13 +2059,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Instagram
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("instagram")}
-                      id="instagram"
-                      placeholder="Example: instagram.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("instagram")}
+                        id="instagram"
+                        placeholder="Example: instagram.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.instagram && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.instagram.message}
@@ -2046,13 +2082,15 @@ const CreateStaking: NextPageWithLayout = () => {
                     >
                       Discord
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("discord")}
-                      id="discord"
-                      placeholder="Example: yourweb.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("discord")}
+                        id="discord"
+                        placeholder="Example: yourweb.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.discord && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.discord.message}
@@ -2060,20 +2098,22 @@ const CreateStaking: NextPageWithLayout = () => {
                     )}
                   </div>
 
-                  <div className="col-span-2  w-full text-sm font-medium text-white md:col-span-1">
+                  <div className="col-span-2 w-full text-sm font-medium text-white md:col-span-1">
                     <label
                       htmlFor="reddit"
                       className="block font-normal tracking-wide"
                     >
                       Reddit
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("reddit")}
-                      id="reddit"
-                      placeholder="Example: reddit.com/"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("reddit")}
+                        id="reddit"
+                        placeholder="Example: reddit.com/"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.reddit && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.reddit.message}
@@ -2091,13 +2131,15 @@ const CreateStaking: NextPageWithLayout = () => {
                       Explorers
                       <span className="text-gradient ml-[1px]">*</span>
                     </label>
-                    <input
-                      type="text"
-                      {...stakingForm.register("explorers")}
-                      id="explorers"
-                      placeholder="Example: BscScan"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <input
+                        type="text"
+                        {...stakingForm.register("explorers")}
+                        id="explorers"
+                        placeholder="Example: BscScan"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.explorers && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.explorers.message}
@@ -2116,7 +2158,7 @@ const CreateStaking: NextPageWithLayout = () => {
                     <Controller
                       name="category"
                       control={stakingForm.control}
-                      render={({ field, fieldState }) => (
+                      render={({ field }) => (
                         <Select
                           {...field}
                           options={categoryOptions}
@@ -2147,13 +2189,15 @@ const CreateStaking: NextPageWithLayout = () => {
                       Description
                       <span className="text-gradient ml-[1px]">*</span>
                     </label>
-                    <textarea
-                      {...stakingForm.register("description")}
-                      id="description"
-                      rows={4}
-                      placeholder="Example: This is the best project"
-                      className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                    />
+                    <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                      <textarea
+                        {...stakingForm.register("description")}
+                        id="description"
+                        rows={4}
+                        placeholder="Example: This is the best project"
+                        className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {stakingForm.formState.errors.description && (
                       <p className={`pb-2 text-xs font-medium text-red-500`}>
                         {stakingForm.formState.errors.description.message}
@@ -2179,15 +2223,17 @@ const CreateStaking: NextPageWithLayout = () => {
                         >
                           Job title
                         </label>
-                        <input
-                          type="text"
-                          name="jobTitle"
-                          id="jobTitle"
-                          placeholder="Example: CEO, CTO, COO etc"
-                          className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                          value={memberData.jobTitle}
-                          onChange={handleMemberInputChange}
-                        />
+                        <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                          <input
+                            type="text"
+                            name="jobTitle"
+                            id="jobTitle"
+                            placeholder="Example: CEO, CTO, COO etc"
+                            className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                            value={memberData.jobTitle}
+                            onChange={handleMemberInputChange}
+                          />
+                        </div>
                       </div>
 
                       {/* Wallet public address input */}
@@ -2198,15 +2244,17 @@ const CreateStaking: NextPageWithLayout = () => {
                         >
                           Wallet public address
                         </label>
-                        <input
-                          type="text"
-                          name="walletAddress"
-                          id="walletAddress"
-                          placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
-                          className="mt-2 block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-brand-primary"
-                          value={memberData.walletAddress}
-                          onChange={handleMemberInputChange}
-                        />
+                        <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                          <input
+                            type="text"
+                            name="walletAddress"
+                            id="walletAddress"
+                            placeholder="Example: 0x018rhf63hjj7763kuxx098nbvxx90cc23BBK99KXX028"
+                            className="block w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                            value={memberData.walletAddress}
+                            onChange={handleMemberInputChange}
+                          />
+                        </div>
                       </div>
                       {memberError && (
                         <p className={`pb-2 text-xs font-medium text-red-500`}>
@@ -2278,48 +2326,12 @@ const CreateStaking: NextPageWithLayout = () => {
         </div>
       </div>
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-sm text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to buy this membership");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    disconnectWallet();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="textGradient h-6 w-6 fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          connectWallet={connectWallet}
+          deactivate={disconnectWallet}
+          loggedInUser={loggedInUser}
+          setConnectWalletModal={setConnectWalletModal}
+        />
       )}
       {showMsg && showMsg}
       {progressModel && (

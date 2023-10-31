@@ -5,6 +5,7 @@ import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
   formatAddress,
@@ -22,7 +23,7 @@ import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import AuctionBidModal from "./auction.bid.modal";
-import ConnectWalletModal from "./connect-wallet-modal";
+
 import AuctionCountdownRenderer from "./auction-countdown.renderer";
 
 interface AuctionNFTBuyerDescriptionProps {

@@ -133,21 +133,23 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <label htmlFor="user_id" className="text-sm font-normal text-white">
               Account Address
             </label>
-            <input
-              type="text"
-              name="user_id"
-              id="user_id"
-              className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
-              placeholder={ZeroAddress}
-              value={newOrgMember.user_id}
-              onChange={handleNewMemberUserIdChange}
-              autoComplete="off"
-              onBlur={() => {
-                setTimeout(() => {
-                  setSearchResults([]);
-                }, 200);
-              }}
-            />
+            <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+              <input
+                type="text"
+                name="user_id"
+                id="user_id"
+                className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
+                placeholder={ZeroAddress}
+                value={newOrgMember.user_id}
+                onChange={handleNewMemberUserIdChange}
+                autoComplete="off"
+                onBlur={() => {
+                  setTimeout(() => {
+                    setSearchResults([]);
+                  }, 200);
+                }}
+              />
+            </div>
             {!!searchResults.length && (
               <div className="absolute top-full w-full overflow-hidden rounded-10px border border-gray-shade-3 bg-popup-0 shadow-lg">
                 {searchResults.map((result) => (
@@ -170,15 +172,17 @@ export const InviteMemberModal: React.FC<Props> = ({ isOpen, onClose }) => {
             <label htmlFor="title" className="text-sm font-normal text-white">
               Title
             </label>
-            <input
-              type="text"
-              name="title"
-              id="title"
-              placeholder="CEO, CTO, etc."
-              className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
-              value={newOrgMember.title}
-              onChange={handleNewMemberInputChange}
-            />
+            <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="CEO, CTO, etc."
+                className="w-full rounded-lg border-none bg-black-shade-3 px-4 py-3 text-sm font-medium text-white focus:outline-none focus:ring-0"
+                value={newOrgMember.title}
+                onChange={handleNewMemberInputChange}
+              />
+            </div>
           </div>
           {newMemberError && (
             <p className={`mt-5 text-xs font-medium text-red-500`}>

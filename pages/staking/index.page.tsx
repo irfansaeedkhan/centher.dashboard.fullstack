@@ -31,6 +31,7 @@ const Staking: NextPageWithLayout = () => {
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const { sdk } = useStaking();
+
   useEffect(() => {
     const getCoinDetails = async (tokens: string[]) => {
       const list: string[] = [];
@@ -107,7 +108,7 @@ const Staking: NextPageWithLayout = () => {
         }
       });
     }
-  }, [sdk]);
+  }, [sdk, coinsDetails?.length]);
 
   return (
     <section
