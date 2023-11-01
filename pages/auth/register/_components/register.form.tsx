@@ -199,6 +199,7 @@ export const RegisterForm: React.FC = () => {
 
         {wallet_type == WalletEnum.WALLET_SERVICE ? (
           <Button
+            type="button"
             title="Open Wallet"
             onClick={() => openWallet()}
             variant="primary"
