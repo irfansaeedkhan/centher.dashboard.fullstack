@@ -20,9 +20,16 @@ export const LoginForm: React.FC = () => {
   const { mutate } = useSWRConfig();
   const router = useRouter();
 
-  const { connectWallet, connectedAddress, signMessage, disconnectWallet } =
-    useWallet();
+  const {
+    connectWallet,
+    connectedAddress,
+    signMessage,
+    disconnectWallet,
+    getWalletType,
+    openWallet,
+  } = useWallet();
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
+  const wallet_type = getWalletType();
 
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -96,6 +103,17 @@ export const LoginForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
+          {wallet_type && wallet_type == WalletEnum.WALLET_SERVICE ? (
+            <Button
+              title="Open Wallet"
+              onClick={() => openWallet()}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+          ) : (
+            <></>
+          )}
         </>
       ) : (
         <div className="space-y-3">
