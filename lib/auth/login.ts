@@ -18,6 +18,7 @@ export const login = async (
       account_address,
       signature,
     });
+
     setAuthTokens({
       access_token: data.access_token,
       refresh_token: data.refresh_token,

@@ -5,11 +5,11 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { TokenName } from "@/web3/blockchain/types";
 import { RoundInfo } from "@/web3/constants/types";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { LeftArrowIcon, NTRIconBG, DXCIconBG, USDTIcon } from "@/assets/svgs";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionTokenBox } from "./conversion-token-box";
 import { inputBox, inputBoxLeft, inputBoxRight } from "./shared";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface Props {
   selectedTokenA: SelectedTokenA;

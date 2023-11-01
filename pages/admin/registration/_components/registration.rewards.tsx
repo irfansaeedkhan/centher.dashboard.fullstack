@@ -1,9 +1,9 @@
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { formatNum2DispNum } from "@/utils/format.address";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
 
 const RegistrationRewards = ({
   claimableBNB,

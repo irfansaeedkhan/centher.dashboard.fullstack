@@ -11,11 +11,7 @@ import { ZeroAddress } from "@/web3/constants/common";
 jest.mock("../providers/smart.contract.provider");
 jest.mock("../providers/address.provider");
 
-const signer = {
-  // getSigner: () => {
-  //   return {};
-  // },
-};
+const signer = {};
 
 describe("BlockchainWrite", () => {
   it('should throw error "Invalid Web3 provider"', async () => {
@@ -25,17 +21,6 @@ describe("BlockchainWrite", () => {
       expect(error.message).not.toEqual("Invalid Web3 provider");
     }
   });
-
-  // it('should throw error "Invalid signer"', async () => {
-  //   try {
-  //     const library = {
-  //       getSigner: jest.fn(),
-  //     };
-  //     await BlockchainWrite.adminUnPauseRegistration(library as any);
-  //   } catch (error: any) {
-  //     expect(error.message).toEqual("Invalid signer");
-  //   }
-  // });
 
   it('should call "adminUnPauseRegistration" and call smart contract provider with params', async () => {
     const model = {

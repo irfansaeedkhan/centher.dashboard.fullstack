@@ -1,13 +1,12 @@
-import { BigNumber, PopulatedTransaction, ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import {
   TransactionReceipt,
   TransactionResponse,
-  Web3Provider,
 } from "@ethersproject/providers";
-
-import { SignupState } from "./form.fields.data";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { customLog } from "@/utils/custom.log";
+import { SignupState } from "./form.fields.data";
 
 export const registerWithSmartContract = async (
   library: ethers.providers.JsonRpcSigner,
@@ -120,7 +119,7 @@ export const registerWithSmartContract = async (
       data: tx,
     };
   } catch (error: any) {
-    console.log(error);
+    customLog(["development", "production"], error);
     if (error.code === "ACTION_REJECTED") {
       throw {
         status: "app_error",

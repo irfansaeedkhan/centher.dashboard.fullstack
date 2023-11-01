@@ -1,7 +1,6 @@
 import React from "react";
-
-import { LoaderIcon } from "@/assets/svgs";
 import Button from "@/components/button";
+import { LoaderIcon } from "@/assets/svgs";
 
 const TrxInProgressModal: React.FC = () => {
   return (

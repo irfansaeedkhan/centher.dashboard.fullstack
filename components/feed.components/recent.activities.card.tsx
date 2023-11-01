@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export const RecentActivitiesCard = () => {
   return (
-    <div className="p-4pb-2 w-full max-w-[272px] rounded-10px bg-background-shade-3">
+    <div className="w-full max-w-[272px] rounded-10px bg-background-shade-3 p-4 pb-2">
       <h5 className="pb-6 text-sm font-semibold text-white">
         Recent activities
       </h5>

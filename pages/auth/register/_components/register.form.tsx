@@ -7,6 +7,7 @@ import { ModalWrapper } from "@/components/modal";
 import { AppRoutes } from "@/constants/app.routes";
 import { useWallet } from "@/web3/hooks/use.wallet";
 import { sliceAccountAddress } from "@/utils/user.helpers";
+import { customLog } from "@/utils/custom.log";
 import {
   SpinIcon2,
   Successfully,
@@ -69,14 +70,13 @@ export const RegisterForm: React.FC = () => {
         feeModal.fee
       );
 
-      toast.success(res!.message_description);
+      toast.success(res.message_description);
       setFeeModal((prev) => ({ ...prev, status: "end", isOpen: false }));
 
       // Redirect to login page
       router.push(AppRoutes.auth.login);
     } catch (err: any) {
-      console.log(err);
-      process.env.NEXT_PUBLIC_APP_ENV === "development" && console.log(err);
+      customLog(["development", "staging"], err);
       setFeeModal((prev) => ({ ...prev, status: "start" }));
       toast.error(err.message_description || "Something went wrong");
     }

@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
 import { formatUnits, parseEther } from "ethers/lib/utils";
-import { useWeb3React } from "@web3-react/core";
 import Button from "@/components/button";
 import { useStaking } from "@/hooks/staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
@@ -15,6 +14,7 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -24,7 +24,6 @@ import Details from "./details";
 import PageButtonsWrapper from "./page-buttons";
 import SuccessModalContent from "./success-modal-content";
 import FailedModalContent from "./failed-modal-content";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 const oneYearInSec = 31449600;
 

@@ -1,16 +1,13 @@
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import React, { useEffect, useState } from "react";
-
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import RewardsTableSkeleton from "@/components/loading.skeletons/admin.network.rewards";
-
-import RegistrationTabs from "./_components/registration.tabs";
 import { useGetRegistrationDetail } from "@/web3/hooks/use.get.registration.details";
-
-import { toast } from "react-hot-toast";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import RegistrationTabs from "./_components/registration.tabs";
 
 const RegistrationSetting: NextPageWithLayout = () => {
   const { getSigner } = useWallet();

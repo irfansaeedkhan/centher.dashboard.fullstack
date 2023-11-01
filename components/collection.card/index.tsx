@@ -49,7 +49,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
               alt="collection Image"
               width={340}
               height={180}
-              className={`h-[180px]  w-full rounded-t-lg object-cover`}
+              className={`h-[180px] w-full rounded-t-lg object-cover`}
               onError={() => setCoverImage("/images/placeholder-square.svg")}
             />
           )}
@@ -65,7 +65,7 @@ export const CollectionCard: React.FC<CollectionCardProps> = ({ data }) => {
           )}
         </div>
         <div className={`flex flex-col items-center px-4`}>
-          <div className={`word-break text-base font-bold text-white `}>
+          <div className={`word-break text-base font-bold text-white`}>
             {data.name}
           </div>
           <span

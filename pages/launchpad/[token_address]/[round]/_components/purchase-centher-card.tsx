@@ -11,6 +11,7 @@ import {
 } from "@/web3/hooks/use.contracts.functions";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { RoundInfo } from "@/web3/constants/types";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { StandardModal, ModalState } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
 import DetailsProject from "@/pages/launchpad/pre-booking/_components/details-project";
@@ -18,7 +19,6 @@ import BookingMain from "@/pages/launchpad/pre-booking/_components/booking-main"
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionContainer } from "./conversion-container";
 import { TimelinePeriod } from "./timeline-period";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface Props {
   roundInfo: RoundInfo;

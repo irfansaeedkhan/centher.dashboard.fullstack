@@ -27,12 +27,12 @@ import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { ListCardDataOBj } from "../../_components/list-card-data";
 import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import ReferralsTable from "./_components/referrals-table";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   successFuncModal = "successFuncModal",

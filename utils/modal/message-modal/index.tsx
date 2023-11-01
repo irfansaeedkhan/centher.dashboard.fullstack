@@ -1,6 +1,6 @@
-import { WarningIcon } from "@/assets/svgs";
-import Button from "@/components/button";
 import React from "react";
+import Button from "@/components/button";
+import { WarningIcon } from "@/assets/svgs";
 
 interface MMProps {
   heading: string;

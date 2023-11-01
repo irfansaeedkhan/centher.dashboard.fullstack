@@ -237,7 +237,7 @@ export const AuctionNFTBuyerDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!getSigner) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }

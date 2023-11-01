@@ -4,7 +4,7 @@ type Provider = ConstructorParameters<typeof Web3Provider>[0];
 
 declare global {
   interface Window {
-    ethereum: Provider | undefined | any;
+    ethereum: Provider | undefined;
     gtag: any;
   }
 }

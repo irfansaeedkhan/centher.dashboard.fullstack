@@ -87,7 +87,7 @@ const CreateNFT: NextPageWithLayout = () => {
         asset,
         castedNftData,
         asset as any as safeNameType,
-        videoThumbnail as any
+        videoThumbnail
       );
 
       const result = await BlockchainWrite.callCreateNFT(
@@ -138,7 +138,7 @@ const CreateNFT: NextPageWithLayout = () => {
       assetTab === CreateNftUploadFormType.Video &&
       videoThumbnail === undefined
     ) {
-      toastError("Choose video thumbnail.");
+      toastError("Choose video thumbnail");
       return;
     }
     validateProvider();

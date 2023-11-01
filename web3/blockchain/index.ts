@@ -1534,7 +1534,7 @@ export class BlockchainWrite {
         SmartContractName.REGISTRATION,
         signer
       );
-      // await registrationContract.callStatic.buyMemberShip({ value });
+      await registrationContract.callStatic.buyMemberShip({ value });
 
       const tx = await registrationContract.functions.buyMemberShip({ value });
 
@@ -2108,7 +2108,7 @@ export class BlockchainWrite {
         signer
       );
 
-      // await presaleContract.callStatic.setReferralRate(rates);
+      await presaleContract.callStatic.setReferralRate(rates);
       const tx = await presaleContract.functions.setReferralRate(rates);
       await tx.wait();
       return tx.hash;

@@ -12,7 +12,6 @@ export class ModalManager {
 
   dismissModal(): void {
     this.modalHandler({ visibility: false, title: "", content: "" });
-    // this.toggleBodyScrolling(false);
   }
 
   createModal(
@@ -32,7 +31,6 @@ export class ModalManager {
     }
 
     this.modalHandler(template);
-    // this.toggleBodyScrolling(true);
   }
 
   private getModalModel(
@@ -60,11 +58,4 @@ export class ModalManager {
   private getExistingTemplates(type: string): IModalHandler | null {
     return TemplateFactory(type);
   }
-
-  // private toggleBodyScrolling(enableScroll: boolean): void {
-  //   const bodyElement = document.querySelector("body");
-  //   if (bodyElement) {
-  //     bodyElement.style.overflow = enableScroll ? "hidden" : "auto";
-  //   }
-  // }
 }

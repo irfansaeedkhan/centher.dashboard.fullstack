@@ -20,9 +20,9 @@ import { PreLoader } from "@/components/pre.loader";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import { ListCardDataOBj } from "../../_components/list-card-data";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 const StakingDetails: NextPageWithLayout = () => {
   const { user } = useUser();

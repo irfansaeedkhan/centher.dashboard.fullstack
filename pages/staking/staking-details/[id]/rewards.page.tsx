@@ -23,6 +23,7 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import RewardsTable from "./_components/rewards-table";
@@ -31,7 +32,6 @@ import StakingDetailsWrapper from "./_components/staking-details-wrapper";
 import UnstakeModal from "./_components/unstake-modal";
 import SuccessModalContent from "./_components/success-modal-content";
 import FailedModalContent from "./_components/failed-modal-content";
-import { useWallet } from "@/web3/hooks/use.wallet";
 
 enum ModalType {
   cancelStakingModal = "cancelStakingModal",

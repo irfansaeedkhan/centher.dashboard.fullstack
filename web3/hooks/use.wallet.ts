@@ -1,14 +1,15 @@
-import { useWeb3React } from "@web3-react/core";
-import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
-import { injectedConnector } from "@/web3/connector";
-import toast from "react-hot-toast";
-import { useWalletService } from "./use.wallet.service";
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 import {
   JsonRpcSigner,
   TransactionReceipt,
   Web3Provider,
 } from "@ethersproject/providers";
+import toast from "react-hot-toast";
+import { injectedConnector } from "@/web3/connector";
+import { useWalletService } from "./use.wallet.service";
+
 export enum WalletEnum {
   METAMASK = "METAMASK",
   WALLET_SERVICE = "WALLET_SERVICE",

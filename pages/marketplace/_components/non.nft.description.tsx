@@ -282,15 +282,7 @@ export const NonNFTDescription = ({
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      !txStatus && toastError("Something went wrong 2");
-    }
-  };
-  const SuccessSendFunc = (txStatus: boolean, msg: string) => {
-    try {
-      modal.dismissModal();
-      modal.createModal(ModalType.successSendFuncModal, { txStatus, msg });
-    } catch (err: any) {
-      !txStatus && toastError("Something went wrong 2");
+      !txStatus && toastError("Something went wrong");
     }
   };
 

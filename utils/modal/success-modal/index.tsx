@@ -1,8 +1,7 @@
-import Image from "next/image";
 import React from "react";
-
-import { CircularClose, GreenTick } from "@/assets/svgs";
+import Image from "next/image";
 import Button from "@/components/button";
+import { CircularClose, GreenTick } from "@/assets/svgs";
 
 interface SMMProps {
   heading: React.ReactNode;

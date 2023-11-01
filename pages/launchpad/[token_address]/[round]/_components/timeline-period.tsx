@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import { ClaimCentherFrom } from "@/web3/blockchain/types";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
@@ -7,7 +8,6 @@ import { ModalState, StandardModal } from "@/components/modal/standard.modal";
 import { Timeline } from "./timeline";
 import { TimelineFinal } from "./timeline-final";
 import { TimelineTotal } from "./timeline-total";
-import { JsonRpcSigner } from "@ethersproject/providers";
 
 interface Props {
   roundInfo: RoundInfo;
