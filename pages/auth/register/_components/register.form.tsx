@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import Button from "@/components/button";
 import { ModalWrapper } from "@/components/modal";
 import { AppRoutes } from "@/constants/app.routes";
-import { useWallet } from "@/web3/hooks/use.wallet";
+import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 import { sliceAccountAddress } from "@/utils/user.helpers";
 import { customLog } from "@/utils/custom.log";
 import {
@@ -41,8 +41,14 @@ export const RegisterForm: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   const router = useRouter();
-  const { connectWallet, connectedAddress, getSigner, openWallet } =
-    useWallet();
+  const {
+    connectWallet,
+    connectedAddress,
+    getSigner,
+    openWallet,
+    getWalletType,
+  } = useWallet();
+  const wallet_type = getWalletType();
 
   // Set account address and referred by address
   useEffect(() => {
@@ -189,6 +195,18 @@ export const RegisterForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
+        )}
+
+        {wallet_type == WalletEnum.WALLET_SERVICE ? (
+          <Button
+            title="Open Wallet"
+            onClick={() => openWallet()}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+        ) : (
+          <></>
         )}
 
         <ModalWrapper
