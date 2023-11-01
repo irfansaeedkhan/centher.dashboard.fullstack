@@ -1,8 +1,8 @@
-import { Music3DIcon, PauseIcon, PlayIcon } from "@/assets/svgs";
-import useAudioPlayer from "@/hooks/use.audio";
+import React from "react";
 import clsx from "clsx";
 import moment from "moment";
-import React from "react";
+import { Music3DIcon, PauseIcon, PlayIcon } from "@/assets/svgs";
+import useAudioPlayer from "@/hooks/use.audio";
 import Bar from "./audio.bar";
 
 interface AudioPlayerProps {
@@ -21,8 +21,8 @@ const AudioPlayer: React.FC<AudioPlayerProps> = (props) => {
       </audio>
       <div className="flex flex-col items-center justify-center rounded-2xl bg-background-shade-3 p-6 text-white">
         <Music3DIcon className={clsx(playing && "animate-pulse")} />
-        <div className="my-7 flex flex-col">
-          <div className="textGradient text-lg font-semibold">
+        <div className="mb-5 flex w-full justify-between gap-10">
+          <div className="text-gradient w-fit truncate text-lg font-semibold">
             {props?.srcObject?.name}
           </div>
           {curTime === 0 ? (

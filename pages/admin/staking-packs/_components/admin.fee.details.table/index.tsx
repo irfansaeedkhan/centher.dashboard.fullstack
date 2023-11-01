@@ -1,8 +1,5 @@
-import ctl from "@netlify/classnames-template-literals";
 import React, { useMemo } from "react";
 import { useTable } from "react-table";
-
-//Current directory imports
 import { AdminFeeDetailsData } from "./admin.fee.details.data";
 import { Columns } from "./header.columns";
 
@@ -17,23 +14,27 @@ export const AdminFeeDetailsTable = () => {
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
   return (
-    <div className={componentWrapper}>
-      <table className={tableContainer} {...getTableProps()}>
+    <div className="my-4 inline-block h-auto min-w-full overflow-auto rounded-lg border border-gray-shade-3 shadow">
+      <table className="min-w-full leading-normal" {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => {
             const { key, ...restHeaderGroupProps } =
               headerGroup.getHeaderGroupProps();
             return (
               <tr
-                className={tableRowContainer}
+                className="border-b border-gray-shade-3 text-white"
                 key={key}
                 {...restHeaderGroupProps}
               >
                 {headerGroup.headers.map((column) => {
                   const { key, ...restHeaderProps } = column.getHeaderProps();
                   return (
-                    <th className={header} key={key} {...restHeaderProps}>
-                      {column.render("Header")}
+                    <th
+                      className="py-3 pl-4 pr-2  text-left text-xs font-semibold uppercase tracking-wider"
+                      key={key}
+                      {...restHeaderProps}
+                    >
+                      <>{column.render("Header")}</>
                     </th>
                   );
                 })}
@@ -41,7 +42,10 @@ export const AdminFeeDetailsTable = () => {
             );
           })}
         </thead>
-        <tbody className={tableBody} {...getTableBodyProps()}>
+        <tbody
+          className="bg-transparent text-sm text-white"
+          {...getTableBodyProps()}
+        >
           {rows.map((row) => {
             prepareRow(row);
             const { key, ...restRowProps } = row.getRowProps();
@@ -50,8 +54,8 @@ export const AdminFeeDetailsTable = () => {
                 {row.cells.map((cell) => {
                   const { key, ...restCellProps } = cell.getCellProps();
                   return (
-                    <td className={tablecolumn} key={key} {...restCellProps}>
-                      {cell?.render("Cell")}
+                    <td className="px-4 py-3" key={key} {...restCellProps}>
+                      <>{cell?.render("Cell")}</>
                     </td>
                   );
                 })}
@@ -63,26 +67,3 @@ export const AdminFeeDetailsTable = () => {
     </div>
   );
 };
-
-const componentWrapper = ctl(`
-inline-block min-w-full shadow rounded-lg border border-gray-shade-3 overflow-auto my-4 h-auto
-`);
-
-const tableContainer = ctl(`
-min-w-full leading-normal
-`);
-
-const tableRowContainer = ctl(`text-white border-b border-gray-shade-3`);
-
-const header = ctl(`
-pl-4 pr-2 py-3  text-left text-xs font-semibold uppercase tracking-wider
-`);
-
-const tableBody = ctl(`
-bg-transparent text-white text-sm
-`);
-
-const tablecolumn = ctl(`
-px-4 py-3
-
-`);

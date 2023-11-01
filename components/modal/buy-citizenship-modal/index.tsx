@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { toast } from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
@@ -13,12 +12,12 @@ import useUser from "@/hooks/use.user";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatEther2Number } from "@/utils/format.address";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import Button from "../../button";
 import { CustomNewModal } from "../custom.new.modal";
 import { CitizenShipSuccessModal } from "./success-modal";
 import { CitizenShipFailureModal } from "./failure-modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 interface CustomModalProps {
   isOpen: boolean;
@@ -38,9 +37,9 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [showMsg, setshowMsg] = useState<any>(null);
   const [connectWalletModal, setConnectWalletModal] = useState(false);
-  const { connectWallet } = useConnectWallet();
   const bnbPrice = useBNBPrice();
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
+    useWallet();
   const {
     isCitizen,
     prices,
@@ -52,25 +51,27 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
   } = useCitizenStore();
 
   const { user: loggedInUser } = useUser();
-  const { deactivate } = useWeb3React();
 
   useEffect(() => {
-    if (library && account?.length) {
+    const signer = getSigner();
+    if (signer && connectedAddress?.length) {
       setIsConnected(true);
     } else setIsConnected(false);
-  }, [library, account]);
+  }, [getSigner, connectedAddress]);
 
   useEffect(() => {
-    if (library && account) {
-      updateCitizenShipStatus(library, account as string);
+    const signer = getSigner();
+    if (signer && connectedAddress) {
+      updateCitizenShipStatus(signer!, connectedAddress);
     }
-  }, [isCitizen, library, account, updateCitizenShipStatus]);
+  }, [isCitizen, getSigner, connectedAddress, updateCitizenShipStatus]);
 
   useEffect(() => {
-    if (library) {
-      updatePrices(library);
+    const signer = getSigner();
+    if (signer) {
+      updatePrices(signer!);
     }
-  }, [library, updatePrices]);
+  }, [getSigner, updatePrices]);
 
   const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
@@ -106,8 +107,10 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
 
   const buyMemberShip = async () => {
     try {
-      await buyCitizenShip(library, tab, account as string);
-      setshowMsg(<CitizenShipSuccessModal />);
+      if (connectedAddress) {
+        await buyCitizenShip(getSigner()!, tab, connectedAddress);
+        setshowMsg(<CitizenShipSuccessModal />);
+      }
     } catch (error: any) {
       setshowMsg(
         <CitizenShipFailureModal
@@ -290,7 +293,7 @@ export const BuyCitizenshipModal: React.FC<CustomModalProps> = ({
                                 toast.error(
                                   "Please connect to correct account"
                                 );
-                                deactivate();
+                                disconnectWallet();
                               }
                               setConnectWalletModal(false);
                             }}

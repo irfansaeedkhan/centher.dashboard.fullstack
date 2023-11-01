@@ -13,10 +13,9 @@ import {
   FiTwitter,
 } from "react-icons/fi";
 import { isAddress } from "ethers/lib/utils";
-import { useWeb3React } from "@web3-react/core";
 import {
   LinkNewIcon,
-  NewCentherIcon,
+  CentherIcon,
   NewTelegramIcon,
   NewRedditIcon,
   NewDiscordIcon,
@@ -38,6 +37,7 @@ import { BlockchainConfig } from "@/web3/blockchain/config";
 import { User } from "@/models/user";
 import { claimPeriodOptions, stakingPeriodOptions } from "../../constants";
 import { stakingFormInterfaceUpdated } from "../../_components/staking-types";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 export interface Memb {
   title: string | undefined;
@@ -63,7 +63,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
   const { sdk } = useStaking();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [setConnectWalletModal] = useState(false);
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
   >([]);
@@ -87,10 +87,10 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
   );
 
   useEffect(() => {
-    if (library && account?.length) {
+    if (getSigner() && connectedAddress?.length) {
       setIsConnected(true);
     } else setIsConnected(false);
-  }, [library, account]);
+  }, [getSigner, connectedAddress]);
 
   const handleMembers = async (users: any, data: any) => {
     const combinedArray = [];
@@ -604,7 +604,7 @@ export const StakingReviewModal: React.FC<CustomModalProps> = ({
                           rel="noreferrer noopener"
                           className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
                         >
-                          <NewCentherIcon />
+                          <CentherIcon />
                           <span>Centher</span>
                         </a>
                       ) : null}

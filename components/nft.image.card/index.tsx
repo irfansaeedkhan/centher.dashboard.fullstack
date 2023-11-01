@@ -1,18 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import axios from "axios";
+import clsx from "clsx";
+import { useRouter } from "next/router";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "react-hot-toast";
-import clsx from "clsx";
 import { formatIPFSUrl } from "@/utils/format.address";
 import { AppRoutes } from "@/constants/app.routes";
-import { HammerIconBG, LockIcon, LockVector } from "@/assets/svgs";
+import { HammerIconBG, LockIcon, CentherIcon, LockVector } from "@/assets/svgs";
 import { getUTCNow } from "@/web3/utils/utils";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { BlockchainConfig } from "@/web3/blockchain/config";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { NFTLockedDetailsProps } from "@/lib/get-user-by-id";
 import { LockedNftModal } from "../modal/locked.nft.modal";
 import Button from "../button";
@@ -22,52 +22,22 @@ export interface NFTCardProps {
 }
 
 export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
-  const [imageUrl, setImageUrl] = useState("");
-  const { library, account } = useWeb3React();
-
+  const router = useRouter();
+  const { getSigner, connectedAddress } = useWallet();
   const locked = Number(data.unlock) * 1000 - getUTCNow() > 0 ? true : false;
-
   const auction = Number(data.endTime) * 1000 - getUTCNow() > 0 ? true : false;
   const internal = !data.external;
+
+  const [name, setName] = useState();
+  const [nftType, setNftType] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [videoThumbnail, setVideoThumbnail] = useState("");
+  const [description, setDescription] = useState();
+  const [swapedBefore, setSwapedBefore] = useState(false);
+  const [swapIsLoading, setSwapIsLoading] = useState("loaded");
   const [showLockedDetails, setShowLockedDetails] = useState(false);
   const [showSwapingDetails, setShowSwapingDetails] = useState(false);
   const [showExternalDetails, setShowExternalDetails] = useState(false);
-  const [swapIsLoading, setSwapIsLoading] = useState("loaded");
-  const [swapedBefore, setSwapedBefore] = useState(false);
-
-  const router = useRouter();
-
-  const [name, setName] = useState();
-  const [description, setDescription] = useState();
-
-  useEffect(() => {
-    const fetchMetadata = async (ipfs: string) => {
-      try {
-        const formattedUrl = formatIPFSUrl(ipfs);
-        const _metadata = await axios.get(formattedUrl);
-        const imgUrl = formatIPFSUrl(_metadata.data.image);
-        setImageUrl(imgUrl);
-        setName(_metadata.data.name);
-        setDescription(_metadata.data.description);
-      } catch (error) {
-        setImageUrl("/images/placeholder-square.svg");
-      }
-    };
-
-    const setSwapHistory = async () => {
-      const isSwaped = await BlockchainRead.isTokenSwaped(
-        library,
-        data.collection,
-        data.tokenId
-      );
-      setSwapedBefore(isSwaped);
-    };
-    if (data && data.ipfs) {
-      fetchMetadata(data.ipfs);
-      setSwapHistory();
-    }
-  }, [data, library]);
-
   const [lockedTimer, setLockedTimer] = useState({
     days: 0,
     hours: 0,
@@ -80,6 +50,43 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
     minutes: 0,
     seconds: 0,
   });
+
+  useEffect(() => {
+    const fetchMetadata = async (ipfs: string) => {
+      try {
+        const formattedUrl = formatIPFSUrl(ipfs);
+        const _metadata = await axios.get(formattedUrl);
+        if (_metadata.data.type.includes("video")) {
+          if (!_metadata.data.videoThumbnail) {
+            setImageUrl("/images/placeholder-square.svg");
+            return;
+          }
+          const formattedUrl = formatIPFSUrl(_metadata.data.videoThumbnail);
+          setVideoThumbnail(formattedUrl);
+        }
+        const imgUrl = formatIPFSUrl(_metadata.data.image);
+        setImageUrl(imgUrl);
+        setName(_metadata.data.name);
+        setNftType(_metadata.data.type);
+        setDescription(_metadata.data.description);
+      } catch (error) {
+        setImageUrl("/images/placeholder-square.svg");
+      }
+    };
+
+    const setSwapHistory = async () => {
+      const isSwaped = await BlockchainRead.isTokenSwaped(
+        getSigner()!,
+        data.collection,
+        data.tokenId
+      );
+      setSwapedBefore(isSwaped);
+    };
+    if (data && data.ipfs && getSigner()) {
+      fetchMetadata(data.ipfs);
+      setSwapHistory();
+    }
+  }, [data, getSigner]);
 
   useEffect(() => {
     if (data.endTime === 0) {
@@ -151,12 +158,15 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
       seconds: _seconds <= 0 ? 0 : _seconds,
     });
   };
+
   const onClickClose = () => {
     setShowLockedDetails(false);
   };
+
   const onViewClickClose = () => {
     setShowExternalDetails(false);
   };
+
   const onSwapClickClose = () => {
     setShowSwapingDetails(false);
   };
@@ -186,7 +196,11 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
         throw new Error("Token is already swaped");
       }
 
-      await BlockchainWrite.swapDexagon(library, data.collection, data.tokenId);
+      await BlockchainWrite.swapDexagon(
+        getSigner()!,
+        data.collection,
+        data.tokenId
+      );
       setShowSwapingDetails(false);
       toast.success("Swapped successfully");
       router.reload();
@@ -214,10 +228,12 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
         >
           {imageUrl ? (
-            <img
+            <Image
               src={
-                imageUrl.includes("mp3")
+                nftType.includes("audio")
                   ? "/images/default-music.png"
+                  : nftType.includes("video")
+                  ? videoThumbnail
                   : imageUrl
               }
               alt="nft"
@@ -231,28 +247,32 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {internal && (
             <div
-              className={`absolute left-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute left-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
             >
-              <div className="flex items-center gap-[6px]">CENTHER</div>
+              <div className="flex items-center gap-[6px]">
+                {" "}
+                <CentherIcon className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">CENTHER</span>
+              </div>
             </div>
           )}
           {locked && (
             <div
-              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
             >
               <div className="flex items-center gap-[6px]">
-                <LockIcon className="w-[28%]" />
-                LOCKED
+                <LockIcon className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">LOCKED</span>
               </div>
             </div>
           )}
           {auction && (
             <div
-              className={`absolute right-4 top-4 hidden h-[24px] w-[77px] items-center  justify-center rounded-md bg-black/20 text-[10px] text-white  backdrop-blur-[20px] fsm:flex`}
+              className={`absolute right-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
             >
               <div className="flex items-center gap-[6px]">
-                <HammerIconBG className="w-[28%]" />
-                AUCTION
+                <HammerIconBG className="scale-150 f2xl:w-[28%]" />
+                <span className="ml-1 hidden f2xl:block">AUCTION</span>
               </div>
             </div>
           )}
@@ -349,7 +369,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -491,7 +511,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}
@@ -568,7 +588,8 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
                 </h6>
               </div>
             </div>
-            {account?.toLowerCase() == data.owner?._id?.toLowerCase() &&
+            {connectedAddress?.toLowerCase() ==
+              data.owner?._id?.toLowerCase() &&
               swapedBefore == false &&
               (swapIsLoading == "loading" ? (
                 <button className="mt-6 flex h-11 w-full items-center justify-center gap-3 rounded-lg bg-background-shade-2 px-2 py-[10px] text-sm font-semibold text-gray-shade-7">
@@ -594,7 +615,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           <div className="p-5 fmd:p-10">
             {/* head */}
             <div className="flex flex-col items-center gap-4 fsm:flex-row">
-              <img
+              <Image
                 src={imageUrl}
                 alt={"locknft"}
                 height={120}

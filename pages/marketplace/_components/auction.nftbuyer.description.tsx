@@ -1,34 +1,30 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
+import Countdown from "react-countdown";
 import toast from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
-import { FiArrowRight } from "react-icons/fi";
 import { IModalProps } from "@/components/modal/standard.modal";
 import Button from "@/components/button";
-import {
-  BNBIcon,
-  LoaderIcon,
-  HammerIconBG,
-  WarningIcon,
-  MetamaskIcon2,
-  GreenTick,
-  CircularClose,
-} from "@/assets/svgs";
+import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import {
   formatAddress,
   formatBNB2USD,
   formatEther2Number,
 } from "@/utils/format.address";
+import TrxInProgressModal from "@/utils/modal/trx-modal";
+import MessageModal from "@/utils/modal/message-modal";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { useGetBNBBalance } from "@/web3/hooks/use.get.balances";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import useUser from "@/hooks/use.user";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { BlockchainWrite } from "@/web3/blockchain";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import AuctionBidModal from "./auction.bid.modal";
+
+import AuctionCountdownRenderer from "./auction-countdown.renderer";
 
 interface AuctionNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -40,39 +36,30 @@ enum ModalType {
   successFuncModal = "successFuncModal",
   endAuctionFuncModal = "endAuctionFuncModal",
 }
+
 export const AuctionNFTBuyerDescription = ({
   data,
   setNftData,
 }: AuctionNFTBuyerDescriptionProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
-  const [connectWalletModal, setConnectWalletModal] = useState(false);
+  const { getSigner, connectedAddress, connectWallet, disconnectWallet } =
+    useWallet();
+  const bnbBalance = useGetBNBBalance(connectedAddress);
+  const bnbPrice = useBNBPrice();
+  const price =
+    Number(data?.auctionInfo.highestBidPrice) === 0
+      ? data?.auctionInfo.startPrice
+      : data?.auctionInfo.highestBidPrice;
+  const [nowTime, setNowTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const [BidModal, setBidModal] = useState(false);
   const [isUserWinner, SetIsUserWinner] = useState(false);
+  const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
     content: "",
   });
-  const { library, account } = useWeb3React();
-
-  const bnbBalance = useGetBNBBalance(account);
-
-  const price =
-    Number(data?.auctionInfo.highestBidPrice) === 0
-      ? data?.auctionInfo.startPrice
-      : data?.auctionInfo.highestBidPrice;
-
-  const [end, setEnd] = useState(true);
-  const [days, setDays] = useState<number>(0);
-  const [hours, setHours] = useState<number>(0);
-  const [minutes, setMinutes] = useState<number>(0);
-  const [seconds, setSeconds] = useState<number>(0);
-  const [nowTime, setNowTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-
-  const bnbPrice = useBNBPrice();
 
   useEffect(() => {
     if (data) {
@@ -80,146 +67,115 @@ export const AuctionNFTBuyerDescription = ({
       var now = new Date();
       setNowTime(now);
       setEndTime(endtime);
-
       if (
-        account?.toLowerCase() ==
+        connectedAddress?.toLowerCase() ==
         data?.auctionInfo.highestBidAddress?.toLowerCase()
       ) {
         SetIsUserWinner(true);
       }
-
-      var updateTime = setInterval(() => {
-        var now = new Date().getTime();
-
-        var difference = data.auctionInfo.endTime * 1000 - now;
-
-        var newDays = Math.floor(difference / (1000 * 60 * 60 * 24));
-        var newHours = Math.floor(
-          (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        var newMinutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        var newSeconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        setDays(newDays);
-        setHours(newHours);
-        setMinutes(newMinutes);
-        setSeconds(newSeconds);
-
-        if (difference <= 0) {
-          clearInterval(updateTime);
-          setDays(0);
-          setHours(0);
-          setMinutes(0);
-          setSeconds(0);
-          setEnd(true);
-          setNftData();
-        } else {
-          setEnd(false);
-        }
-      });
     }
+  }, [connectedAddress, data]);
 
+  useEffect(() => {
+    if (ModalModel.visibility) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
     return () => {
-      clearInterval(updateTime);
+      document.body.classList.remove("modal-open");
     };
-  }, [data]);
+  }, [ModalModel.visibility]);
 
-  const SuccessFunc = useCallback((txStatus: boolean, msg: string) => {
+  const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError("Something went wrong, please try again later.");
-    }
-  }, []);
-
-  const ProceedFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.proceedFuncModal);
-    } catch (err: any) {
-      toastError("Something went wrong, please try again later.");
+      !txStatus && toastError("Something went wrong, please try again later.");
     }
   };
-  const onSubmit = useCallback(
-    async (bidPriceVal: any) => {
-      if (Number(bidPriceVal) <= formatEther2Number(price)) {
-        toast.error(
-          `Bid price must be greater than ${formatEther2Number(price)}.`
+
+  const ProceedFunc = () => {
+    modal.dismissModal();
+    modal.createModal(ModalType.proceedFuncModal);
+  };
+
+  const onSubmit = async (bidPriceVal: any) => {
+    validateProvider();
+    let response = { success: false, message: "" };
+    if (Number(bidPriceVal) <= formatEther2Number(price)) {
+      toast.error(
+        `Bid price must be greater than ${formatEther2Number(price)}.`
+      );
+      return;
+    }
+    if (bnbBalance < Number(bidPriceVal)) {
+      toast.error("Insufficient BNB Balance in your wallet.");
+      return;
+    }
+
+    setBidModal(false);
+    ProceedFunc();
+    try {
+      const signer = getSigner();
+      if (signer && data) {
+        const result = await BlockchainWrite.callBidOnAuction(
+          signer,
+          data.collection,
+          data.nftId,
+          bidPriceVal
         );
-        return;
-      }
-      if (bnbBalance < Number(bidPriceVal)) {
-        toast.error("Insufficient BNB Balance in your wallet.");
-        return;
-      }
 
-      setBidModal(false);
-      ProceedFunc();
-      try {
-        if (library && data) {
-          const result = await BlockchainWrite.callBidOnAuction(
-            library,
-            data.collection,
-            data.nftId,
-            bidPriceVal
-          );
-
-          if (result?.length) {
-            setNftData();
-            SuccessFunc(true, "Bid placed successfully on auctioned on");
-          } else throw new Error();
-        }
-      } catch (error) {
-        SuccessFunc(false, "Something went wrong, auction failed");
+        if (!!result?.length) {
+          setNftData();
+          response.success = true;
+          response.message = "Bid placed successfully on auctioned on ";
+        } else throw new Error();
       }
-    },
-    [SuccessFunc, bnbBalance, data, library, price]
-  );
+    } catch (error) {
+      response.success = false;
+      response.message = "Something went wrong, auction failed";
+    } finally {
+      SuccessFunc(response.success, response.message);
+    }
+  };
+
   const handleEndAuction = async () => {
+    let response = { success: false, message: "" };
     ProceedFunc();
     try {
       const result = await BlockchainWrite.callEndAuction(
-        library,
+        getSigner()!,
         (data as INFTDetailData).collection,
         (data as INFTDetailData).nftId
       );
       if (result?.length) {
         setNftData();
-        SuccessFunc(true, "Auction has ended for ");
+        response.success = true;
+        response.message = "Auction has ended for ";
       } else throw new Error();
     } catch (err: any) {
-      SuccessFunc(false, "Something went wrong ");
+      response.success = false;
+      response.message = "Something went wrong";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
+
   const modalTemplateCollection: TemplateCollection = {
     proceedFuncModal: {
       title: "Transaction in progress",
       visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper1}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
-            Transaction in progress
-          </h3>
-          <p className="text-sm font-normal leading-6 text-gray-shade-2">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
+      content: () => <TrxInProgressModal />,
     },
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper1}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
-            <h2 className="text-base font-semibold text-white f2xl:text-lg">
+        <SuccessMessageModal
+          heading={
+            <h2 className="text-18px mt-2 font-semibold text-white">
               {txStatus ? (
                 <span>
                   {msg.includes("updated")
@@ -232,64 +188,42 @@ export const AuctionNFTBuyerDescription = ({
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
-            <p className="text-sm font-normal leading-6 text-gray-shade-2">
+          }
+          subHeading={
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name} </span>{" "}
               NFT on <b> Centher </b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-sm font-normal leading-6 text-gray-shade-2">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <Button
-            title={"View item"}
-            variant="primary"
-            onClick={() => {
-              modal.dismissModal();
-            }}
-            className="w-full rounded-[14px]"
-          />
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     endAuctionFuncModal: {
       title: "Collect NFT",
       visibility: true,
       content: () => (
-        <div className={modalBodyWrapper1}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
-            Click Proceed to collect your NFT!
-          </h3>
-          <p className="text-sm font-normal leading-6 text-gray-shade-2">
-            {formatAddress(data?.owner)} receives
-            {formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
-            will receive the NFT
-          </p>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <Button
-              title={"Proceed"}
-              onClick={handleEndAuction}
-              variant="primary"
-              className="w-full rounded-[14px]"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Click Proceed to collect your NFT!"
+          subHeading={`${formatAddress(data?.owner)} receives
+        ${formatEther2Number(data?.auctionInfo.highestBidPrice)} BNB and you
+        will receive the NFT`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={handleEndAuction}
+        />
       ),
     },
   };
+
   const endAuctionFunc = () => {
     try {
       validateProvider();
@@ -303,13 +237,15 @@ export const AuctionNFTBuyerDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
+
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
@@ -325,52 +261,14 @@ export const AuctionNFTBuyerDescription = ({
       <div className={greyBoxContainer}>
         <h4 className={desTitle}>Description</h4>
         <p className={`${greyTxt} word-break leading-6`}>{data?.description}</p>
-        <div className="w-full overflow-hidden rounded-xl border border-gray-shade-3 bg-[url('/images/backcolouredshadow.png')] bg-[length:85%] bg-center bg-no-repeat ">
-          <div className="flex h-full w-full flex-col items-center justify-evenly gap-5 bg-black bg-opacity-20 bg-contain px-4 py-2 text-sm text-white backdrop-blur-[30px] fsm:m-0 fsm:flex-row fmd:mb-0 fmd:text-left">
-            <div className="flex flex-col items-center gap-3 text-center  fsm:max-w-[138px]">
-              <HammerIconBG className="scale-150" />
-              <h4 className="text-sm font-normal text-white">
-                This Auction will end in
-              </h4>
-            </div>
-            <div className="flex h-full w-full max-w-[280px] items-center justify-evenly gap-2 fsm:justify-end fsm:gap-8">
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {days}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  DAYS
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {hours}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  HOURS
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {minutes}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  MIN
-                </span>
-              </div>
-              <div className="flex flex-col items-center gap-2">
-                <span className="text-[20px] font-semibold text-white">
-                  {seconds}
-                </span>
-                <span className="text-[12px] font-medium text-[#CFD1DD]">
-                  Seconds
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {data && data.auctionInfo.endTime && (
+          <Countdown
+            date={new Date(data.auctionInfo.endTime * 1000)}
+            renderer={AuctionCountdownRenderer}
+          />
+        )}
       </div>
-      {!library ? (
+      {!getSigner() ? (
         <Button
           title={"Connect Wallet"}
           variant="primary"
@@ -384,15 +282,14 @@ export const AuctionNFTBuyerDescription = ({
           {nowTime < endTime && (
             <Button
               title={"Place bid"}
-              variant={end ? "primary" : "primary"}
-              disabled={end}
+              variant={"primary"}
               className="w-full rounded-[14px]"
               onClick={() => {
-                if (!library) {
+                if (!getSigner) {
                   toast.error("Connect your wallet");
                   return;
                 }
-                if (library) {
+                if (getSigner()) {
                   setBidModal(true);
                 }
               }}
@@ -426,6 +323,7 @@ export const AuctionNFTBuyerDescription = ({
           {ModalModel.content}
         </CustomModal>
       )}
+
       {BidModal && (
         <AuctionBidModal
           onSubmit={onSubmit}
@@ -434,60 +332,25 @@ export const AuctionNFTBuyerDescription = ({
           }}
         />
       )}
+
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to buy this nft");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    deactivate();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          connectWallet={connectWallet}
+          deactivate={disconnectWallet}
+          loggedInUser={loggedInUser}
+          setConnectWalletModal={setConnectWalletModal}
+        />
       )}
     </div>
   );
 };
+
 // styling
-const modalBodyWrapper1 = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 items-center`;
+const BnBNum = `text-base font-bold text-white`;
+const desTitle = `text-sm font-semibold text-white`;
+const footerBtnContainer = `flex items-center gap-4`;
+const greyTxt = `text-sm font-normal text-gray-shade-7`;
 const nftDescriptionContainer = `w-full flex flex-col gap-5`;
 const greyBoxContainer = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6`;
-const greyTxt = `text-sm font-normal text-gray-shade-7`;
-const desTitle = `text-sm font-semibold text-white`;
-const BnBNum = `text-base font-bold text-white`;
-const ImgStyling = `w-[64px] h-[64px]  rounded-2xl object-contain mx-auto`;
-const footerBtnContainer = `flex items-center gap-4`;
+const modalBodyWrapper1 = `flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 items-center`;
 const infoBox = `bg-background-shade-3 rounded-10px flex flex-col gap-2 p-6 items-center w-full`;

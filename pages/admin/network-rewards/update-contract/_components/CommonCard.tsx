@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useWeb3React } from "@web3-react/core";
 
 import { useGetReferralRate } from "@/web3/hooks/use.get.referral.rates";
 import { BlockchainWrite } from "@/web3/blockchain";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 export const CommonCard = ({ refreshRoundsInfo }: any) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [rates, setRates] = useState<number[]>([0, 0, 0, 0, 0, 0]);
   const [coreTeamPercentage, setCoreTeamPercentage] = useState(0);
   const [coreTeamAddress, setCoreTeamAddress] = useState("");
@@ -29,7 +29,7 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
   const handleReferralRate = async () => {
     setPendingReferralRateTx(true);
     try {
-      await BlockchainWrite.adminChangeReferralRate(library, rates);
+      await BlockchainWrite.adminChangeReferralRate(getSigner()!, rates);
       toast.success("Changed Referral Percentage Successfully");
     } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
@@ -38,12 +38,13 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
     }
   };
 
-  const handleTeamPercentage = async () => {};
-
   const handleCoreTeamAddress = async () => {
     setPendingTeamAddressTx(true);
     try {
-      await BlockchainWrite.adminChangeCompanyAddress(library, coreTeamAddress);
+      await BlockchainWrite.adminChangeCompanyAddress(
+        getSigner()!,
+        coreTeamAddress
+      );
       toast.success("Changed Core Team Address Successfully");
     } catch (error) {
       toast.error("Something Went Wrong! Please try again.");
@@ -55,7 +56,10 @@ export const CommonCard = ({ refreshRoundsInfo }: any) => {
   const handleCompanyAddress = async () => {
     setPendingCompanyAddressTx(true);
     try {
-      await BlockchainWrite.adminChangeCoreTeamAddress(library, companyAddress);
+      await BlockchainWrite.adminChangeCoreTeamAddress(
+        getSigner()!,
+        companyAddress
+      );
       toast.success("Changed Company Address Successfully");
     } catch (error) {
       toast.error("Something Went Wrong! Please try again.");

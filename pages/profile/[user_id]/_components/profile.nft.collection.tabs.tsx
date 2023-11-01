@@ -13,7 +13,7 @@ export const ProfileNFTCollectionTabs: React.FC<Props> = ({ user }) => {
   const router = useRouter();
 
   return (
-    <div className="scrollSetLight2 mb-4 flex w-full space-x-2 rounded-2xl p-1.5 fsm:mb-6 fsm:max-w-[640px] [@media(min-width:370px)]:overflow-auto">
+    <div className="scrollSetLight mb-4 flex w-full space-x-2 overflow-auto rounded-2xl p-1.5 fsm:mb-6 fsm:max-w-[640px]">
       {user.membership.status === "citizen" && (
         <Link
           href={{

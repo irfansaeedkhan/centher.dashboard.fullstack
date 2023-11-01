@@ -1,9 +1,9 @@
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { formatNum2DispNum } from "@/utils/format.address";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
-import { useWeb3React } from "@web3-react/core";
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
+import { useWallet } from "@/web3/hooks/use.wallet";
 
 const RegistrationRewards = ({
   claimableBNB,
@@ -11,7 +11,7 @@ const RegistrationRewards = ({
   reload,
   setReload,
 }: any) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [pendingTx, setPendingTx] = useState(false);
   const handleClaimBNB = async () => {
     if (claimableBNB <= 0) {
@@ -21,7 +21,7 @@ const RegistrationRewards = ({
 
     setPendingTx(true);
     try {
-      await BlockchainWrite.adminClaimRegistrationBNB(library);
+      await BlockchainWrite.adminClaimRegistrationBNB(getSigner()!);
       setReload(!reload);
       toast.success("Claimed Successfully!");
     } catch (error) {

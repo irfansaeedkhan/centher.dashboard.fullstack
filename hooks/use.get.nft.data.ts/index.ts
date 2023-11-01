@@ -58,6 +58,7 @@ export interface INFTDetailData {
   priceHistory: IListHistory[];
   unlock: number;
   collectionMintedTokens: number;
+  videoThumbnail?: string;
 }
 
 export const useGetNftData = (
@@ -129,6 +130,7 @@ export async function fetchNft(
       priceHistory: _priceHistories,
       unlock: nftResult.unlock,
       collectionMintedTokens: collectionMintedTokens,
+      videoThumbnail: formatIPFSUrl(metadata.data?.videoThumbnail),
     };
     return _nftData;
   } else return null;

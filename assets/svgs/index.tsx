@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import CentherIconImgBg from "./centher.icon.bg.png";
+import CentherIconImg from "./centher.icon.png";
 import NTRIconImgBg from "./ntr.icon.bg.png";
 import NTRIconImg from "./ntr.icon.png";
 import DXCIconImg from "./dexa-logo.png";
@@ -7,6 +8,7 @@ import DXCIconNewImg from "./dexa-logo-new.png";
 import VerifiedIconImg from "./verifiedmark.png";
 import LockedIconImg from "./lock-icon.png";
 import HammerIconImg from "./hammer-icon.png";
+
 export interface IconProps {
   className?: string;
 }
@@ -71,7 +73,6 @@ export { default as SpinIcon3 } from "./spin.login.icon.svg";
 export { default as Successfully } from "./successfully.registeration.icon.svg";
 export { default as YellowTick } from "./yellow.tick.icon.svg";
 export { default as LockedIcon } from "./locked.icon.launchpad.svg";
-export { default as CentherIcon } from "./centher.icon.svg";
 export { default as WalletIconModal } from "./wallet.icon.registration.modal.svg";
 export { default as NotificationIcon } from "./notification.icon.svg";
 export { default as RightSimpleIcon } from "./right.side.blur.icon.svg";
@@ -130,21 +131,11 @@ export { default as GifNewWhite } from "./gif-new-white.svg";
 export { default as LinkNewIcon } from "./link.new.svg";
 export { default as Whitepaper } from "./whitepaper.svg";
 export { default as NewTelegramIcon } from "./telegram.new.svg";
+export { default as CookiesIcon } from "./cookies.svg";
 export { default as Pending } from "./pending.svg";
 export { default as Sent } from "./sent.svg";
 export { default as Delivered } from "./delivered.svg";
 export { default as Seen } from "./seen.svg";
-export { default as CookiesIcon } from "./cookies.svg";
-export { default as SendChatIcon } from "./send-chat-icon.svg";
-export { default as ReplyGradientIcon } from "./reply-gradient.svg";
-export { default as EditGradientIcon } from "./edit-gradient.svg";
-export { default as PinIcon } from "./pin-icon.svg";
-export { default as UnpinIcon } from "./unpin-icon.svg";
-export { default as PinFill } from "./pin-fill.svg";
-export { default as EyeIcon } from "./eye-icon.svg";
-export { default as GradientTick } from "./gradient-tick.svg";
-export { default as ChatUserIcon } from "./chat-user-icon.svg";
-export { default as NewCentherIcon } from "./centher.new.svg";
 export { default as NewFacebookIcon } from "./new-facebook-icon.svg";
 export { default as NewDiscordIcon } from "./new-discord-icon.svg";
 export { default as NewRedditIcon } from "./new-reddit-icon.svg";
@@ -170,6 +161,15 @@ export { default as WarningGradient } from "./warning-gradient.svg";
 export { default as MultiColorLoader } from "./loader-multi-color.svg";
 export { default as TeamMemberIcon } from "./team-member-icon.svg";
 export { default as IconFailure } from "./icon-failure.svg";
+export { default as SendChatIcon } from "./send-chat-icon.svg";
+export { default as ReplyGradientIcon } from "./reply-gradient.svg";
+export { default as EditGradientIcon } from "./edit-gradient.svg";
+export { default as PinIcon } from "./pin-icon.svg";
+export { default as UnpinIcon } from "./unpin-icon.svg";
+export { default as PinFill } from "./pin-fill.svg";
+export { default as EyeIcon } from "./eye-icon.svg";
+export { default as GradientTick } from "./gradient-tick.svg";
+export { default as ChatUserIcon } from "./chat-user-icon.svg";
 export { default as XLogo } from "./x-logo.svg";
 export { default as ChatProfile } from "./chat-profile-icon.svg";
 export { default as XIcon } from "./x-icon.svg";
@@ -177,6 +177,21 @@ export { default as FacebookIcon } from "./facebook-circle.svg";
 export { default as LinkIconCollection } from "./link-icon.svg";
 export { default as USDTIcon } from "./usdt-icon.svg";
 export { default as EyeOffFollow } from "./eye-off-following.svg";
+export { default as GradientArrowFill } from "./gradient-fill.svg";
+export { default as GradientArrowOutline } from "./gradient-outline.svg";
+
+export const CentherIcon: React.FC<IconProps> = (props) => {
+  return (
+    <img
+      className={props.className}
+      src={CentherIconImg.src}
+      alt="Centher Icon"
+      sizes="256px"
+      width={40}
+      height={40}
+    />
+  );
+};
 
 export const CentherIconBG: React.FC<IconProps> = (props) => {
   return (

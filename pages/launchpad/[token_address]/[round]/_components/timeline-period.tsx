@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import { ClaimCentherFrom } from "@/web3/blockchain/types";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { ContributionInfo, RoundInfo } from "@/web3/constants/types";
@@ -10,7 +11,7 @@ import { TimelineTotal } from "./timeline-total";
 
 interface Props {
   roundInfo: RoundInfo;
-  library: any;
+  signer: JsonRpcSigner;
   contributionInfo: ContributionInfo;
   refetchContributionInfo: () => void;
   isBUSD: boolean;
@@ -18,7 +19,7 @@ interface Props {
 
 export const TimelinePeriod: React.FC<Props> = ({
   roundInfo,
-  library,
+  signer,
   contributionInfo,
   refetchContributionInfo,
   isBUSD,
@@ -43,7 +44,7 @@ export const TimelinePeriod: React.FC<Props> = ({
   const handleClaim = async (claimFrom: ClaimCentherFrom) => {
     try {
       setModal((prev) => ({ ...prev, status: "progress" }));
-      await BlockchainWrite.claimTokens(library, roundInfo.round, claimFrom);
+      await BlockchainWrite.claimTokens(signer, roundInfo.round, claimFrom);
       refetchContributionInfo();
       setModal((prev) => ({
         ...prev,

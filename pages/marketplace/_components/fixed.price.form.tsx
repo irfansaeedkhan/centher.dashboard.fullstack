@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { joiResolver } from "@hookform/resolvers/joi";
-import { useWeb3React } from "@web3-react/core";
-import { FiArrowRight } from "react-icons/fi";
 import { IoIosClose } from "react-icons/io";
-import { toast } from "react-hot-toast";
 import Joi from "joi";
 import clsx from "clsx";
+import { JsonRpcSigner } from "@ethersproject/providers";
+import { AddIcon } from "@/assets/svgs";
 import Button from "@/components/button";
-import { CustomModal } from "@/components/modal/custom.modal";
 import { CustomNumberInput } from "@/components/custom-number-input";
-import { CustomNewModal } from "@/components/modal/custom.new.modal";
-import { AddIcon, MetamaskIcon2 } from "@/assets/svgs";
+import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
 import { formatAddress } from "@/utils/format.address";
+import useUser from "@/hooks/use.user";
+import { joiResolver } from "@hookform/resolvers/joi";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
 import { BlockchainConfig } from "@/web3/blockchain/config";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import useUser from "@/hooks/use.user";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
+import { INFTData } from "./create.nft.form";
+import AddPropertiesModal from "./add-properties-modal";
 
 // form validations
 const schema = Joi.object({
@@ -32,11 +31,11 @@ const schema = Joi.object({
   NFTSupply: Joi.number(),
 });
 interface FixedPriceFormProps {
-  createNFT: any;
+  createNFT: (values: INFTData) => void;
   collections: IMyCollection[];
   clearForm: boolean;
   asset: Blob | undefined;
-  library: any;
+  signer: JsonRpcSigner;
 }
 interface FormFields {
   NFTName: String;
@@ -46,17 +45,16 @@ interface FormFields {
   NFTSupply: number | null;
   Collection: String;
 }
-// TODO: Kindly fix any types
+
 const FixedPriceForm = ({
   createNFT,
   collections,
   clearForm,
   asset,
-  library,
+  signer: library,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
+  const { connectWallet, disconnectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
@@ -79,18 +77,30 @@ const FixedPriceForm = ({
     setCollectionErrorMsg(undefined);
   };
 
-  const { handleSubmit, register, setError, formState, reset } =
-    useForm<FormFields>({
-      mode: "onChange",
-      resolver: joiResolver(schema),
-      defaultValues: {
+  const { handleSubmit, register, formState, reset } = useForm<FormFields>({
+    mode: "onChange",
+    resolver: joiResolver(schema),
+    defaultValues: {
+      NFTName: "",
+      Description: "",
+      NFTSupply: 1,
+    },
+  });
+
+  useEffect(() => {
+    if (clearForm) {
+      setChangeNFTPrice(undefined);
+      setCollectionErrorMsg(undefined);
+      setNFTPriceError(undefined);
+      reset({
         NFTName: "",
         Description: "",
         NFTSupply: 1,
-        // NFTPrice: null,
-        // Collection: "",
-      },
-    });
+      });
+      setSelectedOption(collections[0].collection);
+      setPropertyList([]);
+    }
+  }, [clearForm, reset, collections]);
 
   const handlePropertyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -100,6 +110,7 @@ const FixedPriceForm = ({
       [name]: limitedValue,
     }));
   };
+
   const addNewPropertyFunc = () => {
     if (
       propertyDetails?.Type === null ||
@@ -119,6 +130,7 @@ const FixedPriceForm = ({
     setPropertyModal(false);
     setPropertyDetails([]);
   };
+
   const handlePropertyRemove = (prop: any) => {
     setPropertyList(
       propertyList.filter((item: any) => item?.PropertyName != prop)
@@ -148,20 +160,6 @@ const FixedPriceForm = ({
     };
     createNFT(finalizedData);
   };
-  useEffect(() => {
-    if (clearForm) {
-      setChangeNFTPrice(undefined);
-      setCollectionErrorMsg(undefined);
-      setNFTPriceError(undefined);
-      reset({
-        NFTName: "",
-        Description: "",
-        NFTSupply: 1,
-      });
-      setSelectedOption(collections[0].collection);
-      setPropertyList([]);
-    }
-  }, [clearForm, reset, collections]);
 
   return (
     <div className={formContainer}>
@@ -216,23 +214,25 @@ const FixedPriceForm = ({
         <label className={fieldTitle}>
           NFT Price <span className="text-red-500">*</span>{" "}
         </label>
-
-        <div className="relative">
-          <span className="textGradient absolute right-2 top-[50%] translate-x-[-50%] text-sm leading-[0]">
-            BNB
-          </span>
-          <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
+        <div
+          className={clsx(
+            "!rounded-lg p-[1px]",
+            !nftPriceError
+              ? "focus-within:gradient-border-3"
+              : "focus-within:ring-1 focus-within:ring-red-500"
+          )}
+        >
+          <div className="flex items-center justify-between gap-3 !rounded-lg bg-black-shade-3 px-5 py-3">
             <CustomNumberInput
               value={changeNFTPrice === undefined ? "" : changeNFTPrice}
               id="NFTPrice"
               autoComplete="off"
               placeholder="Enter NFT Price"
-              className={!nftPriceError ? inputField : inputFieldError}
+              className="w-full border-0 bg-transparent p-0 text-sm font-semibold text-white focus:outline-none focus:ring-0"
               onChange={(e) => {
                 setNFTPriceError(undefined);
                 const inputValue = e.target.value;
                 const numberValue = Number(inputValue);
-
                 const pattern = /^\d*\.?\d+$/; // Regular expression to match positive integers and positive floating numbers
                 if (pattern.test(inputValue)) {
                   if (numberValue <= 0) {
@@ -255,6 +255,7 @@ const FixedPriceForm = ({
                 }
               }}
             />
+            <span className="text-gradient w-fit text-sm">BNB</span>
           </div>
         </div>
         {nftPriceError !== "" && (
@@ -369,98 +370,21 @@ const FixedPriceForm = ({
       )}
 
       {propertyModal && (
-        <CustomModal
-          onClose={() => {
-            setPropertyModal(false);
-          }}
-          title={"Add new properties"}
-        >
-          <div className={modalBodyWrapper}>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Name</label>
-              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                <input
-                  type="text"
-                  name="PropertyName"
-                  id="PropertyName"
-                  autoComplete="off"
-                  placeholder="Male"
-                  className={inputFieldModal}
-                  onChange={handlePropertyChange}
-                  value={propertyDetails.PropertyName}
-                />
-              </div>
-            </div>
-            <div className={fieldWrapper}>
-              <label className={fieldTitle}>Type</label>
-              <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
-                <input
-                  type="text"
-                  name="Type"
-                  id="Type"
-                  autoComplete="off"
-                  placeholder="Character"
-                  className={inputFieldModal}
-                  onChange={handlePropertyChange}
-                  value={propertyDetails.Type}
-                />
-              </div>
-            </div>
-            {propertyErr && (
-              <p className={`text-red-500 ${errMessage}`}>{propertyErr}</p>
-            )}
-            <Button
-              title={"Save"}
-              variant="primary"
-              onClick={addNewPropertyFunc}
-              className="mt-2"
-            />
-          </div>
-        </CustomModal>
+        <AddPropertiesModal
+          addNewPropertyFunc={addNewPropertyFunc}
+          handlePropertyChange={handlePropertyChange}
+          propertyDetails={propertyDetails}
+          setPropertyModal={setPropertyModal}
+          propertyErr={propertyErr}
+        />
       )}
       {connectWalletModal && (
-        <CustomNewModal
-          onClose={() => {
-            setConnectWalletModal(false);
-          }}
-          title={"Connect to wallet"}
-        >
-          <div className="mb-8 flex w-full justify-center px-5 md:px-10">
-            <p className="mt-2 w-full max-w-[366px] text-center text-xs text-gray-shade-14">
-              Please Connect your wallet to continue, the system support
-              following wallet.
-            </p>
-          </div>
-          <div className="flex w-full justify-center px-5 md:px-10">
-            <div className="flex w-full max-w-[400px] items-center justify-between gap-10 rounded-xl border border-brand-primary px-5 py-3">
-              <div className="flex items-center gap-3 fsm:gap-6">
-                <MetamaskIcon2 />
-                <h3 className="text-sm font-semibold text-white fmd:text-base">
-                  Metamask
-                </h3>
-              </div>
-              <button
-                onClick={async () => {
-                  if (!loggedInUser) {
-                    toast.error("Please login to buy this nft");
-                    setConnectWalletModal(false);
-                    return;
-                  }
-                  const _account = await connectWallet();
-                  if (
-                    loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
-                  ) {
-                    toast.error("Please connect to correct account");
-                    deactivate();
-                  }
-                  setConnectWalletModal(false);
-                }}
-              >
-                <FiArrowRight className="h-6 w-6 text-brand-primary fsm:h-8 fsm:w-8" />
-              </button>
-            </div>
-          </div>
-        </CustomNewModal>
+        <ConnectWalletModal
+          connectWallet={connectWallet}
+          deactivate={disconnectWallet}
+          loggedInUser={loggedInUser}
+          setConnectWalletModal={setConnectWalletModal}
+        />
       )}
     </div>
   );
@@ -469,41 +393,13 @@ const FixedPriceForm = ({
 export default FixedPriceForm;
 
 // styling
-const formContainer = `
- flex flex-col gap-4
-`;
-const errMessage = `
-pb-2 text-xs font-medium
-`;
-const fieldWrapper = `
-  flex gap-2 flex-col w-full
-`;
-const fieldTitle = `
-text-sm text-start font-normal text-white
-`;
-const inputField = `
-w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0
-`;
-const inputFieldModal = `
-w-full py-3 px-5 !bg-black-shade-2 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:ring-0 active:!ring-brand-primary
-`;
-const inputFieldError = `
-  ${inputField}
-   focus:!ring-red-500
-`;
-const addPropertyBtn = `
-flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]
-`;
-const modalBodyWrapper = `
-flex flex-col gap-2 w-full mt-8 text-center p-[2px]
-`;
-
-const properyCard = `
-gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative
-`;
-const PropertyName = `
-text-xs font-medium textGradient
-`;
-const Type = `
-text-sm font-semibold text-white
-`;
+const formContainer = `flex flex-col gap-4`;
+const errMessage = `pb-2 text-xs font-medium`;
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+const fieldTitle = `text-sm text-start font-normal text-white`;
+const inputField = `w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0`;
+const inputFieldError = `${inputField} focus:!ring-red-500`;
+const addPropertyBtn = `flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]`;
+const properyCard = `gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative`;
+const PropertyName = `text-xs font-medium textGradient`;
+const Type = `text-sm font-semibold text-white`;

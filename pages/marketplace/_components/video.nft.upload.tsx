@@ -1,18 +1,31 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import ctl from "@netlify/classnames-template-literals";
-
-// App imports
 import { CrossIcon } from "@/assets/svgs";
-import { UploadNFTProps } from "./upload.nft";
 
-const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
+interface Props {
+  asset: Blob | undefined;
+  setAsset: any;
+  clearForm: boolean;
+  setVideoThumbnail: (asset: Blob | undefined) => void;
+}
+
+const VideoNFTUpload: React.FC<Props> = ({
+  asset,
+  setAsset,
+  clearForm,
+  setVideoThumbnail,
+}) => {
   const [showSecPreview, setShowSecPreivew] = useState<boolean | null>(false);
+  const [previewImage, setPreviewImage] = useState<string | undefined>("");
   const [showPreviewImage, setShowPreviewImage] = useState<boolean | null>(
     false
   );
-  const [previewImage, setPreviewImage] = useState<string | undefined>("");
+
+  useEffect(() => {
+    setShowSecPreivew(false);
+    setAsset(undefined);
+    setShowPreviewImage(false);
+  }, [clearForm, setAsset]);
 
   // upload image to preview
   const uploadFile = (e: any) => {
@@ -20,16 +33,14 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
     setAsset(previewUrl);
     setShowSecPreivew(true);
   };
+
   const uploadPreviewImageFile = (e: any) => {
+    setVideoThumbnail(e.target.files[0]);
     const previewUrl = URL.createObjectURL(e.target.files[0]);
     setPreviewImage(previewUrl);
     setShowPreviewImage(true);
   };
-  useEffect(() => {
-    setShowSecPreivew(false);
-    setAsset(undefined);
-    setShowPreviewImage(false);
-  }, [clearForm, setAsset]);
+
   return (
     <>
       <div className={previewContainer}>
@@ -74,8 +85,8 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
       <div className="previewImageContainer">
         <h4 className="pb-2 text-sm font-semibold text-white">Preview image</h4>
         <p className="text-sm font-normal leading-6 text-[#B7BBCC]">
-          Because you’ve included multimedia, you’ll need to provide an image
-          (PNG, JPG, or GIF) for the card display of your item.
+          Because you&apos;ve included multimedia, you&apos;ll need to provide
+          an image (PNG, JPG, or GIF) for the card display of your item.
         </p>
         <div className={previewImgContainer}>
           {showPreviewImage ? (
@@ -91,6 +102,7 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
                 className={imageDelBtn}
                 onClick={() => {
                   setShowPreviewImage(false);
+                  setVideoThumbnail(undefined);
                   setPreviewImage(undefined);
                 }}
               >
@@ -123,34 +135,15 @@ const VideoNFTUpload = ({ asset, setAsset, clearForm }: UploadNFTProps) => {
 };
 
 export default VideoNFTUpload;
-const previewImgContainer = ctl(`
- bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-[270px] h-[270px] mt-3
-`);
+
 // styling
-const previewContainer = ctl(`
-pb-[100%] bg-black-shade-9 rounded-2xl relative w-full border   border-gray-shade-3
-`);
-const videoStyling = ctl(`
-w-full h-full absolute rounded-2xl object-contain
-`);
-const imageDelBtn = ctl(`
-  absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50  rounded-xl  [&>*]:hover:scale-125 z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg
-  `);
-const uploadBox = ctl(`
-w-full h-full absolute flex items-center justify-center
-  `);
-const uploadBoxContent = ctl(`
-flex flex-col items-center justify-center gap-5
-  `);
-const formatName = ctl(`
-  text-gray-shade-7 text-xs font-semibold
-    `);
-const uploadBtnContainer = ctl(`
-  relative w-[132px] h-10
-    `);
-const chooseFileBtn = ctl(`
-  z-10 absolute w-full h-full text-sm text-gray-shade-7 font-bold leading-normal bg-black-shade-7   rounded-2xl text-center py-2 cursor-pointer hover:bg-brand-primary hover:text-black-shade-3
-    `);
-const chooseFileBtn2 = ctl(`
-  absolute w-full h-full  opacity-0
-    `);
+const uploadBtnContainer = `relative w-[132px] h-10`;
+const chooseFileBtn2 = `absolute w-full h-full opacity-0`;
+const formatName = `text-gray-shade-7 text-xs font-semibold`;
+const videoStyling = `w-full h-full absolute rounded-2xl object-contain`;
+const uploadBoxContent = `flex flex-col items-center justify-center gap-5`;
+const uploadBox = `w-full h-full absolute flex items-center justify-center`;
+const previewContainer = `pb-[100%] bg-black-shade-9 rounded-2xl relative w-full border border-gray-shade-3`;
+const previewImgContainer = `bg-black-shade-9 rounded-2xl relative border border-gray-shade-3 w-[270px] h-[270px] mt-3`;
+const chooseFileBtn = `z-10 absolute w-full h-full text-sm text-white font-bold leading-normal bg-transparent rounded-[14px] border border-gray-shade-3 text-center flex items-center justify-center hover:bg-[#1E202B] cursor-pointer`;
+const imageDelBtn = `absolute top-4 right-5  [&>*>*]:stroke-white border border-gray-shade-3 opacity-100 outline-none  leading-none font-semibold focus:outline-none [&>*]:transition bg-gray-shade-3/50 rounded-xl z-30 w-[34px] h-[34px] flex items-center justify-center leading-0 backdrop-blur-lg`;

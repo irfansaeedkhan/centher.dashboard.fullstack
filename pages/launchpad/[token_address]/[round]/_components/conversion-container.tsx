@@ -1,11 +1,11 @@
 import React from "react";
-import { useWeb3React } from "@web3-react/core";
 import { formatEther } from "ethers/lib/utils";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 import Button from "@/components/button";
 import { TokenName } from "@/web3/blockchain/types";
 import { RoundInfo } from "@/web3/constants/types";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { LeftArrowIcon, NTRIconBG, DXCIconBG, USDTIcon } from "@/assets/svgs";
 import { SelectedTokenA, SelectedTokenB } from "./types";
 import { ConversionTokenBox } from "./conversion-token-box";
@@ -26,7 +26,7 @@ export const ConversionContainer: React.FC<Props> = ({
   setSelectedTokenB,
   roundInfo,
 }) => {
-  const { account } = useWeb3React();
+  const { connectedAddress } = useWallet();
   const handleChangeSelectedToken = (tokenName: TokenName) => {
     if (tokenName === "USDT") {
       setSelectedTokenA((prev) => ({
@@ -118,7 +118,7 @@ export const ConversionContainer: React.FC<Props> = ({
                 title="Max"
                 className="text-xs"
                 onClick={() => {
-                  if (!account) {
+                  if (!connectedAddress) {
                     toast.error("Please connect your wallet");
                     return;
                   }

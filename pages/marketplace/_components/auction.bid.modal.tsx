@@ -1,7 +1,4 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
-
-// App imports
 import { BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import Button from "@/components/button";
@@ -10,29 +7,29 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
   const [bidPrice, setBidPrice] = useState<string>("");
   const [bidPriceErr, setBidPriceErr] = useState(true);
 
-  const handleBidValue = (e: any) => {
+  const handleBidValue: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setBidPrice(e.target.value);
-
     if (!!e.target.value) {
       setBidPriceErr(false);
     } else {
       setBidPriceErr(true);
     }
   };
+
   return (
     <CustomModal onClose={onClose} title={"Place a bid"}>
-      <div className={modalBodyWrapper}>
-        <div className={fieldWrapper}>
+      <div className="flex w-full flex-col gap-4 px-2 pt-2 text-center fmd:px-4 fmd:pt-4">
+        <div className="mt-7 flex w-full flex-col gap-2">
           <label className={fieldTitle}>Blockchain</label>
-          <div className={`${inputFieldModal} flex items-center gap-3 !ring-0`}>
+          <div className={`${inputFieldModal} flex items-center gap-3 pl-2`}>
             <BNBIcon />{" "}
             <h6 className="text-sm font-semibold text-white">BNB</h6>
           </div>
         </div>
-        <div className={fieldWrapper}>
+        <div className="flex w-full flex-col gap-2">
           <label className={fieldTitle}>Price</label>
           <div
-            className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 !ring-0`}
+            className={`${inputFieldModal} gradient-border-3 flex items-center justify-between gap-3 p-[1px] `}
           >
             <input
               type="text"
@@ -49,10 +46,12 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
               value={bidPrice}
               placeholder="0.00"
               className={
-                "h-full w-full !border-0 bg-transparent text-white !ring-0"
+                "h-full w-full border-0 bg-transparent text-white outline-none ring-0 focus:ring-0"
               }
             />
-            <h6 className="text-sm font-semibold text-gray-shade-7">=$0000</h6>
+            <h6 className="mr-2 text-sm font-semibold text-gray-shade-7">
+              =$0000
+            </h6>
           </div>
           {bidPriceErr && (
             <p className={`text-red-500 ${errMessage}`}>
@@ -62,7 +61,7 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
         </div>
         <Button
           title={"Place Bid"}
-          variant={bidPriceErr ? "danger" : "primary"}
+          variant={"primary"}
           disabled={bidPriceErr}
           className="mt-2"
           borderRounded="14px"
@@ -78,18 +77,6 @@ const AuctionBidModal = ({ onSubmit, onClose }: any) => {
 export default AuctionBidModal;
 
 // styling
-const modalBodyWrapper = `
-flex flex-col gap-4 w-full fmd:px-4 px-2 fmd:pt-4 pt-2 text-center 
-`;
-const errMessage = `
-pb-2 text-xs font-medium
-`;
-const fieldWrapper = `
-  flex gap-2 flex-col w-full
-`;
-const fieldTitle = `
-  text-sm text-start font-normal text-white
-`;
-const inputFieldModal = `
-  w-full py-3 px-5 h-[48px]  !bg-black-shade-3  text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none ring-black-shade-7 ring-2 focus:!ring-yellow-theme active:!ring-yellow-theme
-`;
+const errMessage = `pb-2 text-xs font-medium`;
+const fieldTitle = `text-sm text-start font-normal text-white`;
+const inputFieldModal = `w-full h-[48px] bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none`;

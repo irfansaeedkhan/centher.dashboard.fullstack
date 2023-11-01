@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
-
+import React from "react";
 import { formatAddress } from "@/utils/format.address";
 import { ZeroAddress } from "@/web3/constants/common";
 
@@ -55,21 +53,9 @@ const RegistrationHistory = ({ data }: any) => {
 
 export default RegistrationHistory;
 
-const TableContainer = ctl(` 
-overflow-x-auto relative bg-background-shade-3 shadow-md rounded-2xl 
-`);
-const table = ctl(` 
-overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-background-shade-3 
-`);
-const thead = ctl(` 
-text-sm text-gray-shade-7  uppercase bg-background-shade-3 
-`);
-const th = ctl(` 
-py-4 lg:py-7 first:px-8 last:px-8 px-5 lg:px-6 capitalize
-`);
-const td = ctl(` 
-first:px-8 last:px-8 px-5 lg:px-6 text-sm py-4 lg:py-7  text-white font-medium
-`);
-const tbodyTR = ctl(` 
-border-b border-gray-shade-3  odd:bg-black-shade-3 even:bg-black-shade-11
-`);
+const th = `py-4 lg:py-7 first:px-8 last:px-8 px-5 lg:px-6 capitalize`;
+const thead = `text-sm text-gray-shade-7 uppercase bg-background-shade-3`;
+const td = `first:px-8 last:px-8 px-5 lg:px-6 text-sm py-4 lg:py-7 text-white font-medium`;
+const tbodyTR = `border-b border-gray-shade-3 odd:bg-black-shade-3 even:bg-black-shade-11`;
+const TableContainer = `overflow-x-auto relative bg-background-shade-3 shadow-md rounded-2xl`;
+const table = `overflow-hidden w-full border-2 rounded-2xl border-gray-shade-3 text-sm text-left text-gray-500 bg-background-shade-3`;

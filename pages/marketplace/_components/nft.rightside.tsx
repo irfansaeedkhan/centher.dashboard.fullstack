@@ -7,7 +7,6 @@ import { SiWhatsapp } from "react-icons/si";
 import { TwitterShareButton, WhatsappShareButton } from "react-share";
 import { useRouter } from "next/router";
 import { useOnClickOutside } from "usehooks-ts";
-import { useWeb3React } from "@web3-react/core";
 import { useGetNFTOwner } from "@/web3/hooks/use.contracts.functions";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import useGetUser from "@/hooks/use.get.user";
@@ -18,6 +17,10 @@ import { AppRoutes } from "@/constants/app.routes";
 import { ShareBigIcon, LinkIcon, TwitterSvg } from "@/assets/svgs";
 import { useVerificationTick } from "@/web3/hooks/use.verification.tick";
 import { User } from "@/models/user";
+import { useWallet } from "@/web3/hooks/use.wallet";
+import { eqAddress } from "@/live/utils/address.utils";
+import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
+import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
 import { NFTListing } from "./nft.listing";
 import { NFTOffers } from "./nft.offers";
 import { FixedPriceNFTDescription } from "./fixed.price.nft.description";
@@ -26,10 +29,6 @@ import { NonNFTBuyerDescription } from "./non.nftbuyer.description";
 import { FixedPriceNFTBuyerDescription } from "./fixed.price.nftbuyer.description";
 import { AuctionNFTBuyerDescription } from "./auction.nftbuyer.description";
 import { AuctionNftDescription } from "./auction.nft.description";
-import { BlockchainConfig } from "@/web3/blockchain/config";
-import { AddressFactory } from "@/web3/blockchain/providers/address.provider";
-import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
-import { eqAddress } from "@/live/utils/address.utils";
 
 interface NFTRightSideComponentProps {
   data: INFTDetailData | undefined;
@@ -40,8 +39,8 @@ export const NFTRightSideComponent = ({
   setNftData,
 }: NFTRightSideComponentProps) => {
   // states of nfts: nonNFT  nonNFTBuyer, fixedPriceNFT  fixedPriceNFTBuyer  timeAuctionedNFT auctionNFTBuyer
-  const { account } = useWeb3React();
   const router = useRouter();
+  const { connectedAddress } = useWallet();
   const { user } = useGetUser(data?.creator);
   const [nftState, setNftState] = useState("auctionNFTBuyer");
   const [togglePop, setTogglePop] = useState(false);
@@ -100,7 +99,7 @@ export const NFTRightSideComponent = ({
 
   useEffect(() => {
     if (data) {
-      if (account && eqAddress(account, nftOwnerAddress)) {
+      if (connectedAddress && eqAddress(connectedAddress, nftOwnerAddress)) {
         if (data.saleState === "Auction") setNftState("timeAuctionedNFT");
         else if (data.saleState === "List") setNftState("fixedPriceNFT");
         else if (data.saleState === "NON") setNftState("nonNFT");
@@ -110,7 +109,7 @@ export const NFTRightSideComponent = ({
         else if (data.saleState === "NON") setNftState("nonNFTBuyer");
       }
     }
-  }, [account, data, nftOwnerAddress]);
+  }, [connectedAddress, data, nftOwnerAddress]);
   // ref for toggle function
   const toggleContainerRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(toggleContainerRef, () => {
@@ -173,7 +172,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={clsx(
-                  `text-gradient-hover flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`
+                  "hover:text-gradient flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]"
                 )}
                 title={user.display_name}
               >
@@ -222,7 +221,7 @@ export const NFTRightSideComponent = ({
                     user_id: nftOwnerAddress,
                   },
                 }}
-                className={`text-gradient-hover flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
+                className={`hover:text-gradient flex max-w-[230px] items-center text-sm font-semibold text-white f2xl:!max-w-[120px] [@media(min-width:400px)]:max-w-[300px] [@media(min-width:500px)]:max-w-[400px]`}
                 title={nftOwner.display_name}
               >
                 <span className="block truncate break-words ">
@@ -260,7 +259,7 @@ export const NFTRightSideComponent = ({
                   },
                 }}
                 className={
-                  "text-gradient-hover line-clamp-1 text-ellipsis text-sm font-semibold text-white"
+                  "hover:text-gradient line-clamp-1 text-ellipsis text-sm font-semibold text-white"
                 }
               >
                 {formatAddress(data?.collection)}
@@ -300,11 +299,11 @@ export const NFTRightSideComponent = ({
   );
 };
 // styling
-const rightSideContainer = `w-full flex flex-col gap-6`;
-const titleContainer = `flex items-end fmd:items-start  justify-between`;
-const title = `word-break textGradient  font-semibold leading-[42px]  animationTextHeading text-2xl f2xl:text-4x`;
-const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
-const toggleListBtn = `w-full text-sm font-medium text-white  flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;
-const toggleListIcons = `w-[24px] h-[24px] stroke-white`;
 const nameBox = `flex items-start gap-3 flex-grow`;
+const rightSideContainer = `w-full flex flex-col gap-6`;
+const toggleListIcons = `w-[24px] h-[24px] stroke-white`;
 const nameBoxTitle = `text-xs font-normal text-gray-shade-2`;
+const titleContainer = `flex items-end fmd:items-start justify-between`;
+const title = `word-break textGradient font-semibold leading-[42px] animationTextHeading text-2xl f2xl:text-4x`;
+const toggleList = `hidden absolute right-0 top-6 rounded-10px bg-black-shade-12 shadow-sm overflow-hidden w-[240px]`;
+const toggleListBtn = `w-full text-sm font-medium text-white flex items-center gap-3 px-5 py-4 transition hover:bg-[#1f1f1f]`;

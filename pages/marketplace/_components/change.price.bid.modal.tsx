@@ -28,15 +28,21 @@ const ChangePriceBidModal = ({
   return (
     <div className={modalBodyWrapper}>
       {data && (
-        <div className="flex flex-col items-center justify-center gap-6">
+        <div className="flex flex-col items-center justify-center gap-3">
           <Image
-            src={data.image}
+            src={
+              data.type.includes("audio")
+                ? "/images/default-music.png"
+                : data.type.includes("video")
+                ? data.videoThumbnail || "/images/default-music.png"
+                : data.image
+            }
             alt="NFT Image"
             width={64}
             height={64}
-            className="!h-[64px] rounded-xl object-cover"
+            className="!h-[64px] flex-shrink-0 rounded-xl object-cover"
           />
-          <h4 className="text-center text-lg font-semibold text-white">
+          <h4 className="word-break text-center text-lg font-semibold text-white">
             {data.name}
           </h4>
         </div>
@@ -44,9 +50,11 @@ const ChangePriceBidModal = ({
       <div className={fieldWrapper}>
         <label className={fieldTitle}>Price</label>
         <div
-          className={`${inputFieldModal} flex items-center justify-between gap-3 !p-0 !px-3 ring-0 focus-within:!ring-brand-primary`}
+          className={`${inputFieldModal} focus-within:gradient-border-3 flex items-center justify-between gap-3 !rounded-lg !p-[1px] ring-0`}
         >
-          <BNBIcon />
+          <span className="ml-3">
+            <BNBIcon />
+          </span>
           <CustomNumberInput
             id="bidPrice"
             autoComplete="off"
@@ -110,18 +118,8 @@ const ChangePriceBidModal = ({
 export default ChangePriceBidModal;
 
 // styling
-const modalBodyWrapper = `
-  flex flex-col gap-4 w-full px-4 pt-4 text-center
-`;
-const errMessage = `
-pb-2 text-xs font-medium
-`;
-const fieldWrapper = `
-  flex gap-2 flex-col w-full
-`;
-const fieldTitle = `
-  text-sm font-normal text-white text-start
-`;
-const inputFieldModal = `
-  w-full py-3 px-5 h-[48px] !bg-black-shade-3  text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus-within:outline-none focus-within:ring-2 focus-within:!ring-brand-primary active:!ring-yellow-theme
-`;
+const errMessage = `pb-2 text-xs font-medium`;
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+const fieldTitle = `text-sm font-normal text-white text-start`;
+const modalBodyWrapper = `flex flex-col gap-4 w-full px-4 pt-4 text-center`;
+const inputFieldModal = `w-full h-[48px] !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus-within:gradient-border-3`;

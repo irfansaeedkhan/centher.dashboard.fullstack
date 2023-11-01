@@ -1,11 +1,6 @@
-// React, Next, NPM Packages
 import { useState } from "react";
 import { NextPage } from "next";
-import ctl from "@netlify/classnames-template-literals";
-
-//App imports
 import Button from "@/components/button";
-
 import { AdminFeeDetailsTable } from "./admin.fee.details.table";
 import { StakingPackCard } from "./admin.coinpack.card";
 import { StakingPackList } from "./admin.coinpack.list";
@@ -16,8 +11,8 @@ export const StakingPacks: NextPage = () => {
   >("CoinPack");
 
   return (
-    <div className={StakingContentContainer}>
-      <div className={btnContainer}>
+    <div className="stakingpack min-h-screen w-full bg-black-shade-3 p-4 font-monto lg:pl-7 lg:pt-8">
+      <div className="mb-10 flex w-fit rounded-2xl bg-black-shade-6 p-1.5 [&>*]:w-max">
         <Button
           title={"Coin Pack"}
           variant={tab === "CoinPack" ? "primary" : "secondary"}
@@ -48,7 +43,7 @@ export const StakingPacks: NextPage = () => {
         />
       </div>
       {tab === "CoinPack" && (
-        <div className={stackCardContainer}>
+        <div className="flex flex-wrap gap-5">
           {StakingPackList.map((data) => (
             <StakingPackCard stakingPack={data} key={data.id} />
           ))}
@@ -58,15 +53,3 @@ export const StakingPacks: NextPage = () => {
     </div>
   );
 };
-
-const StakingContentContainer = ctl(`
-  stakingpack bg-black-shade-3 w-full min-h-screen p-4 lg:pt-8 lg:pl-7 font-monto
-`);
-
-const btnContainer = ctl(`
-  flex [&>*]:w-max w-fit bg-black-shade-6 p-1.5 rounded-2xl mb-10
-`);
-
-const stackCardContainer = ctl(`
-  flex flex-wrap gap-5
-`);

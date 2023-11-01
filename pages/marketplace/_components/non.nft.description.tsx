@@ -1,6 +1,4 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
@@ -9,26 +7,22 @@ import clsx from "clsx";
 import Button from "@/components/button";
 import { IModalProps } from "@/components/modal/standard.modal";
 import { CustomModal } from "@/components/modal/custom.modal";
-import {
-  BNBIcon,
-  WarningIcon,
-  LoaderIcon,
-  AuctionIcon,
-  GreenTick,
-  CircularClose,
-} from "@/assets/svgs";
+import { BNBIcon, AuctionIcon, GreenTick, CircularClose } from "@/assets/svgs";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import SuccessMessageModal from "@/utils/modal/success-modal";
+import TrxInProgressModal from "@/utils/modal/trx-modal";
+import MessageModal from "@/utils/modal/message-modal";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
 import { useGetApprovedForAll } from "@/web3/hooks/use.contracts.functions";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { BlockchainWrite } from "@/web3/blockchain";
-
+import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import ChangePriceListModal from "./change.price.list.modal";
 import CreateNFTAuctionModal from "./create.nft.auction.modal";
 import SendNFTModal from "./send.nft.modal";
-import { TokenBlackList } from "@/web3/blockchain/helpers/blacklist.helper";
 
 interface NonNFTDescriptionProps {
   data: INFTDetailData | undefined;
@@ -50,7 +44,7 @@ export const NonNFTDescription = ({
   data,
   setNftData,
 }: NonNFTDescriptionProps) => {
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -66,7 +60,7 @@ export const NonNFTDescription = ({
   const [sendNftModal, setSendNftModal] = useState(false);
   const [transferable, setTransferable] = useState(false);
   const bnbPrice = useBNBPrice();
-  const isApproved = useGetApprovedForAll(account, data?.collection);
+  const isApproved = useGetApprovedForAll(connectedAddress, data?.collection);
 
   useEffect(() => {
     if (data) {
@@ -115,41 +109,37 @@ export const NonNFTDescription = ({
   }, [data]);
 
   const handleListNFT = async (bidPrice: any) => {
-    try {
-      validateProvider();
+    if (bidPrice) {
       modal.dismissModal();
       saleWithListing(bidPrice);
-    } catch (err: any) {
-      toastError("Failed to list NFT");
+    } else {
+      toastError("Provide accurate listing price");
     }
   };
   const saleWithListing = (listingPrice: any) => {
-    try {
-      validateProvider();
+    if (listingPrice) {
       modal.dismissModal();
       modal.createModal(ModalType.saleWithListingModal, listingPrice);
-    } catch (err: any) {
-      toastError("Failed to sale with listing");
+    } else {
+      toastError("Provide accurate listing price");
     }
   };
   const listingFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.listingFuncModal);
-    } catch (err: any) {
-      toastError("Failed to list NFT");
-    }
+    validateProvider();
+    modal.dismissModal();
+    modal.createModal(ModalType.listingFuncModal);
   };
 
   const handleListing = async (listingPrice: any) => {
     ProceedFunc();
-    if (library && data) {
+    const signer = getSigner();
+    if (signer && data) {
+      let response = { success: false, message: "" };
       try {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              signer,
               data.collection
             );
 
@@ -157,9 +147,8 @@ export const NonNFTDescription = ({
             throw new Error();
           }
         }
-
         const result = await BlockchainWrite.callListItemForSale(
-          library,
+          signer,
           data.collection,
           data.nftId,
           listingPrice
@@ -167,24 +156,25 @@ export const NonNFTDescription = ({
 
         if (result?.length) {
           setNftData();
-          SuccessFunc(true, "Congratulations! You have successfully listed ");
+          response.success = true;
+          response.message = "Congratulations! You have successfully listed ";
         } else {
           throw new Error();
         }
       } catch (error) {
-        SuccessFunc(false, "something went wrong with listing");
+        response.success = false;
+        response.message = "Something went wrong with listing";
+      } finally {
+        SuccessFunc(response.success, response.message);
       }
-    } else {
-      SuccessFunc(false, "something went wrong with listing");
     }
   };
   const handleAuction = async (data: any) => {
     try {
-      // validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.saleWithAuction, data);
     } catch (err: any) {
-      toastError("failed to auction");
+      !data && toastError("failed to auction");
     }
   };
   const setupAuctionModal = () => {
@@ -198,16 +188,15 @@ export const NonNFTDescription = ({
   };
   const handleAuctionProc = async (auctionPrice: any, auctionDate: any) => {
     const endTime = Math.floor(auctionDate * 24 * 60 * 60);
-    validateProvider();
     ProceedFunc();
 
     let response = { success: false, message: "" };
     try {
-      if (library && data) {
+      if (getSigner() && data) {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              getSigner()!,
               data.collection
             );
 
@@ -217,17 +206,19 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.callCreateAuction(
-          library,
+          getSigner()!,
           data.collection,
           data.nftId,
           Number(auctionPrice),
           endTime
         );
-        if (result?.length) {
+        if (!!result) {
           setNftData();
           response.success = true;
           response.message = "Congratulations! You have successfully auctioned";
         }
+      } else {
+        toast.error("connect your wallet");
       }
     } catch (err) {
       response.success = false;
@@ -241,12 +232,13 @@ export const NonNFTDescription = ({
     LockEndTime: number;
   }) => {
     ProceedFunc();
-    if (library && data) {
+    let response = { success: false, message: "" };
+    if (getSigner() && data) {
       try {
         if (!isApproved) {
           const approveResult =
             await BlockchainWrite.callApproveNFTToMarketplace(
-              library,
+              getSigner()!,
               data.collection
             );
 
@@ -256,58 +248,41 @@ export const NonNFTDescription = ({
         }
 
         const result = await BlockchainWrite.transferNftWithLock(
-          library,
+          getSigner()!,
           data.collection,
           data.nftId,
           input.ReceiverAddress,
           input.LockEndTime
         );
 
-        if (result?.length) {
+        if (!!result) {
           setNftData();
-          SuccessSendFunc(true, "Congratulations! You have successfully sent ");
-          setSendNftModal(false);
+          response.success = true;
+          response.message = "Congratulations! You have successfully sent ";
         } else {
           setSendNftModal(false);
           throw new Error();
         }
       } catch (error) {
-        setSendNftModal(false);
-        SuccessSendFunc(false, "failed to send nft");
+        response.success = false;
+        response.message = "failed to send nft";
+      } finally {
+        SuccessFunc(response.success, response.message);
       }
-    } else {
-      setSendNftModal(false);
-      SuccessSendFunc(false, "failed to send nft");
     }
   };
 
   const ProceedFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      setSendNftModal(false);
-      modal.createModal(ModalType.proceedFuncModal);
-    } catch (err: any) {
-      toastError("Something went wrong");
-    }
+    modal.dismissModal();
+    modal.createModal(ModalType.proceedFuncModal);
   };
 
   const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError("Something went wrong");
-    }
-  };
-  const SuccessSendFunc = (txStatus: boolean, msg: string) => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.successSendFuncModal, { txStatus, msg });
-    } catch (err: any) {
-      toastError("Something went wrong");
+      !txStatus && toastError("Something went wrong");
     }
   };
 
@@ -321,92 +296,47 @@ export const NonNFTDescription = ({
       title: "Auction",
       visibility: true,
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
-            Are you sure you want to setup auction?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            It will be available for auction on market and You will be asked to
-            confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <Button
-              title={"Proceed"}
-              onClick={() =>
-                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
-              }
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to setup auction?"
+          subHeading={`It will be available for auction on market and You will be asked to
+        confirm the transaction through your wallet.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() =>
+            handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+          }
+        />
       ),
     },
     cancelAuction: {
       title: "Cancel listing",
       visibility: true,
       content: ({ StartingNFTPrice, AuctionEndTime }: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
-            Are you sure you want to cancel your Listing?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Canceling your listing will unpublish this sale from market and You
-            will be asked to confirm the transaction through your wallet.
-          </p>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <Button
-              title={"Proceed"}
-              onClick={() =>
-                handleAuctionProc(StartingNFTPrice, AuctionEndTime)
-              }
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to cancel your Listing?"
+          subHeading={`Canceling your listing will unpublish this sale from market and You
+        will be asked to confirm the transaction through your wallet.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() =>
+            handleAuctionProc(StartingNFTPrice, AuctionEndTime)
+          }
+        />
       ),
     },
     proceedFuncModal: {
       title: "Transaction in progress",
       visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
-            Transaction in progress
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
+      content: () => <TrxInProgressModal />,
     },
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <div className="flex flex-col items-center justify-center">
-            {txStatus ? <GreenTick /> : <CircularClose />}
+        <SuccessMessageModal
+          heading={
             <h2 className="text-base font-semibold text-white f2xl:text-lg">
               {txStatus ? (
                 <span>
@@ -414,36 +344,30 @@ export const NonNFTDescription = ({
                     ? "Listing updated successfully"
                     : msg.includes("canceled")
                     ? "Listing successfully canceled"
+                    : msg.includes("sent")
+                    ? "NFT sent successfully"
                     : "Listing NFT successfully"}
                 </span>
               ) : (
                 "Failed!"
               )}
             </h2>
-          </div>
-          {txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
+          }
+          subHeading={
+            <p className="text-14px font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher </b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          <div className={footerBtnContainer}>
-            <Button
-              title={"View item"}
-              variant="primary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full"
-            />
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
     listingFuncModal: {
@@ -462,33 +386,16 @@ export const NonNFTDescription = ({
       title: "List for sale",
       visibility: true,
       content: (listingPrice: any) => (
-        <div className={modalBodyWrapper}>
-          <WarningIcon className="mx-auto" />
-          <h3 className="mt-2 text-base font-semibold leading-6 text-white fmd:text-lg">
-            Are you sure you want to List your NFT to sell?
-          </h3>
-          <p className="text-xs font-normal leading-6 text-gray-shade-2 fmd:text-sm ">
-            {`Listing Price will be  ${normalizeValue(
-              Number(listingPrice)
-            )} BNB.`}
-          </p>
-          <div className={footerBtnContainer}>
-            <Button
-              title={"Go back"}
-              variant="secondary"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-              className="w-full rounded-[14px]"
-            />
-            <Button
-              title={"Proceed"}
-              onClick={() => handleListing(listingPrice)}
-              variant="primary"
-              className="w-full"
-            />
-          </div>
-        </div>
+        <MessageModal
+          heading="Are you sure you want to List your NFT to sell?"
+          subHeading={`Listing Price will be  ${normalizeValue(
+            Number(listingPrice)
+          )} BNB.`}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => handleListing(listingPrice)}
+        />
       ),
     },
     successSendFuncModal: {
@@ -531,7 +438,7 @@ export const NonNFTDescription = ({
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
@@ -540,11 +447,22 @@ export const NonNFTDescription = ({
     toast.error(err?.message ? err.message : err);
   }
 
+  useEffect(() => {
+    if (ModalModel.visibility) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [ModalModel.visibility]);
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>
         <h4 className={greyTxt}>Current Price</h4>
-        <div className="flex items-center  gap-3">
+        <div className="flex items-center gap-3">
           <BNBIcon />
           <h5 className={BnBNum}>
             {`${normalizeValue(formatEther2Number(data?.listInfo.price))} BNB`}
@@ -583,9 +501,6 @@ export const NonNFTDescription = ({
         </div>
       ) : (
         <div className={greyBoxContainer}>
-          <h4 className={desTitle}>Description</h4>
-          <p className={`${greyTxt} leading-6`}>{data?.description}</p>
-
           <div className="auctionTimerBox relative flex flex-row gap-3 overflow-hidden rounded-10px border-2 border-gray-shade-3 [@media(max-width:600px)]:!flex-col">
             <div className="iconBox flex min-w-[170px] flex-col items-center gap-3 bg-background-shade-2 p-6 text-center">
               <AuctionIcon />

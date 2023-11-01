@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import clsx from "clsx";
-
 import { NFTDetails } from "./nft.details";
 import { NFTProperties } from "./nft.properties";
 import { IProperty } from "./create.nft.form";
@@ -28,13 +27,22 @@ export const NFTLeftSideComponent = (props: NFTLeftSideComponentProps) => {
       <div
         className={clsx(
           `relative w-full rounded-2xl border border-gray-shade-3 bg-black-shade-9`,
-          props.image?.includes("mp3") ? `` : `pb-[100%]`
+          props.type?.includes("audio") ? `` : `pb-[100%]`
         )}
       >
-        {props.image && imageUrl && (
+        {props.image && imageUrl && props.type && (
           <div>
-            {props.image.includes("mp3") ? (
+            {props.type.includes("audio") ? (
               <AudioPlayer src={props.image} />
+            ) : props.type.includes("video") ? (
+              <video
+                className={`absolute h-full w-full rounded-2xl object-contain`}
+                src={imageUrl}
+                height={270}
+                width={270}
+                onError={() => setImageUrl("/images/placeholder-square.svg")}
+                controls
+              />
             ) : (
               <Image
                 className={`absolute h-full w-full rounded-2xl object-cover`}

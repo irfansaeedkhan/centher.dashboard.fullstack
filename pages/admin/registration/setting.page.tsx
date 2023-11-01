@@ -1,19 +1,16 @@
+import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import { NextPageWithLayout } from "@/pages/_app.page";
-import React, { useEffect, useState } from "react";
-
 import { AllPagesWrapper } from "@/components/all.pages.wrapper";
 import RewardsTableSkeleton from "@/components/loading.skeletons/admin.network.rewards";
-
-import RegistrationTabs from "./_components/registration.tabs";
 import { useGetRegistrationDetail } from "@/web3/hooks/use.get.registration.details";
-
-import { useWeb3React } from "@web3-react/core";
-import { toast } from "react-hot-toast";
 import { BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
+import RegistrationTabs from "./_components/registration.tabs";
 
 const RegistrationSetting: NextPageWithLayout = () => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [
     updateRegistrationFeeWithReferral,
     setUpdateRegistrationFeeWithReferral,
@@ -34,7 +31,7 @@ const RegistrationSetting: NextPageWithLayout = () => {
     setChangeFeeTx(true);
     try {
       await BlockchainWrite.adminChangeRegistrationFees(
-        library,
+        getSigner()!,
         updateRegistrationFeeWithReferral,
         updateRegistrationFeeWithoutReferral
       );
@@ -51,9 +48,9 @@ const RegistrationSetting: NextPageWithLayout = () => {
     setChangeStatusTx(true);
     try {
       if (registrationDetail.isActive) {
-        await BlockchainWrite.adminPauseRegistration(library);
+        await BlockchainWrite.adminPauseRegistration(getSigner()!);
       } else {
-        await BlockchainWrite.adminUnPauseRegistration(library);
+        await BlockchainWrite.adminUnPauseRegistration(getSigner()!);
       }
 
       toast.success("Changed Registration Statue Successfully");

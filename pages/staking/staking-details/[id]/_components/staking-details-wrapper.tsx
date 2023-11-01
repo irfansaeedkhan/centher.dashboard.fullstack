@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import axios from "axios";
 import { formatUnits, parseEther } from "ethers/lib/utils";
-import { useWeb3React } from "@web3-react/core";
 import Button from "@/components/button";
 import { useStaking } from "@/hooks/staking";
 import { CoinDetails } from "@/staking/types/coin.info.interface";
@@ -15,6 +14,7 @@ import { formatIPFSUrl } from "@/utils/format.address";
 import { ListCardDataOBj } from "@/pages/staking/_components/list-card-data";
 import { PreLoader } from "@/components/pre.loader";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { CustomModal } from "@/components/modal/custom.modal";
@@ -37,7 +37,7 @@ enum ModalType {
 }
 
 const StakingDetailsWrapper = ({ children }: Props) => {
-  const { library, account } = useWeb3React();
+  const { getSigner, connectedAddress } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -172,7 +172,7 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
   const stakeSubmit = async (referrer: string) => {
     try {
-      if (!library || !account?.length) {
+      if (!getSigner() || !connectedAddress?.length) {
         throw new Error("Connect wallet");
       }
 
@@ -224,9 +224,9 @@ const StakingDetailsWrapper = ({ children }: Props) => {
 
         setStakeLoader(true);
         await sdk.stake(
-          library,
+          getSigner()!,
           +poolId,
-          account,
+          connectedAddress,
           amount,
           stakingPool?.token_address as string
         );

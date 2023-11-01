@@ -10,11 +10,9 @@ import { useAdminRegistration } from "@/store/admin.registration";
 import RegistrationOverviewCards from "./_components/registration.overview.card";
 import RegistrationRewards from "./_components/registration.rewards";
 import RegistrationHistory from "./_components/registration.history";
-import { useWeb3React } from "@web3-react/core";
 import RegistrationTabs from "./_components/registration.tabs";
 
 const AdminRegistration: NextPageWithLayout = () => {
-  const { library } = useWeb3React();
   const {
     totalMembersWithoutReferrer,
     totalMembersWithReferrer,

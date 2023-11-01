@@ -1,21 +1,21 @@
-// React, Next, NPM Packages
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useWeb3React } from "@web3-react/core";
 import toast from "react-hot-toast";
 import clsx from "clsx";
-
-// App imports
 import { IModalProps } from "@/components/modal/standard.modal";
-import { AuctionIcon, BNBIcon, LoaderIcon } from "@/assets/svgs";
+import { AuctionIcon, BNBIcon } from "@/assets/svgs";
 import { CustomModal } from "@/components/modal/custom.modal";
 import { INFTDetailData } from "@/hooks/use.get.nft.data.ts";
 import { formatBNB2USD, formatEther2Number } from "@/utils/format.address";
+import SuccessMessageModal from "@/utils/modal/success-modal";
 import { useBNBPrice } from "@/hooks/use.get.bnb.price";
 import { BlockchainRead, BlockchainWrite } from "@/web3/blockchain";
 import { normalizeValue } from "@/web3/blockchain/helpers/math.helper";
 import { ModalManager, IModalHandler, TemplateCollection } from "@/utils/modal";
+
 import Button from "@/components/button";
+import { useWallet } from "@/web3/hooks/use.wallet";
+import TrxInProgressModal from "@/utils/modal/trx-modal";
 
 interface NonNFTBuyerDescriptionProps {
   data: INFTDetailData | undefined;
@@ -31,7 +31,7 @@ export const NonNFTBuyerDescription = ({
   data,
   setNftData,
 }: NonNFTBuyerDescriptionProps) => {
-  const { library } = useWeb3React();
+  const { getSigner } = useWallet();
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
     title: "",
@@ -47,13 +47,11 @@ export const NonNFTBuyerDescription = ({
   const [end, setEnd] = useState(true);
   const bnbPrice = useBNBPrice();
 
-  useEffect(() => {}, [data, library]);
-
   useEffect(() => {
     const CheckStatus = async () => {
       if (data?.saleState === "List") {
         const Status = await BlockchainRead.isCurrentMarketplaceOwner(
-          library,
+          getSigner()!,
           data.collection,
           data.nftId
         );
@@ -104,7 +102,7 @@ export const NonNFTBuyerDescription = ({
     return () => {
       clearInterval(updateTime);
     };
-  }, [library, data]);
+  }, [getSigner, data]);
 
   const buyNFTStep1Func = () => {
     try {
@@ -117,39 +115,39 @@ export const NonNFTBuyerDescription = ({
   };
   const handleBuyNFT = async () => {
     ProceedFunc();
+    let response = { success: false, message: "" };
     try {
-      if (!library || !data) throw new Error("invalid dependencies");
+      const signer = getSigner();
+      if (!signer || !data) throw new Error("invalid dependencies");
       const result = await BlockchainWrite.callBuyListedItem(
-        library,
+        signer!,
         data.collection,
         data.nftId,
         data.listInfo.price
       );
 
-      if (result?.length) {
+      if (!!result) {
         setNftData();
-        SuccessFunc(true, "Congratulations! You have successfully bought the ");
+        response.success = true;
+        response.message = "Congratulations! You have successfully bought the ";
       } else throw new Error();
     } catch (error) {
-      SuccessFunc(false, "Unable to buy NFT");
+      response.success = false;
+      response.message = "Unable to buy NFT";
+    } finally {
+      SuccessFunc(response.success, response.message);
     }
   };
   const ProceedFunc = () => {
-    try {
-      validateProvider();
-      modal.dismissModal();
-      modal.createModal(ModalType.proceedFuncModal);
-    } catch (err: any) {
-      toastError("Something went wrong");
-    }
+    modal.dismissModal();
+    modal.createModal(ModalType.proceedFuncModal);
   };
   const SuccessFunc = (txStatus: boolean, msg: string) => {
     try {
-      validateProvider();
       modal.dismissModal();
       modal.createModal(ModalType.successFuncModal, { txStatus, msg });
     } catch (err: any) {
-      toastError("Something went wrong");
+      !txStatus && toastError("Something went wrong");
     }
   };
 
@@ -189,78 +187,57 @@ export const NonNFTBuyerDescription = ({
     proceedFuncModal: {
       title: "Transaction in progress",
       visibility: true,
-      content: () => (
-        <div className={modalBodyWrapper}>
-          <LoaderIcon className="mx-auto animate-spin" />
-          <h3 className="text-base font-semibold leading-6 text-white f2xl:text-lg">
-            Transaction in progress
-          </h3>
-          <p className="text-sm font-normal leading-6 text-gray-shade-2">
-            Your transaction is in progress, Please wait.
-          </p>
-        </div>
-      ),
+      content: () => <TrxInProgressModal />,
     },
     successFuncModal: {
       title: "Complete Checkout",
       visibility: true,
       content: ({ txStatus, msg }: IModalProps) => (
-        <div className={modalBodyWrapper}>
-          <Image
-            className={ImgStyling}
-            src={data ? data.image : ""}
-            alt="image"
-            height={64}
-            width={64}
-          />
-          <h2 className="text-base font-semibold text-white f2xl:text-lg">
-            {txStatus ? "Success!" : "Failed!"}
-          </h2>
-          {txStatus && (
+        <SuccessMessageModal
+          heading={
+            <h2 className="mt-2 text-base font-semibold text-white f2xl:text-lg">
+              {txStatus ? "Success!" : "Failed!"}
+            </h2>
+          }
+          subHeading={
             <p className="text-sm font-normal leading-6 text-gray-shade-2">
               {msg} <span className="word-break text-white">{data?.name}</span>{" "}
               NFT on <b>Centher</b>
               platform.
             </p>
-          )}
-          {!txStatus && (
-            <p className="text-sm font-normal leading-6 text-gray-shade-2">
-              {msg ?? "Transaction Failed."}
-            </p>
-          )}
-          {/* <Link href={{
-              pathname: AppRoutes.marketplace.nft,
-              query: {
-                collection: nftData?.collection,
-                nftId: 2,
-              }}} 
-          className={footerBtnContainer}
-        > */}
-          <div className={footerBtnContainer}>
-            <Button
-              title={"View item"}
-              variant="primary"
-              className="w-full rounded-[14px]"
-              onClick={() => {
-                modal.dismissModal();
-              }}
-            />
-            {/* </Link> */}
-          </div>
-        </div>
+          }
+          txStatus={txStatus}
+          dismissModal={() => {
+            modal.dismissModal();
+          }}
+          proceedFunc={() => {
+            modal.dismissModal();
+          }}
+        />
       ),
     },
   };
   const modal = new ModalManager(setModalModel, modalTemplateCollection);
 
   function validateProvider(): void {
-    if (!library) {
+    if (!getSigner()) {
       throw new Error("Connect your wallet");
     }
   }
   function toastError(err: any): void {
     toast.error(err?.message ? err.message : err);
   }
+  useEffect(() => {
+    if (ModalModel.visibility) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => {
+      document.body.classList.remove("modal-open");
+    };
+  }, [ModalModel.visibility]);
+
   return (
     <div className={nftDescriptionContainer}>
       <div className={greyBoxContainer}>

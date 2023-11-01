@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useWeb3React } from "@web3-react/core";
 import { formatUnits } from "ethers/lib/utils";
 import { CgSpinner } from "react-icons/cg";
 import toast from "react-hot-toast";
@@ -24,6 +23,7 @@ import { fetchTokenMetadata } from "@/hooks/use.token.metadata";
 import { eqAddress } from "@/live/utils/address.utils";
 import { PreLoader } from "@/components/pre.loader";
 import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { MetamaskIcon2 } from "@/assets/svgs";
 import RewardsTable from "./_components/rewards-table";
@@ -40,7 +40,7 @@ enum ModalType {
 }
 
 const ClaimRewards: NextPageWithLayout = () => {
-  const { library, deactivate } = useWeb3React();
+  const { getSigner, disconnectWallet } = useWallet();
   const [stakingPool, setStakingPool] = useState<ListCardDataOBj | null>(null);
   const [coinsDetails, setCoinsDetails] = useState<
     Array<CoinDetails | undefined>
@@ -69,18 +69,18 @@ const ClaimRewards: NextPageWithLayout = () => {
   const [restakeInProgress, setRestakeInProgress] = useState(false);
 
   useEffect(() => {
-    if (!library) {
+    if (!getSigner()) {
       setConnectWalletModal(true);
     } else {
       setConnectWalletModal(false);
     }
-  }, [library]);
+  }, [getSigner]);
 
   const claimreward = async () => {
     try {
       if (sdk && poolId) {
         setClaimInProcess(true);
-        await sdk.claimReward(library, +poolId);
+        await sdk.claimReward(getSigner()!, +poolId);
         setClaimInProcess(false);
         modal.createModal(ModalType.successFuncModal, {
           message:
@@ -111,7 +111,7 @@ const ClaimRewards: NextPageWithLayout = () => {
       if (sdk && poolId) {
         modal.dismissModal();
         setCancelInProcess(true);
-        await sdk.unstake(library, +poolId, cancelAmount);
+        await sdk.unstake(getSigner()!, +poolId, cancelAmount);
         modal.createModal(ModalType.successFuncModal, {
           title: "Cancel Staking",
           message:
@@ -132,7 +132,7 @@ const ClaimRewards: NextPageWithLayout = () => {
     try {
       if (sdk && poolId) {
         setRestakeInProgress(true);
-        await sdk.restake(library, +poolId);
+        await sdk.restake(getSigner()!, +poolId);
         setRestakeInProgress(false);
         modal.createModal(ModalType.successFuncModal, {
           message:
@@ -217,12 +217,12 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [poolId, router]);
 
   useEffect(() => {
-    if (poolId && library && user && claimableReward == "0") {
-      sdk?.getUserStakes(library, +poolId, user._id).then((data) => {
+    if (poolId && getSigner() && user && claimableReward == "0") {
+      sdk?.getUserStakes(getSigner()!, +poolId, user._id).then((data) => {
         setClaimableReward(data.totalClaimableReward);
       });
     }
-  }, [poolId, library]);
+  }, [poolId, getSigner]);
 
   useEffect(() => {
     if (sdk && user && poolId && !rewards.length) {
@@ -237,12 +237,12 @@ const ClaimRewards: NextPageWithLayout = () => {
   }, [sdk, user, poolId, page, pageSize]);
 
   useEffect(() => {
-    if (sdk && poolId && user && library) {
-      sdk.getUserStakes(library, +poolId, user._id).then((data) => {
+    if (sdk && poolId && user && getSigner()) {
+      sdk.getUserStakes(getSigner()!, +poolId, user._id).then((data) => {
         setUserStaked(data);
       });
     }
-  }, [poolId, sdk, user, library]);
+  }, [poolId, sdk, user, getSigner]);
 
   const modal = new ModalManager(setModalModel, rewardsModal);
   return (
@@ -393,7 +393,7 @@ const ClaimRewards: NextPageWithLayout = () => {
                   const _account = await connectWallet();
                   if (user._id.toLowerCase() !== _account?.toLowerCase()) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

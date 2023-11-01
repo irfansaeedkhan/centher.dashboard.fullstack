@@ -1,15 +1,11 @@
-// React, Next, NPM Packages
-import ctl from "@netlify/classnames-template-literals";
-
-// App imports
-import { NextPageWithLayout } from "@/pages/_app.page";
-import { AllPagesWrapper } from "@/components/all.pages.wrapper";
-import { NFTLeftSideComponent, NFTRightSideComponent } from "../../_components";
-import { ArrowLeftSimpleIcon } from "@/assets/svgs";
-import { useRouter } from "next/router";
-import { fetchNft, INFTDetailData } from "@/hooks/use.get.nft.data.ts";
-import Head from "next/head";
 import { useEffect, useState } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { NextPageWithLayout } from "@/pages/_app.page";
+import { ArrowLeftSimpleIcon } from "@/assets/svgs";
+import { AllPagesWrapper } from "@/components/all.pages.wrapper";
+import { fetchNft, INFTDetailData } from "@/hooks/use.get.nft.data.ts";
+import { NFTLeftSideComponent, NFTRightSideComponent } from "../../_components";
 
 const NFT: NextPageWithLayout = () => {
   const router = useRouter();
@@ -74,13 +70,6 @@ NFT.getLayout = (page) => {
 export default NFT;
 
 // styling
-const dashboardContentContainer = ctl(`
- bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative 
-`);
-const backBtn = ctl(`
-bg-black-shade-10 rounded-full flex items-center justify-center w-12 h-12
-mb-8
-`);
-const feedContainer = ctl(`
-flex flex-col lg:flex-row  gap-5 lg:items-start 
-`);
+const feedContainer = `flex flex-col lg:flex-row gap-5 lg:items-start`;
+const backBtn = `bg-black-shade-10 rounded-full flex items-center justify-center w-12 h-12 mb-8`;
+const dashboardContentContainer = `bg-black-shade-3 w-full h-full font-monto [@media(max-width:1279px)]:max-w-[544px] max-w-[1160px] mx-auto relative`;

@@ -215,7 +215,13 @@ export const NFTCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
         >
           <Image
-            src={imageUrl}
+            src={
+              data.type.includes("audio")
+                ? "/images/default-music.png"
+                : data.type.includes("video")
+                ? data.videoThumbnail ?? "/images/default-music.png"
+                : imageUrl
+            }
             alt={data.name}
             height={222}
             width={293}
@@ -516,4 +522,5 @@ export interface NFTCardData {
   type: "image" | "video" | "audio";
   unlock: NFT["unlock"];
   endTime: NFT["endTime"];
+  videoThumbnail?: string;
 }

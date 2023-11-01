@@ -24,7 +24,12 @@ export class ModalManager {
       throw new Error(`Template for type ${type} not found.`);
     }
 
-    template.content = template.content(params);
+    if (typeof template.content == "function") {
+      template.content = template.content(params);
+    } else {
+      template.content = template.content;
+    }
+
     this.modalHandler(template);
   }
 

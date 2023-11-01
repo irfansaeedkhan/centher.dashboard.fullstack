@@ -52,6 +52,6 @@ const fieldWrapper = `flex gap-2 flex-col`;
 
 const fieldTitle = `text-sm text-white`;
 
-const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-brand-primary text-sm font-medium leading-6`;
+const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-0 text-sm font-medium leading-6`;
 
 const inputFieldError = clsx(inputField, `focus:!ring-red-500`);

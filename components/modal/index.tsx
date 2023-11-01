@@ -24,7 +24,7 @@ export const ModalWrapper: React.FC<ModalWrapperProps> = (props) => {
           className={`relative mb-3 flex h-[28px] items-center justify-between rounded-t`}
         >
           <span
-            className={`text-[16px] font-semibold text-white fmd:text-[18px]`}
+            className={`word-break text-[16px] font-semibold text-white fmd:text-[18px]`}
           >
             {props.title}
           </span>

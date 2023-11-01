@@ -3,18 +3,18 @@ import { ethers } from "ethers";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import { joiResolver } from "@hookform/resolvers/joi";
-import { useWeb3React } from "@web3-react/core";
 import { toast } from "react-hot-toast";
 import { FiArrowRight } from "react-icons/fi";
 import clsx from "clsx";
+import { JsonRpcSigner } from "@ethersproject/providers";
 import Button from "@/components/button";
 import { CustomNewModal } from "@/components/modal/custom.new.modal";
 import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import useUser from "@/hooks/use.user";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
 import { categories } from "@/models/nft";
 import { GreyWorldIcon, GreyFBIcon, XLogo, MetamaskIcon2 } from "@/assets/svgs";
 import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import { useWallet } from "@/web3/hooks/use.wallet";
 import CustomDropdown from "./custom.dropdown";
 import CollectionPreview from "./collection-preview";
 
@@ -80,8 +80,9 @@ interface CreateNFTCollectionFormProps {
   clearForm: boolean;
   cover: Blob | undefined;
   profile: Blob | undefined;
-  library: any;
+  signer: JsonRpcSigner;
 }
+
 export interface ICollectionData {
   name: string;
   symbol: string;
@@ -93,18 +94,18 @@ export interface ICollectionData {
   facebook: string;
   twitter: string;
 }
+
 export const CreateNFTCollectionForm = ({
   createCollection,
   clearForm,
   cover,
   profile,
-  library,
+  signer,
 }: CreateNFTCollectionFormProps) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
   const { user: loggedInUser } = useUser();
-  const { connectWallet } = useConnectWallet();
-  const { deactivate } = useWeb3React();
+  const { disconnectWallet, getSigner, connectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [ModalModel, setModalModel] = useState<IModalHandler>({
     visibility: false,
@@ -366,7 +367,7 @@ export const CreateNFTCollectionForm = ({
             </div>
           </div>
         </div>
-        {!library ? (
+        {!getSigner() ? (
           <Button
             title={"Connect Wallet"}
             variant="primary"
@@ -392,7 +393,7 @@ export const CreateNFTCollectionForm = ({
               onClick={() => {
                 modal.createModal(ModalType.previewCollection);
               }}
-              className="mt-2 w-full hover:scale-95"
+              className="mt-2 w-full"
             />
             <Button
               title={"Create Collection"}
@@ -411,7 +412,7 @@ export const CreateNFTCollectionForm = ({
                 categoryError
               }
               onClick={handleSubmit(onSubmit)}
-              className="mt-2 w-full hover:scale-95"
+              className="mt-2 w-full"
             />
           </div>
         )}
@@ -449,7 +450,7 @@ export const CreateNFTCollectionForm = ({
                     loggedInUser._id.toLowerCase() !== _account?.toLowerCase()
                   ) {
                     toast.error("Please connect to correct account");
-                    deactivate();
+                    disconnectWallet();
                   }
                   setConnectWalletModal(false);
                 }}

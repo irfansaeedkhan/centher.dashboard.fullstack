@@ -1,12 +1,6 @@
-// React, Next, NPM Packages
 import React, { useState } from "react";
-import ctl from "@netlify/classnames-template-literals";
-
-// App imports
 import { ModalWrapper } from "@/components/modal";
 import Button from "@/components/button";
-
-// Current directory imports
 import { StakingPack } from "./staking.pack.data";
 
 interface StakingPackCardProps {
@@ -21,9 +15,11 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
   };
 
   return (
-    <div className={StackCard}>
-      <div className={StackCardTop}>
-        <h3 className={CardTitle}>Staking Pack</h3>
+    <div className="stakingCard w-full max-w-[482px] overflow-hidden rounded-2xl bg-background-shade-3">
+      <div className="flex items-center justify-between bg-background-shade-2 p-5">
+        <h3 className="text-base font-bold text-white f2xl:text-lg">
+          Staking Pack
+        </h3>
         <Button
           title={"Authorize NTR"}
           variant={"primary"}
@@ -31,8 +27,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
           onClick={AuthorizeFunction}
         />
       </div>
-      <div className={StackCardContent}>
-        {/* <div className=""> */}
+      <div className="flex flex-col gap-5 pb-6 pt-8 sm:px-4 md:px-5">
         <div className="flex flex-col gap-3">
           <div className="flex w-full sm:justify-between sm:gap-9 md:justify-start md:gap-10">
             <span className="w-1/3 text-xs leading-[24px] text-gray-shade-7">
@@ -62,7 +57,7 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
             </span>
           </div>
         </div>
-        <div className={StackCardContentWrap}>
+        <div className="flex w-full gap-10 sm:justify-between md:justify-start">
           <div className="flex w-full gap-10">
             <div className="flex w-1/3 flex-col">
               <span className="pb-3 text-xs leading-[24px] text-gray-shade-7">
@@ -87,51 +82,10 @@ export const StakingPackCard: React.FC<StakingPackCardProps> = ({
         onClose={() => setAvatarModal(false)}
         title={"Avatars"}
       >
-        <div className={modalBodyWrapper}>sdfsdf</div>
+        <div className="flex w-full flex-wrap items-center justify-center gap-4">
+          sdfsdf
+        </div>
       </ModalWrapper>
     </div>
   );
 };
-
-// styling
-const modalBodyWrapper = ctl(`
-  flex 
-  gap-4 
-  w-full 
-  flex-wrap
-  items-center 
-  justify-center 
-`);
-const StackCard = ctl(`
-  stakingCard overflow-hidden bg-background-shade-3 rounded-2xl   max-w-[482px]  w-full
-`);
-const StackCardTop = ctl(`
-  flex justify-between items-center bg-background-shade-2 p-5
-`);
-const CardTitle = ctl(`
-  text-base f2xl:text-lg font-bold text-white
-`);
-const StackCardContent = ctl(`
-  pt-8 md:px-5 sm:px-4 flex flex-col gap-5 pb-6
-`);
-const StackCardContentWrap = ctl(`
-  flex md:justify-start sm:justify-between gap-10 w-full
-`);
-const StackCardContentItem = ctl(`
-   w-1/3
-`);
-const ContentItemTitle = ctl(`
-  text-xs leading-[24px] text-gray-shade-7 pb-3 
-`);
-const ContentItemData = ctl(`
-  text-base textGradient  font-semibold
-`);
-const ContentItemData2 = ctl(`
-  text-base text-white font-semibold
-`);
-const rateContainer = ctl(`
-  flex flex-col items-baseline lg:flex-row lg:items-center space-x-1 
-`);
-const ContentItemRate = ctl(`
-  text-sm font-semibold text-gray-shade-7
-`);

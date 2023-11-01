@@ -48,7 +48,7 @@ const ChangePriceListModal: React.FC<Props> = ({
   };
 
   return (
-    <div className={`mt-4 flex w-full flex-col gap-4 px-2 pt-4 text-center`}>
+    <div className={`flex h-full w-full flex-col gap-4 px-2 pt-4 text-center`}>
       <div className="flex items-center justify-center gap-4">
         <Button
           title="Fixed Price"
@@ -66,13 +66,21 @@ const ChangePriceListModal: React.FC<Props> = ({
       {data && (
         <div className="mt-2 flex flex-col items-center justify-center">
           <Image
-            src={data.image}
+            src={
+              data.type.includes("audio")
+                ? "/images/default-music.png"
+                : data.type.includes("video")
+                ? data.videoThumbnail || "/images/default-music.png"
+                : data.image
+            }
             width={266}
             height={190}
             alt="img"
             className="w-full max-w-[266px] rounded-xl object-cover"
           />
-          <h3 className="mt-6 text-lg font-semibold text-white">{data.name}</h3>
+          <h3 className="word-break word-break mt-6 text-lg font-semibold text-white">
+            {data.name}
+          </h3>
         </div>
       )}
       {activeButton === "auction" && (
@@ -101,9 +109,9 @@ const ChangePriceListModal: React.FC<Props> = ({
           Price
         </label>
         <div
-          className={`flex h-[48px] w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 !p-0 !px-3 py-3 text-sm font-semibold text-gray-shade-17 focus-within:ring-1 focus-within:ring-brand-primary focus:outline-none active:!ring-brand-primary`}
+          className={`focus-within:gradient-border-3 flex h-[48px] w-full items-center justify-between gap-2 !rounded-lg bg-black-shade-3 !p-[1px] text-sm font-semibold text-gray-shade-17`}
         >
-          <BNBIcon className="h-4 w-4" />
+          <BNBIcon className="ml-3 h-4 w-4" />
           <CustomNumberInput
             id="bidPrice"
             autoComplete="off"

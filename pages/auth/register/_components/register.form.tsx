@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { toast } from "react-hot-toast";
 import Link from "next/link";
-import ctl from "@netlify/classnames-template-literals";
-import { useWeb3React } from "@web3-react/core";
-import { useConnectWallet } from "@/web3/hooks/use.connect.wallet";
-import { ModalWrapper } from "@/components/modal";
-import { sliceAccountAddress } from "@/utils/user.helpers";
-import { AppRoutes } from "@/constants/app.routes";
+import { toast } from "react-hot-toast";
 import Button from "@/components/button";
+import { ModalWrapper } from "@/components/modal";
+import { AppRoutes } from "@/constants/app.routes";
+import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
+import { sliceAccountAddress } from "@/utils/user.helpers";
+import { customLog } from "@/utils/custom.log";
 import {
   SpinIcon2,
   Successfully,
@@ -42,32 +41,37 @@ export const RegisterForm: React.FC = () => {
   const [isChecked, setIsChecked] = useState(false);
 
   const router = useRouter();
-  const { account, library } = useWeb3React();
-  const { connectWallet } = useConnectWallet();
+  const {
+    connectWallet,
+    connectedAddress,
+    getSigner,
+    openWallet,
+    getWalletType,
+  } = useWallet();
+  const wallet_type = getWalletType();
 
   // Set account address and referred by address
   useEffect(() => {
     setSignupState((prev) => ({
       ...prev,
-      account_address: account ?? prev.account_address ?? "",
+      account_address: connectedAddress ?? prev.account_address ?? "",
       referred_by:
         router.query.referred_by?.toString() ?? prev.referred_by ?? "",
     }));
-  }, [account, router.query.referred_by]);
+  }, [connectedAddress, router.query.referred_by]);
 
   // Pay registration fee and register user
   const payFee: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-
     if (feeModal.fee === "--") {
       toast.error("Please wait for the fee to load");
-      return;
+      return false;
     }
-
     setFeeModal((prev) => ({ ...prev, status: "progress" }));
     try {
-      const res = await registerWithSmartContract(
-        library,
+      let res;
+      res = await registerWithSmartContract(
+        getSigner()!,
         signupState,
         feeModal.fee
       );
@@ -78,7 +82,7 @@ export const RegisterForm: React.FC = () => {
       // Redirect to login page
       router.push(AppRoutes.auth.login);
     } catch (err: any) {
-      process.env.NEXT_PUBLIC_APP_ENV === "development" && console.log(err);
+      customLog(["development", "staging"], err);
       setFeeModal((prev) => ({ ...prev, status: "start" }));
       toast.error(err.message_description || "Something went wrong");
     }
@@ -86,7 +90,7 @@ export const RegisterForm: React.FC = () => {
 
   // Open fee modal and get registration fee from smart contract
   const openFeeModal = async () => {
-    if (!account) {
+    if (!connectedAddress) {
       toast.error("Please connect wallet first!");
       return;
     }
@@ -94,7 +98,10 @@ export const RegisterForm: React.FC = () => {
     setFeeModal((prev) => ({ ...prev, isOpen: true }));
 
     try {
-      const registrationFee = await getRegistrationFee(library, signupState);
+      const registrationFee = await getRegistrationFee(
+        getSigner()!,
+        signupState
+      );
       setFeeModal((prev) => ({ ...prev, fee: registrationFee }));
     } catch (err: any) {
       toast.error(err.message_description ?? "Could not get registration fee!");
@@ -104,26 +111,24 @@ export const RegisterForm: React.FC = () => {
 
   return (
     <>
-      <form className={wrapper} onSubmit={payFee}>
-        {account ? (
-          <>
-            <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
-              <span className="!h-12 !w-12">
-                <MetamaskIcon />
-              </span>
-              <div className="flex flex-grow flex-col">
-                <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
-                  Metamask wallet connected
+      <form className="flex h-auto w-full flex-col gap-6" onSubmit={payFee}>
+        {connectedAddress ? (
+          <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
+            <span onClick={() => openWallet()} className="!h-12 !w-12">
+              <MetamaskIcon />
+            </span>
+            <div className="flex flex-grow flex-col">
+              <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
+                Metamask wallet connected
+              </p>
+              <div className="flex items-center gap-1">
+                <p className="text-sm text-[#6B7280]">Wallet Address:</p>
+                <p className="text-sm text-white">
+                  {sliceAccountAddress(connectedAddress)}
                 </p>
-                <div className="flex items-center gap-1">
-                  <p className="text-sm text-[#6B7280]">Wallet Address:</p>
-                  <p className="text-sm text-white">
-                    {sliceAccountAddress(signupState.account_address)}
-                  </p>
-                </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
           <Button
             type="button"
@@ -192,6 +197,18 @@ export const RegisterForm: React.FC = () => {
           />
         )}
 
+        {wallet_type == WalletEnum.WALLET_SERVICE ? (
+          <Button
+            title="Open Wallet"
+            onClick={() => openWallet()}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+        ) : (
+          <></>
+        )}
+
         <ModalWrapper
           title="Registration"
           isOpen={feeModal.isOpen}
@@ -200,8 +217,8 @@ export const RegisterForm: React.FC = () => {
               setFeeModal((prev) => ({ ...prev, isOpen: false }));
           }}
         >
-          <div className={feeWrapper}>
-            <div className={feeModalWrapper}>
+          <div className="flex flex-col pb-8 pt-5 sm:gap-3 sm:px-5 lg:gap-6 lg:px-10">
+            <div className="flex justify-center">
               {feeModal.status === "start" ? (
                 <WalletIconModal />
               ) : feeModal.status === "progress" ? (
@@ -210,7 +227,7 @@ export const RegisterForm: React.FC = () => {
                 feeModal.status === "end" && <Successfully />
               )}
             </div>
-            <div className={feeModalStatus}>
+            <div className="flex flex-col items-center gap-2">
               {feeModal.status === "start" && Number(feeModal.fee) === 0 && (
                 <h2 className="text-center text-xs font-semibold text-white fmd:text-sm flg:text-lg">
                   Referred users do not pay registration fees.
@@ -230,10 +247,10 @@ export const RegisterForm: React.FC = () => {
               </h2>
               {feeModal.status === "start" ? (
                 Number(feeModal.fee) !== 0 && (
-                  <p className={textFee}>{`${feeModal.fee} BNB`}</p>
+                  <p className="textGradient text-center text-base font-semibold tracking-wider">{`${feeModal.fee} BNB`}</p>
                 )
               ) : feeModal.status === "progress" ? (
-                <p className={modalInnerText}>
+                <p className={registrationCompleted}>
                   Please do not close or refresh page.
                 </p>
               ) : (
@@ -274,26 +291,4 @@ export const RegisterForm: React.FC = () => {
   );
 };
 
-const wrapper = ctl(`
-  flex 
-  gap-6
-  w-full 
-  h-auto 
-  flex-col 
-`);
-
-const feeWrapper = ctl(`
-lg:px-10 sm:px-5 flex flex-col lg:gap-6 sm:gap-3 pt-5 pb-8
-`);
-
-const feeModalWrapper = ctl(`flex justify-center`);
-
-const feeModalStatus = ctl(`flex flex-col gap-2 items-center`);
-
-const textFee = ctl(
-  `textGradient text-center font-semibold tracking-wider text-base`
-);
-
-const modalInnerText = ctl(`text-sm text-center text-gray-shade-2`);
-
-const registrationCompleted = ctl(`text-sm text-center text-gray-shade-2`);
+const registrationCompleted = `text-sm text-center text-gray-shade-2`;

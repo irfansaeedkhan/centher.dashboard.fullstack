@@ -1,23 +1,26 @@
 import { BigNumber, ethers } from "ethers";
-import { TransactionResponse, Web3Provider } from "@ethersproject/providers";
-
-import { SignupState } from "./form.fields.data";
+import {
+  TransactionReceipt,
+  TransactionResponse,
+} from "@ethersproject/providers";
 import { SmartContractProvider } from "@/web3/blockchain/providers/smart.contract.provider";
 import { SmartContractName } from "@/web3/blockchain/enum/smart.contract.name.enum";
+import { customLog } from "@/utils/custom.log";
+import { SignupState } from "./form.fields.data";
 
 export const registerWithSmartContract = async (
-  library: Web3Provider,
+  library: ethers.providers.JsonRpcSigner,
   signupData: SignupState,
   fee: string
 ): Promise<{
   status: "success";
   message: string;
   message_description: string;
-  data: TransactionResponse;
+  data: TransactionResponse | TransactionReceipt;
 }> => {
   try {
     // Get the signer and account address from the library
-    const signer = library.getSigner();
+    const signer = library;
     const address = await signer.getAddress();
     const registrationContract = SmartContractProvider.getContract(
       SmartContractName.REGISTRATION,
@@ -61,7 +64,7 @@ export const registerWithSmartContract = async (
     }
 
     // Get balance of the user's account
-    const bnbBalance = await library.getBalance(address);
+    const bnbBalance = await library.getBalance();
 
     let tx: TransactionResponse;
 
@@ -101,14 +104,13 @@ export const registerWithSmartContract = async (
       if (gasPrice.lt(ethers.utils.parseUnits("10", "gwei"))) {
         gasPrice = ethers.utils.parseUnits("10", "gwei");
       }
+
       tx = await registrationContract.registerWithoutReferrer({
         value: ethers.utils.hexlify(registrationFee),
         gasPrice: ethers.utils.hexlify(gasPrice),
       });
+      await tx.wait(2);
     }
-
-    await tx.wait();
-    await library.waitForTransaction(tx.hash, 2);
 
     return {
       status: "success",
@@ -117,6 +119,7 @@ export const registerWithSmartContract = async (
       data: tx,
     };
   } catch (error: any) {
+    customLog(["development", "production"], error);
     if (error.code === "ACTION_REJECTED") {
       throw {
         status: "app_error",
@@ -146,15 +149,13 @@ export const registerWithSmartContract = async (
 };
 
 export const getRegistrationFee = async (
-  library: Web3Provider,
+  signer: ethers.providers.JsonRpcSigner,
   signupData: SignupState
 ) => {
-  const signer = library.getSigner();
   const registrationContract = SmartContractProvider.getContract(
     SmartContractName.REGISTRATION,
-    signer
+    signer.provider
   );
-
   let registrationFee: BigNumber;
 
   if (signupData.referred_by.trim() !== "") {

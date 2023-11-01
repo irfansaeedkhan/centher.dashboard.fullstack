@@ -23,7 +23,7 @@ export const CustomNewModal: React.FC<CustomModalProps> = (props) => {
           className={`relative flex h-[28px] items-center justify-center rounded-t px-4`}
         >
           <span
-            className={`text-[16px] font-semibold text-white fmd:text-[18px]`}
+            className={`word-break text-[16px] font-semibold text-white fmd:text-[18px]`}
           >
             {props.title}
           </span>
@@ -36,7 +36,9 @@ export const CustomNewModal: React.FC<CustomModalProps> = (props) => {
             </button>
           )}
         </div>
-        <div className={`max-h-[600px] overflow-y-auto`}>{props.children}</div>
+        <div className={`customScrollbar max-h-[600px] overflow-y-auto`}>
+          {props.children}
+        </div>
       </div>
     </div>
   );

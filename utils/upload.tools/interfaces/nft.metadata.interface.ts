@@ -8,4 +8,5 @@ export interface NFTMetaData {
   type: any;
   collection: string;
   attributes: IProperty[];
+  videoThumbnail?: any;
 }

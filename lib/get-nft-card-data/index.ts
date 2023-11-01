@@ -22,12 +22,14 @@ export const getNFTCardData = async (nft: NFT): Promise<NFTCardData> => {
     ]);
 
     const imageUrl = formatIPFSUrl(metadata.data.image);
+    const videoThumbnail = formatIPFSUrl(metadata.data.videoThumbnail);
 
     return {
       id: nft.id,
       collection: metadata.data.collection,
       tokenId: nft.tokenId,
       imageUrl,
+      videoThumbnail,
       name: metadata.data.name,
       description: metadata.data.description,
       price: nft.price,
