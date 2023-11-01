@@ -98,7 +98,7 @@ export const LoginForm: React.FC = () => {
           />
         </>
       ) : (
-        <div>
+        <div className="space-y-3">
           <Button
             title={ButtonsText.connect_metamask}
             onClick={async () => await connectWallet(WalletEnum.METAMASK)}
