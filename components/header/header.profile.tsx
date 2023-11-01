@@ -25,7 +25,7 @@ import {
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useCentherLive } from "@/hooks/chat";
 import Button from "@/components/button";
-import { useWallet } from "@/web3/hooks/use.wallet";
+import { WalletEnum, useWallet } from "@/web3/hooks/use.wallet";
 
 interface HeaderProfileProps {
   onClickOutside: () => void;
@@ -42,7 +42,14 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
   const router = useRouter();
   const { user: loggedInUser } = useUser();
   const { unreadNotifications, unreadConversations } = useCentherLive();
-  const { connectWallet, connectedAddress, disconnectWallet } = useWallet();
+  const {
+    connectWallet,
+    connectedAddress,
+    disconnectWallet,
+    getWalletType,
+    openWallet,
+  } = useWallet();
+  const wallet_type = getWalletType();
 
   const handleClickOutside = (e: MouseEvent) => {
     if (
@@ -128,6 +135,19 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             />
           </a>
         </div>
+      </div>
+      <div className="border-b border-gray-shade-border-color p-4 ">
+        {wallet_type == WalletEnum.WALLET_SERVICE ? (
+          <Button
+            title="Open Wallet"
+            onClick={() => openWallet()}
+            variant="primary"
+            className="text-sm"
+            borderRounded="10px"
+          />
+        ) : (
+          <></>
+        )}
       </div>
       <div className="border-b border-gray-shade-border-color p-4 ">
         <Button
