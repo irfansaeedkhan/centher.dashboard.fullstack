@@ -13,12 +13,14 @@ const UnstakeModal: React.FC<{
         <label htmlFor="unstake" className="text-sm text-white">
           Amount to Unstake
         </label>
-        <CustomNumberInput
-          onChange={(e) => setAmount(e.target.value)}
-          id="unstake"
-          placeholder="0.0"
-          className="mt-2 w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-white focus:ring-1 focus:ring-brand-primary"
-        />
+        <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+          <CustomNumberInput
+            onChange={(e) => setAmount(e.target.value)}
+            id="unstake"
+            placeholder="0.0"
+            className="mt-2 w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-white focus:outline-none focus:ring-0"
+          />
+        </div>
         <p className="m-1 text-sm text-danger">{errors}</p>
       </div>
       <Button
