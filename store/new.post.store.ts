@@ -3,19 +3,22 @@ import { devtools } from "zustand/middleware";
 import { v4 as uuid } from "uuid";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import { EditorState, convertToRaw } from "draft-js";
+import { extractHashtagsWithIndices } from "@draft-js-plugins/hashtag";
+import cloneDeep from "clone-deep";
 import { PostMedia } from "@/models/post";
 import { axiosApiCenther } from "@/utils/axios";
 import { customLog } from "@/utils/custom.log";
 import { getPostAndUpdateStores } from "@/utils/create.post";
-import { SocketIoEvents } from "@/constants/socket-io-events";
-
-import { useSocketIOStore } from "./socket.io.store";
 
 export interface NewPostStore {
   modalType: ModalType;
   postId: string | null; // Used for editing post
   parentPostId: string | null; // Used for replying to a post
+
+  editorState: EditorState;
+  setEditorState: (editorState: EditorState) => void;
+  clearEditorState: () => void;
 
   isModalOpen: boolean;
   openModal: (options: OpenModalOptions) => void;
@@ -32,7 +35,6 @@ export interface NewPostStore {
 
   postTextMaxLength: 260;
   setPostText: (text: string) => void;
-  appendPostText: (text: string) => void;
 
   createPost: () => Promise<void>;
   posts: INewPost[];
@@ -55,6 +57,15 @@ export const useNewPostStore = create<NewPostStore>()(
       posts: [],
       isModalOpen: false,
       postTextMaxLength: 260,
+      editorState: EditorState.createEmpty(),
+
+      setEditorState: (editorState) => {
+        set({ editorState });
+      },
+
+      clearEditorState: () => {
+        get().setEditorState(EditorState.createEmpty());
+      },
 
       openModal: (options) => {
         // Hide scroll bar
@@ -67,6 +78,10 @@ export const useNewPostStore = create<NewPostStore>()(
                 uuid: uuid(),
                 post_text: "",
                 media: [],
+                entities: {
+                  mentions: [],
+                  hashtags: [],
+                },
               },
             ],
             ...options,
@@ -90,6 +105,7 @@ export const useNewPostStore = create<NewPostStore>()(
           isPostModalLoading: false,
           posts: [],
         });
+        get().clearEditorState();
         if (get().onCloseModal) {
           get().onCloseModal();
         }
@@ -218,22 +234,8 @@ export const useNewPostStore = create<NewPostStore>()(
         });
       },
 
-      appendPostText: (text: string) => {
-        set({
-          posts: get().posts.map((post, index) =>
-            index === get().posts.length - 1
-              ? {
-                  ...post,
-                  post_text: post.post_text + text,
-                }
-              : post
-          ),
-        });
-      },
-
       addNewPost: () => {
         // Check if the last post is empty
-
         if (
           get().posts.at(-1)?.post_text.trim() === "" &&
           get().posts.at(-1)?.media.length === 0
@@ -241,15 +243,95 @@ export const useNewPostStore = create<NewPostStore>()(
           return;
         }
 
+        // Extract mentions and hashtags from the editorState and put them in the entities of last post
+        const lastPost = get().posts.at(-1);
+        const mentions: PostMention[] = [];
+        const hashtags: PostHashtag[] = [];
+
+        if (lastPost) {
+          const editorState = get().editorState;
+          const rawEditorContent = convertToRaw(
+            editorState.getCurrentContent()
+          );
+          const entityMap = Object.values(rawEditorContent.entityMap);
+
+          const entityRanges = [];
+          let textLength = 0;
+          for (let i = 0; i < rawEditorContent.blocks.length; i++) {
+            if (i > 0) {
+              textLength =
+                textLength + rawEditorContent.blocks[i - 1].text.length + 1;
+              if (rawEditorContent.blocks[i].entityRanges.length <= 0) {
+                continue;
+              }
+
+              for (
+                let j = 0;
+                j < rawEditorContent.blocks[i].entityRanges.length;
+                j++
+              ) {
+                entityRanges.push({
+                  offset:
+                    rawEditorContent.blocks[i].entityRanges[j].offset +
+                    textLength,
+                  length: rawEditorContent.blocks[i].entityRanges[j].length + 1,
+                  key: rawEditorContent.blocks[i].entityRanges[j].key,
+                });
+              }
+            } else {
+              for (
+                let j = 0;
+                j < rawEditorContent.blocks[i].entityRanges.length;
+                j++
+              ) {
+                entityRanges.push(rawEditorContent.blocks[i].entityRanges[j]);
+              }
+            }
+          }
+
+          for (let i = 0; i < entityMap.length; i++) {
+            mentions.push({
+              user_id: entityMap[i].data.mention.id,
+              display_name: entityMap[i].data.mention.name,
+              indices: [
+                entityRanges[i].offset,
+                entityRanges[i].offset + entityRanges[i].length,
+              ],
+            });
+          }
+
+          extractHashtagsWithIndices(lastPost.post_text).map((data) => {
+            hashtags.push({
+              text: data.hashtag,
+              indices: data.indices,
+            });
+          });
+        }
+
         const posts = [
-          ...get().posts,
+          ...get().posts.map((post, index) =>
+            index === get().posts.length - 1
+              ? {
+                  ...post,
+                  entities: {
+                    mentions,
+                    hashtags,
+                  },
+                }
+              : post
+          ),
           {
             uuid: uuid(),
             post_text: "",
             media: [],
+            entities: {
+              mentions: [],
+              hashtags: [],
+            },
           },
         ];
 
+        get().clearEditorState();
         set({ posts });
       },
 
@@ -263,13 +345,13 @@ export const useNewPostStore = create<NewPostStore>()(
       createPost: async () => {
         try {
           // Exclude the last post if it is empty
-          let postArray = [...get().posts];
+          let postArray = cloneDeep(get().posts);
 
           if (
-            get().posts.at(-1)?.post_text.trim() === "" &&
-            get().posts.at(-1)?.media.length === 0
+            postArray.at(-1)?.post_text.trim() === "" &&
+            postArray.at(-1)?.media.length === 0
           ) {
-            postArray = get().posts.slice(0, -1);
+            postArray = cloneDeep(get().posts.slice(0, -1));
           }
 
           // Every post should have either post_text or media
@@ -304,12 +386,96 @@ export const useNewPostStore = create<NewPostStore>()(
 
           set({ isPostModalLoading: true });
 
+          const lastPost = postArray.at(-1)!;
+          const editorState = get().editorState;
+          const rawEditorContent = convertToRaw(
+            editorState.getCurrentContent()
+          );
+          const entityMap = Object.values(rawEditorContent.entityMap);
+
+          let entityRanges = [];
+          let textLength = 0;
+          let c = 0;
+          for (let i = 0; i < rawEditorContent.blocks.length; i++) {
+            if (i > 0) {
+              textLength =
+                textLength + rawEditorContent.blocks[i - 1].text.length + 1;
+              if (rawEditorContent.blocks[i].entityRanges.length <= 0) {
+                continue;
+              }
+              let totalEmoji = 0;
+              for (
+                let j = 0;
+                j < rawEditorContent.blocks[i].entityRanges.length;
+                j++
+              ) {
+                if (entityMap[c + j].type == "emoji") {
+                  totalEmoji++;
+                  continue;
+                }
+                entityRanges.push({
+                  offset:
+                    rawEditorContent.blocks[i].entityRanges[j].offset +
+                    textLength +
+                    totalEmoji,
+                  length: rawEditorContent.blocks[i].entityRanges[j].length + 1,
+                  key: rawEditorContent.blocks[i].entityRanges[j].key,
+                });
+                c = c + j;
+              }
+            } else {
+              let totalEmoji = 0;
+
+              for (
+                let j = 0;
+                j < rawEditorContent.blocks[i].entityRanges.length;
+                j++
+              ) {
+                c++;
+                if (entityMap[j].type == "emoji") {
+                  totalEmoji++;
+                  continue;
+                }
+                entityRanges.push({
+                  offset:
+                    rawEditorContent.blocks[i].entityRanges[j].offset +
+                    totalEmoji,
+                  length: rawEditorContent.blocks[i].entityRanges[j].length,
+                  key: rawEditorContent.blocks[i].entityRanges[j].key,
+                });
+              }
+            }
+          }
+
+          for (let i = 0, j = 0; i < entityMap.length; i++) {
+            if (entityMap[i].type == "emoji") {
+              continue;
+            }
+            lastPost.entities.mentions.push({
+              user_id: entityMap[i].data.mention.id,
+              display_name: entityMap[i].data.mention.name,
+              indices: [
+                entityRanges[j].offset,
+                entityRanges[j].offset + entityRanges[j].length,
+              ],
+            });
+            j++;
+          }
+
+          extractHashtagsWithIndices(lastPost.post_text).map((data) => {
+            lastPost.entities.hashtags.push({
+              text: data.hashtag,
+              indices: data.indices,
+            });
+          });
+
           const response = await axiosApiCenther.post(`/api/socials/posts`, {
             replying_to: get().parentPostId,
             posts: postArray.map((post) => ({
               uuid: post.uuid,
               post_text: post.post_text,
               media_count: post.media.length,
+              entities: post.entities,
             })),
           });
 
@@ -497,10 +663,27 @@ export const useNewPostStore = create<NewPostStore>()(
   )
 );
 
+interface PostMention {
+  user_id: string;
+  display_name: string;
+  indices: [number, number];
+}
+
+interface PostHashtag {
+  text: string;
+  indices: [number, number];
+}
+
+interface PostEntities {
+  mentions: PostMention[];
+  hashtags: PostHashtag[];
+}
+
 export interface INewPost {
   uuid: string;
   post_text: string;
   media: MediaFile[];
+  entities: PostEntities;
 }
 
 export interface FileWithID {

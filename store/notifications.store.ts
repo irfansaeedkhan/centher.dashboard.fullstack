@@ -247,6 +247,12 @@ interface PresaleBookingReferralNotification extends BaseNotification {
   };
 }
 
+interface PostMentionNotification extends BaseNotification {
+  type: "mention_in_post";
+  by: NotificationBy;
+  post: NotificationPost;
+}
+
 export type Notification =
   | PostLikeNotification
   | PostReplyNotification
@@ -257,4 +263,5 @@ export type Notification =
   | ReplyToReplyNotification
   | BUSDNetworkRewardsNotification
   | PresaleBookingNotification
-  | PresaleBookingReferralNotification;
+  | PresaleBookingReferralNotification
+  | PostMentionNotification;

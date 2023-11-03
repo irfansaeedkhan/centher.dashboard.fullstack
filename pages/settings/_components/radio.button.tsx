@@ -1,10 +1,14 @@
 import React from "react";
 import clsx from "clsx";
-import { PrivacyValues, PrivacyCookiesValues } from "./privacy.form";
+import {
+  PrivacyValues,
+  PrivacyCookiesValues,
+  PrivacyMentionValues,
+} from "./privacy.form";
 
 interface RadioButtonProps {
   name: string;
-  value: PrivacyValues | PrivacyCookiesValues;
+  value: PrivacyValues | PrivacyCookiesValues | PrivacyMentionValues;
   checked: boolean;
   gradient?: boolean;
   label: string;

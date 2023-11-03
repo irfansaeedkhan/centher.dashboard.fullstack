@@ -2,18 +2,12 @@ import clsx from "clsx";
 import React, { useEffect, useRef, useState } from "react";
 import { cva } from "class-variance-authority";
 import toast from "react-hot-toast";
-import { useMediaQuery, useOnClickOutside } from "usehooks-ts";
-import EmojiPicker, {
-  EmojiClickData,
-  EmojiStyle,
-  Theme,
-} from "emoji-picker-react";
-
+import { useOnClickOutside } from "usehooks-ts";
+import { EmojiPlugin } from "@draft-js-plugins/emoji";
 import { useNewPostStore } from "@/store/new.post.store";
 import { customLog } from "@/utils/custom.log";
 import { SUPPORTED_VIDEO_TYPES } from "@/constants/supported.media.type";
-import { PhotoIcon, VideoIcon, EmojiIcon, CameraIcon2 } from "@/assets/svgs";
-
+import { PhotoIcon, VideoIcon, CameraIcon2 } from "@/assets/svgs";
 import {
   FileType,
   validateSelectedFiles,
@@ -23,30 +17,27 @@ import CameraModal from "./camera.modal";
 interface Props {
   placement: "in-modal" | "create-post-card";
   onClickActionButton?: () => void;
+  emojiPlugin?: EmojiPlugin;
+  EmojiSuggestions?: React.ComponentType;
+  EmojiSelect?: React.ComponentType;
 }
 
 export const PostModalActionButtons: React.FC<Props> = ({
   placement,
   onClickActionButton,
 }) => {
-  const { appendPostText, getLastPost, addNewPost, posts, isModalOpen } =
-    useNewPostStore();
+  const { getLastPost, addNewPost, posts, isModalOpen } = useNewPostStore();
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const emojiPickerContainerRef = useRef<HTMLDivElement>(null);
-  const belowMobile = useMediaQuery("(max-width: 560px)");
   const [activeBtn, setActiveBtn] = useState({
     image: false,
     video: false,
   });
+
   useOnClickOutside(emojiPickerContainerRef, () => {
     setShowEmojiPicker(false);
   });
-
-  // Append emoji to post text
-  const onEmojiClick = (emojiObject: EmojiClickData, _event: MouseEvent) => {
-    appendPostText(emojiObject.emoji);
-  };
 
   const handleSelectFiles = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -62,8 +53,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
       // Call the callback function if any
       onClickActionButton && onClickActionButton();
     } catch (err: any) {
-      customLog(["development", "staging"], err.message);
-      if (err.code.startsWith("app_")) {
+      customLog(["development", "staging"], err);
+      if (err.code?.startsWith("app_")) {
         toast.error(err.message);
       } else {
         toast.error("Something went wrong");
@@ -186,8 +177,9 @@ export const PostModalActionButtons: React.FC<Props> = ({
           onChange={(e) => handleSelectFiles(e, "video")}
         />
       </label>
-
-      <label
+      {/* {EmojiSuggestions && <EmojiSuggestions />}
+      {EmojiSelect && <EmojiSelect />} */}
+      {/* <label
         className={clsx(
           `group mr-2 hidden select-none rounded-md border border-transparent px-[5px] py-[5px] text-[#A0A4BB] transition-all duration-200 hover:border-[#00BF96]/30 hover:bg-[#00BF96]/20 flg:flex`,
           buttonVariants({ color: "green", placement })
@@ -195,6 +187,8 @@ export const PostModalActionButtons: React.FC<Props> = ({
         onClick={() => {
           if (placement === "in-modal") {
             setShowEmojiPicker((prev) => !prev);
+            // count= count + emojiLength;
+            // setEmojiLength(count);
           }
           onClickActionButton && onClickActionButton();
           if (!getLastPost()) {
@@ -209,8 +203,13 @@ export const PostModalActionButtons: React.FC<Props> = ({
             " group-hover:[&>*]:stroke-[#00BF96]"
           )}
         />
+        <div className="bg-red-500">
+          {" "}
+      
+          sdfsdf
+        </div>
         Emoji
-      </label>
+      </label> */}
 
       {showEmojiPicker && (
         <div
@@ -220,14 +219,14 @@ export const PostModalActionButtons: React.FC<Props> = ({
             showEmojiPicker && "z-50 !block"
           )}
         >
-          <EmojiPicker
+          {/* <EmojiPicker
             onEmojiClick={onEmojiClick}
             height={400}
             width={belowMobile ? 280 : 300}
             autoFocusSearch={false}
             emojiStyle={EmojiStyle.NATIVE}
             theme={Theme.AUTO}
-          />
+          /> */}
         </div>
       )}
       {showCameraModal && (

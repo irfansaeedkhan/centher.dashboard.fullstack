@@ -919,6 +919,39 @@
       #ff5e52 107.63%
     );
   }
+
+  div.DraftEditor-root {
+    height: 88px;
+    overflow-y: auto;
+  }
+
+  div.DraftEditor-editorContainer {
+    height: 100%;
+    display: block;
+    width: 100%;
+    resize: none;
+    word-wrap: break-word;
+  }
+
+  div.DraftEditor-root::-webkit-scrollbar {
+    display: flex !important;
+    background-color: #17171a !important;
+    width: 6px !important;
+  }
+
+  div.DraftEditor-root::-webkit-scrollbar-thumb {
+    background-color: #febd32c4 !important;
+    border-radius: 18px !important;
+  }
+
+  .emoji-suggestions-button {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
 }
 
 @layer utilities {

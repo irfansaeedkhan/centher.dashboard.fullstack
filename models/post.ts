@@ -22,6 +22,7 @@ export interface ArchivedPost extends BasePost {
   parent_post_id: string | undefined;
   text_content?: string;
   media?: PostMedia[];
+  entities: PostEntities;
 }
 
 export interface CompletedPost extends BasePost {
@@ -29,6 +30,7 @@ export interface CompletedPost extends BasePost {
   parent_post: ParentPost | undefined;
   text_content?: string;
   media?: PostMedia[];
+  entities: PostEntities;
 }
 
 export type Post = DeletedPost | CompletedPost;
@@ -48,4 +50,20 @@ export interface ParentPost {
   _id: string;
   createdAt: string;
   user: PostUser;
+}
+
+interface PostMention {
+  user_id: string;
+  display_name: string;
+  indices: [number, number];
+}
+
+interface PostHashtag {
+  text: string;
+  indices: [number, number];
+}
+
+export interface PostEntities {
+  mentions: PostMention[];
+  hashtags: PostHashtag[];
 }
