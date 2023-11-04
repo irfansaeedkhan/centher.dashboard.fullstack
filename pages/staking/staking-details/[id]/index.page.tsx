@@ -104,13 +104,13 @@ const StakingDetails: NextPageWithLayout = () => {
   useEffect(() => {
     if (stakingPool) {
       const transfers = stakingPool.transfers
-        ?.filter((e) => e.type == "stake")
-        .sort((a, b) => a.endAt - b.endAt);
+        ?.filter((e) => e.type == "stake" && eqAddress(e.user, user?._id))
+        ?.sort((a, b) => a.endAt - b.endAt);
       if (transfers?.length) {
         setExpireTime(transfers[0].endAt);
       } else setExpireTime(+new Date() / 1000);
     }
-  }, [stakingPool]);
+  }, [stakingPool, user]);
 
   return (
     <div className="w-full rounded-xl border border-gray-shade-3 bg-black-shade-9 p-6">
