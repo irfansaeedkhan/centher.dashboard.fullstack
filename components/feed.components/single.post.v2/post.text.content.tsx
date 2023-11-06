@@ -28,10 +28,9 @@ export const PostTextContent: React.FC<Props> = ({ post }) => (
 const purify = (text: string = "", entities: PostEntities) => {
   const hashtags = entities?.hashtags;
   const mentions = entities?.mentions;
-  const texts = text
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">");
+
+  const texts = text;
+
   for (let i = 0; i < hashtags?.length; i++) {
     text = text?.replaceAll(
       texts.substring(hashtags[i].indices[0], hashtags[i].indices[1]),
@@ -50,6 +49,7 @@ const purify = (text: string = "", entities: PostEntities) => {
       )}</a></span>`
     );
   }
+
   return DOMPurify.sanitize(text, {
     ALLOWED_TAGS: ["span", "a"],
   });
