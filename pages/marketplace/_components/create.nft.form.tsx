@@ -12,6 +12,7 @@ export interface CreateNFTFormProps {
   clearForm: boolean;
   asset: Blob | undefined;
   library: JsonRpcSigner;
+  assetTab: string;
 }
 export interface IProperty {
   Type: string;
@@ -32,6 +33,7 @@ export const CreateNFTForm = ({
   clearForm,
   asset,
   library,
+  assetTab,
 }: CreateNFTFormProps) => {
   const { connectedAddress } = useWallet();
   const collections = useGetMyCollections(connectedAddress);
@@ -66,6 +68,7 @@ export const CreateNFTForm = ({
           collections={collections}
           clearForm={clearForm}
           asset={asset}
+          assetTab={assetTab}
         />
       )}
       {tab === "auction" && (
@@ -75,6 +78,7 @@ export const CreateNFTForm = ({
           collections={collections}
           clearForm={clearForm}
           asset={asset}
+          assetTab={assetTab}
         />
       )}
     </div>

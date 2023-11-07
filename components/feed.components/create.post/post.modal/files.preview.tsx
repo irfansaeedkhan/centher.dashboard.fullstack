@@ -91,8 +91,8 @@ export const FilesPreview: React.FC<Props> = ({ media }) => {
           <div
             key={file.uuid}
             className={clsx(
-              `relative`,
-              postFiles.length == 1 && "col-span-2 row-span-2",
+              `relative mb-4`,
+              postFiles.length === 1 && "col-span-2 row-span-2",
               postFiles.length === 2 && "col-span-1 row-span-2",
               postFiles.length === 4 && "col-span-1 row-span-1",
               index === 0 && postFiles.length == 3 && "col-span-1 row-span-2",

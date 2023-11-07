@@ -124,7 +124,6 @@ export const LoginForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
-
           <Button
             title={ButtonsText.connect_wallet}
             onClick={async () => await connectWallet(WalletEnum.WALLET_SERVICE)}

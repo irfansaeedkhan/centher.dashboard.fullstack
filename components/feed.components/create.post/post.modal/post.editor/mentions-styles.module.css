@@ -1,0 +1,28 @@
+.mention {
+  color: #4a85bb;
+  text-decoration: none;
+}
+
+.mentionSuggestions {
+  border: 1px solid #3c3f4a;
+  background: #131314;
+  border-radius: 20px;
+  cursor: pointer;
+  padding: 4px 2px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
+  z-index: 100;
+}
+
+.mentionSuggestionsEntry {
+  padding: 7px 10px 3px 10px;
+}
+
+.mentionSuggestionsEntryFocused {
+  composes: mentionSuggestionsEntry;
+  background-color: #3c3f4a;
+  border-radius: 15px;
+}

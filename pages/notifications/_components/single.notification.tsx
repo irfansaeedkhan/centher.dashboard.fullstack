@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import Link, { LinkProps } from "next/link";
 import Image from "next/image";
@@ -152,6 +152,8 @@ const getNotificationMessage = (
       return <>{NotificationByName} started following you.</>;
     case "new_referral":
       return <>{NotificationByName} joined your network.</>;
+    case "mention_in_post":
+      return <>{NotificationByName} mentioned you in a post.</>;
     case "centher_purchase_ntr":
       return (
         <>
@@ -233,6 +235,11 @@ const getNotificationUrl = (
         pathname: AppRoutes.launchpad_pre_booking.booking,
         query: { tab: "my-rewards" },
       };
+    case "mention_in_post":
+      return {
+        pathname: AppRoutes.feed.single_post,
+        query: { post_id: notification.post._id },
+      };
     default:
       return null;
   }
@@ -250,6 +257,7 @@ const getNotificationImageUrl = (
     case "new_referral":
     case "centher_purchase_busd":
     case "centher_purchase_ntr":
+    case "mention_in_post":
       return {
         pathname: AppRoutes.profile.user_id,
         query: { user_id: notification.by._id },
