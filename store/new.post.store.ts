@@ -393,6 +393,7 @@ export const useNewPostStore = create<NewPostStore>()(
           );
           const entityMap = Object.values(rawEditorContent.entityMap);
 
+          // TODO: the indices sometimes ignore the spaces, we need to fix it
           let entityRanges = [];
           let textLength = 0;
           let c = 0;
