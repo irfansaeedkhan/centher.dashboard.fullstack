@@ -283,6 +283,7 @@ const CreateNFT: NextPageWithLayout = () => {
           createNFT={createNFT}
           clearForm={clearForm}
           asset={asset}
+          assetTab={assetTab}
         />
       </div>
       {ModalModel.visibility && (
