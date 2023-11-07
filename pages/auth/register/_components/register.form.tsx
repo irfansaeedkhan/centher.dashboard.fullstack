@@ -253,6 +253,19 @@ export const RegisterForm: React.FC = () => {
           />
         )}
 
+        {wallet_type == WalletEnum.WALLET_SERVICE ? (
+          <Button
+            type="button"
+            title="Open Wallet"
+            onClick={() => openWallet()}
+            variant="primary"
+            className="flex h-11 w-full items-center justify-center text-[14px]"
+            borderRounded="14px"
+          />
+        ) : (
+          <></>
+        )}
+
         <ModalWrapper
           title="Registration"
           isOpen={feeModal.isOpen}

@@ -49,12 +49,12 @@ export const PostActionMenu: React.FC<Props> = ({
               postType === "archived" ? "w-[190px]" : "w-[170px]"
             )}
           >
-            {isBefore15Minutes && postType !== "archived" && (
+            {/* {isBefore15Minutes && postType !== "archived" && (
               <MenuButton onClick={onClickEdit}>
                 <FiEdit className="h-[18px] w-[18px]" />
                 <span>Edit</span>
               </MenuButton>
-            )}
+            )} */}
 
             <MenuButton
               onClick={async (e) => {

@@ -106,7 +106,7 @@ const Booking: React.FC<Props> = ({
             className="w-full rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm text-white focus:ring-1 focus:ring-brand-primary"
           /> */}
           <p className="mt-10 text-sm text-white">Add Value</p>
-          <div className="relative flex h-12 w-full items-center justify-between gap-2 rounded-lg bg-black-shade-3 p-3 focus-within:ring-1 focus-within:ring-brand-primary flg:max-w-full">
+          <div className="focus-within:gradient-border-3 relative flex h-12 w-full items-center justify-between gap-2 !rounded-lg bg-black-shade-3 p-[1px] focus-within:ring-1 flg:max-w-full">
             <CustomNumberInput
               name={
                 coins.find((e) =>
@@ -119,7 +119,7 @@ const Booking: React.FC<Props> = ({
                 )?.symbol
               }
               placeholder="00"
-              className="foucs:outline-none w-full border-0 bg-transparent p-0 text-white focus:ring-0"
+              className="foucs:outline-none w-full border-0 bg-transparent p-0 pl-3 text-white focus:ring-0"
               // value={paymentForm.paymentTokenAmount}
               min={0}
               onChange={(e) => {
@@ -127,7 +127,7 @@ const Booking: React.FC<Props> = ({
               }}
             />
 
-            <div className="flex w-full max-w-[60px] items-center gap-2">
+            <div className="mr-3 flex w-full max-w-[60px] items-center gap-2">
               {/* TODO: Change this hard-coded icon to icon url coming from backend */}
               {coins.find((e) =>
                 eqAddress(e?.contractAddress, data.tokenAddress)

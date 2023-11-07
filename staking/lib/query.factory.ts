@@ -83,16 +83,16 @@ const queries: Queries = {
       transfers {
         endAt
         createdAt
+        type
+        user
       }
       users {
         referrer
         joinedAt
         id
       }
-     
     }
-  }
-  `,
+  }`,
   GET_USER_TRANSFERS_BY_POOL: `query MyQuery($user: Bytes = "", $projectId: BigInt = "") {
     transfers(where: {user: $user, projectId: $projectId}) {
       user

@@ -16,22 +16,7 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
   data,
   item,
 }) => {
-  const htmlBodyRef = useRef<HTMLBodyElement>(document.body as HTMLBodyElement);
   const PassportModalRef = useRef<HTMLDivElement>(null);
-
-  useOnClickOutside(PassportModalRef, () => {
-    onClickClose();
-  });
-
-  useEventListener(
-    "keydown",
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClickClose();
-      }
-    },
-    htmlBodyRef
-  );
 
   return (
     <ModalPortal wrapperId="progress-staking-portal">
@@ -62,14 +47,6 @@ export const StakingProgressModal: React.FC<CustomModalProps> = ({
                 </div>
               </div>
             </div>
-            <Button
-              onClick={() => {
-                onClickClose();
-              }}
-              title="Hide"
-              variant="secondary"
-              className="w-full rounded-[14px] py-3 text-sm hover:text-white"
-            />
           </div>
         </div>
       </div>

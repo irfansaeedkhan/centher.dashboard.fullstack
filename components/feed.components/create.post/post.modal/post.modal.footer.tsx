@@ -1,18 +1,25 @@
 import React from "react";
 import clsx from "clsx";
-
+import type { EmojiPlugin } from "@draft-js-plugins/emoji";
 import { useNewPostStore } from "@/store/new.post.store";
-
-import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
-import { PostTextCounter } from "./post.text.counter";
 import Button from "@/components/button";
 import { LoaderSpinner } from "@/assets/svgs";
+import { PostTextCounter } from "./post.text.counter";
+import { PostModalActionButtons } from "../shared/ui/post.modal.action.buttons";
 
 interface Props {
   handleScroll: () => void;
+  emojiPlugin: EmojiPlugin;
+  EmojiSuggestions: React.ComponentType;
+  EmojiSelect: React.ComponentType;
 }
 
-const PostModalFooter: React.FC<Props> = ({ handleScroll }) => {
+const PostModalFooter: React.FC<Props> = ({
+  handleScroll,
+  emojiPlugin,
+  EmojiSuggestions,
+  EmojiSelect,
+}) => {
   const {
     isPostModalLoading,
     postTextMaxLength,
@@ -38,7 +45,12 @@ const PostModalFooter: React.FC<Props> = ({ handleScroll }) => {
       )}
     >
       {modalType !== "edit" ? (
-        <PostModalActionButtons placement={"in-modal"} />
+        <PostModalActionButtons
+          placement={"in-modal"}
+          emojiPlugin={emojiPlugin}
+          EmojiSuggestions={EmojiSuggestions}
+          EmojiSelect={EmojiSelect}
+        />
       ) : (
         <div className="hidden fsm:block" />
       )}

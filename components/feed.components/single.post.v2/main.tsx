@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { nanoid } from "nanoid";
 import clsx from "clsx";
 import { HiOutlineArchive } from "react-icons/hi";
 import { useInView } from "react-intersection-observer";
-
 import { useNewPostStore } from "@/store/new.post.store";
 import useUser from "@/hooks/use.user";
 import { ArchivedPost, CompletedPost, ParentPost } from "@/models/post";
 import { customLog } from "@/utils/custom.log";
-
 import { PostModal } from "../create.post/post.modal";
 import { PostHeader } from "./post.header";
 import { PostMedia } from "./post.media";
@@ -192,6 +189,7 @@ export const SinglePostV2: React.FC<Props> = ({
                 {
                   uuid: post._id,
                   post_text: post.text_content ?? "",
+                  entities: post.entities,
                   media:
                     post.media?.map((media) => {
                       return {
@@ -250,13 +248,7 @@ export const SinglePostV2: React.FC<Props> = ({
             />
           )}
 
-          {post.text_content && (
-            <PostTextContent
-              post={post}
-              postType={postType}
-              placement={placement}
-            />
-          )}
+          {post.text_content && <PostTextContent post={post} />}
 
           {/*  Fullscreen Lightbox */}
           {fullscreenPreview.isOpen && post.media && !!post.media.length && (

@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 import { CgSpinner } from "react-icons/cg";
-
 import Button from "@/components/button";
 import useUser from "@/hooks/use.user";
 import { LoadingState } from "@/models/common";
 import { updateCookiesConsent } from "@/lib/cookies-consent";
-
+import { updateMentionPermission } from "@/lib/mention-permission";
 // import PrivacyFormSection from "./privacy.form.section";
 import PrivacyFormCookies from "./privacy.form.cookies";
+import PrivacyFormMention from "./privacy.form.mention";
 
 const ButtonsText = {
-  loading: "Continue...",
-  update_profile: "Save Changes",
+  default: "Save Changes",
 };
 
 export const PrivacyForm = () => {
   const [isLoading, setIsLoading] = useState<LoadingState>("idle");
+  const [isMentionLoading, setIsMentionLoading] =
+    useState<LoadingState>("idle");
+
   const { user } = useUser();
   // const [selectedReplyOption, setSelectedReplyOption] =
   //   useState<PrivacyValues>("everyone");
@@ -25,6 +28,9 @@ export const PrivacyForm = () => {
   //   useState<PrivacyValues>("everyone");
   const [selectedCookieOption, setSelectedCookieOption] =
     useState<PrivacyCookiesValues>("allow");
+
+  const [selectedMentionOption, setSelectedMentionOption] =
+    useState<PrivacyMentionValues>("everyone");
 
   useEffect(() => {
     if (user) {
@@ -39,6 +45,17 @@ export const PrivacyForm = () => {
       setIsLoading("loading");
       await updateCookiesConsent(selectedCookieOption === "allow");
       setIsLoading("idle");
+    } catch {
+      setIsLoading("failed");
+    }
+  };
+
+  const changePermission = async () => {
+    try {
+      setIsMentionLoading("loading");
+      await updateMentionPermission(selectedMentionOption);
+      toast.success("Mention updated successfully");
+      setIsMentionLoading("idle");
     } catch {
       setIsLoading("failed");
     }
@@ -86,11 +103,34 @@ export const PrivacyForm = () => {
         />
 
         <Button
-          title={ButtonsText.update_profile}
+          title={ButtonsText.default}
           variant={"primary"}
           onClick={changePrivacy}
           Icon={
             isLoading === "loading" && (
+              <CgSpinner className="animate-spin text-white" />
+            )
+          }
+          className="w-fit text-sm font-medium"
+        />
+
+        <PrivacyFormMention
+          title="Mention"
+          tagline="Choose who can mention you in their posts"
+          name="mention"
+          handleOptionChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setSelectedMentionOption(event.currentTarget.value as any);
+          }}
+          selectedState={selectedMentionOption}
+          setSelectedMentionOption={setSelectedMentionOption}
+        />
+
+        <Button
+          title={ButtonsText.default}
+          variant={"primary"}
+          onClick={changePermission}
+          loaderIcon={
+            isMentionLoading === "loading" && (
               <CgSpinner className="animate-spin text-white" />
             )
           }
@@ -108,3 +148,10 @@ export type PrivacyValues =
   | "no_one";
 
 export type PrivacyCookiesValues = "allow" | "decline";
+
+export type PrivacyMentionValues =
+  | "everyone"
+  | "followers"
+  | "followings"
+  | "followers_and_followings"
+  | "no_one";

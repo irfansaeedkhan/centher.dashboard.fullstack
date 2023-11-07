@@ -8,15 +8,23 @@ import { AddIcon } from "@/assets/svgs";
 import Button from "@/components/button";
 import { CustomNumberInput } from "@/components/custom-number-input";
 import ConnectWalletModal from "@/components/modal/connect-wallet-modal";
-import { formatAddress } from "@/utils/format.address";
 import useUser from "@/hooks/use.user";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { IMyCollection } from "@/hooks/use.get.my.collections";
+import useGetUser from "@/hooks/use.get.user";
 import { BlockchainConfig } from "@/web3/blockchain/config";
 import { useWallet } from "@/web3/hooks/use.wallet";
+import { formatAddress } from "@/utils/format.address";
+import { IModalHandler, ModalManager, TemplateCollection } from "@/utils/modal";
+import { CollectionPreviewModal } from "@/components/modal/collection-preview";
 import CustomDropdown from "./custom.dropdown";
 import { INFTData } from "./create.nft.form";
 import AddPropertiesModal from "./add-properties-modal";
+import NftPreview from "./nft-preview";
+
+enum ModalType {
+  previewNft = "previewNft",
+}
 
 // form validations
 const schema = Joi.object({
@@ -36,6 +44,7 @@ interface FixedPriceFormProps {
   clearForm: boolean;
   asset: Blob | undefined;
   signer: JsonRpcSigner;
+  assetTab: string;
 }
 interface FormFields {
   NFTName: String;
@@ -52,14 +61,21 @@ const FixedPriceForm = ({
   clearForm,
   asset,
   signer: library,
+  assetTab,
 }: FixedPriceFormProps) => {
   const { user: loggedInUser } = useUser();
+  const { user } = useGetUser(loggedInUser?._id);
   const { connectWallet, disconnectWallet } = useWallet();
   const [connectWalletModal, setConnectWalletModal] = useState(false);
   const [propertyModal, setPropertyModal] = useState(false);
   const [propertyDetails, setPropertyDetails] = useState<any>([]);
   const [propertyList, setPropertyList] = useState<any>([]);
   const [propertyErr, setPropertyErr] = useState<null | string>(null);
+  const [ModalModel, setModalModel] = useState<IModalHandler>({
+    visibility: false,
+    title: "",
+    content: "",
+  });
   const [changeNFTPrice, setChangeNFTPrice] = useState<number | undefined>(
     undefined
   );
@@ -72,20 +88,42 @@ const FixedPriceForm = ({
   const [selectedOption, setSelectedOption] = useState(
     collections[0].collection
   );
+
+  const { handleSubmit, register, formState, reset, watch } =
+    useForm<FormFields>({
+      mode: "onChange",
+      resolver: joiResolver(schema),
+      defaultValues: {
+        NFTName: "",
+        Description: "",
+        NFTSupply: 1,
+      },
+    });
+
+  const modalTemplateCollection: TemplateCollection = {
+    previewNft: {
+      title: "Review your NFT",
+      visibility: true,
+      content: () => (
+        <NftPreview
+          asset={asset}
+          watch={watch}
+          selectedOption={selectedOption}
+          changeNFTPrice={changeNFTPrice}
+          loggedInUser={loggedInUser!}
+          assetTab={assetTab}
+          user={user!}
+        />
+      ),
+    },
+  };
+
+  const modal = new ModalManager(setModalModel, modalTemplateCollection);
+
   const handleOptionSelect = (value: string) => {
     setSelectedOption(value);
     setCollectionErrorMsg(undefined);
   };
-
-  const { handleSubmit, register, formState, reset } = useForm<FormFields>({
-    mode: "onChange",
-    resolver: joiResolver(schema),
-    defaultValues: {
-      NFTName: "",
-      Description: "",
-      NFTSupply: 1,
-    },
-  });
 
   useEffect(() => {
     if (clearForm) {
@@ -159,6 +197,7 @@ const FixedPriceForm = ({
       properties: propertyList,
     };
     createNFT(finalizedData);
+    modal.dismissModal();
   };
 
   return (
@@ -352,21 +391,39 @@ const FixedPriceForm = ({
           }}
         />
       ) : (
-        <Button
-          title={"Create NFT"}
-          variant={
-            formState.isValid &&
-            asset !== undefined &&
-            nftPriceError === undefined &&
-            collectionErrorMsg == undefined &&
-            changeNFTPrice !== undefined
-              ? "primary"
-              : "secondary"
-          }
-          disabled={!formState.isValid || asset === undefined}
-          onClick={handleSubmit(onSubmit)}
-          className="mt-2"
-        />
+        <div className="mt-2 flex flex-col items-center gap-2 fsm:flex-row">
+          <Button
+            title={"Preview"}
+            variant={"secondary"}
+            disabled={
+              !formState.isValid ||
+              watch("NFTName") === "" ||
+              asset === undefined ||
+              watch("Description") === "" ||
+              selectedOption === undefined ||
+              changeNFTPrice === undefined
+            }
+            onClick={() => {
+              modal.createModal(ModalType.previewNft);
+            }}
+            className="w-full"
+          />
+          <Button
+            title={"Create NFT"}
+            variant={
+              formState.isValid &&
+              asset !== undefined &&
+              nftPriceError === undefined &&
+              collectionErrorMsg == undefined &&
+              changeNFTPrice !== undefined
+                ? "primary"
+                : "secondary"
+            }
+            disabled={!formState.isValid || asset === undefined}
+            onClick={handleSubmit(onSubmit)}
+            className="w-full"
+          />
+        </div>
       )}
 
       {propertyModal && (
@@ -386,6 +443,17 @@ const FixedPriceForm = ({
           setConnectWalletModal={setConnectWalletModal}
         />
       )}
+      {ModalModel.visibility && (
+        <CollectionPreviewModal
+          onClose={() => {
+            modal.dismissModal();
+          }}
+          title={ModalModel.title as string}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          {ModalModel.content}
+        </CollectionPreviewModal>
+      )}
     </div>
   );
 };
@@ -399,7 +467,7 @@ const fieldWrapper = `flex gap-2 flex-col w-full`;
 const fieldTitle = `text-sm text-start font-normal text-white`;
 const inputField = `w-full py-3 px-5 bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-0`;
 const inputFieldError = `${inputField} focus:!ring-red-500`;
-const addPropertyBtn = `flex items-center justify-between w-full py-3 px-5 !bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg border-0 focus:outline-none focus:ring-brand-primary h-[48px]`;
+const addPropertyBtn = `flex items-center justify-between w-full py-3 px-5 bg-black-shade-3 text-gray-shade-17 font-semibold text-sm rounded-lg focus:border h-[48px]`;
 const properyCard = `gradientborders2 rounded-10px flex flex-col items-center justify-center h-[98px] p-[2px] gap-3 bg-background-shade-2 w-full lg:max-w-[32%] mb-[2%] relative`;
 const PropertyName = `text-xs font-medium textGradient`;
 const Type = `text-sm font-semibold text-white`;

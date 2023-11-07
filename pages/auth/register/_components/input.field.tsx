@@ -7,12 +7,14 @@ export const InputField = React.forwardRef<HTMLInputElement, FormFieldProps>(
     return (
       <div className="flex flex-col gap-2">
         <label className="text-sm text-white">{label}</label>
-        <input
-          id={id}
-          className={!error ? inputField : inputFieldError}
-          {...props}
-          ref={ref}
-        />
+        <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+          <input
+            id={id}
+            className={!error ? inputField : inputFieldError}
+            {...props}
+            ref={ref}
+          />
+        </div>
         {error && <ErrorMessage message={error.message} />}
       </div>
     );
@@ -22,5 +24,5 @@ export const InputField = React.forwardRef<HTMLInputElement, FormFieldProps>(
 // Display name of the component for debugging
 InputField.displayName = "InputField";
 
-const inputField = `w-full py-3 px-5 !bg-[#1E1E21] text-white rounded-lg border-0 focus:!outline-none focus:!ring-brand-primary`;
+const inputField = `w-full py-3 px-5 bg-[#1E1E21] text-white rounded-lg border-0 focus:outline-none focus:ring-0`;
 const inputFieldError = `${inputField} focus:!ring-red-500`;

@@ -5,7 +5,7 @@ import { SiBinance } from "react-icons/si";
 import { isAddress } from "ethers/lib/utils";
 import {
   LinkNewIcon,
-  NewCentherIcon,
+  CentherIcon,
   NewTelegramIcon,
   Whitepaper,
 } from "@/assets/svgs";
@@ -156,7 +156,7 @@ const Details: React.FC<{ data: OptionalType<ListCardDataOBj> }> = ({
                 rel="noreferrer noopener"
                 className="centher-social-button flex select-none items-center gap-2 rounded-[11px] bg-elevation-1 px-[10px] py-[6px] text-xs font-medium text-gray-shade-14"
               >
-                <NewCentherIcon />
+                <CentherIcon />
                 <span>Centher</span>
               </a>
             ) : null}

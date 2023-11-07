@@ -137,6 +137,19 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           </a>
         </div>
       </div>
+      {wallet_type == WalletEnum.WALLET_SERVICE ? (
+        <div className="border-b border-gray-shade-border-color p-4 ">
+          <Button
+            title="Open Wallet"
+            onClick={() => openWallet()}
+            variant="primary"
+            className="text-sm"
+            borderRounded="10px"
+          />
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="border-b border-gray-shade-border-color p-4 ">
         {wallet_type == WalletEnum.WALLET_SERVICE ? (
           <Button

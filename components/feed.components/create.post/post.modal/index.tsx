@@ -1,12 +1,13 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import Image from "next/image";
-import clsx from "clsx";
+import React, { useEffect, useMemo, useRef } from "react";
+import createEmojiPlugin from "@draft-js-plugins/emoji";
+import createHashtagPlugin from "@draft-js-plugins/hashtag";
+import createMentionPlugin from "@draft-js-plugins/mention";
+import "@draft-js-plugins/emoji/lib/plugin.css";
 import useUser from "@/hooks/use.user";
 import { useNewPostStore } from "@/store/new.post.store";
-import { sliceDisplayName } from "@/utils/user.helpers/slice.display.name";
 import { PostModalContainer } from "./post.modal.container";
-import { FilesPreview } from "./files.preview";
-import PostPreview from "./post.preview";
+import { PostEditor } from "./post.editor/post.editor";
+import mentionsStyles from "./postmodal.module.css";
 
 interface Props {
   modalTitle: string;
@@ -15,18 +16,13 @@ interface Props {
 export const PostModal: React.FC<Props> = ({ modalTitle }) => {
   const { user } = useUser();
   const scrollRef = useRef<HTMLTextAreaElement>(null);
-  const {
-    closeModal,
-    isModalOpen,
-    setPostText,
-    postTextMaxLength,
-    posts,
-    removePost,
-  } = useNewPostStore();
+  const { closeModal, isModalOpen, posts } = useNewPostStore();
 
   const lastPost = useMemo(() => {
     return posts.at(-1);
   }, [posts]);
+
+  const emojiPlugin = createEmojiPlugin();
 
   const hasMedia = useMemo(() => {
     return (
@@ -36,6 +32,27 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
           .length)
     );
   }, [lastPost]);
+
+  const { EmojiSuggestions, EmojiSelect } = useMemo(() => {
+    const hashtagPlugin = createHashtagPlugin();
+    const mentionPlugin = createMentionPlugin({
+      entityMutability: "IMMUTABLE",
+      theme: mentionsStyles,
+      mentionPrefix: "@",
+      supportWhitespace: true,
+    });
+    const { MentionSuggestions } = mentionPlugin;
+    const emojiPlugin = createEmojiPlugin();
+    const { EmojiSuggestions, EmojiSelect } = emojiPlugin;
+    const plugins = [hashtagPlugin, mentionPlugin, emojiPlugin];
+    return {
+      plugins,
+      MentionSuggestions,
+      hashtagPlugin,
+      EmojiSuggestions,
+      EmojiSelect,
+    };
+  }, []);
 
   useEffect(() => {
     if (hasMedia) {
@@ -64,62 +81,11 @@ export const PostModal: React.FC<Props> = ({ modalTitle }) => {
         isOpen={isModalOpen}
         onClickClose={closeModal}
         title={modalTitle}
+        emojiPlugin={emojiPlugin}
+        EmojiSuggestions={EmojiSuggestions}
+        EmojiSelect={EmojiSelect}
       >
-        <div
-          className={`flex w-full flex-col gap-4 border-b-2 border-gray-shade-3 border-opacity-40 px-3 py-4 fsm:px-6`}
-        >
-          <div className={`flex items-center gap-3`}>
-            <Image
-              src={user.profile_image}
-              width={44}
-              height={44}
-              className="h-[44px] w-[44px] rounded-full object-cover"
-              alt={user.display_name ?? "profile image"}
-              sizes={"256px"}
-            />
-            <h5
-              className={clsx(
-                `text-sm font-semibold text-white`,
-                user.display_name.includes(" ")
-                  ? "line-clamp-1 text-ellipsis"
-                  : "block w-full max-w-full overflow-hidden truncate"
-              )}
-              title={user.display_name}
-            >
-              {user && sliceDisplayName(user.display_name)}
-            </h5>
-          </div>
-
-          <div>
-            {posts.slice(0, -1).map((post) => (
-              <PostPreview
-                key={post.uuid}
-                post={post}
-                removePost={removePost}
-              />
-            ))}
-
-            {lastPost && (
-              <div>
-                <FilesPreview media={lastPost.media} />
-
-                <div className={clsx(`w-full`, hasMedia && "mt-4")}>
-                  <textarea
-                    ref={scrollRef}
-                    autoFocus
-                    className={`scrollSet block w-full resize-none overflow-y-auto break-words rounded-10px border-none bg-background-shade-3 px-4 py-3.5 text-xs font-medium leading-6 text-white outline-none focus:ring-0 fsm:text-sm`}
-                    cols={12}
-                    rows={3}
-                    maxLength={postTextMaxLength}
-                    placeholder="Type here"
-                    value={lastPost.post_text}
-                    onChange={(e) => setPostText(e.target.value)}
-                  ></textarea>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        <PostEditor />
       </PostModalContainer>
     </div>
   );

@@ -115,6 +115,15 @@ const CreateStaking: NextPageWithLayout = () => {
 
   const [selectedValue, setSelectedValue] = useState<MultiLevelRewards>("");
   const [inputValues, setInputValues] = useState<levelDataType[]>([]);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocus = () => {
+    setIsFocused(true);
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false);
+  };
 
   const uploadCoverFile = (e: any) => {
     const previewUrl = e.target.files[0];
@@ -891,19 +900,19 @@ const CreateStaking: NextPageWithLayout = () => {
     control: (provided: any, state: any) => ({
       ...provided,
       background: "#17171a",
-      boxShadow: state.isFocused ? "0 0 0 1px #febf32" : "0 0 0 1px #17171a",
-      borderColor: state.isFocused ? "#febf32" : "#17171a",
+      boxShadow: state.isFocused ? "0 0 0 1px #17171a" : "0 0 0 1px #17171a",
+      borderColor: state.isFocused ? "#17171a" : "#17171a",
       borderRadius: "8px",
       cursor: "pointer",
       padding: "2px 5px",
       ":hover": {
-        borderColor: "#febf32",
+        borderColor: "#17171a",
       },
     }),
     option: (provided: any, state: any) => ({
       ...provided,
       background: state.isFocused ? "#17171a" : "#141416",
-      color: state.isFocused ? "#febf32" : "white",
+      color: state.isFocused ? "white" : "white",
       cursor: "pointer",
     }),
     menu: (provided: any) => ({
@@ -1739,13 +1748,15 @@ const CreateStaking: NextPageWithLayout = () => {
                         Total Supply
                         <span className="text-gradient ml-[2px]">*</span>
                       </label>
-                      <input
-                        type="number"
-                        {...stakingForm.register("total_supply")}
-                        id="total_supply"
-                        placeholder="Only numbers here"
-                        className="focus:ring-brand-primar mt-2 block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none"
-                      />
+                      <div className="focus-within:gradient-border-3 mt-2 !rounded-lg p-[1px]">
+                        <input
+                          type="number"
+                          {...stakingForm.register("total_supply")}
+                          id="total_supply"
+                          placeholder="Only numbers here"
+                          className="block w-full appearance-none rounded-lg border-0 bg-black-shade-3 px-5 py-3 text-sm placeholder:text-gray-shade-17 focus:outline-none focus:ring-0"
+                        />
+                      </div>
                       <p
                         className={`text-gradient pb-2 pt-1 text-xs font-medium`}
                       >
@@ -2162,10 +2173,14 @@ const CreateStaking: NextPageWithLayout = () => {
                         <Select
                           {...field}
                           options={categoryOptions}
-                          styles={customStyles} // Apply the custom styles
+                          styles={customStyles}
                           isMulti
-                          className="mt-1 py-1"
+                          className={`mt-2 p-[2px] ${
+                            isFocused ? "gradient-border" : ""
+                          }`}
                           classNamePrefix="select"
+                          onFocus={handleFocus}
+                          onBlur={handleBlur}
                         />
                       )}
                     />
