@@ -247,7 +247,7 @@ export const NFTImageCard: React.FC<NFTCardProps> = ({ data }) => {
           )}
           {internal && (
             <div
-              className={`absolute left-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[80px]`}
+              className={`absolute left-3 top-3 hidden h-[28px] w-[28px] items-center justify-center rounded-md bg-black/20 text-[10px] text-white backdrop-blur-[20px] fsm:flex f2xl:h-[28px] f2xl:w-[100px]`}
             >
               <div className="flex items-center gap-[6px]">
                 {" "}

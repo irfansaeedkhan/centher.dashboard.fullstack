@@ -9,7 +9,6 @@ interface Props {
   watch: any;
   cover: Blob | undefined;
   profile: Blob | undefined;
-  onClose: () => void;
   loggedInUser: LoggedInUser;
 }
 

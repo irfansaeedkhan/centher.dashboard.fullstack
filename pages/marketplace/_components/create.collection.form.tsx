@@ -100,7 +100,6 @@ export const CreateNFTCollectionForm = ({
   clearForm,
   cover,
   profile,
-  signer,
 }: CreateNFTCollectionFormProps) => {
   const [selectedOption, setSelectedOption] = useState("");
   const [categoryError, setCategoryError] = useState(true);
@@ -135,7 +134,6 @@ export const CreateNFTCollectionForm = ({
       content: () => (
         <CollectionPreview
           watch={watch}
-          onClose={() => modal.dismissModal()}
           cover={cover}
           profile={profile}
           loggedInUser={loggedInUser!}
@@ -185,8 +183,8 @@ export const CreateNFTCollectionForm = ({
   }, [clearForm, reset]);
 
   return (
-    <div className={CreateNFTCollectionFormContainer}>
-      <div className={formContainer}>
+    <div className="relative flex w-full flex-col gap-6 rounded-2xl border border-gray-shade-3 bg-black-shade-9 px-6 py-8">
+      <div className="flex flex-col gap-5">
         <div className={fieldWrapper}>
           <label className={fieldTitle}>
             Name Your Collection <span className="text-red-500">*</span>
@@ -297,7 +295,7 @@ export const CreateNFTCollectionForm = ({
           <label className={fieldTitle}>
             Add Links <span className="text-gray-shade-17"> (optional)</span>
           </label>
-          <div className={linkListContainer}>
+          <div className="flex flex-col gap-5">
             <div>
               <div className="focus-within:gradient-border-3 !rounded-lg p-[1px]">
                 <div className={linkInputContainer}>
@@ -476,41 +474,13 @@ export const CreateNFTCollectionForm = ({
   );
 };
 // styling
-const CreateNFTCollectionFormContainer = `
- bg-black-shade-9 rounded-2xl relative w-full border border-gray-shade-3 py-8 px-6 flex flex-col gap-6
-`;
-const formContainer = `
- flex flex-col gap-5
-`;
-const errMessage = `
-pb-2 text-xs font-medium
-`;
-const fieldWrapper = `
-  flex gap-2 flex-col w-full
-`;
-const fieldTitle = `
-  text-sm  font-normal text-white
-`;
-const inputField = `
-  w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0
-`;
-const inputFieldError = `
-  ${inputField}
-   focus:!ring-red-500
-`;
-const linkField = `
-absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0
-`;
-const linkFieldError = `
-  ${linkField}
-   focus:!ring-red-500
-`;
-const linkInputContainer = `
-inputItem h-[48px]  w-full !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0 relative
-`;
-const linkIcon = `
-z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] h-5 w-5
-`;
-const linkListContainer = `
-flex flex-col gap-5
-`;
+
+const errMessage = `pb-2 text-xs font-medium`;
+const fieldWrapper = `flex gap-2 flex-col w-full`;
+const fieldTitle = `text-sm font-normal text-white`;
+const inputField = `w-full py-3 px-5 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0`;
+const inputFieldError = `${inputField} focus:!ring-red-500`;
+const linkField = `absolute top-0 left-0 w-full h-full !pl-14 !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0`;
+const linkFieldError = `${linkField} focus:!ring-red-500`;
+const linkInputContainer = `inputItem h-[48px] w-full !bg-black-shade-3 text-white font-semibold text-sm rounded-lg border-0 focus:outline-none focus:!ring-0 relative`;
+const linkIcon = `z-30 absolute top-[50%] left-[20px] translate-y-[-50%] stroke-[#45474D] h-5 w-5`;
