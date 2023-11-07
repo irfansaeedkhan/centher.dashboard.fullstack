@@ -14,7 +14,12 @@ export enum WalletEnum {
   METAMASK = "METAMASK",
   WALLET_SERVICE = "WALLET_SERVICE",
 }
+
+const CONNECTED_WALLET_KEY = "connected_wallet";
+const IS_WALLET_CONNECTED_KEY = "is_wallet_connected";
+
 export const useWallet = () => {
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false);
   const { account, activate, library, deactivate } = useWeb3React();
   const { address, connect, disconnect, sign, signer, send, showWallet } =
     useWalletService();
@@ -22,16 +27,55 @@ export const useWallet = () => {
     string | null | undefined
   >(null);
 
-  const getConnectedAccount = useCallback(async () => {
-    const connected_wallet = getWalletType();
-    if (connected_wallet) {
-      if (connected_wallet == WalletEnum.METAMASK) {
-        return account;
-      } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
-        return address;
+  const updateConnectedAccount = async () => {
+    if (isWalletConnected) {
+      const connected_wallet = getWalletType();
+      if (connected_wallet) {
+        if (connected_wallet == WalletEnum.METAMASK) {
+          if (account) {
+            setConnecteedAddress(account);
+            return account;
+          } else {
+            return undefined;
+          }
+        } else if (connected_wallet == WalletEnum.WALLET_SERVICE) {
+          if (address) {
+            setConnecteedAddress(address);
+            return address;
+          } else {
+            return undefined;
+          }
+        }
+      }
+    } else {
+      setConnecteedAddress(undefined);
+      return undefined;
+    }
+  };
+
+  const updateWalletConnectionStatus = (status?: boolean) => {
+    if (status != undefined) {
+      setIsWalletConnected(status);
+      localStorage.setItem(IS_WALLET_CONNECTED_KEY, `${status}`);
+    } else {
+      const latest_status = localStorage.getItem(IS_WALLET_CONNECTED_KEY);
+      if (latest_status && latest_status == "true") {
+        setIsWalletConnected(true);
+      } else {
+        localStorage.setItem(IS_WALLET_CONNECTED_KEY, `false`);
+        setIsWalletConnected(false);
       }
     }
-  }, [account, address]);
+  };
+
+  useEffect(() => {
+    updateWalletConnectionStatus();
+  }, []);
+
+  useEffect(() => {
+    updateConnectedAccount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isWalletConnected, account, address]);
 
   const getSigner = useCallback((): JsonRpcSigner | null => {
     const connected_wallet = getWalletType();
@@ -49,22 +93,13 @@ export const useWallet = () => {
     return null;
   }, [account, library, signer]);
 
-  const updateConnectedAddress = useCallback(async () => {
-    const connectedAccount = await getConnectedAccount();
-    setConnecteedAddress(connectedAccount);
-  }, [getConnectedAccount]);
-
-  useEffect(() => {
-    updateConnectedAddress();
-  }, [getConnectedAccount, updateConnectedAddress]);
-
   const setWalletType = (wallet: WalletEnum) => {
-    localStorage.setItem("connected_wallet", wallet);
+    localStorage.setItem(CONNECTED_WALLET_KEY, wallet);
   };
 
   const getWalletType = (): WalletEnum | undefined => {
     if (typeof window !== "undefined") {
-      const connected_wallet = localStorage.getItem("connected_wallet");
+      const connected_wallet = localStorage.getItem(CONNECTED_WALLET_KEY);
       if (connected_wallet) {
         return connected_wallet as WalletEnum;
       }
@@ -73,37 +108,38 @@ export const useWallet = () => {
     return undefined;
   };
 
-  const connectWallet = useCallback(
-    async (
-      wallet: WalletEnum = WalletEnum.METAMASK,
-      showError: boolean = true
-    ) => {
-      if (wallet == WalletEnum.METAMASK) {
-        if (typeof window.ethereum !== "undefined") {
-          await activate(injectedConnector, (error) => {
-            if (
-              showError &&
-              error.message.toLocaleLowerCase().includes("unsupported chain id")
-            ) {
-              const network =
-                process.env.NEXT_PUBLIC_APP_ENV === "production"
-                  ? "BSC mainnet"
-                  : "Goerli testnet";
-              toast.error(`Please connect to the ${network}!`);
-            }
-          });
-          setWalletType(wallet);
-          return await getConnectedAccount();
-        } else {
-          toast.error("Please install MetaMask!");
-        }
-      } else if (wallet == WalletEnum.WALLET_SERVICE) {
+  const connectWallet = async (
+    wallet: WalletEnum = WalletEnum.METAMASK,
+    showError: boolean = true
+  ): Promise<string | undefined> => {
+    if (wallet == WalletEnum.METAMASK) {
+      if (typeof window.ethereum !== "undefined") {
+        await activate(injectedConnector, (error) => {
+          if (
+            showError &&
+            error.message.toLocaleLowerCase().includes("unsupported chain id")
+          ) {
+            const network =
+              process.env.NEXT_PUBLIC_APP_ENV === "production"
+                ? "BSC mainnet"
+                : "Goerli testnet";
+            toast.error(`Please connect to the ${network}!`);
+          }
+        });
         setWalletType(wallet);
-        return await connect();
+        const get_wallet = await updateConnectedAccount();
+        updateWalletConnectionStatus(true);
+        return get_wallet;
+      } else {
+        toast.error("Please install MetaMask!");
       }
-    },
-    [activate, getConnectedAccount, connect]
-  );
+    } else if (wallet == WalletEnum.WALLET_SERVICE) {
+      setWalletType(wallet);
+      const get_wallet = await connect();
+      updateWalletConnectionStatus(true);
+      return get_wallet;
+    }
+  };
 
   const signMessage = async (message: string): Promise<string> => {
     const wallet = getWalletType();
@@ -137,6 +173,7 @@ export const useWallet = () => {
     } else {
       disconnect();
     }
+    updateWalletConnectionStatus(false);
   };
 
   const openWallet = async () => {

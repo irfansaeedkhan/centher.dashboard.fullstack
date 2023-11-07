@@ -68,6 +68,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
       return;
     }
     if (loggedInUser._id.toLowerCase() !== connectedAddress.toLowerCase()) {
+      toast.error("Please connect to correct account");
       disconnectWallet();
     }
   }, [disconnectWallet, loggedInUser, connectedAddress]);
@@ -317,6 +318,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
           <button
             className="flex items-center gap-3 stroke-red-theme text-red-theme"
             onClick={() => {
+              console.log("disconnectWalletdisconnectWallet");
               disconnectWallet();
             }}
           >
@@ -328,11 +330,7 @@ const HeaderProfile: React.FC<HeaderProfileProps> = ({
             className="textGradient flex items-center gap-3 stroke-brand-primary"
             onClick={async () => {
               if (!loggedInUser) return;
-              const _account = await connectWallet();
-              if (loggedInUser._id.toLowerCase() !== _account?.toLowerCase()) {
-                toast.error("Please connect to correct account");
-                disconnectWallet();
-              }
+              await connectWallet();
             }}
           >
             <ConnectIcon />

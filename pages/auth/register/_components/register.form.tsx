@@ -34,6 +34,11 @@ const initialFeeModalState: FeeModalState = {
   fee: "--",
 };
 
+const ButtonsText = {
+  connect_metamask: "Connect to Metamask",
+  connect_wallet: "Connect To Centher Wallet",
+};
+
 export const RegisterForm: React.FC = () => {
   const [feeModal, setFeeModal] = useState<FeeModalState>(initialFeeModalState);
   const [signupState, setSignupState] =
@@ -47,6 +52,7 @@ export const RegisterForm: React.FC = () => {
     getSigner,
     openWallet,
     getWalletType,
+    disconnectWallet,
   } = useWallet();
   const wallet_type = getWalletType();
 
@@ -114,30 +120,80 @@ export const RegisterForm: React.FC = () => {
       <form className="flex h-auto w-full flex-col gap-6" onSubmit={payFee}>
         {connectedAddress ? (
           <div className="flex gap-2 sm:flex-row sm:items-center md:!flex-col md:!items-start">
-            <span onClick={() => openWallet()} className="!h-12 !w-12">
-              <MetamaskIcon />
-            </span>
-            <div className="flex flex-grow flex-col">
-              <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
-                Metamask wallet connected
-              </p>
-              <div className="flex items-center gap-1">
-                <p className="text-sm text-[#6B7280]">Wallet Address:</p>
-                <p className="text-sm text-white">
-                  {sliceAccountAddress(connectedAddress)}
-                </p>
+            {wallet_type == WalletEnum.METAMASK ? (
+              <div>
+                <span onClick={() => openWallet()} className="!h-12 !w-12">
+                  <MetamaskIcon />
+                </span>
+                <div className="flex flex-grow flex-col">
+                  <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
+                    Metamask wallet connected
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-sm text-[#6B7280]">Wallet Address:</p>
+                    <p className="text-sm text-white">
+                      {sliceAccountAddress(connectedAddress)}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div>
+                <div className="flex flex-grow flex-col">
+                  <p className="font-semibold text-white sm:text-base md:mt-4 md:text-lg">
+                    wallet connected
+                  </p>
+                  <div className="flex items-center gap-1">
+                    <p className="text-sm text-[#6B7280]">Wallet Address:</p>
+                    <p className="text-sm text-white">
+                      {sliceAccountAddress(connectedAddress)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Button
+              title="Disconnect"
+              onClick={() => disconnectWallet()}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+            {wallet_type == WalletEnum.WALLET_SERVICE ? (
+              <Button
+                title="Open Wallet"
+                onClick={() => openWallet()}
+                variant="primary"
+                className="flex h-11 w-full items-center justify-center text-[14px]"
+                borderRounded="14px"
+              />
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
-          <Button
-            type="button"
-            title={"Connect"}
-            onClick={() => connectWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
+          <div className="space-y-3">
+            <Button
+              type="button"
+              title={ButtonsText.connect_metamask}
+              onClick={async () => await connectWallet(WalletEnum.METAMASK)}
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+
+            <Button
+              type="button"
+              title={ButtonsText.connect_wallet}
+              onClick={async () =>
+                await connectWallet(WalletEnum.WALLET_SERVICE)
+              }
+              variant="primary"
+              className="flex h-11 w-full items-center justify-center text-[14px]"
+              borderRounded="14px"
+            />
+          </div>
         )}
 
         <InputField
@@ -195,18 +251,6 @@ export const RegisterForm: React.FC = () => {
             className="flex h-11 w-full items-center justify-center text-[14px]"
             borderRounded="14px"
           />
-        )}
-
-        {wallet_type == WalletEnum.WALLET_SERVICE ? (
-          <Button
-            title="Open Wallet"
-            onClick={() => openWallet()}
-            variant="primary"
-            className="flex h-11 w-full items-center justify-center text-[14px]"
-            borderRounded="14px"
-          />
-        ) : (
-          <></>
         )}
 
         <ModalWrapper
